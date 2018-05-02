@@ -42,12 +42,6 @@ script:
   # Do a parallel build to spot potential dependency problems.
   # No ebtables-restore in ubuntu 14.04
   - ./autogen.sh --with-ebtables-restore=/bin/false --sysconfdir=/etc && make -j32
-  # run the tests suite, must install some policy first
-  - sudo make -C config install-dist_dbus_policyDATA install-polkit1_actionDATA
-  - sudo ln -sf /usr/share/polkit-1/actions/org.fedoraproject.FirewallD1.server.policy
-                /usr/share/polkit-1/actions/org.fedoraproject.FirewallD1.policy
-  - sudo pkill -HUP dbus-daemon || true
-  - sudo pkill -HUP polkitd || true
   - sudo make check || { cat src/tests/testsuite.log; exit 1; }
 
 # uncomment to add IRC notifications

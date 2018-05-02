@@ -1,8 +1,6 @@
 FWD_START_TEST([GRE proto helper])
 
 FWD_CHECK([-q --add-protocol=gre])
-AT_CHECK([lsmod | grep nf_conntrack_proto_gre], 1, ignore)
-AT_CHECK([lsmod | grep nf_nat_proto_gre], 1, ignore)
 FWD_CHECK([-q --remove-protocol=gre])
 
 FWD_CHECK([-q --add-service=gre])

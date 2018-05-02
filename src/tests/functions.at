@@ -8,34 +8,13 @@ m4_define([FWD_STOP_FIREWALLD], [
     test $pid -eq 0 || { kill -9 $pid; sleep 3; }
 ])
 
-m4_define([FWD_CHECK_FIREWALLD], [
-    AT_SKIP_IF([pgrep firewalld])
-
-    dnl Can't start the dbus interface unless these exist, but we don't want to
-    dnl install it and dirty the host.
-    dnl
-    dnl This can be manually installed with:
-    dnl    ./configure --sysconfdir=/etc
-    dnl    make -C config install-dist_dbus_policyDATA install-polkit1_actionDATA
-    dnl    ln -s /usr/share/polkit-1/actions/org.fedoraproject.FirewallD1.server.policy \
-    dnl          /usr/share/polkit-1/actions/org.fedoraproject.FirewallD1.policy
-    dnl
-    dnl You might have to restart dbus-daemon and polkitd.
-    dnl Alternatively, fully install firewalld first.
-    dnl
-    AT_SKIP_IF([! test -f /etc/dbus-1/system.d/FirewallD.conf])
-    AT_SKIP_IF([! test -f /usr/share/polkit-1/actions/org.fedoraproject.FirewallD1.policy])
-])
-
 m4_define([FWD_START_FIREWALLD], [
-    FWD_CHECK_FIREWALLD
-
     FIREWALLD_ARGS="--debug=2 --nofork --nopid --log-file ./firewalld.log --system-config ./"
     if test "x${FIREWALLD_DEFAULT_CONFIG}" != x ; then
         FIREWALLD_ARGS+=" --default-config ${FIREWALLD_DEFAULT_CONFIG}"
     fi
 
-    firewalld $FIREWALLD_ARGS &
+    NS_CMD([firewalld $FIREWALLD_ARGS &])
     if test $? -ne 0; then
         AT_FAIL_IF([:])
     fi
@@ -44,7 +23,7 @@ m4_define([FWD_START_FIREWALLD], [
     dnl Give it some time for the dbus interface to come up
     up=0
     for I in 1 2 3 4 5 6 7 8 9 0; do
-        if firewall-cmd --state; then
+        if NS_CMD([firewall-cmd --state]); then
             up=1
             break
         fi
@@ -73,6 +52,9 @@ m4_define([FWD_START_TEST], [
     fi
 
     m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
+        dnl don't unload modules or bother cleaning up, the namespace will be deleted
+        AT_CHECK([sed -i 's/^CleanupOnExit.*/CleanupOnExit=no/' ./firewalld.conf])
+
         dnl set the appropriate backend
         AT_CHECK([sed -i 's/^FirewallBackend.*/FirewallBackend=FIREWALL_BACKEND/' ./firewalld.conf])
 
@@ -92,8 +74,53 @@ m4_define([FWD_START_TEST], [
 
         dnl run cleanup commands on test exit
         echo "" > cleanup
-        trap ". ./cleanup" EXIT
-        trap "kill_firewalld" EXIT
+        trap ". ./cleanup; kill_firewalld" EXIT
+
+        dnl create a namespace and dbus-daemon
+        m4_define([CURRENT_DBUS_ADDRESS], [unix:abstract=firewalld-testsuite-dbus-system-socket-${at_group}])
+        m4_define([CURRENT_TEST_NS], [fwd-test-${at_group}])
+        echo "ip netns delete CURRENT_TEST_NS" >> ./cleanup
+        AT_CHECK([ip netns add CURRENT_TEST_NS])
+        AT_DATA([./dbus.conf], [
+            <!DOCTYPE busconfig PUBLIC "-//freedesktop//DTD D-Bus Bus Configuration 1.0//EN"
+            "http://www.freedesktop.org/standards/dbus/1.0/busconfig.dtd">
+            <busconfig>
+            <fork />
+            <auth>EXTERNAL</auth>
+            <listen>unix:path=/tmp/dummy</listen>
+            <policy context="default">
+                <allow user="*"/>
+                <allow send_type="signal"/>
+                <allow send_requested_reply="true" send_type="method_return"/>
+                <allow send_requested_reply="true" send_type="error"/>
+                <allow receive_type="method_call"/>
+                <allow receive_type="method_return"/>
+                <allow receive_type="error"/>
+                <allow receive_type="signal"/>
+                <allow send_destination="org.freedesktop.DBus"/>
+            </policy>
+            <!-- from .../config/FirewallD.conf -->
+            <policy user="root">
+                <allow own="org.fedoraproject.FirewallD1"/>
+                <allow own="org.fedoraproject.FirewallD1.config"/>
+                <allow send_destination="org.fedoraproject.FirewallD1"/>
+                <allow send_destination="org.fedoraproject.FirewallD1.config"/>
+            </policy>
+            <policy context="default">
+                <allow send_destination="org.fedoraproject.FirewallD1"/>
+                <allow send_destination="org.fedoraproject.FirewallD1"
+                       send_interface="org.freedesktop.DBus.Introspectable"/>
+                <allow send_destination="org.fedoraproject.FirewallD1"
+                       send_interface="org.freedesktop.DBus.Properties"/>
+                <allow send_destination="org.fedoraproject.FirewallD1.config"/>
+            </policy>
+            </busconfig>
+])
+        DBUS_PID=`NS_CMD([dbus-daemon --address="CURRENT_DBUS_ADDRESS" --print-pid --config-file="./dbus.conf"])`
+        if test $? -ne 0; then
+            AT_FAIL_IF([:])
+        fi
+        echo "kill $DBUS_PID" >> ./cleanup
 
         FWD_START_FIREWALLD
     ])
@@ -108,6 +135,8 @@ m4_define([FWD_END_TEST], [
             AT_FAIL_IF([grep ERROR ./firewalld.log])
             AT_FAIL_IF([grep WARNING ./firewalld.log])
         fi
+        m4_undefine([CURRENT_DBUS_ADDRESS])
+        m4_undefine([CURRENT_TEST_NS])
     ])
     AT_CLEANUP
 ])
@@ -158,7 +187,7 @@ m4_define([FWD_CHECK], [
                 ])], [$2], [$3], [$4], [$5], [$6])
         ])
     ], [
-        AT_CHECK([firewall-cmd $1], [$2], [$3], [$4], [$5], [$6])
+        NS_CHECK([firewall-cmd $1], [$2], [$3], [$4], [$5], [$6])
     ])
 ])
 
@@ -167,3 +196,11 @@ m4_define([FWD_GREP_LOG], [
 ])
 
 m4_define([TRIM], [[sed -e 's/^[ \t]*//' -e 's/[ \t]*$//']])
+
+m4_define([NS_CMD], [dnl
+    env DBUS_SYSTEM_BUS_ADDRESS="CURRENT_DBUS_ADDRESS" ip netns exec CURRENT_TEST_NS $1 dnl
+])
+
+m4_define([NS_CHECK], [
+    AT_CHECK([NS_CMD([$1])], [$2], [$3], [$4], [$5], [$6])
+])

@@ -7,7 +7,11 @@ FWD_START_TEST([basic options])
     FWD_CHECK([--help], 0, ignore)
     FWD_CHECK([-V], 0, ignore)
     FWD_CHECK([--reload], 0, ignore)
-    FWD_CHECK([--complete-reload], 0, ignore)
+    dnl Don't test --complete-reload, it causes modules to unload and we don't
+    dnl want to do that to the testing host. The module unload _should_ be
+    dnl denied, but lets be safe and avoid it all together.
+    dnl
+    dnl FWD_CHECK([--complete-reload], 0, ignore)
     FWD_CHECK([--permanent --complete-reload], 2, ignore, ignore)
 
     FWD_CHECK([--panic-on], 0, ignore)

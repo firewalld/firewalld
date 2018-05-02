@@ -242,6 +242,8 @@ class Firewall(object):
                 value = self._firewalld_conf.get("CleanupOnExit")
                 if value is not None and value.lower() in [ "no", "false" ]:
                     self.cleanup_on_exit = False
+                log.debug1("CleanupOnExit is set to '%s'",
+                           self.cleanup_on_exit)
 
             if self._firewalld_conf.get("Lockdown"):
                 value = self._firewalld_conf.get("Lockdown")
