@@ -43,7 +43,6 @@ script:
   # Do a parallel build to spot potential dependency problems.
   # No ebtables-restore in ubuntu 14.04
   - ./autogen.sh --with-ebtables-restore=/bin/false --sysconfdir=/etc && make -j32
-  - ./config/xmlschema/check.sh -d $(pwd)/config
   # run the tests suite, must install some policy first
   - sudo make -C config install-dist_dbus_policyDATA install-polkit1_actionDATA
   - sudo ln -sf /usr/share/polkit-1/actions/org.fedoraproject.FirewallD1.server.policy
