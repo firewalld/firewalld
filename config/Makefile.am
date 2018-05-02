@@ -186,7 +186,7 @@ CONFIG_FILES = \
 	services/libvirt.xml \
 	services/llmnr.xml \
 	services/managesieve.xml \
-	services/matrix-synapse.xml \
+	services/matrix.xml \
 	services/mdns.xml \
 	services/minidlna.xml \
 	services/mongodb.xml \
