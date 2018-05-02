@@ -57,7 +57,7 @@ FWD_START_TEST([user zone])
     FWD_CHECK([--permanent --zone=foobar --set-target=ACCEPT], 0, ignore)
     FWD_CHECK([--permanent --zone=foobar --get-target | grep ACCEPT], 0, ignore)
     FWD_CHECK([--permanent --zone=foobar --add-service=ssh], 0, ignore)
-FWD_END_TEST([-e '/ERROR: INVALID_TARGET: BAD/g'])
+FWD_END_TEST([-e '/ERROR: INVALID_TARGET: BAD/d'])
 
 FWD_START_TEST([zone interfaces])
     FWD_CHECK([--zone=work --add-interface=dummy], 0, ignore)
