@@ -91,7 +91,7 @@ class ipset(object):
             raise FirewallError(errors.INVALID_NAME,
                                 "ipset name '%s' is not valid" % name)
 
-    def supported_types(self):
+    def set_supported_types(self):
         """Return types that are supported by the ipset command and kernel"""
         ret = [ ]
         output = ""
@@ -118,7 +118,7 @@ class ipset(object):
             raise FirewallError(errors.INVALID_TYPE,
                                 "ipset type name '%s' is not valid" % type_name)
 
-    def create(self, set_name, type_name, options=None):
+    def set_create(self, set_name, type_name, options=None):
         """Create an ipset with name, type and options"""
         self.check_name(set_name)
         self.check_type(type_name)
@@ -131,17 +131,17 @@ class ipset(object):
                     args.append(val)
         return self.__run(args)
 
-    def destroy(self, set_name):
+    def set_destroy(self, set_name):
         self.check_name(set_name)
         return self.__run([ "destroy", set_name ])
 
-    def add(self, set_name, entry, options=None):
+    def set_add(self, set_name, entry, options=None):
         args = [ "add", set_name, entry, "-exist" ]
         if options:
             args.append("%s" % " ".join(options))
         return self.__run(args)
 
-    def delete(self, set_name, entry, options=None):
+    def set_delete(self, set_name, entry, options=None):
         args = [ "del", set_name, entry ]
         if options:
             args.append("%s" % " ".join(options))
@@ -153,7 +153,7 @@ class ipset(object):
             args.append("%s" % " ".join(options))
         return self.__run(args)
 
-    def list(self, set_name=None, options=None):
+    def set_list(self, set_name=None, options=None):
         args = [ "list" ]
         if set_name:
             args.append(set_name)
@@ -161,9 +161,9 @@ class ipset(object):
             args.extend(options)
         return self.__run(args).split("\n")
 
-    def get_active_terse(self):
+    def set_get_active_terse(self):
         """ Get active ipsets (only headers) """
-        lines = self.list(options=["-terse"])
+        lines = self.set_list(options=["-terse"])
 
         ret = { }
         _name = _type = None
@@ -206,7 +206,7 @@ class ipset(object):
             args.append(set_name)
         return self.__run(args)
 
-    def restore(self, set_name, type_name, entries,
+    def set_restore(self, set_name, type_name, entries,
                 create_options=None, entry_options=None):
         self.check_name(set_name)
         self.check_type(type_name)
@@ -261,7 +261,7 @@ class ipset(object):
                                                      " ".join(args), ret))
         return ret
 
-    def flush(self, set_name):
+    def set_flush(self, set_name):
         args = [ "flush" ]
         if set_name:
             args.append(set_name)

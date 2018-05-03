@@ -145,7 +145,7 @@ class Firewall(object):
 
     def _start_check(self):
         try:
-            self.ipset_backend.list()
+            self.ipset_backend.set_list()
         except ValueError:
             log.warning("ipset not usable, disabling ipset usage in firewall.")
             # ipset is not usable, no supported types
@@ -153,7 +153,7 @@ class Firewall(object):
             self.ipset_supported_types = [ ]
         else:
             # ipset is usable, get all supported types
-            self.ipset_supported_types = self.ipset_backend.supported_types()
+            self.ipset_supported_types = self.ipset_backend.set_supported_types()
 
         self.ip4tables_backend.fill_exists()
         if not self.ip4tables_backend.restore_command_exists:
