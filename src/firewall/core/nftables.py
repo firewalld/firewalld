@@ -28,7 +28,7 @@ from firewall.functions import splitArgs, check_mac, portStr, \
                                check_single_address, check_address
 from firewall import config
 from firewall.errors import FirewallError, UNKNOWN_ERROR, INVALID_RULE, \
-                            INVALID_ICMPTYPE
+                            INVALID_ICMPTYPE, INVALID_TYPE, INVALID_ENTRY
 from firewall.core.rich import Rich_Accept, Rich_Reject, Rich_Drop, Rich_Mark
 
 TABLE_NAME = "firewalld"
@@ -544,8 +544,9 @@ class nftables(object):
             action = "jump"
 
         if address.startswith("ipset:"):
-            # FIXME: ipset support
-            FirewallError(UNKNOWN_ERROR, "not implemented")
+            ipset = address[len("ipset:"):]
+            rule_family = self._set_get_family(ipset)
+            address = "@" + ipset
         else:
             if check_mac(address):
                 # outgoing can not be set
@@ -557,9 +558,9 @@ class nftables(object):
             else:
                 rule_family = "ip6"
 
-            rule = [add_del, "rule", family, "%s" % TABLE_NAME,
-                    "%s_%s_ZONES_SOURCE" % (table, chain),
-                    rule_family, opt, address, action, "%s_%s" % (table, target)]
+        rule = [add_del, "rule", family, "%s" % TABLE_NAME,
+                "%s_%s_ZONES_SOURCE" % (table, chain),
+                rule_family, opt, address, action, "%s_%s" % (table, target)]
         return [rule]
 
     def build_zone_chain_rules(self, zone, table, chain, family="inet"):
@@ -780,8 +781,11 @@ class nftables(object):
             else:
                 rule_fragment += ["ether", "saddr", rich_source.mac]
         elif hasattr(rich_source, "ipset") and rich_source.ipset:
-            # FIXME: ipset support
-            FirewallError(UNKNOWN_ERROR, "not implemented")
+            family = self._set_get_family(rich_source.ipset)
+            if rich_source.invert:
+                rule_fragment += [family, "saddr", "!=", "@" + rich_source.ipset]
+            else:
+                rule_fragment += [family, "saddr", "@" + rich_source.ipset]
 
         return rule_fragment
 
@@ -1145,3 +1149,108 @@ class nftables(object):
         if ipv in ["ipv4", "ipv6", "eb"]:
             return True
         return False
+
+    def _set_type_fragment(self, ipv, type):
+        ipv_addr = {
+            "ipv4" : "ipv4_addr",
+            "ipv6" : "ipv6_addr",
+        }
+        types = {
+            "hash:ip" : [ipv_addr[ipv]],
+            "hash:ip,port" : [ipv_addr[ipv], ". inet_proto", ". inet_service"],
+            "hash:ip,port,ip" : [ipv_addr[ipv], ". inet_proto", ". inet_service .", ipv_addr[ipv]],
+            "hash:ip,port,net" : [ipv_addr[ipv], ". inet_proto", ". inet_service .", ipv_addr[ipv]],
+            "hash:ip,mark" : [ipv_addr[ipv], ". mark"],
+
+            "hash:net" : [ipv_addr[ipv]],
+            "hash:net,port" : [ipv_addr[ipv], ". inet_proto", ". inet_service"],
+            "hash:net,port,ip" : [ipv_addr[ipv], ". inet_proto", ". inet_service .", ipv_addr[ipv]],
+            "hash:net,port,net" : [ipv_addr[ipv], ". inet_proto", ". inet_service .", ipv_addr[ipv]],
+            "hash:net,iface" : [ipv_addr[ipv], ". ifname"],
+
+            "hash:mac" : ["ether_addr"],
+        }
+        try:
+            return ["type"] + types[type] + [";"]
+        except KeyError:
+            raise FirewallError(INVALID_TYPE,
+                                "ipset type name '%s' is not valid" % type)
+
+    def set_create(self, name, type, options=None):
+        if options and "family" in options and options["family"] == "inet6":
+            ipv = "ipv6"
+        else:
+            ipv = "ipv4"
+
+        cmd = [name, "{"]
+        cmd += self._set_type_fragment(ipv, type)
+        if options:
+            if "timeout" in options:
+                cmd += ["timeout", options["timeout"]+ "s", ";"]
+            if "maxelem" in options:
+                cmd += ["size", options["maxelem"], ";"]
+        # flag "interval" currently does not work with timeouts or
+        # concatenations. See rhbz 1576426, 1576430.
+        if (not options or "timeout" not in options) \
+           and "," not in type: # e.g. hash:net,port
+            cmd += ["flags", "interval", ";"]
+        cmd += ["}"]
+
+        for family in ["inet", "ip", "ip6"]:
+            self.__run(["add", "set", family, TABLE_NAME] + cmd)
+
+    def set_destroy(self, name):
+        for family in ["inet", "ip", "ip6"]:
+            self.__run(["delete", "set", family, TABLE_NAME, name])
+
+    def _set_entry_fragment(self, name, entry):
+        # convert something like
+        #    1.2.3.4,sctp:8080 (type hash:ip,port)
+        # to
+        #    1.2.3.4 . sctp . 8080
+        type_format = self._fw.ipset.get_type(name).split(":")[1].split(",")
+        entry_tokens = entry.split(",")
+        if len(type_format) != len(entry_tokens):
+            raise FirewallError(INVALID_ENTRY,
+                                "Number of values does not match ipset type.")
+        fragment = []
+        for i in range(len(type_format)):
+            if type_format[i] == "port":
+                try:
+                    index = entry_tokens[i].index(":")
+                except ValueError:
+                    # no protocol means default tcp
+                    fragment += ["tcp", ".", entry_tokens[i]]
+                else:
+                    fragment += [entry_tokens[i][:index], ".", entry_tokens[i][index+1:]]
+            else:
+                fragment.append(entry_tokens[i])
+            fragment.append(".")
+        return fragment[:-1] # snip last concat operator
+
+    def set_add(self, name, entry):
+        for family in ["inet", "ip", "ip6"]:
+            self.__run(["add", "element", family, TABLE_NAME, name, "{"]
+                       + self._set_entry_fragment(name, entry) + ["}"])
+
+    def set_delete(self, name, entry):
+        for family in ["inet", "ip", "ip6"]:
+            self.__run(["delete", "element", family, TABLE_NAME, name, "{"]
+                       + self._set_entry_fragment(name, entry) + ["}"])
+
+    def set_flush(self, name):
+        for family in ["inet", "ip", "ip6"]:
+            self.__run(["flush", "set", family, TABLE_NAME, name])
+
+    def _set_get_family(self, name):
+        ipset = self._fw.ipset.get_ipset(name)
+
+        if ipset.type == "hash:mac":
+            family = "ether"
+        elif ipset.options and "family" in ipset.options \
+             and ipset.options["family"] == "inet6":
+            family = "ip6"
+        else:
+            family = "ip"
+
+        return family
