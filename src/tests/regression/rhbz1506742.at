@@ -1,0 +1,19 @@
+FWD_START_TEST([ipset with timeout])
+FWD_CHECK([-q --permanent --new-ipset=foobar --type=hash:net --option=maxelem=1000000 --option=family=inet --option=hashsize=4096 --option=timeout=600])
+FWD_RELOAD
+FWD_CHECK([--permanent --ipset=foobar --add-entry=1.2.3.4/24], 32, ignore, ignore)
+FWD_CHECK([-q --ipset=foobar --add-entry=1.2.3.4/24])
+FWD_CHECK([-q --ipset=foobar --query-entry=1.2.3.4/24], 32, ignore, ignore)
+FWD_CHECK([-q --ipset=foobar --remove-entry=1.2.3.4/24])
+
+AT_DATA([foobar_entries.txt], [
+1.2.3.4/24
+10.0.1.1/16
+])
+FWD_CHECK([--permanent --ipset=foobar --add-entries-from-file=foobar_entries.txt], 32, ignore, ignore)
+FWD_CHECK([-q --ipset=foobar --add-entries-from-file=foobar_entries.txt])
+FWD_CHECK([-q --ipset=foobar --query-entry=1.2.3.4/24], 32, ignore, ignore)
+FWD_CHECK([-q --ipset=foobar --remove-entries-from-file=foobar_entries.txt])
+FWD_END_TEST([-e '/Error: IPSET_WITH_TIMEOUT/d' dnl
+              -e '/ERROR: IPSET_WITH_TIMEOUT/d' dnl
+			  -e '/WARNING: NOT_ENABLED/d'])
