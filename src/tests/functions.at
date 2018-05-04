@@ -77,8 +77,8 @@ m4_define([FWD_START_TEST], [
         trap ". ./cleanup; kill_firewalld" EXIT
 
         dnl create a namespace and dbus-daemon
-        m4_define([CURRENT_DBUS_ADDRESS], [unix:abstract=firewalld-testsuite-dbus-system-socket-${at_group}])
-        m4_define([CURRENT_TEST_NS], [fwd-test-${at_group}])
+        m4_define([CURRENT_DBUS_ADDRESS], [unix:abstract=firewalld-testsuite-dbus-system-socket-]RANDOM_NUMBER)
+        m4_define([CURRENT_TEST_NS], [fwd-test-]RANDOM_NUMBER)
         echo "ip netns delete CURRENT_TEST_NS" >> ./cleanup
         AT_CHECK([ip netns add CURRENT_TEST_NS])
         AT_DATA([./dbus.conf], [
@@ -204,3 +204,5 @@ m4_define([NS_CMD], [dnl
 m4_define([NS_CHECK], [
     AT_CHECK([NS_CMD([$1])], [$2], [$3], [$4], [$5], [$6])
 ])
+
+m4_define([RANDOM_NUMBER], [m4_eval(m4_esyscmd([bash -c 'echo $RANDOM']))])
