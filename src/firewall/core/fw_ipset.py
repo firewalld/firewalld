@@ -181,9 +181,6 @@ class FirewallIPSet(object):
 
     def add_entry(self, name, entry):
         obj = self.get_ipset(name, applied=True)
-        if "timeout" in obj.options and obj.options["timeout"] != "0":
-            # no entries visible for ipsets with timeout
-            raise FirewallError(errors.IPSET_WITH_TIMEOUT, name)
 
         IPSet.check_entry(entry, obj.options, obj.type)
         if entry in obj.entries:
@@ -203,9 +200,6 @@ class FirewallIPSet(object):
 
     def remove_entry(self, name, entry):
         obj = self.get_ipset(name, applied=True)
-        if "timeout" in obj.options and obj.options["timeout"] != "0":
-            # no entries visible for ipsets with timeout
-            raise FirewallError(errors.IPSET_WITH_TIMEOUT, name)
 
         # no entry check for removal
         if entry not in obj.entries:
@@ -236,13 +230,12 @@ class FirewallIPSet(object):
 
     def set_entries(self, name, entries):
         obj = self.get_ipset(name, applied=True)
-        if "timeout" in obj.options and obj.options["timeout"] != "0":
-            # no entries visible for ipsets with timeout
-            raise FirewallError(errors.IPSET_WITH_TIMEOUT, name)
 
         for entry in entries:
             IPSet.check_entry(entry, obj.options, obj.type)
-        obj.entries = entries
+        if "timeout" not in obj.options or obj.options["timeout"] == "0":
+            # no entries visible for ipsets with timeout
+            obj.entries = entries
 
         if self._fw.individual_calls():
             try:
