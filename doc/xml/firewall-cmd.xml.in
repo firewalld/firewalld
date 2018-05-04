@@ -1132,6 +1132,10 @@ For interfaces that are not under control of NetworkManager, firewalld tries to 
            <para>
              Add a new entry to the ipset.
            </para>
+           <para>
+             Adding an entry to an ipset with option <literal>timeout</literal>
+             is permitted, but these entries are not tracked by firewalld.
+           </para>
          </listitem>
        </varlistentry>
 
@@ -1149,6 +1153,10 @@ For interfaces that are not under control of NetworkManager, firewalld tries to 
          <listitem>
            <para>
 	     Return whether the entry has been added to an ipset. Returns 0 if true, 1 otherwise.
+           </para>
+           <para>
+             Querying an ipset with a timeout will yield an error. Entries are
+             not tracked for ipsets with a timeout.
            </para>
          </listitem>
        </varlistentry>
