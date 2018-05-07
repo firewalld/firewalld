@@ -135,16 +135,12 @@ class ipset(object):
         self.check_name(set_name)
         return self.__run([ "destroy", set_name ])
 
-    def set_add(self, set_name, entry, options=None):
+    def set_add(self, set_name, entry):
         args = [ "add", set_name, entry, "-exist" ]
-        if options:
-            args.append("%s" % " ".join(options))
         return self.__run(args)
 
-    def set_delete(self, set_name, entry, options=None):
+    def set_delete(self, set_name, entry):
         args = [ "del", set_name, entry ]
-        if options:
-            args.append("%s" % " ".join(options))
         return self.__run(args)
 
     def test(self, set_name, entry, options=None):
