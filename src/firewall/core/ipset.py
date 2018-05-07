@@ -73,6 +73,7 @@ class ipset(object):
 
     def __init__(self):
         self._command = COMMANDS["ipset"]
+        self.name = "ipset"
 
     def __run(self, args):
         """Call ipset with args"""
