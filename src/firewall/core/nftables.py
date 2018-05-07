@@ -374,11 +374,14 @@ class nftables(object):
 
         return list(supported)
 
+    def build_default_tables(self):
+        default_tables = []
+        for family in OUR_CHAINS.keys():
+            default_tables.append("add table %s %s" % (family, TABLE_NAME))
+        return map(splitArgs, default_tables)
+
     def build_default_rules(self, log_denied="off"):
         default_rules = []
-        for family in OUR_CHAINS.keys():
-            default_rules.append("add table %s %s" % (family, TABLE_NAME))
-
         OUR_CHAINS["inet"]["raw"] = set()
         for chain in IPTABLES_TO_NFT_HOOK["raw"].keys():
             default_rules.append("add chain inet %s raw_%s '{ type filter hook %s priority %d ; }'" %

@@ -622,6 +622,10 @@ class ip4tables(object):
                 in_types = True
         return ret
 
+    def build_default_tables(self):
+        # nothing to do, they always exist
+        return []
+
     def build_default_rules(self, log_denied="off"):
         default_rules = []
         for table in DEFAULT_RULES:

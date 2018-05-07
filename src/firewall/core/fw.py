@@ -431,6 +431,10 @@ class Firewall(object):
             log.debug1("Unloading firewall modules")
             self.modules_backend.unload_firewall_modules()
 
+        self.apply_default_tables(use_transaction=transaction)
+        transaction.execute(True)
+        transaction.clear()
+
         # apply settings for loaded ipsets while reloading here
         if self.ipset_enabled and self.ipset.has_ipsets():
             log.debug1("Applying ipsets")
@@ -762,6 +766,18 @@ class Firewall(object):
             backends.append(self.nftables_backend)
         return backends
 
+    def apply_default_tables(self, use_transaction=None):
+        if use_transaction is None:
+            transaction = FirewallTransaction(self)
+        else:
+            transaction = use_transaction
+
+        for backend in self.enabled_backends():
+            transaction.add_rules(backend, backend.build_default_tables())
+
+        if use_transaction is None:
+            transaction.execute(True)
+
     def apply_default_rules(self, use_transaction=None):
         if use_transaction is None:
             transaction = FirewallTransaction(self)
@@ -771,12 +787,6 @@ class Firewall(object):
         for backend in self.enabled_backends():
             rules = backend.build_default_rules(self._log_denied)
             transaction.add_rules(backend, rules)
-            if backend.name == "nftables":
-                # nftables backend must flush default rules to create the
-                # "tables" first. Otherwise we attempt to add rules to
-                # non-existent tables.
-                transaction.execute(True)
-                transaction.clear()
 
         ipv6_backend = self.get_backend_by_ipv("ipv6")
         if self.ipv6_rpfilter_enabled and \
