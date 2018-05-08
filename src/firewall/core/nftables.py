@@ -322,28 +322,23 @@ class nftables(object):
             for chain in IPTABLES_TO_NFT_HOOK[table]:
                 table_chains.append((table, chain))
 
-        table_suffix = "policy_drop"
+        table_name = TABLE_NAME + "_" + "policy_drop"
 
         def _policy_drop_helper(table, chain, family, rules):
-            _chain = "%s_%s_%s" % (table, chain, table_suffix)
+            _chain = "%s_%s" % (table, chain)
             _hook = IPTABLES_TO_NFT_HOOK[table][chain][0]
             # add hooks with priority -1, only contain drop rule
             _priority = IPTABLES_TO_NFT_HOOK[table][chain][1] - 1
             _add_chain = "add chain %s %s %s '{ type filter hook %s priority %d ; }'" % \
-                         (family, TABLE_NAME, _chain, _hook, _priority)
+                         (family, table_name, _chain, _hook, _priority)
             rules.append(splitArgs(_add_chain))
-            rules.append(["add", "rule", family, TABLE_NAME, _chain, "drop"])
-
-        def _policy_accept_helper(table, chain, family, rules):
-            _chain = "%s_%s_%s" % (table, chain, table_suffix)
-            _rule = ["delete", "rule", family, TABLE_NAME, _chain, "drop"]
-            _rule_key = " ".join(_rule)
-            if _rule_key in self.rule_to_handle:
-                rules.append(_rule)
-                rules.append(["delete", "chain", family, TABLE_NAME, _chain])
+            rules.append(["add", "rule", family, table_name, _chain, "drop"])
 
         rules = []
         if policy == "DROP":
+            for family in ["inet", "ip", "ip6"]:
+                rules.append(["add", "table", family, table_name])
+
             for table,chain in table_chains:
                 if table == "nat":
                     # nat requires two families
@@ -352,13 +347,8 @@ class nftables(object):
                 else:
                     _policy_drop_helper(table, chain, "inet", rules)
         elif policy == "ACCEPT":
-            for table,chain in table_chains:
-                if table == "nat":
-                    # nat requires two families
-                    for family in ["ip", "ip6"]:
-                        _policy_accept_helper(table, chain, family, rules)
-                else:
-                    _policy_accept_helper(table, chain, "inet", rules)
+            for family in ["inet", "ip", "ip6"]:
+                rules.append(["delete", "table", family, table_name])
         else:
             FirewallError(UNKNOWN_ERROR, "not implemented")
 
