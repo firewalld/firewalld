@@ -583,6 +583,17 @@ FWD_START_TEST([ipset])
     FWD_CHECK([--permanent --ipset=foobar --add-entry=10.10.10.10,sctp:1234], 0, ignore)
     FWD_RELOAD
     FWD_CHECK([--ipset=foobar --add-entry=1.2.3.4,sctp:8080], 0, ignore)
+    FWD_CHECK([--permanent --delete-ipset=foobar], 0, ignore)
+    FWD_RELOAD
+
+    if ipset --help |grep "hash:mac"; then
+    FWD_CHECK([--permanent --new-ipset=foobar --type=hash:mac], 0, ignore)
+    FWD_CHECK([--permanent --ipset=foobar --add-entry=12:34:56:78:90:ab], 0, ignore)
+    FWD_RELOAD
+    FWD_CHECK([--ipset=foobar --add-entry=12:34:56:78:90:ac], 0, ignore)
+    FWD_CHECK([--permanent --delete-ipset=foobar], 0, ignore)
+    FWD_RELOAD
+    fi
 FWD_END_TEST([-e '/ERROR: INVALID_ENTRY: invalid address/d'])
 
 FWD_START_TEST([user helpers])
