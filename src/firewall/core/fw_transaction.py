@@ -181,7 +181,7 @@ class FirewallTransaction(SimpleFirewallTransaction):
     def zone_transaction(self, zone):
         if zone not in self.zone_transactions:
             self.zone_transactions[zone] = FirewallZoneTransaction(
-                self.fw, zone)
+                self.fw, zone, self)
         return self.zone_transactions[zone]
 
     def prepare(self, enable, rules=None, modules=None):
@@ -223,9 +223,10 @@ class FirewallTransaction(SimpleFirewallTransaction):
 class FirewallZoneTransaction(SimpleFirewallTransaction):
     """Zone transaction with additional chain and module interface"""
 
-    def __init__(self, fw, zone):
+    def __init__(self, fw, zone, fw_transaction=None):
         super(FirewallZoneTransaction, self).__init__(fw)
         self.zone = zone
+        self.fw_transaction = fw_transaction
         self.chains = [ ] # [ (table, chain),.. ]
         self.modules = [ ] # [ module,.. ]
 
@@ -245,6 +246,15 @@ class FirewallZoneTransaction(SimpleFirewallTransaction):
                 modules.append(module)
 
         return rules, modules
+
+    def execute(self, enable):
+        # calling execute on a zone_transaction that was spawned from a
+        # FirewallTransaction should execute the FirewallTransaction as it may
+        # have prerequisite rules
+        if self.fw_transaction:
+            self.fw_transaction.execute(enable)
+        else:
+            super(FirewallZoneTransaction, self).execute(enable)
 
     def add_chain(self, table, chain):
         table_chain = (table, chain)
