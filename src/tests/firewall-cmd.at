@@ -548,7 +548,9 @@ FWD_START_TEST([user ICMP types])
 FWD_END_TEST([-e '/NAME_CONFLICT: new_icmptype():/d'])
 
 FWD_START_TEST([ipset])
+    CHECK_IPSET_HASH_MAC
     m4_if(nftables, FIREWALL_BACKEND, [AT_CHECK([exit 77])])
+
     FWD_CHECK([--permanent --new-ipset=foobar --type=hash:ip], 0, ignore)
     FWD_CHECK([--reload], 0, ignore)
     FWD_CHECK([--ipset=foobar --get-entries], 0, [
@@ -586,14 +588,12 @@ FWD_START_TEST([ipset])
     FWD_CHECK([--permanent --delete-ipset=foobar], 0, ignore)
     FWD_RELOAD
 
-    if ipset --help |grep "hash:mac"; then
     FWD_CHECK([--permanent --new-ipset=foobar --type=hash:mac], 0, ignore)
     FWD_CHECK([--permanent --ipset=foobar --add-entry=12:34:56:78:90:ab], 0, ignore)
     FWD_RELOAD
     FWD_CHECK([--ipset=foobar --add-entry=12:34:56:78:90:ac], 0, ignore)
     FWD_CHECK([--permanent --delete-ipset=foobar], 0, ignore)
     FWD_RELOAD
-    fi
 FWD_END_TEST([-e '/ERROR: INVALID_ENTRY: invalid address/d'])
 
 FWD_START_TEST([user helpers])

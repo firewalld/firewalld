@@ -206,3 +206,10 @@ m4_define([NS_CHECK], [
 ])
 
 m4_define([RANDOM_NUMBER], [m4_eval(m4_esyscmd([bash -c 'echo $RANDOM']))])
+
+m4_define([CHECK_IPSET_HASH_MAC], [
+    dnl skip if ipset hash:mac support is there
+    AT_SKIP_IF([! ipset --help | grep "hash:mac"])
+    AT_SKIP_IF([! NS_CMD([ipset create foobar hash:mac >/dev/null 2>&1])])
+    NS_CHECK([ipset destroy foobar])
+])
