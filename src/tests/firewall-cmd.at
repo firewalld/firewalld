@@ -548,6 +548,7 @@ FWD_START_TEST([user ICMP types])
 FWD_END_TEST([-e '/NAME_CONFLICT: new_icmptype():/d'])
 
 FWD_START_TEST([ipset])
+    CHECK_IPSET
     CHECK_IPSET_HASH_MAC
     m4_if(nftables, FIREWALL_BACKEND, [AT_CHECK([exit 77])])
 

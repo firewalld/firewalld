@@ -207,6 +207,16 @@ m4_define([NS_CHECK], [
 
 m4_define([RANDOM_NUMBER], [m4_eval(m4_esyscmd([bash -c 'echo $RANDOM']))])
 
+m4_define([CHECK_IPSET], [
+    m4_if(nftables, FIREWALL_BACKEND, [
+        dnl If our nft binary has buggy flush set, then skip the test
+        NS_CHECK([nft add table inet firewalld_check_ipset])
+        NS_CHECK([nft add set inet firewalld_check_ipset foobar { type ipv4_addr \; }])
+        AT_SKIP_IF([! NS_CMD([nft flush set inet firewalld_check_ipset foobar >/dev/null 2>&1])])
+        NS_CHECK([nft delete table inet firewalld_check_ipset])
+    ])
+])
+
 m4_define([CHECK_IPSET_HASH_MAC], [
     dnl skip if ipset hash:mac support is there
     AT_SKIP_IF([! ipset --help | grep "hash:mac"])

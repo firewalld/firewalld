@@ -1,4 +1,6 @@
 FWD_START_TEST([ipset with timeout])
+CHECK_IPSET
+
 FWD_CHECK([-q --permanent --new-ipset=foobar --type=hash:ip --option=maxelem=1000000 --option=family=inet --option=hashsize=4096 --option=timeout=600])
 FWD_RELOAD
 FWD_CHECK([--permanent --ipset=foobar --add-entry=1.2.3.4], 32, ignore, ignore)
