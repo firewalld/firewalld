@@ -219,7 +219,9 @@ m4_define([CHECK_IPSET], [
 
 m4_define([CHECK_IPSET_HASH_MAC], [
     dnl skip if ipset hash:mac support is there
-    AT_SKIP_IF([! ipset --help | grep "hash:mac"])
-    AT_SKIP_IF([! NS_CMD([ipset create foobar hash:mac >/dev/null 2>&1])])
-    NS_CHECK([ipset destroy foobar])
+    m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
+        AT_SKIP_IF([! ipset --help | grep "hash:mac"])
+        AT_SKIP_IF([! NS_CMD([ipset create foobar hash:mac >/dev/null 2>&1])])
+        NS_CHECK([ipset destroy foobar])
+    ])
 ])
