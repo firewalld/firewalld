@@ -198,6 +198,9 @@ m4_define([FWD_GREP_LOG], [
 ])
 
 m4_define([TRIM], [[sed -e 's/^[ \t]*//' -e 's/[ \t]*$//']])
+m4_define([TRIMV], [[sed -e '/^[ \t]*$/d']])
+m4_define([TRIM_INTERNAL], [[sed -e 's/[ \t]\+/ /g']])
+m4_define([TRIM_WHITESPACE], [TRIM | TRIMV | TRIM_INTERNAL])
 
 m4_define([NS_CMD], [dnl
     env DBUS_SYSTEM_BUS_ADDRESS="CURRENT_DBUS_ADDRESS" ip netns exec CURRENT_TEST_NS $1 dnl
