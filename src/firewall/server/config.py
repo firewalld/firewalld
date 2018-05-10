@@ -523,7 +523,7 @@ class FirewallDConfig(slip.dbus.service.Object):
             return dbus.String(value)
         elif prop == "AutomaticHelpers":
             if value is None:
-                value = config.FALLBACK_LOG_DENIED
+                value = config.FALLBACK_AUTOMATIC_HELPERS
             return dbus.String(value)
 
     @dbus_handle_exceptions
