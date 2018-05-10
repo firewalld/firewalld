@@ -2571,6 +2571,16 @@
               </para>
             </listitem>
           </varlistentry>
+          <varlistentry id="FirewallD1.config.Properties.FirewallBackend">
+            <term>FirewallBackend - s - (rw)</term>
+            <listitem>
+              <para>
+                Selects the firewalld backend for all rules except the direct
+                interface. Valid options are; nftables, iptables. Default in
+                nftables.
+              </para>
+            </listitem>
+          </varlistentry>
           <varlistentry id="FirewallD1.config.Properties.IPv6_rpfilter">
             <term><parameter>IPv6_rpfilter</parameter> - s - (rw)</term>
             <listitem><para>Indicates whether the reverse path filter test on a packet for IPv6 is enabled. If a reply to the packet would be sent via the same interface that the packet arrived on, the packet will match and be accepted, otherwise dropped.</para></listitem>
