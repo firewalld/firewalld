@@ -847,14 +847,6 @@ class Firewall(object):
     # rule function used in handle_ functions
 
     def rule(self, backend_name, rule):
-        # remove leading and trailing '"' for use with execve
-        i = 0
-        while i < len(rule):
-            x = rule[i]
-            if len(x) > 2 and x[0] == '"' and x[-1] == '"':
-                rule[i] = x[1:-1]
-            i += 1
-
         backend = self.get_backend_by_name(backend_name)
         if not backend:
             raise FirewallError(errors.INVALID_IPV,
@@ -880,14 +872,6 @@ class Firewall(object):
            not backend.restore_command_exists or \
            (backend_name == "ebtables" and not self.ebtables_backend.restore_noflush_option):
             for i,rule in enumerate(_rules):
-                # remove leading and trailing '"' for use with execve
-                j = 0
-                while j < len(rule):
-                    x = rule[j]
-                    if len(x) > 2 and x[0] == '"' and x[-1] == '"':
-                        rule[j] = x[1:-1]
-                    j += 1
-
                 try:
                     backend.set_rule(rule)
                 except Exception as msg:
