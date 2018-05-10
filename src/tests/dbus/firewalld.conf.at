@@ -1,0 +1,65 @@
+FWD_START_TEST([firewalld.conf])
+
+dnl Verify defaults over dbus. Should be inline with default firewalld.conf.
+DBUS_GETALL([config], [config], 0, [dnl
+array
+dict entry(
+string "MinimalMark"
+variant int32 100
+)
+dict entry(
+string "AutomaticHelpers"
+variant string "system"
+)
+dict entry(
+string "Lockdown"
+variant string "no"
+)
+dict entry(
+string "LogDenied"
+variant string "off"
+)
+dict entry(
+string "IPv6_rpfilter"
+m4_if(no, HOST_SUPPORTS_NFT_FIB, [dnl
+variant string "no"],[dnl
+variant string "yes"])
+)
+dict entry(
+string "IndividualCalls"
+variant string "no"
+)
+dict entry(
+string "FirewallBackend"
+variant string "nftables"
+)
+dict entry(
+string "CleanupOnExit"
+variant string "no"
+)
+dict entry(
+string "DefaultZone"
+variant string "public"
+)
+])
+
+m4_define([_helper], [
+DBUS_SET([config], [config], [string:"$1" $2], 0, ignore)
+DBUS_GET([config], [config], [string:"$1"], 0, [dnl
+$3
+])
+])
+
+dnl Test individual Set/Get
+_helper([MinimalMark], [int32:1234], [variant int32 1234])
+_helper([AutomaticHelpers], [string:"no"], [variant string "no"])
+_helper([Lockdown], [string:"yes"], [variant string "yes"])
+_helper([LogDenied], [string:"all"], [variant string "all"])
+_helper([IPv6_rpfilter], [string:"yes"], [variant string "yes"])
+_helper([IndividualCalls], [string:"yes"], [variant string "yes"])
+_helper([FirewallBackend], [string:"iptables"], [variant string "iptables"])
+_helper([CleanupOnExit], [string:"yes"], [variant string "yes"])
+dnl Note: DefaultZone is RO
+m4_undefine([_helper])
+
+FWD_END_TEST
