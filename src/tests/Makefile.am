@@ -1,6 +1,7 @@
 TESTSUITE = $(srcdir)/testsuite
 TESTSUITE_FILES = \
 	$(wildcard $(srcdir)/*.at) \
+	$(wildcard $(srcdir)/dbus/*.at) \
 	$(wildcard $(srcdir)/regression/*.at)
 
 EXTRA_DIST = \

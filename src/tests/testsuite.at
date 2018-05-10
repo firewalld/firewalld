@@ -3,6 +3,7 @@ AT_COLOR_TESTS
 m4_include([functions.at])
 
 m4_include([firewall-offline-cmd.at])
+m4_include([dbus.at])
 
 m4_foreach([FIREWALL_BACKEND], [[nftables], [iptables]], [
     m4_include([firewall-cmd.at])
