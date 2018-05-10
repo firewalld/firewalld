@@ -428,10 +428,10 @@ class nftables(object):
         default_rules.append("add rule inet %s filter_%s jump filter_%s_ZONES_SOURCE" % (TABLE_NAME, "INPUT", "INPUT"))
         default_rules.append("add rule inet %s filter_%s jump filter_%s_ZONES" % (TABLE_NAME, "INPUT", "INPUT"))
         if log_denied != "off":
-            default_rules.append("add rule inet %s filter_%s ct state invalid log prefix \"STATE_INVALID_DROP\"" % (TABLE_NAME, "INPUT"))
+            default_rules.append("add rule inet %s filter_%s ct state invalid log prefix '\"STATE_INVALID_DROP: \"'" % (TABLE_NAME, "INPUT"))
         default_rules.append("add rule inet %s filter_%s ct state invalid drop" % (TABLE_NAME, "INPUT"))
         if log_denied != "off":
-            default_rules.append("add rule inet %s filter_%s log prefix \"FINAL_REJECT\"" % (TABLE_NAME, "INPUT"))
+            default_rules.append("add rule inet %s filter_%s log prefix '\"FINAL_REJECT: \"'" % (TABLE_NAME, "INPUT"))
         default_rules.append("add rule inet %s filter_%s reject with icmpx type admin-prohibited" % (TABLE_NAME, "INPUT"))
 
         # filter, FORWARD
@@ -446,10 +446,10 @@ class nftables(object):
         default_rules.append("add rule inet %s filter_%s jump filter_%s_OUT_ZONES_SOURCE" % (TABLE_NAME, "FORWARD", "FORWARD"))
         default_rules.append("add rule inet %s filter_%s jump filter_%s_OUT_ZONES" % (TABLE_NAME, "FORWARD", "FORWARD"))
         if log_denied != "off":
-            default_rules.append("add rule inet %s filter_%s ct state invalid log prefix \"STATE_INVALID_DROP\"" % (TABLE_NAME, "FORWARD"))
+            default_rules.append("add rule inet %s filter_%s ct state invalid log prefix '\"STATE_INVALID_DROP: \"'" % (TABLE_NAME, "FORWARD"))
         default_rules.append("add rule inet %s filter_%s ct state invalid drop" % (TABLE_NAME, "FORWARD"))
         if log_denied != "off":
-            default_rules.append("add rule inet %s filter_%s log prefix \"FINAL_REJECT\"" % (TABLE_NAME, "FORWARD"))
+            default_rules.append("add rule inet %s filter_%s log prefix '\"FINAL_REJECT: \"'" % (TABLE_NAME, "FORWARD"))
         default_rules.append("add rule inet %s filter_%s reject with icmpx type admin-prohibited" % (TABLE_NAME, "FORWARD"))
 
         OUR_CHAINS["inet"]["filter"] = set(["INPUT_ZONES_SOURCE",
@@ -609,7 +609,7 @@ class nftables(object):
                 rules.append(["add", "rule", family, "%s" % TABLE_NAME,
                               "%s_%s" % (table, _zone), "type", "%%LOGTYPE%%",
                               "log", "prefix",
-                              "\"filter_%s_%s\"" % (_zone, log_suffix)])
+                              "\"filter_%s_%s: \"" % (_zone, log_suffix)])
 
         # Handle trust, block and drop zones:
         # Add an additional rule with the zone target (accept, reject
@@ -686,7 +686,7 @@ class nftables(object):
                 "%s_%s_allow" % (table, target)]
         rule += rule_fragment + ["log"]
         if rich_rule.log.prefix:
-            rule += ["prefix", '"%s"' % rich_rule.log.prefix]
+            rule += ["prefix", "\"%s\"" % rich_rule.log.prefix]
         if rich_rule.log.level:
             rule += ["level", '"%s"' % rich_rule.log.level]
         rule += self._rich_rule_limit_fragment(rich_rule.log.limit)
@@ -1056,7 +1056,7 @@ class nftables(object):
                     if self._fw.get_log_denied() != "off" and final_target != "accept":
                         rules.append([add_del, "rule", "inet", "%s" % TABLE_NAME,
                                       final_chain] + rule_fragment + ["log",
-                                      "prefix", "\"%s_%s_ICMP_BLOCK\"" % (table, zone)])
+                                      "prefix", "\"%s_%s_ICMP_BLOCK: \"" % (table, zone)])
                     rules.append([add_del, "rule", "inet", "%s" % TABLE_NAME,
                                   final_chain] + rule_fragment + [final_target])
 
@@ -1107,7 +1107,7 @@ class nftables(object):
                         rule = ["delete", "rule", "inet", "%s" % TABLE_NAME,
                                 "%s_%s" % (table, _zone)]
                     rule += ["%%ICMP%%", "%%LOGTYPE%%", "log", "prefix",
-                             "\"%s_%s_ICMP_BLOCK\"" % (table, _zone)]
+                             "\"%s_%s_ICMP_BLOCK: \"" % (table, _zone)]
                     rules.append(rule)
 
         return rules
@@ -1122,7 +1122,7 @@ class nftables(object):
             rules.append(["insert", "rule", "inet", "%s" % TABLE_NAME,
                           "raw_%s" % "PREROUTING",
                           "meta", "nfproto", "ipv6", "fib", "saddr", ".", "iif",
-                          "oif", "missing", "log", "prefix", "\"rpfilter_DROP\""])
+                          "oif", "missing", "log", "prefix", "\"rpfilter_DROP: \""])
         rules.append(["insert", "rule", "inet", "%s" % TABLE_NAME,
                       "raw_%s" % "PREROUTING",
                       "icmpv6", "type", "nd-router-advert", "accept"]) # RHBZ#1058505
