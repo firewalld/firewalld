@@ -62,12 +62,11 @@ m4_define([FWD_START_TEST], [
 
         dnl fib matching is pretty new in nftables. Don't use rpfilter on older
         dnl kernels.
-        m4_if(nftables, FIREWALL_BACKEND, [[
-            KERNEL_VER=( $(uname -r | tr '.' ' ') )
-            if [ ${KERNEL_VER[0]} -lt 4 ] || [ ${KERNEL_VER[1]} -lt 10 ]; then
+        m4_if(nftables, FIREWALL_BACKEND, [
+            m4_if(no, HOST_SUPPORTS_NFT_FIB, [
                 sed -i 's/^IPv6_rpfilter.*/IPv6_rpfilter=no/' ./firewalld.conf
-            fi
-        ]])
+            ])
+        ])
 
         dnl dummy wrapper for trap syntax
         function kill_firewalld() {
@@ -230,3 +229,14 @@ m4_define([CHECK_IPSET_HASH_MAC], [
         NS_CHECK([ipset destroy foobar])
     ])
 ])
+
+m4_ifnblank(
+    m4_esyscmd([
+        KERNEL_VER=( $(uname -r | tr '.' ' ') )
+        if test ${KERNEL_VER[0]} -eq 4 && test ${KERNEL_VER[1]} -ge 10 || test ${KERNEL_VER[0]} -gt 4; then
+            echo -n "yes"
+        fi
+    ]),
+    [m4_define([HOST_SUPPORTS_NFT_FIB], [yes])],
+    [m4_define([HOST_SUPPORTS_NFT_FIB], [no])]
+)
