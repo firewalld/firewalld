@@ -3,7 +3,7 @@ XSLTPROC = xsltproc
 EXTRA_DIST = $(HTMLS:../html/%.html=%.xml) \
 	authors.xml notes.xml seealso.xml errorcodes.xml \
 	transform-man.xsl.in transform-html.xsl.in \
-	firewalld.xml.in firewall-cmd.xml.in firewallctl.xml.in
+	firewalld.xml.in firewall-cmd.xml.in
 
 man_MANS = $(man1_MANS) $(man5_MANS)
 HTMLS = $(man1_MANS:../man/man1/%.1=../html/%.html) $(man5_MANS:../man/man5/%.5=../html/%.html)
@@ -12,7 +12,6 @@ man1_MANS = \
 	../man/man1/firewall-applet.1 \
 	../man/man1/firewall-cmd.1 \
 	../man/man1/firewall-config.1 \
-	../man/man1/firewallctl.1 \
 	../man/man1/firewalld.1 \
 	../man/man1/firewall-offline-cmd.1
 
@@ -31,7 +30,7 @@ man5_MANS = \
 
 CLEAN_FILES = *~ errorcodes.xml
 DISTCLEANFILES = $(man_MANS) $(HTMLS) transform-*.xsl \
-                 firewalld.xml firewall-cmd.xml firewallctl.xml
+                 firewalld.xml firewall-cmd.xml
 
 #SGML_CATALOG_FILES
 #XSLTPROC_FLAGS = --catalogs --nonet --xinclude
@@ -45,9 +44,6 @@ all: $(man_MANS) $(HTMLS)
 
 clean:
 	-test -z "$(CLEAN_FILES)" || rm -f $(CLEAN_FILES)
-
-../man/man1/firewallctl.1: errorcodes.xml
-../html/firewallctl.html: errorcodes.xml
 
 ../man/man1/firewall-cmd.1: errorcodes.xml
 ../html/firewall-cmd.html: errorcodes.xml
@@ -82,6 +78,4 @@ transform-html.xsl: transform-html.xsl.in
 firewall-cmd.xml: firewall-cmd.xml.in
 	$(edit) $< >$@
 firewalld.xml: firewalld.xml.in
-	$(edit) $< >$@
-firewallctl.xml: firewallctl.xml.in
 	$(edit) $< >$@

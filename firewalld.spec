@@ -220,7 +220,6 @@ fi
 %{_sbindir}/firewalld
 %{_bindir}/firewall-cmd
 %{_bindir}/firewall-offline-cmd
-%{_bindir}/firewallctl
 %dir %{_datadir}/bash-completion/completions
 %{_datadir}/bash-completion/completions/firewall-cmd
 %{_prefix}/lib/firewalld/icmptypes/*.xml
@@ -247,7 +246,6 @@ fi
 %{_datadir}/polkit-1/actions/org.fedoraproject.FirewallD1.server.policy.choice
 %{_datadir}/polkit-1/actions/org.fedoraproject.FirewallD1.policy
 %{_mandir}/man1/firewall*cmd*.1*
-%{_mandir}/man1/firewallctl*.1*
 %{_mandir}/man1/firewalld*.1*
 %{_mandir}/man5/firewall*.5*
 %{_sysconfdir}/modprobe.d/firewalld-sysctls.conf

@@ -1,6 +1,6 @@
 SUBDIRS = icons tests
 
-dist_bin_SCRIPTS = firewall-applet firewall-cmd firewall-offline-cmd firewall-config firewallctl
+dist_bin_SCRIPTS = firewall-applet firewall-cmd firewall-offline-cmd firewall-config
 dist_sbin_SCRIPTS = firewalld
 
 gladedir = $(pkgdatadir)
