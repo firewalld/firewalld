@@ -241,6 +241,7 @@ CONFIG_FILES = \
 	services/spideroak-lansync.xml \
 	services/squid.xml \
 	services/ssh.xml \
+	services/steam.xml \
 	services/svdrp.xml \
 	services/svn.xml \
 	services/syncthing.xml \
