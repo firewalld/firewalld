@@ -35,6 +35,7 @@ from firewall.errors import FirewallError
 from firewall import config
 from firewall.core.fw_test import Firewall_test
 from firewall.functions import joinArgs, splitArgs
+from firewall.core.io.functions import check_config
 from firewall.core.io.zone import zone_reader
 from firewall.core.io.service import service_reader
 from firewall.core.io.ipset import ipset_reader
@@ -62,6 +63,7 @@ General Options
   -q, --quiet          Do not print status messages
       --system-config  Path to firewalld system configuration
       --default-config Path to firewalld default configuration
+      --check-config   Check system and default configuration
 
 Lokkit Compatibility Options
   --migrate-system-config-firewall=<file>
@@ -532,6 +534,7 @@ parser_group_lokkit.add_argument("--block-icmp", metavar="<icmptype>", action='a
 
 parser.add_argument("--system-config", metavar="path")
 parser.add_argument("--default-config", metavar="path")
+parser.add_argument("--check-config", action="store_true")
 
 parser_group_standalone = parser.add_mutually_exclusive_group()
 parser_group_standalone.add_argument("-h", "--help",
@@ -970,7 +973,8 @@ cmd.set_verbose(a.verbose)
 if not (options_standalone or options_ipset or \
         options_lokkit or \
         options_icmptype or options_service or options_helper or \
-        options_permanent or options_direct or options_desc_xml_file):
+        options_permanent or options_direct or options_desc_xml_file or \
+        a.check_config):
     cmd.fail(parser.format_usage() + "No option specified.")
 
 if options_lokkit and (options_standalone or \
@@ -1035,6 +1039,16 @@ if a.system_config:
     config.set_system_config_paths(a.system_config)
 if a.default_config:
     config.set_default_config_paths(a.default_config)
+if a.check_config:
+    try:
+        fw = Firewall_test()
+        fw.start()
+        check_config(fw)
+    except FirewallError as error:
+        cmd.print_and_exit("Configuration error: %s" % error, error.code)
+    except Exception as msg:
+        cmd.fail("Configuration error: %s" % msg)
+    sys.exit(0)
 
 zone = a.zone
 fw = Firewall_test()
