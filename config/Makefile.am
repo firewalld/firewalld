@@ -426,4 +426,6 @@ check-local:
 		fi; \
 	done
 	@echo
-	$(srcdir)/xmlschema/check.sh -d $(abs_top_srcdir)/config
+	$(top_srcdir)/src/firewall-offline-cmd \
+	    --check-config --system-config /dev/null \
+	    --default-config $(abs_top_srcdir)/config
