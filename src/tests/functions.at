@@ -164,6 +164,9 @@ m4_define([FWD_CHECK], [
                 m4_if(-1, m4_index([$1], [-default-zone]), [], [
                     m4_define([FWD_CHECK_RUN_FIREWALL_OFFLINE_CMD])
                 ])
+                m4_if(-1, m4_index([$1], [--check-config]), [], [
+                    m4_define([FWD_CHECK_RUN_FIREWALL_OFFLINE_CMD])
+                ])
             ], [
                 m4_if(-1, m4_index([$1], [--timeout]), [
                     m4_define([FWD_CHECK_RUN_FIREWALL_OFFLINE_CMD])

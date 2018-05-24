@@ -875,3 +875,377 @@ FWD_END_TEST([-e '/ERROR: INVALID_RULE:/d' dnl
               -e '/ERROR: INVALID_LOG_LEVEL: eror/d' dnl
               -e '/ERROR: MISSING_FAMILY/d' dnl
               -e '/ERROR: INVALID_LIMIT: 1\/2m/d'])
+
+FWD_START_TEST([config validation])
+    dnl default config
+    FWD_CHECK([--check-config], 0, ignore)
+
+    dnl The rest of these are negative test cases.
+
+    dnl firewalld.conf
+    AT_CHECK([cp ./firewalld.conf ./firewalld.conf.orig])
+    AT_CHECK([echo "SomeBogusField=yes" >> ./firewalld.conf])
+    FWD_CHECK([--check-config], 0, ignore, [dnl
+m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [dnl
+ERROR: Invalid option: 'SomeBogusField=yes'
+ERROR: Invalid option: 'SomeBogusField=yes'
+])])
+    AT_CHECK([cp ./firewalld.conf.orig ./firewalld.conf])
+
+    dnl direct
+    AT_DATA([./direct.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<direct>
+<chain table="filter" ipv="ipv7" chain="foobar"/>
+</direct>
+])
+    FWD_CHECK([--check-config], 111, ignore, ignore)
+
+    AT_DATA([./direct.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<direct>
+<rule />
+</direct>
+])
+    FWD_CHECK([--check-config], 28, ignore, ignore)
+    AT_CHECK([rm ./direct.xml])
+
+    dnl lockdown-whitelist
+    AT_DATA([./lockdown-whitelist.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<whitelist>
+    <user uid="666"/>
+</whitelist>
+])
+    FWD_CHECK([--check-config], 28, ignore, ignore)
+
+    AT_DATA([./lockdown-whitelist.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<whitelist>
+    <uid id="666"/>
+</whitelist>
+])
+    FWD_CHECK([--check-config], 28, ignore, ignore)
+
+    AT_DATA([./lockdown-whitelist.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<whitelist>
+    <group name="foobar" />
+</whitelist>
+])
+    FWD_CHECK([--check-config], 28, ignore, ignore)
+    AT_CHECK([rm ./lockdown-whitelist.xml])
+
+    dnl ipset
+    AT_CHECK([mkdir -p ./ipsets])
+    AT_DATA([./ipsets/foobar.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<ipset type="hash:mac">
+  <entry>12:34:56:78:90</entry>
+</ipset>
+])
+    FWD_CHECK([--check-config], 0, ignore, [dnl
+m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [dnl
+WARNING: INVALID_ENTRY: invalid mac address '12:34:56:78:90' in '12:34:56:78:90', ignoring.
+WARNING: INVALID_ENTRY: invalid mac address '12:34:56:78:90' in '12:34:56:78:90', ignoring.
+])])
+
+    AT_DATA([./ipsets/foobar.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<ipset type="hash:mac">
+  <entry bogus_attr="bogus">12:34:56:78:90:ab</entry>
+</ipset>
+])
+    FWD_CHECK([--check-config], 28, ignore, ignore)
+
+    AT_DATA([./ipsets/foobar.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<ipset type="hash:ip,bogus">
+</ipset>
+])
+    FWD_CHECK([--check-config], 119, ignore, ignore)
+    AT_CHECK([rm ./ipsets/foobar.xml])
+
+    dnl helpers
+    AT_CHECK([mkdir -p ./helpers])
+    AT_DATA([./helpers/foobar.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<helper>
+</helper>
+])
+    FWD_CHECK([--check-config], 28, ignore, ignore)
+
+    AT_DATA([./helpers/foobar.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<helper family="ipv7" module="nf_conntrack_ftp">
+</helper>
+])
+    FWD_CHECK([--check-config], 111, ignore, ignore)
+
+    AT_DATA([./helpers/foobar.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<helper family="ipv6" module="nf_conntrack_ftp">
+<port protocol="aoeui" port="666" />
+</helper>
+])
+    FWD_CHECK([--check-config], 103, ignore, ignore)
+    AT_CHECK([rm ./helpers/foobar.xml])
+
+    dnl icmptype
+    AT_CHECK([mkdir -p ./icmptypes])
+    AT_DATA([./icmptypes/foobar.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<bad_element />
+<icmptype>
+</icmptype>
+])
+    FWD_CHECK([--check-config], 28, ignore, ignore)
+
+    AT_DATA([./icmptypes/foobar.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<icmptype>
+<destination unexpected_attr="foobar" />
+</icmptype>
+])
+    FWD_CHECK([--check-config], 28, ignore, ignore)
+    AT_CHECK([rm ./icmptypes/foobar.xml])
+
+    dnl services
+    AT_CHECK([mkdir -p ./services])
+    AT_DATA([./services/foobar.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+<protocol value="aoeui" />
+</service>
+])
+    FWD_CHECK([--check-config], 103, ignore, ignore)
+
+    AT_DATA([./services/foobar.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+<protocol bad_attr="foo" />
+</service>
+])
+    FWD_CHECK([--check-config], 28, ignore, ignore)
+
+    AT_DATA([./services/foobar.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+<bad_element />
+</service>
+])
+    FWD_CHECK([--check-config], 28, ignore, ignore)
+
+    AT_DATA([./services/foobar.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+<module module="bad_attr" />
+</service>
+])
+    FWD_CHECK([--check-config], 28, ignore, ignore)
+
+    AT_DATA([./services/foobar.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+<port protocol="aoeu" port="666" />
+</service>
+])
+    FWD_CHECK([--check-config], 103, ignore, ignore)
+
+    AT_DATA([./services/foobar.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+<port protocol="tcp" port="ssssssh" />
+</service>
+])
+    FWD_CHECK([--check-config], 102, ignore, ignore)
+
+    AT_DATA([./services/foobar.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+<port protocol="tcp" port="22" />
+<source-port protocol="tcp" port="sssssh" />
+</service>
+])
+    FWD_CHECK([--check-config], 102, ignore, ignore)
+
+    AT_DATA([./services/foobar.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+<destination ipv4="224.0.0.1" ipv7="1234" />
+</service>
+])
+    FWD_CHECK([--check-config], 28, ignore, ignore)
+    AT_CHECK([rm ./services/foobar.xml])
+
+    dnl zones
+    AT_CHECK([mkdir -p ./zones])
+    AT_DATA([./zones/foobar.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+])
+    FWD_CHECK([--check-config], 112, ignore, ignore)
+
+    AT_DATA([./zones/foobar.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+<service name="bogus_service_name" />
+</zone>
+])
+    FWD_CHECK([--check-config], 101, ignore, ignore)
+
+    AT_DATA([./zones/foobar.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+<port protocol="ipv4" />
+</zone>
+])
+    FWD_CHECK([--check-config], 28, ignore, ignore)
+
+    AT_DATA([./zones/foobar.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+<protocol value="thisdoesnotexist" />
+</zone>
+])
+    FWD_CHECK([--check-config], 103, ignore, ignore)
+
+    AT_DATA([./zones/foobar.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+<icmp-block invalid_attr=""/>
+</zone>
+])
+    FWD_CHECK([--check-config], 28, ignore, ignore)
+
+    AT_DATA([./zones/foobar.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+<icmp-type />
+</zone>
+])
+    FWD_CHECK([--check-config], 28, ignore, ignore)
+
+    AT_DATA([./zones/foobar.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+<masquerade value="true" />
+</zone>
+])
+    FWD_CHECK([--check-config], 28, ignore, ignore)
+
+    AT_DATA([./zones/foobar.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+<forward-port port="666" />
+</zone>
+])
+    FWD_CHECK([--check-config], 28, ignore, ignore)
+
+    AT_DATA([./zones/foobar.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+<forward-port protocol="sctppp" />
+</zone>
+])
+    FWD_CHECK([--check-config], 28, ignore, ignore)
+
+    AT_DATA([./zones/foobar.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+<source-port port="-1" />
+</zone>
+])
+    FWD_CHECK([--check-config], 28, ignore, ignore)
+
+    AT_DATA([./zones/foobar.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+<interface />
+</zone>
+])
+    FWD_CHECK([--check-config], 28, ignore, ignore)
+
+    AT_DATA([./zones/foobar.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+<source />
+</zone>
+])
+    FWD_CHECK([--check-config], 0, ignore, [dnl
+m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [dnl
+WARNING: Invalid source: No address no ipset.
+WARNING: Invalid source: No address no ipset.
+])])
+
+    AT_DATA([./zones/foobar.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+<rule>
+<source address="10.0.0.1/24" />
+<limit />
+</rule>
+</zone>
+])
+    FWD_CHECK([--check-config], 28, ignore, ignore)
+
+    AT_DATA([./zones/foobar.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+<rule family="ipv4">
+<source address="10.0.0.1/24" />
+<accept>
+<limit value="none" />
+</accept>
+</rule>
+</zone>
+])
+    FWD_CHECK([--check-config], 0, ignore, [dnl
+m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [dnl
+WARNING: INVALID_LIMIT: none: rule family="ipv4" source address="10.0.0.1/24" accept limit value="none"
+WARNING: INVALID_LIMIT: none: rule family="ipv4" source address="10.0.0.1/24" accept limit value="none"
+])])
+
+    AT_DATA([./zones/foobar.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+<rule>
+<source address="10.0.0.1/24" />
+<log level="super_critical" />
+</rule>
+</zone>
+])
+    FWD_CHECK([--check-config], 0, ignore, [dnl
+m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [dnl
+WARNING: Invalid rule: Invalid log level
+WARNING: Invalid rule: Invalid log level
+])])
+
+    AT_DATA([./zones/foobar.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+<rule family="ipv4">
+<source address="10.0.0.1/24" />
+<audit prefix="foobar" />
+</rule>
+</zone>
+])
+    FWD_CHECK([--check-config], 28, ignore, ignore)
+
+    AT_DATA([./zones/foobar.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+<rule family="ipv6">
+<source address="10.0.0.1/24" />
+<accept />
+</rule>
+</zone>
+])
+    FWD_CHECK([--check-config], 0, ignore, [dnl
+m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [dnl
+WARNING: INVALID_ADDR: 10.0.0.1/24: rule family="ipv6" source address="10.0.0.1/24" accept
+WARNING: INVALID_ADDR: 10.0.0.1/24: rule family="ipv6" source address="10.0.0.1/24" accept
+])])
+    AT_CHECK([rm ./zones/foobar.xml])
+
+FWD_END_TEST([-e '/ERROR:/d'dnl
+              -e '/WARNING:/d'])

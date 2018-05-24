@@ -425,7 +425,3 @@ check-local:
 			exit 1; \
 		fi; \
 	done
-	@echo
-	$(top_srcdir)/src/firewall-offline-cmd \
-	    --check-config --system-config /dev/null \
-	    --default-config $(abs_top_srcdir)/config
