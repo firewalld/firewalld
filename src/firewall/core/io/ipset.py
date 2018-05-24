@@ -320,6 +320,8 @@ class ipset_ContentHandler(IO_Object_ContentHandler):
         self.item.parser_check_element_attrs(name, attrs)
         if name == "ipset":
             if "type" in attrs:
+                if attrs["type"] not in IPSET_TYPES:
+                    raise FirewallError(errors.INVALID_TYPE, "%s" % attrs["type"])
                 self.item.type = attrs["type"]
             if "version" in attrs:
                 self.item.version = attrs["version"]
