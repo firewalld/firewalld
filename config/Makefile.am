@@ -137,6 +137,7 @@ CONFIG_FILES = \
 	services/ceph-mon.xml \
 	services/ceph.xml \
 	services/cfengine.xml \
+	services/cockpit.xml \
 	services/condor-collector.xml \
 	services/ctdb.xml \
 	services/dhcpv6-client.xml \
