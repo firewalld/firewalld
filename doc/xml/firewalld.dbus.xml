@@ -347,6 +347,17 @@
 	      </para>
             </listitem>
           </varlistentry>
+          <varlistentry id="FirewallD1.Methods.checkPermanentConfig">
+            <term><methodname>checkPermanentConfig</methodname>() &rarr; Nothing</term>
+            <listitem>
+              <para>
+                Run checks on the permanent configuration. This is most useful if changes were made manually to configuration files.
+              </para>
+              <para>
+                Possible errors: any
+              </para>
+            </listitem>
+          </varlistentry>
           <varlistentry id="FirewallD1.Methods.setDefaultZone">
             <term><methodname>setDefaultZone</methodname>(s: <parameter>zone</parameter>) &rarr; Nothing</term>
             <listitem>
