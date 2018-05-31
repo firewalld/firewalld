@@ -1195,8 +1195,8 @@ try:
         try:
             obj = zone_reader(filename, dirname)
         except FirewallError as msg:
-            cmd.fail("Failed to load zone file '%s': %s" % \
-                   (a.new_zone_from_file, msg))
+            cmd.print_and_exit("Failed to load zone file '%s': %s" % \
+                               (a.new_zone_from_file, msg), msg.code)
         except IOError as msg:
             cmd.fail("Failed to load zone file: %s" % msg)
 
@@ -1241,8 +1241,8 @@ try:
         try:
             obj = service_reader(filename, dirname)
         except FirewallError as msg:
-            cmd.fail("Failed to load service file '%s': %s" % \
-                   (a.new_service_from_file, msg))
+            cmd.print_and_exit("Failed to load service file '%s': %s" % \
+                               (a.new_service_from_file, msg), msg.code)
         except IOError as msg:
             cmd.fail("Failed to load service file: %s" % msg)
 
@@ -1297,8 +1297,8 @@ try:
         try:
             obj = icmptype_reader(filename, dirname)
         except FirewallError as msg:
-            cmd.fail("Failed to load icmptype file '%s': %s" % \
-                   (a.new_icmptype_from_file, msg))
+            cmd.print_and_exit("Failed to load icmptype file '%s': %s" % \
+                               (a.new_icmptype_from_file, msg), msg.code)
         except IOError as msg:
             cmd.fail("Failed to load icmptype file: %s" % msg)
 
@@ -1534,8 +1534,8 @@ try:
         try:
             obj = ipset_reader(filename, dirname)
         except FirewallError as msg:
-            cmd.fail("Failed to load ipset file '%s': %s" % \
-                   (a.new_ipset_from_file, msg))
+            cmd.print_and_exit("Failed to load ipset file '%s': %s" % \
+                               (a.new_ipset_from_file, msg), msg.code)
         except IOError as msg:
             cmd.fail("Failed to load ipset file: %s" % msg)
 
@@ -1718,8 +1718,8 @@ try:
         try:
             obj = helper_reader(filename, dirname)
         except FirewallError as msg:
-            cmd.fail("Failed to load helper file '%s': %s" % \
-                     (a.new_helper_from_file, msg))
+            cmd.print_and_exit("Failed to load helper file '%s': %s" % \
+                               (a.new_helper_from_file, msg), msg.code)
         except IOError as msg:
             cmd.fail("Failed to load helper file: %s" % msg)
 
@@ -2249,6 +2249,8 @@ try:
 
         cmd.print_and_exit("success")
 
+except FirewallError as msg:
+    cmd.print_and_exit("%s" % msg, msg.code)
 except Exception as msg:
     cmd.fail("%s" % msg)
 else:
