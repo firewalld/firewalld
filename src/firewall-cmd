@@ -59,6 +59,7 @@ Status Options
   --complete-reload    Reload firewall and lose state information
   --runtime-to-permanent
                        Create permanent from runtime configuration
+  --check-config       Check permanent configuration for errors
 
 Log Denied Options
   --get-log-denied     Print the log denied value
@@ -484,6 +485,7 @@ parser_group_standalone.add_argument("--reload", action="store_true")
 parser_group_standalone.add_argument("--complete-reload", action="store_true")
 parser_group_standalone.add_argument("--runtime-to-permanent",
                                      action="store_true")
+parser_group_standalone.add_argument("--check-config", action="store_true")
 parser_group_standalone.add_argument("--get-ipset-types", action="store_true")
 parser_group_standalone.add_argument("--get-log-denied", action="store_true")
 parser_group_standalone.add_argument("--set-log-denied", metavar="<value>")
@@ -750,7 +752,7 @@ options_standalone = a.help or a.version or \
     a.get_default_zone or a.set_default_zone or \
     a.get_active_zones or a.get_ipset_types or \
     a.get_log_denied or a.set_log_denied or \
-    a.get_automatic_helpers or a.set_automatic_helpers
+    a.get_automatic_helpers or a.set_automatic_helpers or a.check_config
 
 options_desc_xml_file = a.set_description or a.get_description or \
                         a.set_short or a.get_short
@@ -2039,6 +2041,8 @@ elif a.complete_reload:
     fw.complete_reload()
 elif a.runtime_to_permanent:
     fw.runtimeToPermanent()
+elif a.check_config:
+    fw.checkPermanentConfig()
 elif a.direct:
     if a.passthrough:
         if len(a.passthrough) < 2:

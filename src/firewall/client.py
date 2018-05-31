@@ -2762,6 +2762,11 @@ class FirewallClient(object):
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
+    def checkPermanentConfig(self):
+        self.fw.checkPermanentConfig()
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
     def get_property(self, prop):
         return dbus_to_python(self.fw_properties.Get(
             config.dbus.DBUS_INTERFACE, prop))

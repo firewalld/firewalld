@@ -45,6 +45,7 @@ from firewall.dbus_utils import dbus_to_python, \
     command_of_sender, context_of_sender, uid_of_sender, user_of_uid, \
     dbus_introspection_prepare_properties, \
     dbus_introspection_add_properties
+from firewall.core.io.functions import check_config
 from firewall.core.io.zone import Zone
 from firewall.core.io.ipset import IPSet
 from firewall.core.io.service import Service
@@ -338,6 +339,16 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def Reloaded(self):
         log.debug1("Reloaded()")
+
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE, in_signature='',
+                         out_signature='')
+    @dbus_handle_exceptions
+    def checkPermanentConfig(self, sender=None): # pylint: disable=W0613
+        """Check permanent configuration
+        """
+        log.debug1("checkPermanentConfig()")
+        check_config(self.fw)
 
     # runtime to permanent
 
