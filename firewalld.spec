@@ -9,7 +9,7 @@ Summary: A firewall daemon with D-Bus interface providing a dynamic firewall
 Name: firewalld
 Version: 0.6.0
 Release: 0.1.alpha1%{?dist}
-URL:     http://www.firewalld.org
+URL:     http://firewalld.org
 License: GPLv2+
 #Source0: https://github.com/firewalld/firewalld/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 Source0: https://github.com/firewalld/firewalld/archive/v%{version}-alpha.tar.gz#/%{name}-%{version}-alpha.tar.gz
@@ -333,7 +333,7 @@ fi
   available
 - Merge pull request 212 from leongold/ovirt-imageio-service
 - config/Makefile.am: Install new ovirt-imageio service
-- README: Use www.firewalld.org/documentation as documentation link
+- README: Use firewalld.org/documentation as documentation link
 - Fix misspelled word in documentation
 - Merge pull request 216 from tobiasvl/fix-protocol-spelling
 - Man pages: Mention sctp and dccp protocols for remaining ports, ..

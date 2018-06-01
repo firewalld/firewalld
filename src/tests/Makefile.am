@@ -14,7 +14,7 @@ $(srcdir)/package.m4: $(top_srcdir)/configure.ac $(top_srcdir)/firewalld.spec
 	echo 'm4_define([AT_PACKAGE_NAME],[$(PACKAGE_NAME)])' && \
 	echo 'm4_define([AT_PACKAGE_VERSION],[$(PACKAGE_VERSION)])' && \
 	echo 'm4_define([AT_PACKAGE_STRING],[$(PACKAGE_STRING)])' && \
-	echo 'm4_define([AT_PACKAGE_URL],[http://www.firewalld.org/])' && \
+	echo 'm4_define([AT_PACKAGE_URL],[http://firewalld.org/])' && \
 	echo 'm4_define([AT_PACKAGE_BUGREPORT],[https://github.com/firewalld/firewalld])'; \
 	} > "$@"
 
