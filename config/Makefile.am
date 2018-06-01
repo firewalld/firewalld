@@ -28,14 +28,6 @@ dist_dbus_policy_DATA = FirewallD.conf
 gsettings_in_file = org.fedoraproject.FirewallConfig.gschema.xml.in
 gsettings_SCHEMAS = $(gsettings_in_file:.xml.in=.xml)
 
-xmlschemadir = $(prefixlibdir)/xmlschema
-dist_xmlschema_DATA = \
-	xmlschema/icmptype.xsd \
-	xmlschema/ipset.xsd \
-	xmlschema/service.xsd \
-	xmlschema/zone.xsd
-dist_xmlschema_SCRIPTS = xmlschema/check.sh
-
 BUILT_SOURCES = \
 	$(desktop_DATA) \
 	$(appdata_DATA) \
@@ -290,7 +282,6 @@ EXTRA_DIST = \
 	$(polkit1_action_FILES) \
 	$(gsettings_in_file) \
 	$(CONFIG_FILES) \
-	$(dist_xmlschema_DATA) \
 	firewalld.init \
 	firewalld-sysctls.conf.in \
 	firewalld.service.in \
