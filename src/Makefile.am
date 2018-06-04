@@ -1,7 +1,7 @@
 SUBDIRS = icons tests
 
-dist_bin_SCRIPTS = firewall-applet firewall-cmd firewall-offline-cmd firewall-config
-dist_sbin_SCRIPTS = firewalld
+dist_bin_SCRIPTS = firewall-applet.in firewall-cmd.in firewall-offline-cmd.in firewall-config.in
+dist_sbin_SCRIPTS = firewalld.in
 
 gladedir = $(pkgdatadir)
 dist_glade_DATA = firewall-config.glade
@@ -69,22 +69,10 @@ nobase_dist_python_DATA = \
 	firewall/server/server.py
 
 EXTRA_DIST = \
-	firewall/config/__init__.py.in
+	firewall/config/__init__.py.in \
+	$(dist_bin_SCRIPTS) $(dist_sbin_SCRIPTS)
 
 CLEANFILES = *~ *\# .\#* *.py?
-
-install-data-local: install-dist_sbinSCRIPTS install-dist_binSCRIPTS
-	@echo "Fixing python shebang"
-	@list='$(dist_bin_SCRIPTS)'; \
-	for p in $$list; do \
-	  echo $(top_srcdir)/fix_python_shebang.sh "$(DESTDIR)$(bindir)/$$p"; \
-	  $(top_srcdir)/fix_python_shebang.sh "$(DESTDIR)$(bindir)/$$p"; \
-	done
-	@list='$(dist_sbin_SCRIPTS)'; \
-	for p in $$list; do \
-	  echo $(top_srcdir)/fix_python_shebang.sh "$(DESTDIR)$(sbindir)/$$p"; \
-	  $(top_srcdir)/fix_python_shebang.sh "$(DESTDIR)$(sbindir)/$$p"; \
-	done
 
 check-local:
 	find . -name '*.py' |xargs flake8 --ignore=E121,E122,E123,E124,E126,E127,\
