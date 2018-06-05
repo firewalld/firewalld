@@ -31,16 +31,20 @@ import os
 from dbus.mainloop.pyqt5 import DBusQtMainLoop
 import functools
 
-from firewall.config import *
-from firewall.config.dbus import *
-from firewall.core.fw_nm import *
+from firewall import config
+from firewall.core.fw_nm import nm_is_imported, nm_get_zone_of_connection, \
+                                nm_set_zone_of_connection, \
+                                nm_get_dbus_interface, \
+                                nm_get_connections
 from firewall.core.watcher import Watcher
 from firewall.client import FirewallClient
-from firewall.dbus_utils import dbus_to_python
-from firewall.errors import *
 import slip.dbus
 import dbus
 import signal
+
+import gettext
+gettext.textdomain(config.DOMAIN)
+_ = gettext.gettext
 
 PATH = [ ]
 for p in os.getenv("PATH").split(":"):
@@ -167,7 +171,7 @@ class ZoneConnectionEditor(ZoneInterfaceEditor):
         # apply changes
         try:
             nm_set_zone_of_connection(self.get_zone(), self.connection)
-        except Exception as msg:
+        except Exception:
             text = _("Failed to set zone {zone} for connection {connection}")
             QtWidgets.QMessageBox.warning(None, fromUTF8(escape(self.title)),
                                       escape(text.format(
@@ -447,8 +451,9 @@ class TrayApplet(QtWidgets.QSystemTrayIcon):
 
         self.about_dialog = AboutDialog(self.name,
                                         self.icons["normal"],
-                                        VERSION, WEBSITE, COPYRIGHT, AUTHORS,
-                                        LICENSE)
+                                        config.VERSION, config.WEBSITE,
+                                        config.COPYRIGHT, config.AUTHORS,
+                                        config.LICENSE)
 
         # urgencies
 
@@ -762,7 +767,7 @@ class TrayApplet(QtWidgets.QSystemTrayIcon):
             text = _("Failed to get connections from NetworkManager")
             try:
                 nm_get_connections(self.connections, self.connections_uuid)
-            except Exception as msg:
+            except Exception:
                 self.notify(escape(text), urgency=Notify.Urgency.CRITICAL)
                 if text not in self.tooltip_messages:
                     self.tooltip_messages.append(text)
@@ -1077,7 +1082,6 @@ class TrayApplet(QtWidgets.QSystemTrayIcon):
         if self.notificationsAction.isChecked():
             ed = { 1: _("activated"),
                    0: _("deactivated") }
-            connection = None
             text = _("Zone '{zone}' {activated_deactivated} for "
                      "source '{source}'")
             self.notify(escape(text.format(
