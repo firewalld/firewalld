@@ -1010,7 +1010,7 @@ except FirewallError as msg:
     cmd.print_and_exit("Error: %s" % msg, code)
 
 fw.setExceptionHandler(cmd.exception_handler)
-if fw.connected == False:
+if not fw.connected:
     if a.state:
         cmd.print_and_exit ("not running", errors.NOT_RUNNING)
     else:
