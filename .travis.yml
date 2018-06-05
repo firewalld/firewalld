@@ -3,24 +3,33 @@ sudo: required
 dist: trusty
 
 language: python
+virtualenv:
+  system_site_packages: true
 
+# Can only use the versions backed by apt because we need gobject(gi) and dbus,
+# which can't be installed via pip because Trusty's dependencies are too old.
 python:
   - "2.7"
   - "3.4"
-  - "3.5"
-  - "3.6"
 
 # Install necessary dependencies
 before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -qq -y autoconf automake pkg-config intltool
     libglib2.0-dev xsltproc docbook-xsl docbook-xml iptables ipset ebtables
-    python-slip-dbus libxml2-utils realpath python-flake8
+    libxml2-utils realpath python-dbus python3-dbus python-gi python3-gi
 
+install:
+  - pip install flake8 decorator
+    && pushd /tmp
+    && tar xf ${OLDPWD}/.travis/python-slip-0.6.5.tar.bz2
+    && cd python-slip-0.6.5
+    && make
+    && sudo env PATH="$PATH" make install
+    && popd
 # nftables is not available in Ubuntu Trusty, but supported in the kernel.
 # Once travis supports a newer Ubuntu version we can remove this and add
 # nftables to the apt comamnd above.
-install:
   - echo "/usr/local/lib" | sudo tee /etc/ld.so.conf.d/local.conf
   - sudo apt-get -qq -y install libmnl-dev libgmp-dev libreadline-dev
     && pushd /tmp
@@ -42,7 +51,7 @@ script:
   # Do a parallel build to spot potential dependency problems.
   # No ebtables-restore in ubuntu 14.04
   - ./autogen.sh --with-ebtables-restore=/bin/false --sysconfdir=/etc && make -j32
-  - sudo make check || { cat src/tests/testsuite.log; exit 1; }
+  - sudo env PATH="$PATH" make check || { cat src/tests/testsuite.log; exit 1; }
 
 # uncomment to add IRC notifications
 # 
