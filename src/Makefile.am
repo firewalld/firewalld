@@ -76,7 +76,7 @@ CLEANFILES = *~ *\# .\#* *.py?
 
 FLAKE8_IGNORE = E121,E122,E123,E124,E126,E127,E128,E201,E202,E203,E211,E221,E222,E225,E226,E231,E241,E251,E261,E262,E265,E266,W291,W293,E301,E302,E303,E305,E306,W391,E402,E501,E502,W503,E722
 check-local:
-	find . -name '*.py' |xargs flake8 --ignore="$(FLAKE8_IGNORE)"
+	find . -name '*.py' -or -name '*.py.in' |xargs flake8 --ignore="$(FLAKE8_IGNORE)"
 	flake8 --ignore="$(FLAKE8_IGNORE)" $(dist_bin_SCRIPTS) $(dist_sbin_SCRIPTS)
 	@echo
 	@for file in $(filter-out $(EXTRA_DIST:.in=),$(nobase_dist_python_DATA)); do \
