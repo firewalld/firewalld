@@ -40,15 +40,13 @@ datadir = None
 if os.getenv("FIREWALLD_DEVEL_ENV") is not None:
     datadir = os.getenv("FIREWALLD_DEVEL_ENV")
     sys.path.insert(0, datadir)
-import dbus
 from dbus.exceptions import DBusException
 
 from firewall import config
 from firewall import client
 from firewall import functions
-from firewall.dbus_utils import dbus_to_python
 from firewall.core.base import DEFAULT_ZONE_TARGET, REJECT_TYPES, \
-    ZONE_SOURCE_IPSET_TYPES
+                               ZONE_SOURCE_IPSET_TYPES
 from firewall.core.ipset import IPSET_MAXNAMELEN
 from firewall.core.helper import HELPER_MAXNAMELEN
 from firewall.core.io.zone import Zone
@@ -57,7 +55,9 @@ from firewall.core.io.icmptype import IcmpType
 from firewall.core.io.ipset import IPSet
 from firewall.core.io.helper import Helper
 from firewall.core import rich
-from firewall.core.fw_nm import *
+from firewall.core.fw_nm import nm_is_imported, nm_get_dbus_interface, \
+                                nm_get_connections, nm_get_zone_of_connection, \
+                                nm_set_zone_of_connection
 from firewall import errors
 from firewall.errors import FirewallError
 
@@ -1564,7 +1564,7 @@ class FirewallConfig(object):
         if nm_is_imported():
             try:
                 nm_get_connections(self.connections, self.connections_uuid)
-            except Exception as msg:
+            except Exception:
                 text = _("Failed to get connections from NetworkManager")
                 self._warning(text)
 
@@ -2018,7 +2018,6 @@ class FirewallConfig(object):
         self.icmpBlockInversionCheck.set_active(False)
 
     def _add_rich_rule(self, obj):
-#        family = "ipv4 & ipv6"
         family = "all"
         src = ""
         dest = ""
@@ -3241,14 +3240,14 @@ class FirewallConfig(object):
                                          "ipset")
                     self.richRuleDialogSourceChooser.set_text(old_obj.source.ipset)
                 self.richRuleDialogSourceInvertCheck.set_active( \
-                    old_obj.source.invert == True)
+                    old_obj.source.invert)
 
             # destination
             if old_obj.destination:
                 self.richRuleDialogDestinationChooser.set_text( \
                     old_obj.destination.addr)
                 self.richRuleDialogDestinationInvertCheck.set_active( \
-                    old_obj.destination.invert == True)
+                    old_obj.destination.invert)
 
             # log
             if old_obj.log:
@@ -3701,9 +3700,9 @@ class FirewallConfig(object):
                 rule.action = rich.Rich_Mark(_set, limit)
 
         # source
-        if self.richRuleDialogSourceChooser.is_sensitive() and \
-           (self.richRuleDialogSourceChooser.get_text() != "" \
-            or self.richRuleDialogSourceInvertCheck.get_active()):
+        if self.richRuleDialogSourceChooser.is_sensitive() \
+           and (self.richRuleDialogSourceChooser.get_text() != "" \
+                or self.richRuleDialogSourceInvertCheck.get_active()):
             txt = self.richRuleDialogSourceTypeCombobox.get_active_text()
             addr = mac = ipset = None
             if txt == "IP":
@@ -3717,9 +3716,9 @@ class FirewallConfig(object):
                 self.richRuleDialogSourceInvertCheck.get_active())
 
         # destination
-        if self.richRuleDialogDestinationBox.is_sensitive() and \
-           (self.richRuleDialogDestinationChooser.get_text() != "" \
-            or self.richRuleDialogDestinationInvertCheck.get_active()):
+        if self.richRuleDialogDestinationBox.is_sensitive() \
+           and (self.richRuleDialogDestinationChooser.get_text() != "" \
+                or self.richRuleDialogDestinationInvertCheck.get_active()):
             rule.destination = rich.Rich_Destination(
                 self.richRuleDialogDestinationChooser.get_text(),
                 self.richRuleDialogDestinationInvertCheck.get_active())
@@ -3902,7 +3901,7 @@ class FirewallConfig(object):
             editor.set_transient_for(self.mainWindow)
             editor.show_all()
             try:
-                result = editor.run()
+                editor.run()
             except Exception:
                 text = _("Failed to set zone {zone} "
                          "for connection {connection}")
@@ -4232,68 +4231,6 @@ class FirewallConfig(object):
             self.helperDialogOkButton.set_sensitive(True)
         else:
             self.helperDialogOkButton.set_sensitive(False)
-
-    def helper_select_dialog(self, old_helper="", ipv=None):
-        self.helperDialogHelperStore.clear()
-
-        helpers = { }
-        if self.runtime_view:
-            for x in self.fw.getHelpers():
-                settings = self.fw.getHelperSettings(x)
-                helpers[x] = settings
-        else:
-            for i in self.fw.config().listHelpers():
-                obj = self.fw.config().getHelper(i)
-                helpers[obj.get_property("name")] = obj.getSettings()
-
-        for i in sorted(helpers.keys()):
-            # for all hash:ip and hash:net types, ipv has to match the family
-            # of the set
-            helper_type = helpers[i].getType()
-            if helper_type in [ "hash:ip", "hash:net" ]:
-                opts = helpers[i].getOptions()
-                if "family" in opts:
-                    if opts["family"] == "inet6" and \
-                       (ipv != "ipv6" and ipv != "all"):
-                        continue
-                else:
-                    if ipv == "ipv6" or ipv is None:
-                        continue
-            self.helperDialogHelperStore.append([i, helper_type])
-
-        selection = self.helperDialogHelperView.get_selection()
-        selection.set_mode(Gtk.SelectionMode.SINGLE)
-        #selection.select_path(0)
-        iter = self.helperDialogHelperStore.get_iter_first()
-        while iter:
-            if self.helperDialogHelperStore.get_value(iter, 0) == old_helper:
-                selection.select_iter(iter)
-            iter = self.helperDialogHelperStore.iter_next(iter)
-
-        self.helperDialogOkButton.set_sensitive(False)
-        self.helperDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
-        self.helperDialog.set_transient_for(self.mainWindow)
-        self.helperDialog.show_all()
-        self.add_visible_dialog(self.helperDialog)
-
-        result = self.helperDialog.run()
-        self.helperDialog.hide()
-        self.remove_visible_dialog(self.helperDialog)
-
-        #self.helperDialogHelperEntry.disconnect(handler_id)
-
-        #helper = self.helperDialogHelperEntry.get_text()
-
-        if result != 1:
-            return None
-
-        (model, iter) = selection.get_selected()
-        if not iter:
-            return None
-        helper = self.helperDialogHelperStore.get_value(iter, 0)
-        if old_helper == helper:
-            return None
-        return helper
 
     def on_sourceDialog_changed(self, arg, old_type, old_source):
         _type = self.sourceDialogSourceTypeCombobox.get_active_text()
@@ -5406,7 +5343,6 @@ class FirewallConfig(object):
             old_version = None
             old_short = None
             old_desc = None
-            old_target = None
 
             self.serviceBaseDialogNameEntry.set_text("")
             self.serviceBaseDialogVersionEntry.set_text("")
@@ -5636,8 +5572,8 @@ class FirewallConfig(object):
             if functions.checkIP6nMask(text) and text != old_address:
                 self.addressDialogOkButton.set_sensitive(True)
         else:
-            if (functions.checkIPnMask(text) or \
-                functions.checkIP6nMask(text)) and text != old_address:
+            if (functions.checkIPnMask(text) or functions.checkIP6nMask(text)) \
+               and text != old_address:
                 self.addressDialogOkButton.set_sensitive(True)
 
     def address_select_dialog(self, addr_type, old_address):
@@ -6078,7 +6014,7 @@ class FirewallConfig(object):
 
         try:
             IPSet.check_entry(entry, settings.getOptions(), settings.getType())
-        except Exception as e:
+        except Exception:
             self.ipsetEntryDialogOkButton.set_sensitive(False)
         else:
             self.ipsetEntryDialogOkButton.set_sensitive(True)
@@ -6536,17 +6472,6 @@ class FirewallConfig(object):
             helper.removePort(port, proto)
             self.changes_applied()
 
-    def onHelperPortChanged(self, *args):
-        settings = self.active_helper_settings
-        port = self.helperEntryDialogEntryEntry.get_text()
-
-        try:
-            Helper.check_entry(entry, settings.getOptions(), settings.getType())
-        except Exception as e:
-            self.helperEntryDialogOkButton.set_sensitive(False)
-        else:
-            self.helperEntryDialogOkButton.set_sensitive(True)
-
     def change_helper_conf_port_selection_cb(self, selection):
         (model, iter) = selection.get_selected()
         if iter:
@@ -6909,7 +6834,6 @@ class FirewallConfig(object):
             old_version = None
             old_short = None
             old_desc = None
-            old_target = None
 
             self.icmpBaseDialogNameEntry.set_text("")
             self.icmpBaseDialogVersionEntry.set_text("")
@@ -6999,7 +6923,6 @@ class FirewallConfig(object):
     def icmp_dialog_dest_ipv4_check_cb(self, *args):
         active_icmp = self.get_active_icmp()
         icmp = self.fw.config().getIcmpTypeByName(active_icmp)
-        settings = icmp.getSettings()
         if self.icmpDialogDestIpv4Check.get_active():
             if icmp.queryDestination("ipv4"):
                 icmp.removeDestination("ipv4")
