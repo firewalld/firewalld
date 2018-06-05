@@ -2,45 +2,17 @@ FWD_START_TEST([firewalld.conf])
 
 dnl Verify defaults over dbus. Should be inline with default firewalld.conf.
 DBUS_GETALL([config], [config], 0, [dnl
-array
-dict entry(
-string "MinimalMark"
-variant int32 100
-)
-dict entry(
-string "AutomaticHelpers"
-variant string "system"
-)
-dict entry(
-string "Lockdown"
-variant string "no"
-)
-dict entry(
-string "LogDenied"
-variant string "off"
-)
-dict entry(
-string "IPv6_rpfilter"
+string "AutomaticHelpers" : variant string "system"
+string "CleanupOnExit" : variant string "no"
+string "DefaultZone" : variant string "public"
+string "FirewallBackend" : variant string "nftables"
+string "IndividualCalls" : variant string "no"
 m4_if(no, HOST_SUPPORTS_NFT_FIB, [dnl
-variant string "no"],[dnl
-variant string "yes"])
-)
-dict entry(
-string "IndividualCalls"
-variant string "no"
-)
-dict entry(
-string "FirewallBackend"
-variant string "nftables"
-)
-dict entry(
-string "CleanupOnExit"
-variant string "no"
-)
-dict entry(
-string "DefaultZone"
-variant string "public"
-)
+string "IPv6_rpfilter" : variant string "no"],[dnl
+string "IPv6_rpfilter" : variant string "yes"])
+string "Lockdown" : variant string "no"
+string "LogDenied" : variant string "off"
+string "MinimalMark" : variant int32 100
 ])
 
 m4_define([_helper], [

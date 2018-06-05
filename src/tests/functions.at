@@ -225,11 +225,15 @@ m4_define([DBUS_CHECK], [
              [$4], [$5], [$6], [$7], [$8])
 ])
 
+m4_define([DBUS_GETALL_NORMALIZE], dnl
+    m4_escape([awk 'BEGIN{line_mark=-99; line=0} {line++; if (line == line_mark + 1) {buffer = $0}; if (line == line_mark + 2) {print buffer " : " $0} } /^dict entry/{line_mark=line}' | sort])dnl
+)
+
 m4_define([DBUS_GETALL], [
     NS_CHECK([dbus-send --system --print-reply --dest=org.fedoraproject.FirewallD1 dnl
               /org/fedoraproject/FirewallD1/$1 dnl
               org.freedesktop.DBus.Properties.GetAll string:"org.fedoraproject.FirewallD1.$2" dnl
-              | tr -d [['[]']] | tail -n +2 | TRIM_WHITESPACE],
+              | TRIM_WHITESPACE | DBUS_GETALL_NORMALIZE],
              [$3], [$4], [$5], [$6], [$7])
 ])
 
