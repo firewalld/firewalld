@@ -44,6 +44,13 @@ m4_define([FWD_RESTART], [
 m4_define([FWD_START_TEST], [
     AT_SETUP([$1])
 
+    dnl We test some unicode strings and autotest overrides LC_ALL=C, so set it
+    dnl again for every test.
+    LC_ALL="en_US.UTF-8"
+    export LC_ALL
+    LANGUAGE="en_US.UTF-8"
+    export LANGUAGE
+
     dnl start every test with the default config
     if test "x${FIREWALLD_DEFAULT_CONFIG}" != x ; then
         AT_CHECK([if ! cp "${FIREWALLD_DEFAULT_CONFIG}/firewalld.conf" ./firewalld.conf; then exit 77; fi])
