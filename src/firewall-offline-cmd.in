@@ -2170,7 +2170,7 @@ try:
         # forward port
         elif a.list_forward_ports:
             l = fw_settings.getForwardPorts()
-            cmd.print_and_exit("\n".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % (port, protocol, toport, toaddr) for (port, protocol, toport, toaddr) in l]))
+            cmd.print_and_exit("\n".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % (_port, _protocol, _toport, _toaddr) for (_port, _protocol, _toport, _toaddr) in l]))
         elif a.add_forward_port:
             cmd.add_sequence(a.add_forward_port, fw_settings.addForwardPort,
                              fw_settings.queryForwardPort,
