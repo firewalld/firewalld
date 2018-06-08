@@ -79,7 +79,7 @@ check-local:
 	find . -name '*.py' -or -name '*.py.in' |xargs flake8 --ignore="$(FLAKE8_IGNORE)"
 	flake8 --ignore="$(FLAKE8_IGNORE)" $(dist_bin_SCRIPTS) $(dist_sbin_SCRIPTS)
 	@echo
-	@for file in $(filter-out $(EXTRA_DIST:.in=),$(nobase_dist_python_DATA)); do \
+	@for file in $(filter-out $(EXTRA_DIST:.in=),$(nobase_dist_python_DATA) $(dist_bin_SCRIPTS) $(dist_sbin_SCRIPTS)); do \
 		if ! grep "$${file}" ${top_srcdir}/po/POTFILES.in > /dev/null; then \
 			echo "$${file} should be in ${abs_top_srcdir}/po/POTFILES.in"; \
 			exit 1; \
