@@ -46,9 +46,9 @@ m4_define([FWD_START_TEST], [
 
     dnl We test some unicode strings and autotest overrides LC_ALL=C, so set it
     dnl again for every test.
-    LC_ALL="en_US.UTF-8"
+    LC_ALL="C.UTF-8"
     export LC_ALL
-    LANGUAGE="en_US.UTF-8"
+    LANGUAGE="C.UTF-8"
     export LANGUAGE
 
     dnl start every test with the default config
