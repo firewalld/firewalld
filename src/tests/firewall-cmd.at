@@ -656,7 +656,8 @@ FWD_END_TEST([-e '/ERROR: INVALID_TABLE:/d' dnl
               -e '/WARNING: NOT_ENABLED: chain/d'])
 
 FWD_START_TEST([direct nat])
-    m4_if(nftables, FIREWALL_BACKEND, [AT_CHECK([exit 77])])
+    CHECK_NAT_COEXISTENCE
+
     m4_define([direct_rule1], [ipv4 nat OUTPUT 0 -s 1.2.3.4 -d 1.2.3.4 -p tcp --dport 80 -j REDIRECT --to-ports 81])
     m4_define([direct_rule2], [ipv4 nat OUTPUT 0 -s 1.2.3.4 -d 1.2.3.4 -p tcp --dport 80 -j REDIRECT --to-ports 82])
     FWD_CHECK([--permanent --direct --add-rule direct_rule1], 0, ignore)
