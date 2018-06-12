@@ -21,6 +21,7 @@ $(srcdir)/package.m4: $(top_srcdir)/configure.ac $(top_srcdir)/firewalld.spec
 check-local: atconfig $(TESTSUITE)
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS) \
 		AUTOTEST_PATH="src" \
+		PYTHON="$(PYTHON)" \
 		PYTHONPATH="${abs_top_srcdir}/src:${PYTHONPATH}" \
 		FIREWALLD_DEFAULT_CONFIG="${abs_top_srcdir}/config"
 
