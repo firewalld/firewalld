@@ -69,6 +69,11 @@ AC_ARG_WITH([bashcompletiondir],
        [BASHCOMPLETIONDIR=$withval], [BASHCOMPLETIONDIR="${datadir}/bash-completion/completions"])
 AC_SUBST(BASHCOMPLETIONDIR)
 
+AC_ARG_WITH([zshcompletiondir],
+       AS_HELP_STRING([--with-zshcompletiondir=DIR], [Zsh completions directory]),
+       [ZSHCOMPLETIONDIR=$withval], [ZSHCOMPLETIONDIR="${datadir}/zsh/site-functions"])
+AC_SUBST(ZSHCOMPLETIONDIR)
+
 AC_ARG_WITH([ifcfgdir],
        AS_HELP_STRING([--with-ifcfgdir=DIR], [The ifcfg configuration directory]),
        [IFCFGDIR=$withval], [IFCFGDIR="/etc/sysconfig/network-scripts"])
