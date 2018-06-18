@@ -1,0 +1,303 @@
+#compdef firewall-cmd firewall-offline-cmd
+
+local curcontext="$curcontext" name nm="$compstate[nmatches]"
+local -a state line expl direct args auxargs opargs suf
+typeset -A opt_args
+
+direct=(
+  '--get-all-chains[get all chains]'
+  '--get-chains[get all chains added to the table]:family:(ipv4 ipv6 eb):table:->tables'
+  '--add-chain[add a new chain to the table]:family:(ipv4 ipv6 eb):table:->tables:new chain'
+  '--remove-chain[remove a chain from the table]:family:(ipv4 ipv6 eb):table:->tables:chain:->chains'
+  '--query-chain[return whether the chain has been added to the table]:family:(ipv4 ipv6 eb):table:->tables:chain:->chains'
+  '--get-all-rules[get all rules]'
+  '--get-rules[get all rules added to chain in table]:family:(ipv4 ipv6 eb):table:->tables:chain:->chains'
+  '--add-rule[add rule to chain in table]:family:(ipv4 ipv6 eb):table:->tables:chain:->chains:priority: :*:argument'
+  '--remove-rule[remove rule with priority from chain in table]:family:(ipv4 ipv6 eb):table:->tables:chain:->chains:priority: :*:argument'
+  '--remove-rules[remove rules from chain in table]:family:(ipv4 ipv6 eb):table:->tables:chain->chains'
+  '--query-rule[chain in table]:family:(ipv4 ipv6 eb):table:->tables:chain: :priority: :*:argument'
+  '--get-all-passthroughs[get all tracked passthrough rules]'
+  '--get-passthroughs[get tracked passthrough rules]:family:(ipv4 ipv6 eb):*:: : _iptables'
+  '--add-passthrough[add a new tracked passthrough rule]:family:(ipv4 ipv6 eb):*:: : _iptables'
+  '--remove-passthrough[remove a tracked passthrough rule]:family:(ipv4 ipv6 eb):*:: : _iptables'
+  '--query-passthrough[return whether the tracked passthrough rule has been added]:family:(ipv4 ipv6 eb):*:: : _iptables'
+)
+name='--name=[specify new name]:name'
+
+case $service in
+  firewall-cmd)
+    direct+=(
+      '--passthrough[pass a command through (untracked by firewalld)]:family:(ipv4 ipv6 eb):*:: : _iptables'
+    )
+    args=(
+      '(--timeout)--permanent[set an option permanently]'
+    )
+    auxargs=(
+      '(--permanent)--timeout=[specify time for rule to be active]:time value (seconds)'
+    )
+    opargs=(
+      '(aux --permanent --zone)--state[print firewalld state]'
+      '(aux --permanent --zone)--reload[reload firewall and keep state information]'
+      '(aux --permanent --zone)--complete-reload[reload firewall and lose state information]'
+      '(aux --permanent --zone)--runtime-to-permanent[create permanent from runtime configuration]'
+      '(aux --permanent --zone -q --quiet)--get-active-zones[print currently active zones]'
+      '*--remove-service=[remove a service from a zone]:service:->services'
+      '(aux --permanent --zone)--panic-on[enable panic mode]'
+      '(aux --permanent --zone)--panic-off[disable panic mode]'
+      '(aux --permanent --zone)--query-panic[query whether panic mode is enabled]'
+    )
+  ;;
+  firewall-offline-cmd)
+    args=(
+      '--system-config[specify path to firewalld system configuration]:path:_directories'
+      '--default-config[specify path to firewalld default configuration]:path:_directories'
+      '--migrate-system-config-firewall=[import configuration data from the given configuration file]:file:_files'
+      '--disabled[disable the firewall by disabling the firewalld service]' '!(--disabled)--enabled'
+      '!--'{add,remove}'module=:iptables module' '!--custom-rules=:type:table:filename (ignored'
+      \*{-s+,--service=}'[enable a service in the default zone]:service:->services'
+      '*--remove-service=[disable a service in the default zone]:service:->services'
+      \*{-p+,--port=}'[enable a port in the default zone]:port:->ports'
+      \*{-t+,--trust=}'[bind an interface to the trusted zone]:interface:_net_interfaces'
+      {-m+,--masq=}'[enable masquerading in the default zone, IPv4 only]:interface (ignored)'
+      '--forward-port=[add port forward in the default zone]:port forward:->port-forwards'
+      '--block-icmp=[block this ICMP type in the default zone]:icmp type:->icmp-types'
+      "--policy-server[change Polkit actions to 'server'  (more restricted)]"
+      "--policy-desktop[change Polkit actions to 'desktop' (less restricted)]"
+    )
+    opargs=(
+      '*--remove-service-from-zone[remove a service from a zone]:service:->services'
+    )
+  ;;
+esac
+
+# option ordering doesn't matter but listing fewer options makes
+# completion more useful:
+(( $words[(I)--direct] )) || direct=( \!$^direct )   # only list direct options after --direct
+(( $words[(I)--new-*-from-file*] )) || name="!$name" # also check for required options before listing --name
+
+_arguments -C -s $args $direct \
+  '!(-q --quiet)'{-v,--verbose} \
+  '(-q --quiet --list-all --list-all-zones --list-lockdown-whitelist-commands --list-lockdown-whitelist-contexts --list-lockdown-whitelist-uids --list-lockdown-whitelist-users --list-services --list-ports --list-protocols --list-icmp-blocks --list-forward-ports --list-rich-rules --list-interfaces --list-sources --get-default-zone --get-active-zones --get-zone-of-interface --get-zone-of-source --get-zones --get-services --get-icmptypes --get-target --info-zone --info-icmptype --info-service --info-ipset --get-ipsets --get-entries --info-helper --get-helpers --get-destinations --get-description --version -h --help)'{-q,--quiet}"[don't print status messages]" \
+  '*--zone=[use this zone to set or query options, else default zone]:zone:->zones' \
+  + aux \
+  $auxargs $name \
+  '*--option=[specify option]:option (key=value)' \
+  '--type=[specify ipset type]:ipset type:->ipset-types' \
+  '--ipset=[specify ipset]:ipset:->ipsets' \
+  '--icmptype=[specify icmp type]:icmp type:->icmp-types' \
+  '--service=[specify service]:service:->services' \
+  '--helper=[specify helper]:helper:->helpers' \
+  '--family=[specify family]:family:(ipv4 ipv6)' \
+  '--module=[specify module]:module' \
+  + '(op)' \
+  $opargs \
+  '(aux -)'{-h,--help}'[display usage information]' \
+  '(aux -)'{-V,--version}'[display version information]' \
+  '(aux --permanent --zone)--get-log-denied[print the log denied value]' \
+  '(aux --permanent --zone)--set-log-denied=[set log denied value]:value:(all unicast broadcast multicast off)' \
+  '(aux --permanent --zone)--get-automatic-helpers[print the automatic helpers value]' \
+  '(aux --permanent --zone)--set-automatic-helpers=[set automatic helpers value]:value:(yes no system)' \
+  '(aux --permanent --zone -q --quiet)--get-default-zone[print default zone for connections and interfaces]' \
+  '(aux --permanent --zone)--set-default-zone=[set default zone]:zone:->zones' \
+  '(--zone -q --quiet)--get-zones[print predefined zones]' \
+  '(--zone -q --quiet)--get-services[print predefined services]' \
+  '(--zone -q --quiet)--get-icmptypes[print predefined icmptypes]' \
+  '(-q --quiet)*--get-zone-of-interface=[print name of the zone the interface is bound to]:interface:_net_interfaces' \
+  '(-q --quiet)*--get-zone-of-source=[print name of the zone a source is bound to]:source' \
+  '(-q --quiet)--list-all-zones[list everything added for or enabled in all zones]' \
+  '--new-zone=[add a new zone]:zone:->zones' \
+  '--new-zone-from-file=[add a new zone from file with optional name]:filename:_files' \
+  '--delete-zone=[delete an existing zone]:zone:->zones' \
+  '--load-zone-defaults=[load zone default settings]:zone:->zones' \
+  '(-q --quiet)--get-target[get the zone target]' \
+  '--set-target=[set the zone target]:target:(default ACCEPT DROP REJECT)' \
+  '(-q --quiet)--info-zone=[print information about a zone]:zone:->zones' \
+  '--path-zone=[print file path of a zone]:zone:->zones' \
+  '(aux --permanent --zone)--get-ipset-types[print the supported ipset types]' \
+  '--new-ipset=[add a new ipset]:ipset:->ipsets' \
+  '--new-ipset-from-file=[add a new ipset from file with optional name]:filename:_files' \
+  '--delete-ipset=[delete an existing ipset]:ipset:->ipsets' \
+  '--load-ipset-defaults=[load ipset default settings]:ipset:->ipsets' \
+  '(-q --quiet)--info-ipset=[print information about an ipset]:ipset' \
+  '--path-ipset=[print file path of an ipset]:ipset' \
+  '(aux --permanent --zone -q --quiet)--get-ipsets[print predefined ipsets]' \
+  '--set-description=[set new description]:description' \
+  '(-q --quiet)--get-description[print description]' \
+  '--set-short=[set new short description]:description' \
+  '--get-short[print short description]' \
+  '*--add-entry=[add a new entry to an ipset]:entry' \
+  '*--remove-entry=[remove an entry from an ipset]:entry' \
+  '*--query-entry=[return whether ipset has an entry]:entry' \
+  '(-q --quiet)--get-entries[list entries of an ipset]' \
+  '*--add-entries-from-file=[add a new entries to an ipset]:entry' \
+  '--remove-entries-from-file=[remove entries from an ipset]:entry' \
+  '--new-icmptype=[add a new icmptype]:icmp type:->icmp-types' \
+  '--new-icmptype-from-file=[add a new icmptype from file with optional name]:file:_files' \
+  '--delete-icmptype=[delete an existing icmptype]:icmp type:->icmp-types' \
+  '--load-icmptype-defaults=[load icmptype default settings]:icmp type:->icmp-types' \
+  '(-q --quiet)--info-icmptype=[print information about an icmptype]:icmp type:->icmp-types' \
+  '--path-icmptype=[print file path of an icmptype]:icmp type:->icmp-types' \
+  '*--add-destination=[enable destination for ipv in icmptype]:destination:->destinations' \
+  '*--remove-destination=[disable destination for ipv in service or icmp-type]:destination:->destinations' \
+  '(-q --quiet)--get-destinations[list destinations]' \
+  '--new-service=[add a new service]:service' \
+  '--new-service-from-file=[add a new service from file with optional name]:file:_files' \
+  '--delete-service=[delete an existing service]:service:->services' \
+  '--load-service-defaults=[load icmptype default settings]:service:->services' \
+  '(-q --quiet)--info-service=[print information about a service]:service:->services' \
+  '--path-service=[print file path of a service]:service:->services' \
+  '*--add-port=[add a new port to service, zone or helper]:port:->ports' \
+  '*--remove-port=[remove a port from a service, zone or helper]:port:->ports' \
+  '*--query-port=[return whether the port has been added for service, zone or helper]:port:->ports' \
+  '--get-ports[list ports of service or helper]' \
+  '*--add-protocol=[add a new protocol to service or zone]:protocol' \
+  '*--remove-protocol=[remove a protocol from service or zone]:protocol' \
+  '*--query-protocol=[return whether the protocol has been added for service or zone]:protocol' \
+  '--get-protocols[list protocols of service]' \
+  '*--add-source-port=[add a new source port to service or zone]:port:->ports' \
+  '*--remove-source-port=[remove a source port from service or zone]:port:->ports' \
+  '*--query-source-port=[return whether the source port has been added for service or zone]:port:->ports' \
+  '--get-source-ports[list source ports of service]' \
+  '*--add-module=[add a new module to service]:module' \
+  '*--remove-module=[remove a module from service]:module' \
+  '*--query-module=[return whether the module has been added for service]:module' \
+  '--get-modules[list modules of service]' \
+  '*--set-destination=[set destination for ipv to address in service]:destination:->destinations' \
+  '--query-destination=[return whether destination ipv is set for service or enabled for icmptype]:destination:->destinations' \
+  '(-q --quiet)--list-all[list everything added for or enabled in a zone]' \
+  '(-q --quiet)--list-services[list services added for a zone]' \
+  '*--add-service=[add a service for a zone]:service:->services' \
+  '*--query-service=[return whether service has been added for a zone]:service:->services' \
+  '(-q --quiet)--list-ports[list ports added for a zone]' \
+  '(-q --quiet)--list-protocols[list protocols added for a zone]' \
+  '--list-source-ports[list source ports added for a zone]' \
+  '(-q --quiet)--list-icmp-blocks[list Internet ICMP type blocks added for a zone]' \
+  '*--add-icmp-block=[add an ICMP block for a zone]:icmp type:->icmp-types' \
+  '*--remove-icmp-block=[remove the ICMP block from a zone]:icmp type:->icmp-types' \
+  '*--query-icmp-block=[return whether an ICMP block has been added for a zone]:icmp type:->icmp-types' \
+  '--add-icmp-block-inversion[enable inversion of icmp blocks for a zone]' \
+  '--remove-icmp-block-inversion[disable inversion of icmp blocks for a zone]' \
+  '--query-icmp-block-inversion[return whether inversion of icmp blocks has been enabled for a zone]' \
+  '(-q --quiet)--list-forward-ports[list IPv4 forward ports added for a zone]' \
+  '*--add-forward-port=[add the IPv4 forward port for a zone]: :->port-forwards' \
+  '*--remove-forward-port=[remove the IPv4 forward port from a zone]: :->port-forwards' \
+  '*--query-forward-port=[return whether the IPv4 forward port has been added for a zone]: :->port-forwards' \
+  '--add-masquerade[enable IPv4 masquerade for a zone]' \
+  '--remove-masquerade[disable IPv4 masquerade for a zone]' \
+  '--query-masquerade[return whether IPv4 masquerading has been enabled for a zone]' \
+  '(-q --quiet)--list-rich-rules[list rich language rules added for a zone]' \
+  '*--add-rich-rule=[add rich language rule for a zone]:rule' \
+  '*--remove-rich-rule=[remove specified rich language rule from a zone]:rule' \
+  '*--query-rich-rule=[return whether specified rich language rule has been added for a zone]:rule' \
+  '(-q --quiet)--list-interfaces[list interfaces that are bound to a zone]' \
+  '*--add-interface=[bind the specified interface to a zone]:interface:_net_interfaces' \
+  '*--change-interface=[change zone the specified interface is bound to]:interface:_net_interfaces' \
+  '*--query-interface=[query whether specified interface is bound to a zone]:interface:_net_interfaces' \
+  '*--remove-interface=[remove binding of specified interface from a zone]:interface:_net_interfaces' \
+  '(-q --quiet)--list-sources[list sources that are bound to a zone]' \
+  '*--add-source=[bind source to a zone]: :->sources' \
+  '*--change-source=[change zone a source is bound to]: :->sources' \
+  '*--query-source=[query whether source is bound to a zone]: :->sources' \
+  '*--remove-source=[remove binding of a source from a zone]: :->sources' \
+  '--new-helper=[add a new helper]:helper:->helpers' \
+  '--new-helper-from-file=[add a new helper from file with optional name]:file:_files' \
+  '--delete-helper=[delete an existing helper]:helper:->helpers' \
+  '--load-helper-defaults=[load helper default settings]:helper:->helpers' \
+  '(--zone -q --quiet)--info-helper=[print information about an helper]:helper:->helpers' \
+  '--path-helper=[print file path of an helper]:helper:->helpers' \
+  '(--zone -q --quiet)--get-helpers[print predefined helpers]' \
+  '--set-module=[set module to helper]:module' \
+  '--get-module[get module from helper]' \
+  '--set-family=[set family for helper]:family' \
+  '--get-family[get family from helper]' \
+  '(aux --permanent --zone)--lockdown-on[enable lockdown]' \
+  '(aux --permanent --zone)--lockdown-off[disable lockdown]' \
+  '(aux --permanent --zone)--query-lockdown[query whether lockdown is enabled]' \
+  '(-q --quiet)--list-lockdown-whitelist-commands[list all command lines that are on the whitelist]' \
+  '*--add-lockdown-whitelist-command=[add a command to the whitelist]:command:_cmdstring' \
+  '*--remove-lockdown-whitelist-command=[remove the command from the whitelist]:command' \
+  '*--query-lockdown-whitelist-command=[query whether a command is on the whitelist]:command' \
+  '(-q --quiet)--list-lockdown-whitelist-contexts[list all contexts that are on the whitelist]' \
+  '*--add-lockdown-whitelist-context=[add the specified context to the whitelist]:context' \
+  '*--remove-lockdown-whitelist-context=[remove a context from the whitelist]:context' \
+  '*--query-lockdown-whitelist-context=[query whether a context is on the whitelist]:context' \
+  '(-q --quiet)--list-lockdown-whitelist-uids[list all user ids that are on the whitelist]' \
+  '*--add-lockdown-whitelist-uid=[add the specified user id to the whitelist]:uid' \
+  '*--remove-lockdown-whitelist-uid=[remove the specified user id from the whitelist]:uid' \
+  '*--query-lockdown-whitelist-uid=[query whether a user id is on the whitelist]:uid' \
+  '(-q --quiet)--list-lockdown-whitelist-users[list all user names that are on the whitelist]' \
+  '*--add-lockdown-whitelist-user=[add the specified user to the whitelist]:user:_users' \
+  '*--remove-lockdown-whitelist-user=[remove the specified user from the whitelist]:user:_users' \
+  '*--query-lockdown-whitelist-user=[query whether the specified user is on the whitelist]:user:_users' \
+  '--direct[first option for all direct options]'
+
+[[ $state = sources ]] && compset -P 'ipset:' && state=ipsets
+case $state in
+  sources)
+    _message -e sources "source[/mask]|MAC|ipset:ipset"
+  ;;
+  chains)
+    _description chains expl 'chain'
+    compadd "$expl[@]" - ${${(f)"$(_call_program chains $words[1] ${(k)opt_args[--permanent]} --direct --get-all-chains)"}##* }
+  ;;
+  destinations)
+    if compset -P 1 '*:'; then
+      if compset -P 1 '*/'; then
+        _message -e masks "mask"
+      else
+        _message -e addresses "address"
+      fi
+    else
+      compset -S ':*' || suf=( -qS : )
+      _description ipvs expl 'ipv'
+      compadd "$expl[@]" $suf - ipv4 ipv6
+    fi
+  ;;
+  helpers)
+    _description helpers expl 'helper'
+    compadd "$expl[@]" - $(_call_program helpers $words[1] ${(k)opt_args[--permanent]} --get-helpers)
+  ;;
+  icmp-types)
+    _description icmp-types expl 'icmp type'
+    compadd "$expl[@]" - $(_call_program icmp-types $words[1] --get-icmptypes)
+  ;;
+  ipsets)
+    _description ipsets expl 'ipset'
+    compadd "$expl[@]" - $(_call_program ipsets $words[1] ${(k)opt_args[--permanent]} --get-ipsets)
+  ;;
+  ipset-types)
+    _description ipset-types expl 'ipset type'
+    compadd "$expl[@]" - $(_call_program ipset-types $words[1] --get-ipset-types)
+  ;;
+  ports)
+    if compset -P 1 '*/'; then
+      _description protocols expl 'protocol'
+      compadd "$expl[@]" - tcp udp sctp dccp
+    else
+      _message -e ports 'port number'
+    fi
+  ;;
+  port-forwards)
+    _values -S = -s : 'port forward' \
+      'port[specify port]:port range:_sequence -n 2 -s - _ports' \
+      'proto[specify protocol]:protocol:(tcp udp sctp dccp)' \
+      'toport[specify port]:port range:_sequence -n 2 -s - _ports' \
+      'toaddr[specify destination address]:address[/mask]'
+  ;;
+  services)
+    _description services expl 'service'
+    compadd "$expl[@]" - $(_call_program services $words[1] --get-services)
+  ;;
+  tables)
+    _description services expl 'service'
+    compadd "$expl[@]" - security raw mangle nat filter
+  ;;
+  zones)
+    _description zones expl 'zone'
+    compadd "$expl[@]" - $(_call_program zones $words[1] --get-zones)
+  ;;
+esac
+
+# return whether matches were added
+[[ nm -ne compstate[nmatches] ]] && return 0
+return 1
