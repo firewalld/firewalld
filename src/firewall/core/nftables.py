@@ -696,8 +696,15 @@ class nftables(object):
     def _rich_rule_audit(self, rich_rule, enable, table, target, rule_fragment):
         if not rich_rule.audit:
             return []
-        # FIXME: nftables does not support AUDIT, need to complain loudly
-        raise FirewallError(UNKNOWN_ERROR, "not implemented")
+
+        add_del = { True: "add", False: "delete" }[enable]
+
+        rule = [add_del, "rule", "inet", "%s" % TABLE_NAME,
+                "%s_%s_allow" % (table, target)]
+        rule += rule_fragment + ["log", "level", "audit"]
+        rule += self._rich_rule_limit_fragment(rich_rule.log.limit)
+
+        return rule
 
     def _rich_rule_action(self, zone, rich_rule, enable, table, target, rule_fragment):
         if not rich_rule.action:
