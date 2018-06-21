@@ -291,6 +291,15 @@ m4_define([CHECK_NAT_COEXISTENCE], [
     ])
 ])
 
+m4_define([CHECK_LOG_AUDIT], [
+    m4_if(nftables, FIREWALL_BACKEND, [
+        NS_CHECK([nft add table inet firewalld_check_log_audit])
+        NS_CHECK([nft add chain inet firewalld_check_log_audit foobar { type filter hook input priority 0 \; } ])
+        AT_SKIP_IF([! NS_CMD([nft add rule inet firewalld_check_log_audit foobar log level audit >/dev/null 2>&1])])
+        NS_CHECK([nft delete table inet firewalld_check_log_audit])
+    ])
+])
+
 m4_ifnblank(
     m4_esyscmd([
         KERNEL_VER=( $(uname -r | tr '.' ' ') )
