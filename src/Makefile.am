@@ -1,7 +1,10 @@
 SUBDIRS = icons tests
 
-dist_bin_SCRIPTS = firewall-applet.in firewall-cmd.in firewall-offline-cmd.in firewall-config.in
-dist_sbin_SCRIPTS = firewalld.in
+dist_bin_SCRIPTS_in = firewall-applet.in firewall-cmd.in firewall-offline-cmd.in firewall-config.in
+dist_sbin_SCRIPTS_in = firewalld.in
+
+dist_bin_SCRIPTS = $(dist_bin_SCRIPTS_in:.in=)
+dist_sbin_SCRIPTS = $(dist_sbin_SCRIPTS_in:.in=)
 
 gladedir = $(pkgdatadir)
 dist_glade_DATA = firewall-config.glade
@@ -70,16 +73,16 @@ nobase_dist_python_DATA = \
 
 EXTRA_DIST = \
 	firewall/config/__init__.py.in \
-	$(dist_bin_SCRIPTS) $(dist_sbin_SCRIPTS)
+	$(dist_bin_SCRIPTS_in) $(dist_sbin_SCRIPTS_in)
 
 CLEANFILES = *~ *\# .\#* *.py?
 
 FLAKE8_IGNORE = E121,E122,E123,E124,E126,E127,E128,E201,E202,E203,E211,E221,E222,E225,E226,E231,E241,E251,E261,E262,E265,E266,W291,W293,E301,E302,E303,E305,E306,W391,E402,E501,E502,W503,E722,E741
 check-local:
 	find . -name '*.py' -or -name '*.py.in' |xargs flake8 --ignore="$(FLAKE8_IGNORE)"
-	flake8 --ignore="$(FLAKE8_IGNORE)" $(dist_bin_SCRIPTS) $(dist_sbin_SCRIPTS)
+	flake8 --ignore="$(FLAKE8_IGNORE)" $(dist_bin_SCRIPTS_in) $(dist_sbin_SCRIPTS_in)
 	@echo
-	@for file in $(filter-out $(EXTRA_DIST:.in=),$(nobase_dist_python_DATA) $(dist_bin_SCRIPTS) $(dist_sbin_SCRIPTS)); do \
+	@for file in $(filter-out $(EXTRA_DIST:.in=),$(nobase_dist_python_DATA) $(dist_bin_SCRIPTS_in) $(dist_sbin_SCRIPTS_in)); do \
 		if ! grep "$${file}" ${top_srcdir}/po/POTFILES.in > /dev/null; then \
 			echo "$${file} should be in ${abs_top_srcdir}/po/POTFILES.in"; \
 			exit 1; \
