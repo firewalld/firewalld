@@ -474,16 +474,21 @@ class ip6tables(ip4tables):
 
     def apply_rpfilter_rules(self, transaction, log_denied=False):
             transaction.add_rule(self.ipv,
-                                 [ "-I", "PREROUTING", "1", "-t", "raw",
+                          [ "-I", "PREROUTING", "1", "-t", "raw",
+                            "-p", "ipv6-icmp",
+                            "--icmpv6-type=neighbour-solicitation",
+                            "-j", "ACCEPT" ]) # RHBZ#1575431, kernel bug in 4.16-4.17
+            transaction.add_rule(self.ipv,
+                                 [ "-I", "PREROUTING", "2", "-t", "raw",
                                    "-p", "ipv6-icmp",
                                    "--icmpv6-type=router-advertisement",
                                    "-j", "ACCEPT" ]) # RHBZ#1058505
             transaction.add_rule(self.ipv,
-                                 [ "-I", "PREROUTING", "2", "-t", "raw",
+                                 [ "-I", "PREROUTING", "3", "-t", "raw",
                                    "-m", "rpfilter", "--invert", "-j", "DROP" ])
             if log_denied != "off":
                 transaction.add_rule(self.ipv,
-                                     [ "-I", "PREROUTING", "2", "-t", "raw",
+                                     [ "-I", "PREROUTING", "3", "-t", "raw",
                                        "-m", "rpfilter", "--invert",
                                        "-j", "LOG",
                                        "--log-prefix", "rpfilter_DROP: " ])
