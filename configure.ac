@@ -169,6 +169,7 @@ AC_CONFIG_COMMANDS([xsl-cleanup],,[rm -f doc/xml/transform-*.xsl])
 
 AC_CONFIG_FILES([Makefile
 		 doxygen.conf
+		 config/lockdown-whitelist.xml
 		 config/Makefile
 		 doc/Makefile
 		 doc/man/Makefile

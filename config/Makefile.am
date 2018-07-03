@@ -283,6 +283,7 @@ EXTRA_DIST = \
 	$(polkit1_action_FILES) \
 	$(gsettings_in_file) \
 	$(CONFIG_FILES) \
+	lockdown-whitelist.xml.in \
 	firewalld.init \
 	firewalld-sysctls.conf.in \
 	firewalld.service.in \
