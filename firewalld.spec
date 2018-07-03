@@ -126,7 +126,6 @@ firewalld.
 rm -rf %{py3dir}
 cp -a . %{py3dir}
 %if 0%{?use_python3}
-sed -i -e 's|/usr/bin/python -Es|%{__python3} -Es|' %{py3dir}/fix_python_shebang.sh
 sed -i 's|/usr/bin/python|%{__python3}|' %{py3dir}/config/lockdown-whitelist.xml
 %endif #0%{?use_python3}
 %endif #0%{?with_python3}
