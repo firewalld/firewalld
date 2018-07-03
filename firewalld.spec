@@ -8,11 +8,10 @@
 Summary: A firewall daemon with D-Bus interface providing a dynamic firewall
 Name: firewalld
 Version: 0.6.0
-Release: 0.1.alpha1%{?dist}
+Release: 1%{?dist}
 URL:     http://firewalld.org
 License: GPLv2+
-#Source0: https://github.com/firewalld/firewalld/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
-Source0: https://github.com/firewalld/firewalld/archive/v%{version}-alpha.tar.gz#/%{name}-%{version}-alpha.tar.gz
+Source0: https://github.com/firewalld/firewalld/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 BuildArch: noarch
 BuildRequires: autoconf
 BuildRequires: automake
@@ -119,7 +118,7 @@ The firewall configuration application provides an configuration interface for
 firewalld.
 
 %prep
-%autosetup -n %{name}-%{version}-alpha
+%autosetup
 ./autogen.sh
 
 %if 0%{?with_python3}
