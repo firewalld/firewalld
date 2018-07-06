@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Andrzej Olszewski <andrzej.olszewski@ifj.edu.pl>, 2004
 # Piotr Drąg <piotrdrag@gmail.com>, 2007,2013-2014
@@ -17,17 +17,17 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-05-02 09:11-0400\n"
-"PO-Revision-Date: 2018-03-10 11:24-0500\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2018-03-10 11:24+0000\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/projects/p/firewalld/"
 "language/pl/)\n"
 "Language: pl\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2);\n"
-"X-Generator: Zanata 3.9.6\n"
+"X-Generator: Zanata 4.4.5\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:411
 msgid "Firewall Applet"
@@ -45,8 +45,7 @@ msgstr "Konfiguracja zapory sieciowej"
 #: ../config/firewall-config.desktop.in.h:4
 msgid "firewall;network;security;iptables;netfilter;"
 msgstr ""
-"zapora;sieciowa;ogniowa;firewall;sieć;sieci;network;bezpieczeństwo;"
-"zabezpieczenia;security;iptables;netfilter;"
+"zapora;sieciowa;ogniowa;firewall;sieć;sieci;network;bezpieczeństwo;zabezpieczenia;security;iptables;netfilter;"
 
 #: ../src/firewall-applet:88 ../src/firewall-config:8044
 #, c-format
@@ -213,7 +212,8 @@ msgstr ""
 
 #: ../src/firewall-applet:873
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface "
+"'{interface}'"
 msgstr ""
 "Strefa „{zone}” jest aktywna dla połączenia „{connection}” na interfejsie "
 "„{interface}”"
@@ -654,8 +654,7 @@ msgstr "IPv6"
 
 #: ../src/firewall-config:5073
 msgid ""
-"Forwarding to another system is only useful if the interface is "
-"masqueraded.\n"
+"Forwarding to another system is only useful if the interface is masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 "Przekierowywanie do innego systemu jest przydatne tylko, jeśli interfejs "
@@ -985,7 +984,8 @@ msgstr "Skonfiguruj przypisanie automatycznego modułu pomocniczego"
 
 #: ../src/firewall-config.glade.h:67
 msgid "Configure Automatic Helper Assignment setting."
-msgstr "Skonfiguruj ustawienia przypisania automatycznego modułu pomocniczego."
+msgstr ""
+"Skonfiguruj ustawienia przypisania automatycznego modułu pomocniczego."
 
 #: ../src/firewall-config.glade.h:68
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
@@ -1541,6 +1541,7 @@ msgstr ""
 msgid "Define ports or port ranges, which are monitored by the helper."
 msgstr ""
 "Proszę określić porty lub zakresy portów monitorowane przez moduł pomocniczy."
+""
 
 #: ../src/firewall-config.glade.h:175
 msgid ""
@@ -1942,11 +1943,11 @@ msgstr "odwrócone"
 
 #: ../src/firewall-config.glade.h:262
 msgid ""
-"To enable this Action has to be 'reject' and Family either 'ipv4' or "
-"'ipv6' (not both)."
+"To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
+"(not both)."
 msgstr ""
-"Aby to włączyć, działanie musi wynosić „reject”, a rodzina „ipv4” lub "
-"„ipv6” (nie oba)."
+"Aby to włączyć, działanie musi wynosić „reject”, a rodzina „ipv4” lub „ipv6” "
+"(nie oba)."
 
 #: ../src/firewall-config.glade.h:263
 msgid "with Type:"

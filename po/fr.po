@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # <>, 2006
 # Alain PORTAL <aportal@univ-montp2.fr>, 2007
@@ -33,16 +33,16 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-05-02 09:11-0400\n"
-"PO-Revision-Date: 2017-10-11 01:47-0400\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2017-10-11 01:47+0000\n"
 "Last-Translator: Eric Garver <e@erig.me>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/firewalld/"
 "language/fr/)\n"
 "Language: fr\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Zanata 3.9.6\n"
+"X-Generator: Zanata 4.4.5\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:411
 msgid "Firewall Applet"
@@ -93,7 +93,8 @@ msgstr "Configurer des zones à protection active/inactive"
 
 #: ../src/firewall-applet:215
 msgid "Here you can select the zones used for Shields Up and Shields Down."
-msgstr "Vous pouvez choisir ici les zones avec protections active ou inactive."
+msgstr ""
+"Vous pouvez choisir ici les zones avec protections active ou inactive."
 
 #: ../src/firewall-applet:221
 msgid ""
@@ -226,7 +227,8 @@ msgstr ""
 
 #: ../src/firewall-applet:873
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface "
+"'{interface}'"
 msgstr ""
 "Zone « {zone} » active pour la connexion  « {connection} » sur l'interface "
 "« {interface} »"
@@ -665,8 +667,7 @@ msgstr "ipv6"
 
 #: ../src/firewall-config:5073
 msgid ""
-"Forwarding to another system is only useful if the interface is "
-"masqueraded.\n"
+"Forwarding to another system is only useful if the interface is masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 "Rediriger vers un autre système est utile seulement si l'interface est "
@@ -679,7 +680,8 @@ msgstr "Service intégré, le renommage n'est pas pris en charge."
 
 #: ../src/firewall-config:5645
 msgid "Please enter an ipv4 address with the form address[/mask]."
-msgstr "Veuillez saisir une adresse ipv4 avec l'adresse du formulaire [/mask]."
+msgstr ""
+"Veuillez saisir une adresse ipv4 avec l'adresse du formulaire [/mask]."
 
 #: ../src/firewall-config:5646
 msgid "The mask can be a network mask or a number."
@@ -687,7 +689,8 @@ msgstr "Le masque peut être un masque de réseau ou un numéro"
 
 #: ../src/firewall-config:5648
 msgid "Please enter an ipv6 address with the form address[/mask]."
-msgstr "Veuillez saisir une adresse ipv6 avec l'adresse du formulaire [/mask]."
+msgstr ""
+"Veuillez saisir une adresse ipv6 avec l'adresse du formulaire [/mask]."
 
 #: ../src/firewall-config:5649
 msgid "The mask is a number."
@@ -1971,8 +1974,8 @@ msgstr "inversé"
 
 #: ../src/firewall-config.glade.h:262
 msgid ""
-"To enable this Action has to be 'reject' and Family either 'ipv4' or "
-"'ipv6' (not both)."
+"To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
+"(not both)."
 msgstr ""
 "Pour activer ceci, Action doit être paramétré sur « reject » et Famille soit "
 "sur « Ipv4 » ou « Ipv6 » (pas les deux)."
