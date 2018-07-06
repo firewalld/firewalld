@@ -30,6 +30,7 @@ import syslog
 import traceback
 import fcntl
 import os.path
+import os
 
 PY2 = sys.version < '3'
 PY3 = sys.version >= '3'
@@ -137,7 +138,14 @@ class FileLog(LogTarget):
     def open(self):
         if self.fd:
             return
-        self.fd = open(self.filename, self.mode)
+        flags = os.O_CREAT | os.O_WRONLY
+        if self.mode.startswith('a'):
+            flags |= os.O_APPEND
+        self.fd = os.open(self.filename, flags, 0o640)
+        # Make sure that existing file has correct perms
+        os.fchmod(self.fd, 0o640)
+        # Make it an object
+        self.fd = os.fdopen(self.fd, self.mode)
         fcntl.fcntl(self.fd, fcntl.F_SETFD, fcntl.FD_CLOEXEC)
 
     def write(self, data, level, logger, is_debug=0):
