@@ -1368,7 +1368,7 @@ class FirewallConfig(object):
         # connect
 
         self.connections = { }
-        self.connections_uuid = { }
+        self.connections_name = { }
 
         if nm_is_imported():
             self.fw.bus.add_signal_receiver(
@@ -1428,11 +1428,11 @@ class FirewallConfig(object):
             self.fw.changeZoneOfInterface(editor.get_zone(), interface)
         del self.zone_interface_editors[interface]
 
-    def change_zone_connection_editor(self, item, connection, zone):
+    def change_zone_connection_editor(self, item, connection, connection_name, zone):
         if connection in self.zone_connection_editors:
             return self.zone_connection_editors[connection].present()
 
-        editor = ZoneConnectionEditor(self.fw, connection, zone)
+        editor = ZoneConnectionEditor(self.fw, connection, connection_name, zone)
         editor.set_icon(self.icon)
         editor.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         editor.set_transient_for(self.mainWindow)
@@ -1557,14 +1557,14 @@ class FirewallConfig(object):
         self.update_active_zones()
 
         self.connections.clear()
-        self.connections_uuid.clear()
+        self.connections_name.clear()
 
         # do not use NMClient could result in python core dump
 
         if nm_is_imported():
             try:
-                nm_get_connections(self.connections, self.connections_uuid)
-            except Exception as msg:
+                nm_get_connections(self.connections, self.connections_name)
+            except Exception:
                 text = _("Failed to get connections from NetworkManager")
                 self._warning(text)
 
@@ -1572,12 +1572,14 @@ class FirewallConfig(object):
         while iter:
             interface = self.interfaceStore.get_value(iter, 0)
             if interface in self.connections:
-                zone = nm_get_zone_of_connection(self.connections[interface])
+                connection = self.connections[interface]
+                connection_name = self.connections_name[connection]
+                zone = nm_get_zone_of_connection(connection)
                 if zone == "":
                     comment = self.default_zone_used_by_label % \
-                              self.connections[interface]
+                              connection_name
                 else:
-                    comment = self.used_by_label % self.connections[interface]
+                    comment = self.used_by_label % connection_name
                 self.interfaceStore.set_value(iter, 1, comment)
             iter = self.interfaceStore.iter_next(iter)
         self.change_interface_selection_cb(self.interfaceView.get_selection())
@@ -2427,37 +2429,38 @@ class FirewallConfig(object):
         # add NM controlled entries
         for connection in sorted(connections):
             [ zone, _interfaces ] = connections[connection]
+            connection_name = self.connections_name[connection]
 
             item = Gtk.MenuItem.new()
             hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
             label = Gtk.Label()
             if zone == "":
                 label.set_markup("%s (%s)\n<small>%s: %s</small>" % \
-                                 (connection, ",".join(_interfaces),
+                                 (connection_name, ",".join(_interfaces),
                                   escape(_("Default Zone")), self.default_zone))
             else:
                 label.set_markup("%s (%s)\n<small>%s: %s</small>" % \
-                                 (connection, ",".join(_interfaces),
+                                 (connection_name, ",".join(_interfaces),
                                   escape(_("Zone")), zone))
             label.set_alignment(0, 0.5)
             label.set_padding(12, 0)
             hbox.pack_start(label, True, True, 0)
             item.add(hbox)
-            item.connect("activate", self.change_zone_connection_editor, connection, zone)
+            item.connect("activate", self.change_zone_connection_editor, connection, connection_name, zone)
             self.left_menu.append(item)
 
             if zone == "":
                 self.bindingsStore.append(
                     self.connectionsIter,
                     [ "%s (%s)\n<small>%s</small>" % (
-                        connection, ",".join(_interfaces),
+                        connection_name, ",".join(_interfaces),
                         _("Default Zone: %s") % self.default_zone),
                       connection, zone ])
             else:
                 self.bindingsStore.append(
                     self.connectionsIter,
                     [ "%s (%s)\n<small>%s</small>" % (
-                        connection, ",".join(_interfaces),
+                        connection_name, ",".join(_interfaces),
                         _("Zone: %s") % zone),
                       connection, zone ])
 
@@ -2683,7 +2686,7 @@ class FirewallConfig(object):
         zone = self.bindingsStore.get_value(iter, 2)
 
         if self.bindingsStore.get_value(parent_iter, 0) == _("Connections"):
-            self.change_zone_connection_editor(None, item, zone)
+            self.change_zone_connection_editor(None, item, self.connections_name[item], zone)
         elif self.bindingsStore.get_value(parent_iter, 0) == _("Interfaces"):
             self.change_zone_interface_editor(None, item, zone)
         elif self.bindingsStore.get_value(parent_iter, 0) == _("Sources"):
@@ -3894,9 +3897,10 @@ class FirewallConfig(object):
         interface = self.interfaceStore.get_value(iter, 0)
         if interface in self.connections:
             connection = self.connections[interface]
+            connection_name = self.connections_name[connection]
             if selected_zone == self.default_zone:
                 selected_zone = nm_get_zone_of_connection(connection)
-            editor = ZoneConnectionEditor(self.fw, connection, selected_zone)
+            editor = ZoneConnectionEditor(self.fw, connection, connection_name, selected_zone)
             editor.set_icon(self.icon)
             editor.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
             editor.set_transient_for(self.mainWindow)
@@ -3905,9 +3909,9 @@ class FirewallConfig(object):
                 result = editor.run()
             except Exception:
                 text = _("Failed to set zone {zone} "
-                         "for connection {connection}")
+                         "for connection {connection_name}")
                 self._warning(text.format(zone=editor.get_zone(),
-                                          connection=editor.connection))
+                                          connection_name=editor.connection_name))
             editor.hide()
         else:
             self.add_edit_interface(False)
@@ -8115,11 +8119,12 @@ class ZoneInterfaceEditor(Gtk.Dialog):
         self.fw.changeZoneOfInterface(self.get_zone(), self.interface)
 
 class ZoneConnectionEditor(ZoneInterfaceEditor):
-    def __init__(self, fw, connection, zone):
+    def __init__(self, fw, connection, connection_name, zone):
         self.fw = fw
         self.connection = connection
+        self.connection_name = connection_name
         self.zone = None
-        self.title = _("Select zone for connection '%s'") % self.connection
+        self.title = _("Select zone for connection '%s'") % self.connection_name
 
         Gtk.Dialog.__init__(self, self.title)
         self.create_ui(zone)
