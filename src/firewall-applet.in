@@ -158,11 +158,12 @@ class ZoneInterfaceEditor(QtWidgets.QDialog):
 # ZoneConnectionEditor ########################################################
 
 class ZoneConnectionEditor(ZoneInterfaceEditor):
-    def __init__(self, fw, connection, zone):
+    def __init__(self, fw, connection, connection_name, zone):
         self.fw = fw
         self.connection = connection
+        self.connection_name = connection_name
         self.zone = None
-        self.title = _("Select zone for connection '%s'") % self.connection
+        self.title = _("Select zone for connection '%s'") % self.connection_name
 
         QtWidgets.QDialog.__init__(self)
         self.create_ui(zone)
@@ -172,11 +173,11 @@ class ZoneConnectionEditor(ZoneInterfaceEditor):
         try:
             nm_set_zone_of_connection(self.get_zone(), self.connection)
         except Exception:
-            text = _("Failed to set zone {zone} for connection {connection}")
+            text = _("Failed to set zone {zone} for connection {connection_name}")
             QtWidgets.QMessageBox.warning(None, fromUTF8(escape(self.title)),
                                       escape(text.format(
                                           zone=self.get_zone(),
-                                          connection=self.connection)))
+                                          connection_name=self.connection_name)))
         self.hide()
 
 # ZoneSourceEditor ############################################################
@@ -431,7 +432,7 @@ class TrayApplet(QtWidgets.QSystemTrayIcon):
 
         self.active_zones = { }
         self.connections = { }
-        self.connections_uuid = { }
+        self.connections_name = { }
         self.default_zone = None
         self.zone_connection_editors = { }
         self.zone_interface_editors = { }
@@ -670,30 +671,31 @@ class TrayApplet(QtWidgets.QSystemTrayIcon):
         # NM controlled connections
         for interface in self.connections:
             connection = self.connections[interface]
-            if connection not in self.connections_uuid:
-                uuid = None
+            if connection not in self.connections_name:
+                connection_name = None
             else:
-                uuid = self.connections_uuid[connection]
+                connection_name = self.connections_name[connection]
             zone = nm_get_zone_of_connection(connection)
-            connections[connection] = [ zone, uuid ]
+            connections[connection] = [ zone, connection_name ]
 
         binding = _("{entry} (Zone: {zone})")
 
         # add NM controlled bindings
         for connection in sorted(connections):
             zone = connections[connection][0]
+            connection_name = connections[connection][1]
             if zone == "":
                 _binding = _("{entry} (Default Zone: {default_zone})")
                 action = QtWidgets.QAction(
                     fromUTF8(escape(
                         _binding.format(default_zone=self.default_zone,
-                                        entry=connection))), self)
+                                        entry=connection_name))), self)
             else:
                 action = QtWidgets.QAction(
                     fromUTF8(escape(binding.format(zone=zone,
-                                                   entry=connection))), self)
+                                                   entry=connection_name))), self)
             action.triggered.connect(functools.partial(
-                self.zone_connection_editor, connection, zone))
+                self.zone_connection_editor, connection, connection_name, zone))
             self.left_menu.addAction(action)
 
         # add interfaces entry
@@ -733,13 +735,13 @@ class TrayApplet(QtWidgets.QSystemTrayIcon):
         editor.raise_()
         editor.show()
 
-    def zone_connection_editor(self, connection, zone):
+    def zone_connection_editor(self, connection, connection_name, zone):
         if connection in self.zone_connection_editors:
             self.zone_connection_editors[connection].set_zone(zone)
             self.zone_connection_editors[connection].show()
             return self.zone_connection_editors[connection].raise_()
 
-        editor = ZoneConnectionEditor(self.fw, connection, zone)
+        editor = ZoneConnectionEditor(self.fw, connection, connection_name, zone)
         self.zone_connection_editors[connection] = editor
         editor.show()
         editor.raise_()
@@ -759,14 +761,14 @@ class TrayApplet(QtWidgets.QSystemTrayIcon):
 
     def nm_signal_receiver(self, *args, **kwargs):
         self.connections.clear()
-        self.connections_uuid.clear()
+        self.connections_name.clear()
 
         # do not use NMClient could result in python core dump
 
         if nm_is_imported():
             text = _("Failed to get connections from NetworkManager")
             try:
-                nm_get_connections(self.connections, self.connections_uuid)
+                nm_get_connections(self.connections, self.connections_name)
             except Exception:
                 self.notify(escape(text), urgency=Notify.Urgency.CRITICAL)
                 if text not in self.tooltip_messages:

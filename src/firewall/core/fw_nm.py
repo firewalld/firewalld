@@ -73,7 +73,7 @@ def nm_get_zone_of_connection(connection):
     """
     check_nm_imported()
 
-    con = nm_get_client().get_connection_by_id(connection)
+    con = nm_get_client().get_connection_by_uuid(connection)
     if con is None:
         return False
 
@@ -94,7 +94,7 @@ def nm_set_zone_of_connection(zone, connection):
     """
     check_nm_imported()
 
-    con = nm_get_client().get_connection_by_id(connection)
+    con = nm_get_client().get_connection_by_uuid(connection)
     if con is None:
         return False
 
@@ -107,14 +107,14 @@ def nm_set_zone_of_connection(zone, connection):
     setting_con.set_property("zone", zone)
     return con.commit_changes(True, None)
 
-def nm_get_connections(connections, connections_uuid):
+def nm_get_connections(connections, connections_name):
     """Get active connections from NM
     @param connections return dict
-    @param connections_uuid return dict
+    @param connections_name return dict
     """
 
     connections.clear()
-    connections_uuid.clear()
+    connections_name.clear()
 
     check_nm_imported()
 
@@ -129,9 +129,9 @@ def nm_get_connections(connections, connections_uuid):
         uuid = active_con.get_uuid()
         devices = active_con.get_devices()
 
-        connections_uuid[name] = uuid
+        connections_name[uuid] = name
         for dev in devices:
-            connections[dev.get_iface()] = name
+            connections[dev.get_iface()] = uuid
 
 def nm_get_connection_of_interface(interface):
     """Get connection from NM that is using the interface
@@ -148,7 +148,7 @@ def nm_get_connection_of_interface(interface):
     if active_con is None:
         return None
 
-    return active_con.get_id()
+    return active_con.get_uuid()
 
 def nm_get_bus_name():
     if not _nm_imported:
