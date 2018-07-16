@@ -148,6 +148,16 @@ def nm_get_connection_of_interface(interface):
     if active_con is None:
         return None
 
+    try:
+        con = active_con.get_connection()
+        if con.get_flags() & NM.SettingsConnectionFlags.NM_GENERATED:
+            return None
+    except AttributeError:
+        # Prior to NetworkManager 1.12, we can only guess
+        # that a connection was generated.
+        if con.get_unsaved():
+            return None
+
     return active_con.get_uuid()
 
 def nm_get_bus_name():
