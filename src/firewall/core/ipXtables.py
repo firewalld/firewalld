@@ -992,9 +992,8 @@ class ip4tables(object):
                                             zone=zone)
         rule_fragment = []
         if rich_rule:
-            # note the reversed source/destination
-            rule_fragment += self._rich_rule_destination_fragment(rich_rule.source)
-            rule_fragment += self._rich_rule_source_fragment(rich_rule.destination)
+            rule_fragment += self._rich_rule_destination_fragment(rich_rule.destination)
+            rule_fragment += self._rich_rule_source_fragment(rich_rule.source)
 
         rules.append([ add_del, "%s_allow" % (target), "-t", "filter"]
                      + rule_fragment +
