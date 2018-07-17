@@ -469,6 +469,17 @@ def try_set_zone_of_interface(_zone, interface):
                 return True
     return False
 
+def try_get_zone_of_interface(interface):
+    if nm_is_imported():
+        try:
+            connection = nm_get_connection_of_interface(interface)
+        except Exception:
+            pass
+        else:
+            if connection is not None:
+                return nm_get_zone_of_connection(connection)
+    return False
+
 parser = argparse.ArgumentParser(usage="see firewall-cmd man page",
                                  add_help=False)
 
@@ -1777,7 +1788,10 @@ if a.permanent:
             cmd.print_and_exit(" ".join(l))
         elif a.get_zone_of_interface:
             for interface in a.get_zone_of_interface:
-                zone = fw.config().getZoneOfInterface(interface)
+                # ask NM before checking our config
+                zone = try_get_zone_of_interface(interface)
+                if not zone:
+                    zone = fw.config().getZoneOfInterface(interface)
                 if zone:
                     if len(a.get_zone_of_interface) > 1:
                         cmd.print_warning("%s: %s" % (interface, zone))
