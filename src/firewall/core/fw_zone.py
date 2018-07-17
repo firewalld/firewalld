@@ -2078,9 +2078,8 @@ class FirewallZoneIPTables(FirewallZone):
                 target = DEFAULT_ZONE_TARGET.format(
                     chain=SHORTCUTS["FORWARD_OUT"], zone=zone)
                 command = [ ]
-                # reverse source/destination !
-                self.__rule_source(rule.destination, command)
-                self.__rule_destination(rule.source, command)
+                self.__rule_source(rule.source, command)
+                self.__rule_destination(rule.destination, command)
                 command += [ "-m", "conntrack", "--ctstate", "NEW",
                              "-j", "ACCEPT" ]
 
