@@ -81,6 +81,16 @@ def nm_get_zone_of_connection(connection):
     if setting_con is None:
         return None
 
+    try:
+        if con.get_flags() & (NM.SettingsConnectionFlags.NM_GENERATED
+                              | NM.SettingsConnectionFlags.NM_VOLATILE):
+            return False
+    except AttributeError:
+        # Prior to NetworkManager 1.12, we can only guess
+        # that a connection was generated/volatile.
+        if con.get_unsaved():
+            return False
+
     zone = setting_con.get_zone()
     if zone is None:
         zone = ""
