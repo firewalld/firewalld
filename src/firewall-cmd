@@ -2370,22 +2370,19 @@ elif a.get_zone_of_interface:
 elif a.add_interface:
     interfaces = [ ]
     for interface in a.add_interface:
-        if not try_set_zone_of_interface(zone, interface):
-            interfaces.append(interface)
+        interfaces.append(interface)
     cmd.x_add_sequence(zone, interfaces, fw.addInterface,
                        fw.queryInterface, None, "'%s'")
 elif a.change_interface:
     interfaces = [ ]
     for interface in a.change_interface:
-        if not try_set_zone_of_interface(zone, interface):
-            interfaces.append(interface)
+        interfaces.append(interface)
     cmd.x_add_sequence(zone, interfaces, fw.changeZoneOfInterface,
                        fw.queryInterface, None, "'%s'")
 elif a.remove_interface:
     interfaces = [ ]
     for interface in a.remove_interface:
-        if not try_set_zone_of_interface("", interface):
-            interfaces.append(interface)
+        interfaces.append(interface)
     cmd.x_remove_sequence(zone, interfaces, fw.removeInterface,
                           fw.queryInterface, None, "'%s'")
 elif a.query_interface:
