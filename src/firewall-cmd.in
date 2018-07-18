@@ -36,7 +36,7 @@ from firewall import errors
 from firewall.functions import joinArgs, splitArgs
 from firewall.core.fw_nm import nm_is_imported, \
     nm_get_connection_of_interface, nm_get_zone_of_connection, \
-    nm_set_zone_of_connection
+    nm_set_zone_of_connection, nm_get_interfaces_in_zone
 from firewall.core.io.zone import zone_reader
 from firewall.core.io.service import service_reader
 from firewall.core.io.ipset import ipset_reader
@@ -479,6 +479,14 @@ def try_get_zone_of_interface(interface):
             if connection is not None:
                 return nm_get_zone_of_connection(connection)
     return False
+
+def try_nm_get_interfaces_in_zone(zone):
+    if nm_is_imported():
+        try:
+            return nm_get_interfaces_in_zone(zone)
+        except Exception:
+            pass
+    return []
 
 parser = argparse.ArgumentParser(usage="see firewall-cmd man page",
                                  add_help=False)
@@ -1784,8 +1792,9 @@ if a.permanent:
 
         # interface
         if a.list_interfaces:
-            l = fw_zone.getInterfaces()
-            cmd.print_and_exit(" ".join(l))
+            interfaces = sorted(set(try_nm_get_interfaces_in_zone(zone))
+                                | set(fw_zone.getInterfaces()))
+            cmd.print_and_exit(" ".join(interfaces))
         elif a.get_zone_of_interface:
             for interface in a.get_zone_of_interface:
                 # ask NM before checking our config
