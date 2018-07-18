@@ -173,6 +173,15 @@ def nm_get_interfaces():
 
     return active_interfaces
 
+def nm_get_interfaces_in_zone(zone):
+    interfaces = []
+    for interface in nm_get_interfaces():
+        conn = nm_get_connection_of_interface(interface)
+        if zone == nm_get_zone_of_connection(conn):
+            interfaces.append(interface)
+
+    return interfaces
+
 def nm_get_connection_of_interface(interface):
     """Get connection from NM that is using the interface
     @param interface name
