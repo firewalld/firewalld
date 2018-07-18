@@ -377,10 +377,10 @@ class FirewallCommand(object):
                                 "Module name '%s' too short" % value)
         return value
 
-    def print_zone_info(self, zone, settings, default_zone=None): # pylint: disable=R0914
+    def print_zone_info(self, zone, settings, default_zone=None, extra_interfaces=[]): # pylint: disable=R0914
         target = settings.getTarget()
         icmp_block_inversion = settings.getIcmpBlockInversion()
-        interfaces = settings.getInterfaces()
+        interfaces = sorted(set(settings.getInterfaces() + extra_interfaces))
         sources = settings.getSources()
         services = settings.getServices()
         ports = settings.getPorts()
