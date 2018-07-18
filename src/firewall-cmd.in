@@ -2005,15 +2005,17 @@ if a.permanent:
 
         # list all zone settings
         elif a.list_all:
-            cmd.print_zone_info(zone, fw_zone.getSettings())
+            interfaces = try_nm_get_interfaces_in_zone(zone)
+            cmd.print_zone_info(zone, fw_zone.getSettings(), extra_interfaces=interfaces)
             sys.exit(0)
 
         # list everything
         elif a.list_all_zones:
             names = fw.config().getZoneNames()
             for zone in sorted(names):
+                interfaces = try_nm_get_interfaces_in_zone(zone)
                 settings = fw.config().getZoneByName(zone).getSettings()
-                cmd.print_zone_info(zone, settings)
+                cmd.print_zone_info(zone, settings, extra_interfaces=interfaces)
                 cmd.print_msg("")
             sys.exit(0)
 
