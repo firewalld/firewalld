@@ -48,7 +48,8 @@ from firewall.core.io.ipset import IPSet
 from firewall.core.io.service import Service
 from firewall.core.io.icmptype import IcmpType
 from firewall.core.io.helper import Helper
-from firewall.core.fw_nm import nm_get_bus_name
+from firewall.core.fw_nm import nm_get_bus_name, nm_get_connection_of_interface, \
+                                nm_set_zone_of_connection
 from firewall import errors
 from firewall.errors import FirewallError
 
@@ -444,6 +445,16 @@ class FirewallD(slip.dbus.service.Object):
                         log.debug1("Zone '%s': interface binding for '%s' has been added by NM, ignoring." % (name, interface))
                         settings.removeInterface(interface)
                         changed = True
+                # For the remaining interfaces, attempt to let NM manage them
+                for interface in settings.getInterfaces():
+                    try:
+                        connection = nm_get_connection_of_interface(interface)
+                        if connection and nm_set_zone_of_connection(name, connection):
+                            settings.removeInterface(interface)
+                            changed = True
+                    except Exception:
+                        pass
+
                 if changed:
                     del conf
                     conf = settings.settings
