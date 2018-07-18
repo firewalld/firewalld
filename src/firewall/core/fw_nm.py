@@ -143,6 +143,36 @@ def nm_get_connections(connections, connections_name):
         for dev in devices:
             connections[dev.get_iface()] = uuid
 
+def nm_get_interfaces():
+    """Get active interfaces from NM
+    @returns list of interface names
+    """
+
+    check_nm_imported()
+
+    active_interfaces = []
+
+    for active_con in nm_get_client().get_active_connections():
+        # ignore vpn devices for now
+        if active_con.get_vpn():
+            continue
+
+        try:
+            con = active_con.get_connection()
+            if con.get_flags() & (NM.SettingsConnectionFlags.NM_GENERATED
+                                  | NM.SettingsConnectionFlags.NM_VOLATILE):
+                continue
+        except AttributeError:
+            # Prior to NetworkManager 1.12, we can only guess
+            # that a connection was generated/volatile.
+            if con.get_unsaved():
+                continue
+
+        for dev in active_con.get_devices():
+            active_interfaces.append(dev.get_iface())
+
+    return active_interfaces
+
 def nm_get_connection_of_interface(interface):
     """Get connection from NM that is using the interface
     @param interface name
