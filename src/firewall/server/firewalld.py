@@ -50,6 +50,7 @@ from firewall.core.io.icmptype import IcmpType
 from firewall.core.io.helper import Helper
 from firewall.core.fw_nm import nm_get_bus_name, nm_get_connection_of_interface, \
                                 nm_set_zone_of_connection
+from firewall.core.fw_ifcfg import ifcfg_set_zone_of_interface
 from firewall import errors
 from firewall.errors import FirewallError
 
@@ -458,6 +459,9 @@ class FirewallD(slip.dbus.service.Object):
                 if changed:
                     del conf
                     conf = settings.settings
+            # For the remaining try to update the ifcfg files
+            for interface in settings.getInterfaces():
+                ifcfg_set_zone_of_interface(name, interface)
             try:
                 if name in config_names:
                     conf_obj = self.config.getZoneByName(name)
