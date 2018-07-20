@@ -148,12 +148,12 @@
             <term><option>FirewallBackend</option></term>
             <listitem>
                 <para>
-                Selects the firewall backend implementation;
-                <replaceable>nftables</replaceable> or
-                <replaceable>iptables</replaceable> (default). This applies to
-                almost everything with the exception of direct and passthrough
-                rules which always use the traditional iptables, ip6tables, and
-                ebtables backends.
+                Selects the firewall backend implementation. Possible values
+                are; <replaceable>nftables</replaceable> (default), or
+                <replaceable>iptables</replaceable>. This applies to all
+                firewalld primitives. The only exception is direct and
+                passthrough rules which always use the traditional iptables,
+                ip6tables, and ebtables backends.
                 </para>
 	        </listitem>
         </varlistentry>
