@@ -156,7 +156,7 @@ OUR_CHAINS["filter"] = set(["INPUT_direct", "INPUT_ZONES_SOURCE", "INPUT_ZONES",
 
 # ipv ebtables also uses this
 #
-def common_reverse_rule(self, args):
+def common_reverse_rule(args):
     """ Inverse valid rule """
 
     replace_args = {
