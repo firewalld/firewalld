@@ -2068,11 +2068,11 @@ class FirewallConfig(object):
             elif type(obj.element) == rich.Rich_Masquerade:
                 elem = _("masquerade")
             elif type(obj.element) == rich.Rich_IcmpBlock:
-                elem = "icmp-block" + "\n%s" % obj.element.name
+                elem = _("icmp-block") + "\n%s" % obj.element.name
             elif type(obj.element) == rich.Rich_IcmpType:
-                elem = "icmp-type" + "\n%s" % obj.element.name
+                elem = _("icmp-type") + "\n%s" % obj.element.name
             elif type(obj.element) == rich.Rich_ForwardPort:
-                elem = "forward-port" + "\n%s" % self.create_fwp_string(
+                elem = _("forward-port") + "\n%s" % self.create_fwp_string(
                     obj.element.port, obj.element.protocol,
                     obj.element.to_port, obj.element.to_address)
             elif type(obj.element) == rich.Rich_SourcePort:
@@ -3196,9 +3196,9 @@ class FirewallConfig(object):
                 self.richRuleDialogActionCheck.set_active(True)
                 action = None
                 if type(old_obj.action) == rich.Rich_Accept:
-                    action = "accept"
+                    action = _("accept")
                 elif type(old_obj.action) == rich.Rich_Reject:
-                    action = "reject"
+                    action = _("reject")
                     self.richRuleDialogActionRejectTypeCombobox.remove_all()
                     if old_obj.family is not None:
                         for icmp in REJECT_TYPES[old_obj.family]:
@@ -3213,9 +3213,9 @@ class FirewallConfig(object):
                             self.richRuleDialogActionRejectTypeCombobox. \
                                 set_active_id(REJECT_TYPES[old_obj.family][0])
                 elif type(old_obj.action) == rich.Rich_Drop:
-                    action = "drop"
+                    action = _("drop")
                 elif type(old_obj.action) == rich.Rich_Mark:
-                    action = "mark"
+                    action = _("mark")
                     self.richRuleDialogActionMarkChooser.set_text(old_obj.action.set)
 
                 combobox_select_text(self.richRuleDialogActionCombobox, action)
