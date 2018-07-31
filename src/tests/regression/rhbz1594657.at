@@ -1,0 +1,12 @@
+FWD_START_TEST([no log untracked passthrough queries])
+FWD_CHECK([--direct --passthrough eb -t filter -L dummy_chain], 13, [ignore], [ignore])
+FWD_CHECK([--direct --passthrough eb -t filter -L INPUT], 0, [ignore])
+
+FWD_CHECK([--direct --passthrough ipv4 -t filter -C dummy_chain -j ACCEPT], 13, [ignore], [ignore])
+FWD_CHECK([--direct --passthrough ipv4 -t filter -L dummy_chain], 13, [ignore], [ignore])
+FWD_CHECK([--direct --passthrough ipv4 -t filter -L INPUT], 0, [ignore])
+
+FWD_CHECK([--direct --passthrough ipv6 -t filter -C dummy_chain -j ACCEPT], 13, [ignore], [ignore])
+FWD_CHECK([--direct --passthrough ipv6 -t filter -L dummy_chain], 13, [ignore], [ignore])
+FWD_CHECK([--direct --passthrough ipv6 -t filter -L INPUT], 0, [ignore])
+FWD_END_TEST
