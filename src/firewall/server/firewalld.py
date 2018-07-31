@@ -2239,9 +2239,15 @@ class FirewallD(slip.dbus.service.Object):
         try:
             return self.fw.direct.passthrough(ipv, args)
         except FirewallError as error:
+            if ipv in ["ipv4", "ipv6"]:
+                query_args = set(["-C", "--check",
+                                  "-L", "--list"])
+            else:
+                query_args = set(["-L", "--list"])
             msg = str(error)
-            if "COMMAND_FAILED" in msg:
-                log.warning(msg)
+            if error.code == errors.COMMAND_FAILED:
+                if len(set(args) & query_args) <= 0:
+                    log.warning(msg)
                 raise FirewallDBusException(msg)
             raise
 
