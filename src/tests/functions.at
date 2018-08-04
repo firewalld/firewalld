@@ -302,8 +302,9 @@ m4_define([CHECK_LOG_AUDIT], [
 
 m4_ifnblank(
     m4_esyscmd([
-        KERNEL_VER=( $(uname -r | tr '.' ' ') )
-        if test ${KERNEL_VER[0]} -eq 4 && test ${KERNEL_VER[1]} -ge 10 || test ${KERNEL_VER[0]} -gt 4; then
+        KERNEL_MAJOR=`uname -r | cut -d. -f1`
+        KERNEL_MINOR=`uname -r | cut -d. -f2`
+        if test ${KERNEL_MAJOR} -eq 4 && test ${KERNEL_MINOR} -ge 10 || test ${KERNEL_MAJOR} -gt 4; then
             echo -n "yes"
         fi
     ]),
