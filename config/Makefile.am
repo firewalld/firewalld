@@ -7,7 +7,7 @@ desktopdir = $(datadir)/applications
 desktop_DATA = $(desktop_FILES:.in=)
 
 appdata_FILES = firewall-config.appdata.xml.in
-appdatadir = $(datadir)/appdata/
+appdatadir = $(datadir)/metainfo/
 appdata_DATA = $(appdata_FILES:.in=)
 
 applet_desktop_FILES = firewall-applet.desktop.in
