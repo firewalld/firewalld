@@ -26,7 +26,8 @@ check-local: atconfig $(TESTSUITE)
 		FIREWALLD_DEFAULT_CONFIG="${abs_top_srcdir}/config"
 
 installcheck-local: atconfig $(TESTSUITE)
-	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
+	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS) \
+		PYTHON="$(PYTHON)"
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
