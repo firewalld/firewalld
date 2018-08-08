@@ -600,13 +600,14 @@ class nftables(object):
         if self._fw.get_log_denied() != "off":
             if table == "filter" and \
                chain in ["INPUT", "FORWARD_IN", "FORWARD_OUT", "OUTPUT"]:
-                log_suffix = "DROP"
-                if target in ["REJECT", "%%REJECT%%"]:
-                    log_suffix = "REJECT"
-                rules.append(["add", "rule", family, "%s" % TABLE_NAME,
-                              "%s_%s" % (table, _zone), "type", "%%LOGTYPE%%",
-                              "log", "prefix",
-                              "\"filter_%s_%s: \"" % (_zone, log_suffix)])
+                if target in ["REJECT", "%%REJECT%%", "DROP"]:
+                    log_suffix = target
+                    if target == "%%REJECT%%":
+                        log_suffix = "REJECT"
+                    rules.append(["add", "rule", family, "%s" % TABLE_NAME,
+                                  "%s_%s" % (table, _zone), "%%LOGTYPE%%",
+                                  "log", "prefix",
+                                  "\"filter_%s_%s: \"" % (_zone, log_suffix)])
 
         # Handle trust, block and drop zones:
         # Add an additional rule with the zone target (accept, reject
