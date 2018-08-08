@@ -1073,10 +1073,10 @@ class ip4tables(object):
         return rules
 
     def build_zone_icmp_block_inversion_rules(self, enable, zone):
-        rule_idx = 4
         table = "filter"
         rules = []
         for chain in [ "INPUT", "FORWARD_IN" ]:
+            rule_idx = 4
             _zone = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[chain],
                                                zone=zone)
 
