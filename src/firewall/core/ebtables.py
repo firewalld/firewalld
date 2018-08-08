@@ -30,9 +30,6 @@ from firewall.core import ipXtables # some common stuff lives there
 from firewall.errors import FirewallError, INVALID_IPV
 import string
 
-PROC_IPxTABLE_NAMES = {
-}
-
 BUILT_IN_CHAINS = {
     "broute": [ "BROUTING" ],
     "nat": [ "PREROUTING", "POSTROUTING", "OUTPUT" ],
@@ -229,12 +226,9 @@ class ebtables(object):
     def get_zone_table_chains(self, table):
         return {}
 
-    def used_tables(self):
-        return list(BUILT_IN_CHAINS.keys())
-
     def build_flush_rules(self):
         rules = []
-        for table in self.used_tables():
+        for table in BUILT_IN_CHAINS.keys():
             # Flush firewall rules: -F
             # Delete firewall chains: -X
             # Set counter to zero: -Z
@@ -242,14 +236,9 @@ class ebtables(object):
                 rules.append(["-t", table, flag])
         return rules
 
-    def build_set_policy_rules(self, policy, which="used"):
-        if which == "used":
-            tables = self.used_tables()
-        else:
-            tables = list(BUILT_IN_CHAINS.keys())
-
+    def build_set_policy_rules(self, policy):
         rules = []
-        for table in tables:
+        for table in BUILT_IN_CHAINS.keys():
             for chain in BUILT_IN_CHAINS[table]:
                 rules.append(["-t", table, "-P", chain, policy])
         return rules

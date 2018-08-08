@@ -312,7 +312,7 @@ class nftables(object):
             rules.append(["delete", "table", family, "%s" % TABLE_NAME])
         return rules
 
-    def build_set_policy_rules(self, policy, which="used"):
+    def build_set_policy_rules(self, policy):
         # Policy is not exposed to the user. It's only to make sure we DROP
         # packets while initially starting and for panic mode. As such, using
         # hooks with a higher priority than our base chains is sufficient.
