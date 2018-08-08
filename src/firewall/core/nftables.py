@@ -166,9 +166,6 @@ class nftables(object):
         self.restore_command_exists = False
 
     def __run(self, args):
-        if not args:
-            return ""
-
         nft_opts = ["--echo", "--handle"]
         _args = args[:]
 

@@ -847,6 +847,9 @@ class Firewall(object):
     # rule function used in handle_ functions
 
     def rule(self, backend_name, rule):
+        if not rule:
+            return ""
+
         backend = self.get_backend_by_name(backend_name)
         if not backend:
             raise FirewallError(errors.INVALID_IPV,
@@ -858,7 +861,7 @@ class Firewall(object):
         return backend.set_rule(rule, self._log_denied)
 
     def rules(self, backend_name, rules):
-        _rules = rules[:]
+        _rules = list(filter(None, rules))
 
         backend = self.get_backend_by_name(backend_name)
         if not backend:
