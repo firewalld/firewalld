@@ -876,21 +876,21 @@ class Firewall(object):
            (backend_name == "ebtables" and not self.ebtables_backend.restore_noflush_option):
             for i,rule in enumerate(_rules):
                 try:
-                    backend.set_rule(rule)
+                    backend.set_rule(rule, self._log_denied)
                 except Exception as msg:
                     log.debug1(traceback.format_exc())
                     log.error("Failed to apply rules. A firewall reload might solve the issue if the firewall has been modified using ip*tables or ebtables.")
                     log.error(msg)
                     for rule in reversed(_rules[:i]):
                         try:
-                            backend.set_rule(backend.reverse_rule(rule))
+                            backend.set_rule(backend.reverse_rule(rule), self._log_denied)
                         except Exception:
                             # ignore errors here
                             pass
                     return False
             return True
         else:
-            return backend.set_rules(_rules, log_denied=self._log_denied)
+            return backend.set_rules(_rules, self._log_denied)
 
     # check functions
 

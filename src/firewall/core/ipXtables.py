@@ -385,7 +385,7 @@ class ip4tables(object):
                     chain = args[i+1]
         return (table, chain)
 
-    def set_rules(self, rules, flush=False, log_denied="off"):
+    def set_rules(self, rules, log_denied):
         temp_file = tempFile()
 
         table_rules = { }
@@ -453,8 +453,7 @@ class ip4tables(object):
         args = [ ]
         if self.restore_wait_option:
             args.append(self.restore_wait_option)
-        if not flush:
-            args.append("-n")
+        args.append("-n")
 
         (status, ret) = runProg(self._restore_command, args,
                                 stdin=temp_file.name)
@@ -476,7 +475,7 @@ class ip4tables(object):
                                                      " ".join(args), ret))
         return ret
 
-    def set_rule(self, rule, log_denied="off"):
+    def set_rule(self, rule, log_denied):
         # replace %%REJECT%%
         self._rule_replace(rule, "%%REJECT%%", \
                 ["REJECT", "--reject-with", DEFAULT_REJECT_TYPE[self.ipv]])

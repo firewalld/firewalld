@@ -256,7 +256,7 @@ class nftables(object):
         ret_args[0] = "delete"
         return ret_args
 
-    def set_rules(self, rules, flush=False, log_denied="off"):
+    def set_rules(self, rules, log_denied):
         # We can't support using "nft -f" because we need to retrieve the
         # handles for each rules so we can delete them later on.
         # See also: self.restore_command_exists
@@ -265,7 +265,7 @@ class nftables(object):
         #
         raise FirewallError(UNKNOWN_ERROR, "not implemented")
 
-    def set_rule(self, rule, log_denied="off"):
+    def set_rule(self, rule, log_denied):
         # replace %%REJECT%%
         #
         # HACK: work around nft bug in which icmpx does not work if the rule

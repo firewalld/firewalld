@@ -80,7 +80,7 @@ class ebtables(object):
         # with --noflush
         rules = [ ]
         try:
-            self.set_rules(rules, flush=False)
+            self.set_rules(rules, "off")
         except ValueError:
             return False
         return True
@@ -137,7 +137,7 @@ class ebtables(object):
     def reverse_passthrough(self, args):
         return ipXtables.common_reverse_passthrough(args)
 
-    def set_rules(self, rules, flush=False, log_denied="off"):
+    def set_rules(self, rules, log_denied):
         temp_file = tempFile()
 
         table = "filter"
@@ -180,8 +180,7 @@ class ebtables(object):
         log.debug2("%s: %s %s", self.__class__, self._restore_command,
                    "%s: %d" % (temp_file.name, stat.st_size))
         args = [ ]
-        if not flush:
-            args.append("--noflush")
+        args.append("--noflush")
 
         (status, ret) = runProg(self._restore_command, args,
                                 stdin=temp_file.name)
@@ -203,7 +202,7 @@ class ebtables(object):
                                                      " ".join(args), ret))
         return ret
 
-    def set_rule(self, rule, log_denied="off"):
+    def set_rule(self, rule, log_denied):
         self._rule_validate(rule)
         return self.__run(rule)
 
