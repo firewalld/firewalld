@@ -764,9 +764,9 @@ class ip4tables(object):
         rule = [ add_del, "%s_log" % (target), "-t", table]
         rule += rule_fragment + [ "-j", "LOG" ]
         if rich_rule.log.prefix:
-            rule += [ "--log-prefix", '"%s"' % rich_rule.log.prefix ]
+            rule += [ "--log-prefix", "'%s'" % rich_rule.log.prefix ]
         if rich_rule.log.level:
-            rule += [ "--log-level", '"%s"' % rich_rule.log.level ]
+            rule += [ "--log-level", "%s" % rich_rule.log.level ]
         rule += self._rule_limit(rich_rule.log.limit)
 
         return rule
