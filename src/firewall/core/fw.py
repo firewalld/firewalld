@@ -829,7 +829,7 @@ class Firewall(object):
         if use_transaction is None:
             transaction.execute(True)
 
-    def set_policy(self, policy, which="used", use_transaction=None):
+    def set_policy(self, policy, use_transaction=None):
         if use_transaction is None:
             transaction = FirewallTransaction(self)
         else:
@@ -838,7 +838,7 @@ class Firewall(object):
         log.debug1("Setting policy to '%s'", policy)
 
         for backend in self.enabled_backends():
-            rules = backend.build_set_policy_rules(policy, which)
+            rules = backend.build_set_policy_rules(policy)
             transaction.add_rules(backend, rules)
 
         if use_transaction is None:
@@ -1023,7 +1023,7 @@ class Firewall(object):
 
         # TODO: use rule in raw table not default chain policy
         try:
-            self.set_policy("DROP", "all")
+            self.set_policy("DROP")
         except Exception as msg:
             raise FirewallError(errors.COMMAND_FAILED, msg)
         self._panic = True
@@ -1035,7 +1035,7 @@ class Firewall(object):
 
         # TODO: use rule in raw table not default chain policy
         try:
-            self.set_policy("ACCEPT", "all")
+            self.set_policy("ACCEPT")
         except Exception as msg:
             raise FirewallError(errors.COMMAND_FAILED, msg)
         self._panic = False

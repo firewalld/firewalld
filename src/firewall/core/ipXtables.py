@@ -31,11 +31,6 @@ from firewall.errors import FirewallError, INVALID_PASSTHROUGH, INVALID_RULE
 from firewall.core.rich import Rich_Accept, Rich_Reject, Rich_Drop, Rich_Mark
 import string
 
-PROC_IPxTABLE_NAMES = {
-    "ipv4": "/proc/net/ip_tables_names",
-    "ipv6": "/proc/net/ip6_tables_names",
-}
-
 BUILT_IN_CHAINS = {
     "security": [ "INPUT", "OUTPUT", "FORWARD" ],
     "raw": [ "PREROUTING", "OUTPUT" ],
@@ -521,19 +516,6 @@ class ip4tables(object):
 
         return ret
 
-    def used_tables(self):
-        tables = [ ]
-        filename = PROC_IPxTABLE_NAMES[self.ipv]
-
-        if os.path.exists(filename):
-            with open(filename, "r") as f:
-                for line in f.readlines():
-                    if not line:
-                        break
-                    tables.append(line.strip())
-
-        return tables
-
     def _detect_wait_option(self):
         wait_option = ""
         ret = runProg(self._command, ["-w", "-L", "-n"])  # since iptables-1.4.20
@@ -567,7 +549,7 @@ class ip4tables(object):
 
     def build_flush_rules(self):
         rules = []
-        for table in self.used_tables():
+        for table in BUILT_IN_CHAINS.keys():
             # Flush firewall rules: -F
             # Delete firewall chains: -X
             # Set counter to zero: -Z
@@ -575,14 +557,9 @@ class ip4tables(object):
                 rules.append(["-t", table, flag])
         return rules
 
-    def build_set_policy_rules(self, policy, which="used"):
-        if which == "used":
-            tables = self.used_tables()
-        else:
-            tables = list(BUILT_IN_CHAINS.keys())
-
+    def build_set_policy_rules(self, policy):
         rules = []
-        for table in tables:
+        for table in BUILT_IN_CHAINS.keys():
             if table == "nat":
                 continue
             for chain in BUILT_IN_CHAINS[table]:
