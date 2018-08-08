@@ -29,7 +29,7 @@ install:
     && popd
 # nftables is not available in Ubuntu Trusty, but supported in the kernel.
 # Once travis supports a newer Ubuntu version we can remove this and add
-# nftables to the apt comamnd above.
+# nftables to the apt command above.
   - echo "/usr/local/lib" | sudo tee /etc/ld.so.conf.d/local.conf
   - sudo apt-get -qq -y install libmnl-dev libgmp-dev libreadline-dev
     && pushd /tmp
