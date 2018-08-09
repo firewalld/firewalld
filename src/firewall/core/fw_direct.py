@@ -391,6 +391,11 @@ class FirewallDirect(object):
         if not self._fw.nftables_enabled \
            and backend.is_chain_builtin(ipv, table, chain):
             _chain = "%s_direct" % (chain)
+        elif self._fw.nftables_enabled and chain[-7:] == "_direct" \
+             and backend.is_chain_builtin(ipv, table, chain[:-7]):
+            # strip _direct suffix. If we're using nftables we don't bother
+            # creating the *_direct chains for builtin chains.
+            _chain = chain[:-7]
 
         chain_id = (ipv, table, chain)
         rule_id = (priority, args)
