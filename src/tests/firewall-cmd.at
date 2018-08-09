@@ -652,6 +652,16 @@ FWD_START_TEST([direct])
     FWD_CHECK([--permanent --direct --query-rule ipv4 filter žluťoučký 3 -j ACCEPT], 1, ignore)
     FWD_CHECK([--permanent --direct --remove-chain ipv4 filter žluťoučký], 0, ignore)
     FWD_CHECK([--permanent --direct --query-chain ipv4 filter žluťoučký], 1, ignore)
+
+    dnl rhbz 1614048 - add rule to chain with _direct suffix
+    FWD_CHECK([--direct --add-rule ipv4 filter INPUT_direct 3 -j ACCEPT], 0, ignore)
+    FWD_CHECK([--direct --add-rule ipv4 filter FORWARD_direct 3 -j ACCEPT], 0, ignore)
+    FWD_CHECK([--direct --add-rule ipv4 security INPUT_direct 3 -j ACCEPT], 0, ignore)
+    FWD_CHECK([--direct --add-rule ipv4 raw PREROUTING_direct 3 -j ACCEPT], 0, ignore)
+    FWD_CHECK([--direct --add-rule ipv4 mangle PREROUTING_direct 3 -j ACCEPT], 0, ignore)
+    FWD_CHECK([--direct --add-rule ipv4 nat PREROUTING_direct 3 -j ACCEPT], 0, ignore)
+    FWD_CHECK([--permanent --direct --add-rule ipv4 filter INPUT_direct 3 -j ACCEPT], 0, ignore)
+    FWD_RELOAD
 FWD_END_TEST([-e '/ERROR: INVALID_TABLE:/d' dnl
               -e '/WARNING: NOT_ENABLED: chain/d'])
 
