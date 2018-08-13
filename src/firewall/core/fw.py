@@ -391,14 +391,11 @@ class Firewall(object):
         # Start transaction
         transaction = FirewallTransaction(self)
 
-        if reload:
-            self.set_policy("DROP", use_transaction=transaction)
-
         # flush rules
         self.flush(use_transaction=transaction)
 
         # If modules need to be unloaded in complete reload or if there are
-        # ipsets to get applied, limit the transaction to set_policy and flush.
+        # ipsets to get applied, limit the transaction to flush.
         #
         # Future optimization for the ipset case in reload: The transaction
         # only needs to be split here if there are conflicting ipset types in
@@ -918,6 +915,8 @@ class Firewall(object):
 
         # stop
         self.cleanup()
+
+        self.set_policy("DROP")
 
         # start
         self._start(reload=True, complete_reload=stop)
