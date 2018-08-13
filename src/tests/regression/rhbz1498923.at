@@ -1,5 +1,11 @@
 FWD_START_TEST([invalid direct rule causes reload error])
 FWD_CHECK([-q --permanent --direct --add-rule ipv4 filter INPUT 0 -p tcp --dport 8080 -j ACCEPT])
 FWD_CHECK([-q --permanent --direct --add-rule ipv4 filter INPUT 1 --a-bogus-flag])
-FWD_RELOAD(13, [ignore], [ignore])
+FWD_RELOAD(13, [ignore], [ignore], 251)
+FWD_CHECK([--state], 251, [ignore], [failed
+])
+
+dnl now remove the bad rule and reload successfully
+FWD_CHECK([-q --permanent --direct --remove-rule ipv4 filter INPUT 1 --a-bogus-flag])
+FWD_RELOAD
 FWD_END_TEST([-e '/.*a-bogus-flag.*/d'])
