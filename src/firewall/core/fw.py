@@ -473,11 +473,16 @@ class Firewall(object):
             tm2 = time.time()
             log.debug2("Flushing and applying took %f seconds" % (tm2 - tm1))
 
-        self._state = "RUNNING"
-
     def start(self):
-        self._start()
-        self.set_policy("ACCEPT")
+        try:
+            self._start()
+        except Exception:
+            self._state = "FAILED"
+            self.set_policy("ACCEPT")
+            raise
+        else:
+            self._state = "RUNNING"
+            self.set_policy("ACCEPT")
 
     def _loader(self, path, reader_type, combine=False):
         # combine: several zone files are getting combined into one obj
@@ -952,64 +957,70 @@ class Firewall(object):
     def reload(self, stop=False):
         _panic = self._panic
 
-        # save zone interfaces
-        _zone_interfaces = { }
-        for zone in self.zone.get_zones():
-            _zone_interfaces[zone] = self.zone.get_settings(zone)["interfaces"]
-        # save direct config
-        _direct_config = self.direct.get_runtime_config()
-        _old_dz = self.get_default_zone()
+        try:
+            # save zone interfaces
+            _zone_interfaces = { }
+            for zone in self.zone.get_zones():
+                _zone_interfaces[zone] = self.zone.get_settings(zone)["interfaces"]
+            # save direct config
+            _direct_config = self.direct.get_runtime_config()
+            _old_dz = self.get_default_zone()
 
-        # stop
-        self.cleanup()
+            # stop
+            self.cleanup()
 
-        self.set_policy("DROP")
+            self.set_policy("DROP")
 
-        # start
-        self._start(reload=True, complete_reload=stop)
+            self._start(reload=True, complete_reload=stop)
 
-        # handle interfaces in the default zone and move them to the new
-        # default zone if it changed
-        _new_dz = self.get_default_zone()
-        if _new_dz != _old_dz:
-            # if_new_dz has been introduced with the reload, we need to add it
-            # https://github.com/firewalld/firewalld/issues/53
-            if _new_dz not in _zone_interfaces:
-                _zone_interfaces[_new_dz] = { }
-            # default zone changed. Move interfaces from old default zone to
-            # the new one.
-            for iface, settings in list(_zone_interfaces[_old_dz].items()):
-                if settings["__default__"]:
-                    # move only those that were added to default zone
-                    # (not those that were added to specific zone same as
-                    # default)
-                    _zone_interfaces[_new_dz][iface] = \
-                        _zone_interfaces[_old_dz][iface]
-                    del _zone_interfaces[_old_dz][iface]
+            # handle interfaces in the default zone and move them to the new
+            # default zone if it changed
+            _new_dz = self.get_default_zone()
+            if _new_dz != _old_dz:
+                # if_new_dz has been introduced with the reload, we need to add it
+                # https://github.com/firewalld/firewalld/issues/53
+                if _new_dz not in _zone_interfaces:
+                    _zone_interfaces[_new_dz] = { }
+                # default zone changed. Move interfaces from old default zone to
+                # the new one.
+                for iface, settings in list(_zone_interfaces[_old_dz].items()):
+                    if settings["__default__"]:
+                        # move only those that were added to default zone
+                        # (not those that were added to specific zone same as
+                        # default)
+                        _zone_interfaces[_new_dz][iface] = \
+                            _zone_interfaces[_old_dz][iface]
+                        del _zone_interfaces[_old_dz][iface]
 
-        # add interfaces to zones again
-        for zone in self.zone.get_zones():
-            if zone in _zone_interfaces:
-                self.zone.set_settings(zone, { "interfaces":
-                                               _zone_interfaces[zone] })
-                del _zone_interfaces[zone]
+            # add interfaces to zones again
+            for zone in self.zone.get_zones():
+                if zone in _zone_interfaces:
+                    self.zone.set_settings(zone, { "interfaces":
+                                                   _zone_interfaces[zone] })
+                    del _zone_interfaces[zone]
+                else:
+                    log.info1("New zone '%s'.", zone)
+            if len(_zone_interfaces) > 0:
+                for zone in list(_zone_interfaces.keys()):
+                    log.info1("Lost zone '%s', zone interfaces dropped.", zone)
+                    del _zone_interfaces[zone]
+            del _zone_interfaces
+
+            # restore direct config
+            self.direct.set_config(_direct_config)
+
+            # enable panic mode again if it has been enabled before or set policy
+            # to ACCEPT
+            if _panic:
+                self.enable_panic_mode()
             else:
-                log.info1("New zone '%s'.", zone)
-        if len(_zone_interfaces) > 0:
-            for zone in list(_zone_interfaces.keys()):
-                log.info1("Lost zone '%s', zone interfaces dropped.", zone)
-                del _zone_interfaces[zone]
-        del _zone_interfaces
+                self.set_policy("ACCEPT")
 
-        # restore direct config
-        self.direct.set_config(_direct_config)
-
-        # enable panic mode again if it has been enabled before or set policy
-        # to ACCEPT
-        if _panic:
-            self.enable_panic_mode()
-        else:
+            self._state = "RUNNING"
+        except Exception:
+            self._state = "FAILED"
             self.set_policy("ACCEPT")
+            raise
 
     # STATE
 

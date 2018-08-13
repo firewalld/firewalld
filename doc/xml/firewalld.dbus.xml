@@ -488,7 +488,7 @@
           </varlistentry>
           <varlistentry id="FirewallD1.Properties.state">
             <term><parameter>state</parameter> - s - (ro)</term>
-            <listitem><para>firewalld state. This can be either <literal>INIT</literal> or <literal>RUNNING</literal>. In <literal>INIT</literal> state, firewalld is starting up and initializing.</para></listitem>
+            <listitem><para>firewalld state. This can be either <literal>INIT</literal>, <literal>FAILED</literal>, or <literal>RUNNING</literal>. In <literal>INIT</literal> state, firewalld is starting up and initializing. In <literal>FAILED</literal> state, firewalld completely started but experienced a failure.</para></listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.Properties.version">
             <term><parameter>version</parameter> - s - (ro)</term>
