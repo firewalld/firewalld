@@ -167,6 +167,7 @@ CONFIG_FILES = \
 	services/isns.xml \
 	services/jenkins.xml \
 	services/kadmin.xml \
+	services/kdeconnect.xml \
 	services/kerberos.xml \
 	services/kibana.xml \
 	services/klogin.xml \
