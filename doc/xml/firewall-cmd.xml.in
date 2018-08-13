@@ -118,7 +118,7 @@
 	  <term><option>--state</option></term>
 	  <listitem>
 	    <para>
-	      Check whether the firewalld daemon is active (i.e. running). Returns an exit code 0 if it is active, <replaceable>NOT_RUNNING</replaceable> otherwise (see <xref linkend="exit_codes"/>). This will also print the state to <replaceable>STDOUT</replaceable>.
+	      Check whether the firewalld daemon is active (i.e. running). Returns an exit code 0 if it is active, <replaceable>RUNNING_BUT_FAILED</replaceable> if failure occurred on startup, <replaceable>NOT_RUNNING</replaceable> otherwise. See <xref linkend="exit_codes"/>. This will also print the state to <replaceable>STDOUT</replaceable>.
 	    </para>
 	  </listitem>
 	</varlistentry>

@@ -2022,6 +2022,8 @@ elif a.state:
     state = fw.get_property("state")
     if state == "RUNNING":
         cmd.print_and_exit ("running")
+    elif state == "FAILED":
+        cmd.print_and_exit("failed", errors.RUNNING_BUT_FAILED)
     else:
         cmd.print_and_exit ("not running", errors.NOT_RUNNING)
 elif a.get_log_denied:
