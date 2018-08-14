@@ -7653,8 +7653,6 @@ class FirewallConfig(object):
             self.directChainDialogTableCombobox.append_text("mangle")
             self.directChainDialogTableCombobox.append_text("raw")
             self.directChainDialogTableCombobox.append_text("security")
-        else:
-            self.directChainDialogTableCombobox.append_text("broute")
 
         combobox_select_text(self.directChainDialogTableCombobox, old_table)
 
@@ -7809,8 +7807,6 @@ class FirewallConfig(object):
             self.directRuleDialogTableCombobox.append_text("mangle")
             self.directRuleDialogTableCombobox.append_text("raw")
             self.directRuleDialogTableCombobox.append_text("security")
-        else:
-            self.directRuleDialogTableCombobox.append_text("broute")
 
         combobox_select_text(self.directRuleDialogTableCombobox, old_table)
 
