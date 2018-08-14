@@ -31,7 +31,6 @@ from firewall.errors import FirewallError, INVALID_IPV
 import string
 
 BUILT_IN_CHAINS = {
-    "broute": [ "BROUTING" ],
     "nat": [ "PREROUTING", "POSTROUTING", "OUTPUT" ],
     "filter": [ "INPUT", "OUTPUT", "FORWARD" ],
 }
