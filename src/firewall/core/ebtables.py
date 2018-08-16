@@ -107,7 +107,7 @@ class ebtables(object):
         return table in BUILT_IN_CHAINS and \
                chain in BUILT_IN_CHAINS[table]
 
-    def build_chain(self, add, table, chain):
+    def build_chain_rules(self, add, table, chain):
         rule = [ "-t", table ]
         if add:
             rule.append("-N")
@@ -116,7 +116,7 @@ class ebtables(object):
         rule.append(chain)
         if add:
             rule += [ "-P", "RETURN" ]
-        return rule
+        return [rule]
 
     def build_rule(self, add, table, chain, index, args):
         rule = [ "-t", table ]
