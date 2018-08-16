@@ -91,13 +91,13 @@ class Firewall(object):
         self.__init_vars()
 
     def __repr__(self):
-        return '%s(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)' % \
+        return '%s(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)' % \
             (self.__class__, self.ip4tables_enabled, self.ip6tables_enabled,
              self.ebtables_enabled, self._state, self._panic,
              self._default_zone, self._module_refcount, self._marks,
              self._min_mark, self.cleanup_on_exit, self.ipv6_rpfilter_enabled,
              self.ipset_enabled, self._individual_calls, self._log_denied,
-             self._automatic_helpers)
+             self._automatic_helpers, self.drop_on_reload)
 
     def __init_vars(self):
         self._state = "INIT"
@@ -116,6 +116,7 @@ class Firewall(object):
         self.nf_conntrack_helper_setting = 0
         self.nf_conntrack_helpers = { }
         self.nf_nat_helpers = { }
+        self.drop_on_reload = config.FALLBACK_DROP_ON_RELOAD
 
     def individual_calls(self):
         return self._individual_calls
@@ -297,6 +298,13 @@ class Firewall(object):
                 self._firewall_backend = self._firewalld_conf.get("FirewallBackend")
                 log.debug1("FirewallBackend is set to '%s'",
                            self._firewall_backend)
+
+            if self._firewalld_conf.get("DropOnReload"):
+                value = self._firewalld_conf.get("DropOnReload")
+                if value is not None and value.lower() in [ "no", "false" ]:
+                    self.drop_on_reload = False
+                    log.debug1("FirewallBackend is set to '%s'",
+                               self._firewall_backend)
 
         self.config.set_firewalld_conf(copy.deepcopy(self._firewalld_conf))
 
@@ -969,7 +977,8 @@ class Firewall(object):
             # stop
             self.cleanup()
 
-            self.set_policy("DROP")
+            if self.drop_on_reload:
+                self.set_policy("DROP")
 
             self._start(reload=True, complete_reload=stop)
 
@@ -1013,13 +1022,14 @@ class Firewall(object):
             # to ACCEPT
             if _panic:
                 self.enable_panic_mode()
-            else:
+            elif self.drop_on_reload:
                 self.set_policy("ACCEPT")
 
             self._state = "RUNNING"
         except Exception:
             self._state = "FAILED"
-            self.set_policy("ACCEPT")
+            if self.drop_on_reload:
+                self.set_policy("ACCEPT")
             raise
 
     # STATE

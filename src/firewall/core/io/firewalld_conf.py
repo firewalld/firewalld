@@ -30,7 +30,7 @@ from firewall.functions import b2u, u2b, PY2
 
 valid_keys = [ "DefaultZone", "MinimalMark", "CleanupOnExit", "Lockdown", 
                "IPv6_rpfilter", "IndividualCalls", "LogDenied",
-               "AutomaticHelpers", "FirewallBackend" ]
+               "AutomaticHelpers", "FirewallBackend", "DropOnReload" ]
 
 class firewalld_conf(object):
     def __init__(self, filename):
@@ -80,6 +80,7 @@ class firewalld_conf(object):
             self.set("LogDenied", config.FALLBACK_LOG_DENIED)
             self.set("AutomaticHelpers", config.FALLBACK_AUTOMATIC_HELPERS)
             self.set("FirewallBackend", config.FALLBACK_FIREWALL_BACKEND)
+            self.set("DropOnReload", "yes" if config.FALLBACK_DROP_ON_RELOAD else "no")
             raise
 
         for line in f:
@@ -182,6 +183,15 @@ class firewalld_conf(object):
                             "value %s", value if value else '',
                             config.FALLBACK_FIREWALL_BACKEND)
             self.set("FirewallBackend", str(config.FALLBACK_FIREWALL_BACKEND))
+
+        # check drop on reload
+        value = self.get("DropOnReload")
+        if not value or value.lower() not in [ "no", "false", "yes", "true" ]:
+            if value is not None:
+                log.warning("DropOnReload '%s' is not valid, using default "
+                            "value %s", value if value else '',
+                            config.FALLBACK_DROP_ON_RELOAD)
+            self.set("DropOnReload", "yes" if FALLBACK_DROP_ON_RELOAD else "no")
 
     # save to self.filename if there are key/value changes
     def write(self):
