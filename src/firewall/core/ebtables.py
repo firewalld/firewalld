@@ -43,8 +43,9 @@ for table in BUILT_IN_CHAINS.keys():
     DEFAULT_RULES[table] = [ ]
     OUR_CHAINS[table] = set()
     for chain in BUILT_IN_CHAINS[table]:
-        DEFAULT_RULES[table].append("-N %s_direct -P RETURN" % chain)
+        DEFAULT_RULES[table].append("-N %s_direct" % chain)
         DEFAULT_RULES[table].append("-I %s 1 -j %s_direct" % (chain, chain))
+        DEFAULT_RULES[table].append("-I %s_direct 1 -j RETURN" % chain)
         OUR_CHAINS[table].add("%s_direct" % chain)
 
 class ebtables(object):
@@ -108,15 +109,15 @@ class ebtables(object):
                chain in BUILT_IN_CHAINS[table]
 
     def build_chain_rules(self, add, table, chain):
-        rule = [ "-t", table ]
+        rules = []
+
         if add:
-            rule.append("-N")
+            rules.append([ "-t", table, "-N", chain ])
+            rules.append([ "-t", table, "-I", chain, "1", "-j", "RETURN" ])
         else:
-            rule.append("-X")
-        rule.append(chain)
-        if add:
-            rule += [ "-P", "RETURN" ]
-        return [rule]
+            rules.append([ "-t", table, "-X", chain ])
+
+        return rules
 
     def build_rule(self, add, table, chain, index, args):
         rule = [ "-t", table ]
