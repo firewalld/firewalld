@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Maxim Dubovoy <max@mylinux.com.ua>, 2003
 # Yuri Chornoivan <yurchor@ukr.net>, 2010-2014
@@ -14,20 +14,20 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-30 20:38-0400\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2018-03-10 02:14-0500\n"
+"POT-Creation-Date: 2018-08-16 14:36-0400\n"
+"PO-Revision-Date: 2018-07-29 04:00+0000\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian (http://www.transifex.com/projects/p/firewalld/"
 "language/uk/)\n"
 "Language: uk\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Zanata 3.9.6\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Zanata 4.6.0\n"
 
-#: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:411
+#: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:412
 msgid "Firewall Applet"
 msgstr "Аплет брандмауера"
 
@@ -43,43 +43,44 @@ msgstr "Налаштовування мережного екрану"
 #: ../config/firewall-config.desktop.in.h:4
 msgid "firewall;network;security;iptables;netfilter;"
 msgstr ""
-"firewall;network;security;iptables;netfilter;брандмауер;файрвол;екран;мережа;безпека;захист;айпітейблс;нетфільтр;"
+"firewall;network;security;iptables;netfilter;брандмауер;файрвол;екран;мережа;"
+"безпека;захист;айпітейблс;нетфільтр;"
 
-#: ../src/firewall-applet:88 ../src/firewall-config:8044
+#: ../src/firewall-applet:88 ../src/firewall-config:8048
 #, c-format
 msgid "Select zone for interface '%s'"
 msgstr "Виберіть зону для інтерфейсу «%s»"
 
 #: ../src/firewall-applet:128 ../src/firewall-applet:135
-#: ../src/firewall-applet:141 ../src/firewall-config:2437
-#: ../src/firewall-config:8089 ../src/firewall-config:8097
-#: ../src/firewall-config:8129 ../src/firewall-config.glade.h:8
+#: ../src/firewall-applet:141 ../src/firewall-config:2440
+#: ../src/firewall-config:8093 ../src/firewall-config:8101
+#: ../src/firewall-config:8134 ../src/firewall-config.glade.h:8
 msgid "Default Zone"
 msgstr "Типова зона"
 
-#: ../src/firewall-applet:161 ../src/firewall-config:8122
+#: ../src/firewall-applet:162 ../src/firewall-config:8127
 #, c-format
 msgid "Select zone for connection '%s'"
 msgstr "Виберіть зону для з’єднання «%s»"
 
-#: ../src/firewall-applet:171 ../src/firewall-config:3907
-msgid "Failed to set zone {zone} for connection {connection}"
-msgstr "Не вдалося встановити зону {zone} для з’єднання {connection}"
+#: ../src/firewall-applet:172 ../src/firewall-config:3911
+msgid "Failed to set zone {zone} for connection {connection_name}"
+msgstr "Не вдалося встановити зону {zone} для зʼєднання {connection_name}"
 
-#: ../src/firewall-applet:185
+#: ../src/firewall-applet:186
 #, c-format
 msgid "Select zone for source '%s'"
 msgstr "Виберіть зону для джерела «%s»"
 
-#: ../src/firewall-applet:202
+#: ../src/firewall-applet:203
 msgid "Configure Shields Up/Down Zones"
 msgstr "Налаштування відкритої і закритої зон"
 
-#: ../src/firewall-applet:215
+#: ../src/firewall-applet:216
 msgid "Here you can select the zones used for Shields Up and Shields Down."
 msgstr "Тут ви можете вибрати відкриту і закриту зони."
 
-#: ../src/firewall-applet:221
+#: ../src/firewall-applet:222
 msgid ""
 "This feature is useful for people using the default zones mostly. For users, "
 "that are changing zones of connections, it might be of limited use."
@@ -88,119 +89,119 @@ msgstr ""
 "Доцільність її використання у системах, де зони змінюються залежно від "
 "з’єднань, є доволі сумнівною."
 
-#: ../src/firewall-applet:230
+#: ../src/firewall-applet:231
 msgid "Shields Up Zone:"
 msgstr "Відкрита зона:"
 
-#: ../src/firewall-applet:239 ../src/firewall-applet:252
+#: ../src/firewall-applet:240 ../src/firewall-applet:253
 msgid "Reset To Default"
 msgstr "Скинути до типового"
 
-#: ../src/firewall-applet:243
+#: ../src/firewall-applet:244
 msgid "Shields Down Zone:"
 msgstr "Закрита зона:"
 
-#: ../src/firewall-applet:335
+#: ../src/firewall-applet:336
 #, c-format
 msgid "About %s"
 msgstr "Про %s"
 
-#: ../src/firewall-applet:386
+#: ../src/firewall-applet:387
 msgid "Authors"
 msgstr "Автори"
 
-#: ../src/firewall-applet:396
+#: ../src/firewall-applet:397
 msgid "License"
 msgstr "Умови ліцензування"
 
-#: ../src/firewall-applet:462
+#: ../src/firewall-applet:463
 msgid "Shields Up"
 msgstr "Відкрити"
 
-#: ../src/firewall-applet:469
+#: ../src/firewall-applet:470
 msgid "Enable Notifications"
 msgstr "Увімкнути сповіщення"
 
-#: ../src/firewall-applet:475
+#: ../src/firewall-applet:476
 msgid "Edit Firewall Settings..."
 msgstr "Змінити параметри брандмауера…"
 
-#: ../src/firewall-applet:479 ../src/firewall-config.glade.h:61
+#: ../src/firewall-applet:480 ../src/firewall-config.glade.h:61
 msgid "Change Zones of Connections..."
 msgstr "Змінити зони з’єднань…"
 
-#: ../src/firewall-applet:483
+#: ../src/firewall-applet:484
 msgid "Configure Shields UP/Down Zones..."
 msgstr "Налаштувати відкриту і закриту зони…"
 
-#: ../src/firewall-applet:487
+#: ../src/firewall-applet:488
 msgid "Block all network traffic"
 msgstr "Заблокувати весь обмін даними мережею"
 
-#: ../src/firewall-applet:492
+#: ../src/firewall-applet:493
 msgid "About"
 msgstr "Відомості"
 
-#: ../src/firewall-applet:500 ../src/firewall-config:618
-#: ../src/firewall-config:2379 ../src/firewall-config:2659
-#: ../src/firewall-config:2685
+#: ../src/firewall-applet:501 ../src/firewall-config:618
+#: ../src/firewall-config:2381 ../src/firewall-config:2662
+#: ../src/firewall-config:2688
 msgid "Connections"
 msgstr "З’єднання"
 
-#: ../src/firewall-applet:504 ../src/firewall-config:620
-#: ../src/firewall-config:2466 ../src/firewall-config:2662
-#: ../src/firewall-config:2687 ../src/firewall-config.glade.h:130
+#: ../src/firewall-applet:505 ../src/firewall-config:620
+#: ../src/firewall-config:2469 ../src/firewall-config:2665
+#: ../src/firewall-config:2690 ../src/firewall-config.glade.h:130
 msgid "Interfaces"
 msgstr "<інтерфейс>"
 
-#: ../src/firewall-applet:508 ../src/firewall-config:622
-#: ../src/firewall-config:2497 ../src/firewall-config:2665
-#: ../src/firewall-config:2689 ../src/firewall-config.glade.h:135
+#: ../src/firewall-applet:509 ../src/firewall-config:622
+#: ../src/firewall-config:2500 ../src/firewall-config:2668
+#: ../src/firewall-config:2692 ../src/firewall-config.glade.h:135
 msgid "Sources"
 msgstr "Джерела"
 
-#: ../src/firewall-applet:584 ../src/firewall-config:2278
+#: ../src/firewall-applet:585 ../src/firewall-config:2280
 msgid "Authorization failed."
 msgstr "Спроба уповноваження зазнала невдачі."
 
-#: ../src/firewall-applet:586 ../src/firewall-config:2281
+#: ../src/firewall-applet:587 ../src/firewall-config:2283
 msgid "Invalid name"
 msgstr "Неправильний аргумент %s"
 
-#: ../src/firewall-applet:590 ../src/firewall-config:2285
+#: ../src/firewall-applet:591 ../src/firewall-config:2287
 msgid "Name already exists"
 msgstr "Назва вже існує"
 
-#: ../src/firewall-applet:675
+#: ../src/firewall-applet:676
 msgid "{entry} (Zone: {zone})"
 msgstr "{entry} (Зона: {zone})"
 
-#: ../src/firewall-applet:681
+#: ../src/firewall-applet:683
 msgid "{entry} (Default Zone: {default_zone})"
 msgstr "{entry} (Типова зона: {default_zone})"
 
-#: ../src/firewall-applet:762 ../src/firewall-config:1568
+#: ../src/firewall-applet:764 ../src/firewall-config:1568
 msgid "Failed to get connections from NetworkManager"
 msgstr "Не вдалося отримати список з’єднань від NetworkManager"
 
-#: ../src/firewall-applet:774 ../src/firewall-config:1380
+#: ../src/firewall-applet:776 ../src/firewall-config:1380
 msgid "No NetworkManager imports available"
 msgstr "Немає доступних джерел імпортування з NetworkManager"
 
-#: ../src/firewall-applet:852
+#: ../src/firewall-applet:854
 msgid "No connection to firewall daemon"
 msgstr "Немає зв’язку з фоновою службою брандмауера"
 
-#: ../src/firewall-applet:860 ../src/firewall-applet:997
+#: ../src/firewall-applet:862 ../src/firewall-applet:999
 msgid "All network traffic is blocked."
 msgstr "Весь обмін даними мережею заблоковано."
 
-#: ../src/firewall-applet:864
+#: ../src/firewall-applet:866
 #, c-format
 msgid "Default Zone: '%s'"
 msgstr "Типова зона: «%s»"
 
-#: ../src/firewall-applet:870
+#: ../src/firewall-applet:872
 msgid ""
 "Default Zone '{default_zone}' active for connection '{connection}' on "
 "interface '{interface}'"
@@ -208,56 +209,55 @@ msgstr ""
 "Типова зона «{default_zone}» активна для з’єднання «{connection}» на "
 "інтерфейсі «{interface}»"
 
-#: ../src/firewall-applet:873
+#: ../src/firewall-applet:875
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface "
-"'{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
 msgstr ""
 "Зона «{zone}» використовується для з’єднання «{connection}» на інтерфейсі "
 "«{interface}»"
 
-#: ../src/firewall-applet:885
+#: ../src/firewall-applet:887
 msgid "Zone '{zone}' active for interface '{interface}'"
 msgstr "На інтерфейсі «{interface}» працює зона «{zone}»"
 
-#: ../src/firewall-applet:893
+#: ../src/firewall-applet:895
 msgid "Zone '{zone}' active for source {source}"
 msgstr "Зону «{zone}» задіяно для джерела {source}"
 
-#: ../src/firewall-applet:897
+#: ../src/firewall-applet:899
 msgid "No Active Zones."
 msgstr "Немає активних зон."
 
-#: ../src/firewall-applet:955
+#: ../src/firewall-applet:957
 msgid "Connection to FirewallD established."
 msgstr "Встановлено зв’язок з FirewallD."
 
-#: ../src/firewall-applet:967
+#: ../src/firewall-applet:969
 msgid "Connection to FirewallD lost."
 msgstr "Зв’язок з FirewallD втрачено."
 
-#: ../src/firewall-applet:972
+#: ../src/firewall-applet:974
 msgid "FirewallD has been reloaded."
 msgstr "FirewallD перезавантажено."
 
-#: ../src/firewall-applet:979
+#: ../src/firewall-applet:981
 #, c-format
 msgid "Default zone changed to '%s'."
 msgstr "Типову зону змінено на «%s»."
 
-#: ../src/firewall-applet:998
+#: ../src/firewall-applet:1000
 msgid "Network traffic is not blocked anymore."
 msgstr "Обмін даними мережею повністю розблоковано."
 
-#: ../src/firewall-applet:1024 ../src/firewall-applet:1078
+#: ../src/firewall-applet:1026 ../src/firewall-applet:1080
 msgid "activated"
 msgstr "увімкнено"
 
-#: ../src/firewall-applet:1025 ../src/firewall-applet:1079
+#: ../src/firewall-applet:1027 ../src/firewall-applet:1081
 msgid "deactivated"
 msgstr "вимкнено"
 
-#: ../src/firewall-applet:1030
+#: ../src/firewall-applet:1032
 msgid ""
 "Default zone '{default_zone}' {activated_deactivated} for connection "
 "'{connection}' on interface '{interface}'"
@@ -265,7 +265,7 @@ msgstr ""
 "Типову зону «{default_zone}» {activated_deactivated} для з’єднання "
 "«{connection}» на інтерфейсі «{interface}»"
 
-#: ../src/firewall-applet:1035
+#: ../src/firewall-applet:1037
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
@@ -273,20 +273,20 @@ msgstr ""
 "Зону «{zone}» {activated_deactivated} для з’єднання «{connection}» на "
 "інтерфейсі «{interface}»"
 
-#: ../src/firewall-applet:1040
+#: ../src/firewall-applet:1042
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
 msgstr "Зону «{zone}» {activated_deactivated} для інтерфейсу «{interface}»"
 
-#: ../src/firewall-applet:1063
+#: ../src/firewall-applet:1065
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
 msgstr "Для інтерфейсу «%2$s» задіяно зону «%1$s»"
 
-#: ../src/firewall-applet:1081
+#: ../src/firewall-applet:1083
 msgid "Zone '{zone}' {activated_deactivated} for source '{source}'"
 msgstr "Зону «{zone}» {activated_deactivated} для джерела «{source}»"
 
-#: ../src/firewall-applet:1105
+#: ../src/firewall-applet:1107
 #, c-format
 msgid "Zone '%s' activated for source '%s'"
 msgstr "Зону «%s» задіяно для джерела «%s»"
@@ -365,7 +365,7 @@ msgstr "Пріоритетність"
 msgid "Args"
 msgstr "Аргументи"
 
-#: ../src/firewall-config:401 ../src/firewall-config:2328
+#: ../src/firewall-config:401 ../src/firewall-config:2330
 msgid "Runtime"
 msgstr "Тимчасові"
 
@@ -451,238 +451,242 @@ msgstr "Коментар"
 msgid "Source"
 msgstr "Джерело"
 
-#: ../src/firewall-config:1607 ../src/firewall-config:2800
-#: ../src/firewall-config:2848
+#: ../src/firewall-config:1609 ../src/firewall-config:2803
+#: ../src/firewall-config:2851
 msgid "Warning"
 msgstr "Попередження"
 
-#: ../src/firewall-config:1616 ../src/firewall-config:1622
+#: ../src/firewall-config:1618 ../src/firewall-config:1624
 msgid "Error"
 msgstr "Помилка"
 
-#: ../src/firewall-config:2034 ../src/firewall-config:3690
+#: ../src/firewall-config:2036 ../src/firewall-config:3200
+#: ../src/firewall-config:3693
 msgid "accept"
 msgstr "приймання"
 
-#: ../src/firewall-config:2036 ../src/firewall-config:3692
-#: ../src/firewall-config:3840
+#: ../src/firewall-config:2038 ../src/firewall-config:3202
+#: ../src/firewall-config:3695 ../src/firewall-config:3843
 msgid "reject"
 msgstr "відмова"
 
-#: ../src/firewall-config:2040 ../src/firewall-config:3697
+#: ../src/firewall-config:2042 ../src/firewall-config:3217
+#: ../src/firewall-config:3700
 msgid "drop"
 msgstr "відкидання"
 
-#: ../src/firewall-config:2042 ../src/firewall-config:3699
-#: ../src/firewall-config:3841
+#: ../src/firewall-config:2044 ../src/firewall-config:3219
+#: ../src/firewall-config:3702 ../src/firewall-config:3844
 msgid "mark"
 msgstr "позначка"
 
-#: ../src/firewall-config:2045 ../src/firewall-config:2089
-#: ../src/firewall-config:2094
+#: ../src/firewall-config:2047 ../src/firewall-config:2091
+#: ../src/firewall-config:2096
 msgid "limit"
 msgstr "обмеження"
 
-#: ../src/firewall-config:2061 ../src/firewall-config:3151
-#: ../src/firewall-config:3331 ../src/firewall-config:3637
+#: ../src/firewall-config:2063 ../src/firewall-config:3154
+#: ../src/firewall-config:3334 ../src/firewall-config:3640
 #: ../src/firewall-config.glade.h:280
 msgid "service"
 msgstr "служба"
 
-#: ../src/firewall-config:2063 ../src/firewall-config:3157
-#: ../src/firewall-config:3333 ../src/firewall-config:3640
+#: ../src/firewall-config:2065 ../src/firewall-config:3160
+#: ../src/firewall-config:3336 ../src/firewall-config:3643
 #: ../src/firewall-config.glade.h:281
 msgid "port"
 msgstr "порт"
 
-#: ../src/firewall-config:2066 ../src/firewall-config:3162
-#: ../src/firewall-config:3342 ../src/firewall-config:3650
+#: ../src/firewall-config:2068 ../src/firewall-config:3165
+#: ../src/firewall-config:3345 ../src/firewall-config:3653
 #: ../src/firewall-config.glade.h:282
 msgid "protocol"
 msgstr "протокол"
 
-#: ../src/firewall-config:2068 ../src/firewall-config:3167
-#: ../src/firewall-config:3667 ../src/firewall-config:3853
+#: ../src/firewall-config:2070 ../src/firewall-config:3170
+#: ../src/firewall-config:3670 ../src/firewall-config:3856
 #: ../src/firewall-config.glade.h:287
 msgid "masquerade"
 msgstr "підробка"
 
-#: ../src/firewall-config:2078 ../src/firewall-config:3189
-#: ../src/firewall-config:3350 ../src/firewall-config:3669
+#: ../src/firewall-config:2072 ../src/firewall-config:3173
+#: ../src/firewall-config:3347 ../src/firewall-config:3656
+#: ../src/firewall-config:3871 ../src/firewall-config.glade.h:283
+msgid "icmp-block"
+msgstr "icmp-блокування"
+
+#: ../src/firewall-config:2074 ../src/firewall-config:3178
+#: ../src/firewall-config:3349 ../src/firewall-config:3659
+#: ../src/firewall-config.glade.h:284
+msgid "icmp-type"
+msgstr "icmp-тип"
+
+#: ../src/firewall-config:2076 ../src/firewall-config:3183
+#: ../src/firewall-config:3351 ../src/firewall-config:3662
+#: ../src/firewall-config:3864 ../src/firewall-config.glade.h:285
+msgid "forward-port"
+msgstr "переспрямування портів"
+
+#: ../src/firewall-config:2080 ../src/firewall-config:3192
+#: ../src/firewall-config:3353 ../src/firewall-config:3672
 #: ../src/firewall-config.glade.h:286
 msgid "source-port"
 msgstr "порт джерела"
 
-#: ../src/firewall-config:2087
+#: ../src/firewall-config:2089
 msgid "level"
 msgstr "рівень"
 
-#: ../src/firewall-config:2091 ../src/firewall-config:2096
+#: ../src/firewall-config:2093 ../src/firewall-config:2098
 msgid "yes"
 msgstr "так"
 
-#: ../src/firewall-config:2441 ../src/firewall-config:2481
-#: ../src/firewall-config:2511 ../src/firewall-config.glade.h:89
+#: ../src/firewall-config:2444 ../src/firewall-config:2484
+#: ../src/firewall-config:2514 ../src/firewall-config.glade.h:89
 msgid "Zone"
 msgstr "Зона"
 
-#: ../src/firewall-config:2454
+#: ../src/firewall-config:2457
 #, c-format
 msgid "Default Zone: %s"
 msgstr "Типова зона: %s"
 
-#: ../src/firewall-config:2461 ../src/firewall-config:2492
-#: ../src/firewall-config:2522
+#: ../src/firewall-config:2464 ../src/firewall-config:2495
+#: ../src/firewall-config:2525
 #, c-format
 msgid "Zone: %s"
 msgstr "Зона: %s"
 
-#: ../src/firewall-config:2797
+#: ../src/firewall-config:2800
 #, c-format
 msgid "Zone '%s': Service '%s' is not available."
 msgstr "Зона «%s»: немає доступу до служби «%s»."
 
-#: ../src/firewall-config:2801 ../src/firewall-config:2849
+#: ../src/firewall-config:2804 ../src/firewall-config:2852
 #: ../src/firewall-config.glade.h:163
 msgid "Remove"
 msgstr "Вилучити зону"
 
-#: ../src/firewall-config:2801 ../src/firewall-config:2849
+#: ../src/firewall-config:2804 ../src/firewall-config:2852
 msgid "Ignore"
 msgstr "Ігнорувати"
 
-#: ../src/firewall-config:2845
+#: ../src/firewall-config:2848
 #, c-format
 msgid "Zone '%s': ICMP type '%s' is not available."
 msgstr "Зона «%s»: тип ICMP «%s» недоступний."
 
-#: ../src/firewall-config:3000
+#: ../src/firewall-config:3003
 msgid "Built-in zone, rename not supported."
 msgstr "Вбудована зона, підтримки перейменування не передбачено."
 
-#: ../src/firewall-config:3114 ../src/firewall-config:3612
+#: ../src/firewall-config:3117 ../src/firewall-config:3615
 #: ../src/firewall-config.glade.h:266
 msgid "second"
 msgstr "секунда"
 
-#: ../src/firewall-config:3115 ../src/firewall-config:3613
+#: ../src/firewall-config:3118 ../src/firewall-config:3616
 #: ../src/firewall-config.glade.h:267
 msgid "minute"
 msgstr "хвилина"
 
-#: ../src/firewall-config:3116 ../src/firewall-config:3614
+#: ../src/firewall-config:3119 ../src/firewall-config:3617
 #: ../src/firewall-config.glade.h:268
 msgid "hour"
 msgstr "година"
 
-#: ../src/firewall-config:3117 ../src/firewall-config:3615
+#: ../src/firewall-config:3120 ../src/firewall-config:3618
 #: ../src/firewall-config.glade.h:269
 msgid "day"
 msgstr "день"
 
-#: ../src/firewall-config:3118 ../src/firewall-config:3616
+#: ../src/firewall-config:3121 ../src/firewall-config:3619
 #: ../src/firewall-config.glade.h:272
 msgid "emergency"
 msgstr "надзвичайний стан"
 
-#: ../src/firewall-config:3119 ../src/firewall-config:3617
+#: ../src/firewall-config:3122 ../src/firewall-config:3620
 #: ../src/firewall-config.glade.h:273
 msgid "alert"
 msgstr "нагадування"
 
-#: ../src/firewall-config:3120 ../src/firewall-config:3618
+#: ../src/firewall-config:3123 ../src/firewall-config:3621
 #: ../src/firewall-config.glade.h:274
 msgid "critical"
 msgstr "критичний"
 
-#: ../src/firewall-config:3121 ../src/firewall-config:3619
+#: ../src/firewall-config:3124 ../src/firewall-config:3622
 #: ../src/firewall-config.glade.h:275
 msgid "error"
 msgstr "помилка"
 
-#: ../src/firewall-config:3122 ../src/firewall-config:3620
+#: ../src/firewall-config:3125 ../src/firewall-config:3623
 #: ../src/firewall-config.glade.h:276
 msgid "warning"
 msgstr "попередження"
 
-#: ../src/firewall-config:3123 ../src/firewall-config:3621
+#: ../src/firewall-config:3126 ../src/firewall-config:3624
 #: ../src/firewall-config.glade.h:277
 msgid "notice"
 msgstr "зауваження"
 
-#: ../src/firewall-config:3124 ../src/firewall-config:3622
+#: ../src/firewall-config:3127 ../src/firewall-config:3625
 #: ../src/firewall-config.glade.h:278
 msgid "info"
 msgstr "інформація"
 
-#: ../src/firewall-config:3125 ../src/firewall-config:3623
+#: ../src/firewall-config:3128 ../src/firewall-config:3626
 #: ../src/firewall-config.glade.h:279
 msgid "debug"
 msgstr "діагностика"
 
-#: ../src/firewall-config:3170 ../src/firewall-config:3344
-#: ../src/firewall-config:3653 ../src/firewall-config:3868
-#: ../src/firewall-config.glade.h:283
-msgid "icmp-block"
-msgstr "icmp-блокування"
-
-#: ../src/firewall-config:3175 ../src/firewall-config:3346
-#: ../src/firewall-config:3656 ../src/firewall-config.glade.h:284
-msgid "icmp-type"
-msgstr "icmp-тип"
-
-#: ../src/firewall-config:3180 ../src/firewall-config:3348
-#: ../src/firewall-config:3659 ../src/firewall-config:3861
-#: ../src/firewall-config.glade.h:285
-msgid "forward-port"
-msgstr "переспрямування портів"
-
-#: ../src/firewall-config:3323 ../src/firewall-config:3548
-#: ../src/firewall-config:3572 ../src/firewall-config:3627
-#: ../src/firewall-config:3757 ../src/firewall-config:3804
+#: ../src/firewall-config:3326 ../src/firewall-config:3551
+#: ../src/firewall-config:3575 ../src/firewall-config:3630
+#: ../src/firewall-config:3760 ../src/firewall-config:3807
 msgid "ipv4"
 msgstr "ipv4"
 
-#: ../src/firewall-config:3325 ../src/firewall-config:3550
-#: ../src/firewall-config:3574 ../src/firewall-config:3629
-#: ../src/firewall-config:3759 ../src/firewall-config:3806
+#: ../src/firewall-config:3328 ../src/firewall-config:3553
+#: ../src/firewall-config:3577 ../src/firewall-config:3632
+#: ../src/firewall-config:3762 ../src/firewall-config:3809
 msgid "ipv6"
 msgstr "ipv6"
 
-#: ../src/firewall-config:5073
+#: ../src/firewall-config:5077
 msgid ""
-"Forwarding to another system is only useful if the interface is masqueraded.\n"
+"Forwarding to another system is only useful if the interface is "
+"masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 "Переспрямовування до іншої системи працюватиме, лише якщо інтерфейс "
 "замасковано.\n"
 "Хочете увімкнути маскування цієї зони?"
 
-#: ../src/firewall-config:5436
+#: ../src/firewall-config:5440
 msgid "Built-in service, rename not supported."
 msgstr "Вбудована служба, підтримки перейменування не передбачено."
 
-#: ../src/firewall-config:5645
+#: ../src/firewall-config:5649
 msgid "Please enter an ipv4 address with the form address[/mask]."
 msgstr "Будь ласка, введіть адресу IPv4 у форматі «адреса[/маска]»"
 
-#: ../src/firewall-config:5646
+#: ../src/firewall-config:5650
 msgid "The mask can be a network mask or a number."
 msgstr "Маску можна вказати у форматі маски мережі або числа."
 
-#: ../src/firewall-config:5648
+#: ../src/firewall-config:5652
 msgid "Please enter an ipv6 address with the form address[/mask]."
 msgstr "Будь ласка, введіть адресу IPv6 у форматі «адреса[/маска]»"
 
-#: ../src/firewall-config:5649
+#: ../src/firewall-config:5653
 msgid "The mask is a number."
 msgstr "Маску слід вказати у форматі числа."
 
-#: ../src/firewall-config:5651
+#: ../src/firewall-config:5655
 msgid "Please enter an ipv4 or ipv6 address with the form address[/mask]."
 msgstr "Будь ласка, введіть адресу IPv4 або IPv6 у форматі «адреса[/маска]»"
 
-#: ../src/firewall-config:5652
+#: ../src/firewall-config:5656
 msgid ""
 "The mask can be a network mask or a number for ipv4.\n"
 "The mask is a number for ipv6."
@@ -690,52 +694,52 @@ msgstr ""
 "Для IPv4 маску можна вказати у форматі маски мережі або числа.\n"
 "Для IPv6 маску слід вказати у форматі числа."
 
-#: ../src/firewall-config:5836
+#: ../src/firewall-config:5840
 msgid "Built-in ipset, rename not supported."
 msgstr "Вбудований ipset, підтримки перейменування не передбачено."
 
-#: ../src/firewall-config:5928 ../src/firewall-config:6010
+#: ../src/firewall-config:5932 ../src/firewall-config:6014
 msgid "Please select a file"
 msgstr "Будь ласка, виберіть файл"
 
-#: ../src/firewall-config:5935 ../src/firewall-config:6017
+#: ../src/firewall-config:5939 ../src/firewall-config:6021
 msgid "Text Files"
 msgstr "текстові файли"
 
-#: ../src/firewall-config:5940 ../src/firewall-config:6022
+#: ../src/firewall-config:5944 ../src/firewall-config:6026
 msgid "All Files"
 msgstr "усі файли"
 
-#: ../src/firewall-config:6443 ../src/firewall-config:6472
+#: ../src/firewall-config:6447 ../src/firewall-config:6476
 #: ../src/firewall-config.glade.h:40
 msgid "All"
 msgstr "Усе"
 
-#: ../src/firewall-config:6443 ../src/firewall-config:6472
+#: ../src/firewall-config:6447 ../src/firewall-config:6476
 #: ../src/firewall-config.glade.h:41
 msgid "IPv4"
 msgstr "IPv4"
 
-#: ../src/firewall-config:6444 ../src/firewall-config:6472
+#: ../src/firewall-config:6448 ../src/firewall-config:6476
 #: ../src/firewall-config.glade.h:42
 msgid "IPv6"
 msgstr "IPv6"
 
-#: ../src/firewall-config:6449
+#: ../src/firewall-config:6453
 msgid "Built-in helper, rename not supported."
 msgstr ""
 "Вбудований допоміжний засіб, підтримки перейменовування не передбачено."
 
-#: ../src/firewall-config:6939
+#: ../src/firewall-config:6943
 msgid "Built-in icmp, rename not supported."
 msgstr "Вбудований ICMP, підтримки перейменування не передбачено."
 
-#: ../src/firewall-config:8012
+#: ../src/firewall-config:8016
 #, c-format
 msgid "Failed to read file '%s': %s"
 msgstr "Не вдалося прочитати файл «%s»: %s"
 
-#: ../src/firewall-config:8144
+#: ../src/firewall-config:8149
 #, c-format
 msgid "Select zone for source %s"
 msgstr "Виберіть зону для джерела %s"
@@ -772,7 +776,6 @@ msgstr "Безпосередній ланцюжок"
 msgid "Please select ipv and table and enter the chain name."
 msgstr ""
 "Будь ласка виберіть версію протоколу IP та таблицю та введіть назву ланцюжка."
-""
 
 #: ../src/firewall-config.glade.h:12
 msgid "ipv:"
@@ -986,14 +989,12 @@ msgstr "Налаштовування автоматичного призначе
 
 #: ../src/firewall-config.glade.h:67
 msgid "Configure Automatic Helper Assignment setting."
-msgstr ""
-"Налаштовування параметра автоматичного призначення допоміжних засобів."
+msgstr "Налаштовування параметра автоматичного призначення допоміжних засобів."
 
 #: ../src/firewall-config.glade.h:68
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
 msgstr ""
 "Режим супербезпеки означає, що усіх вхідні та вихідні пакети відкидатимуться."
-""
 
 #: ../src/firewall-config.glade.h:69
 msgid "Panic Mode"
@@ -1063,8 +1064,7 @@ msgstr "Змінити зону прив’язки"
 msgid ""
 "Hide active runtime bindings of connections, interfaces and sources to zones"
 msgstr ""
-"Приховати активні динамічні прив’язки з’єднань, інтерфейсів або джерел до "
-"зон"
+"Приховати активні динамічні прив’язки з’єднань, інтерфейсів або джерел до зон"
 
 #: ../src/firewall-config.glade.h:85
 msgid ""
@@ -1395,8 +1395,7 @@ msgstr "Порт джерела"
 
 #: ../src/firewall-config.glade.h:148
 msgid "Netfilter helper modules are needed for some services."
-msgstr ""
-"Модулі допоміжних засобів фільтрування мережі потребують певних служб."
+msgstr "Модулі допоміжних засобів фільтрування мережі потребують певних служб."
 
 #: ../src/firewall-config.glade.h:149
 msgid "Modules"
@@ -1434,8 +1433,8 @@ msgid ""
 "example IP addresses, port numbers or MAC addresses. "
 msgstr ""
 "IPSet може бути використано для створення «білих» або «чорних» списків, у "
-"ньому можуть зберігатися, наприклад, IP-адреси, номери портів або MAC-адреси."
-"  "
+"ньому можуть зберігатися, наприклад, IP-адреси, номери портів або MAC-"
+"адреси.  "
 
 #: ../src/firewall-config.glade.h:155
 msgid "IPSet"
@@ -1547,7 +1546,6 @@ msgstr ""
 msgid "Define ports or port ranges, which are monitored by the helper."
 msgstr ""
 "Визначення портів або діапазонів портів, за якими стежитиме допоміжний засіб."
-""
 
 #: ../src/firewall-config.glade.h:175
 msgid ""
@@ -1708,9 +1706,9 @@ msgid ""
 "the absolute command inclusive arguments must match."
 msgstr ""
 "Якщо запис команди у «білому» списку завершується зірочкою, «*», його буде "
-"використано для обробки усіх рядків команд, що починаються відповідним чином."
-" Якщо у записі немає «*», обробка виконуватиметься лише для вказано разом з "
-"аргументами команди."
+"використано для обробки усіх рядків команд, що починаються відповідним "
+"чином. Якщо у записі немає «*», обробка виконуватиметься лише для вказано "
+"разом з аргументами команди."
 
 #: ../src/firewall-config.glade.h:201
 msgid "Add Command Line"
@@ -1959,8 +1957,8 @@ msgstr "інвертування"
 
 #: ../src/firewall-config.glade.h:262
 msgid ""
-"To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
-"(not both)."
+"To enable this Action has to be 'reject' and Family either 'ipv4' or "
+"'ipv6' (not both)."
 msgstr ""
 "Щоб можна було скористатися цим, значення «Дія» має бути «відмова», а "
 "«Сімейством» має бути «ipv4» або «ipv6» (не обидва)."
