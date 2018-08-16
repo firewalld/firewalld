@@ -428,6 +428,7 @@ class Firewall(object):
         # exsting ipsets and the configuration in firewalld.
         if (reload and complete_reload) or \
            (self.ipset_enabled and self.ipset.has_ipsets()):
+            # FIXME(security issue): if self.drop_on_reload, all traffic are ACCEPT now
             transaction.execute(True)
             transaction.clear()
 
@@ -436,9 +437,11 @@ class Firewall(object):
             log.debug1("Unloading firewall modules")
             self.modules_backend.unload_firewall_modules()
 
-        self.apply_default_tables(use_transaction=transaction)
-        transaction.execute(True)
-        transaction.clear()
+        if self._firewall_backend == "nftables":
+            # TODO: remove build_default_tables for ebtables and iptables
+            self.apply_default_tables(use_transaction=transaction)
+            transaction.execute(True)
+            transaction.clear()
 
         # apply settings for loaded ipsets while reloading here
         if self.ipset_enabled and self.ipset.has_ipsets():
