@@ -829,14 +829,14 @@ FWD_START_TEST([lockdown])
 FWD_END_TEST
 
 m4_define([rich_rule_test], [
-	FWD_CHECK([--add-rich-rule='$1'], 0, ignore)
-	FWD_CHECK([--query-rich-rule='$1'], 0, ignore)
-	FWD_CHECK([--remove-rich-rule='$1'], 0, ignore)
-	FWD_CHECK([--query-rich-rule='$1'], 1, ignore)
-	FWD_CHECK([--permanent --add-rich-rule='$1'], 0, ignore)
-	FWD_CHECK([--permanent --query-rich-rule='$1'], 0, ignore)
-	FWD_CHECK([--permanent --remove-rich-rule='$1'], 0, ignore)
-	FWD_CHECK([--permanent --query-rich-rule='$1'], 1, ignore)
+    FWD_CHECK([--add-rich-rule='$1'], 0, ignore)
+    FWD_CHECK([--query-rich-rule='$1'], 0, ignore)
+    FWD_CHECK([--remove-rich-rule='$1'], 0, ignore)
+    FWD_CHECK([--query-rich-rule='$1'], 1, ignore)
+    FWD_CHECK([--permanent --add-rich-rule='$1'], 0, ignore)
+    FWD_CHECK([--permanent --query-rich-rule='$1'], 0, ignore)
+    FWD_CHECK([--permanent --remove-rich-rule='$1'], 0, ignore)
+    FWD_CHECK([--permanent --query-rich-rule='$1'], 1, ignore)
 ])
 FWD_START_TEST([rich rules good])
     rich_rule_test([rule protocol value="ah" reject])
@@ -859,8 +859,8 @@ FWD_START_TEST([rich rules good])
     rich_rule_test([rule forward-port port="99" to-port="10999" to-addr="1::2:3:4:7" protocol="dccp" family="ipv6" source address="1:2:3:4:6::"])
 FWD_END_TEST
 FWD_START_TEST([rich rules audit])
-	CHECK_LOG_AUDIT
-	rich_rule_test([rule service name="ftp" audit limit value="1/m" accept])
+    CHECK_LOG_AUDIT
+    rich_rule_test([rule service name="ftp" audit limit value="1/m" accept])
 FWD_END_TEST
 m4_undefine([rich_rule_test])
 
