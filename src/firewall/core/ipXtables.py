@@ -336,14 +336,14 @@ class ip4tables(object):
         return table in BUILT_IN_CHAINS and \
                chain in BUILT_IN_CHAINS[table]
 
-    def build_chain(self, add, table, chain):
+    def build_chain_rules(self, add, table, chain):
         rule = [ "-t", table ]
         if add:
             rule.append("-N")
         else:
             rule.append("-X")
         rule.append(chain)
-        return rule
+        return [rule]
 
     def build_rule(self, add, table, chain, index, args):
         rule = [ "-t", table ]

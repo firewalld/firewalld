@@ -487,7 +487,7 @@ class FirewallDirect(object):
                                     (chain, ipv, table))
 
         backend = self._fw.get_direct_backend_by_ipv(ipv)
-        transaction.add_rule(backend, backend.build_chain(add, table, chain))
+        transaction.add_rules(backend, backend.build_chain_rules(add, table, chain))
 
         self._register_chain(table_id, chain, add)
         transaction.add_fail(self._register_chain, table_id, chain, not add)
