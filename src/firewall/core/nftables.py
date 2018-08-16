@@ -700,7 +700,7 @@ class nftables(object):
         rule = [add_del, "rule", "inet", "%s" % TABLE_NAME,
                 "%s_%s_allow" % (table, target)]
         rule += rule_fragment + ["log", "level", "audit"]
-        rule += self._rich_rule_limit_fragment(rich_rule.log.limit)
+        rule += self._rich_rule_limit_fragment(rich_rule.audit.limit)
 
         return rule
 
