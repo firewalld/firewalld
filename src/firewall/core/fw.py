@@ -462,9 +462,15 @@ class Firewall(object):
             log.debug1("Applying direct chains rules and passthrough rules")
             self.direct.apply_direct(transaction)
 
-            # Execute transaction
-            transaction.execute(True)
-            transaction.clear()
+            # since direct rules are easy to make syntax errors lets highlight
+            # the cause if the transaction fails.
+            try:
+                transaction.execute(True)
+                transaction.clear()
+            except FirewallError as e:
+                raise FirewallError(e.code, "Direct: %s" % (e.msg if e.msg else ""))
+            except Exception:
+                raise
 
         del transaction
 
