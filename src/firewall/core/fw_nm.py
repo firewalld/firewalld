@@ -75,11 +75,11 @@ def nm_get_zone_of_connection(connection):
 
     con = nm_get_client().get_connection_by_uuid(connection)
     if con is None:
-        return False
+        return None
 
     setting_con = con.get_setting_connection()
     if setting_con is None:
-        return False
+        return None
 
     zone = setting_con.get_zone()
     if zone is None:
