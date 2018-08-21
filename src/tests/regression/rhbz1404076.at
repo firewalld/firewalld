@@ -1,0 +1,17 @@
+FWD_START_TEST([query single port added with range])
+
+dnl add a set of ports by range, then query a specific port inside that range.
+FWD_CHECK([-q --add-port=8080-8090/tcp])
+FWD_CHECK([-q --query-port=8085/tcp])
+FWD_CHECK([-q --query-port=webcache/tcp]) dnl named port
+FWD_CHECK([-q --query-port=8091/tcp], 1) dnl negative test
+FWD_CHECK([-q --query-port=8085/udp], 1) dnl negative test
+
+dnl same thing, but for permanent configuration.
+FWD_CHECK([-q --permanent --add-port=8080-8090/tcp])
+FWD_CHECK([-q --permanent --query-port=8085/tcp])
+FWD_CHECK([-q --permanent --query-port=webcache/tcp]) dnl named port
+FWD_CHECK([-q --permanent --query-port=8091/tcp], 1) dnl negative test
+FWD_CHECK([-q --permanent --query-port=8085/udp], 1) dnl negative test
+
+FWD_END_TEST
