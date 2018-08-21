@@ -24,7 +24,8 @@ from firewall.core.base import SHORTCUTS, DEFAULT_ZONE_TARGET, \
     ZONE_SOURCE_IPSET_TYPES
 from firewall.core.logger import log
 from firewall.functions import portStr, checkIPnMask, checkIP6nMask, \
-    checkProtocol, enable_ip_forwarding, check_single_address, check_mac
+    checkProtocol, enable_ip_forwarding, check_single_address, check_mac, \
+    portInPortRange
 from firewall.core.rich import Rich_Rule, Rich_Accept, \
     Rich_Mark, Rich_Service, Rich_Port, Rich_Protocol, \
     Rich_Masquerade, Rich_ForwardPort, Rich_SourcePort, Rich_IcmpBlock, \
@@ -929,7 +930,15 @@ class FirewallZone(object):
             del _obj.settings["ports"][port_id]
 
     def query_port(self, zone, port, protocol):
-        return self.__port_id(port, protocol) in self.get_settings(zone)["ports"]
+        if self.__port_id(port, protocol) in self.get_settings(zone)["ports"]:
+            return True
+        else:
+            # It might be a single port query that is inside a range
+            for (_port, _protocol) in self.get_settings(zone)["ports"]:
+                if portInPortRange(port, _port) and protocol == _protocol:
+                    return True
+
+        return False
 
     def list_ports(self, zone):
         return list(self.get_settings(zone)["ports"].keys())

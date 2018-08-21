@@ -140,6 +140,18 @@ def portStr(port, delimiter=":"):
     else:
         return "%s%s%s" % (_range[0], delimiter, _range[1])
 
+def portInPortRange(port, range):
+    _port = getPortID(port)
+    _range = getPortRange(range)
+
+    if len(_range) == 1:
+        return _port == getPortID(_range[0])
+    if len(_range) == 2 and \
+       _port >= getPortID(_range[0]) and _port <= getPortID(_range[1]):
+            return True
+
+    return False
+
 def getServiceName(port, proto):
     """ Check and Get service name from port and proto string combination using socket.getservbyport
 
