@@ -237,6 +237,7 @@ CONFIG_FILES = \
 	services/snmptrap.xml \
 	services/snmp.xml \
 	services/spideroak-lansync.xml \
+	services/spotify-sync.xml \
 	services/squid.xml \
 	services/ssh.xml \
 	services/steam-streaming.xml \
