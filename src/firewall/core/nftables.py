@@ -19,7 +19,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import os.path
 import copy
 
 from firewall.core.base import SHORTCUTS, DEFAULT_ZONE_TARGET
@@ -152,17 +151,13 @@ class nftables(object):
     def __init__(self, fw):
         self._fw = fw
         self._command = config.COMMANDS["nft"]
-        self.fill_exists()
+        self.restore_command_exists = False
         self.available_tables = []
         self.rule_to_handle = {}
         self.rule_ref_count = {}
         self.rich_rule_priority_counts = {}
         self.zone_source_index_cache = {}
         self.used_families = ["inet", "ip", "ip6"]
-
-    def fill_exists(self):
-        self.command_exists = os.path.exists(self._command)
-        self.restore_command_exists = False
 
     def _rule_key_from_rule(self, rule):
         rule_key = rule[2:]
