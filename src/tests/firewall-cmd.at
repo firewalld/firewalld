@@ -1408,8 +1408,8 @@ FWD_START_TEST([rich rules priority])
     NFT_LIST_RULES([inet], [filter_IN_public_pre], 0, [dnl
         table inet firewalld {
         chain filter_IN_public_pre {
-        icmp type destination-unreachable reject with icmp type admin-prohibited
-        icmpv6 type destination-unreachable reject with icmpv6 type admin-prohibited
+        icmp type destination-unreachable reject with icmpx type admin-prohibited
+        icmpv6 type destination-unreachable reject with icmpx type admin-prohibited
         icmp type echo-request accept
         icmpv6 type echo-request accept
         }
@@ -1418,8 +1418,8 @@ FWD_START_TEST([rich rules priority])
     NFT_LIST_RULES([inet], [filter_IN_public_deny], 0, [dnl
         table inet firewalld {
         chain filter_IN_public_deny {
-        icmp type destination-unreachable reject with icmp type admin-prohibited
-        icmpv6 type destination-unreachable reject with icmpv6 type admin-prohibited
+        icmp type destination-unreachable reject with icmpx type admin-prohibited
+        icmpv6 type destination-unreachable reject with icmpx type admin-prohibited
         }
         }
     ])
@@ -1436,8 +1436,8 @@ FWD_START_TEST([rich rules priority])
     NFT_LIST_RULES([inet], [filter_FWDI_public_pre], 0, [dnl
         table inet firewalld {
         chain filter_FWDI_public_pre {
-        icmp type destination-unreachable reject with icmp type admin-prohibited
-        icmpv6 type destination-unreachable reject with icmpv6 type admin-prohibited
+        icmp type destination-unreachable reject with icmpx type admin-prohibited
+        icmpv6 type destination-unreachable reject with icmpx type admin-prohibited
         icmp type echo-request accept
         icmpv6 type echo-request accept
         }
@@ -1446,8 +1446,8 @@ FWD_START_TEST([rich rules priority])
     NFT_LIST_RULES([inet], [filter_FWDI_public_deny], 0, [dnl
         table inet firewalld {
         chain filter_FWDI_public_deny {
-        icmp type destination-unreachable reject with icmp type admin-prohibited
-        icmpv6 type destination-unreachable reject with icmpv6 type admin-prohibited
+        icmp type destination-unreachable reject with icmpx type admin-prohibited
+        icmpv6 type destination-unreachable reject with icmpx type admin-prohibited
         }
         }
     ])

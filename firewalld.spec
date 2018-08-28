@@ -25,12 +25,12 @@ BuildRequires: docbook-style-xsl
 BuildRequires: libxslt
 BuildRequires: python2-devel
 BuildRequires: iptables, ebtables, ipset
-BuildRequires: nftables >= 0.9.0
+BuildRequires: nftables >= 0.9.3
 %if 0%{?with_python3}
 BuildRequires:  python3-devel
 %endif #0%{?with_python3}
 Requires: iptables, ebtables, ipset
-Requires: nftables >= 0.9.0
+Requires: nftables >= 0.9.3
 Requires(post): systemd
 Requires(preun): systemd
 Requires(postun): systemd
