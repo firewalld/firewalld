@@ -1150,4 +1150,19 @@ class ip6tables(ip4tables):
                            "-m", "rpfilter", "--invert",
                            "-j", "LOG",
                            "--log-prefix", "rpfilter_DROP: " ])
+        # We also need to allow these messages to the filter table
+        # because accepting them in the 'raw' table alone will still
+        # make them traverse the rest of the tables.
+        rules.append([ "-I", "INPUT", "1", "-t", "filter",
+                       "-p", "ipv6-icmp",
+                       "--icmpv6-type=neighbour-solicitation",
+                       "-j", "ACCEPT" ])
+        rules.append([ "-I", "INPUT", "2", "-t", "filter",
+                       "-p", "ipv6-icmp",
+                       "--icmpv6-type=router-advertisement",
+                       "-j", "ACCEPT" ])
+        rules.append([ "-I", "INPUT", "3", "-t", "filter",
+                       "-p", "ipv6-icmp",
+                       "--icmpv6-type=neighbour-advertisement",
+                       "-j", "ACCEPT" ])
         return rules
