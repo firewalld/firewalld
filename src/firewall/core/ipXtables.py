@@ -1140,9 +1140,13 @@ class ip6tables(ip4tables):
                        "--icmpv6-type=router-advertisement",
                        "-j", "ACCEPT" ]) # RHBZ#1058505
         rules.append([ "-I", "PREROUTING", "3", "-t", "raw",
+                       "-p", "ipv6-icmp",
+                       "--icmpv6-type=neighbour-advertisement",
+                       "-j", "ACCEPT" ]) # suse bz #1105821
+        rules.append([ "-I", "PREROUTING", "4", "-t", "raw",
                        "-m", "rpfilter", "--invert", "-j", "DROP" ])
         if log_denied != "off":
-            rules.append([ "-I", "PREROUTING", "3", "-t", "raw",
+            rules.append([ "-I", "PREROUTING", "4", "-t", "raw",
                            "-m", "rpfilter", "--invert",
                            "-j", "LOG",
                            "--log-prefix", "rpfilter_DROP: " ])

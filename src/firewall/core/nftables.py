@@ -1130,8 +1130,9 @@ class nftables(object):
                           "oif", "missing", "log", "prefix", "\"rpfilter_DROP: \""])
         rules.append(["insert", "rule", "inet", "%s" % TABLE_NAME,
                       "raw_%s" % "PREROUTING",
-                      "icmpv6", "type", "{ nd-router-advert, nd-neighbor-solicit }",
-                      "accept"]) # RHBZ#1058505, RHBZ#1575431 (bug in kernel 4.16-4.17)
+                      "icmpv6", "type", "{ nd-router-advert, nd-neighbor-advert, nd-neighbor-solicit }",
+                      "accept"]) # RHBZ#1058505, RHBZ#1575431 (bug in kernel 4.16-4.17), suse bz #1105821
+
         return rules
 
     def build_zone_rich_source_destination_rules(self, enable, zone, rich_rule):
