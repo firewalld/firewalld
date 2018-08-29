@@ -825,12 +825,20 @@ class nftables(object):
 
         return rules
 
-    def build_zone_protocol_rules(self, enable, zone, protocol, rich_rule=None):
+    def build_zone_protocol_rules(self, enable, zone, protocol, destination=None, rich_rule=None):
         add_del = { True: "add", False: "delete" }[enable]
         table = "filter"
         target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["INPUT"], zone=zone)
 
         rule_fragment = []
+        if rich_rule:
+            rule_fragment += self._rich_rule_family_fragment(rich_rule.family)
+        if destination:
+            if check_single_address("ipv4", destination):
+                rule_fragment += ["ip"]
+            else:
+                rule_fragment += ["ip6"]
+            rule_fragment += ["daddr", destination]
         if rich_rule:
             rule_fragment += self._rich_rule_family_fragment(rich_rule.family)
             rule_fragment += self._rich_rule_destination_fragment(rich_rule.destination)
