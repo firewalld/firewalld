@@ -812,6 +812,7 @@ class nftables(object):
             rule_fragment += self._rich_rule_destination_fragment(rich_rule.destination)
             rule_fragment += self._rich_rule_source_fragment(rich_rule.source)
         rule_fragment += [proto, "dport", "%s" % portStr(port, "-")]
+        rule_fragment += ["ct", "state", "new"]
 
         rules = []
         if rich_rule:
@@ -821,7 +822,7 @@ class nftables(object):
         else:
             rules.append([add_del, "rule", "inet", "%s" % TABLE_NAME,
                           "%s_%s_allow" % (table, target)] +
-                          rule_fragment + ["ct", "state", "new", "accept"])
+                          rule_fragment + ["accept"])
 
         return rules
 
@@ -844,6 +845,7 @@ class nftables(object):
             rule_fragment += self._rich_rule_destination_fragment(rich_rule.destination)
             rule_fragment += self._rich_rule_source_fragment(rich_rule.source)
         rule_fragment = ["meta", "l4proto", protocol]
+        rule_fragment += ["ct", "state", "new"]
 
         rules = []
         if rich_rule:
@@ -853,7 +855,7 @@ class nftables(object):
         else:
             rules.append([add_del, "rule", "inet", "%s" % TABLE_NAME,
                           "filter_%s_allow" % (target)] +
-                          rule_fragment + ["ct", "state", "new", "accept"])
+                          rule_fragment + ["accept"])
 
         return rules
 
@@ -876,6 +878,7 @@ class nftables(object):
             rule_fragment += self._rich_rule_destination_fragment(rich_rule.destination)
             rule_fragment += self._rich_rule_source_fragment(rich_rule.source)
         rule_fragment += [proto, "sport", "%s" % portStr(port, "-")]
+        rule_fragment += ["ct", "state", "new"]
 
         rules = []
         if rich_rule:
@@ -885,7 +888,7 @@ class nftables(object):
         else:
             rules.append([add_del, "rule", "inet", "%s" % TABLE_NAME,
                           "%s_%s_allow" % (table, target)] +
-                          rule_fragment + ["ct", "state", "new", "accept"])
+                          rule_fragment + ["accept"])
 
         return rules
 
