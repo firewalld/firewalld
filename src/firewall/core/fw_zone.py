@@ -1640,7 +1640,7 @@ class FirewallZone(object):
                     if enable and type(rule.action) == Rich_Mark:
                         zone_transaction.add_chain("mangle", "PREROUTING")
                     rules = backend.build_zone_protocol_rules(
-                                enable, zone, proto, rule)
+                                enable, zone, proto, destination, rule)
                     zone_transaction.add_rules(backend, rules)
 
                 # create rules
@@ -1677,7 +1677,7 @@ class FirewallZone(object):
                     zone_transaction.add_chain("mangle", "PREROUTING")
 
                 rules = backend.build_zone_protocol_rules(
-                            enable, zone, protocol, rule)
+                            enable, zone, protocol, None, rule)
                 zone_transaction.add_rules(backend, rules)
 
             # MASQUERADE
@@ -1852,7 +1852,8 @@ class FirewallZone(object):
                 zone_transaction.add_rules(backend, rules)
 
             for protocol in svc.protocols:
-                rules = backend.build_zone_protocol_rules(enable, zone, protocol)
+                rules = backend.build_zone_protocol_rules(
+                                    enable, zone, protocol, destination)
                 zone_transaction.add_rules(backend, rules)
 
             for (port,proto) in svc.source_ports:

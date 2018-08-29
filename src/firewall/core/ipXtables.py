@@ -885,12 +885,14 @@ class ip4tables(object):
 
         return rules
 
-    def build_zone_protocol_rules(self, enable, zone, protocol, rich_rule=None):
+    def build_zone_protocol_rules(self, enable, zone, protocol, destination=None, rich_rule=None):
         add_del = { True: "-A", False: "-D" }[enable]
         table = "filter"
         target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["INPUT"], zone=zone)
 
         rule_fragment = [ "-p", protocol ]
+        if destination:
+            rule_fragment += [ "-d", destination ]
         if rich_rule:
             rule_fragment += self._rich_rule_destination_fragment(rich_rule.destination)
             rule_fragment += self._rich_rule_source_fragment(rich_rule.source)
