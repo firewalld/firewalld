@@ -226,13 +226,7 @@ m4_define([NS_CHECK], [
 ])
 
 m4_define([EBTABLES_LIST_RULES], [
-    if test x"$1" != x && test x"$2" != x; then
-        NS_CHECK([ebtables -t $1 -L $2 | TRIM_WHITESPACE | grep -v "^Bridge"], [$3], [$4], [$5], [$6], [$7])
-    elif test x"$1" != x; then
-        NS_CHECK([ebtables -t $1 -L | TRIM_WHITESPACE | grep -v "^Bridge"], [$3], [$4], [$5], [$6], [$7])
-    else
-        NS_CHECK([ebtables -L | TRIM_WHITESPACE | grep -v "^Bridge"], [$3], [$4], [$5], [$6], [$7])
-    fi
+    NS_CHECK([ebtables -t $1 -L $2 | TRIM_WHITESPACE | grep -v "^Bridge"], [$3], [$4], [$5], [$6], [$7])
 ])
 
 m4_define([DBUS_CHECK], [
