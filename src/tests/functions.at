@@ -229,6 +229,18 @@ m4_define([EBTABLES_LIST_RULES], [
     NS_CHECK([ebtables -t $1 -L $2 | TRIM_WHITESPACE | grep -v "^Bridge"], [$3], [$4], [$5], [$6], [$7])
 ])
 
+m4_define([IPTABLES_LIST_RULES], [
+    NS_CHECK([iptables -n -t $1 -L $2 | TRIM_WHITESPACE | tail -n +3], [$3], [$4], [$5], [$6], [$7])
+])
+
+m4_define([IP6TABLES_LIST_RULES], [
+    NS_CHECK([ip6tables -n -t $1 -L $2 | TRIM_WHITESPACE | tail -n +3], [$3], [$4], [$5], [$6], [$7])
+])
+
+m4_define([NFT_LIST_RULES], [
+    NS_CHECK([nft -n list chain $1 firewalld $2 | TRIM_WHITESPACE], [$3], [$4], [$5], [$6], [$7])
+])
+
 m4_define([DBUS_CHECK], [
     NS_CHECK([dbus-send --system --print-reply --dest=org.fedoraproject.FirewallD1 dnl
               /org/fedoraproject/FirewallD1/$1 org.fedoraproject.FirewallD1.$2 $3],
