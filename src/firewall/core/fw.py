@@ -616,7 +616,7 @@ class Firewall(object):
             except FirewallError as msg:
                 log.error("Failed to load %s file '%s': %s", reader_type,
                           name, msg)
-            except Exception as msg:
+            except Exception:
                 log.error("Failed to load %s file '%s':", reader_type, name)
                 log.exception()
 
