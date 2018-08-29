@@ -672,14 +672,8 @@ class FirewallZone(object):
         return None
 
     def __rule(self, enable, zone, rule, mark_id, zone_transaction):
-        try:
-            mark = self._rule_prepare(enable, zone, rule, mark_id,
-                                       zone_transaction)
-        except FirewallError as msg:
-            log.warning(str(msg))
-            mark = None
-
-        return mark
+        return self._rule_prepare(enable, zone, rule, mark_id,
+                                  zone_transaction)
 
     def add_rule(self, zone, rule, timeout=0, sender=None,
                  use_zone_transaction=None):
