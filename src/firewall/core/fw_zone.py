@@ -1581,84 +1581,82 @@ class FirewallZone(object):
             if type(rule.element) == Rich_Service:
                 svc = self._fw.service.get_service(rule.element.name)
 
-                destination = rule.destination if rule.destination else None
+                destinations = [rule.destination] if rule.destination else [None]
+
                 if len(svc.destination) > 0:
+                    if rule.destination:
+                        # we can not use two destinations at the same time
+                        raise FirewallError(errors.INVALID_RULE,
+                                            "Destination conflict with service.")
+                    destinations = []
                     for ipv in ipvs:
-                        if ipv in svc.destination:
-                            if not backend.is_ipv_supported(ipv):
-                                # destination is set, only use if it contains ipv
-                                raise FirewallError(errors.INVALID_RULE,
-                                                    "Service %s is not usable with %s" %
-                                                    (rule.element.name, backend.name))
-                            elif svc.destination[ipv] != "" and rule.destination:
-                                # we can not use two destinations at the same time
-                                raise FirewallError(errors.INVALID_RULE,
-                                                    "Destination conflict with service.")
-                            destination = svc.destination[ipv]
+                        if ipv in svc.destination and backend.is_ipv_supported(ipv):
+                            destinations.append(svc.destination[ipv])
 
-                if enable:
-                    zone_transaction.add_chain("filter", "INPUT")
-                    if self._fw.nf_conntrack_helper_setting == 0:
-                        zone_transaction.add_chain("raw", "PREROUTING")
-
-                if type(rule.action) == Rich_Accept:
-                    # only load modules for accept action
-                    helpers = self.get_helpers_for_service_modules(svc.modules,
-                                                                   enable)
-
-                    modules = [ ]
-                    for helper in helpers:
-                        module = helper.module
+                for destination in destinations:
+                    if enable:
+                        zone_transaction.add_chain("filter", "INPUT")
                         if self._fw.nf_conntrack_helper_setting == 0:
-                            if helper.name not in \
-                               self._fw.nf_conntrack_helpers[module]:
-                                raise FirewallError(
-                                    errors.INVALID_HELPER,
-                                    "'%s' not available in kernel" % module)
-                            nat_module = module.replace("conntrack", "nat")
-                            if nat_module in self._fw.nf_nat_helpers:
-                                modules.append(nat_module)
-                            if helper.family != "" and not backend.is_ipv_supported(helper.family):
-                                # no support for family ipv, continue
-                                continue
-                            if len(helper.ports) < 1:
-                                modules.append(module)
-                            else:
-                                for (port,proto) in helper.ports:
-                                    rules = backend.build_zone_helper_ports_rules(
-                                                    enable, zone, proto, port,
-                                                    destination, helper.name)
-                                    zone_transaction.add_rules(backend, rules)
-                        else:
-                            if helper.module not in modules:
-                                modules.append(helper.module)
-                                nat_module = helper.module.replace("conntrack", "nat")
+                            zone_transaction.add_chain("raw", "PREROUTING")
+
+                    if type(rule.action) == Rich_Accept:
+                        # only load modules for accept action
+                        helpers = self.get_helpers_for_service_modules(svc.modules,
+                                                                       enable)
+
+                        modules = [ ]
+                        for helper in helpers:
+                            module = helper.module
+                            if self._fw.nf_conntrack_helper_setting == 0:
+                                if helper.name not in \
+                                   self._fw.nf_conntrack_helpers[module]:
+                                    raise FirewallError(
+                                        errors.INVALID_HELPER,
+                                        "'%s' not available in kernel" % module)
+                                nat_module = module.replace("conntrack", "nat")
                                 if nat_module in self._fw.nf_nat_helpers:
                                     modules.append(nat_module)
-                    zone_transaction.add_modules(modules)
+                                if helper.family != "" and not backend.is_ipv_supported(helper.family):
+                                    # no support for family ipv, continue
+                                    continue
+                                if len(helper.ports) < 1:
+                                    modules.append(module)
+                                else:
+                                    for (port,proto) in helper.ports:
+                                        rules = backend.build_zone_helper_ports_rules(
+                                                        enable, zone, proto, port,
+                                                        destination, helper.name)
+                                        zone_transaction.add_rules(backend, rules)
+                            else:
+                                if helper.module not in modules:
+                                    modules.append(helper.module)
+                                    nat_module = helper.module.replace("conntrack", "nat")
+                                    if nat_module in self._fw.nf_nat_helpers:
+                                        modules.append(nat_module)
+                        zone_transaction.add_modules(modules)
 
-                # create rules
-                for (port,proto) in svc.ports:
-                    if enable and type(rule.action) == Rich_Mark:
-                        zone_transaction.add_chain("mangle", "PREROUTING")
-                    rules = backend.build_zone_ports_rules(
-                                enable, zone, proto, port, destination, rule)
-                    zone_transaction.add_rules(backend, rules)
+                    # create rules
+                    for (port,proto) in svc.ports:
+                        if enable and type(rule.action) == Rich_Mark:
+                            zone_transaction.add_chain("mangle", "PREROUTING")
+                        rules = backend.build_zone_ports_rules(
+                                    enable, zone, proto, port, destination, rule)
+                        zone_transaction.add_rules(backend, rules)
 
-                for proto in svc.protocols:
-                    if enable and type(rule.action) == Rich_Mark:
-                        zone_transaction.add_chain("mangle", "PREROUTING")
-                    rules = backend.build_zone_protocol_rules(
-                                enable, zone, proto, destination, rule)
-                    zone_transaction.add_rules(backend, rules)
+                    for proto in svc.protocols:
+                        if enable and type(rule.action) == Rich_Mark:
+                            zone_transaction.add_chain("mangle", "PREROUTING")
+                        rules = backend.build_zone_protocol_rules(
+                                    enable, zone, proto, destination, rule)
+                        zone_transaction.add_rules(backend, rules)
 
-                # create rules
-                for (port,proto) in svc.source_ports:
-                    if enable and type(rule.action) == Rich_Mark:
-                        zone_transaction.add_chain("mangle", "PREROUTING")
-                    rules = backend.build_zone_source_ports_rules(
-                                enable, zone, proto, port, destination, rule)
-                    zone_transaction.add_rules(backend, rules)
+                    # create rules
+                    for (port,proto) in svc.source_ports:
+                        if enable and type(rule.action) == Rich_Mark:
+                            zone_transaction.add_chain("mangle", "PREROUTING")
+                        rules = backend.build_zone_source_ports_rules(
+                                    enable, zone, proto, port, destination, rule)
+                        zone_transaction.add_rules(backend, rules)
 
             # PORT
             elif type(rule.element) == Rich_Port:
@@ -1814,24 +1812,20 @@ class FirewallZone(object):
                 zone_transaction.add_modules(modules)
             zone_transaction.add_chain("filter", "INPUT")
 
-        for backend in self._fw.enabled_backends():
-            if not backend.zones_supported:
-                continue
-            skip_backend = False
-
-            destination = None
+        # build a list of (backend, destination). The destination may be ipv4,
+        # ipv6 or None
+        #
+        backends_ipv = []
+        for ipv in ["ipv4", "ipv6"]:
+            backend = self._fw.get_backend_by_ipv(ipv)
             if len(svc.destination) > 0:
-                for ipv in ["ipv4", "ipv6"]:
-                    if ipv in svc.destination:
-                        if not backend.is_ipv_supported(ipv):
-                            # destination is set, only use if it contains ipv
-                            skip_backend = True
-                            break
-                        destination = svc.destination[ipv]
+                if ipv in svc.destination:
+                    backends_ipv.append((backend, svc.destination[ipv]))
+            else:
+                if (backend, None) not in backends_ipv:
+                    backends_ipv.append((backend, None))
 
-            if skip_backend:
-                continue
-
+        for (backend,destination) in backends_ipv:
             if self._fw.nf_conntrack_helper_setting == 0:
                 for helper in helpers:
                     module = helper.module
