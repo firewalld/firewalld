@@ -107,7 +107,7 @@ class Firewall_test(object):
         log.debug1("Loading firewalld config file '%s'", config.FIREWALLD_CONF)
         try:
             self._firewalld_conf.read()
-        except Exception as msg:
+        except Exception:
             log.warning("Using fallback firewalld configuration settings.")
         else:
             if self._firewalld_conf.get("DefaultZone"):
@@ -377,7 +377,7 @@ class Firewall_test(object):
             except FirewallError as msg:
                 log.error("Failed to load %s file '%s': %s", reader_type,
                           name, msg)
-            except Exception as msg:
+            except Exception:
                 log.error("Failed to load %s file '%s':", reader_type, name)
                 log.exception()
 

@@ -110,10 +110,10 @@ def run_server(debug_gc=False):
 
         mainloop.run()
 
-    except KeyboardInterrupt as e:
+    except KeyboardInterrupt:
         log.debug1("Stopping..")
 
-    except SystemExit as e:
+    except SystemExit:
         log.error("Raising SystemExit in run_server")
 
     except Exception as e:
