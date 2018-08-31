@@ -520,9 +520,9 @@ class ip4tables(object):
         ret = runProg(self._command, ["-w", "-L", "-n"])  # since iptables-1.4.20
         if ret[0] == 0:
             wait_option = "-w"  # wait for xtables lock
-            ret = runProg(self._command, ["-w2", "-L", "-n"])  # since iptables > 1.4.21
+            ret = runProg(self._command, ["-w10", "-L", "-n"])  # since iptables > 1.4.21
             if ret[0] == 0:
-                wait_option = "-w2"  # wait max 2 seconds
+                wait_option = "-w10"  # wait max 10 seconds
             log.debug2("%s: %s will be using %s option.", self.__class__, self._command, wait_option)
 
         return wait_option
