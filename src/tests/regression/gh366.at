@@ -5,10 +5,10 @@ m4_if(nftables, FIREWALL_BACKEND, [
 NFT_LIST_RULES([inet], [filter_IN_public_allow], 0, [dnl
 table inet firewalld {
 chain filter_IN_public_allow {
-tcp dport ssh ct state new accept
-ip6 daddr fe80::/64 udp dport dhcpv6-client ct state new accept
-ip daddr 224.0.0.251 udp dport mdns ct state new accept
-ip6 daddr ff02::fb udp dport mdns ct state new accept
+tcp dport 22 ct state new accept
+ip6 daddr fe80::/64 udp dport 546 ct state new accept
+ip daddr 224.0.0.251 udp dport 5353 ct state new accept
+ip6 daddr ff02::fb udp dport 5353 ct state new accept
 }
 }
 ])], [
