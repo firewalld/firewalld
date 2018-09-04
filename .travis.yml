@@ -51,7 +51,8 @@ script:
   # Do a parallel build to spot potential dependency problems.
   # No ebtables-restore in ubuntu 14.04
   - ./autogen.sh --with-ebtables-restore=/bin/false --sysconfdir=/etc && make -j32
-  - sudo env PATH="$PATH" make check || { cat src/tests/testsuite.log; exit 1; }
+  - sudo env PATH="$PATH" make check ||
+    sudo env PATH="$PATH" make check TESTSUITEFLAGS="--recheck --errexit -v -d"
 
 # uncomment to add IRC notifications
 # 
