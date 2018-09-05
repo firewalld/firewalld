@@ -872,7 +872,7 @@ class ip4tables(object):
             rule_fragment += self._rich_rule_destination_fragment(rich_rule.destination)
             rule_fragment += self._rich_rule_source_fragment(rich_rule.source)
         if not rich_rule or rich_rule.action != Rich_Mark:
-            rule_fragment += [ "-m", "conntrack", "--ctstate", "NEW" ]
+            rule_fragment += [ "-m", "conntrack", "--ctstate", "NEW,UNTRACKED" ]
 
         rules = []
         if rich_rule:
@@ -897,7 +897,7 @@ class ip4tables(object):
             rule_fragment += self._rich_rule_destination_fragment(rich_rule.destination)
             rule_fragment += self._rich_rule_source_fragment(rich_rule.source)
         if not rich_rule or rich_rule.action != Rich_Mark:
-            rule_fragment += [ "-m", "conntrack", "--ctstate", "NEW" ]
+            rule_fragment += [ "-m", "conntrack", "--ctstate", "NEW,UNTRACKED" ]
 
         rules = []
         if rich_rule:
@@ -925,7 +925,7 @@ class ip4tables(object):
             rule_fragment += self._rich_rule_destination_fragment(rich_rule.destination)
             rule_fragment += self._rich_rule_source_fragment(rich_rule.source)
         if not rich_rule or rich_rule.action != Rich_Mark:
-            rule_fragment += [ "-m", "conntrack", "--ctstate", "NEW" ]
+            rule_fragment += [ "-m", "conntrack", "--ctstate", "NEW,UNTRACKED" ]
 
         rules = []
         if rich_rule:
@@ -975,7 +975,7 @@ class ip4tables(object):
 
         rules.append([ add_del, "%s_allow" % (target), "-t", "filter"]
                      + rule_fragment +
-                     ["-m", "conntrack", "--ctstate", "NEW", "-j", "ACCEPT" ])
+                     ["-m", "conntrack", "--ctstate", "NEW,UNTRACKED", "-j", "ACCEPT" ])
 
         return rules
 
@@ -1019,7 +1019,7 @@ class ip4tables(object):
                                             zone=zone)
         rules.append([ add_del, "%s_allow" % (target),
                      "-t", "filter", "-m", "conntrack",
-                     "--ctstate", "NEW" ] +
+                     "--ctstate", "NEW,UNTRACKED" ] +
                      mark + [ "-j", "ACCEPT" ])
 
         return rules

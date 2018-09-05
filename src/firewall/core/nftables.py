@@ -812,7 +812,7 @@ class nftables(object):
             rule_fragment += self._rich_rule_destination_fragment(rich_rule.destination)
             rule_fragment += self._rich_rule_source_fragment(rich_rule.source)
         rule_fragment += [proto, "dport", "%s" % portStr(port, "-")]
-        rule_fragment += ["ct", "state", "new"]
+        rule_fragment += ["ct", "state", "new,untracked"]
 
         rules = []
         if rich_rule:
@@ -845,7 +845,7 @@ class nftables(object):
             rule_fragment += self._rich_rule_destination_fragment(rich_rule.destination)
             rule_fragment += self._rich_rule_source_fragment(rich_rule.source)
         rule_fragment = ["meta", "l4proto", protocol]
-        rule_fragment += ["ct", "state", "new"]
+        rule_fragment += ["ct", "state", "new,untracked"]
 
         rules = []
         if rich_rule:
@@ -878,7 +878,7 @@ class nftables(object):
             rule_fragment += self._rich_rule_destination_fragment(rich_rule.destination)
             rule_fragment += self._rich_rule_source_fragment(rich_rule.source)
         rule_fragment += [proto, "sport", "%s" % portStr(port, "-")]
-        rule_fragment += ["ct", "state", "new"]
+        rule_fragment += ["ct", "state", "new,untracked"]
 
         rules = []
         if rich_rule:
@@ -949,7 +949,7 @@ class nftables(object):
 
         rules.append([add_del, "rule", "inet", "%s" % TABLE_NAME,
                       "filter_%s_allow" % (target)]
-                      + rule_fragment + ["ct", "state", "new", "accept"])
+                      + rule_fragment + ["ct", "state", "new,untracked", "accept"])
 
         return rules
 
@@ -1013,7 +1013,7 @@ class nftables(object):
         target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[filter_chain],
                                             zone=zone)
         rules.append([add_del, "rule", "inet", "%s" % TABLE_NAME,
-                      "filter_%s_allow" % (target), "ct", "state", "new"]
+                      "filter_%s_allow" % (target), "ct", "state", "new,untracked"]
                       + mark_fragment + ["accept"])
 
         return rules
