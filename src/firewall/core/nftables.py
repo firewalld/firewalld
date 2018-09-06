@@ -1141,8 +1141,16 @@ class nftables(object):
                           "oif", "missing", "log", "prefix", "\"rpfilter_DROP: \""])
         rules.append(["insert", "rule", "inet", "%s" % TABLE_NAME,
                       "raw_%s" % "PREROUTING",
-                      "icmpv6", "type", "{ nd-router-advert, nd-neighbor-solicit }",
-                      "accept"]) # RHBZ#1058505, RHBZ#1575431 (bug in kernel 4.16-4.17)
+                      "icmpv6", "type", "{ nd-router-advert, nd-neighbor-advert, nd-neighbor-solicit }",
+                      "accept"]) # RHBZ#1058505, RHBZ#1575431 (bug in kernel 4.16-4.17), suse bz #1105821
+        # We also need to allow these messages to the filter table
+        # because accepting them in the 'raw' table alone will still
+        # make them traverse the rest of the tables.
+        rules.append(["insert", "rule", "inet", "%s" % TABLE_NAME,
+                      "filter_%s" % "INPUT",
+                      "icmpv6", "type", "{ nd-router-advert, nd-neighbor-advert, nd-neighbor-solicit }",
+                      "accept"])
+
         return rules
 
     def build_zone_rich_source_destination_rules(self, enable, zone, rich_rule):
