@@ -120,6 +120,7 @@ CONFIG_FILES = \
 	services/apcupsd.xml \
 	services/bacula-client.xml \
 	services/bacula.xml \
+	services/bb.xml \
 	services/bgp.xml \
 	services/bitcoin-rpc.xml \
 	services/bitcoin-testnet-rpc.xml \
