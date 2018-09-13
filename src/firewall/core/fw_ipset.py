@@ -87,12 +87,12 @@ class FirewallIPSet(object):
     def remove_ipset(self, name, keep=False):
         obj = self._ipsets[name]
         if obj.applied and not keep:
-            for backend in self.backends():
-                try:
+            try:
+                for backend in self.backends():
                     backend.set_destroy(name)
-                except Exception as msg:
-                    log.error("Failed to destroy ipset '%s'" % name)
-                    log.error(msg)
+            except Exception as msg:
+                log.error("Failed to destroy ipset '%s'" % name)
+                log.error(msg)
         else:
             log.debug1("Keeping ipset '%s' because of timeout option", name)
         del self._ipsets[name]
@@ -194,18 +194,18 @@ class FirewallIPSet(object):
             raise FirewallError(errors.ALREADY_ENABLED,
                                 "'%s' already is in '%s'" % (entry, name))
 
-        for backend in self.backends():
-            try:
+        try:
+            for backend in self.backends():
                 backend.set_add(obj.name, entry)
-            except Exception as msg:
-                log.error("Failed to add entry '%s' to ipset '%s'" % \
-                          (entry, obj.name))
-                log.error(msg)
-            else:
-                if "timeout" not in obj.options or obj.options["timeout"] == "0" \
-                   and entry not in obj.entries:
-                    # no entries visible for ipsets with timeout
-                    obj.entries.append(entry)
+        except Exception as msg:
+            log.error("Failed to add entry '%s' to ipset '%s'" % \
+                      (entry, obj.name))
+            log.error(msg)
+        else:
+            if "timeout" not in obj.options or obj.options["timeout"] == "0" \
+               and entry not in obj.entries:
+                # no entries visible for ipsets with timeout
+                obj.entries.append(entry)
 
     def remove_entry(self, name, entry):
         obj = self.get_ipset(name, applied=True)
@@ -214,18 +214,18 @@ class FirewallIPSet(object):
         if entry not in obj.entries:
             raise FirewallError(errors.NOT_ENABLED,
                                 "'%s' not in '%s'" % (entry, name))
-        for backend in self.backends():
-            try:
+        try:
+            for backend in self.backends():
                 backend.set_delete(obj.name, entry)
-            except Exception as msg:
-                log.error("Failed to remove entry '%s' from ipset '%s'" % \
-                          (entry, obj.name))
-                log.error(msg)
-            else:
-                if "timeout" not in obj.options or obj.options["timeout"] == "0" \
-                   and entry not in obj.entries:
-                    # no entries visible for ipsets with timeout
-                    obj.entries.remove(entry)
+        except Exception as msg:
+            log.error("Failed to remove entry '%s' from ipset '%s'" % \
+                      (entry, obj.name))
+            log.error(msg)
+        else:
+            if "timeout" not in obj.options or obj.options["timeout"] == "0" \
+               and entry not in obj.entries:
+                # no entries visible for ipsets with timeout
+                obj.entries.remove(entry)
 
     def query_entry(self, name, entry):
         obj = self.get_ipset(name, applied=True)
@@ -248,32 +248,28 @@ class FirewallIPSet(object):
             # no entries visible for ipsets with timeout
             obj.entries = entries
 
-        for backend in self.backends():
-            try:
+        try:
+            for backend in self.backends():
                 backend.set_flush(obj.name)
-            except Exception as msg:
-                log.error("Failed to flush ipset '%s'" % obj.name)
-                log.error(msg)
-            else:
-                obj.applied = True
+        except Exception as msg:
+            log.error("Failed to flush ipset '%s'" % obj.name)
+            log.error(msg)
+        else:
+            obj.applied = True
 
-            if self._fw.individual_calls() \
-               or backend.name == "nftables":
-                for entry in obj.entries:
-                    try:
+        try:
+            for backend in self.backends():
+                if self._fw.individual_calls() \
+                   or backend.name == "nftables":
+                    for entry in obj.entries:
                         backend.set_add(obj.name, entry)
-                    except Exception as msg:
-                        log.error("Failed to add entry '%s' to ipset '%s'" % \
-                                  (entry, obj.name))
-                        log.error(msg)
-            else:
-                try:
+                else:
                     backend.set_restore(obj.name, obj.type, obj.entries,
                                                    obj.options, None)
-                except Exception as msg:
-                    log.error("Failed to create ipset '%s'" % obj.name)
-                    log.error(msg)
-                else:
-                    obj.applied = True
+        except Exception as msg:
+            log.error("Failed to create ipset '%s'" % obj.name)
+            log.error(msg)
+        else:
+            obj.applied = True
 
         return
