@@ -15,8 +15,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-16 14:36-0400\n"
-"PO-Revision-Date: 2018-01-25 03:08+0000\n"
+"POT-Creation-Date: 2018-09-13 13:45-0400\n"
+"PO-Revision-Date: 2018-08-19 12:28+0000\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
 "Language-Team: Finnish (http://www.transifex.com/projects/p/firewalld/"
 "language/fi/)\n"
@@ -25,7 +25,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Zanata 4.6.0\n"
+"X-Generator: Zanata 4.6.2\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:412
 msgid "Firewall Applet"
@@ -65,7 +65,7 @@ msgstr "Valitse alue yhteydelle '%s'"
 
 #: ../src/firewall-applet:172 ../src/firewall-config:3911
 msgid "Failed to set zone {zone} for connection {connection_name}"
-msgstr ""
+msgstr "Alueen {zone} asettaminen yhteydelle {connection_name} epäonnistui"
 
 #: ../src/firewall-applet:186
 #, c-format
@@ -74,7 +74,7 @@ msgstr "Valitse alue lähteelle '%s'"
 
 #: ../src/firewall-applet:203
 msgid "Configure Shields Up/Down Zones"
-msgstr ""
+msgstr "Määritä Kilvet ylös/alas -alueet"
 
 #: ../src/firewall-applet:216
 msgid "Here you can select the zones used for Shields Up and Shields Down."
@@ -88,7 +88,7 @@ msgstr ""
 
 #: ../src/firewall-applet:231
 msgid "Shields Up Zone:"
-msgstr ""
+msgstr "Kilvet ylös -alue:"
 
 #: ../src/firewall-applet:240 ../src/firewall-applet:253
 msgid "Reset To Default"
@@ -96,7 +96,7 @@ msgstr "Palauta oletukset"
 
 #: ../src/firewall-applet:244
 msgid "Shields Down Zone:"
-msgstr ""
+msgstr "Kilvet alas -alue:"
 
 #: ../src/firewall-applet:336
 #, c-format
@@ -113,7 +113,7 @@ msgstr "Lisenssi"
 
 #: ../src/firewall-applet:463
 msgid "Shields Up"
-msgstr ""
+msgstr "Kilvet ylös"
 
 #: ../src/firewall-applet:470
 msgid "Enable Notifications"
@@ -129,7 +129,7 @@ msgstr "Muuta yhteyksien alueita..."
 
 #: ../src/firewall-applet:484
 msgid "Configure Shields UP/Down Zones..."
-msgstr ""
+msgstr "Määritä Kilvet ylös/alas -alueet..."
 
 #: ../src/firewall-applet:488
 msgid "Block all network traffic"
@@ -218,7 +218,7 @@ msgstr "Alue '{zone}' käytössä verkkoliitännälle '{interface}'"
 
 #: ../src/firewall-applet:895
 msgid "Zone '{zone}' active for source {source}"
-msgstr ""
+msgstr "Alue '{zone}' aktiivisena lähteelle {source}"
 
 #: ../src/firewall-applet:899
 msgid "No Active Zones."
@@ -281,7 +281,7 @@ msgstr ""
 #: ../src/firewall-applet:1107
 #, c-format
 msgid "Zone '%s' activated for source '%s'"
-msgstr ""
+msgstr "Alue '%s' aktivoitu lähteelle '%s'"
 
 #: ../src/firewall-config:89
 msgid "Connection to firewalld established."
@@ -296,6 +296,8 @@ msgid ""
 "Failed to connect to firewalld. Please make sure that the service has been "
 "started correctly and try again."
 msgstr ""
+"Yhteys firewalld:hen epäonnistui. Varmista että palvelu on päällä ja yritä "
+"uudelleen."
 
 #: ../src/firewall-config:95
 msgid "Changes applied."
@@ -685,7 +687,7 @@ msgstr ""
 
 #: ../src/firewall-config:5840
 msgid "Built-in ipset, rename not supported."
-msgstr ""
+msgstr "Sisäänrakennettu ipset, uudelleennimeäminen ei ole tuettu."
 
 #: ../src/firewall-config:5932 ../src/firewall-config:6014
 msgid "Please select a file"
@@ -1701,7 +1703,7 @@ msgstr "Oletusalue:"
 
 #: ../src/firewall-config.glade.h:222
 msgid "Please enter an interface name:"
-msgstr ""
+msgstr "Anna liitännän nimi:"
 
 #: ../src/firewall-config.glade.h:223
 msgid "Base IPSet Settings"
