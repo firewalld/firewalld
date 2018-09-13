@@ -1,0 +1,61 @@
+FWD_START_TEST([ipset duplicate entries])
+
+FWD_CHECK([-q --new-ipset=foobar --permanent --type=hash:net])
+FWD_RELOAD
+
+FWD_CHECK([-q --ipset=foobar --add-entry=10.1.1.0/22])
+FWD_CHECK([-q --ipset=foobar --add-entry=10.1.2.0/22], 13, ignore, ignore)
+FWD_CHECK([-q --ipset=foobar --add-entry=10.2.0.0/22])
+FWD_CHECK([--ipset=foobar --get-entries], 0, [dnl
+10.1.1.0/22
+10.2.0.0/22
+])
+m4_if(nftables, FIREWALL_BACKEND, [
+NFT_LIST_SET([foobar], 0, [dnl
+table inet firewalld {
+set foobar {
+type ipv4_addr
+flags interval
+elements = { 10.1.0.0/22, 10.2.0.0/22 }
+}
+}
+])], [
+IPSET_LIST_SET([foobar], 0, [dnl
+Name: foobar
+Type: hash:net
+Members:
+10.1.0.0/22
+10.2.0.0/22
+])])
+
+FWD_CHECK([-q --ipset=foobar --remove-entry=10.1.1.0/22])
+FWD_CHECK([--ipset=foobar --get-entries], 0, [dnl
+10.2.0.0/22
+])
+m4_if(nftables, FIREWALL_BACKEND, [
+NFT_LIST_SET([foobar], 0, [dnl
+table inet firewalld {
+set foobar {
+type ipv4_addr
+flags interval
+elements = { 10.2.0.0/22 }
+}
+}
+])], [
+IPSET_LIST_SET([foobar], 0, [dnl
+Name: foobar
+Type: hash:net
+Members:
+10.2.0.0/22
+])])
+
+FWD_CHECK([-q --permanent --ipset=foobar --add-entry=10.1.1.0/22])
+FWD_CHECK([--permanent --ipset=foobar --get-entries], 0, [dnl
+10.1.1.0/22
+])
+FWD_CHECK([-q --permanent --ipset=foobar --remove-entry=10.1.1.0/22])
+FWD_CHECK([--permanent --ipset=foobar --get-entries], 0, [
+])
+
+FWD_END_TEST([-e '/ERROR: COMMAND_FAILED:.*already added.*/d'dnl
+              -e '/ERROR: COMMAND_FAILED:.*element.*exists/d'])
