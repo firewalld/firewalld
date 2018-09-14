@@ -91,8 +91,7 @@ class FirewallIPSet(object):
                 for backend in self.backends():
                     backend.set_destroy(name)
             except Exception as msg:
-                log.error("Failed to destroy ipset '%s'" % name)
-                log.error(msg)
+                raise FirewallError(errors.COMMAND_FAILED, msg)
         else:
             log.debug1("Keeping ipset '%s' because of timeout option", name)
         del self._ipsets[name]
@@ -116,16 +115,14 @@ class FirewallIPSet(object):
                         try:
                             backend.set_destroy(name)
                         except Exception as msg:
-                            log.error("Failed to destroy ipset '%s'" % name)
-                            log.error(msg)
+                            raise FirewallError(errors.COMMAND_FAILED, msg)
 
                 if self._fw.individual_calls() \
                    or backend.name == "nftables":
                     try:
                         backend.set_create(obj.name, obj.type, obj.options)
                     except Exception as msg:
-                        log.error("Failed to create ipset '%s'" % obj.name)
-                        log.error(msg)
+                        raise FirewallError(errors.COMMAND_FAILED, msg)
                     else:
                         obj.applied = True
                         if "timeout" not in obj.options or \
@@ -137,17 +134,14 @@ class FirewallIPSet(object):
                         try:
                             backend.set_add(obj.name, entry)
                         except Exception as msg:
-                            log.error("Failed to add entry '%s' to ipset '%s'" % \
-                                      (entry, obj.name))
-                            log.error(msg)
+                            raise FirewallError(errors.COMMAND_FAILED, msg)
                 else:
                     try:
                         backend.set_restore(obj.name, obj.type,
                                                        obj.entries, obj.options,
                                                        None)
                     except Exception as msg:
-                        log.error("Failed to create ipset '%s'" % obj.name)
-                        log.error(msg)
+                        raise FirewallError(errors.COMMAND_FAILED, msg)
                     else:
                         obj.applied = True
 
@@ -198,9 +192,7 @@ class FirewallIPSet(object):
             for backend in self.backends():
                 backend.set_add(obj.name, entry)
         except Exception as msg:
-            log.error("Failed to add entry '%s' to ipset '%s'" % \
-                      (entry, obj.name))
-            log.error(msg)
+            raise FirewallError(errors.COMMAND_FAILED, msg)
         else:
             if "timeout" not in obj.options or obj.options["timeout"] == "0" \
                and entry not in obj.entries:
@@ -218,9 +210,7 @@ class FirewallIPSet(object):
             for backend in self.backends():
                 backend.set_delete(obj.name, entry)
         except Exception as msg:
-            log.error("Failed to remove entry '%s' from ipset '%s'" % \
-                      (entry, obj.name))
-            log.error(msg)
+            raise FirewallError(errors.COMMAND_FAILED, msg)
         else:
             if "timeout" not in obj.options or obj.options["timeout"] == "0" \
                and entry not in obj.entries:
@@ -252,8 +242,7 @@ class FirewallIPSet(object):
             for backend in self.backends():
                 backend.set_flush(obj.name)
         except Exception as msg:
-            log.error("Failed to flush ipset '%s'" % obj.name)
-            log.error(msg)
+            raise FirewallError(errors.COMMAND_FAILED, msg)
         else:
             obj.applied = True
 
@@ -267,8 +256,7 @@ class FirewallIPSet(object):
                     backend.set_restore(obj.name, obj.type, obj.entries,
                                                    obj.options, None)
         except Exception as msg:
-            log.error("Failed to create ipset '%s'" % obj.name)
-            log.error(msg)
+            raise FirewallError(errors.COMMAND_FAILED, msg)
         else:
             obj.applied = True
 
