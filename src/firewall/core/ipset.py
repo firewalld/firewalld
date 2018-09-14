@@ -137,7 +137,7 @@ class ipset(object):
         return self.__run([ "destroy", set_name ])
 
     def set_add(self, set_name, entry):
-        args = [ "add", set_name, entry, "-exist" ]
+        args = [ "add", set_name, entry ]
         return self.__run(args)
 
     def set_delete(self, set_name, entry):
@@ -219,15 +219,16 @@ class ipset(object):
                 if val != "":
                     args.append(val)
         temp_file.write("%s\n" % " ".join(args))
+        temp_file.write("flush %s\n" % set_name)
 
         for entry in entries:
             if ' ' in entry:
                 entry = "'%s'" % entry
             if entry_options:
-                temp_file.write("add %s %s %s -exist\n" % \
+                temp_file.write("add %s %s %s\n" % \
                                 (set_name, entry, " ".join(entry_options)))
             else:
-                temp_file.write("add %s %s -exist\n" % (set_name, entry))
+                temp_file.write("add %s %s\n" % (set_name, entry))
         temp_file.close()
 
         stat = os.stat(temp_file.name)
