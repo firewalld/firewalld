@@ -244,7 +244,7 @@ m4_define([NFT_LIST_RULES], [
 m4_define([IPSET_LIST_SET], [
     NS_CHECK([ipset list $1 | TRIM_WHITESPACE |dnl
               grep -v "^\(Revision\|Header\|Size\|References\|Number\)" |dnl
-              awk 'NR <= 4; NR > 4 {print | "sort"}'],
+              awk 'NR <= 3; NR > 3 {print | "sort"}'],
              [$2], [$3], [$4], [$5], [$6])
 ])
 
