@@ -20,8 +20,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-09 13:13-0400\n"
-"PO-Revision-Date: 2018-06-08 03:30+0000\n"
+"POT-Creation-Date: 2018-09-19 15:02-0400\n"
+"PO-Revision-Date: 2018-08-13 01:35+0000\n"
 "Last-Translator: Peter Pan <pan93412@gmail.com>\n"
 "Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/"
 "firewalld/language/zh_TW/)\n"
@@ -30,7 +30,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Zanata 4.6.0\n"
+"X-Generator: Zanata 4.6.2\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:416
 msgid "Firewall Applet"
@@ -49,26 +49,26 @@ msgstr "防火牆組態"
 msgid "firewall;network;security;iptables;netfilter;"
 msgstr "防火牆;網路;安全性;iptables;netfilter;"
 
-#: ../src/firewall-applet.in:92 ../src/firewall-config.in:7971
+#: ../src/firewall-applet.in:92 ../src/firewall-config.in:7967
 #, c-format
 msgid "Select zone for interface '%s'"
 msgstr "選取「%s」介面的界域"
 
 #: ../src/firewall-applet.in:132 ../src/firewall-applet.in:139
 #: ../src/firewall-applet.in:145 ../src/firewall-config.in:2439
-#: ../src/firewall-config.in:8016 ../src/firewall-config.in:8024
-#: ../src/firewall-config.in:8057 ../src/firewall-config.glade.h:8
+#: ../src/firewall-config.in:8012 ../src/firewall-config.in:8020
+#: ../src/firewall-config.in:8053 ../src/firewall-config.glade.h:8
 msgid "Default Zone"
 msgstr "預設界域"
 
-#: ../src/firewall-applet.in:166 ../src/firewall-config.in:8050
+#: ../src/firewall-applet.in:166 ../src/firewall-config.in:8046
 #, c-format
 msgid "Select zone for connection '%s'"
 msgstr "選取「%s」連線的界域"
 
 #: ../src/firewall-applet.in:176 ../src/firewall-config.in:3910
 msgid "Failed to set zone {zone} for connection {connection_name}"
-msgstr ""
+msgstr "無法為連線 {connection_name} 設定區域 {zone}"
 
 #: ../src/firewall-applet.in:190
 #, c-format
@@ -729,12 +729,12 @@ msgstr "內建輔助器，不支援重新命名。"
 msgid "Built-in icmp, rename not supported."
 msgstr "內建 icmp，不支援重新命名。"
 
-#: ../src/firewall-config.in:7939
+#: ../src/firewall-config.in:7935
 #, c-format
 msgid "Failed to read file '%s': %s"
 msgstr "讀取檔案 '%s' 失敗：%s"
 
-#: ../src/firewall-config.in:8072
+#: ../src/firewall-config.in:8068
 #, c-format
 msgid "Select zone for source %s"
 msgstr "選取 %s 來源的界域"

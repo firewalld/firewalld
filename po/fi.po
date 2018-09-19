@@ -15,8 +15,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-09 13:13-0400\n"
-"PO-Revision-Date: 2018-01-25 03:08+0000\n"
+"POT-Creation-Date: 2018-09-19 15:02-0400\n"
+"PO-Revision-Date: 2018-08-19 12:28+0000\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
 "Language-Team: Finnish (http://www.transifex.com/projects/p/firewalld/"
 "language/fi/)\n"
@@ -25,7 +25,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Zanata 4.6.0\n"
+"X-Generator: Zanata 4.6.2\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:416
 msgid "Firewall Applet"
@@ -46,26 +46,26 @@ msgstr ""
 "palomuuri;verkko;tietoturva;suojaus;turva;firewall;network;security;iptables;"
 "netfilter;"
 
-#: ../src/firewall-applet.in:92 ../src/firewall-config.in:7971
+#: ../src/firewall-applet.in:92 ../src/firewall-config.in:7967
 #, c-format
 msgid "Select zone for interface '%s'"
 msgstr "Valitse alue liitännälle '%s'"
 
 #: ../src/firewall-applet.in:132 ../src/firewall-applet.in:139
 #: ../src/firewall-applet.in:145 ../src/firewall-config.in:2439
-#: ../src/firewall-config.in:8016 ../src/firewall-config.in:8024
-#: ../src/firewall-config.in:8057 ../src/firewall-config.glade.h:8
+#: ../src/firewall-config.in:8012 ../src/firewall-config.in:8020
+#: ../src/firewall-config.in:8053 ../src/firewall-config.glade.h:8
 msgid "Default Zone"
 msgstr "Oletusalue"
 
-#: ../src/firewall-applet.in:166 ../src/firewall-config.in:8050
+#: ../src/firewall-applet.in:166 ../src/firewall-config.in:8046
 #, c-format
 msgid "Select zone for connection '%s'"
 msgstr "Valitse alue yhteydelle '%s'"
 
 #: ../src/firewall-applet.in:176 ../src/firewall-config.in:3910
 msgid "Failed to set zone {zone} for connection {connection_name}"
-msgstr ""
+msgstr "Alueen {zone} asettaminen yhteydelle {connection_name} epäonnistui"
 
 #: ../src/firewall-applet.in:190
 #, c-format
@@ -74,7 +74,7 @@ msgstr "Valitse alue lähteelle '%s'"
 
 #: ../src/firewall-applet.in:207
 msgid "Configure Shields Up/Down Zones"
-msgstr ""
+msgstr "Määritä Kilvet ylös/alas -alueet"
 
 #: ../src/firewall-applet.in:220
 msgid "Here you can select the zones used for Shields Up and Shields Down."
@@ -88,7 +88,7 @@ msgstr ""
 
 #: ../src/firewall-applet.in:235
 msgid "Shields Up Zone:"
-msgstr ""
+msgstr "Kilvet ylös -alue:"
 
 #: ../src/firewall-applet.in:244 ../src/firewall-applet.in:257
 msgid "Reset To Default"
@@ -96,7 +96,7 @@ msgstr "Palauta oletukset"
 
 #: ../src/firewall-applet.in:248
 msgid "Shields Down Zone:"
-msgstr ""
+msgstr "Kilvet alas -alue:"
 
 #: ../src/firewall-applet.in:340
 #, c-format
@@ -113,7 +113,7 @@ msgstr "Lisenssi"
 
 #: ../src/firewall-applet.in:468
 msgid "Shields Up"
-msgstr ""
+msgstr "Kilvet ylös"
 
 #: ../src/firewall-applet.in:475
 msgid "Enable Notifications"
@@ -129,7 +129,7 @@ msgstr "Muuta yhteyksien alueita..."
 
 #: ../src/firewall-applet.in:489
 msgid "Configure Shields UP/Down Zones..."
-msgstr ""
+msgstr "Määritä Kilvet ylös/alas -alueet..."
 
 #: ../src/firewall-applet.in:493
 msgid "Block all network traffic"
@@ -218,7 +218,7 @@ msgstr "Alue '{zone}' käytössä verkkoliitännälle '{interface}'"
 
 #: ../src/firewall-applet.in:900
 msgid "Zone '{zone}' active for source {source}"
-msgstr ""
+msgstr "Alue '{zone}' aktiivisena lähteelle {source}"
 
 #: ../src/firewall-applet.in:904
 msgid "No Active Zones."
@@ -281,7 +281,7 @@ msgstr ""
 #: ../src/firewall-applet.in:1111
 #, c-format
 msgid "Zone '%s' activated for source '%s'"
-msgstr ""
+msgstr "Alue '%s' aktivoitu lähteelle '%s'"
 
 #: ../src/firewall-config.in:89
 msgid "Connection to firewalld established."
@@ -296,6 +296,8 @@ msgid ""
 "Failed to connect to firewalld. Please make sure that the service has been "
 "started correctly and try again."
 msgstr ""
+"Yhteys firewalld:hen epäonnistui. Varmista että palvelu on päällä ja yritä "
+"uudelleen."
 
 #: ../src/firewall-config.in:95
 msgid "Changes applied."
@@ -685,7 +687,7 @@ msgstr ""
 
 #: ../src/firewall-config.in:5776
 msgid "Built-in ipset, rename not supported."
-msgstr ""
+msgstr "Sisäänrakennettu ipset, uudelleennimeäminen ei ole tuettu."
 
 #: ../src/firewall-config.in:5868 ../src/firewall-config.in:5950
 msgid "Please select a file"
@@ -722,12 +724,12 @@ msgstr "Sisäänrakennettu avustin, nimen muuttaminen ei ole tuettu."
 msgid "Built-in icmp, rename not supported."
 msgstr "Sisäänrakennettu icmp, nimen muuttaminen ei ole tuettu."
 
-#: ../src/firewall-config.in:7939
+#: ../src/firewall-config.in:7935
 #, c-format
 msgid "Failed to read file '%s': %s"
 msgstr "Tiedoston ”%s” lukeminen epäonnistui: %s"
 
-#: ../src/firewall-config.in:8072
+#: ../src/firewall-config.in:8068
 #, c-format
 msgid "Select zone for source %s"
 msgstr "Valitse alue lähteelle %s"
@@ -1702,7 +1704,7 @@ msgstr "Oletusalue:"
 
 #: ../src/firewall-config.glade.h:222
 msgid "Please enter an interface name:"
-msgstr ""
+msgstr "Anna liitännän nimi:"
 
 #: ../src/firewall-config.glade.h:223
 msgid "Base IPSet Settings"

@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-09 13:13-0400\n"
-"PO-Revision-Date: 2018-05-12 02:10+0000\n"
+"POT-Creation-Date: 2018-09-19 15:02-0400\n"
+"PO-Revision-Date: 2018-08-15 12:34+0000\n"
 "Last-Translator: scootergrisen <scootergrisen@gmail.com>\n"
 "Language-Team: Danish (http://www.transifex.com/projects/p/firewalld/"
 "language/da/)\n"
@@ -23,7 +23,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Zanata 4.6.0\n"
+"X-Generator: Zanata 4.6.2\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:416
 msgid "Firewall Applet"
@@ -43,26 +43,26 @@ msgid "firewall;network;security;iptables;netfilter;"
 msgstr ""
 "firewall;network;security;iptables;netfilter;netværk;sikkerhed;iptabeller;"
 
-#: ../src/firewall-applet.in:92 ../src/firewall-config.in:7971
+#: ../src/firewall-applet.in:92 ../src/firewall-config.in:7967
 #, c-format
 msgid "Select zone for interface '%s'"
 msgstr "Vælg zone til grænseflade '%s'"
 
 #: ../src/firewall-applet.in:132 ../src/firewall-applet.in:139
 #: ../src/firewall-applet.in:145 ../src/firewall-config.in:2439
-#: ../src/firewall-config.in:8016 ../src/firewall-config.in:8024
-#: ../src/firewall-config.in:8057 ../src/firewall-config.glade.h:8
+#: ../src/firewall-config.in:8012 ../src/firewall-config.in:8020
+#: ../src/firewall-config.in:8053 ../src/firewall-config.glade.h:8
 msgid "Default Zone"
 msgstr "Standardzone"
 
-#: ../src/firewall-applet.in:166 ../src/firewall-config.in:8050
+#: ../src/firewall-applet.in:166 ../src/firewall-config.in:8046
 #, c-format
 msgid "Select zone for connection '%s'"
 msgstr "Vælg zone for forbindelse '%s'"
 
 #: ../src/firewall-applet.in:176 ../src/firewall-config.in:3910
 msgid "Failed to set zone {zone} for connection {connection_name}"
-msgstr ""
+msgstr "Kunne ikke sætte zonen {zone} til forbindelsen {connection_name}"
 
 #: ../src/firewall-applet.in:190
 #, c-format
@@ -728,12 +728,12 @@ msgstr "Indbygget hjælper, omdøbning understøttes ikke."
 msgid "Built-in icmp, rename not supported."
 msgstr "Indbygget ICMP, omdøbning understøttes ikke."
 
-#: ../src/firewall-config.in:7939
+#: ../src/firewall-config.in:7935
 #, c-format
 msgid "Failed to read file '%s': %s"
 msgstr "Kunne ikke læse fil '%s': %s"
 
-#: ../src/firewall-config.in:8072
+#: ../src/firewall-config.in:8068
 #, c-format
 msgid "Select zone for source %s"
 msgstr "Vælg zone for kilde %s"
