@@ -420,6 +420,8 @@ class TrayApplet(QtWidgets.QSystemTrayIcon):
             "normal": QtGui.QIcon.fromTheme(self.icon_name),
             "error": QtGui.QIcon.fromTheme(self.icon_name+"-error"),
             "panic": QtGui.QIcon.fromTheme(self.icon_name+"-panic"),
+            "normal-shields_up": QtGui.QIcon.fromTheme(self.icon_name+"-shields_up"),
+            "normal-shields_down": QtGui.QIcon.fromTheme(self.icon_name+"-shields_down"),
         }
         self.timer = None
         self.mode = None
@@ -536,7 +538,7 @@ class TrayApplet(QtWidgets.QSystemTrayIcon):
         self.activated.connect(self.activated_cb)
 
         self.set_mode("error")
-        self.set_icon(self.mode)
+        self.set_icon()
 
         self.setVisible(self.show_inactive)
 
@@ -603,8 +605,15 @@ class TrayApplet(QtWidgets.QSystemTrayIcon):
     def quit(self):
         sys.exit(1)
 
-    def set_icon(self, mode):
-        self.setIcon(self.icons[mode])
+    def set_icon(self, mode=None):
+        if mode is not None:
+            self.setIcon(self.icons[mode])
+        elif self.mode != "normal":
+            self.setIcon(self.icons[self.mode])
+        elif self.default_zone == self.shields_up:
+            self.setIcon(self.icons["normal-shields_up"])
+        else:
+            self.setIcon(self.icons["normal-shields_down"])
 
     def load_settings(self, name=None):
         self.settings.sync()
@@ -822,7 +831,7 @@ class TrayApplet(QtWidgets.QSystemTrayIcon):
                 self.timer.setInterval(1000)
             self.timer.start()
         if not self._blink:
-            self.set_icon(self.mode)
+            self.set_icon()
         else:
             self.set_icon("normal")
 
@@ -842,7 +851,7 @@ class TrayApplet(QtWidgets.QSystemTrayIcon):
             return
 
         if mode == "normal":
-            self.set_icon(mode)
+            self.set_icon()
             return
 
         if self.blink:
@@ -851,7 +860,7 @@ class TrayApplet(QtWidgets.QSystemTrayIcon):
                 self._blink_count = self.blink_count
                 self.__blink()
         else:
-            self.set_icon(mode)
+            self.set_icon()
 
     def update_tooltip(self):
         if self.get_mode() == "error":
@@ -906,6 +915,7 @@ class TrayApplet(QtWidgets.QSystemTrayIcon):
 
         tooltip = "<nobr>"+"</nobr><br><nobr>".join(messages)+"</nobr>"
         self.setToolTip(fromUTF8("<font size=\"3\">"+tooltip+"</font>"))
+        self.set_icon()
 
     def show(self):
         # do not automatically show the applet
