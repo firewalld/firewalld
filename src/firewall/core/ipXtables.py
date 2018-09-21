@@ -852,7 +852,7 @@ class ip4tables(object):
             rule_fragment += [ "-m", "set" ]
             if rich_source.invert:
                 rule_fragment.append("!")
-            flags = self._fw.zone.__ipset_match_flags(rich_source.ipset, "src")
+            flags = self._fw.zone._ipset_match_flags(rich_source.ipset, "src")
             rule_fragment += [ "--match-set", rich_source.ipset, flags ]
 
         return rule_fragment

@@ -1519,7 +1519,7 @@ class FirewallZone(object):
     def __ipset_type(self, name):
         return self._fw.ipset.get_type(name)
 
-    def __ipset_match_flags(self, name, flag):
+    def _ipset_match_flags(self, name, flag):
         return ",".join([flag] * self._fw.ipset.get_dimension(name))
 
     def _check_ipset_applied(self, name):
