@@ -92,6 +92,8 @@ FWD_START_TEST([zone interfaces])
     FWD_CHECK([--zone=dmz --get-zone-of-interface], 2, ignore, ignore)
 
     FWD_CHECK([--permanent --zone=work --add-interface=perm_dummy], 0, ignore)
+    FWD_CHECK([--permanent --zone=trusted --add-interface=perm_dummy2], 0, ignore)
+    FWD_RELOAD
     FWD_CHECK([--permanent --get-zone-of-interface=perm_dummy], 0, [work
 ])
     FWD_CHECK([--permanent --zone work --query-interface=perm_dummy], 0, ignore)
