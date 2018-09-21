@@ -696,9 +696,11 @@ def zone_reader(filename, path, no_check_name=False):
     parser = sax.make_parser()
     parser.setContentHandler(handler)
     name = "%s/%s" % (path, filename)
-    with open(name, "r") as f:
+    with open(name, "rb") as f:
+        source = sax.InputSource(None)
+        source.setByteStream(f)
         try:
-            parser.parse(f)
+            parser.parse(source)
         except sax.SAXParseException as msg:
             raise FirewallError(errors.INVALID_ZONE,
                                 "not a valid zone file: %s" % \

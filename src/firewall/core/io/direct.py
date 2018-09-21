@@ -360,9 +360,11 @@ class Direct(IO_Object):
         handler = direct_ContentHandler(self)
         parser = sax.make_parser()
         parser.setContentHandler(handler)
-        with open(self.filename, "r") as f:
+        with open(self.filename, "rb") as f:
+            source = sax.InputSource(None)
+            source.setByteStream(f)
             try:
-                parser.parse(f)
+                parser.parse(source)
             except sax.SAXParseException as msg:
                 raise FirewallError(errors.INVALID_TYPE,
                                     "Not a valid file: %s" % \
