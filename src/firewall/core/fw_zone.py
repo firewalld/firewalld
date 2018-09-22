@@ -2558,9 +2558,9 @@ class FirewallZoneIPTables(FirewallZone):
         zone_transaction.add_chain("filter", "FORWARD_IN")
 
         for ipv in [ "ipv4", "ipv6" ]:
-            rule_idx = 4
             table = "filter"
             for chain in [ "INPUT", "FORWARD_IN" ]:
+                rule_idx = 4
                 _zone = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[chain],
                                                    zone=zone)
 
