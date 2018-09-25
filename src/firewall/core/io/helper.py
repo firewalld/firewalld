@@ -156,9 +156,11 @@ def helper_reader(filename, path):
     parser = sax.make_parser()
     parser.setContentHandler(handler)
     name = "%s/%s" % (path, filename)
-    with open(name, "r") as f:
+    with open(name, "rb") as f:
+        source = sax.InputSource(None)
+        source.setByteStream(f)
         try:
-            parser.parse(f)
+            parser.parse(source)
         except sax.SAXParseException as msg:
             raise FirewallError(errors.INVALID_HELPER,
                                 "not a valid helper file: %s" % \
