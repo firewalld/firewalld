@@ -753,7 +753,7 @@ class nftables(object):
             return []
 
         rule_fragment = []
-        if check_single_address("ipv4", rich_dest.addr):
+        if check_address("ipv4", rich_dest.addr):
             rule_fragment += ["ip"]
         else:
             rule_fragment += ["ip6"]
@@ -803,7 +803,7 @@ class nftables(object):
         if rich_rule:
             rule_fragment += self._rich_rule_family_fragment(rich_rule.family)
         if destination:
-            if check_single_address("ipv4", destination):
+            if check_address("ipv4", destination):
                 rule_fragment += ["ip"]
             else:
                 rule_fragment += ["ip6"]
@@ -835,7 +835,7 @@ class nftables(object):
         if rich_rule:
             rule_fragment += self._rich_rule_family_fragment(rich_rule.family)
         if destination:
-            if check_single_address("ipv4", destination):
+            if check_address("ipv4", destination):
                 rule_fragment += ["ip"]
             else:
                 rule_fragment += ["ip6"]
@@ -869,7 +869,7 @@ class nftables(object):
         if rich_rule:
             rule_fragment += self._rich_rule_family_fragment(rich_rule.family)
         if destination:
-            if check_single_address("ipv4", destination):
+            if check_address("ipv4", destination):
                 rule_fragment += ["ip"]
             else:
                 rule_fragment += ["ip6"]
@@ -900,7 +900,7 @@ class nftables(object):
         rule = [add_del, "rule", "inet", "%s" % TABLE_NAME,
                 "raw_%s_allow" % (target), proto]
         if destination:
-            if check_single_address("ipv4", destination):
+            if check_address("ipv4", destination):
                 rule += ["ip"]
             else:
                 rule += ["ip6"]
