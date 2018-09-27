@@ -681,7 +681,7 @@ class nftables(object):
         add_del = { True: "add", False: "delete" }[enable]
 
         rule = [add_del, "rule", "inet", "%s" % TABLE_NAME,
-                "%s_%s_allow" % (table, target)]
+                "%s_%s_log" % (table, target)]
         rule += rule_fragment + ["log"]
         if rich_rule.log.prefix:
             rule += ["prefix", "\"%s\"" % rich_rule.log.prefix]
@@ -698,7 +698,7 @@ class nftables(object):
         add_del = { True: "add", False: "delete" }[enable]
 
         rule = [add_del, "rule", "inet", "%s" % TABLE_NAME,
-                "%s_%s_allow" % (table, target)]
+                "%s_%s_log" % (table, target)]
         rule += rule_fragment + ["log", "level", "audit"]
         rule += self._rich_rule_limit_fragment(rich_rule.audit.limit)
 
