@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>bootp-server</short>
+  <description>The Bootstrap Protocol (BOOTP) is a computer networking protocol used in Internet Protocol networks to automatically assign an IP address to network devices from a configuration server.</description>
+  <port protocol="udp" port="67"/>
+  <port protocol="tcp" port="67"/>
+</service>
