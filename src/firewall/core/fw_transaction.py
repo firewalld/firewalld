@@ -23,6 +23,8 @@
 
 __all__ = [ "FirewallTransaction", "FirewallZoneTransaction" ]
 
+import traceback
+
 from firewall.core.logger import log
 from firewall import errors
 from firewall.errors import FirewallError
@@ -105,6 +107,7 @@ class SimpleFirewallTransaction(object):
             except Exception as msg:
                 error = True
                 errorMsg = msg
+                log.debug1(traceback.format_exc())
                 log.error(msg)
             else:
                 done.append(backend_name)
@@ -131,12 +134,14 @@ class SimpleFirewallTransaction(object):
                 try:
                     self.fw.rules(backend_name, undo_rules[backend_name])
                 except Exception as msg:
+                    log.debug1(traceback.format_exc())
                     log.error(msg)
             # call failure functions
             for (func, args) in self.fail_funcs:
                 try:
                     func(*args)
                 except Exception as msg:
+                    log.debug1(traceback.format_exc())
                     log.error("Calling fail func %s(%s) failed: %s" % \
                               (func, args, msg))
 
@@ -152,6 +157,7 @@ class SimpleFirewallTransaction(object):
             try:
                 func(*args)
             except Exception as msg:
+                log.debug1(traceback.format_exc())
                 log.error("Calling pre func %s(%s) failed: %s" % \
                           (func, args, msg))
 
@@ -162,6 +168,7 @@ class SimpleFirewallTransaction(object):
             try:
                 func(*args)
             except Exception as msg:
+                log.debug1(traceback.format_exc())
                 log.error("Calling post func %s(%s) failed: %s" % \
                           (func, args, msg))
 
