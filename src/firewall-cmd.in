@@ -1921,7 +1921,7 @@ if a.permanent:
         # protocol
         elif a.list_protocols:
             l = fw_zone.getProtocols()
-            cmd.print_and_exit(" ".join(["%s" % protocol for protocol in l]))
+            cmd.print_and_exit(" ".join(["%s" % protocol for protocol in sorted(l)]))
         elif a.add_protocol:
             cmd.add_sequence(a.add_protocol, fw_zone.addProtocol,
                              fw_zone.queryProtocol, None, "'%s'")
@@ -2476,7 +2476,7 @@ elif a.query_port:
 # protocol
 elif a.list_protocols:
     l = fw.getProtocols(zone)
-    cmd.print_and_exit(" ".join(["%s" % protocol for protocol in l]))
+    cmd.print_and_exit(" ".join(["%s" % protocol for protocol in sorted(l)]))
 elif a.add_protocol:
     cmd.zone_add_timeout_sequence(zone, a.add_protocol, fw.addProtocol,
                                   fw.queryProtocol, None, "'%s'", a.timeout)

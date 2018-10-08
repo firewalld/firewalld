@@ -2131,7 +2131,7 @@ try:
         # protocol
         elif a.list_protocols:
             l = fw_settings.getProtocols()
-            cmd.print_and_exit(" ".join(l))
+            cmd.print_and_exit(" ".join(sorted(l)))
         elif a.add_protocol:
             cmd.add_sequence(a.add_protocol, fw_settings.addProtocol,
                              fw_settings.queryProtocol, None, "'%s'")
