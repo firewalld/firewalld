@@ -410,10 +410,10 @@ class FirewallCommand(object):
                        ("yes" if icmp_block_inversion else "no"))
         self.print_msg("  interfaces: " + " ".join(interfaces))
         self.print_msg("  sources: " + " ".join(sources))
-        self.print_msg("  services: " + " ".join(services))
+        self.print_msg("  services: " + " ".join(sorted(services)))
         self.print_msg("  ports: " + " ".join(["%s/%s" % (port[0], port[1])
                                                for port in ports]))
-        self.print_msg("  protocols: " + " ".join(protocols))
+        self.print_msg("  protocols: " + " ".join(sorted(protocols)))
         self.print_msg("  masquerade: %s" % ("yes" if masquerade else "no"))
         self.print_msg("  forward-ports: " +
                        "\n\t".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % \

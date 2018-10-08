@@ -17,6 +17,6 @@ AT_CHECK([echo '</zone>' >> ./zones/foobar/another_really_long_name_that_trigger
 
 FWD_RELOAD
 FWD_CHECK([--zone=foobar --list-all | TRIM | grep ^services], 0, [dnl
-services: ssh http
+services: http ssh
 ])
 FWD_END_TEST
