@@ -118,6 +118,7 @@ CONFIG_FILES = \
 	services/amqp.xml \
 	services/amqps.xml \
 	services/apcupsd.xml \
+	services/audit.xml \
 	services/bacula-client.xml \
 	services/bacula.xml \
 	services/bgp.xml \
