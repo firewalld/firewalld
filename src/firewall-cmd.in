@@ -1893,7 +1893,7 @@ if a.permanent:
         # service
         if a.list_services:
             l = fw_zone.getServices()
-            cmd.print_and_exit(" ".join(l))
+            cmd.print_and_exit(" ".join(sorted(l)))
         elif a.add_service:
             cmd.add_sequence(a.add_service, fw_zone.addService,
                              fw_zone.queryService, None, "'%s'")
@@ -2448,7 +2448,7 @@ elif a.query_rich_rule:
 # service
 elif a.list_services:
     l = fw.getServices(zone)
-    cmd.print_and_exit(" ".join(l))
+    cmd.print_and_exit(" ".join(sorted(l)))
 elif a.add_service:
     cmd.zone_add_timeout_sequence(zone, a.add_service, fw.addService,
                                   fw.queryService, None, "'%s'",
