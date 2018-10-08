@@ -2102,7 +2102,7 @@ try:
         # service
         if a.list_services:
             l = fw_settings.getServices()
-            cmd.print_and_exit(" ".join(l))
+            cmd.print_and_exit(" ".join(sorted(l)))
         elif a.add_service:
             cmd.add_sequence(a.add_service, fw_settings.addService,
                              fw_settings.queryService, None, "'%s'")

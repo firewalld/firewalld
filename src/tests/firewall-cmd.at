@@ -187,7 +187,7 @@ FWD_START_TEST([services])
 
     FWD_CHECK([--permanent --zone=external --add-service=dns --timeout 60], 2, ignore, ignore) dnl impossible combination
     FWD_CHECK([--permanent --zone=external --add-service dns], 0, ignore)
-    FWD_CHECK([--permanent --zone=external --list-services], 0, [ssh dns
+    FWD_CHECK([--permanent --zone=external --list-services], 0, [dns ssh
 ])
     FWD_CHECK([--permanent --zone=external --query-service dns], 0, ignore)
     m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [
