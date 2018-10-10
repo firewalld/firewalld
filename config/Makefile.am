@@ -253,6 +253,7 @@ CONFIG_FILES = \
 	services/telnet.xml \
 	services/tftp-client.xml \
 	services/tftp.xml \
+	services/tile38.xml \
 	services/tinc.xml \
 	services/tor-socks.xml \
 	services/transmission-client.xml \
