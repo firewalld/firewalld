@@ -113,7 +113,6 @@ _firewall_cmd()
 {
     local cur prev words cword split
     _init_completion -s || return
-    firewall-cmd --state 1> /dev/null || return
 
     case $prev in
     --*-entries-from-file|--new-*-from-file)

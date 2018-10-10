@@ -36,18 +36,24 @@ from firewall.core.fw import Firewall
 from firewall.core.rich import Rich_Rule
 from firewall.core.logger import log
 from firewall.client import FirewallClientZoneSettings
-from firewall.server.decorators import *
+from firewall.server.decorators import dbus_handle_exceptions, \
+                                       dbus_service_method, \
+                                       handle_exceptions, \
+                                       FirewallDBusException
 from firewall.server.config import FirewallDConfig
 from firewall.dbus_utils import dbus_to_python, \
     command_of_sender, context_of_sender, uid_of_sender, user_of_uid, \
     dbus_introspection_prepare_properties, \
     dbus_introspection_add_properties
+from firewall.core.io.functions import check_config
 from firewall.core.io.zone import Zone
 from firewall.core.io.ipset import IPSet
 from firewall.core.io.service import Service
 from firewall.core.io.icmptype import IcmpType
 from firewall.core.io.helper import Helper
-from firewall.core.fw_nm import nm_get_bus_name
+from firewall.core.fw_nm import nm_get_bus_name, nm_get_connection_of_interface, \
+                                nm_set_zone_of_connection
+from firewall.core.fw_ifcfg import ifcfg_set_zone_of_interface
 from firewall import errors
 from firewall.errors import FirewallError
 
@@ -336,6 +342,16 @@ class FirewallD(slip.dbus.service.Object):
     def Reloaded(self):
         log.debug1("Reloaded()")
 
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE, in_signature='',
+                         out_signature='')
+    @dbus_handle_exceptions
+    def checkPermanentConfig(self, sender=None): # pylint: disable=W0613
+        """Check permanent configuration
+        """
+        log.debug1("checkPermanentConfig()")
+        check_config(self.fw)
+
     # runtime to permanent
 
     @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
@@ -425,17 +441,30 @@ class FirewallD(slip.dbus.service.Object):
         nm_bus_name = nm_get_bus_name()
         for name in self.fw.zone.get_zones():
             conf = self.getZoneSettings(name)
-            if nm_bus_name != None:
-                settings = FirewallClientZoneSettings(conf)
+            settings = FirewallClientZoneSettings(conf)
+            if nm_bus_name is not None:
                 changed = False
                 for interface in settings.getInterfaces():
                     if self.fw.zone.interface_get_sender(name, interface) == nm_bus_name:
                         log.debug1("Zone '%s': interface binding for '%s' has been added by NM, ignoring." % (name, interface))
                         settings.removeInterface(interface)
                         changed = True
+                # For the remaining interfaces, attempt to let NM manage them
+                for interface in settings.getInterfaces():
+                    try:
+                        connection = nm_get_connection_of_interface(interface)
+                        if connection and nm_set_zone_of_connection(name, connection):
+                            settings.removeInterface(interface)
+                            changed = True
+                    except Exception:
+                        pass
+
                 if changed:
                     del conf
                     conf = settings.settings
+            # For the remaining try to update the ifcfg files
+            for interface in settings.getInterfaces():
+                ifcfg_set_zone_of_interface(name, interface)
             try:
                 if name in config_names:
                     conf_obj = self.config.getZoneByName(name)
@@ -939,6 +968,10 @@ class FirewallD(slip.dbus.service.Object):
         self.accessCheck(sender)
         self.fw.set_log_denied(value)
         self.LogDeniedChanged(value)
+        # must reload the firewall as well
+        self.fw.reload()
+        self.config.reload()
+        self.Reloaded()
 
     @dbus.service.signal(config.dbus.DBUS_INTERFACE, signature='s')
     @dbus_handle_exceptions
@@ -969,6 +1002,10 @@ class FirewallD(slip.dbus.service.Object):
         self.accessCheck(sender)
         self.fw.set_automatic_helpers(value)
         self.AutomaticHelpersChanged(value)
+        # must reload the firewall as well
+        self.fw.reload()
+        self.config.reload()
+        self.Reloaded()
 
     @dbus.service.signal(config.dbus.DBUS_INTERFACE, signature='s')
     @dbus_handle_exceptions
@@ -2220,9 +2257,15 @@ class FirewallD(slip.dbus.service.Object):
         try:
             return self.fw.direct.passthrough(ipv, args)
         except FirewallError as error:
+            if ipv in ["ipv4", "ipv6"]:
+                query_args = set(["-C", "--check",
+                                  "-L", "--list"])
+            else:
+                query_args = set(["-L", "--list"])
             msg = str(error)
-            if "COMMAND_FAILED" in msg:
-                log.warning(msg)
+            if error.code == errors.COMMAND_FAILED:
+                if len(set(args) & query_args) <= 0:
+                    log.warning(msg)
                 raise FirewallDBusException(msg)
             raise
 

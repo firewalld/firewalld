@@ -61,7 +61,7 @@ class Watcher(object):
             self._blocked.remove(filename)
 
     def clear_timeouts(self):
-        for filename in self._timeouts.keys():
+        for filename in list(self._timeouts.keys()):
             GLib.source_remove(self._timeouts[filename])
             del self._timeouts[filename]
 

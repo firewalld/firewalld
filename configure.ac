@@ -8,7 +8,7 @@ m4_define([PKG_RELEASE], m4_bpatsubst(m4_esyscmd([grep "Release:" firewalld.spec
 m4_define([PKG_TAG], m4_format(v%s, PKG_VERSION))
 
 AC_INIT(PKG_NAME,PKG_VERSION)
-AC_CONFIG_SRCDIR([src/firewalld])
+AC_CONFIG_SRCDIR([src/firewalld.in])
 AC_PREFIX_DEFAULT([/usr])
 
 AM_INIT_AUTOMAKE([1.11 tar-ustar no-define foreign dist-bzip2 no-dist-gzip])
@@ -34,6 +34,8 @@ AC_PATH_PROG([MODINFO], [modinfo], [/sbin/modinfo])
 AC_PATH_PROG([MODPROBE], [modprobe], [/sbin/modprobe])
 AC_PATH_PROG([RMMOD], [rmmod], [/sbin/rmmod])
 AC_PATH_PROG([SYSCTL], [sysctl], [/sbin/sysctl])
+
+AC_CONFIG_TESTDIR([src/tests])
 
 GLIB_GSETTINGS
 
@@ -66,6 +68,16 @@ AC_ARG_WITH([bashcompletiondir],
        AS_HELP_STRING([--with-bashcompletiondir=DIR], [Bash completions directory]),
        [BASHCOMPLETIONDIR=$withval], [BASHCOMPLETIONDIR="${datadir}/bash-completion/completions"])
 AC_SUBST(BASHCOMPLETIONDIR)
+
+AC_ARG_WITH([zshcompletiondir],
+       AS_HELP_STRING([--with-zshcompletiondir=DIR], [Zsh completions directory]),
+       [ZSHCOMPLETIONDIR=$withval], [ZSHCOMPLETIONDIR="${datadir}/zsh/site-functions"])
+AC_SUBST(ZSHCOMPLETIONDIR)
+
+AC_ARG_WITH([ifcfgdir],
+       AS_HELP_STRING([--with-ifcfgdir=DIR], [The ifcfg configuration directory]),
+       [IFCFGDIR=$withval], [IFCFGDIR="/etc/sysconfig/network-scripts"])
+AC_SUBST(IFCFGDIR)
 
 # Extend PATH to include /sbin etc in case we are building as non-root
 FW_TOOLS_PATH="$PATH:/usr/local/sbin:/sbin:/usr/sbin"
@@ -140,6 +152,16 @@ if test "x$IPSET" = "x"; then
 fi
 AC_SUBST(IPSET)
 
+AC_ARG_WITH([nft],
+       AS_HELP_STRING([--with-nft], [Path to nft (nftables) executable]),
+       [NFT=$withval
+       AC_MSG_NOTICE([Using for nft: $NFT])],
+       [AC_PATH_PROG([NFT], [nft], [], [$FW_TOOLS_PATH])])
+if test "x$NFT" = "x"; then
+    AC_MSG_ERROR([nft was not found in $FW_TOOLS_PATH])
+fi
+AC_SUBST(NFT)
+
 #############################################################
 
 AC_SUBST([GETTEXT_PACKAGE], '[PKG_NAME]')
@@ -152,6 +174,7 @@ AC_CONFIG_COMMANDS([xsl-cleanup],,[rm -f doc/xml/transform-*.xsl])
 
 AC_CONFIG_FILES([Makefile
 		 doxygen.conf
+		 config/lockdown-whitelist.xml
 		 config/Makefile
 		 doc/Makefile
 		 doc/man/Makefile
@@ -162,5 +185,15 @@ AC_CONFIG_FILES([Makefile
 		 shell-completion/Makefile
 		 src/firewall/config/__init__.py
 		 src/Makefile
+		 src/tests/Makefile
 		 src/icons/Makefile])
+
+m4_foreach([FILE], [[src/firewall-applet],
+                   [src/firewall-cmd],
+                   [src/firewall-offline-cmd],
+                   [src/firewall-config],
+                   [src/firewalld]],
+    [AC_CONFIG_FILES(FILE, chmod +x FILE)]
+)
+
 AC_OUTPUT

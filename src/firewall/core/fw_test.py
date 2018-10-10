@@ -21,7 +21,8 @@
 
 __all__ = [ "Firewall_test" ]
 
-import os.path, sys
+import os.path
+import sys
 import copy
 from firewall import config
 from firewall import functions
@@ -60,11 +61,6 @@ class Firewall_test(object):
         self.ebtables_enabled = False
         self.ipset_enabled = False
         self.ipset_supported_types = IPSET_TYPES
-
-        self.available_tables = { }
-        self.available_tables["ipv4"] = [ ]
-        self.available_tables["ipv6"] = [ ]
-        self.available_tables["eb"] = [ ]
 
         self.icmptype = FirewallIcmpType(self)
         self.service = FirewallService(self)
@@ -111,7 +107,7 @@ class Firewall_test(object):
         log.debug1("Loading firewalld config file '%s'", config.FIREWALLD_CONF)
         try:
             self._firewalld_conf.read()
-        except Exception as msg:
+        except Exception:
             log.warning("Using fallback firewalld configuration settings.")
         else:
             if self._firewalld_conf.get("DefaultZone"):
@@ -252,8 +248,8 @@ class Firewall_test(object):
             try:
                 obj.read()
             except Exception as msg:
-                log.debug1("Failed to load direct rules file '%s': %s",
-                           config.FIREWALLD_DIRECT, msg)
+                log.error("Failed to load direct rules file '%s': %s",
+                          config.FIREWALLD_DIRECT, msg)
         self.config.set_direct(copy.deepcopy(obj))
 
         self._default_zone = self.check_zone(default_zone)
@@ -317,7 +313,7 @@ class Firewall_test(object):
                     # add a deep copy to the configuration interface
                     self.config.add_service(copy.deepcopy(obj))
                 elif reader_type == "zone":
-                    obj = zone_reader(filename, path)
+                    obj = zone_reader(filename, path, no_check_name=combine)
                     if combine:
                         # Change name for permanent configuration
                         obj.name = "%s/%s" % (
@@ -381,7 +377,7 @@ class Firewall_test(object):
             except FirewallError as msg:
                 log.error("Failed to load %s file '%s': %s", reader_type,
                           name, msg)
-            except Exception as msg:
+            except Exception:
                 log.error("Failed to load %s file '%s':", reader_type, name)
                 log.exception()
 
@@ -397,11 +393,6 @@ class Firewall_test(object):
                     pass
                 self.config.forget_zone(combined_zone.name)
             self.zone.add_zone(combined_zone)
-
-    def get_available_tables(self, ipv):
-        if ipv in [ "ipv4", "ipv6", "eb" ]:
-            return self.available_tables[ipv]
-        return [ ]
 
     def cleanup(self):
         self.icmptype.cleanup()
@@ -456,7 +447,7 @@ class Firewall_test(object):
     def check_tcpudp(self, protocol):
         if not protocol:
             raise FirewallError(errors.MISSING_PROTOCOL)
-        if not protocol in [ "tcp", "udp", "sctp", "dccp" ]:
+        if protocol not in [ "tcp", "udp", "sctp", "dccp" ]:
             raise FirewallError(errors.INVALID_PROTOCOL,
                                 "'%s' not in {'tcp'|'udp'|'sctp'|'dccp'}" % \
                                 protocol)
@@ -550,7 +541,6 @@ class Firewall_test(object):
     def set_default_zone(self, zone):
         _zone = self.check_zone(zone)
         if _zone != self._default_zone:
-            _old_dz = self._default_zone
             self._default_zone = _zone
             self._firewalld_conf.set("DefaultZone", _zone)
             self._firewalld_conf.write()

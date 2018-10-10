@@ -5,8 +5,7 @@ EXTRA_DIST = \
 	COPYING \
 	README \
 	autogen.sh \
-	${PACKAGE_NAME}.spec \
-	fix_python_shebang.sh
+	${PACKAGE_NAME}.spec
 
 CLEANFILES = *~ *\# .\#* *.tar*
 

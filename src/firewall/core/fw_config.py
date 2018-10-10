@@ -22,7 +22,8 @@
 __all__ = [ "FirewallConfig" ]
 
 import copy
-import os, os.path
+import os
+import os.path
 import shutil
 from firewall import config
 from firewall.core.logger import log
@@ -390,7 +391,7 @@ class FirewallConfig(object):
             return obj
 
     def new_icmptype(self, name, conf):
-        if name in self._icmptypes:
+        if name in self._icmptypes or name in self._builtin_icmptypes:
             raise FirewallError(errors.NAME_CONFLICT,
                                 "new_icmptype(): '%s'" % name)
 

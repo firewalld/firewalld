@@ -21,7 +21,6 @@
 
 __all__ = [ "FirewallPolicies" ]
 
-import time
 from firewall import config
 from firewall.core.logger import log
 from firewall.core.io.lockdown_whitelist import LockdownWhitelist

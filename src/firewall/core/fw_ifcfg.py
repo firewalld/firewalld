@@ -23,7 +23,8 @@
 
 __all__ = [ "search_ifcfg_of_interface", "ifcfg_set_zone_of_interface" ]
 
-import os, os.path
+import os
+import os.path
 
 from firewall import config
 from firewall.core.logger import log
@@ -35,13 +36,6 @@ def search_ifcfg_of_interface(interface):
     # Return quickly if config.IFCFGDIR does not exist
     if not os.path.exists(config.IFCFGDIR):
         return None
-
-    filename = "%s/ifcfg-%s" % (config.IFCFGDIR, interface)
-    if os.path.exists(filename):
-        ifcfg_file = ifcfg(filename)
-        ifcfg_file.read()
-        if ifcfg_file.get("DEVICE") == interface:
-            return ifcfg_file
 
     for filename in sorted(os.listdir(config.IFCFGDIR)):
         if not filename.startswith("ifcfg-"):
@@ -57,13 +51,20 @@ def search_ifcfg_of_interface(interface):
         if ifcfg_file.get("DEVICE") == interface:
             return ifcfg_file
 
+    # Wasn't found above, so assume filename matches the device we want
+    filename = "%s/ifcfg-%s" % (config.IFCFGDIR, interface)
+    if os.path.exists(filename):
+        ifcfg_file = ifcfg(filename)
+        ifcfg_file.read()
+        return ifcfg_file
+
     return None
 
 def ifcfg_set_zone_of_interface(zone, interface):
     """Set zone (ZONE=<zone>) in the ifcfg file that uses the interface
     (DEVICE=<interface>)"""
 
-    if zone == None:
+    if zone is None:
         zone = ""
 
     ifcfg_file = search_ifcfg_of_interface(interface)

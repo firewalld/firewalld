@@ -1,0 +1,14 @@
+FWD_START_TEST([ICMP block inversion])
+
+AT_CHECK([mkdir -p ./zones])
+AT_CHECK([echo '<?xml version="1.0" encoding="utf-8"?>' > ./zones/foobar.xml])
+AT_CHECK([echo '<zone>' >> ./zones/foobar.xml])
+AT_CHECK([echo '<short>foobar</short>' >> ./zones/foobar.xml])
+AT_CHECK([echo '<description>foobar desc</description>' >> ./zones/foobar.xml])
+AT_CHECK([echo '<service name="http"/>' >> ./zones/foobar.xml])
+AT_CHECK([echo '<source address="172.16.0.0/12" />' >> ./zones/foobar.xml])
+AT_CHECK([echo '<icmp-block-inversion />' >> ./zones/foobar.xml])
+AT_CHECK([echo '</zone>' >> ./zones/foobar.xml])
+
+FWD_RELOAD
+FWD_END_TEST

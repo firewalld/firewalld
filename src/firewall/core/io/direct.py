@@ -25,7 +25,7 @@ import io
 import shutil
 
 from firewall import config
-from firewall.fw_types import *
+from firewall.fw_types import LastUpdatedOrderedDict
 from firewall.functions import splitArgs, joinArgs, u2b_if_py2
 from firewall.core.io.io_object import IO_Object, IO_Object_ContentHandler, \
     IO_Object_XMLGenerator
@@ -360,9 +360,11 @@ class Direct(IO_Object):
         handler = direct_ContentHandler(self)
         parser = sax.make_parser()
         parser.setContentHandler(handler)
-        with open(self.filename, "r") as f:
+        with open(self.filename, "rb") as f:
+            source = sax.InputSource(None)
+            source.setByteStream(f)
             try:
-                parser.parse(f)
+                parser.parse(source)
             except sax.SAXParseException as msg:
                 raise FirewallError(errors.INVALID_TYPE,
                                     "Not a valid file: %s" % \

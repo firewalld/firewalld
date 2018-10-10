@@ -25,7 +25,8 @@ import io
 import shutil
 
 from firewall import config
-from firewall.core.io.io_object import *
+from firewall.core.io.io_object import PY2, IO_Object, \
+                    IO_Object_ContentHandler, IO_Object_XMLGenerator
 from firewall.core.logger import log
 from firewall.functions import uniqify, checkUser, checkUid, checkCommand, \
                                checkContext, u2b_if_py2

@@ -1,0 +1,12 @@
+FWD_START_TEST([ICMP block present FORWARD chain])
+
+FWD_CHECK([-q --zone=public --add-icmp-block=host-prohibited])
+m4_if(iptables, FIREWALL_BACKEND, [
+    NS_CHECK([iptables -L IN_public_deny | grep "host-prohibited"], 0, ignore)
+    NS_CHECK([iptables -L FWDI_public_deny | grep "host-prohibited"], 0, ignore)
+], [
+    NS_CHECK([nft list chain inet firewalld filter_IN_public_deny | grep "destination-unreachable" |grep "\(code 10\|host-prohibited\)"], 0, ignore)
+    NS_CHECK([nft list chain inet firewalld filter_FWDI_public_deny | grep "destination-unreachable" |grep "\(code 10\|host-prohibited\)"], 0, ignore)
+])
+
+FWD_END_TEST

@@ -1,18 +1,16 @@
-SUBDIRS = icons
+SUBDIRS = icons tests
 
-dist_bin_SCRIPTS = firewall-applet firewall-cmd firewall-offline-cmd firewall-config firewallctl
-dist_sbin_SCRIPTS = firewalld
+dist_bin_SCRIPTS_in = firewall-applet.in firewall-cmd.in firewall-offline-cmd.in firewall-config.in
+dist_sbin_SCRIPTS_in = firewalld.in
+
+dist_bin_SCRIPTS = $(dist_bin_SCRIPTS_in:.in=)
+dist_sbin_SCRIPTS = $(dist_sbin_SCRIPTS_in:.in=)
 
 gladedir = $(pkgdatadir)
 dist_glade_DATA = firewall-config.glade
 
 gtkextradir = $(pkgdatadir)
 dist_gtkextra_DATA = gtk3_chooserbutton.py gtk3_niceexpander.py
-
-testsdir = $(pkgdatadir)/tests
-dist_tests_DATA = \
-	tests/firewall-cmd_test.sh \
-	tests/firewall-offline-cmd_test.sh
 
 nobase_dist_python_DATA = \
 	firewall/client.py \
@@ -39,6 +37,7 @@ nobase_dist_python_DATA = \
 	firewall/core/__init__.py \
 	firewall/core/io/direct.py \
 	firewall/core/io/firewalld_conf.py \
+	firewall/core/io/functions.py \
 	firewall/core/io/helper.py \
 	firewall/core/io/icmptype.py \
 	firewall/core/io/ifcfg.py \
@@ -52,6 +51,7 @@ nobase_dist_python_DATA = \
 	firewall/core/ipXtables.py \
 	firewall/core/logger.py \
 	firewall/core/modules.py \
+	firewall/core/nftables.py \
 	firewall/core/prog.py \
 	firewall/core/rich.py \
 	firewall/core/watcher.py \
@@ -72,25 +72,19 @@ nobase_dist_python_DATA = \
 	firewall/server/server.py
 
 EXTRA_DIST = \
-	firewall/config/__init__.py.in
+	firewall/config/__init__.py.in \
+	$(dist_bin_SCRIPTS_in) $(dist_sbin_SCRIPTS_in)
 
 CLEANFILES = *~ *\# .\#* *.py?
 
-install-data-local: install-dist_sbinSCRIPTS install-dist_binSCRIPTS install-dist_testsDATA
-	@echo "Fixing python shebang"
-	@list='$(dist_bin_SCRIPTS)'; \
-	for p in $$list; do \
-	  echo $(top_srcdir)/fix_python_shebang.sh "$(DESTDIR)$(bindir)/$$p"; \
-	  $(top_srcdir)/fix_python_shebang.sh "$(DESTDIR)$(bindir)/$$p"; \
-	done
-	@list='$(dist_sbin_SCRIPTS)'; \
-	for p in $$list; do \
-	  echo $(top_srcdir)/fix_python_shebang.sh "$(DESTDIR)$(sbindir)/$$p"; \
-	  $(top_srcdir)/fix_python_shebang.sh "$(DESTDIR)$(sbindir)/$$p"; \
-	done
-	@echo "Fixing path for test suite scripts"
-	@list='$(dist_tests_DATA)'; \
-	for p in $$list; do \
-	  echo sed -i -e 's@^readonly path=.*@readonly path=\"$(bindir)/\"@' "$(DESTDIR)$(pkgdatadir)/$$p"; \
-	  sed -i -e 's@^readonly path=.*@readonly path=\"$(bindir)/\"@' "$(DESTDIR)$(pkgdatadir)/$$p"; \
+FLAKE8_IGNORE = E121,E122,E123,E124,E126,E127,E128,E201,E202,E203,E211,E221,E222,E225,E226,E231,E241,E251,E261,E262,E265,E266,W291,W293,E301,E302,E303,E305,E306,W391,E402,E501,E502,W503,W504,E722,E741
+check-local:
+	find . -name '*.py' -or -name '*.py.in' |xargs flake8 --ignore="$(FLAKE8_IGNORE)"
+	flake8 --ignore="$(FLAKE8_IGNORE)" $(dist_bin_SCRIPTS_in) $(dist_sbin_SCRIPTS_in)
+	@echo
+	@for file in $(filter-out $(EXTRA_DIST:.in=),$(nobase_dist_python_DATA) $(dist_bin_SCRIPTS_in) $(dist_sbin_SCRIPTS_in)); do \
+		if ! grep "$${file}" ${top_srcdir}/po/POTFILES.in > /dev/null; then \
+			echo "$${file} should be in ${abs_top_srcdir}/po/POTFILES.in"; \
+			exit 1; \
+		fi; \
 	done

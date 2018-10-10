@@ -1,0 +1,6 @@
+FWD_START_TEST([individual calls])
+
+AT_CHECK([sed -i 's/^IndividualCalls.*/IndividualCalls=yes/' ./firewalld.conf])
+FWD_RELOAD
+
+FWD_END_TEST

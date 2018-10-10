@@ -7,9 +7,9 @@
 
 Summary: A firewall daemon with D-Bus interface providing a dynamic firewall
 Name: firewalld
-Version: 0.4.4.5
+Version: 0.6.999
 Release: 1%{?dist}
-URL:     http://www.firewalld.org
+URL:     http://firewalld.org
 License: GPLv2+
 Source0: https://github.com/firewalld/firewalld/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 BuildArch: noarch
@@ -23,12 +23,14 @@ BuildRequires: glib2, glib2-devel
 BuildRequires: systemd-units
 BuildRequires: docbook-style-xsl
 BuildRequires: libxslt
-BuildRequires:  python2-devel
+BuildRequires: python2-devel
 BuildRequires: iptables, ebtables, ipset
+BuildRequires: nftables
 %if 0%{?with_python3}
 BuildRequires:  python3-devel
 %endif #0%{?with_python3}
 Requires: iptables, ebtables, ipset
+Requires: nftables
 Requires(post): systemd
 Requires(preun): systemd
 Requires(postun): systemd
@@ -116,16 +118,12 @@ The firewall configuration application provides an configuration interface for
 firewalld.
 
 %prep
-%setup -q
+%autosetup
 ./autogen.sh
 
 %if 0%{?with_python3}
 rm -rf %{py3dir}
 cp -a . %{py3dir}
-%if 0%{?use_python3}
-sed -i -e 's|/usr/bin/python -Es|%{__python3} -Es|' %{py3dir}/fix_python_shebang.sh
-sed -i 's|/usr/bin/python|%{__python3}|' %{py3dir}/config/lockdown-whitelist.xml
-%endif #0%{?use_python3}
 %endif #0%{?with_python3}
 
 %build
@@ -217,7 +215,6 @@ fi
 %{_sbindir}/firewalld
 %{_bindir}/firewall-cmd
 %{_bindir}/firewall-offline-cmd
-%{_bindir}/firewallctl
 %dir %{_datadir}/bash-completion/completions
 %{_datadir}/bash-completion/completions/firewall-cmd
 %{_prefix}/lib/firewalld/icmptypes/*.xml
@@ -225,8 +222,6 @@ fi
 %{_prefix}/lib/firewalld/services/*.xml
 %{_prefix}/lib/firewalld/zones/*.xml
 %{_prefix}/lib/firewalld/helpers/*.xml
-%{_prefix}/lib/firewalld/xmlschema/check.sh
-%{_prefix}/lib/firewalld/xmlschema/*.xsd
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld
 %config(noreplace) %{_sysconfdir}/firewalld/firewalld.conf
 %config(noreplace) %{_sysconfdir}/firewalld/lockdown-whitelist.xml
@@ -235,9 +230,6 @@ fi
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld/ipsets
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld/services
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld/zones
-%dir %{_datadir}/firewalld
-%dir %{_datadir}/firewalld/tests
-%{_datadir}/firewalld/tests
 %defattr(0644,root,root)
 %config(noreplace) %{_sysconfdir}/sysconfig/firewalld
 #%attr(0755,root,root) %{_initrddir}/firewalld
@@ -247,7 +239,6 @@ fi
 %{_datadir}/polkit-1/actions/org.fedoraproject.FirewallD1.server.policy.choice
 %{_datadir}/polkit-1/actions/org.fedoraproject.FirewallD1.policy
 %{_mandir}/man1/firewall*cmd*.1*
-%{_mandir}/man1/firewallctl*.1*
 %{_mandir}/man1/firewalld*.1*
 %{_mandir}/man5/firewall*.5*
 %{_sysconfdir}/modprobe.d/firewalld-sysctls.conf
@@ -295,7 +286,6 @@ fi
 %dir %{_prefix}/lib/firewalld/ipsets
 %dir %{_prefix}/lib/firewalld/services
 %dir %{_prefix}/lib/firewalld/zones
-%dir %{_prefix}/lib/firewalld/xmlschema
 %{_rpmconfigdir}/macros.d/macros.firewalld
 
 %files -n firewall-applet
@@ -320,6 +310,12 @@ fi
 %{_mandir}/man1/firewall-config*.1*
 
 %changelog
+* Fri Apr 20 2018 Eric Garver <e@erig.me> - 0.6.0-1
+- bump package to v0.6.0
+
+* Thu Jan 25 2018 Eric Garver <e@erig.me> - 0.5.0-1
+- rebase package to v0.5.0
+
 * Tue Jun  6 2017 Thomas Woerner <twoerner@redhat.com> - 0.4.4.5-1
 - Fix build from spec without fedorahosted.org archives
 - firewalld.spec: Add missing autotools dependencies
@@ -332,7 +328,7 @@ fi
   available
 - Merge pull request 212 from leongold/ovirt-imageio-service
 - config/Makefile.am: Install new ovirt-imageio service
-- README: Use www.firewalld.org/documentation as documentation link
+- README: Use firewalld.org/documentation as documentation link
 - Fix misspelled word in documentation
 - Merge pull request 216 from tobiasvl/fix-protocol-spelling
 - Man pages: Mention sctp and dccp protocols for remaining ports, ..

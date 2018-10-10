@@ -7,7 +7,7 @@ desktopdir = $(datadir)/applications
 desktop_DATA = $(desktop_FILES:.in=)
 
 appdata_FILES = firewall-config.appdata.xml.in
-appdatadir = $(datadir)/appdata/
+appdatadir = $(datadir)/metainfo/
 appdata_DATA = $(appdata_FILES:.in=)
 
 applet_desktop_FILES = firewall-applet.desktop.in
@@ -27,14 +27,6 @@ dist_dbus_policy_DATA = FirewallD.conf
 
 gsettings_in_file = org.fedoraproject.FirewallConfig.gschema.xml.in
 gsettings_SCHEMAS = $(gsettings_in_file:.xml.in=.xml)
-
-xmlschemadir = $(prefixlibdir)/xmlschema
-dist_xmlschema_DATA = \
-	xmlschema/icmptype.xsd \
-	xmlschema/ipset.xsd \
-	xmlschema/service.xsd \
-	xmlschema/zone.xsd
-dist_xmlschema_SCRIPTS = xmlschema/check.sh
 
 BUILT_SOURCES = \
 	$(desktop_DATA) \
@@ -68,6 +60,7 @@ CONFIG_FILES = \
 	helpers/irc.xml \
 	helpers/netbios-ns.xml \
 	helpers/pptp.xml \
+	helpers/proto-gre.xml \
 	helpers/Q.931.xml \
 	helpers/RAS.xml \
 	helpers/sane.xml \
@@ -122,26 +115,37 @@ CONFIG_FILES = \
 	ipsets/README \
 	services/amanda-client.xml \
 	services/amanda-k5-client.xml \
+	services/amqp.xml \
+	services/amqps.xml \
+	services/apcupsd.xml \
+	services/audit.xml \
 	services/bacula-client.xml \
 	services/bacula.xml \
+	services/bb.xml \
 	services/bgp.xml \
 	services/bitcoin-rpc.xml \
 	services/bitcoin-testnet-rpc.xml \
 	services/bitcoin-testnet.xml \
 	services/bitcoin.xml \
+	services/lightning-network.xml \
 	services/ceph-mon.xml \
 	services/ceph.xml \
 	services/cfengine.xml \
+	services/cockpit.xml \
 	services/condor-collector.xml \
 	services/ctdb.xml \
 	services/dhcpv6-client.xml \
 	services/dhcpv6.xml \
 	services/dhcp.xml \
+	services/distcc.xml \
 	services/dns.xml \
 	services/docker-registry.xml \
 	services/docker-swarm.xml \
 	services/dropbox-lansync.xml \
 	services/elasticsearch.xml \
+	services/etcd-client.xml \
+	services/etcd-server.xml \
+	services/finger.xml \
 	services/freeipa-ldaps.xml \
 	services/freeipa-ldap.xml \
 	services/freeipa-replication.xml \
@@ -150,6 +154,7 @@ CONFIG_FILES = \
 	services/ganglia-client.xml \
 	services/ganglia-master.xml \
 	services/git.xml \
+	services/gre.xml \
 	services/high-availability.xml \
 	services/https.xml \
 	services/http.xml \
@@ -161,7 +166,10 @@ CONFIG_FILES = \
 	services/ircs.xml \
 	services/irc.xml \
 	services/iscsi-target.xml \
+	services/isns.xml \
+	services/jenkins.xml \
 	services/kadmin.xml \
+	services/kdeconnect.xml \
 	services/kerberos.xml \
 	services/kibana.xml \
 	services/klogin.xml \
@@ -172,20 +180,26 @@ CONFIG_FILES = \
 	services/ldap.xml \
 	services/libvirt-tls.xml \
 	services/libvirt.xml \
+	services/llmnr.xml \
 	services/managesieve.xml \
+	services/matrix.xml \
 	services/mdns.xml \
 	services/minidlna.xml \
 	services/mongodb.xml \
 	services/mosh.xml \
 	services/mountd.xml \
+	services/mqtt.xml \
+	services/mqtt-tls.xml \
 	services/mssql.xml \
 	services/ms-wbt.xml \
 	services/murmur.xml \
 	services/mysql.xml \
 	services/nfs.xml \
 	services/nfs3.xml \
+	services/nmea-0183.xml \
 	services/nrpe.xml \
 	services/ntp.xml \
+	services/nut.xml \
 	services/openvpn.xml \
 	services/ovirt-imageio.xml \
 	services/ovirt-storageconsole.xml \
@@ -194,6 +208,7 @@ CONFIG_FILES = \
 	services/pmproxy.xml \
 	services/pmwebapis.xml \
 	services/pmwebapi.xml \
+	services/plex.xml \
 	services/pop3s.xml \
 	services/pop3.xml \
 	services/postgresql.xml \
@@ -209,19 +224,29 @@ CONFIG_FILES = \
 	services/rpc-bind.xml \
 	services/rsh.xml \
 	services/rsyncd.xml \
+	services/rtsp.xml \
+	services/salt-master.xml \
 	services/samba-client.xml \
+	services/samba-dc.xml \
 	services/samba.xml \
 	services/sane.xml \
 	services/sips.xml \
 	services/sip.xml \
+	services/slp.xml \
 	services/smtp-submission.xml \
 	services/smtps.xml \
 	services/smtp.xml \
 	services/snmptrap.xml \
 	services/snmp.xml \
 	services/spideroak-lansync.xml \
+	services/spotify-sync.xml \
 	services/squid.xml \
 	services/ssh.xml \
+	services/steam-streaming.xml \
+	services/svdrp.xml \
+	services/svn.xml \
+	services/syncthing.xml \
+	services/syncthing-gui.xml \
 	services/synergy.xml \
 	services/syslog-tls.xml \
 	services/syslog.xml \
@@ -231,9 +256,14 @@ CONFIG_FILES = \
 	services/tinc.xml \
 	services/tor-socks.xml \
 	services/transmission-client.xml \
+	services/upnp-client.xml \
 	services/vdsm.xml \
 	services/vnc-server.xml \
+	services/wbem-http.xml \
 	services/wbem-https.xml \
+	services/wsman.xml \
+	services/wsmans.xml \
+	services/xdmcp.xml \
 	services/xmpp-bosh.xml \
 	services/xmpp-client.xml \
 	services/xmpp-local.xml \
@@ -257,7 +287,7 @@ EXTRA_DIST = \
 	$(polkit1_action_FILES) \
 	$(gsettings_in_file) \
 	$(CONFIG_FILES) \
-	$(dist_xmlschema_DATA) \
+	lockdown-whitelist.xml.in \
 	firewalld.init \
 	firewalld-sysctls.conf.in \
 	firewalld.service.in \
@@ -382,3 +412,12 @@ install-data-hook:
 		mv org.fedoraproject.FirewallD1.desktop.policy org.fedoraproject.FirewallD1.desktop.policy.choice && \
 		rm -f org.fedoraproject.FirewallD1.policy && \
 		$(LN_S) org.fedoraproject.FirewallD1.server.policy.choice org.fedoraproject.FirewallD1.policy
+
+# make sure CONFIG_FILES are also in POTFILES
+check-local:
+	@for file in $(filter-out helpers/% %/README,$(CONFIG_FILES)); do \
+		if ! grep "$${file}" ${top_srcdir}/po/POTFILES.in > /dev/null; then \
+			echo "$${file} should be in ${abs_top_srcdir}/po/POTFILES.in"; \
+			exit 1; \
+		fi; \
+	done

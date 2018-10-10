@@ -73,22 +73,28 @@ def nm_get_zone_of_connection(connection):
     """
     check_nm_imported()
 
-    active_connections = nm_get_client().get_active_connections()
+    con = nm_get_client().get_connection_by_uuid(connection)
+    if con is None:
+        return None
 
-    for active_con in active_connections:
-        if active_con.get_id() == connection:
-            con = active_con.get_connection()
-            if con is None:
-                continue
-            setting_con = con.get_setting_connection()
-            if setting_con is None:
-                continue
-            zone = setting_con.get_zone()
-            if zone is None:
-                zone = ""
-            return zone
+    setting_con = con.get_setting_connection()
+    if setting_con is None:
+        return None
 
-    return None
+    try:
+        if con.get_flags() & (NM.SettingsConnectionFlags.NM_GENERATED
+                              | NM.SettingsConnectionFlags.NM_VOLATILE):
+            return ""
+    except AttributeError:
+        # Prior to NetworkManager 1.12, we can only guess
+        # that a connection was generated/volatile.
+        if con.get_unsaved():
+            return ""
+
+    zone = setting_con.get_zone()
+    if zone is None:
+        zone = ""
+    return zone
 
 def nm_set_zone_of_connection(zone, connection):
     """Set the zone for a connection
@@ -98,33 +104,27 @@ def nm_set_zone_of_connection(zone, connection):
     """
     check_nm_imported()
 
-    active_connections = nm_get_client().get_active_connections()
+    con = nm_get_client().get_connection_by_uuid(connection)
+    if con is None:
+        return False
 
-    for active_con in active_connections:
-        con = active_con.get_connection()
-        if con is None:
-            continue
+    setting_con = con.get_setting_connection()
+    if setting_con is None:
+        return False
 
-        if active_con.get_id() == connection:
-            setting_con = con.get_setting_connection()
-            if setting_con is None:
-                continue
-            if zone == "":
-                zone = None
-            setting_con.set_property("zone", zone)
-            con.commit_changes(True, None)
-            return True
+    if zone == "":
+        zone = None
+    setting_con.set_property("zone", zone)
+    return con.commit_changes(True, None)
 
-    return False
-
-def nm_get_connections(connections, connections_uuid):
+def nm_get_connections(connections, connections_name):
     """Get active connections from NM
     @param connections return dict
-    @param connections_uuid return dict
+    @param connections_name return dict
     """
 
     connections.clear()
-    connections_uuid.clear()
+    connections_name.clear()
 
     check_nm_imported()
 
@@ -139,9 +139,48 @@ def nm_get_connections(connections, connections_uuid):
         uuid = active_con.get_uuid()
         devices = active_con.get_devices()
 
-        connections_uuid[name] = uuid
+        connections_name[uuid] = name
         for dev in devices:
-            connections[dev.get_iface()] = name
+            connections[dev.get_iface()] = uuid
+
+def nm_get_interfaces():
+    """Get active interfaces from NM
+    @returns list of interface names
+    """
+
+    check_nm_imported()
+
+    active_interfaces = []
+
+    for active_con in nm_get_client().get_active_connections():
+        # ignore vpn devices for now
+        if active_con.get_vpn():
+            continue
+
+        try:
+            con = active_con.get_connection()
+            if con.get_flags() & (NM.SettingsConnectionFlags.NM_GENERATED
+                                  | NM.SettingsConnectionFlags.NM_VOLATILE):
+                continue
+        except AttributeError:
+            # Prior to NetworkManager 1.12, we can only guess
+            # that a connection was generated/volatile.
+            if con.get_unsaved():
+                continue
+
+        for dev in active_con.get_devices():
+            active_interfaces.append(dev.get_iface())
+
+    return active_interfaces
+
+def nm_get_interfaces_in_zone(zone):
+    interfaces = []
+    for interface in nm_get_interfaces():
+        conn = nm_get_connection_of_interface(interface)
+        if zone == nm_get_zone_of_connection(conn):
+            interfaces.append(interface)
+
+    return interfaces
 
 def nm_get_connection_of_interface(interface):
     """Get connection from NM that is using the interface
@@ -150,21 +189,25 @@ def nm_get_connection_of_interface(interface):
     """
     check_nm_imported()
 
-    active_connections = nm_get_client().get_active_connections()
+    device = nm_get_client().get_device_by_iface(interface)
+    if device is None:
+        return None
 
-    for active_con in active_connections:
-        # ignore vpn devices for now
-        if active_con.get_vpn():
-            continue
+    active_con = device.get_active_connection()
+    if active_con is None:
+        return None
 
-        devices = active_con.get_devices()
+    try:
+        con = active_con.get_connection()
+        if con.get_flags() & NM.SettingsConnectionFlags.NM_GENERATED:
+            return None
+    except AttributeError:
+        # Prior to NetworkManager 1.12, we can only guess
+        # that a connection was generated.
+        if con.get_unsaved():
+            return None
 
-        for dev in devices:
-            if dev.get_iface() == interface:
-                return active_con.get_id()
-
-
-    return None
+    return active_con.get_uuid()
 
 def nm_get_bus_name():
     if not _nm_imported:

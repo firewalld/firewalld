@@ -1,0 +1,194 @@
+#!@PYTHON@
+# -*- coding: utf-8 -*-
+#
+# Copyright (C) 2010-2016 Red Hat, Inc.
+# Authors:
+# Thomas Woerner <twoerner@redhat.com>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# python fork magic derived from setroubleshoot
+# Copyright (C) 2006,2007,2008,2009 Red Hat, Inc.
+# Authors:
+#   John Dennis <jdennis@redhat.com>
+#   Dan Walsh <dwalsh@redhat.com>
+
+import os
+import sys
+import dbus
+import traceback
+import argparse
+
+from firewall import config
+from firewall.functions import firewalld_is_active
+from firewall.core.logger import log, FileLog
+
+def parse_cmdline():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--debug',
+                        nargs='?', const=1, default=0, type=int,
+                        choices=range(1, log.DEBUG_MAX+1),
+                        help="""Enable logging of debug messages.
+                                Additional argument in range 1..%s can be used
+                                to specify log level.""" % log.DEBUG_MAX,
+                        metavar="level")
+    parser.add_argument('--debug-gc',
+                        help="""Turn on garbage collector leak information.
+                        The collector runs every 10 seconds and if there are
+                        leaks, it prints information about the leaks.""",
+                        action="store_true")
+    parser.add_argument('--nofork',
+                        help="""Turn off daemon forking,
+                                run as a foreground process.""",
+                        action="store_true")
+    parser.add_argument('--nopid',
+                        help="""Disable writing pid file and don't check
+                                for existing server process.""",
+                        action="store_true")
+    parser.add_argument('--system-config',
+                        help="""Path to firewalld system configuration""",
+                        metavar="path")
+    parser.add_argument('--default-config',
+                        help="""Path to firewalld default configuration""",
+                        metavar="path")
+    parser.add_argument('--log-file',
+                        help="""Path to firewalld log file""",
+                        metavar="path")
+    return parser.parse_args()
+
+def setup_logging(args):
+    # Set up logging capabilities
+    log.setDateFormat("%Y-%m-%d %H:%M:%S")
+    log.setFormat("%(date)s %(label)s%(message)s")
+    log.setInfoLogging("*", log.syslog, [ log.FATAL, log.ERROR, log.WARNING ],
+                       fmt="%(label)s%(message)s")
+    log.setDebugLogLevel(log.NO_INFO)
+    log.setDebugLogLevel(log.NO_DEBUG)
+
+    if args.debug:
+        log.setInfoLogLevel(log.INFO_MAX)
+        log.setDebugLogLevel(args.debug)
+        if args.nofork:
+            log.addInfoLogging("*", log.stdout)
+            log.addDebugLogging("*", log.stdout)
+
+    log_file = FileLog(config.FIREWALLD_LOGFILE, "a")
+    try:
+        log_file.open()
+    except IOError as e:
+        log.error("Failed to open log file '%s': %s", config.FIREWALLD_LOGFILE,
+                  str(e))
+    else:
+        log.addInfoLogging("*", log_file, [ log.FATAL, log.ERROR, log.WARNING ])
+        log.addDebugLogging("*", log_file)
+        if args.debug:
+            log.addInfoLogging("*", log_file)
+            log.addDebugLogging("*", log_file)
+
+def startup(args):
+    try:
+        if not args.nofork:
+            # do the UNIX double-fork magic, see Stevens' "Advanced
+            # Programming in the UNIX Environment" for details (ISBN 0201563177)
+            pid = os.fork()
+            if pid > 0:
+                # exit first parent
+                sys.exit(0)
+
+            # decouple from parent environment
+            os.chdir("/")
+            os.setsid()
+            os.umask(os.umask(0o077) | 0o022)
+
+            # Do not close the file descriptors here anymore
+            # File descriptors are now closed in runProg before execve
+
+            # Redirect the standard I/O file descriptors to /dev/null
+            if hasattr(os, "devnull"):
+                REDIRECT_TO = os.devnull
+            else:
+                REDIRECT_TO = "/dev/null"
+            fd = os.open(REDIRECT_TO, os.O_RDWR)
+            os.dup2(fd, 0)  # standard input (0)
+            os.dup2(fd, 1)  # standard output (1)
+            os.dup2(fd, 2)  # standard error (2)
+
+        if not args.nopid:
+            # write the pid file
+            with open(config.FIREWALLD_PIDFILE, "w") as f:
+                f.write(str(os.getpid()))
+
+        if not os.path.exists(config.FIREWALLD_TEMPDIR):
+            os.mkdir(config.FIREWALLD_TEMPDIR, 0o750)
+
+        if args.system_config:
+            config.set_system_config_paths(args.system_config)
+
+        if args.default_config:
+            config.set_default_config_paths(args.default_config)
+
+        # Start the server mainloop here
+        from firewall.server import server
+        server.run_server(args.debug_gc)
+
+        # Clean up on exit
+        if not args.nopid and os.path.exists(config.FIREWALLD_PIDFILE):
+            os.remove(config.FIREWALLD_PIDFILE)
+
+    except OSError as e:
+        log.fatal("Fork #1 failed: %d (%s)" % (e.errno, e.strerror))
+        log.error(traceback.format_exc())
+        if not args.nopid and os.path.exists(config.FIREWALLD_PIDFILE):
+            os.remove(config.FIREWALLD_PIDFILE)
+        sys.exit(1)
+
+    except dbus.exceptions.DBusException as e:
+        log.fatal(str(e))
+        log.error(traceback.format_exc())
+        if not args.nopid and os.path.exists(config.FIREWALLD_PIDFILE):
+            os.remove(config.FIREWALLD_PIDFILE)
+        sys.exit(1)
+
+    except IOError as e:
+        log.fatal(str(e))
+        log.error(traceback.format_exc())
+        if not args.nopid and os.path.exists(config.FIREWALLD_PIDFILE):
+            os.remove(config.FIREWALLD_PIDFILE)
+        sys.exit(1)
+
+def main():
+    # firewalld should only be run as the root user
+    if os.getuid() != 0:
+        print("You need to be root to run %s." % sys.argv[0])
+        sys.exit(-1)
+
+    # Process the command-line arguments
+    args = parse_cmdline()
+
+    if args.log_file:
+        config.FIREWALLD_LOGFILE = args.log_file
+
+    setup_logging(args)
+
+    # Don't attempt to run two copies of firewalld simultaneously
+    if not args.nopid and firewalld_is_active():
+        log.fatal("Not starting FirewallD, already running.")
+        sys.exit(1)
+
+    startup(args)
+
+    sys.exit(0)
+
+if __name__ == '__main__':
+    main()

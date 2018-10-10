@@ -33,6 +33,7 @@ from firewall.dbus_utils import dbus_to_python, \
     dbus_introspection_prepare_properties, \
     dbus_introspection_add_properties
 from firewall.core.io.zone import Zone
+from firewall.core.fw_ifcfg import ifcfg_set_zone_of_interface
 from firewall.core.base import DEFAULT_ZONE_TARGET
 from firewall.core.rich import Rich_Rule
 from firewall.core.logger import log
@@ -40,6 +41,7 @@ from firewall.server.decorators import handle_exceptions, \
     dbus_handle_exceptions, dbus_service_method
 from firewall import errors
 from firewall.errors import FirewallError
+from firewall.functions import portInPortRange
 
 ############################################################################
 #
@@ -482,7 +484,15 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         protocol = dbus_to_python(protocol, str)
         log.debug1("%s.queryPort('%s', '%s')", self._log_prefix, port,
                    protocol)
-        return (port,protocol) in self.getSettings()[6]
+        if (port,protocol) in self.getSettings()[6]:
+            return True
+        else:
+            # It might be a single port query that is inside a range
+            for (_port, _protocol) in self.getSettings()[6]:
+                if portInPortRange(port, _port) and protocol == _protocol:
+                    return True
+
+        return False
 
     # protocol
 
@@ -878,6 +888,8 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         settings[10].append(interface)
         self.update(settings)
 
+        ifcfg_set_zone_of_interface(self.obj.name, interface)
+
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
                          in_signature='s')
     @dbus_handle_exceptions
@@ -890,6 +902,8 @@ class FirewallDConfigZone(slip.dbus.service.Object):
             raise FirewallError(errors.NOT_ENABLED, interface)
         settings[10].remove(interface)
         self.update(settings)
+
+        ifcfg_set_zone_of_interface("", interface)
 
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
                          in_signature='s',

@@ -1,0 +1,15 @@
+FWD_START_TEST([--set-log-denied does not zero config])
+FWD_CHECK([-q --set-log-denied=all])
+FWD_CHECK([-q --permanent --zone=public --add-service=samba])
+FWD_RELOAD
+FWD_CHECK([--zone=public --list-all | TRIM | grep ^services], 0, [dnl
+services: dhcpv6-client samba ssh
+])
+dnl check that log denied actually took effect
+m4_if(iptables, FIREWALL_BACKEND, [
+	NS_CHECK([iptables -t filter -L | grep "FINAL_REJECT:"], 0, ignore)
+], [
+	NS_CHECK([nft list chain inet firewalld filter_INPUT | grep "FINAL_REJECT"], 0, ignore)
+	NS_CHECK([nft list chain inet firewalld filter_FORWARD | grep "FINAL_REJECT"], 0, ignore)
+])
+FWD_END_TEST

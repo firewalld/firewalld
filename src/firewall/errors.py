@@ -97,6 +97,7 @@ MISSING_NAME        =  205
 MISSING_SETTING     =  206
 MISSING_FAMILY      =  207
 
+RUNNING_BUT_FAILED  =  251
 NOT_RUNNING         =  252
 NOT_AUTHORIZED      =  253
 UNKNOWN_ERROR       =  254
@@ -108,10 +109,11 @@ class FirewallError(Exception):
         self.code = code
         if msg is not None:
             # escape msg if needed
-            try:
-                x = str(msg)
-            except UnicodeEncodeError:
-                msg = unicode(msg).encode("unicode_escape")
+            if sys.version < '3':
+                try:
+                    x = str(msg) # noqa: F841
+                except UnicodeEncodeError:
+                    msg = unicode(msg).encode("unicode_escape") # noqa: F821
         self.msg = msg
 
     def __repr__(self):

@@ -37,6 +37,7 @@ Install the following requirements or packages:
   iptables
   ebtables
   ipset
+  nftables
 
 For use with Python 3:
 
@@ -69,7 +70,12 @@ Use
 
 to create the documentation and to update the po files.
 
-Now you are done.
+Use
+
+  make check
+
+to run the testsuite. This assumes full control of the host and also requires
+the host's firewalld to be stopped.
 
 
 RPM package
@@ -82,11 +88,11 @@ RHEL >= 7.
 
 Links
 -----
-Homepage:          http://www.firewalld.org
+Homepage:          http://firewalld.org
 Report a bug:      https://github.com/firewalld/firewalld/issues
 Git repo browser:  https://github.com/firewalld/firewalld
 Git repo:          https://github.com/firewalld/firewalld.git
-Documentation:     http://www.firewalld.org/documentation/
+Documentation:     http://firewalld.org/documentation/
 
 
 Mailing lists
@@ -100,7 +106,6 @@ Directory Structure
 config/                 Configuration files
 config/icmptypes/       Predefined ICMP types
 config/services/        Predefined services
-config/xmlschema/       XML Schema checks for config files
 config/zones/           Predefined zones
 config/ipsets/          Predefined ipsets
 doc/                    Documentation
@@ -114,4 +119,4 @@ shell-completion/bash/  Bash auto completion scripts
 src/                    Source tree
 src/firewall/           Import tree for the sevice and all applications
 src/icons/              Icons in the sizes: 16, 22, 24, 32, 48 and scalable
-src/tests/              Test scripts
+src/tests/              Testsuite

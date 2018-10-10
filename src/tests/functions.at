@@ -1,0 +1,346 @@
+m4_define([FWD_STOP_FIREWALLD], [
+    pid=$(< firewalld.pid)
+    kill $pid
+    for I in 1 2 3 4 5 6 7 8 9 0; do
+        ps --pid $pid >/dev/null || { pid=0; break; }
+        sleep 1
+    done
+    test $pid -eq 0 || { kill -9 $pid; sleep 3; }
+])
+
+m4_define([FWD_START_FIREWALLD], [
+    FIREWALLD_ARGS="--nofork --nopid --log-file ./firewalld.log --system-config ./"
+    dnl if testsuite ran with debug flag, add debug output
+    case "${TESTSUITEFLAGS}" in
+        *-d*|*--debug*) FIREWALLD_ARGS="--debug=2 ${FIREWALLD_ARGS}";;
+        *) :;;
+    esac
+    if test "x${FIREWALLD_DEFAULT_CONFIG}" != x ; then
+        FIREWALLD_ARGS+=" --default-config ${FIREWALLD_DEFAULT_CONFIG}"
+    fi
+
+    NS_CMD([firewalld $FIREWALLD_ARGS &])
+    if test $? -ne 0; then
+        AT_FAIL_IF([:])
+    fi
+    echo "$!" > firewalld.pid
+
+    dnl Give it some time for the dbus interface to come up
+    up=0
+    for I in 1 2 3 4 5 6 7 8 9 0; do
+        if NS_CMD([firewall-cmd --state]); then
+            up=1
+            break
+        fi
+        sleep 1
+    done
+    AT_FAIL_IF([test $up -ne 1])
+])
+
+m4_define([FWD_RELOAD], [
+    FWD_CHECK([-q --reload], [$1], [$2], [$3])
+    FWD_CHECK([-q --state], [$4], [$5], [$6])
+])
+
+m4_define([FWD_RESTART], [
+    FWD_STOP_FIREWALLD
+    FWD_START_FIREWALLD
+])
+
+m4_define([FWD_START_TEST], [
+    AT_SETUP([$1])
+
+    dnl We test some unicode strings and autotest overrides LC_ALL=C, so set it
+    dnl again for every test.
+    LC_ALL="C.UTF-8"
+    export LC_ALL
+    LANGUAGE="C.UTF-8"
+    export LANGUAGE
+
+    dnl start every test with the default config
+    if test "x${FIREWALLD_DEFAULT_CONFIG}" != x ; then
+        AT_CHECK([if ! cp "${FIREWALLD_DEFAULT_CONFIG}/firewalld.conf" ./firewalld.conf; then exit 77; fi])
+    else
+        AT_CHECK([if ! cp /etc/firewalld/firewalld.conf ./firewalld.conf; then exit 77; fi])
+    fi
+
+    m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
+        m4_define_default([FIREWALL_BACKEND], [nftables])
+
+        dnl don't unload modules or bother cleaning up, the namespace will be deleted
+        AT_CHECK([sed -i 's/^CleanupOnExit.*/CleanupOnExit=no/' ./firewalld.conf])
+
+        dnl set the appropriate backend
+        AT_CHECK([sed -i 's/^FirewallBackend.*/FirewallBackend=FIREWALL_BACKEND/' ./firewalld.conf])
+
+        dnl fib matching is pretty new in nftables. Don't use rpfilter on older
+        dnl kernels.
+        m4_if(nftables, FIREWALL_BACKEND, [
+            m4_if(no, HOST_SUPPORTS_NFT_FIB, [
+                sed -i 's/^IPv6_rpfilter.*/IPv6_rpfilter=no/' ./firewalld.conf
+            ])
+        ])
+
+        dnl dummy wrapper for trap syntax
+        function kill_firewalld() {
+            FWD_STOP_FIREWALLD
+        }
+
+        dnl run cleanup commands on test exit
+        echo "" > cleanup
+        trap ". ./cleanup; kill_firewalld" EXIT
+
+        dnl create a namespace and dbus-daemon
+        m4_define([CURRENT_DBUS_ADDRESS], [unix:abstract=firewalld-testsuite-dbus-system-socket-]RANDOM_NUMBER)
+        m4_define([CURRENT_TEST_NS], [fwd-test-]RANDOM_NUMBER)
+        echo "ip netns delete CURRENT_TEST_NS" >> ./cleanup
+        AT_CHECK([ip netns add CURRENT_TEST_NS])
+        AT_DATA([./dbus.conf], [
+            <!DOCTYPE busconfig PUBLIC "-//freedesktop//DTD D-Bus Bus Configuration 1.0//EN"
+            "http://www.freedesktop.org/standards/dbus/1.0/busconfig.dtd">
+            <busconfig>
+            <fork />
+            <auth>EXTERNAL</auth>
+            <listen>unix:path=/tmp/dummy</listen>
+            <policy context="default">
+                <allow user="*"/>
+                <allow send_type="signal"/>
+                <allow send_requested_reply="true" send_type="method_return"/>
+                <allow send_requested_reply="true" send_type="error"/>
+                <allow receive_type="method_call"/>
+                <allow receive_type="method_return"/>
+                <allow receive_type="error"/>
+                <allow receive_type="signal"/>
+                <allow send_destination="org.freedesktop.DBus"/>
+            </policy>
+            <!-- from .../config/FirewallD.conf -->
+            <policy user="root">
+                <allow own="org.fedoraproject.FirewallD1"/>
+                <allow own="org.fedoraproject.FirewallD1.config"/>
+                <allow send_destination="org.fedoraproject.FirewallD1"/>
+                <allow send_destination="org.fedoraproject.FirewallD1.config"/>
+            </policy>
+            <policy context="default">
+                <allow send_destination="org.fedoraproject.FirewallD1"/>
+                <allow send_destination="org.fedoraproject.FirewallD1"
+                       send_interface="org.freedesktop.DBus.Introspectable"/>
+                <allow send_destination="org.fedoraproject.FirewallD1"
+                       send_interface="org.freedesktop.DBus.Properties"/>
+                <allow send_destination="org.fedoraproject.FirewallD1.config"/>
+            </policy>
+            </busconfig>
+])
+        DBUS_PID=`NS_CMD([dbus-daemon --address="CURRENT_DBUS_ADDRESS" --print-pid --config-file="./dbus.conf"])`
+        if test $? -ne 0; then
+            AT_FAIL_IF([:])
+        fi
+        echo "kill $DBUS_PID" >> ./cleanup
+
+        FWD_START_FIREWALLD
+    ])
+])
+
+m4_define([FWD_END_TEST], [
+    m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
+        if test x"$1" != x"ignore"; then
+            if test -n "$1"; then
+                sed -i $1 ./firewalld.log
+            fi
+            AT_FAIL_IF([grep ERROR ./firewalld.log])
+            AT_FAIL_IF([grep WARNING ./firewalld.log])
+        fi
+        m4_undefine([CURRENT_DBUS_ADDRESS])
+        m4_undefine([CURRENT_TEST_NS])
+    ])
+    AT_CLEANUP
+])
+
+m4_define([FWD_CHECK], [
+    m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [
+        dnl Silently skip tests that don't affect permanent config or other
+        dnl flags we're interested in.
+        dnl
+        dnl if TESTING_FIREWALL_OFFLINE_CMD_PASSTHROUGH
+        dnl     firewall-offline-cmd ...
+        dnl else
+        dnl     if ! --permanent
+        dnl         if -default-zone
+        dnl             firewall-offline-cmd ...
+        dnl     else
+        dnl         if ! --timeout
+        dnl             firewall-offline-cmd ...
+        dnl
+        m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD_PASSTHROUGH], [
+            m4_define([FWD_CHECK_RUN_FIREWALL_OFFLINE_CMD])
+        ], [
+            m4_if(-1, m4_index([$1], [--permanent]), [
+                m4_if(-1, m4_index([$1], [-default-zone]), [], [
+                    m4_define([FWD_CHECK_RUN_FIREWALL_OFFLINE_CMD])
+                ])
+                m4_if(-1, m4_index([$1], [--check-config]), [], [
+                    m4_define([FWD_CHECK_RUN_FIREWALL_OFFLINE_CMD])
+                ])
+            ], [
+                m4_if(-1, m4_index([$1], [--timeout]), [
+                    m4_define([FWD_CHECK_RUN_FIREWALL_OFFLINE_CMD])
+                ], [])
+            ])
+        ])
+
+        m4_ifdef([FWD_CHECK_RUN_FIREWALL_OFFLINE_CMD], [
+            m4_undefine([FWD_CHECK_RUN_FIREWALL_OFFLINE_CMD])
+
+            FIREWALL_OFFLINE_CMD_ARGS="--system-config ./"
+            if test "x${FIREWALLD_DEFAULT_CONFIG}" != x ; then
+                FIREWALL_OFFLINE_CMD_ARGS+=" --default-config ${FIREWALLD_DEFAULT_CONFIG}"
+            fi
+
+            AT_CHECK([firewall-offline-cmd $FIREWALL_OFFLINE_CMD_ARGS dnl
+                dnl This m4 mess is all about stripping --permanent
+                dnl flag if it exists, otherwise we pass arg 1 verbatim.
+                m4_if(-1, m4_index([$1], [--permanent]), [$1], [ dnl
+                    m4_substr([$1],0,m4_index([$1], [--permanent])) dnl before --permanent
+                    m4_substr([$1],m4_eval(m4_index([$1], [--permanent])+11),m4_eval(m4_len([$1])-11)) dnl after --permanent
+                ])], [$2], [$3], [$4], [$5], [$6])
+        ])
+    ], [
+        NS_CHECK([firewall-cmd $1], [$2], [$3], [$4], [$5], [$6])
+    ])
+])
+
+m4_define([FWD_GREP_LOG], [
+    AT_CHECK([grep "$1" ./firewalld.log], 0, [ignore], [ignore])
+])
+
+m4_define([TRIM], [[sed -e 's/^[ \t]*//' -e 's/[ \t]*$//']])
+m4_define([TRIMV], [[sed -e '/^[ \t]*$/d']])
+m4_define([TRIM_INTERNAL], [[sed -e 's/[ \t]\+/ /g']])
+m4_define([TRIM_WHITESPACE], [TRIM | TRIMV | TRIM_INTERNAL])
+
+m4_define([NS_CMD], [dnl
+    env DBUS_SYSTEM_BUS_ADDRESS="CURRENT_DBUS_ADDRESS" ip netns exec CURRENT_TEST_NS $1 dnl
+])
+
+m4_define([NS_CHECK], [
+    AT_CHECK([NS_CMD([$1])], [$2], [$3], [$4], [$5], [$6])
+])
+
+m4_define([EBTABLES_LIST_RULES], [
+    NS_CHECK([ebtables --concurrent -t $1 -L $2 | TRIM_WHITESPACE | grep -v "^Bridge"], [$3], [$4], [$5], [$6], [$7])
+])
+
+m4_define([IPTABLES_LIST_RULES], [
+    NS_CHECK([iptables -w -n -t $1 -L $2 | TRIM_WHITESPACE | tail -n +3], [$3], [$4], [$5], [$6], [$7])
+])
+
+m4_define([IP6TABLES_LIST_RULES], [
+    NS_CHECK([ip6tables -w -n -t $1 -L $2 | TRIM_WHITESPACE | tail -n +3], [$3], [$4], [$5], [$6], [$7])
+])
+
+m4_define([NFT_LIST_RULES], [
+    NS_CHECK([nft -nn list chain $1 firewalld $2 | TRIM_WHITESPACE], [$3], [$4], [$5], [$6], [$7])
+])
+
+m4_define([IPSET_LIST_SET], [
+    NS_CHECK([ipset list $1 | TRIM_WHITESPACE |dnl
+              grep -v "^\(Revision\|Header\|Size\|References\|Number\)" |dnl
+              awk 'NR <= 3; NR > 3 {print | "sort"}'],
+             [$2], [$3], [$4], [$5], [$6])
+])
+
+m4_define([NFT_LIST_SET], [
+    NS_CHECK([nft -nn list set inet firewalld $1 | TRIM_WHITESPACE], [$2], [$3], [$4], [$5], [$6])
+])
+
+m4_define([DBUS_CHECK], [
+    NS_CHECK([dbus-send --system --print-reply --dest=org.fedoraproject.FirewallD1 dnl
+              /org/fedoraproject/FirewallD1/$1 org.fedoraproject.FirewallD1.$2 $3],
+             [$4], [$5], [$6], [$7], [$8])
+])
+
+m4_define([DBUS_GETALL_NORMALIZE], dnl
+    m4_escape([awk 'BEGIN{line_mark=-99; line=0} {line++; if (line == line_mark + 1) {buffer = $0}; if (line == line_mark + 2) {print buffer " : " $0} } /^dict entry/{line_mark=line}' | sort])dnl
+)
+
+m4_define([DBUS_GETALL], [
+    NS_CHECK([dbus-send --system --print-reply --dest=org.fedoraproject.FirewallD1 dnl
+              /org/fedoraproject/FirewallD1/$1 dnl
+              org.freedesktop.DBus.Properties.GetAll string:"org.fedoraproject.FirewallD1.$2" dnl
+              | TRIM_WHITESPACE | DBUS_GETALL_NORMALIZE],
+             [$3], [$4], [$5], [$6], [$7])
+])
+
+m4_define([DBUS_GET], [
+    NS_CHECK([dbus-send --system --print-reply --dest=org.fedoraproject.FirewallD1 dnl
+              /org/fedoraproject/FirewallD1/$1 dnl
+              org.freedesktop.DBus.Properties.Get string:"org.fedoraproject.FirewallD1.$2" $3 dnl
+              | tail -n +2 | TRIM_WHITESPACE],
+             [$4], [$5], [$6], [$7], [$8])
+])
+
+m4_define([DBUS_SET], [
+    NS_CHECK([dbus-send --system --print-reply --dest=org.fedoraproject.FirewallD1 dnl
+              /org/fedoraproject/FirewallD1/$1 dnl
+              org.freedesktop.DBus.Properties.Set string:"org.fedoraproject.FirewallD1.$2" $3],
+             [$4], [$5], [$6], [$7], [$8])
+])
+
+m4_define([RANDOM_NUMBER], [m4_eval(m4_esyscmd([bash -c 'echo $RANDOM']))])
+
+m4_define([CHECK_IPSET], [
+    m4_if(nftables, FIREWALL_BACKEND, [
+        dnl If our nft binary has buggy flush set, then skip the test
+        NS_CHECK([nft add table inet firewalld_check_ipset])
+        NS_CHECK([nft add set inet firewalld_check_ipset foobar { type ipv4_addr \; }])
+        AT_SKIP_IF([! NS_CMD([nft flush set inet firewalld_check_ipset foobar >/dev/null 2>&1])])
+        NS_CHECK([nft delete table inet firewalld_check_ipset])
+    ])
+])
+
+m4_define([CHECK_IPSET_HASH_MAC], [
+    dnl skip if ipset hash:mac support is there
+    m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
+        AT_SKIP_IF([! ipset --help | grep "hash:mac"])
+        AT_SKIP_IF([! NS_CMD([ipset create foobar hash:mac >/dev/null 2>&1])])
+        NS_CHECK([ipset destroy foobar])
+    ])
+])
+
+m4_define([CHECK_NAT_COEXISTENCE], [
+    dnl verify the host can support simultaneous iptables and nftables NAT
+    m4_if(nftables, FIREWALL_BACKEND, [
+        KERNEL_MAJOR=`uname -r | cut -d. -f1`
+        KERNEL_MINOR=`uname -r | cut -d. -f2`
+        if test ${KERNEL_MAJOR} -eq 4 && test ${KERNEL_MINOR} -ge 16 || test ${KERNEL_MAJOR} -gt 4; then
+            dnl Only check >=4.16 kernels. Previous versions did not explicitly
+            dnl deny it, but had undefined behavior.
+            AT_SKIP_IF([! modprobe iptable_nat])
+            AT_SKIP_IF([! NS_CMD([nft add table ip foobar])])
+            AT_SKIP_IF([! NS_CMD([nft add chain ip foobar foobar_chain { type nat hook postrouting priority 100 \; }])])
+            NS_CHECK([nft flush ruleset])
+        else
+            AT_SKIP_IF([true])
+        fi
+    ])
+])
+
+m4_define([CHECK_LOG_AUDIT], [
+    m4_if(nftables, FIREWALL_BACKEND, [
+        NS_CHECK([nft add table inet firewalld_check_log_audit])
+        NS_CHECK([nft add chain inet firewalld_check_log_audit foobar { type filter hook input priority 0 \; } ])
+        AT_SKIP_IF([! NS_CMD([nft add rule inet firewalld_check_log_audit foobar log level audit >/dev/null 2>&1])])
+        NS_CHECK([nft delete table inet firewalld_check_log_audit])
+    ])
+])
+
+m4_ifnblank(
+    m4_esyscmd([
+        KERNEL_MAJOR=`uname -r | cut -d. -f1`
+        KERNEL_MINOR=`uname -r | cut -d. -f2`
+        if test ${KERNEL_MAJOR} -eq 4 && test ${KERNEL_MINOR} -ge 10 || test ${KERNEL_MAJOR} -gt 4; then
+            echo -n "yes"
+        fi
+    ]),
+    [m4_define([HOST_SUPPORTS_NFT_FIB], [yes])],
+    [m4_define([HOST_SUPPORTS_NFT_FIB], [no])]
+)

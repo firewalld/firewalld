@@ -72,7 +72,7 @@ def handle_exceptions(func, *args, **kwargs):
                 raise
             else:
                 exception_handler(b2u(str(e)))
-        except Exception as e:
+        except Exception:
             if not exception_handler:
                 raise
             else:
@@ -2759,6 +2759,11 @@ class FirewallClient(object):
     @handle_exceptions
     def runtimeToPermanent(self):
         self.fw.runtimeToPermanent()
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def checkPermanentConfig(self):
+        self.fw.checkPermanentConfig()
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions

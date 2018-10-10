@@ -1,0 +1,28 @@
+FWD_START_TEST([invalid direct rule causes reload error])
+FWD_CHECK([-q --permanent --direct --add-rule ipv4 filter INPUT 0 -p tcp --dport 8080 -j ACCEPT])
+FWD_CHECK([-q --permanent --direct --add-rule ipv4 filter INPUT 1 --a-bogus-flag])
+
+dnl add some non-permanent things that should persist a reload
+FWD_CHECK([-q --zone=public --add-interface=foobar0])
+FWD_CHECK([-q --direct --direct --add-rule ipv4 filter FORWARD 0 -p tcp -j ACCEPT])
+
+FWD_RELOAD(13, [ignore], [ignore], 251)
+FWD_CHECK([--state], 251, [ignore], [failed
+])
+
+dnl verify the non-permanent stuff we set above remained
+FWD_CHECK([--get-zone-of-interface=foobar0], 0, [dnl
+public
+])
+FWD_CHECK([-q --direct --direct --query-rule ipv4 filter FORWARD 0 -p tcp -j ACCEPT])
+
+dnl now remove the bad rule and reload successfully
+FWD_CHECK([-q --permanent --direct --remove-rule ipv4 filter INPUT 1 --a-bogus-flag])
+FWD_RELOAD
+
+dnl verify the non-permanent stuff we set above remained
+FWD_CHECK([--get-zone-of-interface=foobar0], 0, [dnl
+public
+])
+FWD_CHECK([-q --direct --direct --query-rule ipv4 filter FORWARD 0 -p tcp -j ACCEPT])
+FWD_END_TEST([-e '/.*a-bogus-flag.*/d'])

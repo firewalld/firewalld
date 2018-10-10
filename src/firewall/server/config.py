@@ -105,6 +105,7 @@ class FirewallDConfig(slip.dbus.service.Object):
                                                 "IndividualCalls": "readwrite",
                                                 "LogDenied": "readwrite",
                                                 "AutomaticHelpers": "readwrite",
+                                                "FirewallBackend": "readwrite",
                                               })
 
     @handle_exceptions
@@ -484,7 +485,7 @@ class FirewallDConfig(slip.dbus.service.Object):
     def _get_property(self, prop):
         if prop not in [ "DefaultZone", "MinimalMark", "CleanupOnExit",
                          "Lockdown", "IPv6_rpfilter", "IndividualCalls",
-                         "LogDenied", "AutomaticHelpers" ]:
+                         "LogDenied", "AutomaticHelpers", "FirewallBackend" ]:
             raise dbus.exceptions.DBusException(
                 "org.freedesktop.DBus.Error.InvalidArgs: "
                 "Property '%s' does not exist" % prop)
@@ -523,7 +524,11 @@ class FirewallDConfig(slip.dbus.service.Object):
             return dbus.String(value)
         elif prop == "AutomaticHelpers":
             if value is None:
-                value = config.FALLBACK_LOG_DENIED
+                value = config.FALLBACK_AUTOMATIC_HELPERS
+            return dbus.String(value)
+        elif prop == "FirewallBackend":
+            if value is None:
+                value = config.FALLBACK_FIREWALL_BACKEND
             return dbus.String(value)
 
     @dbus_handle_exceptions
@@ -543,6 +548,8 @@ class FirewallDConfig(slip.dbus.service.Object):
         elif prop == "LogDenied":
             return dbus.String(self._get_property(prop))
         elif prop == "AutomaticHelpers":
+            return dbus.String(self._get_property(prop))
+        elif prop == "FirewallBackend":
             return dbus.String(self._get_property(prop))
         else:
             raise dbus.exceptions.DBusException(
@@ -583,7 +590,7 @@ class FirewallDConfig(slip.dbus.service.Object):
         if interface_name == config.dbus.DBUS_INTERFACE_CONFIG:
             for x in [ "DefaultZone", "MinimalMark", "CleanupOnExit",
                        "Lockdown", "IPv6_rpfilter", "IndividualCalls",
-                       "LogDenied", "AutomaticHelpers" ]:
+                       "LogDenied", "AutomaticHelpers", "FirewallBackend" ]:
                 ret[x] = self._get_property(x)
         elif interface_name in [ config.dbus.DBUS_INTERFACE_CONFIG_DIRECT,
                                  config.dbus.DBUS_INTERFACE_CONFIG_POLICIES ]:
@@ -609,7 +616,8 @@ class FirewallDConfig(slip.dbus.service.Object):
         if interface_name == config.dbus.DBUS_INTERFACE_CONFIG:
             if property_name in [ "MinimalMark", "CleanupOnExit", "Lockdown",
                                   "IPv6_rpfilter", "IndividualCalls",
-                                  "LogDenied", "AutomaticHelpers" ]:
+                                  "LogDenied", "AutomaticHelpers",
+                                  "FirewallBackend" ]:
                 if property_name == "MinimalMark":
                     try:
                         int(new_value)
@@ -635,6 +643,11 @@ class FirewallDConfig(slip.dbus.service.Object):
                                             (new_value, property_name))
                 if property_name == "AutomaticHelpers":
                     if new_value not in config.AUTOMATIC_HELPERS_VALUES:
+                        raise FirewallError(errors.INVALID_VALUE,
+                                            "'%s' for %s" % \
+                                            (new_value, property_name))
+                if property_name == "FirewallBackend":
+                    if new_value not in config.FIREWALL_BACKEND_VALUES:
                         raise FirewallError(errors.INVALID_VALUE,
                                             "'%s' for %s" % \
                                             (new_value, property_name))

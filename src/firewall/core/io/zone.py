@@ -26,7 +26,7 @@ import os
 import io
 import shutil
 
-from firewall.config import ETC_FIREWALLD
+from firewall import config
 from firewall.functions import checkIP, checkIP6, checkIPnMask, checkIP6nMask, checkInterface, uniqify, max_zone_name_len, u2b_if_py2, check_mac, portStr
 from firewall.core.base import DEFAULT_ZONE_TARGET, ZONE_TARGETS
 from firewall.core.io.io_object import PY2, IO_Object, \
@@ -245,11 +245,17 @@ class Zone(IO_Object):
         elif name.count('/') > 1:
             raise FirewallError(errors.INVALID_NAME,
                                 "more than one '/' in '%s'" % name)
-        elif len(name) > max_zone_name_len():
-            raise FirewallError(
-                errors.INVALID_NAME,
-                "'%s' has %d chars, max is %d" % (name, len(name),
-                                                  max_zone_name_len()))
+        else:
+            if "/" in name:
+                checked_name = name[:name.find('/')]
+            else:
+                checked_name = name
+            if len(checked_name) > max_zone_name_len():
+                raise FirewallError(errors.INVALID_NAME,
+                                    "Zone of '%s' has %d chars, max is %d %s" % (
+                                    name, len(checked_name),
+                                    max_zone_name_len(),
+                                    self.combined))
 
     def combine(self, zone):
         self.combined = True
@@ -674,24 +680,27 @@ class zone_ContentHandler(IO_Object_ContentHandler):
         elif name in [ "accept", "reject", "drop", "mark", "log", "audit" ]:
             self._limit_ok = None
 
-def zone_reader(filename, path):
+def zone_reader(filename, path, no_check_name=False):
     zone = Zone()
     if not filename.endswith(".xml"):
         raise FirewallError(errors.INVALID_NAME,
                             "'%s' is missing .xml suffix" % filename)
     zone.name = filename[:-4]
-    zone.check_name(zone.name)
+    if not no_check_name:
+        zone.check_name(zone.name)
     zone.filename = filename
     zone.path = path
-    zone.builtin = False if path.startswith(ETC_FIREWALLD) else True
+    zone.builtin = False if path.startswith(config.ETC_FIREWALLD) else True
     zone.default = zone.builtin
     handler = zone_ContentHandler(zone)
     parser = sax.make_parser()
     parser.setContentHandler(handler)
     name = "%s/%s" % (path, filename)
-    with open(name, "r") as f:
+    with open(name, "rb") as f:
+        source = sax.InputSource(None)
+        source.setByteStream(f)
         try:
-            parser.parse(f)
+            parser.parse(source)
         except sax.SAXParseException as msg:
             raise FirewallError(errors.INVALID_ZONE,
                                 "not a valid zone file: %s" % \
@@ -717,9 +726,9 @@ def zone_writer(zone, path=None):
             log.error("Backup of file '%s' failed: %s", name, msg)
 
     dirpath = os.path.dirname(name)
-    if dirpath.startswith(ETC_FIREWALLD) and not os.path.exists(dirpath):
-        if not os.path.exists(ETC_FIREWALLD):
-            os.mkdir(ETC_FIREWALLD, 0o750)
+    if dirpath.startswith(config.ETC_FIREWALLD) and not os.path.exists(dirpath):
+        if not os.path.exists(config.ETC_FIREWALLD):
+            os.mkdir(config.ETC_FIREWALLD, 0o750)
         os.mkdir(dirpath, 0o750)
 
     f = io.open(name, mode='wt', encoding='UTF-8')

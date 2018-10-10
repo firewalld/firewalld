@@ -1,0 +1,71 @@
+AT_BANNER([firewall-offline-cmd])
+
+dnl !!! DO NOT ADD TESTS HERE !!!
+dnl
+dnl Most tests are common and should be added to firewall-cmd.at
+dnl See FWD_CHECK() and related macros for the magic.
+dnl
+dnl !!! DO NOT ADD TESTS HERE !!!
+
+m4_define([TESTING_FIREWALL_OFFLINE_CMD])
+m4_include([firewall-cmd.at])
+
+dnl Now begin the tests explicitly for firewall-offline-cmd
+dnl
+m4_define([TESTING_FIREWALL_OFFLINE_CMD_PASSTHROUGH])
+
+FWD_START_TEST([lokkit migration])
+    dnl from command line
+    FWD_CHECK([--addmodule=abc --addmodule=efg --removemodule=xyz dnl
+        --trust=eth+ --trust=em0 dnl
+        --masq=tun+ --masq=tap+ --port=7:tcp --port=666:udp dnl
+        --custom-rules=ipv4:mangle:/etc/sysconfig/ebtables-config dnl
+        --service=dns --service=ftp --remove-service=dhcpv6-client dnl
+        --block-icmp=router-advertisement --block-icmp=router-solicitation dnl
+        --forward-port=if=ippp+:port=13:proto=tcp:toport=15:toaddr=1.2.3.4 dnl
+        --forward-port=if=ippp+:port=333:proto=udp:toport=444], 0, ignore)
+    FWD_CHECK([--zone=trusted --query-interface=eth+], 0, ignore)
+    FWD_CHECK([--zone=trusted --query-interface=em0], 0, ignore)
+    FWD_CHECK([--query-service dns], 0, ignore)
+    FWD_CHECK([--query-service ftp], 0, ignore)
+    FWD_CHECK([--query-service dhcpv6-client], 1, ignore)
+    FWD_CHECK([--query-icmp-block router-advertisement], 0, ignore)
+    FWD_CHECK([--query-icmp-block router-solicitation], 0, ignore)
+    FWD_CHECK([--query-forward-port port=13:proto=tcp:toport=15:toaddr=1.2.3.4], 0, ignore)
+    FWD_CHECK([--query-forward-port port=333:proto=udp:toport=444], 0, ignore)
+
+    dnl from file
+    AT_CHECK([cat << EOF > ./system-config-firewall
+        --addmodule=abc
+        --addmodule=efg
+        --removemodule=xyz
+        --trust=eth+
+        --trust=em0
+        --masq=tun+
+        --masq=tap+
+        --port=7:tcp
+        --port=666:udp
+        --custom-rules=ipv4:mangle:/etc/sysconfig/ebtables-config
+        --service=dns
+        --service=ftp
+        --remove-service=dhcpv6-client
+        --block-icmp=router-advertisement
+        --block-icmp=router-solicitation
+        --forward-port=if=ippp+:port=13:proto=tcp:toport=15:toaddr=1.2.3.4
+        --forward-port=if=ippp+:port=333:proto=udp:toport=444
+EOF
+    ], 0, ignore)
+    FWD_CHECK([--migrate-system-config-firewall=./system-config-firewall], 0, ignore)
+    FWD_CHECK([--zone=trusted --query-interface=eth+], 0, ignore)
+    FWD_CHECK([--zone=trusted --query-interface=em0], 0, ignore)
+    FWD_CHECK([--query-service dns], 0, ignore)
+    FWD_CHECK([--query-service ftp], 0, ignore)
+    FWD_CHECK([--query-service dhcpv6-client], 1, ignore)
+    FWD_CHECK([--query-icmp-block router-advertisement], 0, ignore)
+    FWD_CHECK([--query-icmp-block router-solicitation], 0, ignore)
+    FWD_CHECK([--query-forward-port port=13:proto=tcp:toport=15:toaddr=1.2.3.4], 0, ignore)
+    FWD_CHECK([--query-forward-port port=333:proto=udp:toport=444], 0, ignore)
+FWD_END_TEST
+
+m4_undefine([TESTING_FIREWALL_OFFLINE_CMD_PASSTHROUGH])
+m4_undefine([TESTING_FIREWALL_OFFLINE_CMD])

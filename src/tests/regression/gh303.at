@@ -1,0 +1,21 @@
+FWD_START_TEST([unicode in XML])
+
+AT_CHECK([mkdir -p ./services])
+AT_CHECK([cat <<HERE > ./services/unicode-service-test.xml
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>unicode-service-test</short>
+  <description>A string with unicode characters; Ё ώ € ⇶ ▜ ◯ ★ ☠ ☯ ☺ ♻ </description>
+  <port protocol="tcp" port="12345"/>
+</service>
+HERE
+])
+
+LC_ALL="C"
+export LC_ALL
+FWD_RESTART
+
+FWD_CHECK([-q --permanent --add-service=unicode-service-test])
+FWD_RELOAD
+
+FWD_END_TEST

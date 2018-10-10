@@ -1,0 +1,16 @@
+dnl Either don't deduplicate rules, or make sure deduplication does not break
+dnl cleanup of those rules. Both removes should succeed.
+FWD_START_TEST([rule deduplication])
+
+dnl runtime config
+FWD_CHECK([-q --add-service nfs --add-service nfs3])
+FWD_CHECK([-q --remove-service nfs3])
+FWD_CHECK([-q --remove-service nfs])
+
+dnl permanent config
+FWD_CHECK([-q --permanent --add-service nfs --add-service nfs3])
+FWD_RELOAD
+FWD_CHECK([-q --remove-service nfs3])
+FWD_CHECK([-q --remove-service nfs])
+
+FWD_END_TEST

@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN" "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd"
+[
+<!ENTITY authors SYSTEM "authors.xml">
+<!ENTITY seealso SYSTEM "seealso.xml">
+<!ENTITY notes SYSTEM "notes.xml">
+]>
+
+<!--
+  This file is part of firewalld.
+
+  Copyright (C) 2010-2013 Red Hat, Inc.
+  Authors:
+  Thomas Woerner <twoerner@redhat.com>
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<refentry id="firewalld">
+
+  <refentryinfo>
+    <title>firewalld</title>
+    <productname>firewalld</productname>
+    &authors;
+  </refentryinfo>
+
+  <refmeta>
+    <refentrytitle>firewalld</refentrytitle>
+    <manvolnum>1</manvolnum>
+  </refmeta>
+
+  <refnamediv>
+    <refname>firewalld</refname>
+    <refpurpose>Dynamic Firewall Manager</refpurpose>
+  </refnamediv>
+
+  <refsynopsisdiv>
+    <cmdsynopsis>
+      <command>firewalld <arg choice="opt" rep="repeat">OPTIONS</arg></command>
+    </cmdsynopsis>
+  </refsynopsisdiv>
+
+  <refsect1>
+    <title>Description</title>
+		
+    <para>
+      firewalld provides a dynamically managed firewall with support for network/firewall zones to define the trust level of network connections or interfaces. It has support for IPv4, IPv6 firewall settings and for ethernet bridges and has a separation of runtime and permanent configuration options. It also supports an interface for services or applications to add firewall rules directly.
+    </para>
+  </refsect1>
+
+  <refsect1>
+    <title>Options</title>
+    <para>
+      These are the command line options of firewalld:
+    </para>
+
+    <variablelist>
+      <varlistentry>
+        <term><option>-h</option></term>
+        <term><option>--help</option></term>
+        <listitem>
+	  <para>
+	    Prints a short help text and exists.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><option>--debug</option><optional>=<replaceable>level</replaceable></optional></term>
+        <listitem>
+	  <para>
+	    Set the debug level for firewalld to <replaceable>level</replaceable>. The range of the debug level is 1 (lowest level) to 10 (highest level). The debug output will be written to the firewalld log file <filename class="directory">/var/log/firewalld</filename>.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><option>--debug-gc</option></term>
+        <listitem>
+	  <para>
+	    Print garbage collector leak information. The collector runs every 10 seconds and if there are leaks, it prints information about the leaks.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><option>--nofork</option></term>
+        <listitem>
+	  <para>
+	    Turn off daemon forking. Force firewalld to run as a foreground process instead of as a daemon in the background.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><option>--nopid</option></term>
+        <listitem>
+	  <para>
+	    Disable writing pid file. By default the program will write a pid file. If the program is invoked with this option it will not check for an existing server process.
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </refsect1>
+
+  <refsect1 id="concepts">
+    <title>Concepts</title>
+    <para>
+      firewalld has a D-Bus interface for firewall configuration of services and applications. It also has a command line client for the user. Services or applications already using D-Bus can request changes to the firewall with the D-Bus interface directly.  For more information on the firewalld D-Bus interface, please have a look at <citerefentry><refentrytitle>firewalld.dbus</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+    </para>
+    <para>
+      firewalld provides support for zones, predefined services and ICMP types and has a separation of runtime and permanent configuration options. Permanent configuration is loaded from XML files in <filename class="directory">/usr/lib/firewalld</filename> or <filename class="directory">/etc/firewalld</filename> (see <xref linkend="directories"/>).
+    </para>
+    <para>
+      If NetworkManager is not in use and firewalld gets started after the network is already up, the connections and manually created interfaces are not bound to the zone specified in the ifcfg file.
+      The interfaces will automatically be handled by the default zone.
+      firewalld will also not get notified about network device renames.
+      All this also applies to interfaces that are not controlled by NetworkManager if <replaceable>NM_CONTROLLED=no</replaceable> is set.
+    </para>
+    <para>
+      You can add these interfaces to a zone with <command>firewall-cmd [--permanent] --zone=<replaceable>zone</replaceable> --add-interface=<replaceable>interface</replaceable></command>.
+      If there is a @IFCFGDIR@/ifcfg-<replaceable>interface</replaceable> file, firewalld tries to change the ZONE=<replaceable>zone</replaceable> setting in this file.
+    </para>
+    <para>
+      If firewalld gets reloaded, it will restore the interface bindings that were in place before reloading to keep interface bindings stable in the case of NetworkManager uncontrolled interfaces.
+      This mechanism is not possible in the case of a firewalld service restart.
+    </para>
+    <para>
+      It is essential to keep the ZONE= setting in the ifcfg file consistent to the binding in firewalld in the case of NetworkManager uncontrolled interfaces.
+    </para>
+
+    <refsect2>
+      <title>Zones</title>
+      <para>
+	A network or firewall zone defines the trust level of the interface used for a connection. There are several pre-defined zones provided by firewalld. Zone configuration options and generic information about zones are described in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>
+      </para>
+    </refsect2>
+
+    <refsect2>
+      <title>Services</title>
+      <para>
+	A service can be a list of local ports, protocols and destinations and additionally also a list of firewall helper modules automatically loaded if a service is enabled. Service configuration options and generic information about services are described in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>. The use of predefined services makes it easier for the user to enable and disable access to a service.
+      </para>
+    </refsect2>
+
+    <refsect2>
+      <title>ICMP types</title>
+      <para>
+	The Internet Control Message Protocol (ICMP) is used to exchange information and also error messages in the Internet Protocol (IP). ICMP types can be used in firewalld to limit the exchange of these messages. For more information, please have a look at <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+      </para>
+    </refsect2>
+
+    <refsect2>
+      <title>Runtime configuration</title>
+      <para>
+	Runtime configuration is the actual active configuration and is not permanent. After reload/restart of the service or a system reboot, runtime settings will be gone if they haven't been also in permanent configuration.
+      </para>
+    </refsect2>
+
+    <refsect2>
+      <title>Permanent configuration</title>
+      <para>
+	The permanent configuration is stored in config files and will be loaded and become new runtime configuration with every machine boot or service reload/restart.
+      </para>
+    </refsect2>
+
+    <refsect2>
+      <title>Direct interface</title>
+      <para>
+	The direct interface is mainly used by services or applications to add specific firewall rules. It requires basic knowledge of ip(6)tables concepts (tables, chains, commands, parameters, targets).
+      </para>
+    </refsect2>
+  </refsect1>
+
+  <refsect1 id="directories">
+    <title>Directories</title>
+    <para>
+      firewalld supports two configuration directories:
+    </para>
+
+    <refsect2>
+      <title>Default/Fallback configuration in <filename class="directory">/usr/lib/firewalld</filename></title>
+
+      <para>
+	This directory contains the default and fallback configuration provided by firewalld for icmptypes, services and zones. The files provided with the firewalld package should not get changed and the changes are gone with an update of the firewalld package. Additional <option>icmptypes</option>, <option>services</option> and <option>zones</option> can be provided with packages or by creating files.
+      </para>
+    </refsect2>
+
+    <refsect2>
+      <title>System configuration settings in <filename class="directory">/etc/firewalld</filename></title>
+
+      <para>
+	The system or user configuration stored here is either created by the system administrator or by customization with the configuration interface of firewalld or by hand. The files will overload the default configuration files.
+      </para>
+
+      <para>
+	To manually change settings of pre-defined icmptypes, zones or services, copy the file from the default configuration directory to the corresponding directory in the system configuration directory and change it accordingly.
+      </para>
+
+      <para>
+	For more information on icmptypes, please have a look at the <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry> man page, for services at <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry> and for zones at <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+      </para>
+    </refsect2>
+  </refsect1>
+
+  <refsect1>
+    <title>SIGNALS</title>
+    <para>
+      Currently only SIGHUP is supported.
+    </para>
+
+    <refsect2>
+      <title>SIGHUP</title>
+      <para>
+	Reloads the complete firewall configuration. You can also use <command>firewall-cmd --reload</command>. All runtime configuration settings will be restored. Permanent configuration will change according to options defined in the configuration files.
+      </para>
+    </refsect2>
+  </refsect1>
+
+  &seealso;
+
+  &notes;
+
+</refentry>

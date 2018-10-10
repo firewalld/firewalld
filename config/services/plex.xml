@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>PLEX</short>
+  <description> Plex Media Server (PMS) is the back-end media server component of Plex.
+  It organizes audio (music) and visual (photos and videos) content from personal media
+  libraries and streams it to their player counterparts, either on the same machine,
+  the same local area network, or over the Internet. </description>
+  <port protocol="tcp" port="32400"/>
+  <port protocol="udp" port="32400"/>
+</service>

@@ -347,6 +347,17 @@
 	      </para>
             </listitem>
           </varlistentry>
+          <varlistentry id="FirewallD1.Methods.checkPermanentConfig">
+            <term><methodname>checkPermanentConfig</methodname>() &rarr; Nothing</term>
+            <listitem>
+              <para>
+                Run checks on the permanent configuration. This is most useful if changes were made manually to configuration files.
+              </para>
+              <para>
+                Possible errors: any
+              </para>
+            </listitem>
+          </varlistentry>
           <varlistentry id="FirewallD1.Methods.setDefaultZone">
             <term><methodname>setDefaultZone</methodname>(s: <parameter>zone</parameter>) &rarr; Nothing</term>
             <listitem>
@@ -477,7 +488,7 @@
           </varlistentry>
           <varlistentry id="FirewallD1.Properties.state">
             <term><parameter>state</parameter> - s - (ro)</term>
-            <listitem><para>firewalld state. This can be either <literal>INIT</literal> or <literal>RUNNING</literal>. In <literal>INIT</literal> state, firewalld is starting up and initializing.</para></listitem>
+            <listitem><para>firewalld state. This can be either <literal>INIT</literal>, <literal>FAILED</literal>, or <literal>RUNNING</literal>. In <literal>INIT</literal> state, firewalld is starting up and initializing. In <literal>FAILED</literal> state, firewalld completely started but experienced a failure.</para></listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.Properties.version">
             <term><parameter>version</parameter> - s - (ro)</term>
@@ -2568,6 +2579,16 @@
             <listitem>
               <para>
 		Default zone for connections or interfaces if the zone is not selected or specified by NetworkManager, initscripts or command line tool.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.Properties.FirewallBackend">
+            <term>FirewallBackend - s - (rw)</term>
+            <listitem>
+              <para>
+                Selects the firewalld backend for all rules except the direct
+                interface. Valid options are; nftables, iptables. Default in
+                nftables.
               </para>
             </listitem>
           </varlistentry>

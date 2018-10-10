@@ -377,10 +377,10 @@ class FirewallCommand(object):
                                 "Module name '%s' too short" % value)
         return value
 
-    def print_zone_info(self, zone, settings, default_zone=None): # pylint: disable=R0914
+    def print_zone_info(self, zone, settings, default_zone=None, extra_interfaces=[]): # pylint: disable=R0914
         target = settings.getTarget()
         icmp_block_inversion = settings.getIcmpBlockInversion()
-        interfaces = settings.getInterfaces()
+        interfaces = sorted(set(settings.getInterfaces() + extra_interfaces))
         sources = settings.getSources()
         services = settings.getServices()
         ports = settings.getPorts()
@@ -410,10 +410,10 @@ class FirewallCommand(object):
                        ("yes" if icmp_block_inversion else "no"))
         self.print_msg("  interfaces: " + " ".join(interfaces))
         self.print_msg("  sources: " + " ".join(sources))
-        self.print_msg("  services: " + " ".join(services))
+        self.print_msg("  services: " + " ".join(sorted(services)))
         self.print_msg("  ports: " + " ".join(["%s/%s" % (port[0], port[1])
                                                for port in ports]))
-        self.print_msg("  protocols: " + " ".join(protocols))
+        self.print_msg("  protocols: " + " ".join(sorted(protocols)))
         self.print_msg("  masquerade: %s" % ("yes" if masquerade else "no"))
         self.print_msg("  forward-ports: " +
                        "\n\t".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % \

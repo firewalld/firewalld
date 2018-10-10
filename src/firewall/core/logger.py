@@ -30,9 +30,7 @@ import syslog
 import traceback
 import fcntl
 import os.path
-
-PY2 = sys.version < '3'
-PY3 = sys.version >= '3'
+import os
 
 # ---------------------------------------------------------------------------
 
@@ -137,7 +135,14 @@ class FileLog(LogTarget):
     def open(self):
         if self.fd:
             return
-        self.fd = open(self.filename, self.mode)
+        flags = os.O_CREAT | os.O_WRONLY
+        if self.mode.startswith('a'):
+            flags |= os.O_APPEND
+        self.fd = os.open(self.filename, flags, 0o640)
+        # Make sure that existing file has correct perms
+        os.fchmod(self.fd, 0o640)
+        # Make it an object
+        self.fd = os.fdopen(self.fd, self.mode)
         fcntl.fcntl(self.fd, fcntl.F_SETFD, fcntl.FD_CLOEXEC)
 
     def write(self, data, level, logger, is_debug=0):
@@ -631,11 +636,10 @@ class Logger(object):
 
         # class in module
         for (dummy, obj) in module.__dict__.items():
-            if (PY2 and isinstance(obj, types.ClassType)) or \
-               (PY3 and isinstance(obj, type)):
+            if isinstance(obj, types.ClassType):
                 if hasattr(obj, code.co_name):
                     value = getattr(obj, code.co_name)
-                    if type(value) == types.FunctionType:
+                    if isinstance(value, types.FunctionType):
                         if value.__code__ == code:
                             return obj
 
@@ -645,7 +649,7 @@ class Logger(object):
     def _getClass2(self, obj, code):
         """ Internal function to get calling class. Returns class or None. """
         for value in obj.__dict__.values():
-            if type(value) == types.FunctionType:
+            if isinstance(value, types.FunctionType):
                 if value.__code__ == code:
                     return obj
 

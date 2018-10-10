@@ -25,6 +25,7 @@ __all__ = ["FirewallDBusException", "handle_exceptions",
 
 import dbus
 import dbus.service
+import traceback
 from dbus.exceptions import DBusException
 from decorator import decorator
 
@@ -51,8 +52,10 @@ def handle_exceptions(func, *args, **kwargs):
     try:
         return func(*args, **kwargs)
     except FirewallError as error:
+        log.debug1(traceback.format_exc())
         log.error(error)
     except Exception:  # pylint: disable=W0703
+        log.debug1(traceback.format_exc())
         log.exception()
 
 @decorator
@@ -69,12 +72,14 @@ def dbus_handle_exceptions(func, *args, **kwargs):
                      errors.ZONE_ALREADY_SET, errors.ALREADY_SET ]:
             log.warning(str(error))
         else:
+            log.debug1(traceback.format_exc())
             log.error(str(error))
         raise FirewallDBusException(str(error))
     except DBusException as ex:
         # only log DBusExceptions once
         raise ex
     except Exception as ex:
+        log.debug1(traceback.format_exc())
         log.exception()
         raise FirewallDBusException(str(ex))
 
