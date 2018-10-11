@@ -7,7 +7,7 @@
 
 Summary: A firewall daemon with D-Bus interface providing a dynamic firewall
 Name: firewalld
-Version: 0.6.2
+Version: 0.6.3
 Release: 1%{?dist}
 URL:     http://firewalld.org
 License: GPLv2+
@@ -127,16 +127,17 @@ cp -a . %{py3dir}
 %endif #0%{?with_python3}
 
 %build
-%configure --enable-sysconfig --enable-rpmmacros
 %if 0%{?use_python3}
+%configure --enable-sysconfig --enable-rpmmacros PYTHON="%{__python3} %{py3_shbang_opts}"
 make -C src %{?_smp_mflags}
 %else
+%configure --enable-sysconfig --enable-rpmmacros PYTHON="%{__python2} %{py2_shbang_opts}"
 make %{?_smp_mflags}
 %endif
 
 %if 0%{?with_python3}
 pushd %{py3dir}
-%configure --enable-sysconfig --enable-rpmmacros PYTHON=%{__python3}
+%configure --enable-sysconfig --enable-rpmmacros PYTHON="%{__python3} %{py3_shbang_opts}"
 %if 0%{?use_python3}
 make %{?_smp_mflags}
 %else
@@ -310,6 +311,10 @@ fi
 %{_mandir}/man1/firewall-config*.1*
 
 %changelog
+* Thu Oct 11 2018 Eric Garver <e@erig.me> - 0.6.3-1
+- bump package to v0.6.3
+- use py{2,3}_shbang_opts for python interpreter
+
 * Wed Sep 19 2018 Eric Garver <e@erig.me> - 0.6.2-1
 - bump package to v0.6.2
 
