@@ -619,7 +619,8 @@ class nftables(object):
            target in ["ACCEPT", "REJECT", "%%REJECT%%", "DROP"] and \
            chain in ["INPUT", "FORWARD_IN", "FORWARD_OUT", "OUTPUT"]:
             rules.append(["add", "rule", family, "%s" % TABLE_NAME,
-                          "%s_%s" % (table, _zone), target.lower()])
+                          "%s_%s" % (table, _zone),
+                          target.lower() if target != "%%REJECT%%" else "%%REJECT%%"])
 
         return rules
 
