@@ -69,6 +69,8 @@ FWD_START_TEST([zone interfaces])
     FWD_CHECK([--zone=public --change-interface=dummy], 0, ignore)
     FWD_CHECK([--get-zone-of-interface=dummy], 0, [public
 ])
+    FWD_CHECK([--zone=block --add-interface=dummy1], 0, ignore)
+    FWD_CHECK([--zone=block --remove-interface=dummy1], 0, ignore)
 
     FWD_CHECK([--zone=dmz --change-zone=dummy], 0, ignore)
     FWD_CHECK([--get-zone-of-interface=dummy], 0, [dmz
