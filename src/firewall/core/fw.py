@@ -1003,18 +1003,19 @@ class Firewall(object):
                         _zone_interfaces[_old_dz][iface]
                     del _zone_interfaces[_old_dz][iface]
 
-        # add interfaces to zones again
-        for zone in self.zone.get_zones():
-            if zone in _zone_interfaces:
-                self.zone.set_settings(zone, { "interfaces":
-                                               _zone_interfaces[zone] })
-                del _zone_interfaces[zone]
-            else:
-                log.info1("New zone '%s'.", zone)
-        if len(_zone_interfaces) > 0:
-            for zone in list(_zone_interfaces.keys()):
-                log.info1("Lost zone '%s', zone interfaces dropped.", zone)
-                del _zone_interfaces[zone]
+        if start_exception:
+            # add interfaces to zones again if startup failed
+            for zone in self.zone.get_zones():
+                if zone in _zone_interfaces:
+                    self.zone.set_settings(zone, { "interfaces":
+                                                   _zone_interfaces[zone] })
+                    del _zone_interfaces[zone]
+                else:
+                    log.info1("New zone '%s'.", zone)
+            if len(_zone_interfaces) > 0:
+                for zone in list(_zone_interfaces.keys()):
+                    log.info1("Lost zone '%s', zone interfaces dropped.", zone)
+                    del _zone_interfaces[zone]
         del _zone_interfaces
 
         # restore direct config
