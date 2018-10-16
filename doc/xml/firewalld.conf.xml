@@ -158,6 +158,19 @@
 	        </listitem>
         </varlistentry>
 
+        <varlistentry>
+            <term><option>FlushAllOnReload</option></term>
+            <listitem>
+                <para>
+                Flush all runtime rules on a reload. In previous releases some
+                runtime configuration was retained during a reload, namely;
+                interface to zone assignment, and direct rules. This was
+                confusing to users. To get the old behavior set this to "no".
+                Defaults to "yes".
+                </para>
+            </listitem>
+        </varlistentry>
+
     </variablelist>
 
   </refsect1>

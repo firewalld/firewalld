@@ -6,6 +6,7 @@ string "AutomaticHelpers" : variant string "system"
 string "CleanupOnExit" : variant string "no"
 string "DefaultZone" : variant string "public"
 string "FirewallBackend" : variant string "nftables"
+string "FlushAllOnReload" : variant string "yes"
 m4_if(no, HOST_SUPPORTS_NFT_FIB, [dnl
 string "IPv6_rpfilter" : variant string "no"],[dnl
 string "IPv6_rpfilter" : variant string "yes"])
@@ -30,6 +31,7 @@ _helper([LogDenied], [string:"all"], [variant string "all"])
 _helper([IPv6_rpfilter], [string:"yes"], [variant string "yes"])
 _helper([IndividualCalls], [string:"yes"], [variant string "yes"])
 _helper([FirewallBackend], [string:"iptables"], [variant string "iptables"])
+_helper([FlushAllOnReload], [string:"no"], [variant string "no"])
 _helper([CleanupOnExit], [string:"yes"], [variant string "yes"])
 dnl Note: DefaultZone is RO
 m4_undefine([_helper])

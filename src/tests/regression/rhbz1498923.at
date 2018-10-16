@@ -1,4 +1,8 @@
 FWD_START_TEST([invalid direct rule causes reload error])
+dnl Below we test retention of some items applicable to FlushAllOnReload=no
+AT_CHECK([sed -i 's/^FlushAllOnReload.*/FlushAllOnReload=no/' ./firewalld.conf])
+FWD_RELOAD
+
 FWD_CHECK([-q --permanent --direct --add-rule ipv4 filter INPUT 0 -p tcp --dport 8080 -j ACCEPT])
 FWD_CHECK([-q --permanent --direct --add-rule ipv4 filter INPUT 1 --a-bogus-flag])
 
