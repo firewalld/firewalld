@@ -266,12 +266,16 @@ class Rich_Limit(object):
         return ''
 
 class Rich_Rule(object):
-    def __init__(self, family=None, rule_str=None):
+    priority_min = -32768
+    priority_max =  32767
+
+    def __init__(self, family=None, rule_str=None, priority=0):
         if family is not None:
             self.family = str(family)
         else:
             self.family = None
 
+        self.priority = priority
         self.source = None
         self.destination = None
         self.element = None
@@ -303,6 +307,7 @@ class Rich_Rule(object):
         if not rule_str:
             raise FirewallError(errors.INVALID_RULE, 'empty rule')
 
+        self.priority = 0
         self.family = None
         self.source = None
         self.destination = None
@@ -325,7 +330,7 @@ class Rich_Rule(object):
             #print ("in_elements: ", in_elements)
             #print ("index: %s, element: %s, attribute: %s=%s" % (index, element, attr_name, attr_value))
             if attr_name:     # attribute
-                if attr_name not in ['family', 'address', 'mac', 'ipset',
+                if attr_name not in ['priority', 'family', 'address', 'mac', 'ipset',
                                      'invert', 'value',
                                      'port', 'protocol', 'to-port', 'to-addr',
                                      'name', 'prefix', 'level', 'type',
@@ -360,6 +365,8 @@ class Rich_Rule(object):
                 if not element and attr_name:
                     if attr_name == 'family':
                         raise FirewallError(errors.INVALID_RULE, "'family' outside of rule. Use 'rule family=...'.")
+                    elif attr_name == 'priority':
+                        raise FirewallError(errors.INVALID_RULE, "'priority' outside of rule. Use 'rule priority=...'.")
                     else:
                         raise FirewallError(errors.INVALID_RULE, "'%s' outside of any element. Use 'rule <element> %s= ...'." % (attr_name, attr_name))
                 elif 'rule' not in element:
@@ -371,6 +378,8 @@ class Rich_Rule(object):
                     if attr_value not in ['ipv4', 'ipv6']:
                         raise FirewallError(errors.INVALID_RULE, "'family' attribute cannot have '%s' value. Use 'ipv4' or 'ipv6' instead." % attr_value)
                     self.family = attr_value
+                elif attr_name == 'priority':
+                    self.priority = int(attr_value)
                 elif attr_name:
                     if attr_name == 'protocol':
                         err_msg = "wrong 'protocol' usage. Use either 'rule protocol value=...' or  'rule [forward-]port protocol=...'."
@@ -528,6 +537,10 @@ class Rich_Rule(object):
             if type(self.element) == Rich_ForwardPort:
                 raise FirewallError(errors.MISSING_FAMILY)
 
+        if self.priority < self.priority_min or self.priority > self.priority_max:
+            raise FirewallError(errors.INVALID_PRIORITY, "'priority' attribute must be between %d and %d." \
+                                                         % (self.priority_min, self.priority_max))
+
         if self.element is None:
             if self.action is None:
                 raise FirewallError(errors.INVALID_RULE, "no element, no action")
@@ -679,6 +692,8 @@ class Rich_Rule(object):
 
     def __str__(self):
         ret = 'rule'
+        if self.priority:
+            ret += ' priority="%d"' % self.priority
         if self.family:
             ret += ' family="%s"' % self.family
         if self.source:
