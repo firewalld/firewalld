@@ -290,7 +290,7 @@ class nftables(object):
             if log_denied == "off":
                 return ""
             if log_denied in ["unicast", "broadcast", "multicast"]:
-                rule[i:i+1] = ["pkttype", self._log_denied]
+                rule[i:i+1] = ["pkttype", log_denied]
             else:
                 rule.pop(i)
 
