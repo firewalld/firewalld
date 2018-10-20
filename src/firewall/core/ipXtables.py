@@ -492,8 +492,7 @@ class ip4tables(object):
             if log_denied == "off":
                 return ""
             if log_denied in [ "unicast", "broadcast", "multicast" ]:
-                rule[i:i+1] = [ "-m", "pkttype", "--pkt-type",
-                                self._log_denied ]
+                rule[i:i+1] = [ "-m", "pkttype", "--pkt-type", log_denied ]
             else:
                 rule.pop(i)
 
