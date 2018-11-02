@@ -723,10 +723,10 @@ class nftables(object):
             chain = "%s_%s_deny" % (table, target)
             rule_action = ["drop"]
         elif type(rich_rule.action) == Rich_Mark:
-            table = "mangle"
-            chain = "%s_%s_allow" % (table, target)
             target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["PREROUTING"],
                                                 zone=zone)
+            table = "mangle"
+            chain = "%s_%s_allow" % (table, target)
             rule_action = ["meta", "mark", "set", rich_rule.action.set]
         else:
             raise FirewallError(INVALID_RULE,

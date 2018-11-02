@@ -863,6 +863,7 @@ FWD_START_TEST([rich rules good])
     rich_rule_test([rule forward-port port="66" to-port="666" to-addr="192.168.100.2" protocol="sctp" family="ipv4" source address="192.168.2.100"])
     rich_rule_test([rule forward-port port="99" to-port="999" to-addr="1::2:3:4:7" protocol="dccp" family="ipv6" source address="1:2:3:4:6::"])
     rich_rule_test([rule forward-port port="99" to-port="10999" to-addr="1::2:3:4:7" protocol="dccp" family="ipv6" source address="1:2:3:4:6::"])
+    rich_rule_test([rule family="ipv4" port port="222" protocol="tcp" mark set="0xff"])
 FWD_END_TEST
 FWD_START_TEST([rich rules audit])
 	CHECK_LOG_AUDIT

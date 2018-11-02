@@ -807,10 +807,10 @@ class ip4tables(object):
             chain = "%s_deny" % target
             rule_action = [ "-j", "DROP" ]
         elif type(rich_rule.action) == Rich_Mark:
-            chain = "%s_allow" % target
-            table = "mangle"
             target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["PREROUTING"],
                                                 zone=zone)
+            table = "mangle"
+            chain = "%s_allow" % target
             rule_action = [ "-j", "MARK", "--set-xmark", rich_rule.action.set ]
         else:
             raise FirewallError(INVALID_RULE,
