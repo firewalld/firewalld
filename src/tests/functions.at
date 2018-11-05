@@ -232,30 +232,30 @@ m4_define([NS_CHECK], [
 ])
 
 m4_define([EBTABLES_LIST_RULES], [
-    NS_CHECK([ebtables --concurrent -t $1 -L $2 | TRIM_WHITESPACE | grep -v "^Bridge"], [$3], [$4], [$5], [$6], [$7])
+    NS_CHECK([ebtables --concurrent -t $1 -L $2 | TRIM_WHITESPACE | grep -v "^Bridge"], [$3], [m4_strip([$4])], [m4_strip([$5])], [$6], [$7])
 ])
 
 m4_define([IPTABLES_LIST_RULES], [
-    NS_CHECK([iptables -w -n -t $1 -L $2 | TRIM_WHITESPACE | tail -n +3], [$3], [$4], [$5], [$6], [$7])
+    NS_CHECK([iptables -w -n -t $1 -L $2 | TRIM_WHITESPACE | tail -n +3], [$3], [m4_strip([$4])], [m4_strip([$5])], [$6], [$7])
 ])
 
 m4_define([IP6TABLES_LIST_RULES], [
-    NS_CHECK([ip6tables -w -n -t $1 -L $2 | TRIM_WHITESPACE | tail -n +3], [$3], [$4], [$5], [$6], [$7])
+    NS_CHECK([ip6tables -w -n -t $1 -L $2 | TRIM_WHITESPACE | tail -n +3], [$3], [m4_strip([$4])], [m4_strip([$5])], [$6], [$7])
 ])
 
 m4_define([NFT_LIST_RULES], [
-    NS_CHECK([nft -nn list chain $1 firewalld $2 | TRIM_WHITESPACE], [$3], [$4], [$5], [$6], [$7])
+    NS_CHECK([nft -nn list chain $1 firewalld $2 | TRIM_WHITESPACE], [$3], [m4_strip([$4])], [m4_strip([$5])], [$6], [$7])
 ])
 
 m4_define([IPSET_LIST_SET], [
     NS_CHECK([ipset list $1 | TRIM_WHITESPACE |dnl
               grep -v "^\(Revision\|Header\|Size\|References\|Number\)" |dnl
               awk 'NR <= 3; NR > 3 {print | "sort"}'],
-             [$2], [$3], [$4], [$5], [$6])
+             [$2], [m4_strip([$3])], [m4_strip([$4])], [$5], [$6])
 ])
 
 m4_define([NFT_LIST_SET], [
-    NS_CHECK([nft -nn list set inet firewalld $1 | TRIM_WHITESPACE], [$2], [$3], [$4], [$5], [$6])
+    NS_CHECK([nft -nn list set inet firewalld $1 | TRIM_WHITESPACE], [$2], [m4_strip([$3])], [m4_strip([$4])], [$5], [$6])
 ])
 
 m4_define([DBUS_CHECK], [
@@ -273,7 +273,7 @@ m4_define([DBUS_GETALL], [
               /org/fedoraproject/FirewallD1/$1 dnl
               org.freedesktop.DBus.Properties.GetAll string:"org.fedoraproject.FirewallD1.$2" dnl
               | TRIM_WHITESPACE | DBUS_GETALL_NORMALIZE],
-             [$3], [$4], [$5], [$6], [$7])
+             [$3], [m4_strip([$4])], [m4_strip([$5])], [$6], [$7])
 ])
 
 m4_define([DBUS_GET], [
@@ -281,7 +281,7 @@ m4_define([DBUS_GET], [
               /org/fedoraproject/FirewallD1/$1 dnl
               org.freedesktop.DBus.Properties.Get string:"org.fedoraproject.FirewallD1.$2" $3 dnl
               | tail -n +2 | TRIM_WHITESPACE],
-             [$4], [$5], [$6], [$7], [$8])
+             [$4], [m4_strip([$5])], [m4_strip([$6])], [$7], [$8])
 ])
 
 m4_define([DBUS_SET], [
