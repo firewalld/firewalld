@@ -302,8 +302,8 @@ msgid ""
 "Failed to connect to firewalld. Please make sure that the service has been "
 "started correctly and try again."
 msgstr ""
-"Misslyckades att ansluta till firewalld.  Se till att tjänsten har kommit "
-"igång som den skall och försök igen."
+"Det gick inte att ansluta till brandväggen. Kontrollera att tjänsten har "
+"startats korrekt och försök igen."
 
 #: ../src/firewall-config.in:95
 msgid "Changes applied."
@@ -345,7 +345,7 @@ msgstr "Användarnamn"
 
 #: ../src/firewall-config.in:244
 msgid "User id"
-msgstr "Användar-id"
+msgstr "Användar-ID"
 
 #: ../src/firewall-config.in:284 ../src/firewall-config.in:318
 msgid "Table"
@@ -443,7 +443,7 @@ msgstr "Gränssnitt"
 
 #: ../src/firewall-config.in:936
 msgid "Comment"
-msgstr "Kommentera"
+msgstr "Kommentar"
 
 #: ../src/firewall-config.in:955 ../src/firewall-config.glade.h:27
 msgid "Source"
@@ -1050,11 +1050,11 @@ msgstr "_Hjälp"
 
 #: ../src/firewall-config.glade.h:82
 msgid "Change Zone"
-msgstr "Byt zon"
+msgstr "Ändra zon"
 
 #: ../src/firewall-config.glade.h:83
 msgid "Change zone of binding"
-msgstr "Byt bindningszon"
+msgstr "Ändra bindningszon"
 
 #: ../src/firewall-config.glade.h:84
 msgid ""
@@ -1431,7 +1431,7 @@ msgid ""
 "example IP addresses, port numbers or MAC addresses. "
 msgstr ""
 "En IPMängd kan användas för att skapa vit- eller svartlistningar och kan "
-"lagra till exempel IP-adresser, portnummer eller MAC-adresser."
+"lagra till exempel IP-adresser, portnummer eller MAC-adresser. "
 
 #: ../src/firewall-config.glade.h:155
 msgid "IPSet"
@@ -1785,7 +1785,7 @@ msgstr "Standardzon:"
 
 #: ../src/firewall-config.glade.h:222
 msgid "Please enter an interface name:"
-msgstr "Ange ett gränssnittsnamn:"
+msgstr "Ange ett namn för gränssnittet:"
 
 #: ../src/firewall-config.glade.h:223
 msgid "Base IPSet Settings"
@@ -1829,7 +1829,7 @@ msgstr "Välj en ipmängd:"
 
 #: ../src/firewall-config.glade.h:234
 msgid "Please enter an ipset entry:"
-msgstr "Ange en ipmängdpost:"
+msgstr "Ange en ipset-post:"
 
 #: ../src/firewall-config.glade.h:235
 msgid "Log Denied"
