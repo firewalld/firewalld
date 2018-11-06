@@ -317,8 +317,8 @@ msgid ""
 "Failed to connect to firewalld. Please make sure that the service has been "
 "started correctly and try again."
 msgstr ""
-"No se pudo conectar con firewalld. Asegúrese de que el servicio se ha "
-"iniciado y vuelva a intentarlo."
+"Error al conectar con firewalld. Asegúrese de que el servicio se ha iniciado "
+"correctamente y vuelva a intentarlo."
 
 #: ../src/firewall-config.in:95
 msgid "Changes applied."
@@ -360,7 +360,7 @@ msgstr "Nombre de usuario"
 
 #: ../src/firewall-config.in:244
 msgid "User id"
-msgstr "Id de usuario"
+msgstr "ID de usuario"
 
 #: ../src/firewall-config.in:284 ../src/firewall-config.in:318
 msgid "Table"
@@ -593,7 +593,7 @@ msgstr "Zona '%s': El tipo ICMP '%s' no está disponible."
 
 #: ../src/firewall-config.in:3002
 msgid "Built-in zone, rename not supported."
-msgstr " Zona incorporada, no se puede renombrar."
+msgstr "Zona incorporada, no se puede renombrar."
 
 #: ../src/firewall-config.in:3116 ../src/firewall-config.in:3614
 #: ../src/firewall-config.glade.h:270
@@ -1451,7 +1451,7 @@ msgid ""
 "example IP addresses, port numbers or MAC addresses. "
 msgstr ""
 "Se puede usar un IPSet para crear listas blancas o negras, y puede contener "
-"direcciones IP o MAC, o números puertos."
+"direcciones IP o MAC, o números puertos. "
 
 #: ../src/firewall-config.glade.h:155
 msgid "IPSet"
@@ -1843,7 +1843,7 @@ msgstr "Tamaño inicial del hash (valor predeterminado: 1024)"
 
 #: ../src/firewall-config.glade.h:231
 msgid "Max number of elements, default 65536"
-msgstr "Máximo número de elementos; valor predeterminado: 65536 "
+msgstr "Máximo número de elementos; valor predeterminado: 65536"
 
 #: ../src/firewall-config.glade.h:232
 msgid "Please select an ipset:"
@@ -1851,7 +1851,7 @@ msgstr "Elija un IPSet"
 
 #: ../src/firewall-config.glade.h:234
 msgid "Please enter an ipset entry:"
-msgstr "Introduzca un IPSet:"
+msgstr "Introduzca una entrada de ipset:"
 
 #: ../src/firewall-config.glade.h:235
 msgid "Log Denied"
