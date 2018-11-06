@@ -308,8 +308,8 @@ msgid ""
 "Failed to connect to firewalld. Please make sure that the service has been "
 "started correctly and try again."
 msgstr ""
-"Połączenie z usługą firewalld się nie powiodło. Proszę się upewnić, że "
-"usługa została poprawnie uruchomiona i spróbować ponownie."
+"Połączenie z firewalld nie powiodło się. Sprawdź, czy usługa została "
+"poprawnie uruchomiona, i ponów próbę."
 
 #: ../src/firewall-config.in:95
 msgid "Changes applied."
@@ -355,7 +355,7 @@ msgstr "Identyfikator użytkownika"
 
 #: ../src/firewall-config.in:284 ../src/firewall-config.in:318
 msgid "Table"
-msgstr "Tablica"
+msgstr "Tabela"
 
 #: ../src/firewall-config.in:286 ../src/firewall-config.in:320
 msgid "Chain"
@@ -367,7 +367,7 @@ msgstr "Priorytet"
 
 #: ../src/firewall-config.in:324 ../src/firewall-config.in:361
 msgid "Args"
-msgstr "Parametry"
+msgstr "Argumenty"
 
 #: ../src/firewall-config.in:401 ../src/firewall-config.in:2329
 msgid "Runtime"
@@ -1439,7 +1439,7 @@ msgid ""
 "example IP addresses, port numbers or MAC addresses. "
 msgstr ""
 "Zestaw adresów IP może być używany do tworzenia białych i czarnych list, "
-"i może przechowywać na przykład adresy IP, numery portów i adresy MAC."
+"i może przechowywać na przykład adresy IP, numery portów i adresy MAC. "
 
 #: ../src/firewall-config.glade.h:155
 msgid "IPSet"
@@ -1796,7 +1796,7 @@ msgstr "Domyślna strefa:"
 
 #: ../src/firewall-config.glade.h:222
 msgid "Please enter an interface name:"
-msgstr "Proszę podać nazwę interfejsu:"
+msgstr "Wprowadź nazwę initerfejsu:"
 
 #: ../src/firewall-config.glade.h:223
 msgid "Base IPSet Settings"
@@ -1840,7 +1840,7 @@ msgstr "Proszę wybrać zestaw adresów IP:"
 
 #: ../src/firewall-config.glade.h:234
 msgid "Please enter an ipset entry:"
-msgstr "Proszę podać wpis ipset:"
+msgstr "Wprowadź wpis zestawu adresów IP:"
 
 #: ../src/firewall-config.glade.h:235
 msgid "Log Denied"
@@ -1998,7 +1998,7 @@ msgstr "Proszę wybrać usługę."
 
 #: ../src/firewall-config.glade.h:297
 msgid "Please enter a source."
-msgstr "Proszę podać źródło."
+msgstr "Wprowadź źródło."
 
 #: ../src/firewall-config.glade.h:298
 msgid "User ID"
