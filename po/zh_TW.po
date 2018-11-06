@@ -168,7 +168,7 @@ msgstr "授權失敗。"
 
 #: ../src/firewall-applet.in:594 ../src/firewall-config.in:2282
 msgid "Invalid name"
-msgstr "無效的引數 %s"
+msgstr "無效的名稱"
 
 #: ../src/firewall-applet.in:598 ../src/firewall-config.in:2286
 msgid "Name already exists"
@@ -302,7 +302,7 @@ msgstr "正在嘗試連上 firewalld，等待中..."
 msgid ""
 "Failed to connect to firewalld. Please make sure that the service has been "
 "started correctly and try again."
-msgstr "無法連線到 firewalld。請確保服務已經正確啟動，並且重試。"
+msgstr "連接 firewalld 失敗。請確定該服務已正常啟動，然後重試。"
 
 #: ../src/firewall-config.in:95
 msgid "Changes applied."
@@ -348,15 +348,15 @@ msgstr "使用者 ID"
 
 #: ../src/firewall-config.in:284 ../src/firewall-config.in:318
 msgid "Table"
-msgstr "表格"
+msgstr "表"
 
 #: ../src/firewall-config.in:286 ../src/firewall-config.in:320
 msgid "Chain"
-msgstr "鏈條"
+msgstr "鏈"
 
 #: ../src/firewall-config.in:322
 msgid "Priority"
-msgstr "優先等級"
+msgstr "優先程度"
 
 #: ../src/firewall-config.in:324 ../src/firewall-config.in:361
 msgid "Args"
