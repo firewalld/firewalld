@@ -17,12 +17,12 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-11 15:05-0400\n"
+"POT-Creation-Date: 2018-11-06 17:55+0100\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "PO-Revision-Date: 2016-08-22 05:00+0000\n"
-"Last-Translator: Eun-Ju Kim <eukim@redhat.com>\n"
+"Last-Translator: Novell Language <language@novell.com>\n"
 "Language-Team: Korean (http://www.transifex.com/projects/p/firewalld/"
 "language/ko/)\n"
 "Language: ko\n"
@@ -112,148 +112,148 @@ msgstr "작자"
 msgid "License"
 msgstr "라이센스"
 
-#: ../src/firewall-applet.in:468
+#: ../src/firewall-applet.in:470
 msgid "Shields Up"
 msgstr "쉴드업 "
 
-#: ../src/firewall-applet.in:475
+#: ../src/firewall-applet.in:477
 msgid "Enable Notifications"
 msgstr "통지 활성화 "
 
-#: ../src/firewall-applet.in:481
+#: ../src/firewall-applet.in:483
 msgid "Edit Firewall Settings..."
 msgstr "방화벽 설정 편집..."
 
-#: ../src/firewall-applet.in:485 ../src/firewall-config.glade.h:61
+#: ../src/firewall-applet.in:487 ../src/firewall-config.glade.h:61
 msgid "Change Zones of Connections..."
 msgstr "연결 영역 변경..."
 
-#: ../src/firewall-applet.in:489
+#: ../src/firewall-applet.in:491
 msgid "Configure Shields UP/Down Zones..."
 msgstr "쉴드업/다운 영역 설정..."
 
-#: ../src/firewall-applet.in:493
+#: ../src/firewall-applet.in:495
 msgid "Block all network traffic"
 msgstr "모든 네트워크 통신량 차단 "
 
-#: ../src/firewall-applet.in:498
+#: ../src/firewall-applet.in:500
 msgid "About"
 msgstr "정보"
 
-#: ../src/firewall-applet.in:506 ../src/firewall-config.in:618
+#: ../src/firewall-applet.in:508 ../src/firewall-config.in:618
 #: ../src/firewall-config.in:2380 ../src/firewall-config.in:2661
 #: ../src/firewall-config.in:2687
 msgid "Connections"
 msgstr "접속"
 
-#: ../src/firewall-applet.in:510 ../src/firewall-config.in:620
+#: ../src/firewall-applet.in:512 ../src/firewall-config.in:620
 #: ../src/firewall-config.in:2468 ../src/firewall-config.in:2664
 #: ../src/firewall-config.in:2689 ../src/firewall-config.glade.h:130
 msgid "Interfaces"
 msgstr "인터페이스 "
 
-#: ../src/firewall-applet.in:514 ../src/firewall-config.in:622
+#: ../src/firewall-applet.in:516 ../src/firewall-config.in:622
 #: ../src/firewall-config.in:2499 ../src/firewall-config.in:2667
 #: ../src/firewall-config.in:2691 ../src/firewall-config.glade.h:135
 msgid "Sources"
 msgstr "소스 "
 
-#: ../src/firewall-applet.in:590 ../src/firewall-config.in:2279
+#: ../src/firewall-applet.in:592 ../src/firewall-config.in:2279
 msgid "Authorization failed."
 msgstr "인증 실패했습니다."
 
-#: ../src/firewall-applet.in:592 ../src/firewall-config.in:2282
+#: ../src/firewall-applet.in:594 ../src/firewall-config.in:2282
 msgid "Invalid name"
 msgstr "잘못된 이름 "
 
-#: ../src/firewall-applet.in:596 ../src/firewall-config.in:2286
+#: ../src/firewall-applet.in:598 ../src/firewall-config.in:2286
 msgid "Name already exists"
 msgstr "이름이 이미 존재합니다 "
 
-#: ../src/firewall-applet.in:681
+#: ../src/firewall-applet.in:690
 msgid "{entry} (Zone: {zone})"
 msgstr "{entry} (영역: {zone})"
 
-#: ../src/firewall-applet.in:688
+#: ../src/firewall-applet.in:697
 msgid "{entry} (Default Zone: {default_zone})"
 msgstr "{entry} (기본 영역: {default_zone})"
 
-#: ../src/firewall-applet.in:769 ../src/firewall-config.in:1568
+#: ../src/firewall-applet.in:778 ../src/firewall-config.in:1568
 msgid "Failed to get connections from NetworkManager"
 msgstr "NetworkManager에서 연결 실패했습니다"
 
-#: ../src/firewall-applet.in:781 ../src/firewall-config.in:1380
+#: ../src/firewall-applet.in:790 ../src/firewall-config.in:1380
 msgid "No NetworkManager imports available"
 msgstr "가져올 수 있는 NetworkManager가 없습니다"
 
-#: ../src/firewall-applet.in:859
+#: ../src/firewall-applet.in:868
 msgid "No connection to firewall daemon"
 msgstr "방화벽 데몬으로의 연결이 없습니다 "
 
-#: ../src/firewall-applet.in:867 ../src/firewall-applet.in:1004
+#: ../src/firewall-applet.in:876 ../src/firewall-applet.in:1014
 msgid "All network traffic is blocked."
 msgstr "모든 네트워크 통신이 차단되었습니다."
 
-#: ../src/firewall-applet.in:871
+#: ../src/firewall-applet.in:880
 #, c-format
 msgid "Default Zone: '%s'"
 msgstr "기본 영역: '%s'"
 
-#: ../src/firewall-applet.in:877
+#: ../src/firewall-applet.in:886
 msgid ""
 "Default Zone '{default_zone}' active for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
 "기본 영역 '{default_zone}'은 인터페이스 '{interface}' 상의 연결 '{connection}'에 대해 활성화"
 
-#: ../src/firewall-applet.in:880
+#: ../src/firewall-applet.in:889
 msgid ""
 "Zone '{zone}' active for connection '{connection}' on interface "
 "'{interface}'"
 msgstr "영역 '{zone}'은 인터페이스 '{interface}' 상의 연결 '{connection}'에 대해 활성화"
 
-#: ../src/firewall-applet.in:892
+#: ../src/firewall-applet.in:901
 msgid "Zone '{zone}' active for interface '{interface}'"
 msgstr "영역 '{zone}'은 인터페이스 '{interface}'에 대해 활성화 "
 
-#: ../src/firewall-applet.in:900
+#: ../src/firewall-applet.in:909
 msgid "Zone '{zone}' active for source {source}"
 msgstr "영역 '{zone}'은 소스 {source}에 대해 활성화 "
 
-#: ../src/firewall-applet.in:904
+#: ../src/firewall-applet.in:913
 msgid "No Active Zones."
 msgstr "활성화된 영역이 없습니다."
 
-#: ../src/firewall-applet.in:962
+#: ../src/firewall-applet.in:972
 msgid "Connection to FirewallD established."
 msgstr "FirewallD에 연결되었습니다."
 
-#: ../src/firewall-applet.in:974
+#: ../src/firewall-applet.in:984
 msgid "Connection to FirewallD lost."
 msgstr "FirewallD 연결이 끊어졌습니다."
 
-#: ../src/firewall-applet.in:979
+#: ../src/firewall-applet.in:989
 msgid "FirewallD has been reloaded."
 msgstr "FirewallD가 다시 로딩되었습니다."
 
-#: ../src/firewall-applet.in:986
+#: ../src/firewall-applet.in:996
 #, c-format
 msgid "Default zone changed to '%s'."
 msgstr "기본 영역을 '%s'로 변경했습니다."
 
-#: ../src/firewall-applet.in:1005
+#: ../src/firewall-applet.in:1015
 msgid "Network traffic is not blocked anymore."
 msgstr "네트워크 통신이 더이상 차단되지 않습니다."
 
-#: ../src/firewall-applet.in:1031 ../src/firewall-applet.in:1085
+#: ../src/firewall-applet.in:1041 ../src/firewall-applet.in:1095
 msgid "activated"
 msgstr "활성화됨"
 
-#: ../src/firewall-applet.in:1032 ../src/firewall-applet.in:1086
+#: ../src/firewall-applet.in:1042 ../src/firewall-applet.in:1096
 msgid "deactivated"
 msgstr "비활성화됨 "
 
-#: ../src/firewall-applet.in:1037
+#: ../src/firewall-applet.in:1047
 msgid ""
 "Default zone '{default_zone}' {activated_deactivated} for connection "
 "'{connection}' on interface '{interface}'"
@@ -261,26 +261,26 @@ msgstr ""
 "기본 영역 '{default_zone}'은 인터페이스 '{interface}' 상의 연결 '{connection}'에 대해 "
 "{activated_deactivated}"
 
-#: ../src/firewall-applet.in:1042
+#: ../src/firewall-applet.in:1052
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
 msgstr "영역 '{zone}'이 인터페이스 '{interface}' 상의 연결에 대해 {activated_deactivated}"
 
-#: ../src/firewall-applet.in:1047
+#: ../src/firewall-applet.in:1057
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
 msgstr "영역 '{zone}'이 인터페이스 '{interface}'에 대해 {activated_deactivated}"
 
-#: ../src/firewall-applet.in:1070
+#: ../src/firewall-applet.in:1080
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
 msgstr "영역 '%s'이 인터페이스 '%s'에 대해 활성화되었습니다 "
 
-#: ../src/firewall-applet.in:1087
+#: ../src/firewall-applet.in:1097
 msgid "Zone '{zone}' {activated_deactivated} for source '{source}'"
 msgstr "영역 '{zone}'이 소스 '{source}'에 대해 {activated_deactivated}"
 
-#: ../src/firewall-applet.in:1111
+#: ../src/firewall-applet.in:1121
 #, c-format
 msgid "Zone '%s' activated for source '%s'"
 msgstr "영역 '%s'이 소스 '%s'에 대해 활성화되었습니다 "
@@ -298,6 +298,8 @@ msgid ""
 "Failed to connect to firewalld. Please make sure that the service has been "
 "started correctly and try again."
 msgstr ""
+"방화벽에 연결할 수 없습니다. 서비스를 제대로 시작했는지 확인하고 다시 시도해 "
+"주십시오."
 
 #: ../src/firewall-config.in:95
 msgid "Changes applied."
@@ -339,23 +341,23 @@ msgstr "사용자 이름 "
 
 #: ../src/firewall-config.in:244
 msgid "User id"
-msgstr ""
+msgstr "사용자 ID"
 
 #: ../src/firewall-config.in:284 ../src/firewall-config.in:318
 msgid "Table"
-msgstr ""
+msgstr "테이블"
 
 #: ../src/firewall-config.in:286 ../src/firewall-config.in:320
 msgid "Chain"
-msgstr ""
+msgstr "체인"
 
 #: ../src/firewall-config.in:322
 msgid "Priority"
-msgstr ""
+msgstr "우선순위"
 
 #: ../src/firewall-config.in:324 ../src/firewall-config.in:361
 msgid "Args"
-msgstr ""
+msgstr "인수"
 
 #: ../src/firewall-config.in:401 ../src/firewall-config.in:2329
 msgid "Runtime"
@@ -433,11 +435,11 @@ msgstr "감사 "
 
 #: ../src/firewall-config.in:934 ../src/firewall-config.glade.h:221
 msgid "Interface"
-msgstr ""
+msgstr "인터페이스"
 
 #: ../src/firewall-config.in:936
 msgid "Comment"
-msgstr ""
+msgstr "코멘트"
 
 #: ../src/firewall-config.in:955 ../src/firewall-config.glade.h:27
 msgid "Source"
@@ -513,7 +515,7 @@ msgstr "icmp-차단 "
 #: ../src/firewall-config.in:3348 ../src/firewall-config.in:3658
 #: ../src/firewall-config.glade.h:288
 msgid "icmp-type"
-msgstr ""
+msgstr "icmp 유형"
 
 #: ../src/firewall-config.in:2075 ../src/firewall-config.in:3182
 #: ../src/firewall-config.in:3350 ../src/firewall-config.in:3661
@@ -703,7 +705,7 @@ msgstr "모든 파일  "
 #: ../src/firewall-config.in:6383 ../src/firewall-config.in:6412
 #: ../src/firewall-config.glade.h:40
 msgid "All"
-msgstr ""
+msgstr "모두"
 
 #: ../src/firewall-config.in:6383 ../src/firewall-config.in:6412
 #: ../src/firewall-config.glade.h:41
@@ -717,7 +719,7 @@ msgstr "IPv6"
 
 #: ../src/firewall-config.in:6389
 msgid "Built-in helper, rename not supported."
-msgstr ""
+msgstr "기본 제공 헬퍼, 이름 바꾸기가 지원되지 않습니다."
 
 #: ../src/firewall-config.in:6867
 msgid "Built-in icmp, rename not supported."
@@ -740,11 +742,11 @@ msgstr "주소"
 
 #: ../src/firewall-config.glade.h:2
 msgid "Automatic Helpers"
-msgstr ""
+msgstr "자동 헬퍼"
 
 #: ../src/firewall-config.glade.h:3
 msgid "Please select the automatic helpers value:"
-msgstr ""
+msgstr "자동 헬퍼 값을 선택해 주십시오."
 
 #: ../src/firewall-config.glade.h:5
 msgid "Please enter the command line."
@@ -847,11 +849,11 @@ msgstr "다른 포트로 포워드 "
 
 #: ../src/firewall-config.glade.h:32
 msgid "Base Helper Settings"
-msgstr ""
+msgstr "기본 헬퍼 설정"
 
 #: ../src/firewall-config.glade.h:33
 msgid "Please configure base helper settings:"
-msgstr ""
+msgstr "기본 헬퍼를 설정을 구성해 주십시오."
 
 #: ../src/firewall-config.glade.h:34
 msgid "Bold entries are mandatory, all others are optional."
@@ -879,15 +881,15 @@ msgstr "제품군: "
 
 #: ../src/firewall-config.glade.h:43
 msgid "Module:"
-msgstr ""
+msgstr "모듈:"
 
 #: ../src/firewall-config.glade.h:44
 msgid "Helper"
-msgstr ""
+msgstr "헬퍼"
 
 #: ../src/firewall-config.glade.h:45
 msgid "Please select a helper:"
-msgstr ""
+msgstr "헬퍼를 선택해 주십시오."
 
 #: ../src/firewall-config.glade.h:46
 msgid "Base ICMP Type Settings"
@@ -968,11 +970,11 @@ msgstr "로그 거부 값을 변경합니다."
 
 #: ../src/firewall-config.glade.h:66
 msgid "Configure Automatic Helper Assigment"
-msgstr ""
+msgstr "자동 헬퍼 할당을 구성해 주십시오."
 
 #: ../src/firewall-config.glade.h:67
 msgid "Configure Automatic Helper Assignment setting."
-msgstr ""
+msgstr "자동 헬퍼 할당 설정을 구성해 주십시오."
 
 #: ../src/firewall-config.glade.h:68
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
@@ -1014,7 +1016,7 @@ msgstr "ICMP 유형 "
 
 #: ../src/firewall-config.glade.h:77
 msgid "Helpers"
-msgstr ""
+msgstr "헬퍼"
 
 #: ../src/firewall-config.glade.h:78
 msgid "Direct Configuration"
@@ -1034,7 +1036,7 @@ msgstr "도움말(_H)"
 
 #: ../src/firewall-config.glade.h:82
 msgid "Change Zone"
-msgstr ""
+msgstr "영역 변경"
 
 #: ../src/firewall-config.glade.h:83
 msgid "Change zone of binding"
@@ -1155,7 +1157,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:107
 msgid "Source Ports"
-msgstr ""
+msgstr "소스 포트"
 
 #: ../src/firewall-config.glade.h:108
 msgid ""
@@ -1347,7 +1349,7 @@ msgstr "소스 포트"
 
 #: ../src/firewall-config.glade.h:148
 msgid "Netfilter helper modules are needed for some services."
-msgstr ""
+msgstr "일부 서비스 실행에 Netfilter 헬퍼 모듈이 필요합니다."
 
 #: ../src/firewall-config.glade.h:149
 msgid "Modules"
@@ -1473,10 +1475,13 @@ msgid ""
 "are using ports that are unrelated to the signaling connection and are "
 "therefore blocked by the firewall without the helper."
 msgstr ""
+"연결 추적 헬퍼가 신호 발송과 데이터 전송에 서로 다른 흐름을 사용하는 프로토콜"
+"이 작동하도록 돕습니다. 데이터 전송은 신호 발송 연결과 무관한 포트를 사용하므"
+"로 헬퍼 없이는 방화벽에 의해 차단됩니다."
 
 #: ../src/firewall-config.glade.h:174
 msgid "Define ports or port ranges, which are monitored by the helper."
-msgstr ""
+msgstr "헬퍼가 모니터링하는 포트 또는 포트 범위를 정의해 주십시오."
 
 #: ../src/firewall-config.glade.h:175
 msgid ""
@@ -1700,7 +1705,7 @@ msgctxt ""
 "Meaning: Log of denied packets. But this is too long. LogDenied is also the "
 "parameter used in firewalld.conf."
 msgid "Automatic Helpers:"
-msgstr ""
+msgstr "자동 헬퍼:"
 
 #: ../src/firewall-config.glade.h:219
 msgid "Lockdown:"
@@ -1712,7 +1717,7 @@ msgstr "기본 영역: "
 
 #: ../src/firewall-config.glade.h:222
 msgid "Please enter an interface name:"
-msgstr ""
+msgstr "인터페이스 이름을 입력해 주십시오:"
 
 #: ../src/firewall-config.glade.h:223
 msgid "Base IPSet Settings"
@@ -1756,7 +1761,7 @@ msgstr " IPSet을 선택하십시오:"
 
 #: ../src/firewall-config.glade.h:234
 msgid "Please enter an ipset entry:"
-msgstr ""
+msgstr "ipset 항목을 입력해 주십시오:"
 
 #: ../src/firewall-config.glade.h:235
 msgid "Log Denied"
@@ -1788,7 +1793,7 @@ msgstr "Mask:"
 
 #: ../src/firewall-config.glade.h:242
 msgid "Please select a netfilter conntrack helper:"
-msgstr ""
+msgstr "Netfilter conntrack 헬퍼를 선택해 주십시오."
 
 #: ../src/firewall-config.glade.h:243
 msgid "- Select -"
@@ -1796,7 +1801,7 @@ msgstr "- 선택 -"
 
 #: ../src/firewall-config.glade.h:244
 msgid "Other Module:"
-msgstr ""
+msgstr "기타 모듈:"
 
 #: ../src/firewall-config.glade.h:245
 msgid "Port and Protocol"
@@ -1910,7 +1915,7 @@ msgstr "서비스를 선택하십시오. "
 
 #: ../src/firewall-config.glade.h:297
 msgid "Please enter a source."
-msgstr ""
+msgstr "소스를 입력해 주십시오."
 
 #: ../src/firewall-config.glade.h:298
 msgid "User ID"
@@ -1943,3 +1948,6 @@ msgstr "기본 대상 "
 #: ../src/firewall-config.glade.h:306
 msgid "Target:"
 msgstr "대상: "
+
+#~ msgid "Failed to set zone {zone} for connection {connection}"
+#~ msgstr "연결 {connection}의 영역 {zone} 설정에 실패했습니다"

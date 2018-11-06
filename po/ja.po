@@ -21,12 +21,12 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-11 15:05-0400\n"
+"POT-Creation-Date: 2018-11-06 17:55+0100\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "PO-Revision-Date: 2018-02-26 12:14+0000\n"
-"Last-Translator: Hajime Taira <htaira@fedoraproject.org>\n"
+"Last-Translator: Novell Language <language@novell.com>\n"
 "Language-Team: Japanese (http://www.transifex.com/projects/p/firewalld/"
 "language/ja/)\n"
 "Language: ja\n"
@@ -115,148 +115,148 @@ msgstr "作者"
 msgid "License"
 msgstr "ライセンス"
 
-#: ../src/firewall-applet.in:468
+#: ../src/firewall-applet.in:470
 msgid "Shields Up"
 msgstr "シールド・アップ"
 
-#: ../src/firewall-applet.in:475
+#: ../src/firewall-applet.in:477
 msgid "Enable Notifications"
 msgstr "通知の有効化"
 
-#: ../src/firewall-applet.in:481
+#: ../src/firewall-applet.in:483
 msgid "Edit Firewall Settings..."
 msgstr "ファイアウォール設定の編集..."
 
-#: ../src/firewall-applet.in:485 ../src/firewall-config.glade.h:61
+#: ../src/firewall-applet.in:487 ../src/firewall-config.glade.h:61
 msgid "Change Zones of Connections..."
 msgstr "接続のゾーンの変更..."
 
-#: ../src/firewall-applet.in:489
+#: ../src/firewall-applet.in:491
 msgid "Configure Shields UP/Down Zones..."
 msgstr "シールド・アップ/ダウン・ゾーンの設定..."
 
-#: ../src/firewall-applet.in:493
+#: ../src/firewall-applet.in:495
 msgid "Block all network traffic"
 msgstr "すべてのネットワーク・トラフィックのブロック"
 
-#: ../src/firewall-applet.in:498
+#: ../src/firewall-applet.in:500
 msgid "About"
 msgstr "このアプリケーションについて"
 
-#: ../src/firewall-applet.in:506 ../src/firewall-config.in:618
+#: ../src/firewall-applet.in:508 ../src/firewall-config.in:618
 #: ../src/firewall-config.in:2380 ../src/firewall-config.in:2661
 #: ../src/firewall-config.in:2687
 msgid "Connections"
 msgstr "接続"
 
-#: ../src/firewall-applet.in:510 ../src/firewall-config.in:620
+#: ../src/firewall-applet.in:512 ../src/firewall-config.in:620
 #: ../src/firewall-config.in:2468 ../src/firewall-config.in:2664
 #: ../src/firewall-config.in:2689 ../src/firewall-config.glade.h:130
 msgid "Interfaces"
 msgstr "インターフェース"
 
-#: ../src/firewall-applet.in:514 ../src/firewall-config.in:622
+#: ../src/firewall-applet.in:516 ../src/firewall-config.in:622
 #: ../src/firewall-config.in:2499 ../src/firewall-config.in:2667
 #: ../src/firewall-config.in:2691 ../src/firewall-config.glade.h:135
 msgid "Sources"
 msgstr "送信元"
 
-#: ../src/firewall-applet.in:590 ../src/firewall-config.in:2279
+#: ../src/firewall-applet.in:592 ../src/firewall-config.in:2279
 msgid "Authorization failed."
 msgstr "認証に失敗しました。"
 
-#: ../src/firewall-applet.in:592 ../src/firewall-config.in:2282
+#: ../src/firewall-applet.in:594 ../src/firewall-config.in:2282
 msgid "Invalid name"
 msgstr "不当な実引数 %s"
 
-#: ../src/firewall-applet.in:596 ../src/firewall-config.in:2286
+#: ../src/firewall-applet.in:598 ../src/firewall-config.in:2286
 msgid "Name already exists"
 msgstr "名前がすでに存在します"
 
-#: ../src/firewall-applet.in:681
+#: ../src/firewall-applet.in:690
 msgid "{entry} (Zone: {zone})"
 msgstr "{entry} (ゾーン: {zone})"
 
-#: ../src/firewall-applet.in:688
+#: ../src/firewall-applet.in:697
 msgid "{entry} (Default Zone: {default_zone})"
 msgstr "{entry} (デフォルトゾーン: {default_zone})"
 
-#: ../src/firewall-applet.in:769 ../src/firewall-config.in:1568
+#: ../src/firewall-applet.in:778 ../src/firewall-config.in:1568
 msgid "Failed to get connections from NetworkManager"
 msgstr "NetworkManager からの接続の取得に失敗しました"
 
-#: ../src/firewall-applet.in:781 ../src/firewall-config.in:1380
+#: ../src/firewall-applet.in:790 ../src/firewall-config.in:1380
 msgid "No NetworkManager imports available"
 msgstr "利用可能な NetworkManager インポートがありません"
 
-#: ../src/firewall-applet.in:859
+#: ../src/firewall-applet.in:868
 msgid "No connection to firewall daemon"
 msgstr "ファイアーウォール・デーモンへの接続がありません。"
 
-#: ../src/firewall-applet.in:867 ../src/firewall-applet.in:1004
+#: ../src/firewall-applet.in:876 ../src/firewall-applet.in:1014
 msgid "All network traffic is blocked."
 msgstr "すべてのネットワーク通信が遮断されます。"
 
-#: ../src/firewall-applet.in:871
+#: ../src/firewall-applet.in:880
 #, c-format
 msgid "Default Zone: '%s'"
 msgstr "標準ゾーン: '%s'"
 
-#: ../src/firewall-applet.in:877
+#: ../src/firewall-applet.in:886
 msgid ""
 "Default Zone '{default_zone}' active for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
 "デフォルトゾーン '{default_zone}' がインターフェース '{interface}' の接続 '{connection}' に対して有効化"
 
-#: ../src/firewall-applet.in:880
+#: ../src/firewall-applet.in:889
 msgid ""
 "Zone '{zone}' active for connection '{connection}' on interface "
 "'{interface}'"
 msgstr "ゾーン '{zone}' がインターフェース '{interface}' の接続 '{connection}' に対して有効化"
 
-#: ../src/firewall-applet.in:892
+#: ../src/firewall-applet.in:901
 msgid "Zone '{zone}' active for interface '{interface}'"
 msgstr "ゾーン '{zone}' がインターフェース '{interface}' に対して有効化"
 
-#: ../src/firewall-applet.in:900
+#: ../src/firewall-applet.in:909
 msgid "Zone '{zone}' active for source {source}"
 msgstr "ゾーン '{zone}' を送信元 {source} に対して有効化"
 
-#: ../src/firewall-applet.in:904
+#: ../src/firewall-applet.in:913
 msgid "No Active Zones."
 msgstr "有効なゾーンがありません。"
 
-#: ../src/firewall-applet.in:962
+#: ../src/firewall-applet.in:972
 msgid "Connection to FirewallD established."
 msgstr "FirewallD への接続が確立されました。"
 
-#: ../src/firewall-applet.in:974
+#: ../src/firewall-applet.in:984
 msgid "Connection to FirewallD lost."
 msgstr "FirewallD への接続が失われました。"
 
-#: ../src/firewall-applet.in:979
+#: ../src/firewall-applet.in:989
 msgid "FirewallD has been reloaded."
 msgstr "FirewallD が再読み込みされました。"
 
-#: ../src/firewall-applet.in:986
+#: ../src/firewall-applet.in:996
 #, c-format
 msgid "Default zone changed to '%s'."
 msgstr "標準のゾーンを '%s' に変更しました。"
 
-#: ../src/firewall-applet.in:1005
+#: ../src/firewall-applet.in:1015
 msgid "Network traffic is not blocked anymore."
 msgstr "ネットワーク通信が遮断されなくなります。"
 
-#: ../src/firewall-applet.in:1031 ../src/firewall-applet.in:1085
+#: ../src/firewall-applet.in:1041 ../src/firewall-applet.in:1095
 msgid "activated"
 msgstr "有効化"
 
-#: ../src/firewall-applet.in:1032 ../src/firewall-applet.in:1086
+#: ../src/firewall-applet.in:1042 ../src/firewall-applet.in:1096
 msgid "deactivated"
 msgstr "無効化"
 
-#: ../src/firewall-applet.in:1037
+#: ../src/firewall-applet.in:1047
 msgid ""
 "Default zone '{default_zone}' {activated_deactivated} for connection "
 "'{connection}' on interface '{interface}'"
@@ -264,7 +264,7 @@ msgstr ""
 "デフォルトゾーン '{default_zone}' がインターフェース '{interface}' の接続  '{connection}' に対して  "
 "{activated_deactivated} "
 
-#: ../src/firewall-applet.in:1042
+#: ../src/firewall-applet.in:1052
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
@@ -272,21 +272,21 @@ msgstr ""
 "ゾーン '{zone}' がインターフェース '{interface}' の接続 '{connection}' に対して "
 "{activated_deactivated}"
 
-#: ../src/firewall-applet.in:1047
+#: ../src/firewall-applet.in:1057
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
 msgstr ""
 "インターフェース '{interface}' に対してゾーン '{zone}' を {activated_deactivated} しました"
 
-#: ../src/firewall-applet.in:1070
+#: ../src/firewall-applet.in:1080
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
 msgstr "ゾーン '%s' をインターフェース '%s' に対して有効化しました"
 
-#: ../src/firewall-applet.in:1087
+#: ../src/firewall-applet.in:1097
 msgid "Zone '{zone}' {activated_deactivated} for source '{source}'"
 msgstr "ゾーン '{zone}' を送信元 '{source}' に対して {activated_deactivated} しました"
 
-#: ../src/firewall-applet.in:1111
+#: ../src/firewall-applet.in:1121
 #, c-format
 msgid "Zone '%s' activated for source '%s'"
 msgstr "ゾーン '%s' を送信元 '%s' に対して有効化しました"
@@ -304,6 +304,8 @@ msgid ""
 "Failed to connect to firewalld. Please make sure that the service has been "
 "started correctly and try again."
 msgstr ""
+"firewalldへの接続に失敗しました。サービスが正常に開始していることを確認して、"
+"再度接続を試行してください。"
 
 #: ../src/firewall-config.in:95
 msgid "Changes applied."
@@ -345,23 +347,23 @@ msgstr "ユーザー名"
 
 #: ../src/firewall-config.in:244
 msgid "User id"
-msgstr ""
+msgstr "ユーザーID"
 
 #: ../src/firewall-config.in:284 ../src/firewall-config.in:318
 msgid "Table"
-msgstr ""
+msgstr "テーブル"
 
 #: ../src/firewall-config.in:286 ../src/firewall-config.in:320
 msgid "Chain"
-msgstr ""
+msgstr "チェイン"
 
 #: ../src/firewall-config.in:322
 msgid "Priority"
-msgstr ""
+msgstr "優先度"
 
 #: ../src/firewall-config.in:324 ../src/firewall-config.in:361
 msgid "Args"
-msgstr ""
+msgstr "引数"
 
 #: ../src/firewall-config.in:401 ../src/firewall-config.in:2329
 msgid "Runtime"
@@ -443,7 +445,7 @@ msgstr "インターフェース"
 
 #: ../src/firewall-config.in:936
 msgid "Comment"
-msgstr ""
+msgstr "コメント"
 
 #: ../src/firewall-config.in:955 ../src/firewall-config.glade.h:27
 msgid "Source"
@@ -1038,7 +1040,7 @@ msgstr "ヘルプ(_H)"
 
 #: ../src/firewall-config.glade.h:82
 msgid "Change Zone"
-msgstr ""
+msgstr "ゾーンの変更"
 
 #: ../src/firewall-config.glade.h:83
 msgid "Change zone of binding"
@@ -1714,7 +1716,7 @@ msgstr "標準ゾーン:"
 
 #: ../src/firewall-config.glade.h:222
 msgid "Please enter an interface name:"
-msgstr ""
+msgstr "インターフェース名を入力してください:"
 
 #: ../src/firewall-config.glade.h:223
 msgid "Base IPSet Settings"
@@ -1758,7 +1760,7 @@ msgstr "IPSet を選択してください:"
 
 #: ../src/firewall-config.glade.h:234
 msgid "Please enter an ipset entry:"
-msgstr ""
+msgstr "IPSetエントリーを入力してください:"
 
 #: ../src/firewall-config.glade.h:235
 msgid "Log Denied"
@@ -1914,7 +1916,7 @@ msgstr "サービスを選択してください。"
 
 #: ../src/firewall-config.glade.h:297
 msgid "Please enter a source."
-msgstr ""
+msgstr "ソースを入力してください。"
 
 #: ../src/firewall-config.glade.h:298
 msgid "User ID"
@@ -1947,3 +1949,6 @@ msgstr "標準ターゲット"
 #: ../src/firewall-config.glade.h:306
 msgid "Target:"
 msgstr "ターゲット:"
+
+#~ msgid "Failed to set zone {zone} for connection {connection}"
+#~ msgstr "接続  {connection} のゾーン  {zone} の設定に失敗しました"

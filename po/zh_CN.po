@@ -22,7 +22,12 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-11 15:05-0400\n"
+"POT-Creation-Date: 2018-11-06 17:55+0100\n"
+"PO-Revision-Date: 2017-04-20 09:26+0000\n"
+"Last-Translator: Novell Language <language@novell.com>\n"
+"Language-Team: Chinese (China) (http://www.transifex.com/projects/p/"
+"firewalld/language/zh_CN/)\n"
+"Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -116,147 +121,147 @@ msgstr "作者"
 msgid "License"
 msgstr "许可证"
 
-#: ../src/firewall-applet.in:468
+#: ../src/firewall-applet.in:470
 msgid "Shields Up"
 msgstr "启动保护"
 
-#: ../src/firewall-applet.in:475
+#: ../src/firewall-applet.in:477
 msgid "Enable Notifications"
 msgstr "启用通知"
 
-#: ../src/firewall-applet.in:481
+#: ../src/firewall-applet.in:483
 msgid "Edit Firewall Settings..."
 msgstr "编辑防火墙设置..."
 
-#: ../src/firewall-applet.in:485 ../src/firewall-config.glade.h:61
+#: ../src/firewall-applet.in:487 ../src/firewall-config.glade.h:61
 msgid "Change Zones of Connections..."
 msgstr "更改连接区域…"
 
-#: ../src/firewall-applet.in:489
+#: ../src/firewall-applet.in:491
 msgid "Configure Shields UP/Down Zones..."
 msgstr "配置保护开启/关闭区域…"
 
-#: ../src/firewall-applet.in:493
+#: ../src/firewall-applet.in:495
 msgid "Block all network traffic"
 msgstr "阻止所有网络传输"
 
-#: ../src/firewall-applet.in:498
+#: ../src/firewall-applet.in:500
 msgid "About"
 msgstr "关于"
 
-#: ../src/firewall-applet.in:506 ../src/firewall-config.in:618
+#: ../src/firewall-applet.in:508 ../src/firewall-config.in:618
 #: ../src/firewall-config.in:2380 ../src/firewall-config.in:2661
 #: ../src/firewall-config.in:2687
 msgid "Connections"
 msgstr "连接"
 
-#: ../src/firewall-applet.in:510 ../src/firewall-config.in:620
+#: ../src/firewall-applet.in:512 ../src/firewall-config.in:620
 #: ../src/firewall-config.in:2468 ../src/firewall-config.in:2664
 #: ../src/firewall-config.in:2689 ../src/firewall-config.glade.h:130
 msgid "Interfaces"
 msgstr "接口"
 
-#: ../src/firewall-applet.in:514 ../src/firewall-config.in:622
+#: ../src/firewall-applet.in:516 ../src/firewall-config.in:622
 #: ../src/firewall-config.in:2499 ../src/firewall-config.in:2667
 #: ../src/firewall-config.in:2691 ../src/firewall-config.glade.h:135
 msgid "Sources"
 msgstr "来源"
 
-#: ../src/firewall-applet.in:590 ../src/firewall-config.in:2279
+#: ../src/firewall-applet.in:592 ../src/firewall-config.in:2279
 msgid "Authorization failed."
 msgstr "认证失败。"
 
-#: ../src/firewall-applet.in:592 ../src/firewall-config.in:2282
+#: ../src/firewall-applet.in:594 ../src/firewall-config.in:2282
 msgid "Invalid name"
 msgstr "无效的名称"
 
-#: ../src/firewall-applet.in:596 ../src/firewall-config.in:2286
+#: ../src/firewall-applet.in:598 ../src/firewall-config.in:2286
 msgid "Name already exists"
 msgstr "名称已存在"
 
-#: ../src/firewall-applet.in:681
+#: ../src/firewall-applet.in:690
 msgid "{entry} (Zone: {zone})"
 msgstr "{entry} (区域：{zone})"
 
-#: ../src/firewall-applet.in:688
+#: ../src/firewall-applet.in:697
 msgid "{entry} (Default Zone: {default_zone})"
 msgstr "{entry} (默认区：{default_zone})"
 
-#: ../src/firewall-applet.in:769 ../src/firewall-config.in:1568
+#: ../src/firewall-applet.in:778 ../src/firewall-config.in:1568
 msgid "Failed to get connections from NetworkManager"
 msgstr "从 NetworkManager 获取连接失败"
 
-#: ../src/firewall-applet.in:781 ../src/firewall-config.in:1380
+#: ../src/firewall-applet.in:790 ../src/firewall-config.in:1380
 msgid "No NetworkManager imports available"
 msgstr "没有可用的 NetworkManager 导入"
 
-#: ../src/firewall-applet.in:859
+#: ../src/firewall-applet.in:868
 msgid "No connection to firewall daemon"
 msgstr "没有到防火墙守护进程的连接"
 
-#: ../src/firewall-applet.in:867 ../src/firewall-applet.in:1004
+#: ../src/firewall-applet.in:876 ../src/firewall-applet.in:1014
 msgid "All network traffic is blocked."
 msgstr "阻挡所有网络传输。"
 
-#: ../src/firewall-applet.in:871
+#: ../src/firewall-applet.in:880
 #, c-format
 msgid "Default Zone: '%s'"
 msgstr "默认区域： '%s'"
 
-#: ../src/firewall-applet.in:877
+#: ../src/firewall-applet.in:886
 msgid ""
 "Default Zone '{default_zone}' active for connection '{connection}' on "
 "interface '{interface}'"
 msgstr "接口 '{interface}' 上连接 '{connection}'  的活动默认区 '{default_zone}'"
 
-#: ../src/firewall-applet.in:880
+#: ../src/firewall-applet.in:889
 msgid ""
 "Zone '{zone}' active for connection '{connection}' on interface "
 "'{interface}'"
 msgstr "在接口 '{interface}' 启用连接 '{connection}' 的区域 '{zone}'"
 
-#: ../src/firewall-applet.in:892
+#: ../src/firewall-applet.in:901
 msgid "Zone '{zone}' active for interface '{interface}'"
 msgstr "在接口 '{interface}' 启用区域 '{zone}'"
 
-#: ../src/firewall-applet.in:900
+#: ../src/firewall-applet.in:909
 msgid "Zone '{zone}' active for source {source}"
 msgstr "在来源 {source} 启用区域 '{zone}'"
 
-#: ../src/firewall-applet.in:904
+#: ../src/firewall-applet.in:913
 msgid "No Active Zones."
 msgstr "没有启用区域。"
 
-#: ../src/firewall-applet.in:962
+#: ../src/firewall-applet.in:972
 msgid "Connection to FirewallD established."
 msgstr "建立至 FirewallD 的连接。"
 
-#: ../src/firewall-applet.in:974
+#: ../src/firewall-applet.in:984
 msgid "Connection to FirewallD lost."
 msgstr "丢失至 FirewallD 的连接。"
 
-#: ../src/firewall-applet.in:979
+#: ../src/firewall-applet.in:989
 msgid "FirewallD has been reloaded."
 msgstr "FirewallD 已经重载。"
 
-#: ../src/firewall-applet.in:986
+#: ../src/firewall-applet.in:996
 #, c-format
 msgid "Default zone changed to '%s'."
 msgstr "默认区域变更至 '%s'。"
 
-#: ../src/firewall-applet.in:1005
+#: ../src/firewall-applet.in:1015
 msgid "Network traffic is not blocked anymore."
 msgstr "不再阻挡网络传输。"
 
-#: ../src/firewall-applet.in:1031 ../src/firewall-applet.in:1085
+#: ../src/firewall-applet.in:1041 ../src/firewall-applet.in:1095
 msgid "activated"
 msgstr "已启用"
 
-#: ../src/firewall-applet.in:1032 ../src/firewall-applet.in:1086
+#: ../src/firewall-applet.in:1042 ../src/firewall-applet.in:1096
 msgid "deactivated"
 msgstr "已禁用"
 
-#: ../src/firewall-applet.in:1037
+#: ../src/firewall-applet.in:1047
 msgid ""
 "Default zone '{default_zone}' {activated_deactivated} for connection "
 "'{connection}' on interface '{interface}'"
@@ -264,27 +269,27 @@ msgstr ""
 "接口 '{interface}' 上连接 '{connection}'  的默认区 '{default_zone}' "
 "{activated_deactivated}"
 
-#: ../src/firewall-applet.in:1042
+#: ../src/firewall-applet.in:1052
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
 "在接口 '{interface}' {activated_deactivated} 连接 '{connection}' 的区域 '{zone}' "
 
-#: ../src/firewall-applet.in:1047
+#: ../src/firewall-applet.in:1057
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
 msgstr "在接口 '{interface}' {activated_deactivated} 区域 '{zone}' "
 
-#: ../src/firewall-applet.in:1070
+#: ../src/firewall-applet.in:1080
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
 msgstr "在接口 '%s' 启用区域 '%s'"
 
-#: ../src/firewall-applet.in:1087
+#: ../src/firewall-applet.in:1097
 msgid "Zone '{zone}' {activated_deactivated} for source '{source}'"
 msgstr "在来源 '{source}' {activated_deactivated} 区域 '{zone}'"
 
-#: ../src/firewall-applet.in:1111
+#: ../src/firewall-applet.in:1121
 #, c-format
 msgid "Zone '%s' activated for source '%s'"
 msgstr "在来源  '%s' 已启用区域 '%s'"
@@ -301,7 +306,7 @@ msgstr "试图连接至 firewalld，等待中..."
 msgid ""
 "Failed to connect to firewalld. Please make sure that the service has been "
 "started correctly and try again."
-msgstr "不能连接到防火墙守护进程，请检查服务是否被正确的启动然后重试"
+msgstr "连接 firewalld 失败。请确保该服务已正常启动，然后重试。"
 
 #: ../src/firewall-config.in:95
 msgid "Changes applied."
@@ -343,7 +348,7 @@ msgstr "用户名"
 
 #: ../src/firewall-config.in:244
 msgid "User id"
-msgstr ""
+msgstr "用户 ID"
 
 #: ../src/firewall-config.in:284 ../src/firewall-config.in:318
 msgid "Table"
@@ -359,7 +364,7 @@ msgstr "优先级"
 
 #: ../src/firewall-config.in:324 ../src/firewall-config.in:361
 msgid "Args"
-msgstr "参数"
+msgstr "自变量"
 
 #: ../src/firewall-config.in:401 ../src/firewall-config.in:2329
 msgid "Runtime"
@@ -437,11 +442,11 @@ msgstr "审计"
 
 #: ../src/firewall-config.in:934 ../src/firewall-config.glade.h:221
 msgid "Interface"
-msgstr ""
+msgstr "接口"
 
 #: ../src/firewall-config.in:936
 msgid "Comment"
-msgstr ""
+msgstr "注释"
 
 #: ../src/firewall-config.in:955 ../src/firewall-config.glade.h:27
 msgid "Source"
@@ -517,7 +522,7 @@ msgstr "ICMP 阻拦"
 #: ../src/firewall-config.in:3348 ../src/firewall-config.in:3658
 #: ../src/firewall-config.glade.h:288
 msgid "icmp-type"
-msgstr ""
+msgstr "icmp-type"
 
 #: ../src/firewall-config.in:2075 ../src/firewall-config.in:3182
 #: ../src/firewall-config.in:3350 ../src/firewall-config.in:3661
@@ -720,9 +725,8 @@ msgid "IPv6"
 msgstr "IPv6"
 
 #: ../src/firewall-config.in:6389
-#, fuzzy
 msgid "Built-in helper, rename not supported."
-msgstr "内置辅助模块，不支持重命名。"
+msgstr "内置帮助程序，不支持重命名。"
 
 #: ../src/firewall-config.in:6867
 msgid "Built-in icmp, rename not supported."
@@ -745,11 +749,11 @@ msgstr "地址"
 
 #: ../src/firewall-config.glade.h:2
 msgid "Automatic Helpers"
-msgstr ""
+msgstr "自动帮助程序"
 
 #: ../src/firewall-config.glade.h:3
 msgid "Please select the automatic helpers value:"
-msgstr ""
+msgstr "请选择自动帮助程序的值："
 
 #: ../src/firewall-config.glade.h:5
 msgid "Please enter the command line."
@@ -852,11 +856,11 @@ msgstr "转发到另一端口"
 
 #: ../src/firewall-config.glade.h:32
 msgid "Base Helper Settings"
-msgstr ""
+msgstr "基础帮助程序设置"
 
 #: ../src/firewall-config.glade.h:33
 msgid "Please configure base helper settings:"
-msgstr ""
+msgstr "请配置基础帮助程序设置："
 
 #: ../src/firewall-config.glade.h:34
 msgid "Bold entries are mandatory, all others are optional."
@@ -888,11 +892,11 @@ msgstr "模块: "
 
 #: ../src/firewall-config.glade.h:44
 msgid "Helper"
-msgstr ""
+msgstr "帮助程序"
 
 #: ../src/firewall-config.glade.h:45
 msgid "Please select a helper:"
-msgstr ""
+msgstr "请选择帮助程序："
 
 #: ../src/firewall-config.glade.h:46
 msgid "Base ICMP Type Settings"
@@ -971,11 +975,11 @@ msgstr "修改 LogDenied 值。"
 
 #: ../src/firewall-config.glade.h:66
 msgid "Configure Automatic Helper Assigment"
-msgstr ""
+msgstr "配置自动帮助程序指派"
 
 #: ../src/firewall-config.glade.h:67
 msgid "Configure Automatic Helper Assignment setting."
-msgstr ""
+msgstr "配置自动帮助程序指派设置。"
 
 #: ../src/firewall-config.glade.h:68
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
@@ -1017,7 +1021,7 @@ msgstr "ICMP 类型"
 
 #: ../src/firewall-config.glade.h:77
 msgid "Helpers"
-msgstr ""
+msgstr "帮助程序"
 
 #: ../src/firewall-config.glade.h:78
 msgid "Direct Configuration"
@@ -1037,7 +1041,7 @@ msgstr "帮助(_H)"
 
 #: ../src/firewall-config.glade.h:82
 msgid "Change Zone"
-msgstr ""
+msgstr "更改区域"
 
 #: ../src/firewall-config.glade.h:83
 msgid "Change zone of binding"
@@ -1336,9 +1340,8 @@ msgid "Source Port"
 msgstr "源端口"
 
 #: ../src/firewall-config.glade.h:148
-#, fuzzy
 msgid "Netfilter helper modules are needed for some services."
-msgstr "某些服务需要网络过滤辅助模块"
+msgstr "需要对某些服务使用网络过滤帮助程序模块。"
 
 #: ../src/firewall-config.glade.h:149
 msgid "Modules"
@@ -1459,10 +1462,13 @@ msgid ""
 "are using ports that are unrelated to the signaling connection and are "
 "therefore blocked by the firewall without the helper."
 msgstr ""
+"正在指派连接跟踪帮助程序，以确保使用不同信号发送和数据传输流程的协议正常工"
+"作。数据传输使用的是与信号发送连接不相关的端口，因此若没有该帮助程序将会被防"
+"火墙阻挡。"
 
 #: ../src/firewall-config.glade.h:174
 msgid "Define ports or port ranges, which are monitored by the helper."
-msgstr ""
+msgstr "定义帮助程序将监视的端口或端口范围。"
 
 #: ../src/firewall-config.glade.h:175
 msgid ""
@@ -1679,7 +1685,7 @@ msgctxt ""
 "Meaning: Log of denied packets. But this is too long. LogDenied is also the "
 "parameter used in firewalld.conf."
 msgid "Automatic Helpers:"
-msgstr ""
+msgstr "自动帮助程序："
 
 #: ../src/firewall-config.glade.h:219
 msgid "Lockdown:"
@@ -1691,7 +1697,7 @@ msgstr "默认区域:"
 
 #: ../src/firewall-config.glade.h:222
 msgid "Please enter an interface name:"
-msgstr ""
+msgstr "请输入接口名称："
 
 #: ../src/firewall-config.glade.h:223
 msgid "Base IPSet Settings"
@@ -1735,7 +1741,7 @@ msgstr "请选择 ipset："
 
 #: ../src/firewall-config.glade.h:234
 msgid "Please enter an ipset entry:"
-msgstr ""
+msgstr "请输入 ipset 条目："
 
 #: ../src/firewall-config.glade.h:235
 msgid "Log Denied"
@@ -1767,7 +1773,7 @@ msgstr "掩码："
 
 #: ../src/firewall-config.glade.h:242
 msgid "Please select a netfilter conntrack helper:"
-msgstr ""
+msgstr "请选择网络过滤 conntrack 帮助程序："
 
 #: ../src/firewall-config.glade.h:243
 msgid "- Select -"
@@ -1889,7 +1895,7 @@ msgstr "请选择一个服务。"
 
 #: ../src/firewall-config.glade.h:297
 msgid "Please enter a source."
-msgstr ""
+msgstr "请输入来源。"
 
 #: ../src/firewall-config.glade.h:298
 msgid "User ID"
@@ -1922,3 +1928,6 @@ msgstr "默认目标"
 #: ../src/firewall-config.glade.h:306
 msgid "Target:"
 msgstr "目标:"
+
+#~ msgid "Failed to set zone {zone} for connection {connection}"
+#~ msgstr "设置 {connection} 的区 {zone} 失败"
