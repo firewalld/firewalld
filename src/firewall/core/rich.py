@@ -544,7 +544,7 @@ class Rich_Rule(object):
         if self.element is None:
             if self.action is None:
                 raise FirewallError(errors.INVALID_RULE, "no element, no action")
-            if self.source is None and self.destination is None:
+            if self.source is None and self.destination is None and self.priority == 0:
                 raise FirewallError(errors.INVALID_RULE, "no element, no source, no destination")
 
         if type(self.element) not in [ Rich_IcmpBlock,
