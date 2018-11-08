@@ -541,7 +541,8 @@ class Rich_Rule(object):
             raise FirewallError(errors.INVALID_PRIORITY, "'priority' attribute must be between %d and %d." \
                                                          % (self.priority_min, self.priority_max))
 
-        if self.element is None:
+        if self.element is None and \
+           (self.log is None or (self.log is not None and self.priority == 0)):
             if self.action is None:
                 raise FirewallError(errors.INVALID_RULE, "no element, no action")
             if self.source is None and self.destination is None and self.priority == 0:
