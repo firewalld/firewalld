@@ -169,6 +169,21 @@ class nftables(object):
         nft_opts = ["--echo", "--handle"]
         _args = args[:]
 
+        def rule_key_from_rule(rule):
+            rule_key = rule[2:]
+            if rule_key[3] in ["position", "handle", "index"]:
+                # strip "position #"
+                # "insert rule family table chain position <num>"
+                #              ^^ rule_key starts here
+                try:
+                    int(rule_key[4])
+                except Exception:
+                    raise FirewallError(INVALID_RULE, "position without a number")
+                else:
+                    rule_key.pop(3)
+                    rule_key.pop(3)
+            return " ".join(rule_key)
+
         # If we're deleting a table (i.e. build_flush_rules())
         # then check if its exist first to avoid nft throwing an error
         if _args[0] == "delete" and _args[1] == "table":
@@ -181,23 +196,10 @@ class nftables(object):
         rule_key = None
         if _args[0] in ["add", "insert"] and _args[1] == "rule":
             rule_add = True
-            rule_key = _args[2:]
-            if rule_key[3] == "position":
-                # strip "position #"
-                # "insert rule family table chain position <num>"
-                #              ^^ rule_key starts here
-                try:
-                    int(rule_key[4])
-                except Exception:
-                    raise FirewallError(INVALID_RULE, "position without a number")
-                else:
-                    rule_key.pop(3)
-                    rule_key.pop(3)
-            rule_key = " ".join(rule_key)
+            rule_key = rule_key_from_rule(_args)
         elif _args[0] in ["delete"] and _args[1] == "rule":
             rule_add = False
-            rule_key = _args[2:]
-            rule_key = " ".join(rule_key)
+            rule_key = rule_key_from_rule(_args)
             # delete using rule handle
             _args = ["delete", "rule"] + _args[2:5] + \
                     ["handle", self.rule_to_handle[rule_key]]
