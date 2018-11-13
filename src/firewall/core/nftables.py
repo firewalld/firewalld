@@ -1066,50 +1066,29 @@ class nftables(object):
     def build_zone_icmp_block_inversion_rules(self, enable, zone):
         table = "filter"
         rules = []
+        add_del = { True: "add", False: "delete" }[enable]
+
         for chain in ["INPUT", "FORWARD_IN"]:
             _zone = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[chain],
                                                zone=zone)
-            # HACK: nft position is actually a handle, so we need to lookup the
-            # handle of the rule we want to insert this after.
-            #
-            # This must be kept in sync with build_zone_chain_rules()
-            #
-            # WARN: This does not work if we haven't executed the transaction
-            # yet, because we don't have a handle for our rule_key!! As such,
-            # we execute transactions before calling this function.
-            #
-            rule_key = " ".join(["inet", "%s" % TABLE_NAME,
-                                 "%s_%s" % (table, _zone),
-                                 "jump", "%s_%s_allow" % (table, _zone)])
-            rule_handle = self.rule_to_handle[rule_key]
 
             if self._fw.zone.query_icmp_block_inversion(zone):
                 ibi_target = "%%REJECT%%"
             else:
                 ibi_target = "accept"
 
-            if enable:
-                # FIXME: can we get rid of position ?
-                rule = ["add", "rule", "inet", "%s" % TABLE_NAME,
-                        "%s_%s" % (table, _zone), "position", rule_handle]
-            else:
-                rule = ["delete", "rule", "inet", "%s" % TABLE_NAME,
-                        "%s_%s" % (table, _zone)]
-            rule += ["%%ICMP%%", ibi_target]
-            rules.append(rule)
+            # WARN: index must be kept in sync with build_zone_chain_rules()
+            rules.append([add_del, "rule", "inet", "%s" % TABLE_NAME,
+                          "%s_%s" % (table, _zone), "index", "2",
+                          "%%ICMP%%", ibi_target])
 
             if self._fw.zone.query_icmp_block_inversion(zone):
                 if self._fw.get_log_denied() != "off":
-                    if enable:
-                        # FIXME: can we get rid of position ?
-                        rule = ["add", "rule", "inet", "%s" % TABLE_NAME,
-                                "%s_%s" % (table, _zone), "position", rule_handle]
-                    else:
-                        rule = ["delete", "rule", "inet", "%s" % TABLE_NAME,
-                                "%s_%s" % (table, _zone)]
-                    rule += ["%%ICMP%%", "%%LOGTYPE%%", "log", "prefix",
-                             "\"%s_%s_ICMP_BLOCK: \"" % (table, _zone)]
-                    rules.append(rule)
+                    # WARN: index must be kept in sync with build_zone_chain_rules()
+                    rules.append([add_del, "rule", "inet", "%s" % TABLE_NAME,
+                                  "%s_%s" % (table, _zone), "index", "2",
+                                  "%%ICMP%%", "%%LOGTYPE%%", "log", "prefix",
+                                  "\"%s_%s_ICMP_BLOCK: \"" % (table, _zone)])
 
         return rules
 
