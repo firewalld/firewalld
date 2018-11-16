@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # denka <dennis@dennis.se>, 2014
 # denka <dennis@dennis.se>, 2014
@@ -9,20 +9,21 @@
 # Göran Uddeborg <goeran@uddeborg.se>, 2015. #zanata
 # Göran Uddeborg <goeran@uddeborg.se>, 2016. #zanata
 # Göran Uddeborg <goeran@uddeborg.se>, 2017. #zanata
+# Eric Garver <e@erig.me>, 2018. #zanata
 # Göran Uddeborg <goeran@uddeborg.se>, 2018. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-10-11 15:05-0400\n"
-"PO-Revision-Date: 2018-08-15 08:04+0000\n"
-"Last-Translator: Göran Uddeborg <goeran@uddeborg.se>\n"
-"Language-Team: Swedish (http://www.transifex.com/projects/p/firewalld/"
-"language/sv/)\n"
-"Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2018-11-16 08:28+0000\n"
+"Last-Translator: Copied by Zanata <copied-by-zanata@zanata.org>\n"
+"Language-Team: Swedish (http://www.transifex.com/projects/p/firewalld/"
+"language/sv/)\n"
+"Language: sv\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Zanata 4.6.2\n"
 
@@ -209,7 +210,8 @@ msgstr ""
 
 #: ../src/firewall-applet.in:880
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface "
+"'{interface}'"
 msgstr ""
 "Zonen ”{zone}” aktiv för anslutningen ”{connection}” på gränssnittet "
 "”{interface}”"
@@ -302,8 +304,8 @@ msgid ""
 "Failed to connect to firewalld. Please make sure that the service has been "
 "started correctly and try again."
 msgstr ""
-"Misslyckades att ansluta till firewalld.  Se till att tjänsten har kommit "
-"igång som den skall och försök igen."
+"Det gick inte att ansluta till brandväggen. Kontrollera att tjänsten har "
+"startats korrekt och försök igen."
 
 #: ../src/firewall-config.in:95
 msgid "Changes applied."
@@ -345,7 +347,7 @@ msgstr "Användarnamn"
 
 #: ../src/firewall-config.in:244
 msgid "User id"
-msgstr "Användar-id"
+msgstr "Användar-ID"
 
 #: ../src/firewall-config.in:284 ../src/firewall-config.in:318
 msgid "Table"
@@ -443,7 +445,7 @@ msgstr "Gränssnitt"
 
 #: ../src/firewall-config.in:936
 msgid "Comment"
-msgstr "Kommentera"
+msgstr "Kommentar"
 
 #: ../src/firewall-config.in:955 ../src/firewall-config.glade.h:27
 msgid "Source"
@@ -654,8 +656,7 @@ msgstr "ipv6"
 
 #: ../src/firewall-config.in:5014
 msgid ""
-"Forwarding to another system is only useful if the interface is "
-"masqueraded.\n"
+"Forwarding to another system is only useful if the interface is masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 "Vidarebefordran till ett annat system är endast användbart om gränssnittet "
@@ -1050,7 +1051,7 @@ msgstr "_Hjälp"
 
 #: ../src/firewall-config.glade.h:82
 msgid "Change Zone"
-msgstr "Byt zon"
+msgstr "Ändra zon"
 
 #: ../src/firewall-config.glade.h:83
 msgid "Change zone of binding"
@@ -1431,7 +1432,7 @@ msgid ""
 "example IP addresses, port numbers or MAC addresses. "
 msgstr ""
 "En IPMängd kan användas för att skapa vit- eller svartlistningar och kan "
-"lagra till exempel IP-adresser, portnummer eller MAC-adresser."
+"lagra till exempel IP-adresser, portnummer eller MAC-adresser. "
 
 #: ../src/firewall-config.glade.h:155
 msgid "IPSet"
@@ -1486,6 +1487,7 @@ msgid ""
 "IPSets can only be created or deleted in the permanent configuration view."
 msgstr ""
 "IPMängder kan endast skapas eller tas bort i vyn med permanent konfiguration."
+""
 
 #: ../src/firewall-config.glade.h:166
 msgid ""
@@ -1785,7 +1787,7 @@ msgstr "Standardzon:"
 
 #: ../src/firewall-config.glade.h:222
 msgid "Please enter an interface name:"
-msgstr "Ange ett gränssnittsnamn:"
+msgstr "Ange ett namn för gränssnittet:"
 
 #: ../src/firewall-config.glade.h:223
 msgid "Base IPSet Settings"
@@ -1829,7 +1831,7 @@ msgstr "Välj en ipmängd:"
 
 #: ../src/firewall-config.glade.h:234
 msgid "Please enter an ipset entry:"
-msgstr "Ange en ipmängdpost:"
+msgstr "Ange en ipset-post:"
 
 #: ../src/firewall-config.glade.h:235
 msgid "Log Denied"
@@ -1938,8 +1940,8 @@ msgstr "inverterad"
 
 #: ../src/firewall-config.glade.h:266
 msgid ""
-"To enable this Action has to be 'reject' and Family either 'ipv4' or "
-"'ipv6' (not both)."
+"To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
+"(not both)."
 msgstr ""
 "För att aktivera detta måste Åtgärd vara ”avvisa” och Familj antingen ”ipv4” "
 "eller ”ipv6” (inte båda)."

@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # <>, 2006
 # Alain PORTAL <aportal@univ-montp2.fr>, 2007
@@ -28,20 +28,21 @@
 # Eric Garver <e@erig.me>, 2017. #zanata
 # Jean-Baptiste Holcroft <jean-baptiste@holcroft.fr>, 2017. #zanata
 # Laurent Bigonville <bigon@debian.org>, 2017. #zanata
+# Eric Garver <e@erig.me>, 2018. #zanata
 # Jean-Baptiste Holcroft <jean-baptiste@holcroft.fr>, 2018. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-10-11 15:05-0400\n"
-"PO-Revision-Date: 2018-10-02 09:02+0000\n"
-"Last-Translator: Jean-Baptiste Holcroft <jean-baptiste@holcroft.fr>\n"
-"Language-Team: French (http://www.transifex.com/projects/p/firewalld/"
-"language/fr/)\n"
-"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2018-11-16 08:23+0000\n"
+"Last-Translator: Copied by Zanata <copied-by-zanata@zanata.org>\n"
+"Language-Team: French (http://www.transifex.com/projects/p/firewalld/"
+"language/fr/)\n"
+"Language: fr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Zanata 4.6.2\n"
 
@@ -94,7 +95,8 @@ msgstr "Configurer des zones à protection active/inactive"
 
 #: ../src/firewall-applet.in:220
 msgid "Here you can select the zones used for Shields Up and Shields Down."
-msgstr "Vous pouvez choisir ici les zones avec protections active ou inactive."
+msgstr ""
+"Vous pouvez choisir ici les zones avec protections active ou inactive."
 
 #: ../src/firewall-applet.in:226
 msgid ""
@@ -227,7 +229,8 @@ msgstr ""
 
 #: ../src/firewall-applet.in:880
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface "
+"'{interface}'"
 msgstr ""
 "Zone « {zone} » active pour la connexion  « {connection} » sur l'interface "
 "« {interface} »"
@@ -321,8 +324,8 @@ msgid ""
 "Failed to connect to firewalld. Please make sure that the service has been "
 "started correctly and try again."
 msgstr ""
-"N’a pas pu se connecter à firewalld. Veuillez vérifier que le service a été "
-"correctement démarré et réessayez."
+"Impossible de se connecter à FirewallD. Vérifiez que le service a été "
+"démarré correctement, puis réessayez."
 
 #: ../src/firewall-config.in:95
 msgid "Changes applied."
@@ -380,7 +383,7 @@ msgstr "Priorité"
 
 #: ../src/firewall-config.in:324 ../src/firewall-config.in:361
 msgid "Args"
-msgstr "Paramètres"
+msgstr "Arguments"
 
 #: ../src/firewall-config.in:401 ../src/firewall-config.in:2329
 msgid "Runtime"
@@ -673,8 +676,7 @@ msgstr "ipv6"
 
 #: ../src/firewall-config.in:5014
 msgid ""
-"Forwarding to another system is only useful if the interface is "
-"masqueraded.\n"
+"Forwarding to another system is only useful if the interface is masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 "Rediriger vers un autre système est utile seulement si l'interface est "
@@ -687,7 +689,8 @@ msgstr "Service intégré, le renommage n'est pas pris en charge."
 
 #: ../src/firewall-config.in:5585
 msgid "Please enter an ipv4 address with the form address[/mask]."
-msgstr "Veuillez saisir une adresse ipv4 avec l'adresse du formulaire [/mask]."
+msgstr ""
+"Veuillez saisir une adresse ipv4 avec l'adresse du formulaire [/mask]."
 
 #: ../src/firewall-config.in:5586
 msgid "The mask can be a network mask or a number."
@@ -695,7 +698,8 @@ msgstr "Le masque peut être un masque de réseau ou un numéro"
 
 #: ../src/firewall-config.in:5588
 msgid "Please enter an ipv6 address with the form address[/mask]."
-msgstr "Veuillez saisir une adresse ipv6 avec l'adresse du formulaire [/mask]."
+msgstr ""
+"Veuillez saisir une adresse ipv6 avec l'adresse du formulaire [/mask]."
 
 #: ../src/firewall-config.in:5589
 msgid "The mask is a number."
@@ -1075,7 +1079,7 @@ msgstr "_Aide"
 
 #: ../src/firewall-config.glade.h:82
 msgid "Change Zone"
-msgstr "Zone de liaison"
+msgstr "Modifier la zone"
 
 #: ../src/firewall-config.glade.h:83
 msgid "Change zone of binding"
@@ -1823,7 +1827,7 @@ msgstr "Zone par défaut :"
 
 #: ../src/firewall-config.glade.h:222
 msgid "Please enter an interface name:"
-msgstr "Veuillez saisir un nom d’interface :"
+msgstr "Veuillez saisir un nom d'interface :"
 
 #: ../src/firewall-config.glade.h:223
 msgid "Base IPSet Settings"
@@ -1980,8 +1984,8 @@ msgstr "inversé"
 
 #: ../src/firewall-config.glade.h:266
 msgid ""
-"To enable this Action has to be 'reject' and Family either 'ipv4' or "
-"'ipv6' (not both)."
+"To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
+"(not both)."
 msgstr ""
 "Pour activer ceci, Action doit être paramétré sur « reject » et Famille soit "
 "sur « Ipv4 » ou « Ipv6 » (pas les deux)."

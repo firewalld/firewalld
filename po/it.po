@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Andrea La Fauci <andrea.lafauci@weproudlymanage.com>, 2010
 # antonio montagnani <antonio.montagnani@alice.it>, 2013
@@ -30,20 +30,21 @@
 # Elena Metelli <byruit@gmail.com>, 2017. #zanata
 # Thomas Woerner <twoerner@redhat.com>, 2017. #zanata
 # Elena Metelli <byruit@gmail.com>, 2018. #zanata
+# Eric Garver <e@erig.me>, 2018. #zanata
 # Milo Casagrande <milo@milo.name>, 2018. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-10-11 15:05-0400\n"
-"PO-Revision-Date: 2018-06-07 09:00+0000\n"
-"Last-Translator: Elena Metelli <byruit@gmail.com>\n"
-"Language-Team: Italian (http://www.transifex.com/projects/p/firewalld/"
-"language/it/)\n"
-"Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2018-11-16 08:24+0000\n"
+"Last-Translator: Copied by Zanata <copied-by-zanata@zanata.org>\n"
+"Language-Team: Italian (http://www.transifex.com/projects/p/firewalld/"
+"language/it/)\n"
+"Language: it\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Zanata 4.6.2\n"
 
@@ -84,6 +85,7 @@ msgstr "Seleziona la zone per la connessione '%s'"
 #: ../src/firewall-applet.in:176 ../src/firewall-config.in:3910
 msgid "Failed to set zone {zone} for connection {connection_name}"
 msgstr ""
+"Impossibile impostare la zona {zone} per la connessione {connection_name}"
 
 #: ../src/firewall-applet.in:190
 #, c-format
@@ -104,9 +106,9 @@ msgid ""
 "This feature is useful for people using the default zones mostly. For users, "
 "that are changing zones of connections, it might be of limited use."
 msgstr ""
-"Questa funzione è utile per coloro che usano soprattutto le zone "
-"predefinite. Per gli utenti che modificano le zone delle connessioni, "
-"potrebbe essere limitata."
+"Questa funzione è utile per coloro che usano soprattutto le zone predefinite."
+" Per gli utenti che modificano le zone delle connessioni, potrebbe essere "
+"limitata."
 
 #: ../src/firewall-applet.in:235
 msgid "Shields Up Zone:"
@@ -185,7 +187,7 @@ msgstr "Autorizzazione fallita."
 
 #: ../src/firewall-applet.in:592 ../src/firewall-config.in:2282
 msgid "Invalid name"
-msgstr "Argomento %s non valido"
+msgstr "Nome non valido"
 
 #: ../src/firewall-applet.in:596 ../src/firewall-config.in:2286
 msgid "Name already exists"
@@ -230,7 +232,8 @@ msgstr ""
 
 #: ../src/firewall-applet.in:880
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface "
+"'{interface}'"
 msgstr ""
 "Zona '{zone}' attiva per la connessione '{connection}' sull'interfaccia "
 "'{interface}'"
@@ -323,7 +326,7 @@ msgid ""
 "Failed to connect to firewalld. Please make sure that the service has been "
 "started correctly and try again."
 msgstr ""
-"Impossibile connettersi a firewalld. Assicurarsi che il servizio sia stato "
+"Impossibile connettersi al firewall. Verificare che il servizio sia stato "
 "avviato correttamente e riprovare."
 
 #: ../src/firewall-config.in:95
@@ -366,7 +369,7 @@ msgstr "Nome utente"
 
 #: ../src/firewall-config.in:244
 msgid "User id"
-msgstr "User id"
+msgstr "ID utente"
 
 #: ../src/firewall-config.in:284 ../src/firewall-config.in:318
 msgid "Table"
@@ -464,7 +467,7 @@ msgstr "Interfaccia"
 
 #: ../src/firewall-config.in:936
 msgid "Comment"
-msgstr ""
+msgstr "Commento"
 
 #: ../src/firewall-config.in:955 ../src/firewall-config.glade.h:27
 msgid "Source"
@@ -540,7 +543,7 @@ msgstr "blocco-icmp"
 #: ../src/firewall-config.in:3348 ../src/firewall-config.in:3658
 #: ../src/firewall-config.glade.h:288
 msgid "icmp-type"
-msgstr ""
+msgstr "icmp-type"
 
 #: ../src/firewall-config.in:2075 ../src/firewall-config.in:3182
 #: ../src/firewall-config.in:3350 ../src/firewall-config.in:3661
@@ -675,8 +678,7 @@ msgstr "ipv6"
 
 #: ../src/firewall-config.in:5014
 msgid ""
-"Forwarding to another system is only useful if the interface is "
-"masqueraded.\n"
+"Forwarding to another system is only useful if the interface is masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 "L'inoltro ad un altro sistema è utile solo se l'interfaccia è nattata.\n"
@@ -893,7 +895,8 @@ msgstr "Configurare le impostazioni di base per gli helper:"
 
 #: ../src/firewall-config.glade.h:34
 msgid "Bold entries are mandatory, all others are optional."
-msgstr "Le voci in grassetto sono obbligatorie, tutte le altre sono opzionali."
+msgstr ""
+"Le voci in grassetto sono obbligatorie, tutte le altre sono opzionali."
 
 #: ../src/firewall-config.glade.h:35
 msgid "Name:"
@@ -1078,7 +1081,7 @@ msgstr "Aiu_to"
 
 #: ../src/firewall-config.glade.h:82
 msgid "Change Zone"
-msgstr ""
+msgstr "Modifica zona"
 
 #: ../src/firewall-config.glade.h:83
 msgid "Change zone of binding"
@@ -1501,8 +1504,8 @@ msgid ""
 "This IPSet uses the timeout option, therefore no entries are visible here. "
 "The entries should be taken care directly with the ipset command."
 msgstr ""
-"Questo IPSet usa l'opzione timeout, perciò nessuna delle voci è visibile "
-"qui. Le voci dovrebbero essere prese in considerazione direttamente con il "
+"Questo IPSet usa l'opzione timeout, perciò nessuna delle voci è visibile qui."
+" Le voci dovrebbero essere prese in considerazione direttamente con il "
 "comando ipset."
 
 #: ../src/firewall-config.glade.h:162
@@ -1553,27 +1556,27 @@ msgid ""
 "ICMP Types can only be changed in the permanent configuration view. The "
 "runtime configuration of ICMP Types is fixed."
 msgstr ""
-"E' possibile cambiare i tipi ICMP solo nella vista configurazione "
-"permanente. La configurazione runtime dei tipi ICMP è fissa."
+"E' possibile cambiare i tipi ICMP solo nella vista configurazione permanente."
+" La configurazione runtime dei tipi ICMP è fissa."
 
 #: ../src/firewall-config.glade.h:173
-#, fuzzy
 msgid ""
 "A connection tracking helper is assisting to make protocols work that are "
 "using different flows for signaling and data transfers. The data transfers "
 "are using ports that are unrelated to the signaling connection and are "
 "therefore blocked by the firewall without the helper."
 msgstr ""
-"Un assistente per il monitoraggio della connessione aiuta a far funzionare "
-"protocolli che utilizzano diversi flussi di segnalazione e trasferimento dei "
-"dati. I trasferimenti di dati utilizzano porte che sono estranee alla "
-"connessione di segnalazione e sono quindi bloccate dal firewall senza "
-"l'assistente."
+"È disponibile un helper di controllo per la connessione che consente il "
+"funzionamento di protocolli che utilizzano flussi diversi per segnalazione e "
+"trasferimento dati. Per il trasferimento di dati vengono utilizzate porte "
+"diverse da quelle utilizzate per segnalare la connessione e bloccate dal "
+"firewall senza helper."
 
 #: ../src/firewall-config.glade.h:174
 msgid "Define ports or port ranges, which are monitored by the helper."
 msgstr ""
 "Definire le porte o intervalli di porte, che sono monitorati dall'assistente."
+""
 
 #: ../src/firewall-config.glade.h:175
 msgid ""
@@ -1823,7 +1826,7 @@ msgstr "Zona Predefinita:"
 
 #: ../src/firewall-config.glade.h:222
 msgid "Please enter an interface name:"
-msgstr ""
+msgstr "Immettere un nome per l'interfaccia:"
 
 #: ../src/firewall-config.glade.h:223
 msgid "Base IPSet Settings"
@@ -1867,7 +1870,7 @@ msgstr "Per favore selezionare un ipset:"
 
 #: ../src/firewall-config.glade.h:234
 msgid "Please enter an ipset entry:"
-msgstr ""
+msgstr "Immettere una voce IPSet:"
 
 #: ../src/firewall-config.glade.h:235
 msgid "Log Denied"
@@ -1901,7 +1904,7 @@ msgstr "Maschera:"
 
 #: ../src/firewall-config.glade.h:242
 msgid "Please select a netfilter conntrack helper:"
-msgstr ""
+msgstr "Immettere un helper per il controllo della connessione di Netfiler:"
 
 #: ../src/firewall-config.glade.h:243
 msgid "- Select -"
@@ -1979,8 +1982,8 @@ msgstr "invertito"
 
 #: ../src/firewall-config.glade.h:266
 msgid ""
-"To enable this Action has to be 'reject' and Family either 'ipv4' or "
-"'ipv6' (not both)."
+"To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
+"(not both)."
 msgstr ""
 "Per abilitarlo, Action deve essere 'reject' e Family 'ipv4' o 'ipv6' (non "
 "entrambi)."
@@ -2027,7 +2030,7 @@ msgstr "Per favore selezionare un servizio."
 
 #: ../src/firewall-config.glade.h:297
 msgid "Please enter a source."
-msgstr ""
+msgstr "Immettere una sorgente."
 
 #: ../src/firewall-config.glade.h:298
 msgid "User ID"

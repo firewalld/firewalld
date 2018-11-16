@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Andreas Müller <redhat@andreas-mueller.com>, 2003
 # Bernd Bartmann <Bernd.Bartmann@sohanet.de>, 2004
@@ -35,19 +35,20 @@
 # Robert Scheck <robert@fedoraproject.org>, 2017. #zanata
 # Roman Spirgi <bigant@fedoraproject.org>, 2017. #zanata
 # Eric Garver <e@erig.me>, 2018. #zanata
+# Fabian Affolter <fab@fedoraproject.org>, 2018. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-10-11 15:05-0400\n"
-"PO-Revision-Date: 2018-03-29 10:05+0000\n"
-"Last-Translator: Eric Garver <e@erig.me>\n"
-"Language-Team: German (http://www.transifex.com/projects/p/firewalld/"
-"language/de/)\n"
-"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2018-11-16 08:22+0000\n"
+"Last-Translator: Copied by Zanata <copied-by-zanata@zanata.org>\n"
+"Language-Team: German (http://www.transifex.com/projects/p/firewalld/"
+"language/de/)\n"
+"Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Zanata 4.6.2\n"
 
@@ -87,7 +88,7 @@ msgstr " Zone für Verbindung »%s« auswählen"
 
 #: ../src/firewall-applet.in:176 ../src/firewall-config.in:3910
 msgid "Failed to set zone {zone} for connection {connection_name}"
-msgstr ""
+msgstr "Fehler beim Angeben der Zone {zone} für Verbindung {connection_name}"
 
 #: ../src/firewall-applet.in:190
 #, c-format
@@ -110,7 +111,7 @@ msgid ""
 "that are changing zones of connections, it might be of limited use."
 msgstr ""
 "Diese Funktion ist besonders nützlich für Benutzer, die hauptsächlich die "
-"Standard-Zonen verwenden. Für Benutzer, die Verbindungs-Zonen ändern, ist es "
+"Standardzonen verwenden. Für Benutzer, die Verbindungs-Zonen ändern, ist es "
 "möglicherweise nur bedingt nützlich."
 
 #: ../src/firewall-applet.in:235
@@ -235,7 +236,8 @@ msgstr ""
 
 #: ../src/firewall-applet.in:880
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface "
+"'{interface}'"
 msgstr ""
 "'{zone}'-Zone aktiv für '{connection}'-Verbindung auf '{interface}'-"
 "Schnittstelle"
@@ -267,7 +269,7 @@ msgstr "FirewallD neu geladen."
 #: ../src/firewall-applet.in:986
 #, c-format
 msgid "Default zone changed to '%s'."
-msgstr "Standard-Zone geändert auf »%s«."
+msgstr "Standardzone geändert auf »%s«."
 
 #: ../src/firewall-applet.in:1005
 msgid "Network traffic is not blocked anymore."
@@ -328,6 +330,8 @@ msgid ""
 "Failed to connect to firewalld. Please make sure that the service has been "
 "started correctly and try again."
 msgstr ""
+"Verbindung mit Firewall fehlgeschlagen. Stellen Sie sicher, dass der Dienst "
+"korrekt gestartet wurde, und versuchen Sie es erneut."
 
 #: ../src/firewall-config.in:95
 msgid "Changes applied."
@@ -369,23 +373,23 @@ msgstr "Benutzername"
 
 #: ../src/firewall-config.in:244
 msgid "User id"
-msgstr ""
+msgstr "Benutzer-ID"
 
 #: ../src/firewall-config.in:284 ../src/firewall-config.in:318
 msgid "Table"
-msgstr ""
+msgstr "Tabelle"
 
 #: ../src/firewall-config.in:286 ../src/firewall-config.in:320
 msgid "Chain"
-msgstr ""
+msgstr "Kette"
 
 #: ../src/firewall-config.in:322
 msgid "Priority"
-msgstr ""
+msgstr "Priorität"
 
 #: ../src/firewall-config.in:324 ../src/firewall-config.in:361
 msgid "Args"
-msgstr ""
+msgstr "Argumente"
 
 #: ../src/firewall-config.in:401 ../src/firewall-config.in:2329
 msgid "Runtime"
@@ -467,7 +471,7 @@ msgstr "Schnittstelle"
 
 #: ../src/firewall-config.in:936
 msgid "Comment"
-msgstr ""
+msgstr "Kommentar"
 
 #: ../src/firewall-config.in:955 ../src/firewall-config.glade.h:27
 msgid "Source"
@@ -678,8 +682,7 @@ msgstr "ipv6"
 
 #: ../src/firewall-config.in:5014
 msgid ""
-"Forwarding to another system is only useful if the interface is "
-"masqueraded.\n"
+"Forwarding to another system is only useful if the interface is masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 "Die Weiterleitung an ein anderes System ist nur dann sinnvoll, wenn die "
@@ -935,7 +938,8 @@ msgstr "Grundlegende ICMP Typ-Einstellungen"
 
 #: ../src/firewall-config.glade.h:47
 msgid "Please configure base ICMP type settings:"
-msgstr "Bitte konfigurieren Sie die grundlegenden Einstellungen des ICMP-Typs:"
+msgstr ""
+"Bitte konfigurieren Sie die grundlegenden Einstellungen des ICMP-Typs:"
 
 #: ../src/firewall-config.glade.h:48
 msgid "ICMP Type"
@@ -1065,7 +1069,7 @@ msgstr "Helfer"
 
 #: ../src/firewall-config.glade.h:78
 msgid "Direct Configuration"
-msgstr "Direkte Konfiguration:"
+msgstr "Direkte Konfiguration"
 
 #: ../src/firewall-config.glade.h:79
 msgid "Lockdown Whitelist"
@@ -1081,7 +1085,7 @@ msgstr "_Hilfe"
 
 #: ../src/firewall-config.glade.h:82
 msgid "Change Zone"
-msgstr ""
+msgstr "Zone ändern"
 
 #: ../src/firewall-config.glade.h:83
 msgid "Change zone of binding"
@@ -1151,9 +1155,9 @@ msgid ""
 "are accessible from all hosts and networks that can reach the machine from "
 "connections, interfaces and sources bound to this zone."
 msgstr ""
-"Hier können Sie definieren, welche Dienste in der Zone vertrauenswürdig "
-"sind. Vertrauenswürdige Dienste sind zugänglich von allen Hosts und "
-"Netzwerken, die den Rechner über mit dieser Zone verbundenen Verbindungen, "
+"Hier können Sie definieren, welche Dienste in der Zone vertrauenswürdig sind."
+" Vertrauenswürdige Dienste sind zugänglich von allen Hosts und Netzwerken, "
+"die den Rechner über mit dieser Zone verbundenen Verbindungen, "
 "Schnittstellen und Quellen erreichen können."
 
 #: ../src/firewall-config.glade.h:95
@@ -1702,9 +1706,9 @@ msgid ""
 "contain commands, contexts, users and user ids."
 msgstr ""
 "Die Sperroption ist eine einfache Version von Benutzer- und "
-"Anwendungsrichtlinien für firewalld. Sie begrenzt Änderungen an der "
-"Firewall. Die Sperr-Positivliste kann Befehle, Kontexte, Benutzer und "
-"Benutzer-IDs enthalten."
+"Anwendungsrichtlinien für firewalld. Sie begrenzt Änderungen an der Firewall."
+" Die Sperr-Positivliste kann Befehle, Kontexte, Benutzer und Benutzer-IDs "
+"enthalten."
 
 #: ../src/firewall-config.glade.h:195
 msgid ""
@@ -1801,7 +1805,7 @@ msgstr "Benutzerkennungen"
 
 #: ../src/firewall-config.glade.h:215
 msgid "Current default zone of the system."
-msgstr "Aktuelle Standard-Zone des Systems"
+msgstr "Aktuelle Standardzone des Systems"
 
 #: ../src/firewall-config.glade.h:216
 msgctxt ""
@@ -1827,11 +1831,11 @@ msgstr "Sperrung:"
 
 #: ../src/firewall-config.glade.h:220
 msgid "Default Zone:"
-msgstr "Standard-Zone:"
+msgstr "Standardzone:"
 
 #: ../src/firewall-config.glade.h:222
 msgid "Please enter an interface name:"
-msgstr ""
+msgstr "Geben Sie einen Schnittstellennamen ein:"
 
 #: ../src/firewall-config.glade.h:223
 msgid "Base IPSet Settings"
@@ -1875,7 +1879,7 @@ msgstr "Bitte wählen Sie ein IPSet:"
 
 #: ../src/firewall-config.glade.h:234
 msgid "Please enter an ipset entry:"
-msgstr ""
+msgstr "Geben Sie einen Ipset-Eintrag ein:"
 
 #: ../src/firewall-config.glade.h:235
 msgid "Log Denied"
@@ -1986,8 +1990,8 @@ msgstr "invertiert"
 
 #: ../src/firewall-config.glade.h:266
 msgid ""
-"To enable this Action has to be 'reject' and Family either 'ipv4' or "
-"'ipv6' (not both)."
+"To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
+"(not both)."
 msgstr ""
 "Zum Aktivieren muss diese Aktion 'reject' sein und die Familie muss entweder "
 "'ipv4' oder 'ipv6' sein (nicht beides)."
@@ -2034,7 +2038,7 @@ msgstr "Bitte einen Dienst auswählen."
 
 #: ../src/firewall-config.glade.h:297
 msgid "Please enter a source."
-msgstr ""
+msgstr "Geben Sie eine Quelle ein."
 
 #: ../src/firewall-config.glade.h:298
 msgid "User ID"

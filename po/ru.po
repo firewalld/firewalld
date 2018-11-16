@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Alexey Kostyuk <unitoff@gmail.com>, 2009
 # Andrew Martynov <andrewm@inventa.ru>, 2004-2006,2008
@@ -16,22 +16,23 @@
 # yuliya <ypoyarko@redhat.com>, 2016. #zanata
 # Igor Gorbounov <igor.gorbounov@gmail.com>, 2017. #zanata
 # Thomas Woerner <twoerner@redhat.com>, 2017. #zanata
+# Eric Garver <e@erig.me>, 2018. #zanata
 # Igor Gorbounov <igor.gorbounov@gmail.com>, 2018. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-10-11 15:05-0400\n"
-"PO-Revision-Date: 2018-03-05 03:27+0000\n"
-"Last-Translator: Igor Gorbounov <igor.gorbounov@gmail.com>\n"
-"Language-Team: Russian (http://www.transifex.com/projects/p/firewalld/"
-"language/ru/)\n"
-"Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"PO-Revision-Date: 2018-11-16 08:27+0000\n"
+"Last-Translator: Copied by Zanata <copied-by-zanata@zanata.org>\n"
+"Language-Team: Russian (http://www.transifex.com/projects/p/firewalld/"
+"language/ru/)\n"
+"Language: ru\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Zanata 4.6.2\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:416
@@ -70,7 +71,7 @@ msgstr "Выберите зону для соединения «%s»"
 
 #: ../src/firewall-applet.in:176 ../src/firewall-config.in:3910
 msgid "Failed to set zone {zone} for connection {connection_name}"
-msgstr ""
+msgstr "Не удалось установить зону {zone} для соединения {connection_name}"
 
 #: ../src/firewall-applet.in:190
 #, c-format
@@ -217,7 +218,8 @@ msgstr ""
 
 #: ../src/firewall-applet.in:880
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface "
+"'{interface}'"
 msgstr ""
 "Зона '{zone}' активна для соединения '{connection}' на интерфейсе "
 "'{interface}'"
@@ -290,7 +292,7 @@ msgstr "Зона «%s» активирована на интерфейсе «%s�
 
 #: ../src/firewall-applet.in:1087
 msgid "Zone '{zone}' {activated_deactivated} for source '{source}'"
-msgstr "Зона '{zone}' {activated_deactivated} для источника '{source}' "
+msgstr "Зона '{zone}' {activated_deactivated} для источника '{source}'"
 
 #: ../src/firewall-applet.in:1111
 #, c-format
@@ -310,6 +312,8 @@ msgid ""
 "Failed to connect to firewalld. Please make sure that the service has been "
 "started correctly and try again."
 msgstr ""
+"Не удалось подключиться к брандмауэру. Проверьте, запущена ли служба, и "
+"повторите попытку."
 
 #: ../src/firewall-config.in:95
 msgid "Changes applied."
@@ -351,23 +355,23 @@ msgstr "Пользователь"
 
 #: ../src/firewall-config.in:244
 msgid "User id"
-msgstr ""
+msgstr "ИД пользователя"
 
 #: ../src/firewall-config.in:284 ../src/firewall-config.in:318
 msgid "Table"
-msgstr ""
+msgstr "Таблица"
 
 #: ../src/firewall-config.in:286 ../src/firewall-config.in:320
 msgid "Chain"
-msgstr ""
+msgstr "Цепочка"
 
 #: ../src/firewall-config.in:322
 msgid "Priority"
-msgstr ""
+msgstr "Приоритет"
 
 #: ../src/firewall-config.in:324 ../src/firewall-config.in:361
 msgid "Args"
-msgstr ""
+msgstr "Аргументы"
 
 #: ../src/firewall-config.in:401 ../src/firewall-config.in:2329
 msgid "Runtime"
@@ -449,7 +453,7 @@ msgstr "Интерфейс"
 
 #: ../src/firewall-config.in:936
 msgid "Comment"
-msgstr ""
+msgstr "Комментарий"
 
 #: ../src/firewall-config.in:955 ../src/firewall-config.glade.h:27
 msgid "Source"
@@ -525,7 +529,7 @@ msgstr "блокирование icmp"
 #: ../src/firewall-config.in:3348 ../src/firewall-config.in:3658
 #: ../src/firewall-config.glade.h:288
 msgid "icmp-type"
-msgstr ""
+msgstr "Тип ICMP"
 
 #: ../src/firewall-config.in:2075 ../src/firewall-config.in:3182
 #: ../src/firewall-config.in:3350 ../src/firewall-config.in:3661
@@ -660,8 +664,7 @@ msgstr "ipv6"
 
 #: ../src/firewall-config.in:5014
 msgid ""
-"Forwarding to another system is only useful if the interface is "
-"masqueraded.\n"
+"Forwarding to another system is only useful if the interface is masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 "Переадресация в другую систему поможет только при маскировании интерфейса.\n"
@@ -1057,7 +1060,7 @@ msgstr "_Справка"
 
 #: ../src/firewall-config.glade.h:82
 msgid "Change Zone"
-msgstr ""
+msgstr "Изменить зону"
 
 #: ../src/firewall-config.glade.h:83
 msgid "Change zone of binding"
@@ -1230,7 +1233,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:113
 msgid "Add Forward Port"
-msgstr "Добавить перенаправляемый порт "
+msgstr "Добавить перенаправляемый порт"
 
 #: ../src/firewall-config.glade.h:114
 msgid "Edit Forward Port"
@@ -1433,7 +1436,7 @@ msgid ""
 "example IP addresses, port numbers or MAC addresses. "
 msgstr ""
 "IPSet позволяет настроить «белые» и «черные» списки, а также сохранить IP, "
-"MAC-адреса, а также номера портов."
+"MAC-адреса, а также номера портов. "
 
 #: ../src/firewall-config.glade.h:155
 msgid "IPSet"
@@ -1538,7 +1541,8 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:174
 msgid "Define ports or port ranges, which are monitored by the helper."
-msgstr "Добавьте порты или диапазоны портов, контролируемые модулем поддержки."
+msgstr ""
+"Добавьте порты или диапазоны портов, контролируемые модулем поддержки."
 
 #: ../src/firewall-config.glade.h:175
 msgid ""
@@ -1781,7 +1785,7 @@ msgstr "Зона по умолчанию:"
 
 #: ../src/firewall-config.glade.h:222
 msgid "Please enter an interface name:"
-msgstr ""
+msgstr "Укажите название интерфейса:"
 
 #: ../src/firewall-config.glade.h:223
 msgid "Base IPSet Settings"
@@ -1825,7 +1829,7 @@ msgstr "Выберите ipset:"
 
 #: ../src/firewall-config.glade.h:234
 msgid "Please enter an ipset entry:"
-msgstr ""
+msgstr "Укажите запись IPSet:"
 
 #: ../src/firewall-config.glade.h:235
 msgid "Log Denied"
@@ -1935,8 +1939,8 @@ msgstr "инверсия"
 
 #: ../src/firewall-config.glade.h:266
 msgid ""
-"To enable this Action has to be 'reject' and Family either 'ipv4' or "
-"'ipv6' (not both)."
+"To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
+"(not both)."
 msgstr ""
 "Чтобы разрешить, поле «Действие» должно иметь значение «отказать», а "
 "«Семейство протоколов» —  «ipv4» или «ipv6»."
@@ -1983,7 +1987,7 @@ msgstr "Выберите службу."
 
 #: ../src/firewall-config.glade.h:297
 msgid "Please enter a source."
-msgstr ""
+msgstr "Укажите источник."
 
 #: ../src/firewall-config.glade.h:298
 msgid "User ID"

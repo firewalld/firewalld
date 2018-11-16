@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # beckerde <domingobecker@gmail.com>, 2013
 # Claudio Rodrigo Pereyra Diaz <elsupergomez@gmail.com>, 2012-2013
@@ -25,20 +25,21 @@
 # Máximo Castañeda Riloba <mcrcctm@gmail.com>, 2016. #zanata
 # William  Moreno Reyes <williamjmorenor@gmail.com>, 2016. #zanata
 # Máximo Castañeda Riloba <mcrcctm@gmail.com>, 2017. #zanata
+# Eric Garver <e@erig.me>, 2018. #zanata
 # Máximo Castañeda Riloba <mcrcctm@gmail.com>, 2018. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-10-11 15:05-0400\n"
-"PO-Revision-Date: 2018-08-21 09:57+0000\n"
-"Last-Translator: Máximo Castañeda Riloba <mcrcctm@gmail.com>\n"
-"Language-Team: Spanish (http://www.transifex.com/projects/p/firewalld/"
-"language/es/)\n"
-"Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2018-11-16 08:22+0000\n"
+"Last-Translator: Copied by Zanata <copied-by-zanata@zanata.org>\n"
+"Language-Team: Spanish (http://www.transifex.com/projects/p/firewalld/"
+"language/es/)\n"
+"Language: es\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Zanata 4.6.2\n"
 
@@ -225,7 +226,8 @@ msgstr ""
 
 #: ../src/firewall-applet.in:880
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface "
+"'{interface}'"
 msgstr ""
 "Zona '{zone}' activa para conexión '{connection}' en interfaz '{interface}'"
 
@@ -317,8 +319,8 @@ msgid ""
 "Failed to connect to firewalld. Please make sure that the service has been "
 "started correctly and try again."
 msgstr ""
-"No se pudo conectar con firewalld. Asegúrese de que el servicio se ha "
-"iniciado y vuelva a intentarlo."
+"Error al conectar con firewalld. Asegúrese de que el servicio se ha iniciado "
+"correctamente y vuelva a intentarlo."
 
 #: ../src/firewall-config.in:95
 msgid "Changes applied."
@@ -360,7 +362,7 @@ msgstr "Nombre de usuario"
 
 #: ../src/firewall-config.in:244
 msgid "User id"
-msgstr "Id de usuario"
+msgstr "ID de usuario"
 
 #: ../src/firewall-config.in:284 ../src/firewall-config.in:318
 msgid "Table"
@@ -593,7 +595,7 @@ msgstr "Zona '%s': El tipo ICMP '%s' no está disponible."
 
 #: ../src/firewall-config.in:3002
 msgid "Built-in zone, rename not supported."
-msgstr " Zona incorporada, no se puede renombrar."
+msgstr "Zona incorporada, no se puede renombrar."
 
 #: ../src/firewall-config.in:3116 ../src/firewall-config.in:3614
 #: ../src/firewall-config.glade.h:270
@@ -669,8 +671,7 @@ msgstr "ipv6"
 
 #: ../src/firewall-config.in:5014
 msgid ""
-"Forwarding to another system is only useful if the interface is "
-"masqueraded.\n"
+"Forwarding to another system is only useful if the interface is masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 "El reenvío a otro sistema sólo es útil si la interfaz es enmascarada.\n"
@@ -1179,6 +1180,7 @@ msgstr "Puertos"
 msgid "Add protocols, which need to be accessible for all hosts or networks."
 msgstr ""
 "Añadir protocolos que deben ser accesibles para todos los servidores o redes."
+""
 
 #: ../src/firewall-config.glade.h:102
 msgid "Add Protocol"
@@ -1442,8 +1444,8 @@ msgid ""
 "Services can only be changed in the permanent configuration view. The "
 "runtime configuration of services is fixed."
 msgstr ""
-"Los servicios sólo se pueden cambiar en la vista de configuración "
-"permanente. La configuración de tiempo de ejecución de los servicios es fija."
+"Los servicios sólo se pueden cambiar en la vista de configuración permanente."
+" La configuración de tiempo de ejecución de los servicios es fija."
 
 #: ../src/firewall-config.glade.h:154
 msgid ""
@@ -1451,7 +1453,7 @@ msgid ""
 "example IP addresses, port numbers or MAC addresses. "
 msgstr ""
 "Se puede usar un IPSet para crear listas blancas o negras, y puede contener "
-"direcciones IP o MAC, o números puertos."
+"direcciones IP o MAC, o números puertos. "
 
 #: ../src/firewall-config.glade.h:155
 msgid "IPSet"
@@ -1553,10 +1555,10 @@ msgid ""
 "therefore blocked by the firewall without the helper."
 msgstr ""
 "Hay un agente de seguimiento de conexiones ayudando con los protocolos que "
-"usan diferentes flujos para la señalización y para la transferencia de "
-"datos. Los datos se envían por puertos que no están relacionados con la "
-"conexión de control y el cortafuegos los bloquearía sin la ayuda del agente "
-"de seguimiento."
+"usan diferentes flujos para la señalización y para la transferencia de datos."
+" Los datos se envían por puertos que no están relacionados con la conexión "
+"de control y el cortafuegos los bloquearía sin la ayuda del agente de "
+"seguimiento."
 
 #: ../src/firewall-config.glade.h:174
 msgid "Define ports or port ranges, which are monitored by the helper."
@@ -1654,7 +1656,8 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:189
 msgid "Please be careful with passthrough rules to not damage the firewall."
-msgstr "Tenga cuidado con las reglas passthrough para no dañar el cortafuegos."
+msgstr ""
+"Tenga cuidado con las reglas passthrough para no dañar el cortafuegos."
 
 #: ../src/firewall-config.glade.h:190
 msgid "Add Passthrough"
@@ -1843,7 +1846,7 @@ msgstr "Tamaño inicial del hash (valor predeterminado: 1024)"
 
 #: ../src/firewall-config.glade.h:231
 msgid "Max number of elements, default 65536"
-msgstr "Máximo número de elementos; valor predeterminado: 65536 "
+msgstr "Máximo número de elementos; valor predeterminado: 65536"
 
 #: ../src/firewall-config.glade.h:232
 msgid "Please select an ipset:"
@@ -1851,7 +1854,7 @@ msgstr "Elija un IPSet"
 
 #: ../src/firewall-config.glade.h:234
 msgid "Please enter an ipset entry:"
-msgstr "Introduzca un IPSet:"
+msgstr "Introduzca una entrada de ipset:"
 
 #: ../src/firewall-config.glade.h:235
 msgid "Log Denied"
@@ -1959,8 +1962,8 @@ msgstr "invertido"
 
 #: ../src/firewall-config.glade.h:266
 msgid ""
-"To enable this Action has to be 'reject' and Family either 'ipv4' or "
-"'ipv6' (not both)."
+"To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
+"(not both)."
 msgstr ""
 "Para activar ésto,  Acción debe ser 'reject' y Family 'ipv4' o 'ipv6' (no "
 "ambas)."

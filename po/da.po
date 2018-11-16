@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Christian Rose <menthos@menthos.com>, 2002
 # Keld Simonsen <keld@dkuug.dk>, 2002-2005
@@ -14,14 +14,14 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-10-11 15:05-0400\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 "PO-Revision-Date: 2018-09-20 10:43+0000\n"
 "Last-Translator: scootergrisen <scootergrisen@gmail.com>\n"
 "Language-Team: Danish (http://www.transifex.com/projects/p/firewalld/"
 "language/da/)\n"
 "Language: da\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Zanata 4.6.2\n"
 
@@ -207,7 +207,8 @@ msgstr ""
 
 #: ../src/firewall-applet.in:880
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface "
+"'{interface}'"
 msgstr ""
 "Zone '{zone}' aktiv for forbindelse '{connection}' på grænseflade "
 "'{interface}'"
@@ -652,8 +653,7 @@ msgstr "ipv6"
 
 #: ../src/firewall-config.in:5014
 msgid ""
-"Forwarding to another system is only useful if the interface is "
-"masqueraded.\n"
+"Forwarding to another system is only useful if the interface is masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 "Videresending til et andet system er kun nyttigt hvis grænsefladen er "
@@ -1155,6 +1155,7 @@ msgstr "Porte"
 msgid "Add protocols, which need to be accessible for all hosts or networks."
 msgstr ""
 "Tilføj protokoller som skal være tilgængelig for alle værter eller netværker."
+""
 
 #: ../src/firewall-config.glade.h:102
 msgid "Add Protocol"
@@ -1483,6 +1484,7 @@ msgid ""
 "IPSets can only be created or deleted in the permanent configuration view."
 msgstr ""
 "IP-sæt kan kun oprettes eller slettes i den permanente konfigurationsvisning."
+""
 
 #: ../src/firewall-config.glade.h:166
 msgid ""
@@ -1908,6 +1910,7 @@ msgstr "Indtast venligst en rigregel."
 msgid "For host or network white or blacklisting deactivate the element."
 msgstr ""
 "For værts- eller netværkshvidlistning eller -sortlisting deaktivér elementet."
+""
 
 #: ../src/firewall-config.glade.h:256
 msgid "Source:"
@@ -1935,8 +1938,8 @@ msgstr "omvendt"
 
 #: ../src/firewall-config.glade.h:266
 msgid ""
-"To enable this Action has to be 'reject' and Family either 'ipv4' or "
-"'ipv6' (not both)."
+"To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
+"(not both)."
 msgstr ""
 "For at aktivere, skal denne handling være 'afvis' og familje skal enten være "
 "'ipv4' eller 'ipv6' (ikke begge)."

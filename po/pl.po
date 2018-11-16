@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Andrzej Olszewski <andrzej.olszewski@ifj.edu.pl>, 2004
 # Piotr Drąg <piotrdrag@gmail.com>, 2007,2013-2014
@@ -11,20 +11,21 @@
 # Piotr Drąg <piotrdrag@gmail.com>, 2015. #zanata
 # Piotr Drąg <piotrdrag@gmail.com>, 2016. #zanata
 # Piotr Drąg <piotrdrag@gmail.com>, 2017. #zanata
+# Eric Garver <e@erig.me>, 2018. #zanata
 # Piotr Drąg <piotrdrag@gmail.com>, 2018. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-10-11 15:05-0400\n"
-"PO-Revision-Date: 2018-07-30 06:41+0000\n"
-"Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
-"Language-Team: Polish (http://www.transifex.com/projects/p/firewalld/"
-"language/pl/)\n"
-"Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2018-11-16 08:26+0000\n"
+"Last-Translator: Copied by Zanata <copied-by-zanata@zanata.org>\n"
+"Language-Team: Polish (http://www.transifex.com/projects/p/firewalld/"
+"language/pl/)\n"
+"Language: pl\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2);\n"
 "X-Generator: Zanata 4.6.2\n"
@@ -45,8 +46,7 @@ msgstr "Konfiguracja zapory sieciowej"
 #: ../config/firewall-config.desktop.in.h:4
 msgid "firewall;network;security;iptables;netfilter;"
 msgstr ""
-"zapora;sieciowa;ogniowa;firewall;sieć;sieci;network;bezpieczeństwo;"
-"zabezpieczenia;security;iptables;netfilter;"
+"zapora;sieciowa;ogniowa;firewall;sieć;sieci;network;bezpieczeństwo;zabezpieczenia;security;iptables;netfilter;"
 
 #: ../src/firewall-applet.in:92 ../src/firewall-config.in:7967
 #, c-format
@@ -214,7 +214,8 @@ msgstr ""
 
 #: ../src/firewall-applet.in:880
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface "
+"'{interface}'"
 msgstr ""
 "Strefa „{zone}” jest aktywna dla połączenia „{connection}” na interfejsie "
 "„{interface}”"
@@ -308,8 +309,8 @@ msgid ""
 "Failed to connect to firewalld. Please make sure that the service has been "
 "started correctly and try again."
 msgstr ""
-"Połączenie z usługą firewalld się nie powiodło. Proszę się upewnić, że "
-"usługa została poprawnie uruchomiona i spróbować ponownie."
+"Połączenie z firewalld nie powiodło się. Sprawdź, czy usługa została "
+"poprawnie uruchomiona, i ponów próbę."
 
 #: ../src/firewall-config.in:95
 msgid "Changes applied."
@@ -355,7 +356,7 @@ msgstr "Identyfikator użytkownika"
 
 #: ../src/firewall-config.in:284 ../src/firewall-config.in:318
 msgid "Table"
-msgstr "Tablica"
+msgstr "Tabela"
 
 #: ../src/firewall-config.in:286 ../src/firewall-config.in:320
 msgid "Chain"
@@ -367,7 +368,7 @@ msgstr "Priorytet"
 
 #: ../src/firewall-config.in:324 ../src/firewall-config.in:361
 msgid "Args"
-msgstr "Parametry"
+msgstr "Argumenty"
 
 #: ../src/firewall-config.in:401 ../src/firewall-config.in:2329
 msgid "Runtime"
@@ -660,8 +661,7 @@ msgstr "IPv6"
 
 #: ../src/firewall-config.in:5014
 msgid ""
-"Forwarding to another system is only useful if the interface is "
-"masqueraded.\n"
+"Forwarding to another system is only useful if the interface is masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 "Przekierowywanie do innego systemu jest przydatne tylko, jeśli interfejs "
@@ -992,7 +992,8 @@ msgstr "Skonfiguruj przypisanie automatycznego modułu pomocniczego"
 
 #: ../src/firewall-config.glade.h:67
 msgid "Configure Automatic Helper Assignment setting."
-msgstr "Skonfiguruj ustawienia przypisania automatycznego modułu pomocniczego."
+msgstr ""
+"Skonfiguruj ustawienia przypisania automatycznego modułu pomocniczego."
 
 #: ../src/firewall-config.glade.h:68
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
@@ -1439,7 +1440,7 @@ msgid ""
 "example IP addresses, port numbers or MAC addresses. "
 msgstr ""
 "Zestaw adresów IP może być używany do tworzenia białych i czarnych list, "
-"i może przechowywać na przykład adresy IP, numery portów i adresy MAC."
+"i może przechowywać na przykład adresy IP, numery portów i adresy MAC. "
 
 #: ../src/firewall-config.glade.h:155
 msgid "IPSet"
@@ -1548,6 +1549,7 @@ msgstr ""
 msgid "Define ports or port ranges, which are monitored by the helper."
 msgstr ""
 "Proszę określić porty lub zakresy portów monitorowane przez moduł pomocniczy."
+""
 
 #: ../src/firewall-config.glade.h:175
 msgid ""
@@ -1795,7 +1797,7 @@ msgstr "Domyślna strefa:"
 
 #: ../src/firewall-config.glade.h:222
 msgid "Please enter an interface name:"
-msgstr "Proszę podać nazwę interfejsu:"
+msgstr "Wprowadź nazwę initerfejsu:"
 
 #: ../src/firewall-config.glade.h:223
 msgid "Base IPSet Settings"
@@ -1839,7 +1841,7 @@ msgstr "Proszę wybrać zestaw adresów IP:"
 
 #: ../src/firewall-config.glade.h:234
 msgid "Please enter an ipset entry:"
-msgstr "Proszę podać wpis ipset:"
+msgstr "Wprowadź wpis zestawu adresów IP:"
 
 #: ../src/firewall-config.glade.h:235
 msgid "Log Denied"
@@ -1949,11 +1951,11 @@ msgstr "odwrócone"
 
 #: ../src/firewall-config.glade.h:266
 msgid ""
-"To enable this Action has to be 'reject' and Family either 'ipv4' or "
-"'ipv6' (not both)."
+"To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
+"(not both)."
 msgstr ""
-"Aby to włączyć, działanie musi wynosić „reject”, a rodzina „ipv4” lub "
-"„ipv6” (nie oba)."
+"Aby to włączyć, działanie musi wynosić „reject”, a rodzina „ipv4” lub „ipv6” "
+"(nie oba)."
 
 #: ../src/firewall-config.glade.h:267
 msgid "with Type:"
@@ -1997,7 +1999,7 @@ msgstr "Proszę wybrać usługę."
 
 #: ../src/firewall-config.glade.h:297
 msgid "Please enter a source."
-msgstr "Proszę podać źródło."
+msgstr "Wprowadź źródło."
 
 #: ../src/firewall-config.glade.h:298
 msgid "User ID"

@@ -4,16 +4,16 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-10-11 15:05-0400\n"
-"PO-Revision-Date: 2018-10-09 09:55+0000\n"
-"Last-Translator: Moo <hazap@hotmail.com>\n"
-"Language-Team: Lithuanian\n"
-"Language: lt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2018-10-31 08:18+0000\n"
+"Last-Translator: Moo <hazap@hotmail.com>\n"
+"Language-Team: Lithuanian\n"
+"Language: lt\n"
 "X-Generator: Zanata 4.6.2\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n"
-"%100<10 || n%100>=20) ? 1 : 2)\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"(n%100<10 || n%100>=20) ? 1 : 2)\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:416
 msgid "Firewall Applet"
@@ -71,6 +71,8 @@ msgid ""
 "This feature is useful for people using the default zones mostly. For users, "
 "that are changing zones of connections, it might be of limited use."
 msgstr ""
+"Ši ypatybė yra naudinga žmonėms, kurie, daugiausiai, naudoja numatytąsias "
+"zonas. Naudotojams, kurie keičia ryšių zonas ši ypatybė gali būti ribota."
 
 #: ../src/firewall-applet.in:235
 msgid "Shields Up Zone:"
@@ -78,7 +80,7 @@ msgstr ""
 
 #: ../src/firewall-applet.in:244 ../src/firewall-applet.in:257
 msgid "Reset To Default"
-msgstr ""
+msgstr "Atstatyti į numatytąją"
 
 #: ../src/firewall-applet.in:248
 msgid "Shields Down Zone:"
@@ -141,7 +143,7 @@ msgstr "Sąsajos"
 #: ../src/firewall-config.in:2499 ../src/firewall-config.in:2667
 #: ../src/firewall-config.in:2691 ../src/firewall-config.glade.h:135
 msgid "Sources"
-msgstr ""
+msgstr "Šaltiniai"
 
 #: ../src/firewall-applet.in:590 ../src/firewall-config.in:2279
 msgid "Authorization failed."
@@ -189,19 +191,22 @@ msgid ""
 "Default Zone '{default_zone}' active for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
+"Numatytoji zona \"{default_zone}\" aktyvi ryšiui \"{connection}\" ties "
+"sąsaja \"{interface}\""
 
 #: ../src/firewall-applet.in:880
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
-msgstr ""
+"Zone '{zone}' active for connection '{connection}' on interface "
+"'{interface}'"
+msgstr "Zona \"{zone}\" aktyvi ryšiui \"{connection}\" ties sąsaja \"{interface}\""
 
 #: ../src/firewall-applet.in:892
 msgid "Zone '{zone}' active for interface '{interface}'"
-msgstr ""
+msgstr "Zona \"{zone}\" aktyvi sąsajai \"{interface}\""
 
 #: ../src/firewall-applet.in:900
 msgid "Zone '{zone}' active for source {source}"
-msgstr ""
+msgstr "Zona \"{zone}\" aktyvi sąsajai {source}"
 
 #: ../src/firewall-applet.in:904
 msgid "No Active Zones."
@@ -230,41 +235,45 @@ msgstr "Tinklo duomenų srautas daugiau nebėra užblokuotas."
 
 #: ../src/firewall-applet.in:1031 ../src/firewall-applet.in:1085
 msgid "activated"
-msgstr ""
+msgstr "aktyvuota"
 
 #: ../src/firewall-applet.in:1032 ../src/firewall-applet.in:1086
 msgid "deactivated"
-msgstr ""
+msgstr "pasyvinta"
 
 #: ../src/firewall-applet.in:1037
 msgid ""
 "Default zone '{default_zone}' {activated_deactivated} for connection "
 "'{connection}' on interface '{interface}'"
 msgstr ""
+"Numatytoji zona \"{default_zone}\" {activated_deactivated} ryšiui "
+"\"{connection}\" ties sąsaja \"{interface}\""
 
 #: ../src/firewall-applet.in:1042
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
+"Zona \"{zone}\" {activated_deactivated} ryšiui \"{connection}\" ties sąsaja "
+"\"{interface}\""
 
 #: ../src/firewall-applet.in:1047
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
-msgstr ""
+msgstr "Zona \"{zone}\" {activated_deactivated} sąsajai \"{interface}\""
 
 #: ../src/firewall-applet.in:1070
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
-msgstr ""
+msgstr "Zona \"%s\" aktyvuota sąsajai \"%s\""
 
 #: ../src/firewall-applet.in:1087
 msgid "Zone '{zone}' {activated_deactivated} for source '{source}'"
-msgstr ""
+msgstr "Zona \"{zone}\" {activated_deactivated} šaltiniui \"{source}\""
 
 #: ../src/firewall-applet.in:1111
 #, c-format
 msgid "Zone '%s' activated for source '%s'"
-msgstr ""
+msgstr "Zona \"%s\" aktyvuota šaltiniui \"%s\""
 
 #: ../src/firewall-config.in:89
 msgid "Connection to firewalld established."
@@ -294,15 +303,15 @@ msgstr ""
 #: ../src/firewall-config.in:97
 #, c-format
 msgid "Default zone used by network connection '%s'"
-msgstr ""
+msgstr "Numatytoji zona, naudojama ryšio \"%s\""
 
 #: ../src/firewall-config.in:99
 msgid "enabled"
-msgstr ""
+msgstr "įjungta"
 
 #: ../src/firewall-config.in:100
 msgid "disabled"
-msgstr ""
+msgstr "išjungta"
 
 #: ../src/firewall-config.in:125
 msgid "Failed to load icons."
@@ -310,31 +319,31 @@ msgstr "Nepavyko įkelti piktogramų."
 
 #: ../src/firewall-config.in:187 ../src/firewall-config.glade.h:6
 msgid "Context"
-msgstr ""
+msgstr "Kontekstas"
 
 #: ../src/firewall-config.in:206 ../src/firewall-config.glade.h:4
 msgid "Command line"
-msgstr ""
+msgstr "Komandų eilutė"
 
 #: ../src/firewall-config.in:225 ../src/firewall-config.glade.h:300
 msgid "User name"
-msgstr ""
+msgstr "Naudotojo vardas"
 
 #: ../src/firewall-config.in:244
 msgid "User id"
-msgstr ""
+msgstr "Naudotojo id"
 
 #: ../src/firewall-config.in:284 ../src/firewall-config.in:318
 msgid "Table"
-msgstr ""
+msgstr "Lentelė"
 
 #: ../src/firewall-config.in:286 ../src/firewall-config.in:320
 msgid "Chain"
-msgstr ""
+msgstr "Grandinė"
 
 #: ../src/firewall-config.in:322
 msgid "Priority"
-msgstr ""
+msgstr "Pirmenybė"
 
 #: ../src/firewall-config.in:324 ../src/firewall-config.in:361
 msgid "Args"
@@ -342,15 +351,15 @@ msgstr ""
 
 #: ../src/firewall-config.in:401 ../src/firewall-config.in:2329
 msgid "Runtime"
-msgstr ""
+msgstr "Vykdymo trukmės"
 
 #: ../src/firewall-config.in:402
 msgid "Permanent"
-msgstr ""
+msgstr "Ilgalaikė"
 
 #: ../src/firewall-config.in:481 ../src/firewall-config.glade.h:138
 msgid "Service"
-msgstr ""
+msgstr "Tarnyba"
 
 #: ../src/firewall-config.in:488 ../src/firewall-config.in:535
 #: ../src/firewall-config.in:560 ../src/firewall-config.in:802
@@ -368,23 +377,23 @@ msgstr "Protokolas"
 
 #: ../src/firewall-config.in:564
 msgid "To Port"
-msgstr ""
+msgstr "Į prievadą"
 
 #: ../src/firewall-config.in:566
 msgid "To Address"
-msgstr ""
+msgstr "Į adresą"
 
 #: ../src/firewall-config.in:616
 msgid "Bindings"
-msgstr ""
+msgstr "Susiejimai"
 
 #: ../src/firewall-config.in:651 ../src/firewall-config.glade.h:233
 msgid "Entry"
-msgstr ""
+msgstr "Įrašas"
 
 #: ../src/firewall-config.in:777
 msgid "Icmp Type"
-msgstr ""
+msgstr "Icmp tipas"
 
 #: ../src/firewall-config.in:821
 msgid "Family"
@@ -396,15 +405,15 @@ msgstr "Veiksmas"
 
 #: ../src/firewall-config.in:825
 msgid "Element"
-msgstr ""
+msgstr "Elementas"
 
 #: ../src/firewall-config.in:827
 msgid "Src"
-msgstr ""
+msgstr "Šalt."
 
 #: ../src/firewall-config.in:829
 msgid "Dest"
-msgstr ""
+msgstr "Pask."
 
 #: ../src/firewall-config.in:831
 msgid "log"
@@ -424,7 +433,7 @@ msgstr "Komentaras"
 
 #: ../src/firewall-config.in:955 ../src/firewall-config.glade.h:27
 msgid "Source"
-msgstr ""
+msgstr "Šaltinis"
 
 #: ../src/firewall-config.in:1609 ../src/firewall-config.in:2802
 #: ../src/firewall-config.in:2850
@@ -438,13 +447,13 @@ msgstr "Klaida"
 #: ../src/firewall-config.in:2035 ../src/firewall-config.in:3199
 #: ../src/firewall-config.in:3692 ../src/firewall-config.glade.h:262
 msgid "accept"
-msgstr ""
+msgstr "priimti"
 
 #: ../src/firewall-config.in:2037 ../src/firewall-config.in:3201
 #: ../src/firewall-config.in:3694 ../src/firewall-config.in:3842
 #: ../src/firewall-config.glade.h:263
 msgid "reject"
-msgstr ""
+msgstr "atmesti"
 
 #: ../src/firewall-config.in:2041 ../src/firewall-config.in:3216
 #: ../src/firewall-config.in:3699 ../src/firewall-config.glade.h:264
@@ -455,7 +464,7 @@ msgstr ""
 #: ../src/firewall-config.in:3701 ../src/firewall-config.in:3843
 #: ../src/firewall-config.glade.h:265
 msgid "mark"
-msgstr ""
+msgstr "žymėti"
 
 #: ../src/firewall-config.in:2046 ../src/firewall-config.in:2090
 #: ../src/firewall-config.in:2095
@@ -537,7 +546,7 @@ msgstr "Zona: %s"
 #: ../src/firewall-config.in:2799
 #, c-format
 msgid "Zone '%s': Service '%s' is not available."
-msgstr ""
+msgstr "Zona \"%s\": Tarnyba \"%s\" yra neprieinama."
 
 #: ../src/firewall-config.in:2803 ../src/firewall-config.in:2851
 #: ../src/firewall-config.glade.h:163
@@ -631,10 +640,12 @@ msgstr "ipv6"
 
 #: ../src/firewall-config.in:5014
 msgid ""
-"Forwarding to another system is only useful if the interface is "
-"masqueraded.\n"
+"Forwarding to another system is only useful if the interface is masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
+"Peradresavimas į kitą sistemą yra naudingas tik tuomet, jei sąsaja yra "
+"maskuojama.\n"
+"Ar norite maskuoti šią zoną?"
 
 #: ../src/firewall-config.in:5376
 msgid "Built-in service, rename not supported."
@@ -665,6 +676,8 @@ msgid ""
 "The mask can be a network mask or a number for ipv4.\n"
 "The mask is a number for ipv6."
 msgstr ""
+"Kaukė gali būti tinklo kaukė arba, ipv4 atveju, gali būti skaičius.\n"
+"Kaukė, ipv6 atveju, yra skaičius."
 
 #: ../src/firewall-config.in:5776
 msgid "Built-in ipset, rename not supported."
@@ -676,16 +689,16 @@ msgstr "Pasirinkite failą"
 
 #: ../src/firewall-config.in:5875 ../src/firewall-config.in:5957
 msgid "Text Files"
-msgstr ""
+msgstr "Tekstiniai failai"
 
 #: ../src/firewall-config.in:5880 ../src/firewall-config.in:5962
 msgid "All Files"
-msgstr ""
+msgstr "Visi failai"
 
 #: ../src/firewall-config.in:6383 ../src/firewall-config.in:6412
 #: ../src/firewall-config.glade.h:40
 msgid "All"
-msgstr ""
+msgstr "Visi"
 
 #: ../src/firewall-config.in:6383 ../src/firewall-config.in:6412
 #: ../src/firewall-config.glade.h:41
@@ -742,23 +755,23 @@ msgstr "Pasirinkite numatytąją zoną iš sąrašo žemiau."
 
 #: ../src/firewall-config.glade.h:10
 msgid "Direct Chain"
-msgstr ""
+msgstr "Tiesioginė grandinė"
 
 #: ../src/firewall-config.glade.h:11
 msgid "Please select ipv and table and enter the chain name."
-msgstr ""
+msgstr "Pasirinkite ipv bei lentelę ir įveskite grandinės pavadinimą."
 
 #: ../src/firewall-config.glade.h:12
 msgid "ipv:"
-msgstr ""
+msgstr "ipv:"
 
 #: ../src/firewall-config.glade.h:13
 msgid "eb"
-msgstr ""
+msgstr "eb"
 
 #: ../src/firewall-config.glade.h:14
 msgid "Chain:"
-msgstr ""
+msgstr "Grandinė:"
 
 #: ../src/firewall-config.glade.h:15
 msgid "nat"
@@ -774,7 +787,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:18
 msgid "Table:"
-msgstr ""
+msgstr "Lentelė:"
 
 #: ../src/firewall-config.glade.h:19
 msgid "Direct Passthrough Rule"
@@ -786,16 +799,16 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:21
 msgid "Args:"
-msgstr ""
+msgstr "Argumentai:"
 
 #: ../src/firewall-config.glade.h:22
 msgid "Port Forwarding"
-msgstr ""
+msgstr "Prievadų peradresavimas"
 
 #: ../src/firewall-config.glade.h:23
 msgid ""
 "Please select the source and destination options according to your needs."
-msgstr ""
+msgstr "Pasirinkite šaltinio ir paskirties parametrus pagal savo poreikius."
 
 #: ../src/firewall-config.glade.h:24
 msgid "Port / Port Range:"
@@ -818,14 +831,16 @@ msgid ""
 "If you enable local forwarding, you have to specify a port. This port has to "
 "be different to the source port."
 msgstr ""
+"Jeigu įjungsite vietinį peradresavimą, turėsite nurodyti prievadą. Šis "
+"prievadas turės būti kitoks nei šaltinio prievadas."
 
 #: ../src/firewall-config.glade.h:30
 msgid "Local forwarding"
-msgstr ""
+msgstr "Vietinis peradresavimas"
 
 #: ../src/firewall-config.glade.h:31
 msgid "Forward to another port"
-msgstr ""
+msgstr "Peradresuoti į kitą prievadą"
 
 #: ../src/firewall-config.glade.h:32
 msgid "Base Helper Settings"
@@ -837,7 +852,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:34
 msgid "Bold entries are mandatory, all others are optional."
-msgstr ""
+msgstr "Pusjuodžiai įrašai yra privalomi, visi kiti - nebūtini."
 
 #: ../src/firewall-config.glade.h:35
 msgid "Name:"
@@ -925,18 +940,22 @@ msgid ""
 "runtime configuration. i.e. all runtime only changes done until reload are "
 "lost with reload if they have not been also in permanent configuration."
 msgstr ""
+"Iš naujo įkelia visas užkardos taisykles. Dabartinė ilgalaikė konfigūracija "
+"taps naująja vykdymo trukmės konfigūracija. T. y. įkėlus iš naujo, visi tik "
+"vykdymo trukmės pakeitimai bus prarasti, jeigu jų nebuvo taip pat ir "
+"ilgalaikėje konfigūracijoje."
 
 #: ../src/firewall-config.glade.h:60
 msgid "Change which zone a network connection belongs to."
-msgstr ""
+msgstr "Keisti kuriai zonai priklausys tinklo ryšys."
 
 #: ../src/firewall-config.glade.h:62
 msgid "Change Default Zone"
-msgstr ""
+msgstr "Keisti numatytąją zoną"
 
 #: ../src/firewall-config.glade.h:63
 msgid "Change default zone for connections or interfaces."
-msgstr ""
+msgstr "Keisti numatytąją ryšių ir sąsajų zoną."
 
 #: ../src/firewall-config.glade.h:64
 msgid "Change Log Denied"
@@ -948,11 +967,11 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:66
 msgid "Configure Automatic Helper Assigment"
-msgstr ""
+msgstr "Konfigūruoti automatinių pagelbiklių priskyrimą"
 
 #: ../src/firewall-config.glade.h:67
 msgid "Configure Automatic Helper Assignment setting."
-msgstr ""
+msgstr "Konfigūruoti automatinių pagelbiklių priskyrimo nustatymą."
 
 #: ../src/firewall-config.glade.h:68
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
@@ -960,7 +979,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:69
 msgid "Panic Mode"
-msgstr ""
+msgstr "Panikos veiksena"
 
 #: ../src/firewall-config.glade.h:70
 msgid ""
@@ -974,11 +993,11 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:72
 msgid "Make runtime configuration permanent"
-msgstr ""
+msgstr "Paversti vykdymo trukmės konfigūracija į ilgalaikę"
 
 #: ../src/firewall-config.glade.h:73
 msgid "Runtime To Permanent"
-msgstr ""
+msgstr "Vykdymo trukmės į ilgalaikę"
 
 #: ../src/firewall-config.glade.h:74
 msgid "_View"
@@ -998,7 +1017,7 @@ msgstr "Pagelbikliai"
 
 #: ../src/firewall-config.glade.h:78
 msgid "Direct Configuration"
-msgstr ""
+msgstr "Tiesioginė konfigūracija"
 
 #: ../src/firewall-config.glade.h:79
 msgid "Lockdown Whitelist"
@@ -1006,7 +1025,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:80
 msgid "Active Bindings"
-msgstr ""
+msgstr "Aktyvūs susiejimai"
 
 #: ../src/firewall-config.glade.h:81
 msgid "_Help"
@@ -1018,7 +1037,7 @@ msgstr "Keisti zoną"
 
 #: ../src/firewall-config.glade.h:83
 msgid "Change zone of binding"
-msgstr ""
+msgstr "Keisti susiejimo zoną"
 
 #: ../src/firewall-config.glade.h:84
 msgid ""
@@ -1032,7 +1051,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:86
 msgid "Configuration:"
-msgstr ""
+msgstr "Konfigūracija:"
 
 #: ../src/firewall-config.glade.h:87
 msgid ""
@@ -1040,6 +1059,9 @@ msgid ""
 "configuration. Permanent configuration will be active after service or "
 "system reload or restart."
 msgstr ""
+"Šiuo metu matoma konfigūracija. Vykdymo trukmės konfigūracija yra dabartinė "
+"aktyvi konfigūracija. Ilgalaikė konfigūracija bus aktyvi po tarnybos ar "
+"sistemos įkelimo iš naujo, ar paleidimo iš naujo."
 
 #: ../src/firewall-config.glade.h:88
 msgid ""
@@ -1049,6 +1071,10 @@ msgid ""
 "filters and rich rules. The zone can be bound to interfaces and source "
 "addresses."
 msgstr ""
+"Firewalld zona apibrėžia su zona susietų tinklo ryšių, sąsajų ir šaltinio "
+"adresų pasitikėjimo lygius. Zoną sudaro tarnybos, prievadai, protokolai, "
+"maskavimai, prievadų/paketų peradresavimai, icmp filtrai ir išsamios "
+"taisyklės. Zona gali būti susieta su sąsajomis ir šaltinio adresais."
 
 #: ../src/firewall-config.glade.h:90
 msgid "Add Zone"
@@ -1075,7 +1101,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:95
 msgid "Services"
-msgstr ""
+msgstr "Tarnybos"
 
 #: ../src/firewall-config.glade.h:96
 msgid ""
@@ -1138,17 +1164,19 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:109
 msgid "Masquerade zone"
-msgstr ""
+msgstr "Maskuoti zoną"
 
 #: ../src/firewall-config.glade.h:110
 msgid ""
 "If you enable masquerading, IP forwarding will be enabled for your IPv4 "
 "networks."
 msgstr ""
+"Jeigu įjungsite maskavimą, tuomet jūsų IPv4 tinklams bus įjungtas IP "
+"peradresavimas."
 
 #: ../src/firewall-config.glade.h:111
 msgid "Masquerading"
-msgstr ""
+msgstr "Maskavimas"
 
 #: ../src/firewall-config.glade.h:112
 msgid ""
@@ -1176,6 +1204,10 @@ msgid ""
 "messages between networked computers, but additionally for informational "
 "messages like ping requests and replies."
 msgstr ""
+"Internetinio valdymo pranešimų protokolas (angl. Internet Control Message "
+"Protocol (ICMP)) pagrinde yra naudojamas siųsti žinutes tarp kompiuterių "
+"tinkle, o taip pat ir informacinius pranešimus, tokius kaip ryšio "
+"patikrinimų užklausas ir atsakymus."
 
 #: ../src/firewall-config.glade.h:117
 msgid ""
@@ -1195,33 +1227,35 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:120
 msgid "ICMP Filter"
-msgstr ""
+msgstr "ICMP filtras"
 
 #: ../src/firewall-config.glade.h:121
 msgid "Here you can set rich language rules for the zone."
-msgstr ""
+msgstr "Čia galite nustatyti zonai išsamios kalbos taisykles."
 
 #: ../src/firewall-config.glade.h:122
 msgid "Add Rich Rule"
-msgstr ""
+msgstr "Pridėti išsamią taisyklę"
 
 #: ../src/firewall-config.glade.h:123
 msgid "Edit Rich Rule"
-msgstr ""
+msgstr "Taisyti išsamią taisyklę"
 
 #: ../src/firewall-config.glade.h:124
 msgid "Remove Rich Rule"
-msgstr ""
+msgstr "Šalinti išsamią taisyklę"
 
 #: ../src/firewall-config.glade.h:125
 msgid "Rich Rules"
-msgstr ""
+msgstr "Išsamios taisyklės"
 
 #: ../src/firewall-config.glade.h:126
 msgid ""
 "Add entries to bind interfaces to the zone. If the interface will be used by "
 "a connection, the zone will be set to the zone specified in the connection."
 msgstr ""
+"Pridėkite įrašus, norėdami susieti sąsajas su zona. Jeigu ryšys naudos "
+"sąsają, tuomet zona bus nustatyta į tą, kuri yra nurodyta ryšyje."
 
 #: ../src/firewall-config.glade.h:127
 msgid "Add Interface"
@@ -1241,18 +1275,21 @@ msgid ""
 "to a MAC source address, but with limitations. Port forwarding and "
 "masquerading will not work for MAC source bindings."
 msgstr ""
+"Pridėkite įrašus, norėdami susieti adresus ar sritis su zona. Taip pat "
+"galite susieti su MAC šaltinio adresu, tačiau su apribojimais. Prievadų "
+"peradresavimas ir maskavimas neveiks su MAC šaltinio susiejimais."
 
 #: ../src/firewall-config.glade.h:132
 msgid "Add Source"
-msgstr ""
+msgstr "Pridėti šaltinį"
 
 #: ../src/firewall-config.glade.h:133
 msgid "Edit Source"
-msgstr ""
+msgstr "Taisyti šaltinį"
 
 #: ../src/firewall-config.glade.h:134
 msgid "Remove Source"
-msgstr ""
+msgstr "Šalinti šaltinį"
 
 #: ../src/firewall-config.glade.h:136
 msgid "Zones"
@@ -1263,18 +1300,20 @@ msgid ""
 "A firewalld service is a combination of ports, protocols, modules and "
 "destination addresses."
 msgstr ""
+"Firewalld tarnyba yra prievadų, protokolų, modulių ir paskirties adresų "
+"kombinacija."
 
 #: ../src/firewall-config.glade.h:139
 msgid "Add Service"
-msgstr ""
+msgstr "Pridėti tarnybą"
 
 #: ../src/firewall-config.glade.h:140
 msgid "Edit Service"
-msgstr ""
+msgstr "Taisyti tarnybą"
 
 #: ../src/firewall-config.glade.h:141
 msgid "Remove Service"
-msgstr ""
+msgstr "Šalinti tarnybą"
 
 #: ../src/firewall-config.glade.h:142
 msgid "Load Service Defaults"
@@ -1332,6 +1371,8 @@ msgid ""
 "Services can only be changed in the permanent configuration view. The "
 "runtime configuration of services is fixed."
 msgstr ""
+"Tarnybos gali būti keičiamos tik ilgalaikės konfigūracijos rodinyje. Tarnybų "
+"vykdymo trukmės konfigūracija yra fiksuota."
 
 #: ../src/firewall-config.glade.h:154
 msgid ""
@@ -1379,7 +1420,7 @@ msgstr "Pridėti"
 
 #: ../src/firewall-config.glade.h:164
 msgid "Entries"
-msgstr ""
+msgstr "Įrašai"
 
 #: ../src/firewall-config.glade.h:165
 msgid ""
@@ -1394,15 +1435,15 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:167
 msgid "Add ICMP Type"
-msgstr ""
+msgstr "Pridėti ICMP tipą"
 
 #: ../src/firewall-config.glade.h:168
 msgid "Edit ICMP Type"
-msgstr ""
+msgstr "Taisyti ICMP tipą"
 
 #: ../src/firewall-config.glade.h:169
 msgid "Remove ICMP Type"
-msgstr ""
+msgstr "Šalinti ICMP tipą"
 
 #: ../src/firewall-config.glade.h:170
 msgid "Load ICMP Type Defaults"
@@ -1410,13 +1451,15 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:171
 msgid "Specify whether this ICMP Type is available for IPv4 and/or IPv6."
-msgstr ""
+msgstr "Nurodykite ar šis ICMP tipas yra prieinamas IPv4 ir/ar IPv6."
 
 #: ../src/firewall-config.glade.h:172
 msgid ""
 "ICMP Types can only be changed in the permanent configuration view. The "
 "runtime configuration of ICMP Types is fixed."
 msgstr ""
+"ICMP tipai gali būti keičiami tik ilgalaikės konfigūracijos rodinyje. ICMP "
+"tipų vykdymo trukmės konfigūracija yra fiksuota."
 
 #: ../src/firewall-config.glade.h:173
 msgid ""
@@ -1429,6 +1472,7 @@ msgstr ""
 #: ../src/firewall-config.glade.h:174
 msgid "Define ports or port ranges, which are monitored by the helper."
 msgstr ""
+"Apibrėžkite prievadus ar prievadų rėžius, kurie bus stebimi pagelbiklio."
 
 #: ../src/firewall-config.glade.h:175
 msgid ""
@@ -1447,23 +1491,23 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:177
 msgid "Additional chains for use with rules."
-msgstr ""
+msgstr "Papildomos grandinės, kurios bus naudojamos su taisyklėmis."
 
 #: ../src/firewall-config.glade.h:178
 msgid "Add Chain"
-msgstr ""
+msgstr "Pridėti grandinę"
 
 #: ../src/firewall-config.glade.h:179
 msgid "Edit Chain"
-msgstr ""
+msgstr "Taisyti grandinę"
 
 #: ../src/firewall-config.glade.h:180
 msgid "Remove Chain"
-msgstr ""
+msgstr "Šalinti grandinę"
 
 #: ../src/firewall-config.glade.h:181
 msgid "Chains"
-msgstr ""
+msgstr "Grandinės"
 
 #: ../src/firewall-config.glade.h:182
 msgid ""
@@ -1618,7 +1662,7 @@ msgstr "Naudotojų Id"
 
 #: ../src/firewall-config.glade.h:215
 msgid "Current default zone of the system."
-msgstr ""
+msgstr "Dabartinė numatytoji sistemos zona."
 
 #: ../src/firewall-config.glade.h:216
 msgctxt ""
@@ -1629,7 +1673,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:217
 msgid "Panic Mode:"
-msgstr ""
+msgstr "Panikos veiksena:"
 
 #: ../src/firewall-config.glade.h:218
 msgctxt ""
@@ -1664,7 +1708,7 @@ msgstr "Tipas:"
 
 #: ../src/firewall-config.glade.h:226
 msgid "Timeout:"
-msgstr ""
+msgstr "Laiko limitas:"
 
 #: ../src/firewall-config.glade.h:227
 msgid "Hashsize:"
@@ -1676,15 +1720,15 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:229
 msgid "Timeout value in seconds"
-msgstr ""
+msgstr "Laiko limitas, sekundėmis"
 
 #: ../src/firewall-config.glade.h:230
 msgid "Initial hash size, default 1024"
-msgstr ""
+msgstr "Pradinis maišos dydis, numatytasis 1024"
 
 #: ../src/firewall-config.glade.h:231
 msgid "Max number of elements, default 65536"
-msgstr ""
+msgstr "Maksimalus elementų skaičius, numatytasis 65536"
 
 #: ../src/firewall-config.glade.h:232
 msgid "Please select an ipset:"
@@ -1704,19 +1748,20 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:237
 msgid "Mark"
-msgstr ""
+msgstr "Žymėti"
 
 #: ../src/firewall-config.glade.h:238
 msgid "Please enter a mark with an optional mask."
-msgstr ""
+msgstr "Įveskite žymėjimą ir neprivalomai kaukę."
 
 #: ../src/firewall-config.glade.h:239
 msgid "The mark and the mask fields are both 32 bits wide unsigned numbers."
 msgstr ""
+"Žymėjimo ir kaukės laukai abudu yra 32 bitų pločio skaičiai be ženklo."
 
 #: ../src/firewall-config.glade.h:240
 msgid "Mark:"
-msgstr ""
+msgstr "Žymėjimas:"
 
 #: ../src/firewall-config.glade.h:241
 msgid "Mask:"
@@ -1744,7 +1789,7 @@ msgstr "Įveskite prievadą ir protokolą."
 
 #: ../src/firewall-config.glade.h:247
 msgid "Direct Rule"
-msgstr ""
+msgstr "Tiesioginė taisyklė"
 
 #: ../src/firewall-config.glade.h:248
 msgid "Please select ipv and table, chain priority and enter the args."
@@ -1764,27 +1809,29 @@ msgstr "Kitas protokolas:"
 
 #: ../src/firewall-config.glade.h:253
 msgid "Rich Rule"
-msgstr ""
+msgstr "Išsami taisyklė"
 
 #: ../src/firewall-config.glade.h:254
 msgid "Please enter a rich rule."
-msgstr ""
+msgstr "Įveskite išsamią taisyklę"
 
 #: ../src/firewall-config.glade.h:255
 msgid "For host or network white or blacklisting deactivate the element."
 msgstr ""
+"Serverio ar tinklo įtraukimui į baltąjį ar juodąjį sąrašą, pasyvinkite "
+"elementą."
 
 #: ../src/firewall-config.glade.h:256
 msgid "Source:"
-msgstr ""
+msgstr "Šaltinis:"
 
 #: ../src/firewall-config.glade.h:257
 msgid "Destination:"
-msgstr ""
+msgstr "Paskirtis:"
 
 #: ../src/firewall-config.glade.h:258
 msgid "Log:"
-msgstr ""
+msgstr "Registruoti:"
 
 #: ../src/firewall-config.glade.h:259
 msgid "Audit:"
@@ -1796,21 +1843,21 @@ msgstr "ipv4 ir ipv6"
 
 #: ../src/firewall-config.glade.h:261
 msgid "inverted"
-msgstr ""
+msgstr "invertuota"
 
 #: ../src/firewall-config.glade.h:266
 msgid ""
-"To enable this Action has to be 'reject' and Family either 'ipv4' or "
-"'ipv6' (not both)."
+"To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
+"(not both)."
 msgstr ""
 
 #: ../src/firewall-config.glade.h:267
 msgid "with Type:"
-msgstr ""
+msgstr "naudojant tipą:"
 
 #: ../src/firewall-config.glade.h:268
 msgid "With limit:"
-msgstr ""
+msgstr "naudojant ribą:"
 
 #: ../src/firewall-config.glade.h:269
 msgid "/"
@@ -1818,7 +1865,7 @@ msgstr "/"
 
 #: ../src/firewall-config.glade.h:274
 msgid "Prefix:"
-msgstr ""
+msgstr "Priešdėlis:"
 
 #: ../src/firewall-config.glade.h:275
 msgid "Level:"
@@ -1826,7 +1873,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:292
 msgid "Element:"
-msgstr ""
+msgstr "Elementas:"
 
 #: ../src/firewall-config.glade.h:293
 msgid "Action:"
@@ -1842,11 +1889,11 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:296
 msgid "Please select a service."
-msgstr ""
+msgstr "Pasirinkite tarnybą."
 
 #: ../src/firewall-config.glade.h:297
 msgid "Please enter a source."
-msgstr ""
+msgstr "Įveskite šaltinį."
 
 #: ../src/firewall-config.glade.h:298
 msgid "User ID"
@@ -1862,7 +1909,7 @@ msgstr "Įveskite naudotojo vardą."
 
 #: ../src/firewall-config.glade.h:302
 msgid "label"
-msgstr ""
+msgstr "etiketė"
 
 #: ../src/firewall-config.glade.h:303
 msgid "Base Zone Settings"
