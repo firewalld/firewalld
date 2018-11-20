@@ -291,10 +291,10 @@ fi
 %{_rpmconfigdir}/macros.d/macros.firewalld
 
 %files -n firewall-applet
+%attr(0755,root,root) %dir %{_sysconfdir}/firewall
 %{_bindir}/firewall-applet
 %defattr(0644,root,root)
 %{_sysconfdir}/xdg/autostart/firewall-applet.desktop
-%dir %{_sysconfdir}/firewall
 %{_sysconfdir}/firewall/applet.conf
 %{_datadir}/icons/hicolor/*/apps/firewall-applet*.*
 %{_mandir}/man1/firewall-applet*.1*
