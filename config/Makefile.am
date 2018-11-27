@@ -22,7 +22,7 @@ polkit1_action_FILES = org.fedoraproject.FirewallD1.server.policy.in \
 polkit1_actiondir = $(datadir)/polkit-1/actions
 polkit1_action_DATA = $(polkit1_action_FILES:.in=)
 
-dbus_policydir = $(sysconfdir)/dbus-1/system.d
+dbus_policydir = $(datadir)/dbus-1/system.d
 dist_dbus_policy_DATA = FirewallD.conf
 
 gsettings_in_file = org.fedoraproject.FirewallConfig.gschema.xml.in
