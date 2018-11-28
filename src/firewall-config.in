@@ -810,6 +810,7 @@ class FirewallConfig(object):
         self.richRuleView = builder.get_object("richRuleView")
         self.richRuleStore = Gtk.ListStore(GObject.TYPE_PYOBJECT, # the rule obj
                                            GObject.TYPE_STRING, # ipv4/ipv6
+                                           GObject.TYPE_INT,    # priority
                                            GObject.TYPE_STRING, # action
                                            GObject.TYPE_STRING, # element
                                            GObject.TYPE_STRING, # source
@@ -820,18 +821,21 @@ class FirewallConfig(object):
         self.richRuleView.append_column(
             Gtk.TreeViewColumn(_("Family"), Gtk.CellRendererText(), text=1))
         self.richRuleView.append_column(
-            Gtk.TreeViewColumn(_("Action"), Gtk.CellRendererText(), text=2))
+            Gtk.TreeViewColumn(_("Priority"), Gtk.CellRendererText(), text=2))
         self.richRuleView.append_column(
-            Gtk.TreeViewColumn(_("Element"), Gtk.CellRendererText(), text=3))
+            Gtk.TreeViewColumn(_("Action"), Gtk.CellRendererText(), text=3))
         self.richRuleView.append_column(
-            Gtk.TreeViewColumn(_("Src"), Gtk.CellRendererText(), text=4))
+            Gtk.TreeViewColumn(_("Element"), Gtk.CellRendererText(), text=4))
         self.richRuleView.append_column(
-            Gtk.TreeViewColumn(_("Dest"), Gtk.CellRendererText(), text=5))
+            Gtk.TreeViewColumn(_("Src"), Gtk.CellRendererText(), text=5))
         self.richRuleView.append_column(
-            Gtk.TreeViewColumn(_("log"), Gtk.CellRendererText(), text=6))
+            Gtk.TreeViewColumn(_("Dest"), Gtk.CellRendererText(), text=6))
         self.richRuleView.append_column(
-            Gtk.TreeViewColumn(_("Audit"), Gtk.CellRendererText(), text=7))
+            Gtk.TreeViewColumn(_("log"), Gtk.CellRendererText(), text=7))
+        self.richRuleView.append_column(
+            Gtk.TreeViewColumn(_("Audit"), Gtk.CellRendererText(), text=8))
         self.richRuleView.set_model(self.richRuleStore)
+        self.richRuleStore.set_sort_column_id(2, Gtk.SortType.ASCENDING)
 
         self.richRuleView.get_selection().connect( \
             "changed", self.change_rich_rule_selection_cb)
@@ -848,6 +852,8 @@ class FirewallConfig(object):
 
         self.richRuleDialogFamilyCombobox = builder.get_object( \
             "richRuleDialogFamilyCombobox")
+        self.richRuleDialogPriorityEntry = builder.get_object( \
+            "richRuleDialogPriorityEntry")
         self.richRuleDialogElementCheck = builder.get_object( \
             "richRuleDialogElementCheck")
         self.richRuleDialogElementBox = builder.get_object( \
@@ -2021,6 +2027,7 @@ class FirewallConfig(object):
 
     def _add_rich_rule(self, obj):
         family = "all"
+        priority = 0
         src = ""
         dest = ""
         elem = ""
@@ -2030,6 +2037,8 @@ class FirewallConfig(object):
 
         if obj.family:
             family = obj.family
+        if obj.priority:
+            priority = obj.priority
         if obj.action:
             if type(obj.action) == rich.Rich_Accept:
                 action = _("accept")
@@ -2096,8 +2105,8 @@ class FirewallConfig(object):
             if audit == "":
                 audit = _("yes")
 
-        self.richRuleStore.append([obj, family, action, elem, src, dest, log,
-                                   audit])
+        self.richRuleStore.append([obj, family, priority, action, elem, src,
+                                   dest, log, audit])
 
     def richrule_added_cb(self, zone, rule, timeout):
         if not self.runtime_view or zone != self.get_selected_zone():
@@ -3085,6 +3094,7 @@ class FirewallConfig(object):
 
     def add_edit_rich_rule(self, add):
         self.richRuleDialogFamilyCombobox.set_active(0)
+        self.richRuleDialogPriorityEntry.set_value(0)
         self.richRuleDialogElementCheck.set_active(False)
         self.richRuleDialogElementCombobox.set_active(0)
         self.richRuleDialogElementChooser.set_text("")
@@ -3143,6 +3153,8 @@ class FirewallConfig(object):
             if old_obj.family in [ "ipv4", "ipv6" ]:
                 combobox_select_text(self.richRuleDialogFamilyCombobox,
                                      old_obj.family, insensitive=True)
+            if old_obj.priority != 0:
+                self.richRuleDialogPriorityEntry.set_value(old_obj.priority)
 
             if old_obj.element:
                 self.richRuleDialogElementCheck.set_active(True)
@@ -3632,6 +3644,11 @@ class FirewallConfig(object):
             rule = rich.Rich_Rule("ipv6") # ipv6 rule
         else:
             rule = rich.Rich_Rule() # ipv4+ipv6 rule
+
+        # priority
+        priority = self.richRuleDialogPriorityEntry.get_value_as_int()
+        if priority != 0:
+            rule.priority = priority
 
         # element
         if self.richRuleDialogElementCheck.get_active():
