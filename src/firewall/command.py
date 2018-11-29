@@ -393,6 +393,19 @@ class FirewallCommand(object):
         description = settings.getDescription()
         short_description = settings.getShort()
 
+        def rich_rule_sorted_key(rule):
+            priority = 0
+            search_str = "priority="
+            try:
+                i = rule.index(search_str)
+            except ValueError:
+                pass
+            else:
+                i += len(search_str)
+                priority = int(rule[i:i+(rule[i:].index(" "))].replace("\"", ""))
+
+            return priority
+
         attributes = []
         if default_zone is not None:
             if zone == default_zone:
@@ -424,7 +437,8 @@ class FirewallCommand(object):
                        " ".join(["%s/%s" % (port[0], port[1])
                                  for port in source_ports]))
         self.print_msg("  icmp-blocks: " + " ".join(icmp_blocks))
-        self.print_msg("  rich rules: \n\t" + "\n\t".join(rules))
+        self.print_msg("  rich rules: \n\t" + "\n\t".join(
+                            sorted(rules, key=rich_rule_sorted_key)))
 
     def print_service_info(self, service, settings):
         ports = settings.getPorts()
