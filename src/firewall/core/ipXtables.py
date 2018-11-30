@@ -20,6 +20,7 @@
 #
 
 import os.path
+import copy
 
 from firewall.core.base import SHORTCUTS, DEFAULT_ZONE_TARGET
 from firewall.core.prog import runProg
@@ -27,8 +28,9 @@ from firewall.core.logger import log
 from firewall.functions import tempFile, readfile, splitArgs, check_mac, portStr, \
                                check_single_address
 from firewall import config
-from firewall.errors import FirewallError, INVALID_PASSTHROUGH, INVALID_RULE
-from firewall.core.rich import Rich_Accept, Rich_Reject, Rich_Drop, Rich_Mark
+from firewall.errors import FirewallError, INVALID_PASSTHROUGH, INVALID_RULE, UNKNOWN_ERROR
+from firewall.core.rich import Rich_Accept, Rich_Reject, Rich_Drop, Rich_Mark, \
+                               Rich_Masquerade, Rich_ForwardPort, Rich_IcmpBlock
 import string
 
 BUILT_IN_CHAINS = {
@@ -275,6 +277,7 @@ class ip4tables(object):
         self.restore_wait_option = self._detect_restore_wait_option()
         self.fill_exists()
         self.available_tables = []
+        self.rich_rule_priority_counts = {}
 
     def fill_exists(self):
         self.command_exists = os.path.exists(self._command)
@@ -385,10 +388,91 @@ class ip4tables(object):
                     chain = args[i+1]
         return (table, chain)
 
+    def _set_rule_replace_rich_rule_priority(self, rule, rich_rule_priority_counts):
+        """
+        Change something like
+          -t filter -I public_IN %%RICH_RULE_PRIORITY%% 123
+        or
+          -t filter -A public_IN %%RICH_RULE_PRIORITY%% 321
+        into
+          -t filter -I public_IN 4
+        or
+          -t filter -I public_IN
+        """
+        try:
+            i = rule.index("%%RICH_RULE_PRIORITY%%")
+        except ValueError:
+            pass
+        else:
+            rule_add = True
+            insert = False
+            insert_add_index = -1
+            rule.pop(i)
+            priority = rule.pop(i)
+            if type(priority) != int:
+                raise FirewallError(INVALID_RULE, "rich rule priority must be followed by a number")
+
+            table = "filter"
+            for opt in [ "-t", "--table" ]:
+                try:
+                    j = rule.index(opt)
+                except ValueError:
+                    pass
+                else:
+                    if len(rule) >= j+1:
+                        table = rule[j+1]
+            for opt in [ "-A", "--append",
+                         "-I", "--insert",
+                         "-D", "--delete" ]:
+                try:
+                    insert_add_index = rule.index(opt)
+                except ValueError:
+                    pass
+                else:
+                    if len(rule) >= insert_add_index+1:
+                        chain = rule[insert_add_index+1]
+
+                    if opt in [ "-I", "--insert" ]:
+                        insert = True
+                    if opt in [ "-D", "--delete" ]:
+                        rule_add = False
+
+            chain = (table, chain)
+
+            # Add the rule to the priority counts. We don't need to store the
+            # rule, just bump the ref count for the priority value.
+            if not rule_add:
+                if chain not in rich_rule_priority_counts or \
+                   priority not in rich_rule_priority_counts[chain] or \
+                   rich_rule_priority_counts[chain][priority] <= 0:
+                    raise FirewallError(UNKNOWN_ERROR, "nonexistent or underflow of rich rule priority count")
+
+                rich_rule_priority_counts[chain][priority] -= 1
+            else:
+                if chain not in rich_rule_priority_counts:
+                    rich_rule_priority_counts[chain] = {}
+                if priority not in rich_rule_priority_counts[chain]:
+                    rich_rule_priority_counts[chain][priority] = 0
+
+                # calculate index of new rule
+                index = 1
+                for p in sorted(rich_rule_priority_counts[chain].keys()):
+                    if p == priority and insert:
+                        break
+                    index += rich_rule_priority_counts[chain][p]
+                    if p == priority:
+                        break
+
+                rich_rule_priority_counts[chain][priority] += 1
+
+                rule[insert_add_index] = "-I"
+                rule.insert(insert_add_index+2, "%d" % index)
+
     def set_rules(self, rules, log_denied):
         temp_file = tempFile()
 
         table_rules = { }
+        rich_rule_priority_counts = copy.deepcopy(self.rich_rule_priority_counts)
         for _rule in rules:
             rule = _rule[:]
 
@@ -411,6 +495,8 @@ class ip4tables(object):
                     rule[i:i+1] = [ "-m", "pkttype", "--pkt-type", log_denied ]
                 else:
                     rule.pop(i)
+
+            self._set_rule_replace_rich_rule_priority(rule, rich_rule_priority_counts)
 
             table = "filter"
             # get table form rule
@@ -473,6 +559,7 @@ class ip4tables(object):
         if status != 0:
             raise ValueError("'%s %s' failed: %s" % (self._restore_command,
                                                      " ".join(args), ret))
+        self.rich_rule_priority_counts = rich_rule_priority_counts
         return ret
 
     def set_rule(self, rule, log_denied):
@@ -496,7 +583,11 @@ class ip4tables(object):
             else:
                 rule.pop(i)
 
-        return self.__run(rule)
+        rich_rule_priority_counts = copy.deepcopy(self.rich_rule_priority_counts)
+        self._set_rule_replace_rich_rule_priority(rule, self.rich_rule_priority_counts)
+        output = self.__run(rule)
+        self.rich_rule_priority_counts = rich_rule_priority_counts
+        return output
 
     def get_available_tables(self, table=None):
         ret = []
@@ -546,6 +637,7 @@ class ip4tables(object):
         return wait_option
 
     def build_flush_rules(self):
+        self.rich_rule_priority_counts = {}
         rules = []
         for table in BUILT_IN_CHAINS.keys():
             # Flush firewall rules: -F
@@ -712,16 +804,22 @@ class ip4tables(object):
         OUR_CHAINS[table].update(set([_zone,
                                       "%s_log" % _zone,
                                       "%s_deny" % _zone,
+                                      "%s_rich_rule_pre" % _zone,
+                                      "%s_rich_rule_post" % _zone,
                                       "%s_allow" % _zone]))
 
         rules = []
         rules.append([ "-N", _zone, "-t", table ])
+        rules.append([ "-N", "%s_rich_rule_pre" % _zone, "-t", table ])
         rules.append([ "-N", "%s_log" % _zone, "-t", table ])
         rules.append([ "-N", "%s_deny" % _zone, "-t", table ])
         rules.append([ "-N", "%s_allow" % _zone, "-t", table ])
-        rules.append([ "-I", _zone, "1", "-t", table, "-j", "%s_log" % _zone ])
-        rules.append([ "-I", _zone, "2", "-t", table, "-j", "%s_deny" % _zone ])
-        rules.append([ "-I", _zone, "3", "-t", table, "-j", "%s_allow" % _zone ])
+        rules.append([ "-N", "%s_rich_rule_post" % _zone, "-t", table ])
+        rules.append([ "-I", _zone, "1", "-t", table, "-j", "%s_rich_rule_pre" % _zone ])
+        rules.append([ "-I", _zone, "2", "-t", table, "-j", "%s_log" % _zone ])
+        rules.append([ "-I", _zone, "3", "-t", table, "-j", "%s_deny" % _zone ])
+        rules.append([ "-I", _zone, "4", "-t", table, "-j", "%s_allow" % _zone ])
+        rules.append([ "-I", _zone, "5", "-t", table, "-j", "%s_rich_rule_post" % _zone ])
 
         # Handle trust, block and drop zones:
         # Add an additional rule with the zone target (accept, reject
@@ -733,17 +831,17 @@ class ip4tables(object):
         if table == "filter" and \
            target in [ "ACCEPT", "REJECT", "%%REJECT%%", "DROP" ] and \
            chain in [ "INPUT", "FORWARD_IN", "FORWARD_OUT", "OUTPUT" ]:
-            rules.append([ "-I", _zone, "4", "-t", table, "-j", target ])
+            rules.append([ "-I", _zone, "6", "-t", table, "-j", target ])
 
         if self._fw.get_log_denied() != "off":
             if table == "filter" and \
                chain in [ "INPUT", "FORWARD_IN", "FORWARD_OUT", "OUTPUT" ]:
                 if target in [ "REJECT", "%%REJECT%%" ]:
-                    rules.append([ "-I", _zone, "4", "-t", table, "%%LOGTYPE%%",
+                    rules.append([ "-I", _zone, "6", "-t", table, "%%LOGTYPE%%",
                                    "-j", "LOG", "--log-prefix",
                                    "\"%s_REJECT: \"" % _zone ])
                 if target == "DROP":
-                    rules.append([ "-I", _zone, "4", "-t", table, "%%LOGTYPE%%",
+                    rules.append([ "-I", _zone, "6", "-t", table, "%%LOGTYPE%%",
                                    "-j", "LOG", "--log-prefix",
                                    "\"%s_DROP: \"" % _zone ])
         return rules
@@ -753,13 +851,53 @@ class ip4tables(object):
             return [ "-m", "limit", "--limit", limit.value ]
         return []
 
+    def _rich_rule_chain_suffix(self, rich_rule):
+        if type(rich_rule.element) in [Rich_Masquerade, Rich_ForwardPort, Rich_IcmpBlock]:
+            # These are special and don't have an explicit action
+            pass
+        elif rich_rule.action:
+            if type(rich_rule.action) not in [Rich_Accept, Rich_Reject, Rich_Drop, Rich_Mark]:
+                raise FirewallError(INVALID_RULE, "Unknown action %s" % type(rich_rule.action))
+        else:
+            raise FirewallError(INVALID_RULE, "No rule action specified.")
+
+        if rich_rule.priority == 0:
+            if type(rich_rule.element) in [Rich_Masquerade, Rich_ForwardPort] or \
+               type(rich_rule.action) in [Rich_Accept, Rich_Mark]:
+                return "allow"
+            elif type(rich_rule.element) in [Rich_IcmpBlock] or \
+                 type(rich_rule.action) in [Rich_Reject, Rich_Drop]:
+                return "deny"
+        elif rich_rule.priority < 0:
+            return "rich_rule_pre"
+        else:
+            return "rich_rule_post"
+
+    def _rich_rule_chain_suffix_from_log(self, rich_rule):
+        if not rich_rule.log and not rich_rule.audit:
+            raise FirewallError(INVALID_RULE, "Not log or audit")
+
+        if rich_rule.priority == 0:
+            return "log"
+        elif rich_rule.priority < 0:
+            return "rich_rule_pre"
+        else:
+            return "rich_rule_post"
+
+    def _rich_rule_priority_fragment(self, rich_rule):
+        if rich_rule.priority == 0:
+            return []
+        return ["%%RICH_RULE_PRIORITY%%", rich_rule.priority]
+
     def _rich_rule_log(self, rich_rule, enable, table, target, rule_fragment):
         if not rich_rule.log:
             return []
 
         add_del = { True: "-A", False: "-D" }[enable]
 
-        rule = [ add_del, "%s_log" % (target), "-t", table]
+        chain_suffix = self._rich_rule_chain_suffix_from_log(rich_rule)
+        rule = ["-t", table, add_del, "%s_%s" % (target, chain_suffix)]
+        rule += self._rich_rule_priority_fragment(rich_rule)
         rule += rule_fragment + [ "-j", "LOG" ]
         if rich_rule.log.prefix:
             rule += [ "--log-prefix", "'%s'" % rich_rule.log.prefix ]
@@ -775,7 +913,10 @@ class ip4tables(object):
 
         add_del = { True: "-A", False: "-D" }[enable]
 
-        rule = [add_del, "%s_log" % (target), "-t", table] + rule_fragment
+        chain_suffix = self._rich_rule_chain_suffix_from_log(rich_rule)
+        rule = ["-t", table, add_del, "%s_%s" % (target, chain_suffix)]
+        rule += self._rich_rule_priority_fragment(rich_rule)
+        rule += rule_fragment
         if type(rich_rule.action) == Rich_Accept:
             _type = "accept"
         elif type(rich_rule.action) == Rich_Reject:
@@ -795,28 +936,28 @@ class ip4tables(object):
 
         add_del = { True: "-A", False: "-D" }[enable]
 
+        chain_suffix = self._rich_rule_chain_suffix(rich_rule)
+        chain = "%s_%s" % (target, chain_suffix)
         if type(rich_rule.action) == Rich_Accept:
-            chain = "%s_allow" % target
             rule_action = [ "-j", "ACCEPT" ]
         elif type(rich_rule.action) == Rich_Reject:
-            chain = "%s_deny" % target
             rule_action = [ "-j", "REJECT" ]
             if rich_rule.action.type:
                 rule_action += [ "--reject-with", rich_rule.action.type ]
         elif type(rich_rule.action) ==  Rich_Drop:
-            chain = "%s_deny" % target
             rule_action = [ "-j", "DROP" ]
         elif type(rich_rule.action) == Rich_Mark:
             target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["PREROUTING"],
                                                 zone=zone)
             table = "mangle"
-            chain = "%s_allow" % target
+            chain = "%s_%s" % (target, chain_suffix)
             rule_action = [ "-j", "MARK", "--set-xmark", rich_rule.action.set ]
         else:
             raise FirewallError(INVALID_RULE,
                                 "Unknown action %s" % type(rich_rule.action))
 
-        rule = [ add_del, chain, "-t", table ]
+        rule = ["-t", table, add_del, chain]
+        rule += self._rich_rule_priority_fragment(rich_rule)
         rule += rule_fragment + rule_action
         rule += self._rule_limit(rich_rule.action.limit)
 
@@ -957,11 +1098,15 @@ class ip4tables(object):
                                             zone=zone)
         rule_fragment = []
         if rich_rule:
+            chain_suffix = self._rich_rule_chain_suffix(rich_rule)
+            rule_fragment += self._rich_rule_priority_fragment(rich_rule)
             rule_fragment += self._rich_rule_destination_fragment(rich_rule.destination)
             rule_fragment += self._rich_rule_source_fragment(rich_rule.source)
+        else:
+            chain_suffix = "allow"
 
         rules = []
-        rules.append([ add_del, "%s_allow" % (target), "-t", "nat" ]
+        rules.append(["-t", "nat", add_del, "%s_%s" % (target, chain_suffix)]
                      + rule_fragment +
                      [ "!", "-o", "lo", "-j", "MASQUERADE" ])
         # FORWARD_OUT
@@ -969,10 +1114,14 @@ class ip4tables(object):
                                             zone=zone)
         rule_fragment = []
         if rich_rule:
+            chain_suffix = self._rich_rule_chain_suffix(rich_rule)
+            rule_fragment += self._rich_rule_priority_fragment(rich_rule)
             rule_fragment += self._rich_rule_destination_fragment(rich_rule.destination)
             rule_fragment += self._rich_rule_source_fragment(rich_rule.source)
+        else:
+            chain_suffix = "allow"
 
-        rules.append([ add_del, "%s_allow" % (target), "-t", "filter"]
+        rules.append(["-t", "filter", add_del, "%s_%s" % (target, chain_suffix)]
                      + rule_fragment +
                      ["-m", "conntrack", "--ctstate", "NEW,UNTRACKED", "-j", "ACCEPT" ])
 
@@ -998,28 +1147,35 @@ class ip4tables(object):
                                             zone=zone)
 
         rule_fragment = [ "-p", protocol, "--dport", portStr(port) ]
+        rich_rule_priority_fragment = []
         if rich_rule:
+            chain_suffix = self._rich_rule_chain_suffix(rich_rule)
+            rich_rule_priority_fragment = self._rich_rule_priority_fragment(rich_rule)
             rule_fragment += self._rich_rule_destination_fragment(rich_rule.destination)
             rule_fragment += self._rich_rule_source_fragment(rich_rule.source)
+        else:
+            chain_suffix = "allow"
 
         rules = []
         if rich_rule:
             rules.append(self._rich_rule_log(rich_rule, enable, "mangle", target, rule_fragment))
-        rules.append([ add_del, "%s_allow" % (target), "-t", "mangle"]
-                     + rule_fragment + 
+        rules.append(["-t", "mangle", add_del, "%s_%s" % (target, chain_suffix)]
+                     + rich_rule_priority_fragment + rule_fragment +
                      [ "-j", "MARK", "--set-mark", mark_str ])
 
         # local and remote
-        rules.append([ add_del, "%s_allow" % (target), "-t", "nat",
-                     "-p", protocol ] + mark +
+        rules.append(["-t", "nat", add_del, "%s_%s" % (target, chain_suffix)]
+                     + rich_rule_priority_fragment +
+                     ["-p", protocol ] + mark +
                      [ "-j", "DNAT", "--to-destination", to ])
 
         target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[filter_chain],
                                             zone=zone)
-        rules.append([ add_del, "%s_allow" % (target),
-                     "-t", "filter", "-m", "conntrack",
-                     "--ctstate", "NEW,UNTRACKED" ] +
-                     mark + [ "-j", "ACCEPT" ])
+        rules.append(["-t", "filter", add_del, "%s_%s" % (target, chain_suffix)]
+                     + rich_rule_priority_fragment +
+                     ["-m", "conntrack", "--ctstate", "NEW,UNTRACKED" ]
+                     + mark +
+                     [ "-j", "ACCEPT" ])
 
         return rules
 
@@ -1057,7 +1213,9 @@ class ip4tables(object):
                 if rich_rule.action:
                     rules.append(self._rich_rule_action(zone, rich_rule, enable, table, target, rule_fragment))
                 else:
-                    rules.append([ add_del, "%s_deny" % target, "-t", table ]
+                    chain_suffix = self._rich_rule_chain_suffix(rich_rule)
+                    rules.append(["-t", table, add_del, "%s_%s" % (target, chain_suffix)]
+                                 + self._rich_rule_priority_fragment(rich_rule)
                                  + rule_fragment +
                                  [ "-j", "%%REJECT%%" ])
             else:
@@ -1076,7 +1234,7 @@ class ip4tables(object):
         table = "filter"
         rules = []
         for chain in [ "INPUT", "FORWARD_IN" ]:
-            rule_idx = 4
+            rule_idx = 6
             _zone = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[chain],
                                                zone=zone)
 
