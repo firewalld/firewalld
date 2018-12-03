@@ -314,38 +314,20 @@ class nftables(object):
         # packets while initially starting and for panic mode. As such, using
         # hooks with a higher priority than our base chains is sufficient.
         #
-        table_chains = []
-        for table in list(IPTABLES_TO_NFT_HOOK.keys()):
-            for chain in IPTABLES_TO_NFT_HOOK[table]:
-                table_chains.append((table, chain))
-
         table_name = TABLE_NAME + "_" + "policy_drop"
-
-        def _policy_drop_helper(table, chain, family, rules):
-            _chain = "%s_%s" % (table, chain)
-            _hook = IPTABLES_TO_NFT_HOOK[table][chain][0]
-            # add hooks with priority -1, only contain drop rule
-            _priority = IPTABLES_TO_NFT_HOOK[table][chain][1] - 1
-            _add_chain = "add chain %s %s %s '{ type filter hook %s priority %d ; }'" % \
-                         (family, table_name, _chain, _hook, _priority)
-            rules.append(splitArgs(_add_chain))
-            rules.append(["add", "rule", family, table_name, _chain, "drop"])
 
         rules = []
         if policy == "DROP":
-            for family in ["inet", "ip", "ip6"]:
-                rules.append(["add", "table", family, table_name])
+            rules.append(["add", "table", "inet", table_name])
 
-            for table,chain in table_chains:
-                if table == "nat":
-                    # nat requires two families
-                    for family in ["ip", "ip6"]:
-                        _policy_drop_helper(table, chain, family, rules)
-                else:
-                    _policy_drop_helper(table, chain, "inet", rules)
+            # To drop everything we need to use the "raw" priority. These occur
+            # before conntrack, mangle, nat, etc
+            for hook in ["prerouting", "output"]:
+                _add_chain = "add chain inet %s %s_%s '{ type filter hook %s priority %d ; policy drop ; }'" % \
+                             (table_name, "raw", hook, hook, -300 + NFT_HOOK_OFFSET - 1)
+                rules.append(splitArgs(_add_chain))
         elif policy == "ACCEPT":
-            for family in ["inet", "ip", "ip6"]:
-                rules.append(["delete", "table", family, table_name])
+            rules.append(["delete", "table", "inet", table_name])
         else:
             FirewallError(UNKNOWN_ERROR, "not implemented")
 
