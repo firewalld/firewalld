@@ -1690,7 +1690,7 @@ class FirewallZone(object):
                         if backend.is_ipv_supported(ipv):
                             zone_transaction.add_post(enable_ip_forwarding, ipv)
 
-                rules = backend.build_zone_masquerade_rules(enable, zone)
+                rules = backend.build_zone_masquerade_rules(enable, zone, rule)
                 zone_transaction.add_rules(backend, rules)
 
             # FORWARD PORT
