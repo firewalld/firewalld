@@ -1702,17 +1702,10 @@ class FirewallZone(object):
                 for ipv in ipvs:
                     if backend.is_ipv_supported(ipv):
                         self.check_forward_port(ipv, port, protocol, toport, toaddr)
-
-                if check_single_address("ipv6", toaddr):
-                    ipv = "ipv6"
-                else:
-                    ipv = "ipv4"
-
-                if not backend.is_ipv_supported(ipv):
-                    continue
+                    if enable:
+                        zone_transaction.add_post(enable_ip_forwarding, ipv)
 
                 if enable:
-                    zone_transaction.add_post(enable_ip_forwarding, ipv)
                     mark_id = self._fw.new_mark()
 
                 filter_chain = "INPUT" if not toaddr else "FORWARD_IN"
