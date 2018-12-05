@@ -731,36 +731,30 @@ FWD_START_TEST([direct ebtables])
     FWD_CHECK([--direct --get-chains eb filter | grep mychain], 0, ignore)
     FWD_CHECK([--direct --add-rule eb filter mychain 1 -p 0x86dd -j DROP], 0, ignore)
     FWD_CHECK([--direct --add-rule eb filter mychain 999 -p IPv6 --ip6-protocol UDP --ip6-source-port ! 12345 -j DROP], 0, ignore)
-m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
     EBTABLES_LIST_RULES([filter], [mychain], 0, [dnl
--p IPv6 -j DROP
--p IPv6 --ip6-proto udp --ip6-sport ! 12345 -j DROP
--j RETURN
-])
-])
+        -p IPv6 -j DROP
+        -p IPv6 --ip6-proto udp --ip6-sport ! 12345 -j DROP
+        -j RETURN
+    ])
     FWD_CHECK([--direct --remove-rule eb filter mychain 1 -p 0x86dd -j DROP], 0, ignore)
-m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
     EBTABLES_LIST_RULES([filter], [mychain], 0, [dnl
--p IPv6 --ip6-proto udp --ip6-sport ! 12345 -j DROP
--j RETURN
-])
-])
+        -p IPv6 --ip6-proto udp --ip6-sport ! 12345 -j DROP
+        -j RETURN
+    ])
 
     FWD_CHECK([--direct --add-rule eb filter INPUT 1 -p 0x86dd -j DROP], 0, ignore)
     FWD_CHECK([--direct --add-rule eb filter INPUT_direct 1 -p 0x86dd -j DROP], 0, ignore)
-m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [dnl
-m4_if(nftables, FIREWALL_BACKEND, [dnl
-    EBTABLES_LIST_RULES([filter], [INPUT], 0, [dnl
--p IPv6 -j DROP
--p IPv6 -j DROP
-])], [dnl
-    EBTABLES_LIST_RULES([filter], [INPUT_direct], 0, [dnl
--p IPv6 -j DROP
--p IPv6 -j DROP
--j RETURN
-])
-])
-])
+    m4_if(nftables, FIREWALL_BACKEND, [dnl
+        EBTABLES_LIST_RULES([filter], [INPUT], 0, [dnl
+            -p IPv6 -j DROP
+            -p IPv6 -j DROP
+        ])], [dnl
+        EBTABLES_LIST_RULES([filter], [INPUT_direct], 0, [dnl
+            -p IPv6 -j DROP
+            -p IPv6 -j DROP
+            -j RETURN
+        ])
+    ])
 
     FWD_CHECK([--direct --remove-rules eb filter INPUT], 0, ignore)
     FWD_CHECK([--direct --remove-rules eb filter mychain], 0, ignore)
@@ -769,12 +763,10 @@ m4_if(nftables, FIREWALL_BACKEND, [dnl
     FWD_CHECK([--permanent --direct --get-chains eb filter | grep mychain], 0, ignore)
     FWD_CHECK([--permanent --direct --add-rule eb filter mychain 1 -p 0x86dd -j DROP], 0, ignore)
     FWD_RELOAD
-m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
     EBTABLES_LIST_RULES([filter], [mychain], 0, [dnl
--p IPv6 -j DROP
--j RETURN
-])
-])
+        -p IPv6 -j DROP
+        -j RETURN
+    ])
 FWD_END_TEST
 
 FWD_START_TEST([lockdown])
