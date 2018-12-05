@@ -900,7 +900,6 @@ class nftables(object):
 
         rule_fragment = []
         if rich_rule:
-            rule_fragment += self._rich_rule_family_fragment(rich_rule.family)
             rule_fragment += self._rich_rule_destination_fragment(rich_rule.destination)
             rule_fragment += self._rich_rule_source_fragment(rich_rule.source)
 
@@ -912,10 +911,10 @@ class nftables(object):
         # nat tables needs to use ip/ip6 family
         rules = []
         if rich_rule and (rich_rule.family and rich_rule.family == "ipv6"
-           or rich_rule.source and check_address("ipv6", rich_rule.source)):
+           or rich_rule.source and check_address("ipv6", rich_rule.source.addr)):
             rules.extend(self._build_zone_masquerade_nat_rules(enable, zone, "ip6", rich_rule))
-        if rich_rule and (rich_rule.family and rich_rule.family == "ipv4"
-           or rich_rule.source and check_address("ipv4", rich_rule.source)):
+        elif rich_rule and (rich_rule.family and rich_rule.family == "ipv4"
+           or rich_rule.source and check_address("ipv4", rich_rule.source.addr)):
             rules.extend(self._build_zone_masquerade_nat_rules(enable, zone, "ip", rich_rule))
         else:
             rules.extend(self._build_zone_masquerade_nat_rules(enable, zone, "ip6", rich_rule))
