@@ -804,22 +804,22 @@ class ip4tables(object):
         OUR_CHAINS[table].update(set([_zone,
                                       "%s_log" % _zone,
                                       "%s_deny" % _zone,
-                                      "%s_rich_rule_pre" % _zone,
-                                      "%s_rich_rule_post" % _zone,
+                                      "%s_pre" % _zone,
+                                      "%s_post" % _zone,
                                       "%s_allow" % _zone]))
 
         rules = []
         rules.append([ "-N", _zone, "-t", table ])
-        rules.append([ "-N", "%s_rich_rule_pre" % _zone, "-t", table ])
+        rules.append([ "-N", "%s_pre" % _zone, "-t", table ])
         rules.append([ "-N", "%s_log" % _zone, "-t", table ])
         rules.append([ "-N", "%s_deny" % _zone, "-t", table ])
         rules.append([ "-N", "%s_allow" % _zone, "-t", table ])
-        rules.append([ "-N", "%s_rich_rule_post" % _zone, "-t", table ])
-        rules.append([ "-I", _zone, "1", "-t", table, "-j", "%s_rich_rule_pre" % _zone ])
+        rules.append([ "-N", "%s_post" % _zone, "-t", table ])
+        rules.append([ "-I", _zone, "1", "-t", table, "-j", "%s_pre" % _zone ])
         rules.append([ "-I", _zone, "2", "-t", table, "-j", "%s_log" % _zone ])
         rules.append([ "-I", _zone, "3", "-t", table, "-j", "%s_deny" % _zone ])
         rules.append([ "-I", _zone, "4", "-t", table, "-j", "%s_allow" % _zone ])
-        rules.append([ "-I", _zone, "5", "-t", table, "-j", "%s_rich_rule_post" % _zone ])
+        rules.append([ "-I", _zone, "5", "-t", table, "-j", "%s_post" % _zone ])
 
         # Handle trust, block and drop zones:
         # Add an additional rule with the zone target (accept, reject
@@ -869,9 +869,9 @@ class ip4tables(object):
                  type(rich_rule.action) in [Rich_Reject, Rich_Drop]:
                 return "deny"
         elif rich_rule.priority < 0:
-            return "rich_rule_pre"
+            return "pre"
         else:
-            return "rich_rule_post"
+            return "post"
 
     def _rich_rule_chain_suffix_from_log(self, rich_rule):
         if not rich_rule.log and not rich_rule.audit:
@@ -880,9 +880,9 @@ class ip4tables(object):
         if rich_rule.priority == 0:
             return "log"
         elif rich_rule.priority < 0:
-            return "rich_rule_pre"
+            return "pre"
         else:
-            return "rich_rule_post"
+            return "post"
 
     def _rich_rule_priority_fragment(self, rich_rule):
         if rich_rule.priority == 0:

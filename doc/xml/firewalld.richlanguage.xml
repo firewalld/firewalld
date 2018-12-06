@@ -344,21 +344,21 @@ limit value="rate/duration"
       </para>
       <para>
 	<programlisting>
-<replaceable>zone</replaceable>_rich_rule_pre
+<replaceable>zone</replaceable>_pre
 <replaceable>zone</replaceable>_log
 <replaceable>zone</replaceable>_deny
 <replaceable>zone</replaceable>_allow
-<replaceable>zone</replaceable>_rich_rule_post
+<replaceable>zone</replaceable>_post
 	</programlisting>
       </para>
       <para>
-        When <emphasis>priority &lt; 0</emphasis>, the rich rule will be placed in the <replaceable>zone</replaceable>_rich_rule_pre chain.
+        When <emphasis>priority &lt; 0</emphasis>, the rich rule will be placed in the <replaceable>zone</replaceable>_pre chain.
       </para>
       <para>
         When <emphasis>priority == 0</emphasis>Then all logging rules will be placed in the <replaceable>zone</replaceable>_log chain. All reject and drop rules will be placed in the <replaceable>zone</replaceable>_deny chain, which will be walked after the log chain. All accept rules will be placed in the <replaceable>zone</replaceable>_allow chain, which will be walked after the deny chain. If a rule contains log and also deny or allow actions, the parts are placed in the matching chains.
       </para>
       <para>
-        When <emphasis>priority &gt; 0</emphasis>, the rich rule will be placed in the <replaceable>zone</replaceable>_rich_rule_post chain.
+        When <emphasis>priority &gt; 0</emphasis>, the rich rule will be placed in the <replaceable>zone</replaceable>_post chain.
       </para>
     </refsect2>
   </refsect1>

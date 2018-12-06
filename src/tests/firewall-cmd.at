@@ -871,11 +871,11 @@ FWD_START_TEST([rich rules priority])
     NFT_LIST_RULES([inet], [filter_IN_public], 0, [dnl
         table inet firewalld {
         chain filter_IN_public {
-        jump filter_IN_public_rich_rule_pre
+        jump filter_IN_public_pre
         jump filter_IN_public_log
         jump filter_IN_public_deny
         jump filter_IN_public_allow
-        jump filter_IN_public_rich_rule_post
+        jump filter_IN_public_post
         meta l4proto { icmp, ipv6-icmp } accept
         }
         }
@@ -883,45 +883,45 @@ FWD_START_TEST([rich rules priority])
     NFT_LIST_RULES([inet], [filter_FWDI_public], 0, [dnl
         table inet firewalld {
         chain filter_FWDI_public {
-        jump filter_FWDI_public_rich_rule_pre
+        jump filter_FWDI_public_pre
         jump filter_FWDI_public_log
         jump filter_FWDI_public_deny
         jump filter_FWDI_public_allow
-        jump filter_FWDI_public_rich_rule_post
+        jump filter_FWDI_public_post
         meta l4proto { icmp, ipv6-icmp } accept
         }
         }
     ])], [
     IPTABLES_LIST_RULES([filter], [IN_public], 0, [dnl
-        IN_public_rich_rule_pre all -- 0.0.0.0/0 0.0.0.0/0
+        IN_public_pre all -- 0.0.0.0/0 0.0.0.0/0
         IN_public_log all -- 0.0.0.0/0 0.0.0.0/0
         IN_public_deny all -- 0.0.0.0/0 0.0.0.0/0
         IN_public_allow all -- 0.0.0.0/0 0.0.0.0/0
-        IN_public_rich_rule_post all -- 0.0.0.0/0 0.0.0.0/0
+        IN_public_post all -- 0.0.0.0/0 0.0.0.0/0
         ACCEPT icmp -- 0.0.0.0/0 0.0.0.0/0
     ])
     IPTABLES_LIST_RULES([filter], [FWDI_public], 0, [dnl
-        FWDI_public_rich_rule_pre all -- 0.0.0.0/0 0.0.0.0/0
+        FWDI_public_pre all -- 0.0.0.0/0 0.0.0.0/0
         FWDI_public_log all -- 0.0.0.0/0 0.0.0.0/0
         FWDI_public_deny all -- 0.0.0.0/0 0.0.0.0/0
         FWDI_public_allow all -- 0.0.0.0/0 0.0.0.0/0
-        FWDI_public_rich_rule_post all -- 0.0.0.0/0 0.0.0.0/0
+        FWDI_public_post all -- 0.0.0.0/0 0.0.0.0/0
         ACCEPT icmp -- 0.0.0.0/0 0.0.0.0/0
     ])
     IP6TABLES_LIST_RULES([filter], [IN_public], 0, [dnl
-        IN_public_rich_rule_pre all ::/0 ::/0
+        IN_public_pre all ::/0 ::/0
         IN_public_log all ::/0 ::/0
         IN_public_deny all ::/0 ::/0
         IN_public_allow all ::/0 ::/0
-        IN_public_rich_rule_post all ::/0 ::/0
+        IN_public_post all ::/0 ::/0
         ACCEPT icmpv6 ::/0 ::/0
     ])
     IP6TABLES_LIST_RULES([filter], [FWDI_public], 0, [dnl
-        FWDI_public_rich_rule_pre all ::/0 ::/0
+        FWDI_public_pre all ::/0 ::/0
         FWDI_public_log all ::/0 ::/0
         FWDI_public_deny all ::/0 ::/0
         FWDI_public_allow all ::/0 ::/0
-        FWDI_public_rich_rule_post all ::/0 ::/0
+        FWDI_public_post all ::/0 ::/0
         ACCEPT icmpv6 ::/0 ::/0
     ])])
 
@@ -1004,17 +1004,17 @@ FWD_START_TEST([rich rules priority])
     FWD_CHECK([--add-rich-rule=rich_rule_str], 0, ignore)
     FWD_CHECK([--query-rich-rule=rich_rule_str], 0, ignore)
     m4_if(nftables, FIREWALL_BACKEND, [
-    NFT_LIST_RULES([inet], [filter_IN_public_rich_rule_post], 0, [dnl
+    NFT_LIST_RULES([inet], [filter_IN_public_post], 0, [dnl
         table inet firewalld {
-        chain filter_IN_public_rich_rule_post {
+        chain filter_IN_public_post {
         drop
         }
         }
     ])], [
-    IPTABLES_LIST_RULES([filter], [IN_public_rich_rule_post], 0, [dnl
+    IPTABLES_LIST_RULES([filter], [IN_public_post], 0, [dnl
         DROP all -- 0.0.0.0/0 0.0.0.0/0
     ])
-    IP6TABLES_LIST_RULES([filter], [IN_public_rich_rule_post], 0, [dnl
+    IP6TABLES_LIST_RULES([filter], [IN_public_post], 0, [dnl
         DROP all ::/0 ::/0
     ])])
     FWD_CHECK([--remove-rich-rule=rich_rule_str], 0, ignore)
@@ -1043,9 +1043,9 @@ FWD_START_TEST([rich rules priority])
     FWD_CHECK([--add-rich-rule='rule family="ipv6" priority=-123 forward-port port="999" protocol="tcp" to-port="99"'], 0, ignore)
     FWD_CHECK([--add-rich-rule='rule family="ipv6" priority=-123 forward-port port="9999" protocol="tcp" to-port="9999" to-addr="1234::4321"'], 0, ignore)
     m4_if(nftables, FIREWALL_BACKEND, [
-    NFT_LIST_RULES([inet], [filter_IN_public_rich_rule_pre], 0, [dnl
+    NFT_LIST_RULES([inet], [filter_IN_public_pre], 0, [dnl
         table inet firewalld {
-        chain filter_IN_public_rich_rule_pre {
+        chain filter_IN_public_pre {
         ct state new,untracked meta mark 0x00000069 accept
         ct state new,untracked meta mark 0x00000066 accept
         ip saddr 10.1.0.0/16 drop
@@ -1062,9 +1062,9 @@ FWD_START_TEST([rich rules priority])
         }
         }
     ])
-    NFT_LIST_RULES([inet], [filter_FWDI_public_rich_rule_pre], 0, [dnl
+    NFT_LIST_RULES([inet], [filter_FWDI_public_pre], 0, [dnl
         table inet firewalld {
-        chain filter_FWDI_public_rich_rule_pre {
+        chain filter_FWDI_public_pre {
         ct state new,untracked meta mark 0x0000006a accept
         ct state new,untracked meta mark 0x00000067 accept
         }
@@ -1077,9 +1077,9 @@ FWD_START_TEST([rich rules priority])
         }
         }
     ])
-    NFT_LIST_RULES([inet], [filter_FWDO_public_rich_rule_pre], 0, [dnl
+    NFT_LIST_RULES([inet], [filter_FWDO_public_pre], 0, [dnl
         table inet firewalld {
-        chain filter_FWDO_public_rich_rule_pre {
+        chain filter_FWDO_public_pre {
         ip saddr 10.1.1.0/24 ct state new,untracked accept
         }
         }
@@ -1091,9 +1091,9 @@ FWD_START_TEST([rich rules priority])
         }
         }
     ])
-    NFT_LIST_RULES([ip], [nat_PRE_public_rich_rule_pre], 0, [dnl
+    NFT_LIST_RULES([ip], [nat_PRE_public_pre], 0, [dnl
         table ip firewalld {
-        chain nat_PRE_public_rich_rule_pre {
+        chain nat_PRE_public_pre {
         meta l4proto tcp meta mark 0x00000066 redirect to :80
         meta l4proto tcp meta mark 0x00000067 dnat to 10.1.1.1:80
         }
@@ -1107,9 +1107,9 @@ FWD_START_TEST([rich rules priority])
         }
         }
     ])
-    NFT_LIST_RULES([ip], [nat_POST_public_rich_rule_pre], 0, [dnl
+    NFT_LIST_RULES([ip], [nat_POST_public_pre], 0, [dnl
         table ip firewalld {
-        chain nat_POST_public_rich_rule_pre {
+        chain nat_POST_public_pre {
         ip saddr 10.1.1.0/24 oifname != "lo" masquerade
         }
         }
@@ -1121,9 +1121,9 @@ FWD_START_TEST([rich rules priority])
         }
         }
     ])
-    NFT_LIST_RULES([ip6], [nat_PRE_public_rich_rule_pre], 0,
+    NFT_LIST_RULES([ip6], [nat_PRE_public_pre], 0,
         [[table ip6 firewalld {
-        chain nat_PRE_public_rich_rule_pre {
+        chain nat_PRE_public_pre {
         meta l4proto tcp meta mark 0x00000069 redirect to :99
         meta l4proto tcp meta mark 0x0000006a dnat to [1234::4321]:9999
         }
@@ -1136,9 +1136,9 @@ FWD_START_TEST([rich rules priority])
         }
         }
     ])
-    NFT_LIST_RULES([ip6], [nat_POST_public_rich_rule_pre], 0, [dnl
+    NFT_LIST_RULES([ip6], [nat_POST_public_pre], 0, [dnl
         table ip6 firewalld {
-        chain nat_POST_public_rich_rule_pre {
+        chain nat_POST_public_pre {
         }
         }
     ])
@@ -1148,9 +1148,9 @@ FWD_START_TEST([rich rules priority])
         }
         }
     ])
-    NFT_LIST_RULES([inet], [mangle_PRE_public_rich_rule_pre], 0, [dnl
+    NFT_LIST_RULES([inet], [mangle_PRE_public_pre], 0, [dnl
         table inet firewalld {
-        chain mangle_PRE_public_rich_rule_pre {
+        chain mangle_PRE_public_pre {
         meta nfproto ipv6 tcp dport 999 meta mark set 0x00000069
         meta nfproto ipv6 tcp dport 9999 meta mark set 0x0000006a
         meta nfproto ipv4 tcp dport 8888 meta mark set 0x00000066
@@ -1167,7 +1167,7 @@ FWD_START_TEST([rich rules priority])
         }
         }
     ])], [
-    IPTABLES_LIST_RULES([filter], [IN_public_rich_rule_pre], 0, [dnl
+    IPTABLES_LIST_RULES([filter], [IN_public_pre], 0, [dnl
         ACCEPT all -- 0.0.0.0/0 0.0.0.0/0 ctstate NEW,UNTRACKED mark match 0x66
         DROP all -- 10.1.0.0/16 0.0.0.0/0
     ])
@@ -1175,19 +1175,19 @@ FWD_START_TEST([rich rules priority])
         ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:22 ctstate NEW,UNTRACKED
         ACCEPT all -- 0.0.0.0/0 0.0.0.0/0 ctstate NEW,UNTRACKED mark match 0x64
     ])
-    IPTABLES_LIST_RULES([filter], [FWDI_public_rich_rule_pre], 0, [dnl
+    IPTABLES_LIST_RULES([filter], [FWDI_public_pre], 0, [dnl
         ACCEPT all -- 0.0.0.0/0 0.0.0.0/0 ctstate NEW,UNTRACKED mark match 0x67
     ])
     IPTABLES_LIST_RULES([filter], [FWDI_public_allow], 0, [dnl
         ACCEPT all -- 0.0.0.0/0 0.0.0.0/0 ctstate NEW,UNTRACKED mark match 0x65
     ])
-    IPTABLES_LIST_RULES([filter], [FWDO_public_rich_rule_pre], 0, [dnl
+    IPTABLES_LIST_RULES([filter], [FWDO_public_pre], 0, [dnl
         ACCEPT all -- 10.1.1.0/24 0.0.0.0/0 ctstate NEW,UNTRACKED
     ])
     IPTABLES_LIST_RULES([filter], [FWDO_public_allow], 0, [dnl
         ACCEPT all -- 10.10.0.0/16 0.0.0.0/0 ctstate NEW,UNTRACKED
     ])
-    IPTABLES_LIST_RULES([nat], [PRE_public_rich_rule_pre], 0, [dnl
+    IPTABLES_LIST_RULES([nat], [PRE_public_pre], 0, [dnl
         DNAT tcp -- 0.0.0.0/0 0.0.0.0/0 mark match 0x66 to::80
         DNAT tcp -- 0.0.0.0/0 0.0.0.0/0 mark match 0x67 to:10.1.1.1:80
     ])
@@ -1195,13 +1195,13 @@ FWD_START_TEST([rich rules priority])
         DNAT tcp -- 0.0.0.0/0 0.0.0.0/0 mark match 0x64 to::22
         DNAT tcp -- 0.0.0.0/0 0.0.0.0/0 mark match 0x65 to:10.1.1.1:22
     ])
-    IPTABLES_LIST_RULES([nat], [POST_public_rich_rule_pre], 0, [dnl
+    IPTABLES_LIST_RULES([nat], [POST_public_pre], 0, [dnl
         MASQUERADE all -- 10.1.1.0/24 0.0.0.0/0
     ])
     IPTABLES_LIST_RULES([nat], [POST_public_allow], 0, [dnl
         MASQUERADE all -- 10.10.0.0/16 0.0.0.0/0
     ])
-    IPTABLES_LIST_RULES([mangle], [PRE_public_rich_rule_pre], 0, [dnl
+    IPTABLES_LIST_RULES([mangle], [PRE_public_pre], 0, [dnl
         MARK tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:8888 MARK set 0x66
         MARK tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:8080 MARK set 0x67
     ])
@@ -1209,7 +1209,7 @@ FWD_START_TEST([rich rules priority])
         MARK tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:222 MARK set 0x64
         MARK tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:2222 MARK set 0x65
     ])
-    IP6TABLES_LIST_RULES([filter], [IN_public_rich_rule_pre], 0, [dnl
+    IP6TABLES_LIST_RULES([filter], [IN_public_pre], 0, [dnl
         ACCEPT all ::/0 ::/0 ctstate NEW,UNTRACKED mark match 0x69
     ])
     IP6TABLES_LIST_RULES([filter], [IN_public_allow], 0, [dnl
@@ -1217,19 +1217,19 @@ FWD_START_TEST([rich rules priority])
         ACCEPT udp ::/0 fe80::/64 udp dpt:546 ctstate NEW,UNTRACKED
         ACCEPT all ::/0 ::/0 ctstate NEW,UNTRACKED mark match 0x68
     ])
-    IP6TABLES_LIST_RULES([filter], [FWDI_public_rich_rule_pre], 0, [dnl
+    IP6TABLES_LIST_RULES([filter], [FWDI_public_pre], 0, [dnl
         ACCEPT all ::/0 ::/0 ctstate NEW,UNTRACKED mark match 0x6a
     ])
     IP6TABLES_LIST_RULES([filter], [FWDI_public_allow], 0, [dnl
     ])
-    IP6TABLES_LIST_RULES([nat], [PRE_public_rich_rule_pre], 0,
+    IP6TABLES_LIST_RULES([nat], [PRE_public_pre], 0,
         [[DNAT tcp ::/0 ::/0 mark match 0x69 to::99
         DNAT tcp ::/0 ::/0 mark match 0x6a to:[1234::4321]:9999
     ]])
     IP6TABLES_LIST_RULES([nat], [PRE_public_allow], 0, [dnl
         DNAT tcp ::/0 ::/0 mark match 0x68 to::90
     ])
-    IP6TABLES_LIST_RULES([mangle], [PRE_public_rich_rule_pre], 0, [dnl
+    IP6TABLES_LIST_RULES([mangle], [PRE_public_pre], 0, [dnl
         MARK tcp ::/0 ::/0 tcp dpt:999 MARK set 0x69
         MARK tcp ::/0 ::/0 tcp dpt:9999 MARK set 0x6a
     ])
@@ -1245,9 +1245,9 @@ FWD_START_TEST([rich rules priority])
     FWD_CHECK([--add-rich-rule='rule icmp-type name="echo-request" accept'], 0, ignore)
     FWD_CHECK([--add-rich-rule='rule priority=-10 icmp-type name="echo-request" accept'], 0, ignore)
     m4_if(nftables, FIREWALL_BACKEND, [
-    NFT_LIST_RULES([inet], [filter_IN_public_rich_rule_pre], 0, [dnl
+    NFT_LIST_RULES([inet], [filter_IN_public_pre], 0, [dnl
         table inet firewalld {
-        chain filter_IN_public_rich_rule_pre {
+        chain filter_IN_public_pre {
         icmp type destination-unreachable reject with icmp type admin-prohibited
         icmpv6 type destination-unreachable reject with icmpv6 type admin-prohibited
         icmp type echo-request accept
@@ -1273,9 +1273,9 @@ FWD_START_TEST([rich rules priority])
         }
         }
     ])
-    NFT_LIST_RULES([inet], [filter_FWDI_public_rich_rule_pre], 0, [dnl
+    NFT_LIST_RULES([inet], [filter_FWDI_public_pre], 0, [dnl
         table inet firewalld {
-        chain filter_FWDI_public_rich_rule_pre {
+        chain filter_FWDI_public_pre {
         icmp type destination-unreachable reject with icmp type admin-prohibited
         icmpv6 type destination-unreachable reject with icmpv6 type admin-prohibited
         icmp type echo-request accept
@@ -1299,7 +1299,7 @@ FWD_START_TEST([rich rules priority])
         }
         }
     ])], [
-    IPTABLES_LIST_RULES([filter], [IN_public_rich_rule_pre], 0, [dnl
+    IPTABLES_LIST_RULES([filter], [IN_public_pre], 0, [dnl
         REJECT icmp -- 0.0.0.0/0 0.0.0.0/0 icmptype 3 reject-with icmp-host-prohibited
         ACCEPT icmp -- 0.0.0.0/0 0.0.0.0/0 icmptype 8
     ])
@@ -1310,7 +1310,7 @@ FWD_START_TEST([rich rules priority])
         ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:22 ctstate NEW,UNTRACKED
         ACCEPT icmp -- 0.0.0.0/0 0.0.0.0/0 icmptype 8
     ])
-    IPTABLES_LIST_RULES([filter], [FWDI_public_rich_rule_pre], 0, [dnl
+    IPTABLES_LIST_RULES([filter], [FWDI_public_pre], 0, [dnl
         REJECT icmp -- 0.0.0.0/0 0.0.0.0/0 icmptype 3 reject-with icmp-host-prohibited
         ACCEPT icmp -- 0.0.0.0/0 0.0.0.0/0 icmptype 8
     ])
@@ -1320,7 +1320,7 @@ FWD_START_TEST([rich rules priority])
     IPTABLES_LIST_RULES([filter], [FWDI_public_allow], 0, [dnl
         ACCEPT icmp -- 0.0.0.0/0 0.0.0.0/0 icmptype 8
     ])
-    IP6TABLES_LIST_RULES([filter], [IN_public_rich_rule_pre], 0, [dnl
+    IP6TABLES_LIST_RULES([filter], [IN_public_pre], 0, [dnl
         REJECT icmpv6 ::/0 ::/0 ipv6-icmptype 1 reject-with icmp6-adm-prohibited
         ACCEPT icmpv6 ::/0 ::/0 ipv6-icmptype 128
     ])
@@ -1332,7 +1332,7 @@ FWD_START_TEST([rich rules priority])
         ACCEPT udp ::/0 fe80::/64 udp dpt:546 ctstate NEW,UNTRACKED
         ACCEPT icmpv6 ::/0 ::/0 ipv6-icmptype 128
     ])
-    IP6TABLES_LIST_RULES([filter], [FWDI_public_rich_rule_pre], 0, [dnl
+    IP6TABLES_LIST_RULES([filter], [FWDI_public_pre], 0, [dnl
         REJECT icmpv6 ::/0 ::/0 ipv6-icmptype 1 reject-with icmp6-adm-prohibited
         ACCEPT icmpv6 ::/0 ::/0 ipv6-icmptype 128
     ])
@@ -1370,9 +1370,9 @@ FWD_START_TEST([rich rules priority])
     FWD_CHECK([--remove-rich-rule='rule priority="-77" service name="smtp" accept'], 0, ignore)
     FWD_CHECK([--remove-rich-rule='rule family="ipv4" priority=-3 source address="10.100.100.0/24" drop'], 0, ignore)
     m4_if(nftables, FIREWALL_BACKEND, [
-    NFT_LIST_RULES([inet], [filter_IN_public_rich_rule_pre], 0, [dnl
+    NFT_LIST_RULES([inet], [filter_IN_public_pre], 0, [dnl
         table inet firewalld {
-        chain filter_IN_public_rich_rule_pre {
+        chain filter_IN_public_pre {
         ip saddr 10.0.0.0/8 log
         tcp dport 1111 ct state new,untracked log
         tcp dport 1111 ct state new,untracked drop
@@ -1402,9 +1402,9 @@ FWD_START_TEST([rich rules priority])
         }
         }
     ])
-    NFT_LIST_RULES([inet], [filter_IN_public_rich_rule_post], 0, [dnl
+    NFT_LIST_RULES([inet], [filter_IN_public_post], 0, [dnl
         table inet firewalld {
-        chain filter_IN_public_rich_rule_post {
+        chain filter_IN_public_post {
         tcp dport 80 ct state new,untracked accept
         tcp dport 22 ct state new,untracked accept
         tcp dport 443 ct state new,untracked accept
@@ -1414,7 +1414,7 @@ FWD_START_TEST([rich rules priority])
         }
         }
     ])], [
-    IPTABLES_LIST_RULES([filter], [IN_public_rich_rule_pre], 0, [dnl
+    IPTABLES_LIST_RULES([filter], [IN_public_pre], 0, [dnl
         LOG all -- 10.0.0.0/8 0.0.0.0/0 LOG flags 0 level 4
         LOG tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:1111 ctstate NEW,UNTRACKED LOG flags 0 level 4
         DROP tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:1111 ctstate NEW,UNTRACKED
@@ -1429,7 +1429,7 @@ FWD_START_TEST([rich rules priority])
     ])
     IPTABLES_LIST_RULES([filter], [IN_public_log], 0, [dnl
     ])
-    IPTABLES_LIST_RULES([filter], [IN_public_rich_rule_post], 0, [dnl
+    IPTABLES_LIST_RULES([filter], [IN_public_post], 0, [dnl
         ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:80 ctstate NEW,UNTRACKED
         ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:22 ctstate NEW,UNTRACKED
         ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:443 ctstate NEW,UNTRACKED
@@ -1437,7 +1437,7 @@ FWD_START_TEST([rich rules priority])
         LOG all -- 0.0.0.0/0 0.0.0.0/0 LOG flags 0 level 4 prefix "'DROPPED: '"
         DROP all -- 0.0.0.0/0 0.0.0.0/0
     ])
-    IP6TABLES_LIST_RULES([filter], [IN_public_rich_rule_pre], 0, [dnl
+    IP6TABLES_LIST_RULES([filter], [IN_public_pre], 0, [dnl
         LOG tcp ::/0 ::/0 tcp dpt:1111 ctstate NEW,UNTRACKED LOG flags 0 level 4
         DROP tcp ::/0 ::/0 tcp dpt:1111 ctstate NEW,UNTRACKED
     ])
@@ -1449,7 +1449,7 @@ FWD_START_TEST([rich rules priority])
     ])
     IP6TABLES_LIST_RULES([filter], [IN_public_log], 0, [dnl
     ])
-    IP6TABLES_LIST_RULES([filter], [IN_public_rich_rule_post], 0, [dnl
+    IP6TABLES_LIST_RULES([filter], [IN_public_post], 0, [dnl
         ACCEPT tcp ::/0 ::/0 tcp dpt:80 ctstate NEW,UNTRACKED
         ACCEPT tcp ::/0 ::/0 tcp dpt:22 ctstate NEW,UNTRACKED
         ACCEPT tcp ::/0 ::/0 tcp dpt:443 ctstate NEW,UNTRACKED

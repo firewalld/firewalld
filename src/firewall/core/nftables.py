@@ -609,15 +609,15 @@ class nftables(object):
         OUR_CHAINS[family][table].update(set([_zone,
                                          "%s_log" % _zone,
                                          "%s_deny" % _zone,
-                                         "%s_rich_rule_pre" % _zone,
-                                         "%s_rich_rule_post" % _zone,
+                                         "%s_pre" % _zone,
+                                         "%s_post" % _zone,
                                          "%s_allow" % _zone]))
 
         rules = []
         rules.append(["add", "chain", family, "%s" % TABLE_NAME,
                       "%s_%s" % (table, _zone)])
         rules.append(["add", "chain", family, "%s" % TABLE_NAME,
-                      "%s_%s_rich_rule_pre" % (table, _zone)])
+                      "%s_%s_pre" % (table, _zone)])
         rules.append(["add", "chain", family, "%s" % TABLE_NAME,
                       "%s_%s_log" % (table, _zone)])
         rules.append(["add", "chain", family, "%s" % TABLE_NAME,
@@ -625,11 +625,11 @@ class nftables(object):
         rules.append(["add", "chain", family, "%s" % TABLE_NAME,
                       "%s_%s_allow" % (table, _zone)])
         rules.append(["add", "chain", family, "%s" % TABLE_NAME,
-                      "%s_%s_rich_rule_post" % (table, _zone)])
+                      "%s_%s_post" % (table, _zone)])
 
         rules.append(["add", "rule", family, "%s" % TABLE_NAME,
                       "%s_%s" % (table, _zone),
-                      "jump", "%s_%s_rich_rule_pre" % (table, _zone)])
+                      "jump", "%s_%s_pre" % (table, _zone)])
         rules.append(["add", "rule", family, "%s" % TABLE_NAME,
                       "%s_%s" % (table, _zone),
                       "jump", "%s_%s_log" % (table, _zone)])
@@ -641,7 +641,7 @@ class nftables(object):
                       "jump", "%s_%s_allow" % (table, _zone)])
         rules.append(["add", "rule", family, "%s" % TABLE_NAME,
                       "%s_%s" % (table, _zone),
-                      "jump", "%s_%s_rich_rule_post" % (table, _zone)])
+                      "jump", "%s_%s_post" % (table, _zone)])
 
         target = self._fw.zone._zones[zone].target
 
@@ -741,9 +741,9 @@ class nftables(object):
                  type(rich_rule.action) in [Rich_Reject, Rich_Drop]:
                 return "deny"
         elif rich_rule.priority < 0:
-            return "rich_rule_pre"
+            return "pre"
         else:
-            return "rich_rule_post"
+            return "post"
 
     def _rich_rule_chain_suffix_from_log(self, rich_rule):
         if not rich_rule.log and not rich_rule.audit:
@@ -752,9 +752,9 @@ class nftables(object):
         if rich_rule.priority == 0:
             return "log"
         elif rich_rule.priority < 0:
-            return "rich_rule_pre"
+            return "pre"
         else:
-            return "rich_rule_post"
+            return "post"
 
     def _rich_rule_priority_fragment(self, rich_rule):
         if rich_rule.priority == 0:
