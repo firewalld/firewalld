@@ -1,4 +1,16 @@
 FWD_START_TEST([invalid direct rule causes reload error])
+dnl Verify runtime interface to zone assignment is gone after reload
+AT_CHECK([sed -i 's/^FlushAllOnReload.*/FlushAllOnReload=yes/' ./firewalld.conf])
+FWD_RELOAD
+FWD_CHECK([-q --zone=public --add-interface=foobar0])
+FWD_CHECK([--get-zone-of-interface=foobar0], 0, [dnl
+public
+])
+FWD_RELOAD
+FWD_CHECK([--get-zone-of-interface=foobar0], 2, [], [dnl
+no zone
+])
+
 dnl Below we test retention of some items applicable to FlushAllOnReload=no
 AT_CHECK([sed -i 's/^FlushAllOnReload.*/FlushAllOnReload=no/' ./firewalld.conf])
 FWD_RELOAD

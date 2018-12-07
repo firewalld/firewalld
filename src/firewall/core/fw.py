@@ -42,6 +42,7 @@ from firewall.core.fw_policies import FirewallPolicies
 from firewall.core.fw_ipset import FirewallIPSet
 from firewall.core.fw_transaction import FirewallTransaction
 from firewall.core.fw_helper import FirewallHelper
+from firewall.core.fw_nm import nm_get_bus_name, nm_get_interfaces_in_zone
 from firewall.core.logger import log
 from firewall.core.io.firewalld_conf import firewalld_conf
 from firewall.core.io.direct import Direct
@@ -1034,6 +1035,13 @@ class Firewall(object):
 
             # restore direct config
             self.direct.set_config(_direct_config)
+
+        # Restore permanent interfaces from NetworkManager
+        nm_bus_name = nm_get_bus_name()
+        if nm_bus_name:
+            for zone in self.zone.get_zones():
+                for interface in nm_get_interfaces_in_zone(zone):
+                    self.zone.add_interface(zone, interface, sender=nm_bus_name)
 
         # enable panic mode again if it has been enabled before or set policy
         # to ACCEPT
