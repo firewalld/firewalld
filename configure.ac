@@ -8,6 +8,7 @@ m4_define([PKG_RELEASE], m4_bpatsubst(m4_esyscmd([grep "Release:" firewalld.spec
 m4_define([PKG_TAG], m4_format(v%s, PKG_VERSION))
 
 AC_INIT(PKG_NAME,PKG_VERSION)
+AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_SRCDIR([src/firewalld.in])
 AC_PREFIX_DEFAULT([/usr])
 
@@ -38,6 +39,10 @@ AC_PATH_PROG([SYSCTL], [sysctl], [/sbin/sysctl])
 AC_CONFIG_TESTDIR([src/tests])
 
 GLIB_GSETTINGS
+
+#############################################################
+
+JH_CHECK_XML_CATALOG([http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl], [DocBook XSL Stylesheets])
 
 #############################################################
 
