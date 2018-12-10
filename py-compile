@@ -103,35 +103,37 @@ else
 fi
 
 $PYTHON -c "
+from __future__ import print_function
 import sys, os, string, py_compile
 
 files = '''$files'''
 
-print 'Byte-compiling python modules...'
-for file in string.split(files):
+print('Byte-compiling python modules...')
+for file in files.split():
     $pathtrans
     $filetrans
     if not os.path.exists(filepath) or not (len(filepath) >= 3
                                             and filepath[-3:] == '.py'):
-	continue
-    print file,
+        continue
+    print(file)
     sys.stdout.flush()
     py_compile.compile(filepath, filepath + 'c', path)
 print" || exit $?
 
 # this will fail for python < 1.5, but that doesn't matter ...
 $PYTHON -O -c "
+from __future__ import print_function
 import sys, os, string, py_compile
 
 files = '''$files'''
-print 'Byte-compiling python modules (optimized versions) ...'
-for file in string.split(files):
+print('Byte-compiling python modules (optimized versions) ...')
+for file in files.split():
     $pathtrans
     $filetrans
     if not os.path.exists(filepath) or not (len(filepath) >= 3
                                             and filepath[-3:] == '.py'):
-	continue
-    print file,
+        continue
+    print(file)
     sys.stdout.flush()
     py_compile.compile(filepath, filepath + 'o', path)
 print" 2>/dev/null || :
