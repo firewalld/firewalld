@@ -475,6 +475,9 @@ class nftables(object):
             "OUTPUT": "oifname",
         }[chain]
 
+        if interface[len(interface)-1] == "+":
+            interface = interface[:len(interface)-1] + "*"
+
         target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[chain], zone=zone)
         if zone_target == DEFAULT_ZONE_TARGET:
             action = "goto"
@@ -486,10 +489,10 @@ class nftables(object):
             rule = ["add", "rule", family, "%s" % TABLE_NAME, "%s_%s_ZONES" % (table, chain)]
         else:
             rule = ["delete", "rule", family, "%s" % TABLE_NAME, "%s_%s_ZONES" % (table, chain)]
-        if interface == "+":
+        if interface == "*":
             rule += [action, "%s_%s" % (table, target)]
         else:
-            rule += [opt, interface, action, "%s_%s" % (table, target)]
+            rule += [opt, "\"" + interface + "\"", action, "%s_%s" % (table, target)]
         return [rule]
 
     def build_zone_source_address_rules(self, enable, zone, zone_target,
