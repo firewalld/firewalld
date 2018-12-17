@@ -115,6 +115,8 @@ FWD_START_TEST([zone interfaces])
 ])
     FWD_CHECK([--permanent --zone=public --remove-interface=perm_dummy], 0, ignore)
     FWD_CHECK([--permanent --zone=public --query-interface perm_dummy], 1, ignore)
+    FWD_CHECK([--permanent --zone=trusted --remove-interface=perm_dummy2], 0, ignore)
+    FWD_RELOAD
 
     FWD_CHECK([--add-interface=foo], 0, ignore)
     FWD_CHECK([--add-interface=bar --zone=public], 0, ignore)
@@ -128,6 +130,30 @@ FWD_START_TEST([zone interfaces])
     FWD_CHECK([--set-default-zone=public], 0, ignore)
     FWD_CHECK([--remove-interface=foo], 0, ignore)
     FWD_CHECK([--remove-interface=bar], 0, ignore)
+
+    dnl exercise wildcards, rhbz 1644025
+    dnl Note: This feature is undocumented, because it's a possible security
+    dnl risk.
+    FWD_CHECK([--zone=trusted --add-interface=+], 0, ignore)
+    FWD_CHECK([--add-interface=foobar+++], 0, ignore)
+    FWD_CHECK([--add-interface=foobar+], 0, ignore)
+    m4_if(nftables, FIREWALL_BACKEND, [
+    NFT_LIST_RULES([inet], [filter_INPUT_ZONES], 0, [dnl
+        table inet firewalld {
+        chain filter_INPUT_ZONES {
+            iifname "foobar*" goto filter_IN_public
+            iifname "foobar++*" goto filter_IN_public
+            jump filter_IN_trusted
+            goto filter_IN_public
+        }
+        }
+    ])])
+    FWD_CHECK([--zone=trusted --remove-interface=+], 0, ignore)
+    FWD_CHECK([--remove-interface=foobar+++], 0, ignore)
+    FWD_CHECK([--remove-interface=foobar+], 0, ignore)
+    FWD_CHECK([--permanent --add-interface=foobar+], 0, ignore)
+    FWD_CHECK([--permanent --remove-interface=foobar+], 0, ignore)
+    FWD_RELOAD
 FWD_END_TEST([-e '/ERROR: ZONE_CONFLICT: perm_dummy/d'])
 
 FWD_START_TEST([zone sources])
