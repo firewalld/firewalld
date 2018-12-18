@@ -1039,7 +1039,7 @@ class Firewall(object):
         # Restore permanent interfaces from NetworkManager
         nm_bus_name = nm_get_bus_name()
         if nm_bus_name:
-            for zone in self.zone.get_zones():
+            for zone in self.zone.get_zones() + [""]:
                 for interface in nm_get_interfaces_in_zone(zone):
                     self.zone.add_interface(zone, interface, sender=nm_bus_name)
 
