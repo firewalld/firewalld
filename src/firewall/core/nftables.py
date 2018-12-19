@@ -54,7 +54,7 @@ IPTABLES_TO_NFT_HOOK = {
     #},
     "raw": {
         "PREROUTING": ("prerouting", -300 + NFT_HOOK_OFFSET),
-    #    "OUTPUT": ("output", -300 + NFT_HOOK_OFFSET),
+        "OUTPUT": ("output", -300 + NFT_HOOK_OFFSET),
     },
     "mangle": {
         "PREROUTING": ("prerouting", -150 + NFT_HOOK_OFFSET),
@@ -412,6 +412,7 @@ class nftables(object):
                                   IPTABLES_TO_NFT_HOOK["raw"][chain][0],
                                   IPTABLES_TO_NFT_HOOK["raw"][chain][1]))
 
+        for chain in ["PREROUTING"]:
             default_rules.append("add chain inet %s raw_%s_ZONES_SOURCE" % (TABLE_NAME, chain))
             default_rules.append("add chain inet %s raw_%s_ZONES" % (TABLE_NAME, chain))
             default_rules.append("add rule inet %s raw_%s jump raw_%s_ZONES_SOURCE" % (TABLE_NAME, chain, chain))
@@ -1243,6 +1244,30 @@ class nftables(object):
                       "raw_%s" % "PREROUTING",
                       "icmpv6", "type", "{ nd-router-advert, nd-neighbor-solicit }",
                       "accept"]) # RHBZ#1058505, RHBZ#1575431 (bug in kernel 4.16-4.17)
+        return rules
+
+    def build_rfc3964_ipv4_rules(self):
+        daddr_set = ["{",
+                     "::0.0.0.0/96,", # IPv4 compatible
+                     "::ffff:0.0.0.0/96,", # IPv4 mapped
+                     "2002:0000::/24,", # 0.0.0.0/8 (the system has no address assigned yet)
+                     "2002:0a00::/24,", # 10.0.0.0/8 (private)
+                     "2002:7f00::/24,", # 127.0.0.0/8 (loopback)
+                     "2002:ac10::/28,", # 172.16.0.0/12 (private)
+                     "2002:c0a8::/32,", # 192.168.0.0/16 (private)
+                     "2002:a9fe::/32,", # 169.254.0.0/16 (IANA Assigned DHCP link-local)
+                     "2002:e000::/19,", # 224.0.0.0/4 (multicast), 240.0.0.0/4 (reserved and broadcast)
+                     "}"]
+
+        rule_fragment = ["ip6", "daddr"] + daddr_set
+        if self._fw._log_denied in ["unicast", "all"]:
+            rule_fragment += ["log", "prefix", "\"RFC3964_IPv4_DROP: \""]
+        rule_fragment += ["drop"]
+
+        rules = []
+        for chain in ["PREROUTING", "OUTPUT"]:
+            rules.append(["insert", "rule", "inet", "%s" % TABLE_NAME,
+                          "raw_%s" % chain] + rule_fragment)
         return rules
 
     def build_zone_rich_source_destination_rules(self, enable, zone, rich_rule):
