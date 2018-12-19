@@ -14,6 +14,7 @@ string "IndividualCalls" : variant string "no"
 string "Lockdown" : variant string "no"
 string "LogDenied" : variant string "off"
 string "MinimalMark" : variant int32 100
+string "RFC3964_IPv4" : variant string "yes"
 ])
 
 m4_define([_helper], [
@@ -33,6 +34,7 @@ _helper([IndividualCalls], [string:"yes"], [variant string "yes"])
 _helper([FirewallBackend], [string:"iptables"], [variant string "iptables"])
 _helper([FlushAllOnReload], [string:"no"], [variant string "no"])
 _helper([CleanupOnExit], [string:"yes"], [variant string "yes"])
+_helper([RFC3964_IPv4], [string:"no"], [variant string "no"])
 dnl Note: DefaultZone is RO
 m4_undefine([_helper])
 

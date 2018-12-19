@@ -2635,6 +2635,16 @@
               </para>
             </listitem>
           </varlistentry>
+          <varlistentry id="FirewallD1.config.Properties.RFC3964_IPv4">
+            <term>FirewallBackend - s - (rw)</term>
+            <listitem>
+              <para>
+                As per RFC 3964, filter IPv6 traffic with 6to4 destination
+                addresses that correspond to IPv4 addresses that should not be
+                routed over the public internet. Valid options are; yes, no.
+              </para>
+            </listitem>
+          </varlistentry>
         </variablelist>
       </refsect3>
     </refsect2>

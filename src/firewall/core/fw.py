@@ -309,6 +309,15 @@ class Firewall(object):
                 log.debug1("FlushAllOnReload is set to '%s'",
                            self._flush_all_on_reload)
 
+            if self._firewalld_conf.get("RFC3964_IPv4"):
+                value = self._firewalld_conf.get("RFC3964_IPv4")
+                if value.lower() in [ "no", "false" ]:
+                    self._rfc3964_ipv4 = False
+                else:
+                    self._rfc3964_ipv4 = True
+                log.debug1("RFC3964_IPv4 is set to '%s'",
+                           self._rfc3964_ipv4)
+
         self.config.set_firewalld_conf(copy.deepcopy(self._firewalld_conf))
 
         self._select_firewall_backend(self._firewall_backend)

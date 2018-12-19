@@ -30,7 +30,8 @@ from firewall.functions import b2u, u2b, PY2
 
 valid_keys = [ "DefaultZone", "MinimalMark", "CleanupOnExit", "Lockdown", 
                "IPv6_rpfilter", "IndividualCalls", "LogDenied",
-               "AutomaticHelpers", "FirewallBackend", "FlushAllOnReload" ]
+               "AutomaticHelpers", "FirewallBackend", "FlushAllOnReload",
+               "RFC3964_IPv4" ]
 
 class firewalld_conf(object):
     def __init__(self, filename):
@@ -81,6 +82,7 @@ class firewalld_conf(object):
             self.set("AutomaticHelpers", config.FALLBACK_AUTOMATIC_HELPERS)
             self.set("FirewallBackend", config.FALLBACK_FIREWALL_BACKEND)
             self.set("FlushAllOnReload", "yes" if config.FALLBACK_FLUSH_ALL_ON_RELOAD else "no")
+            self.set("RFC3964_IPv4", "yes" if config.FALLBACK_RFC3964_IPV4 else "no")
             raise
 
         for line in f:
@@ -191,6 +193,14 @@ class firewalld_conf(object):
                             "value %s", value if value else '',
                             config.FALLBACK_FLUSH_ALL_ON_RELOAD)
             self.set("FlushAllOnReload", str(config.FALLBACK_FLUSH_ALL_ON_RELOAD))
+
+        value = self.get("RFC3964_IPv4")
+        if not value or value.lower() not in [ "yes", "true", "no", "false" ]:
+            if value is not None:
+                log.warning("RFC3964_IPv4 '%s' is not valid, using default "
+                            "value %s", value if value else '',
+                            config.FALLBACK_RFC3964_IPV4)
+            self.set("RFC3964_IPv4", str(config.FALLBACK_RFC3964_IPV4))
 
     # save to self.filename if there are key/value changes
     def write(self):
