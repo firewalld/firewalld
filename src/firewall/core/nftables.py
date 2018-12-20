@@ -1230,16 +1230,15 @@ class nftables(object):
         return rules
 
     def build_rpfilter_rules(self, log_denied=False):
+        rule_fragment = ["meta", "nfproto", "ipv6", "fib", "saddr", ".", "iif",
+                         "oif", "missing"]
+        if log_denied != "off":
+            rule_fragment += ["log", "prefix", "\"rpfilter_DROP: \""]
+        rule_fragment += ["drop"]
+
         rules = []
         rules.append(["insert", "rule", "inet", "%s" % TABLE_NAME,
-                      "raw_%s" % "PREROUTING",
-                      "meta", "nfproto", "ipv6", "fib", "saddr", ".", "iif",
-                      "oif", "missing", "drop"])
-        if log_denied != "off":
-            rules.append(["insert", "rule", "inet", "%s" % TABLE_NAME,
-                          "raw_%s" % "PREROUTING",
-                          "meta", "nfproto", "ipv6", "fib", "saddr", ".", "iif",
-                          "oif", "missing", "log", "prefix", "\"rpfilter_DROP: \""])
+                      "raw_%s" % "PREROUTING"] + rule_fragment)
         rules.append(["insert", "rule", "inet", "%s" % TABLE_NAME,
                       "raw_%s" % "PREROUTING",
                       "icmpv6", "type", "{ nd-router-advert, nd-neighbor-solicit }",
