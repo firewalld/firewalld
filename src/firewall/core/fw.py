@@ -817,24 +817,14 @@ class Firewall(object):
             transaction.add_rules(backend, rules)
 
         ipv6_backend = self.get_backend_by_ipv("ipv6")
-        if self.ipv6_rpfilter_enabled and \
-           "raw" in ipv6_backend.get_available_tables():
+        if "raw" in ipv6_backend.get_available_tables():
+            if self.ipv6_rpfilter_enabled:
+                rules = ipv6_backend.build_rpfilter_rules(self._log_denied)
+                transaction.add_rules(ipv6_backend, rules)
 
-            # Execute existing transaction
-            transaction.execute(True)
-            # Start new transaction
-            transaction.clear()
-
-            rules = ipv6_backend.build_rpfilter_rules(self._log_denied)
-            transaction.add_rules(ipv6_backend, rules)
-
-            # Execute ipv6_rpfilter transaction, it might fail
-            try:
-                transaction.execute(True)
-            except FirewallError as msg:
-                log.warning("Applying rules for ipv6_rpfilter failed: %s", msg)
-            # Start new transaction
-            transaction.clear()
+            if self._rfc3964_ipv4:
+                rules = ipv6_backend.build_rfc3964_ipv4_rules()
+                transaction.add_rules(ipv6_backend, rules)
 
         else:
             if use_transaction is None:
