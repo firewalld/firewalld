@@ -255,7 +255,10 @@ m4_define([IP6TABLES_LIST_RULES], [
 m4_define([NFT_LIST_RULES], [
     dnl nftables commit 6dd848339444 change list output to show "meta mark"
     dnl instead of just "mark".
-    m4_define([NFT_LIST_RULES_NORMALIZE], [sed -e 's/meta mark/mark/g'])
+    m4_define([NFT_LIST_RULES_NORMALIZE], [dnl
+        sed -e 's/meta mark/mark/g'dnl
+        | sed -e '/type.*hook.*priority.*policy.*/d'dnl
+    ])
     m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
         NS_CHECK([nft -nn list chain $1 firewalld $2 | TRIM_WHITESPACE | NFT_LIST_RULES_NORMALIZE], [$3], [m4_strip([$4])], [m4_strip([$5])], [$6], [$7])
     ])
