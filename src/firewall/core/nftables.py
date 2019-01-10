@@ -76,13 +76,6 @@ IPTABLES_TO_NFT_HOOK = {
     },
 }
 
-OUR_CHAINS = { # chains created by firewalld
-    # family: { chains ...}
-    "inet": {},
-    "ip": {},
-    "ip6": {},
-}
-
 # Most ICMP types are provided by nft, but for the codes we have to use numeric
 # values.
 #
@@ -163,6 +156,12 @@ class nftables(object):
         self.rule_to_handle = {}
         self.rule_ref_count = {}
         self.rich_rule_priority_counts = {}
+        self.our_chains = { # chains created by firewalld
+            # family: { chains ...}
+            "inet": {},
+            "ip": {},
+            "ip6": {},
+        }
 
     def fill_exists(self):
         self.command_exists = os.path.exists(self._command)
@@ -359,7 +358,7 @@ class nftables(object):
         self.rich_rule_priority_counts = {}
 
         rules = []
-        for family in OUR_CHAINS.keys():
+        for family in self.our_chains.keys():
             rules.append(["delete", "table", family, "%s" % TABLE_NAME])
         return rules
 
@@ -399,13 +398,13 @@ class nftables(object):
 
     def build_default_tables(self):
         default_tables = []
-        for family in OUR_CHAINS.keys():
+        for family in self.our_chains.keys():
             default_tables.append("add table %s %s" % (family, TABLE_NAME))
         return map(splitArgs, default_tables)
 
     def build_default_rules(self, log_denied="off"):
         default_rules = []
-        OUR_CHAINS["inet"]["raw"] = set()
+        self.our_chains["inet"]["raw"] = set()
         for chain in IPTABLES_TO_NFT_HOOK["raw"].keys():
             default_rules.append("add chain inet %s raw_%s '{ type filter hook %s priority %d ; }'" %
                                  (TABLE_NAME, chain,
@@ -417,9 +416,9 @@ class nftables(object):
             default_rules.append("add chain inet %s raw_%s_ZONES" % (TABLE_NAME, chain))
             default_rules.append("add rule inet %s raw_%s jump raw_%s_ZONES_SOURCE" % (TABLE_NAME, chain, chain))
             default_rules.append("add rule inet %s raw_%s jump raw_%s_ZONES" % (TABLE_NAME, chain, chain))
-            OUR_CHAINS["inet"]["raw"].update(set(["%s_ZONES_SOURCE" % chain, "%s_ZONES" % chain]))
+            self.our_chains["inet"]["raw"].update(set(["%s_ZONES_SOURCE" % chain, "%s_ZONES" % chain]))
 
-        OUR_CHAINS["inet"]["mangle"] = set()
+        self.our_chains["inet"]["mangle"] = set()
         for chain in IPTABLES_TO_NFT_HOOK["mangle"].keys():
             default_rules.append("add chain inet %s mangle_%s '{ type filter hook %s priority %d ; }'" %
                                  (TABLE_NAME, chain,
@@ -430,10 +429,10 @@ class nftables(object):
             default_rules.append("add chain inet %s mangle_%s_ZONES" % (TABLE_NAME, chain))
             default_rules.append("add rule inet %s mangle_%s jump mangle_%s_ZONES_SOURCE" % (TABLE_NAME, chain, chain))
             default_rules.append("add rule inet %s mangle_%s jump mangle_%s_ZONES" % (TABLE_NAME, chain, chain))
-            OUR_CHAINS["inet"]["mangle"].update(set(["%s_ZONES_SOURCE" % chain, "%s_ZONES" % chain]))
+            self.our_chains["inet"]["mangle"].update(set(["%s_ZONES_SOURCE" % chain, "%s_ZONES" % chain]))
 
-        OUR_CHAINS["ip"]["nat"] = set()
-        OUR_CHAINS["ip6"]["nat"] = set()
+        self.our_chains["ip"]["nat"] = set()
+        self.our_chains["ip6"]["nat"] = set()
         for family in ["ip", "ip6"]:
             for chain in IPTABLES_TO_NFT_HOOK["nat"].keys():
                 default_rules.append("add chain %s %s nat_%s '{ type nat hook %s priority %d ; }'" %
@@ -445,9 +444,9 @@ class nftables(object):
                 default_rules.append("add chain %s %s nat_%s_ZONES" % (family, TABLE_NAME, chain))
                 default_rules.append("add rule %s %s nat_%s jump nat_%s_ZONES_SOURCE" % (family, TABLE_NAME, chain, chain))
                 default_rules.append("add rule %s %s nat_%s jump nat_%s_ZONES" % (family, TABLE_NAME, chain, chain))
-                OUR_CHAINS[family]["nat"].update(set(["%s_ZONES_SOURCE" % chain, "%s_ZONES" % chain]))
+                self.our_chains[family]["nat"].update(set(["%s_ZONES_SOURCE" % chain, "%s_ZONES" % chain]))
 
-        OUR_CHAINS["inet"]["filter"] = set()
+        self.our_chains["inet"]["filter"] = set()
         for chain in IPTABLES_TO_NFT_HOOK["filter"].keys():
             default_rules.append("add chain inet %s filter_%s '{ type filter hook %s priority %d ; }'" %
                                  (TABLE_NAME, chain,
@@ -486,12 +485,12 @@ class nftables(object):
             default_rules.append("add rule inet %s filter_%s %%%%LOGTYPE%%%% log prefix '\"FINAL_REJECT: \"'" % (TABLE_NAME, "FORWARD"))
         default_rules.append("add rule inet %s filter_%s reject with icmpx type admin-prohibited" % (TABLE_NAME, "FORWARD"))
 
-        OUR_CHAINS["inet"]["filter"] = set(["INPUT_ZONES_SOURCE",
-                                            "INPUT_ZONES",
-                                            "FORWARD_IN_ZONES_SOURCE",
-                                            "FORWARD_IN_ZONES",
-                                            "FORWARD_OUT_ZONES_SOURCE",
-                                            "FORWARD_OUT_ZONES"])
+        self.our_chains["inet"]["filter"] = set(["INPUT_ZONES_SOURCE",
+                                                 "INPUT_ZONES",
+                                                 "FORWARD_IN_ZONES_SOURCE",
+                                                 "FORWARD_IN_ZONES",
+                                                 "FORWARD_OUT_ZONES_SOURCE",
+                                                 "FORWARD_OUT_ZONES"])
 
         return map(splitArgs, default_rules)
 
@@ -610,7 +609,7 @@ class nftables(object):
 
         _zone = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[chain], zone=zone)
 
-        OUR_CHAINS[family][table].update(set([_zone,
+        self.our_chains[family][table].update(set([_zone,
                                          "%s_log" % _zone,
                                          "%s_deny" % _zone,
                                          "%s_pre" % _zone,
