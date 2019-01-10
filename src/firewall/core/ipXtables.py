@@ -49,106 +49,6 @@ ICMP = {
     "ipv6": "ipv6-icmp",
 }
 
-DEFAULT_RULES = { }
-LOG_RULES = { }
-OUR_CHAINS = {} # chains created by firewalld
-
-DEFAULT_RULES["security"] = [ ]
-OUR_CHAINS["security"] = set()
-for chain in BUILT_IN_CHAINS["security"]:
-    DEFAULT_RULES["security"].append("-N %s_direct" % chain)
-    DEFAULT_RULES["security"].append("-I %s 1 -j %s_direct" % (chain, chain))
-    OUR_CHAINS["security"].add("%s_direct" % chain)
-
-DEFAULT_RULES["raw"] = [ ]
-OUR_CHAINS["raw"] = set()
-for chain in BUILT_IN_CHAINS["raw"]:
-    DEFAULT_RULES["raw"].append("-N %s_direct" % chain)
-    DEFAULT_RULES["raw"].append("-I %s 1 -j %s_direct" % (chain, chain))
-    OUR_CHAINS["raw"].add("%s_direct" % chain)
-
-    if chain == "PREROUTING":
-        DEFAULT_RULES["raw"].append("-N %s_ZONES_SOURCE" % chain)
-        DEFAULT_RULES["raw"].append("-N %s_ZONES" % chain)
-        DEFAULT_RULES["raw"].append("-I %s 2 -j %s_ZONES_SOURCE" % (chain, chain))
-        DEFAULT_RULES["raw"].append("-I %s 3 -j %s_ZONES" % (chain, chain))
-        OUR_CHAINS["raw"].update(set(["%s_ZONES_SOURCE" % chain, "%s_ZONES" % chain]))
-
-DEFAULT_RULES["mangle"] = [ ]
-OUR_CHAINS["mangle"] = set()
-for chain in BUILT_IN_CHAINS["mangle"]:
-    DEFAULT_RULES["mangle"].append("-N %s_direct" % chain)
-    DEFAULT_RULES["mangle"].append("-I %s 1 -j %s_direct" % (chain, chain))
-    OUR_CHAINS["mangle"].add("%s_direct" % chain)
-
-    if chain == "PREROUTING":
-        DEFAULT_RULES["mangle"].append("-N %s_ZONES_SOURCE" % chain)
-        DEFAULT_RULES["mangle"].append("-N %s_ZONES" % chain)
-        DEFAULT_RULES["mangle"].append("-I %s 2 -j %s_ZONES_SOURCE" % (chain, chain))
-        DEFAULT_RULES["mangle"].append("-I %s 3 -j %s_ZONES" % (chain, chain))
-        OUR_CHAINS["mangle"].update(set(["%s_ZONES_SOURCE" % chain, "%s_ZONES" % chain]))
-
-DEFAULT_RULES["nat"] = [ ]
-OUR_CHAINS["nat"] = set()
-for chain in BUILT_IN_CHAINS["nat"]:
-    DEFAULT_RULES["nat"].append("-N %s_direct" % chain)
-    DEFAULT_RULES["nat"].append("-I %s 1 -j %s_direct" % (chain, chain))
-    OUR_CHAINS["nat"].add("%s_direct" % chain)
-
-    if chain in [ "PREROUTING", "POSTROUTING" ]:
-        DEFAULT_RULES["nat"].append("-N %s_ZONES_SOURCE" % chain)
-        DEFAULT_RULES["nat"].append("-N %s_ZONES" % chain)
-        DEFAULT_RULES["nat"].append("-I %s 2 -j %s_ZONES_SOURCE" % (chain, chain))
-        DEFAULT_RULES["nat"].append("-I %s 3 -j %s_ZONES" % (chain, chain))
-        OUR_CHAINS["nat"].update(set(["%s_ZONES_SOURCE" % chain, "%s_ZONES" % chain]))
-
-DEFAULT_RULES["filter"] = [
-    "-N INPUT_direct",
-    "-N INPUT_ZONES_SOURCE",
-    "-N INPUT_ZONES",
-
-    "-I INPUT 1 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT",
-    "-I INPUT 2 -i lo -j ACCEPT",
-    "-I INPUT 3 -j INPUT_direct",
-    "-I INPUT 4 -j INPUT_ZONES_SOURCE",
-    "-I INPUT 5 -j INPUT_ZONES",
-    "-I INPUT 6 -m conntrack --ctstate INVALID -j DROP",
-    "-I INPUT 7 -j %%REJECT%%",
-
-    "-N FORWARD_direct",
-    "-N FORWARD_IN_ZONES_SOURCE",
-    "-N FORWARD_IN_ZONES",
-    "-N FORWARD_OUT_ZONES_SOURCE",
-    "-N FORWARD_OUT_ZONES",
-
-    "-I FORWARD 1 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT",
-    "-I FORWARD 2 -i lo -j ACCEPT",
-    "-I FORWARD 3 -j FORWARD_direct",
-    "-I FORWARD 4 -j FORWARD_IN_ZONES_SOURCE",
-    "-I FORWARD 5 -j FORWARD_IN_ZONES",
-    "-I FORWARD 6 -j FORWARD_OUT_ZONES_SOURCE",
-    "-I FORWARD 7 -j FORWARD_OUT_ZONES",
-    "-I FORWARD 8 -m conntrack --ctstate INVALID -j DROP",
-    "-I FORWARD 9 -j %%REJECT%%",
-
-    "-N OUTPUT_direct",
-
-    "-I OUTPUT 1 -j OUTPUT_direct",
-]
-
-LOG_RULES["filter"] = [
-    "-I INPUT 6 -m conntrack --ctstate INVALID %%LOGTYPE%% -j LOG --log-prefix 'STATE_INVALID_DROP: '",
-    "-I INPUT 8 %%LOGTYPE%% -j LOG --log-prefix 'FINAL_REJECT: '",
-
-    "-I FORWARD 8 -m conntrack --ctstate INVALID %%LOGTYPE%% -j LOG --log-prefix 'STATE_INVALID_DROP: '",
-    "-I FORWARD 10 %%LOGTYPE%% -j LOG --log-prefix 'FINAL_REJECT: '",
-]
-
-OUR_CHAINS["filter"] = set(["INPUT_direct", "INPUT_ZONES_SOURCE", "INPUT_ZONES",
-                            "FORWARD_direct", "FORWARD_IN_ZONES_SOURCE",
-                            "FORWARD_IN_ZONES", "FORWARD_OUT_ZONES_SOURCE",
-                            "FORWARD_OUT_ZONES", "OUTPUT_direct"])
-
 # ipv ebtables also uses this
 #
 def common_reverse_rule(args):
@@ -275,6 +175,7 @@ class ip4tables(object):
         self.restore_wait_option = self._detect_restore_wait_option()
         self.fill_exists()
         self.available_tables = []
+        self.our_chains = {} # chains created by firewalld
 
     def fill_exists(self):
         self.command_exists = os.path.exists(self._command)
@@ -602,20 +503,117 @@ class ip4tables(object):
         return []
 
     def build_default_rules(self, log_denied="off"):
-        default_rules = []
-        for table in DEFAULT_RULES:
+        default_rules = {}
+
+        default_rules["security"] = [ ]
+        self.our_chains["security"] = set()
+        for chain in BUILT_IN_CHAINS["security"]:
+            default_rules["security"].append("-N %s_direct" % chain)
+            default_rules["security"].append("-A %s -j %s_direct" % (chain, chain))
+            self.our_chains["security"].add("%s_direct" % chain)
+
+        default_rules["raw"] = [ ]
+        self.our_chains["raw"] = set()
+        for chain in BUILT_IN_CHAINS["raw"]:
+            default_rules["raw"].append("-N %s_direct" % chain)
+            default_rules["raw"].append("-A %s -j %s_direct" % (chain, chain))
+            self.our_chains["raw"].add("%s_direct" % chain)
+
+            if chain == "PREROUTING":
+                default_rules["raw"].append("-N %s_ZONES_SOURCE" % chain)
+                default_rules["raw"].append("-N %s_ZONES" % chain)
+                default_rules["raw"].append("-A %s -j %s_ZONES_SOURCE" % (chain, chain))
+                default_rules["raw"].append("-A %s -j %s_ZONES" % (chain, chain))
+                self.our_chains["raw"].update(set(["%s_ZONES_SOURCE" % chain, "%s_ZONES" % chain]))
+
+        default_rules["mangle"] = [ ]
+        self.our_chains["mangle"] = set()
+        for chain in BUILT_IN_CHAINS["mangle"]:
+            default_rules["mangle"].append("-N %s_direct" % chain)
+            default_rules["mangle"].append("-A %s -j %s_direct" % (chain, chain))
+            self.our_chains["mangle"].add("%s_direct" % chain)
+
+            if chain == "PREROUTING":
+                default_rules["mangle"].append("-N %s_ZONES_SOURCE" % chain)
+                default_rules["mangle"].append("-N %s_ZONES" % chain)
+                default_rules["mangle"].append("-A %s -j %s_ZONES_SOURCE" % (chain, chain))
+                default_rules["mangle"].append("-A %s -j %s_ZONES" % (chain, chain))
+                self.our_chains["mangle"].update(set(["%s_ZONES_SOURCE" % chain, "%s_ZONES" % chain]))
+
+        default_rules["nat"] = [ ]
+        self.our_chains["nat"] = set()
+        for chain in BUILT_IN_CHAINS["nat"]:
+            default_rules["nat"].append("-N %s_direct" % chain)
+            default_rules["nat"].append("-A %s -j %s_direct" % (chain, chain))
+            self.our_chains["nat"].add("%s_direct" % chain)
+
+            if chain in [ "PREROUTING", "POSTROUTING" ]:
+                default_rules["nat"].append("-N %s_ZONES_SOURCE" % chain)
+                default_rules["nat"].append("-N %s_ZONES" % chain)
+                default_rules["nat"].append("-A %s -j %s_ZONES_SOURCE" % (chain, chain))
+                default_rules["nat"].append("-A %s -j %s_ZONES" % (chain, chain))
+                self.our_chains["nat"].update(set(["%s_ZONES_SOURCE" % chain, "%s_ZONES" % chain]))
+
+        default_rules["filter"] = [
+            "-N INPUT_direct",
+            "-N INPUT_ZONES_SOURCE",
+            "-N INPUT_ZONES",
+
+            "-A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT",
+            "-A INPUT -i lo -j ACCEPT",
+            "-A INPUT -j INPUT_direct",
+            "-A INPUT -j INPUT_ZONES_SOURCE",
+            "-A INPUT -j INPUT_ZONES",
+        ]
+        if log_denied != "off":
+            default_rules["filter"].append("-A INPUT -m conntrack --ctstate INVALID %%LOGTYPE%% -j LOG --log-prefix 'STATE_INVALID_DROP: '")
+        default_rules["filter"].append("-A INPUT -m conntrack --ctstate INVALID -j DROP")
+        if log_denied != "off":
+            default_rules["filter"].append("-A INPUT %%LOGTYPE%% -j LOG --log-prefix 'FINAL_REJECT: '")
+        default_rules["filter"].append("-A INPUT -j %%REJECT%%")
+
+        default_rules["filter"] += [
+            "-N FORWARD_direct",
+            "-N FORWARD_IN_ZONES_SOURCE",
+            "-N FORWARD_IN_ZONES",
+            "-N FORWARD_OUT_ZONES_SOURCE",
+            "-N FORWARD_OUT_ZONES",
+
+            "-A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT",
+            "-A FORWARD -i lo -j ACCEPT",
+            "-A FORWARD -j FORWARD_direct",
+            "-A FORWARD -j FORWARD_IN_ZONES_SOURCE",
+            "-A FORWARD -j FORWARD_IN_ZONES",
+            "-A FORWARD -j FORWARD_OUT_ZONES_SOURCE",
+            "-A FORWARD -j FORWARD_OUT_ZONES",
+        ]
+        if log_denied != "off":
+            default_rules["filter"].append("-A FORWARD -m conntrack --ctstate INVALID %%LOGTYPE%% -j LOG --log-prefix 'STATE_INVALID_DROP: '")
+        default_rules["filter"].append("-A FORWARD -m conntrack --ctstate INVALID -j DROP")
+        if log_denied != "off":
+            default_rules["filter"].append("-A FORWARD %%LOGTYPE%% -j LOG --log-prefix 'FINAL_REJECT: '")
+        default_rules["filter"].append("-A FORWARD -j %%REJECT%%")
+
+        default_rules["filter"] += [
+            "-N OUTPUT_direct",
+
+            "-A OUTPUT -o lo -j ACCEPT",
+            "-A OUTPUT -j OUTPUT_direct",
+        ]
+
+        self.our_chains["filter"] = set(["INPUT_direct", "INPUT_ZONES_SOURCE", "INPUT_ZONES",
+                                    "FORWARD_direct", "FORWARD_IN_ZONES_SOURCE",
+                                    "FORWARD_IN_ZONES", "FORWARD_OUT_ZONES_SOURCE",
+                                    "FORWARD_OUT_ZONES", "OUTPUT_direct"])
+
+        final_default_rules = []
+        for table in default_rules:
             if table not in self.get_available_tables():
                 continue
-            _default_rules = DEFAULT_RULES[table][:]
-            if log_denied != "off" and table in LOG_RULES:
-                _default_rules.extend(LOG_RULES[table])
-            prefix = [ "-t", table ]
-            for rule in _default_rules:
-                if type(rule) == list:
-                    default_rules.append(prefix + rule)
-                else:
-                    default_rules.append(prefix + splitArgs(rule))
-        return default_rules
+            for rule in default_rules[table]:
+                final_default_rules.append(["-t", table] + splitArgs(rule))
+
+        return final_default_rules
 
     def get_zone_table_chains(self, table):
         if table == "filter":
@@ -709,7 +707,7 @@ class ip4tables(object):
     def build_zone_chain_rules(self, zone, table, chain):
         _zone = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[chain], zone=zone)
 
-        OUR_CHAINS[table].update(set([_zone,
+        self.our_chains[table].update(set([_zone,
                                       "%s_log" % _zone,
                                       "%s_deny" % _zone,
                                       "%s_allow" % _zone]))
@@ -719,9 +717,23 @@ class ip4tables(object):
         rules.append([ "-N", "%s_log" % _zone, "-t", table ])
         rules.append([ "-N", "%s_deny" % _zone, "-t", table ])
         rules.append([ "-N", "%s_allow" % _zone, "-t", table ])
-        rules.append([ "-I", _zone, "1", "-t", table, "-j", "%s_log" % _zone ])
-        rules.append([ "-I", _zone, "2", "-t", table, "-j", "%s_deny" % _zone ])
-        rules.append([ "-I", _zone, "3", "-t", table, "-j", "%s_allow" % _zone ])
+        rules.append([ "-A", _zone, "-t", table, "-j", "%s_log" % _zone ])
+        rules.append([ "-A", _zone, "-t", table, "-j", "%s_deny" % _zone ])
+        rules.append([ "-A", _zone, "-t", table, "-j", "%s_allow" % _zone ])
+
+        target = self._fw.zone._zones[zone].target
+
+        if self._fw.get_log_denied() != "off":
+            if table == "filter" and \
+               chain in [ "INPUT", "FORWARD_IN", "FORWARD_OUT", "OUTPUT" ]:
+                if target in [ "REJECT", "%%REJECT%%" ]:
+                    rules.append([ "-A", _zone, "-t", table, "%%LOGTYPE%%",
+                                   "-j", "LOG", "--log-prefix",
+                                   "\"%s_REJECT: \"" % _zone ])
+                if target == "DROP":
+                    rules.append([ "-A", _zone, "-t", table, "%%LOGTYPE%%",
+                                   "-j", "LOG", "--log-prefix",
+                                   "\"%s_DROP: \"" % _zone ])
 
         # Handle trust, block and drop zones:
         # Add an additional rule with the zone target (accept, reject
@@ -729,23 +741,11 @@ class ip4tables(object):
         # Otherwise it is not be possible to have a zone with drop
         # target, that is allowing traffic that is locally initiated
         # or that adds additional rules. (RHBZ#1055190)
-        target = self._fw.zone._zones[zone].target
         if table == "filter" and \
            target in [ "ACCEPT", "REJECT", "%%REJECT%%", "DROP" ] and \
            chain in [ "INPUT", "FORWARD_IN", "FORWARD_OUT", "OUTPUT" ]:
-            rules.append([ "-I", _zone, "4", "-t", table, "-j", target ])
+            rules.append([ "-A", _zone, "-t", table, "-j", target ])
 
-        if self._fw.get_log_denied() != "off":
-            if table == "filter" and \
-               chain in [ "INPUT", "FORWARD_IN", "FORWARD_OUT", "OUTPUT" ]:
-                if target in [ "REJECT", "%%REJECT%%" ]:
-                    rules.append([ "-I", _zone, "4", "-t", table, "%%LOGTYPE%%",
-                                   "-j", "LOG", "--log-prefix",
-                                   "\"%s_REJECT: \"" % _zone ])
-                if target == "DROP":
-                    rules.append([ "-I", _zone, "4", "-t", table, "%%LOGTYPE%%",
-                                   "-j", "LOG", "--log-prefix",
-                                   "\"%s_DROP: \"" % _zone ])
         return rules
 
     def _rule_limit(self, limit):
