@@ -54,7 +54,7 @@ IPTABLES_TO_NFT_HOOK = {
     #},
     "raw": {
         "PREROUTING": ("prerouting", -300 + NFT_HOOK_OFFSET),
-        "OUTPUT": ("output", -300 + NFT_HOOK_OFFSET),
+    #   "OUTPUT": ("output", -300 + NFT_HOOK_OFFSET),
     },
     "mangle": {
         "PREROUTING": ("prerouting", -150 + NFT_HOOK_OFFSET),
@@ -72,7 +72,7 @@ IPTABLES_TO_NFT_HOOK = {
     "filter": {
         "INPUT": ("input", 0 + NFT_HOOK_OFFSET),
         "FORWARD": ("forward", 0 + NFT_HOOK_OFFSET),
-    #   "OUTPUT": ("output", 0 + NFT_HOOK_OFFSET),
+        "OUTPUT": ("output", 0 + NFT_HOOK_OFFSET),
     },
 }
 
@@ -484,6 +484,9 @@ class nftables(object):
         if log_denied != "off":
             default_rules.append("add rule inet %s filter_%s %%%%LOGTYPE%%%% log prefix '\"FINAL_REJECT: \"'" % (TABLE_NAME, "FORWARD"))
         default_rules.append("add rule inet %s filter_%s reject with icmpx type admin-prohibited" % (TABLE_NAME, "FORWARD"))
+
+        # filter, OUTPUT
+        default_rules.append("add rule inet %s filter_%s oifname lo accept" % (TABLE_NAME, "OUTPUT"))
 
         self.our_chains["inet"]["filter"] = set(["INPUT_ZONES_SOURCE",
                                                  "INPUT_ZONES",
@@ -1260,13 +1263,16 @@ class nftables(object):
 
         rule_fragment = ["ip6", "daddr"] + daddr_set
         if self._fw._log_denied in ["unicast", "all"]:
-            rule_fragment += ["log", "prefix", "\"RFC3964_IPv4_DROP: \""]
-        rule_fragment += ["drop"]
+            rule_fragment += ["log", "prefix", "\"RFC3964_IPv4_REJECT: \""]
+        rule_fragment += ["reject"]
+        rule_fragment += self._reject_types_fragment("addr-unreach")
 
         rules = []
-        for chain in ["PREROUTING", "OUTPUT"]:
-            rules.append(["insert", "rule", "inet", "%s" % TABLE_NAME,
-                          "raw_%s" % chain] + rule_fragment)
+        # WARN: index must be kept in sync with build_default_rules()
+        rules.append(["add", "rule", "inet", "%s" % TABLE_NAME,
+                      "filter_OUTPUT", "index", "0"] + rule_fragment)
+        rules.append(["add", "rule", "inet", "%s" % TABLE_NAME,
+                      "filter_FORWARD", "index", "1"] + rule_fragment)
         return rules
 
     def build_zone_rich_source_destination_rules(self, enable, zone, rich_rule):

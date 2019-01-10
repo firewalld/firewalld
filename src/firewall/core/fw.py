@@ -822,9 +822,15 @@ class Firewall(object):
                 rules = ipv6_backend.build_rpfilter_rules(self._log_denied)
                 transaction.add_rules(ipv6_backend, rules)
 
-            if self._rfc3964_ipv4:
-                rules = ipv6_backend.build_rfc3964_ipv4_rules()
-                transaction.add_rules(ipv6_backend, rules)
+        if self._rfc3964_ipv4:
+            # Flush due to iptables-restore (nftables) bug tiggered when
+            # specifying same index multiple times in same batch
+            # rhbz 1647925
+            transaction.execute(True)
+            transaction.clear()
+
+            rules = ipv6_backend.build_rfc3964_ipv4_rules()
+            transaction.add_rules(ipv6_backend, rules)
 
         else:
             if use_transaction is None:

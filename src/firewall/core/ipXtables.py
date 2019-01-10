@@ -1320,13 +1320,23 @@ class ip6tables(ip4tables):
                      "2002:e000::/19", # 224.0.0.0/4 (multicast), 240.0.0.0/4 (reserved and broadcast)
                      ]
 
+        chain_name = "RFC3964_IPv4"
+        self.our_chains["filter"].add(chain_name)
+
         rules = []
+        rules.append(["-t", "filter", "-N", chain_name])
         for daddr in daddr_list:
-            for chain in ["PREROUTING", "OUTPUT"]:
-                rules.append(["-t", "raw", "-I", chain,
-                              "-d", daddr, "-j", "DROP"])
-                if self._fw._log_denied in ["unicast", "all"]:
-                    rules.append(["-t", "raw", "-I", chain,
-                                  "-d", daddr, "-j", "LOG",
-                                  "--log-prefix", "\"RFC3964_IPv4_DROP: \""])
+            rules.append(["-t", "filter", "-I", chain_name,
+                          "-d", daddr, "-j", "REJECT", "--reject-with",
+                          "addr-unreach"])
+            if self._fw._log_denied in ["unicast", "all"]:
+                rules.append(["-t", "filter", "-I", chain_name,
+                              "-d", daddr, "-j", "LOG",
+                              "--log-prefix", "\"RFC3964_IPv4_REJECT: \""])
+
+        # Inject into FORWARD and OUTPUT chains
+        rules.append(["-t", "filter", "-I", "OUTPUT", "3",
+                      "-j", chain_name])
+        rules.append(["-t", "filter", "-I", "FORWARD", "4",
+                      "-j", chain_name])
         return rules
