@@ -42,6 +42,7 @@ from firewall.core.fw_policies import FirewallPolicies
 from firewall.core.fw_ipset import FirewallIPSet
 from firewall.core.fw_transaction import FirewallTransaction
 from firewall.core.fw_helper import FirewallHelper
+from firewall.core.fw_nm import nm_get_bus_name, nm_get_interfaces_in_zone
 from firewall.core.logger import log
 from firewall.core.io.firewalld_conf import firewalld_conf
 from firewall.core.io.direct import Direct
@@ -113,6 +114,7 @@ class Firewall(object):
         self._log_denied = config.FALLBACK_LOG_DENIED
         self._automatic_helpers = config.FALLBACK_AUTOMATIC_HELPERS
         self._firewall_backend = config.FALLBACK_FIREWALL_BACKEND
+        self._flush_all_on_reload = config.FALLBACK_FLUSH_ALL_ON_RELOAD
         self.nf_conntrack_helper_setting = 0
         self.nf_conntrack_helpers = { }
         self.nf_nat_helpers = { }
@@ -297,6 +299,24 @@ class Firewall(object):
                 self._firewall_backend = self._firewalld_conf.get("FirewallBackend")
                 log.debug1("FirewallBackend is set to '%s'",
                            self._firewall_backend)
+
+            if self._firewalld_conf.get("FlushAllOnReload"):
+                value = self._firewalld_conf.get("FlushAllOnReload")
+                if value.lower() in [ "no", "false" ]:
+                    self._flush_all_on_reload = False
+                else:
+                    self._flush_all_on_reload = True
+                log.debug1("FlushAllOnReload is set to '%s'",
+                           self._flush_all_on_reload)
+
+            if self._firewalld_conf.get("RFC3964_IPv4"):
+                value = self._firewalld_conf.get("RFC3964_IPv4")
+                if value.lower() in [ "no", "false" ]:
+                    self._rfc3964_ipv4 = False
+                else:
+                    self._rfc3964_ipv4 = True
+                log.debug1("RFC3964_IPv4 is set to '%s'",
+                           self._rfc3964_ipv4)
 
         self.config.set_firewalld_conf(copy.deepcopy(self._firewalld_conf))
 
@@ -797,24 +817,20 @@ class Firewall(object):
             transaction.add_rules(backend, rules)
 
         ipv6_backend = self.get_backend_by_ipv("ipv6")
-        if self.ipv6_rpfilter_enabled and \
-           "raw" in ipv6_backend.get_available_tables():
+        if "raw" in ipv6_backend.get_available_tables():
+            if self.ipv6_rpfilter_enabled:
+                rules = ipv6_backend.build_rpfilter_rules(self._log_denied)
+                transaction.add_rules(ipv6_backend, rules)
 
-            # Execute existing transaction
+        if self._rfc3964_ipv4:
+            # Flush due to iptables-restore (nftables) bug tiggered when
+            # specifying same index multiple times in same batch
+            # rhbz 1647925
             transaction.execute(True)
-            # Start new transaction
             transaction.clear()
 
-            rules = ipv6_backend.build_rpfilter_rules(self._log_denied)
+            rules = ipv6_backend.build_rfc3964_ipv4_rules()
             transaction.add_rules(ipv6_backend, rules)
-
-            # Execute ipv6_rpfilter transaction, it might fail
-            try:
-                transaction.execute(True)
-            except FirewallError as msg:
-                log.warning("Applying rules for ipv6_rpfilter failed: %s", msg)
-            # Start new transaction
-            transaction.clear()
 
         else:
             if use_transaction is None:
@@ -963,13 +979,17 @@ class Firewall(object):
     def reload(self, stop=False):
         _panic = self._panic
 
-        # save zone interfaces
-        _zone_interfaces = { }
-        for zone in self.zone.get_zones():
-            _zone_interfaces[zone] = self.zone.get_settings(zone)["interfaces"]
-        # save direct config
-        _direct_config = self.direct.get_runtime_config()
-        _old_dz = self.get_default_zone()
+        # must stash this. The value may change after _start()
+        flush_all = self._flush_all_on_reload
+
+        if not flush_all:
+            # save zone interfaces
+            _zone_interfaces = { }
+            for zone in self.zone.get_zones():
+                _zone_interfaces[zone] = self.zone.get_settings(zone)["interfaces"]
+            # save direct config
+            _direct_config = self.direct.get_runtime_config()
+            _old_dz = self.get_default_zone()
 
         # stop
         self.cleanup()
@@ -984,41 +1004,49 @@ class Firewall(object):
             # etc. We'll re-raise it at the end.
             start_exception = e
 
-        # handle interfaces in the default zone and move them to the new
-        # default zone if it changed
-        _new_dz = self.get_default_zone()
-        if _new_dz != _old_dz:
-            # if_new_dz has been introduced with the reload, we need to add it
-            # https://github.com/firewalld/firewalld/issues/53
-            if _new_dz not in _zone_interfaces:
-                _zone_interfaces[_new_dz] = { }
-            # default zone changed. Move interfaces from old default zone to
-            # the new one.
-            for iface, settings in list(_zone_interfaces[_old_dz].items()):
-                if settings["__default__"]:
-                    # move only those that were added to default zone
-                    # (not those that were added to specific zone same as
-                    # default)
-                    _zone_interfaces[_new_dz][iface] = \
-                        _zone_interfaces[_old_dz][iface]
-                    del _zone_interfaces[_old_dz][iface]
+        if not flush_all:
+            # handle interfaces in the default zone and move them to the new
+            # default zone if it changed
+            _new_dz = self.get_default_zone()
+            if _new_dz != _old_dz:
+                # if_new_dz has been introduced with the reload, we need to add it
+                # https://github.com/firewalld/firewalld/issues/53
+                if _new_dz not in _zone_interfaces:
+                    _zone_interfaces[_new_dz] = { }
+                # default zone changed. Move interfaces from old default zone to
+                # the new one.
+                for iface, settings in list(_zone_interfaces[_old_dz].items()):
+                    if settings["__default__"]:
+                        # move only those that were added to default zone
+                        # (not those that were added to specific zone same as
+                        # default)
+                        _zone_interfaces[_new_dz][iface] = \
+                            _zone_interfaces[_old_dz][iface]
+                        del _zone_interfaces[_old_dz][iface]
 
-        # add interfaces to zones again
-        for zone in self.zone.get_zones():
-            if zone in _zone_interfaces:
-                self.zone.set_settings(zone, { "interfaces":
-                                               _zone_interfaces[zone] })
-                del _zone_interfaces[zone]
-            else:
-                log.info1("New zone '%s'.", zone)
-        if len(_zone_interfaces) > 0:
-            for zone in list(_zone_interfaces.keys()):
-                log.info1("Lost zone '%s', zone interfaces dropped.", zone)
-                del _zone_interfaces[zone]
-        del _zone_interfaces
+            # add interfaces to zones again
+            for zone in self.zone.get_zones():
+                if zone in _zone_interfaces:
+                    self.zone.set_settings(zone, { "interfaces":
+                                                   _zone_interfaces[zone] })
+                    del _zone_interfaces[zone]
+                else:
+                    log.info1("New zone '%s'.", zone)
+            if len(_zone_interfaces) > 0:
+                for zone in list(_zone_interfaces.keys()):
+                    log.info1("Lost zone '%s', zone interfaces dropped.", zone)
+                    del _zone_interfaces[zone]
+            del _zone_interfaces
 
-        # restore direct config
-        self.direct.set_config(_direct_config)
+            # restore direct config
+            self.direct.set_config(_direct_config)
+
+        # Restore permanent interfaces from NetworkManager
+        nm_bus_name = nm_get_bus_name()
+        if nm_bus_name:
+            for zone in self.zone.get_zones() + [""]:
+                for interface in nm_get_interfaces_in_zone(zone):
+                    self.zone.add_interface(zone, interface, sender=nm_bus_name)
 
         # enable panic mode again if it has been enabled before or set policy
         # to ACCEPT

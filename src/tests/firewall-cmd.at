@@ -69,6 +69,8 @@ FWD_START_TEST([zone interfaces])
     FWD_CHECK([--zone=public --change-interface=dummy], 0, ignore)
     FWD_CHECK([--get-zone-of-interface=dummy], 0, [public
 ])
+    FWD_CHECK([--zone=block --add-interface=dummy1], 0, ignore)
+    FWD_CHECK([--zone=block --remove-interface=dummy1], 0, ignore)
 
     FWD_CHECK([--zone=dmz --change-zone=dummy], 0, ignore)
     FWD_CHECK([--get-zone-of-interface=dummy], 0, [dmz
@@ -113,6 +115,8 @@ FWD_START_TEST([zone interfaces])
 ])
     FWD_CHECK([--permanent --zone=public --remove-interface=perm_dummy], 0, ignore)
     FWD_CHECK([--permanent --zone=public --query-interface perm_dummy], 1, ignore)
+    FWD_CHECK([--permanent --zone=trusted --remove-interface=perm_dummy2], 0, ignore)
+    FWD_RELOAD
 
     FWD_CHECK([--add-interface=foo], 0, ignore)
     FWD_CHECK([--add-interface=bar --zone=public], 0, ignore)
@@ -126,6 +130,30 @@ FWD_START_TEST([zone interfaces])
     FWD_CHECK([--set-default-zone=public], 0, ignore)
     FWD_CHECK([--remove-interface=foo], 0, ignore)
     FWD_CHECK([--remove-interface=bar], 0, ignore)
+
+    dnl exercise wildcards, rhbz 1644025
+    dnl Note: This feature is undocumented, because it's a possible security
+    dnl risk.
+    FWD_CHECK([--zone=trusted --add-interface=+], 0, ignore)
+    FWD_CHECK([--add-interface=foobar+++], 0, ignore)
+    FWD_CHECK([--add-interface=foobar+], 0, ignore)
+    m4_if(nftables, FIREWALL_BACKEND, [
+    NFT_LIST_RULES([inet], [filter_INPUT_ZONES], 0, [dnl
+        table inet firewalld {
+        chain filter_INPUT_ZONES {
+            iifname "foobar*" goto filter_IN_public
+            iifname "foobar++*" goto filter_IN_public
+            jump filter_IN_trusted
+            goto filter_IN_public
+        }
+        }
+    ])])
+    FWD_CHECK([--zone=trusted --remove-interface=+], 0, ignore)
+    FWD_CHECK([--remove-interface=foobar+++], 0, ignore)
+    FWD_CHECK([--remove-interface=foobar+], 0, ignore)
+    FWD_CHECK([--permanent --add-interface=foobar+], 0, ignore)
+    FWD_CHECK([--permanent --remove-interface=foobar+], 0, ignore)
+    FWD_RELOAD
 FWD_END_TEST([-e '/ERROR: ZONE_CONFLICT: perm_dummy/d'])
 
 FWD_START_TEST([zone sources])
@@ -729,36 +757,30 @@ FWD_START_TEST([direct ebtables])
     FWD_CHECK([--direct --get-chains eb filter | grep mychain], 0, ignore)
     FWD_CHECK([--direct --add-rule eb filter mychain 1 -p 0x86dd -j DROP], 0, ignore)
     FWD_CHECK([--direct --add-rule eb filter mychain 999 -p IPv6 --ip6-protocol UDP --ip6-source-port ! 12345 -j DROP], 0, ignore)
-m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
     EBTABLES_LIST_RULES([filter], [mychain], 0, [dnl
--p IPv6 -j DROP
--p IPv6 --ip6-proto udp --ip6-sport ! 12345 -j DROP
--j RETURN
-])
-])
+        -p IPv6 -j DROP
+        -p IPv6 --ip6-proto udp ! --ip6-sport 12345 -j DROP
+        -j RETURN
+    ])
     FWD_CHECK([--direct --remove-rule eb filter mychain 1 -p 0x86dd -j DROP], 0, ignore)
-m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
     EBTABLES_LIST_RULES([filter], [mychain], 0, [dnl
--p IPv6 --ip6-proto udp --ip6-sport ! 12345 -j DROP
--j RETURN
-])
-])
+        -p IPv6 --ip6-proto udp ! --ip6-sport 12345 -j DROP
+        -j RETURN
+    ])
 
     FWD_CHECK([--direct --add-rule eb filter INPUT 1 -p 0x86dd -j DROP], 0, ignore)
     FWD_CHECK([--direct --add-rule eb filter INPUT_direct 1 -p 0x86dd -j DROP], 0, ignore)
-m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [dnl
-m4_if(nftables, FIREWALL_BACKEND, [dnl
-    EBTABLES_LIST_RULES([filter], [INPUT], 0, [dnl
--p IPv6 -j DROP
--p IPv6 -j DROP
-])], [dnl
-    EBTABLES_LIST_RULES([filter], [INPUT_direct], 0, [dnl
--p IPv6 -j DROP
--p IPv6 -j DROP
--j RETURN
-])
-])
-])
+    m4_if(nftables, FIREWALL_BACKEND, [dnl
+        EBTABLES_LIST_RULES([filter], [INPUT], 0, [dnl
+            -p IPv6 -j DROP
+            -p IPv6 -j DROP
+        ])], [dnl
+        EBTABLES_LIST_RULES([filter], [INPUT_direct], 0, [dnl
+            -p IPv6 -j DROP
+            -p IPv6 -j DROP
+            -j RETURN
+        ])
+    ])
 
     FWD_CHECK([--direct --remove-rules eb filter INPUT], 0, ignore)
     FWD_CHECK([--direct --remove-rules eb filter mychain], 0, ignore)
@@ -767,12 +789,10 @@ m4_if(nftables, FIREWALL_BACKEND, [dnl
     FWD_CHECK([--permanent --direct --get-chains eb filter | grep mychain], 0, ignore)
     FWD_CHECK([--permanent --direct --add-rule eb filter mychain 1 -p 0x86dd -j DROP], 0, ignore)
     FWD_RELOAD
-m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
     EBTABLES_LIST_RULES([filter], [mychain], 0, [dnl
--p IPv6 -j DROP
--j RETURN
-])
-])
+        -p IPv6 -j DROP
+        -j RETURN
+    ])
 FWD_END_TEST
 
 FWD_START_TEST([lockdown])
@@ -861,12 +881,646 @@ FWD_START_TEST([rich rules good])
     rich_rule_test([rule forward-port port="66" to-port="666" to-addr="192.168.100.2" protocol="sctp" family="ipv4" source address="192.168.2.100"])
     rich_rule_test([rule forward-port port="99" to-port="999" to-addr="1::2:3:4:7" protocol="dccp" family="ipv6" source address="1:2:3:4:6::"])
     rich_rule_test([rule forward-port port="99" to-port="10999" to-addr="1::2:3:4:7" protocol="dccp" family="ipv6" source address="1:2:3:4:6::"])
+    rich_rule_test([rule family="ipv4" port port="222" protocol="tcp" mark set="0xff"])
 FWD_END_TEST
 FWD_START_TEST([rich rules audit])
     CHECK_LOG_AUDIT
     rich_rule_test([rule service name="ftp" audit limit value="1/m" accept])
 FWD_END_TEST
 m4_undefine([rich_rule_test])
+
+FWD_START_TEST([rich rules priority])
+    CHECK_LOG_AUDIT
+
+    dnl Verify generic layout of zone
+    m4_if(nftables, FIREWALL_BACKEND, [
+    NFT_LIST_RULES([inet], [filter_IN_public], 0, [dnl
+        table inet firewalld {
+        chain filter_IN_public {
+        jump filter_IN_public_pre
+        jump filter_IN_public_log
+        jump filter_IN_public_deny
+        jump filter_IN_public_allow
+        jump filter_IN_public_post
+        meta l4proto { icmp, ipv6-icmp } accept
+        }
+        }
+    ])
+    NFT_LIST_RULES([inet], [filter_FWDI_public], 0, [dnl
+        table inet firewalld {
+        chain filter_FWDI_public {
+        jump filter_FWDI_public_pre
+        jump filter_FWDI_public_log
+        jump filter_FWDI_public_deny
+        jump filter_FWDI_public_allow
+        jump filter_FWDI_public_post
+        meta l4proto { icmp, ipv6-icmp } accept
+        }
+        }
+    ])], [
+    IPTABLES_LIST_RULES([filter], [IN_public], 0, [dnl
+        IN_public_pre all -- 0.0.0.0/0 0.0.0.0/0
+        IN_public_log all -- 0.0.0.0/0 0.0.0.0/0
+        IN_public_deny all -- 0.0.0.0/0 0.0.0.0/0
+        IN_public_allow all -- 0.0.0.0/0 0.0.0.0/0
+        IN_public_post all -- 0.0.0.0/0 0.0.0.0/0
+        ACCEPT icmp -- 0.0.0.0/0 0.0.0.0/0
+    ])
+    IPTABLES_LIST_RULES([filter], [FWDI_public], 0, [dnl
+        FWDI_public_pre all -- 0.0.0.0/0 0.0.0.0/0
+        FWDI_public_log all -- 0.0.0.0/0 0.0.0.0/0
+        FWDI_public_deny all -- 0.0.0.0/0 0.0.0.0/0
+        FWDI_public_allow all -- 0.0.0.0/0 0.0.0.0/0
+        FWDI_public_post all -- 0.0.0.0/0 0.0.0.0/0
+        ACCEPT icmp -- 0.0.0.0/0 0.0.0.0/0
+    ])
+    IP6TABLES_LIST_RULES([filter], [IN_public], 0, [dnl
+        IN_public_pre all ::/0 ::/0
+        IN_public_log all ::/0 ::/0
+        IN_public_deny all ::/0 ::/0
+        IN_public_allow all ::/0 ::/0
+        IN_public_post all ::/0 ::/0
+        ACCEPT icmpv6 ::/0 ::/0
+    ])
+    IP6TABLES_LIST_RULES([filter], [FWDI_public], 0, [dnl
+        FWDI_public_pre all ::/0 ::/0
+        FWDI_public_log all ::/0 ::/0
+        FWDI_public_deny all ::/0 ::/0
+        FWDI_public_allow all ::/0 ::/0
+        FWDI_public_post all ::/0 ::/0
+        ACCEPT icmpv6 ::/0 ::/0
+    ])])
+
+    dnl priority 0 (or not specified) is special:
+    dnl     accept goes to _allow chain
+    dnl     drop   goes to _deny chain
+    dnl     log    goes to _log chain
+    dnl     audit  goes to _log chain
+    FWD_CHECK([--add-rich-rule='rule port port="1111" protocol="tcp" log'], 0, ignore)
+    FWD_CHECK([--add-rich-rule='rule priority=0 port port="1122" protocol="tcp" audit accept'], 0, ignore)
+    FWD_CHECK([--add-rich-rule='rule port port="2222" protocol="tcp" drop'], 0, ignore)
+    FWD_CHECK([--add-rich-rule='rule port port="3333" protocol="tcp" accept'], 0, ignore)
+    FWD_CHECK([--add-rich-rule='rule priority=0 port port="4444" protocol="tcp" accept'], 0, ignore)
+    m4_if(nftables, FIREWALL_BACKEND, [
+    NFT_LIST_RULES([inet], [filter_IN_public_log], 0, [dnl
+        table inet firewalld {
+        chain filter_IN_public_log {
+        tcp dport 1111 ct state new,untracked log
+        tcp dport 1122 ct state new,untracked log level audit
+        }
+        }
+    ])
+    NFT_LIST_RULES([inet], [filter_IN_public_deny], 0, [dnl
+        table inet firewalld {
+        chain filter_IN_public_deny {
+        tcp dport 2222 ct state new,untracked drop
+        }
+        }
+    ])
+    NFT_LIST_RULES([inet], [filter_IN_public_allow], 0, [dnl
+        table inet firewalld {
+        chain filter_IN_public_allow {
+        tcp dport 22 ct state new,untracked accept
+        ip6 daddr fe80::/64 udp dport 546 ct state new,untracked accept
+        tcp dport 1122 ct state new,untracked accept
+        tcp dport 3333 ct state new,untracked accept
+        tcp dport 4444 ct state new,untracked accept
+        }
+        }
+    ])], [
+    IPTABLES_LIST_RULES([filter], [IN_public_log], 0, [dnl
+        LOG tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:1111 ctstate NEW,UNTRACKED LOG flags 0 level 4
+        AUDIT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:1122 ctstate NEW,UNTRACKED AUDIT accept
+    ])
+    IPTABLES_LIST_RULES([filter], [IN_public_deny], 0, [dnl
+        DROP tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:2222 ctstate NEW,UNTRACKED
+    ])
+    IPTABLES_LIST_RULES([filter], [IN_public_allow], 0, [dnl
+        ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:22 ctstate NEW,UNTRACKED
+        ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:1122 ctstate NEW,UNTRACKED
+        ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:3333 ctstate NEW,UNTRACKED
+        ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:4444 ctstate NEW,UNTRACKED
+    ])
+    IP6TABLES_LIST_RULES([filter], [IN_public_log], 0, [dnl
+        LOG tcp ::/0 ::/0 tcp dpt:1111 ctstate NEW,UNTRACKED LOG flags 0 level 4
+        AUDIT tcp ::/0 ::/0 tcp dpt:1122 ctstate NEW,UNTRACKED AUDIT accept
+    ])
+    IP6TABLES_LIST_RULES([filter], [IN_public_deny], 0, [dnl
+        DROP tcp ::/0 ::/0 tcp dpt:2222 ctstate NEW,UNTRACKED
+    ])
+    IP6TABLES_LIST_RULES([filter], [IN_public_allow], 0, [dnl
+        ACCEPT tcp ::/0 ::/0 tcp dpt:22 ctstate NEW,UNTRACKED
+        ACCEPT udp ::/0 fe80::/64 udp dpt:546 ctstate NEW,UNTRACKED
+        ACCEPT tcp ::/0 ::/0 tcp dpt:1122 ctstate NEW,UNTRACKED
+        ACCEPT tcp ::/0 ::/0 tcp dpt:3333 ctstate NEW,UNTRACKED
+        ACCEPT tcp ::/0 ::/0 tcp dpt:4444 ctstate NEW,UNTRACKED
+    ])
+    ])
+    FWD_RELOAD
+
+    dnl verify priority range
+    FWD_CHECK([--add-rich-rule='rule priority=-32768 port port="1234" protocol="tcp" accept'], 0, ignore)
+    FWD_CHECK([--add-rich-rule='rule priority=32767 port port="1234" protocol="tcp" accept'], 0, ignore)
+    FWD_CHECK([--add-rich-rule='rule priority=-32769 port port="1234" protocol="tcp" accept'], 139, ignore, ignore)
+    FWD_CHECK([--add-rich-rule='rule priority=32768 port port="1234" protocol="tcp" accept'], 139, ignore, ignore)
+    FWD_RELOAD
+
+    dnl Special catch-all rule
+    m4_define([rich_rule_str], ['rule priority=127 drop'])
+    FWD_CHECK([--add-rich-rule=rich_rule_str], 0, ignore)
+    FWD_CHECK([--query-rich-rule=rich_rule_str], 0, ignore)
+    m4_if(nftables, FIREWALL_BACKEND, [
+    NFT_LIST_RULES([inet], [filter_IN_public_post], 0, [dnl
+        table inet firewalld {
+        chain filter_IN_public_post {
+        drop
+        }
+        }
+    ])], [
+    IPTABLES_LIST_RULES([filter], [IN_public_post], 0, [dnl
+        DROP all -- 0.0.0.0/0 0.0.0.0/0
+    ])
+    IP6TABLES_LIST_RULES([filter], [IN_public_post], 0, [dnl
+        DROP all ::/0 ::/0
+    ])])
+    FWD_CHECK([--remove-rich-rule=rich_rule_str], 0, ignore)
+    FWD_CHECK([--query-rich-rule=rich_rule_str], 1, ignore)
+    FWD_CHECK([--permanent --add-rich-rule=rich_rule_str], 0, ignore)
+    FWD_CHECK([--permanent --query-rich-rule=rich_rule_str], 0, ignore)
+    FWD_CHECK([--permanent --remove-rich-rule=rich_rule_str], 0, ignore)
+    FWD_CHECK([--permanent --query-rich-rule=rich_rule_str], 1, ignore)
+    m4_undefine([rich_rule_str])
+    dnl special catch-all should be denied if priority not specified
+    FWD_CHECK([--add-rich-rule='rule drop'], 122, ignore, ignore)
+    FWD_CHECK([--add-rich-rule='rule priority=0 drop'], 122, ignore, ignore)
+    FWD_CHECK([--add-rich-rule='rule log prefix="foobar: "'], 122, ignore, ignore)
+    FWD_RELOAD
+
+    dnl masquerade and forward-ports are special because they use nat and mangle.
+    FWD_CHECK([--add-rich-rule='rule family="ipv4" source address="10.10.0.0/16" masquerade'], 0, ignore)
+    FWD_CHECK([--add-rich-rule='rule family="ipv4" priority=-10 source address="10.1.1.0/24" masquerade'], 0, ignore)
+    FWD_CHECK([--add-rich-rule='rule family="ipv4" priority=-1  source address="10.1.0.0/16" drop'], 0, ignore)
+    dnl
+    FWD_CHECK([--add-rich-rule='rule family="ipv4" priority=0 forward-port port="222"  protocol="tcp" to-port="22"'], 0, ignore)
+    FWD_CHECK([--add-rich-rule='rule family="ipv4" priority=0 forward-port port="2222" protocol="tcp" to-port="22" to-addr="10.1.1.1"'], 0, ignore)
+    FWD_CHECK([--add-rich-rule='rule family="ipv4" priority=-10 forward-port port="8888" protocol="tcp" to-port="80"'], 0, ignore)
+    FWD_CHECK([--add-rich-rule='rule family="ipv4" priority=-10 forward-port port="8080" protocol="tcp" to-port="80" to-addr="10.1.1.1"'], 0, ignore)
+    FWD_CHECK([--add-rich-rule='rule family="ipv6" priority=0 forward-port port="9090" protocol="tcp" to-port="90"'], 0, ignore)
+    FWD_CHECK([--add-rich-rule='rule family="ipv6" priority=-123 forward-port port="999" protocol="tcp" to-port="99"'], 0, ignore)
+    FWD_CHECK([--add-rich-rule='rule family="ipv6" priority=-123 forward-port port="9999" protocol="tcp" to-port="9999" to-addr="1234::4321"'], 0, ignore)
+    m4_if(nftables, FIREWALL_BACKEND, [
+    NFT_LIST_RULES([inet], [filter_IN_public_pre], 0, [dnl
+        table inet firewalld {
+        chain filter_IN_public_pre {
+        ct state new,untracked mark 0x00000069 accept
+        ct state new,untracked mark 0x00000066 accept
+        ip saddr 10.1.0.0/16 drop
+        }
+        }
+    ])
+    NFT_LIST_RULES([inet], [filter_IN_public_allow], 0, [dnl
+        table inet firewalld {
+        chain filter_IN_public_allow {
+        tcp dport 22 ct state new,untracked accept
+        ip6 daddr fe80::/64 udp dport 546 ct state new,untracked accept
+        ct state new,untracked mark 0x00000064 accept
+        ct state new,untracked mark 0x00000068 accept
+        }
+        }
+    ])
+    NFT_LIST_RULES([inet], [filter_FWDI_public_pre], 0, [dnl
+        table inet firewalld {
+        chain filter_FWDI_public_pre {
+        ct state new,untracked mark 0x0000006a accept
+        ct state new,untracked mark 0x00000067 accept
+        }
+        }
+    ])
+    NFT_LIST_RULES([inet], [filter_FWDI_public_allow], 0, [dnl
+        table inet firewalld {
+        chain filter_FWDI_public_allow {
+        ct state new,untracked mark 0x00000065 accept
+        }
+        }
+    ])
+    NFT_LIST_RULES([inet], [filter_FWDO_public_pre], 0, [dnl
+        table inet firewalld {
+        chain filter_FWDO_public_pre {
+        ip saddr 10.1.1.0/24 ct state new,untracked accept
+        }
+        }
+    ])
+    NFT_LIST_RULES([inet], [filter_FWDO_public_allow], 0, [dnl
+        table inet firewalld {
+        chain filter_FWDO_public_allow {
+        ip saddr 10.10.0.0/16 ct state new,untracked accept
+        }
+        }
+    ])
+    NFT_LIST_RULES([ip], [nat_PRE_public_pre], 0, [dnl
+        table ip firewalld {
+        chain nat_PRE_public_pre {
+        meta l4proto tcp mark 0x00000066 redirect to :80
+        meta l4proto tcp mark 0x00000067 dnat to 10.1.1.1:80
+        }
+        }
+    ])
+    NFT_LIST_RULES([ip], [nat_PRE_public_allow], 0, [dnl
+        table ip firewalld {
+        chain nat_PRE_public_allow {
+        meta l4proto tcp mark 0x00000064 redirect to :22
+        meta l4proto tcp mark 0x00000065 dnat to 10.1.1.1:22
+        }
+        }
+    ])
+    NFT_LIST_RULES([ip], [nat_POST_public_pre], 0, [dnl
+        table ip firewalld {
+        chain nat_POST_public_pre {
+        ip saddr 10.1.1.0/24 oifname != "lo" masquerade
+        }
+        }
+    ])
+    NFT_LIST_RULES([ip], [nat_POST_public_allow], 0, [dnl
+        table ip firewalld {
+        chain nat_POST_public_allow {
+        ip saddr 10.10.0.0/16 oifname != "lo" masquerade
+        }
+        }
+    ])
+    NFT_LIST_RULES([ip6], [nat_PRE_public_pre], 0,
+        [[table ip6 firewalld {
+        chain nat_PRE_public_pre {
+        meta l4proto tcp mark 0x00000069 redirect to :99
+        meta l4proto tcp mark 0x0000006a dnat to [1234::4321]:9999
+        }
+        }
+    ]])
+    NFT_LIST_RULES([ip6], [nat_PRE_public_allow], 0, [dnl
+        table ip6 firewalld {
+        chain nat_PRE_public_allow {
+        meta l4proto tcp mark 0x00000068 redirect to :90
+        }
+        }
+    ])
+    NFT_LIST_RULES([ip6], [nat_POST_public_pre], 0, [dnl
+        table ip6 firewalld {
+        chain nat_POST_public_pre {
+        }
+        }
+    ])
+    NFT_LIST_RULES([ip6], [nat_POST_public_allow], 0, [dnl
+        table ip6 firewalld {
+        chain nat_POST_public_allow {
+        }
+        }
+    ])
+    NFT_LIST_RULES([inet], [mangle_PRE_public_pre], 0, [dnl
+        table inet firewalld {
+        chain mangle_PRE_public_pre {
+        meta nfproto ipv6 tcp dport 999 mark set 0x00000069
+        meta nfproto ipv6 tcp dport 9999 mark set 0x0000006a
+        meta nfproto ipv4 tcp dport 8888 mark set 0x00000066
+        meta nfproto ipv4 tcp dport 8080 mark set 0x00000067
+        }
+        }
+    ])
+    NFT_LIST_RULES([inet], [mangle_PRE_public_allow], 0, [dnl
+        table inet firewalld {
+        chain mangle_PRE_public_allow {
+        meta nfproto ipv4 tcp dport 222 mark set 0x00000064
+        meta nfproto ipv4 tcp dport 2222 mark set 0x00000065
+        meta nfproto ipv6 tcp dport 9090 mark set 0x00000068
+        }
+        }
+    ])], [
+    IPTABLES_LIST_RULES([filter], [IN_public_pre], 0, [dnl
+        ACCEPT all -- 0.0.0.0/0 0.0.0.0/0 ctstate NEW,UNTRACKED mark match 0x66
+        DROP all -- 10.1.0.0/16 0.0.0.0/0
+    ])
+    IPTABLES_LIST_RULES([filter], [IN_public_allow], 0, [dnl
+        ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:22 ctstate NEW,UNTRACKED
+        ACCEPT all -- 0.0.0.0/0 0.0.0.0/0 ctstate NEW,UNTRACKED mark match 0x64
+    ])
+    IPTABLES_LIST_RULES([filter], [FWDI_public_pre], 0, [dnl
+        ACCEPT all -- 0.0.0.0/0 0.0.0.0/0 ctstate NEW,UNTRACKED mark match 0x67
+    ])
+    IPTABLES_LIST_RULES([filter], [FWDI_public_allow], 0, [dnl
+        ACCEPT all -- 0.0.0.0/0 0.0.0.0/0 ctstate NEW,UNTRACKED mark match 0x65
+    ])
+    IPTABLES_LIST_RULES([filter], [FWDO_public_pre], 0, [dnl
+        ACCEPT all -- 10.1.1.0/24 0.0.0.0/0 ctstate NEW,UNTRACKED
+    ])
+    IPTABLES_LIST_RULES([filter], [FWDO_public_allow], 0, [dnl
+        ACCEPT all -- 10.10.0.0/16 0.0.0.0/0 ctstate NEW,UNTRACKED
+    ])
+    IPTABLES_LIST_RULES([nat], [PRE_public_pre], 0, [dnl
+        DNAT tcp -- 0.0.0.0/0 0.0.0.0/0 mark match 0x66 to::80
+        DNAT tcp -- 0.0.0.0/0 0.0.0.0/0 mark match 0x67 to:10.1.1.1:80
+    ])
+    IPTABLES_LIST_RULES([nat], [PRE_public_allow], 0, [dnl
+        DNAT tcp -- 0.0.0.0/0 0.0.0.0/0 mark match 0x64 to::22
+        DNAT tcp -- 0.0.0.0/0 0.0.0.0/0 mark match 0x65 to:10.1.1.1:22
+    ])
+    IPTABLES_LIST_RULES([nat], [POST_public_pre], 0, [dnl
+        MASQUERADE all -- 10.1.1.0/24 0.0.0.0/0
+    ])
+    IPTABLES_LIST_RULES([nat], [POST_public_allow], 0, [dnl
+        MASQUERADE all -- 10.10.0.0/16 0.0.0.0/0
+    ])
+    IPTABLES_LIST_RULES([mangle], [PRE_public_pre], 0, [dnl
+        MARK tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:8888 MARK set 0x66
+        MARK tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:8080 MARK set 0x67
+    ])
+    IPTABLES_LIST_RULES([mangle], [PRE_public_allow], 0, [dnl
+        MARK tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:222 MARK set 0x64
+        MARK tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:2222 MARK set 0x65
+    ])
+    IP6TABLES_LIST_RULES([filter], [IN_public_pre], 0, [dnl
+        ACCEPT all ::/0 ::/0 ctstate NEW,UNTRACKED mark match 0x69
+    ])
+    IP6TABLES_LIST_RULES([filter], [IN_public_allow], 0, [dnl
+        ACCEPT tcp ::/0 ::/0 tcp dpt:22 ctstate NEW,UNTRACKED
+        ACCEPT udp ::/0 fe80::/64 udp dpt:546 ctstate NEW,UNTRACKED
+        ACCEPT all ::/0 ::/0 ctstate NEW,UNTRACKED mark match 0x68
+    ])
+    IP6TABLES_LIST_RULES([filter], [FWDI_public_pre], 0, [dnl
+        ACCEPT all ::/0 ::/0 ctstate NEW,UNTRACKED mark match 0x6a
+    ])
+    IP6TABLES_LIST_RULES([filter], [FWDI_public_allow], 0, [dnl
+    ])
+    IP6TABLES_LIST_RULES([nat], [PRE_public_pre], 0,
+        [[DNAT tcp ::/0 ::/0 mark match 0x69 to::99
+        DNAT tcp ::/0 ::/0 mark match 0x6a to:[1234::4321]:9999
+    ]])
+    IP6TABLES_LIST_RULES([nat], [PRE_public_allow], 0, [dnl
+        DNAT tcp ::/0 ::/0 mark match 0x68 to::90
+    ])
+    IP6TABLES_LIST_RULES([mangle], [PRE_public_pre], 0, [dnl
+        MARK tcp ::/0 ::/0 tcp dpt:999 MARK set 0x69
+        MARK tcp ::/0 ::/0 tcp dpt:9999 MARK set 0x6a
+    ])
+    IP6TABLES_LIST_RULES([mangle], [PRE_public_allow], 0, [dnl
+        MARK tcp ::/0 ::/0 tcp dpt:9090 MARK set 0x68
+    ])])
+    FWD_RELOAD
+
+    dnl icmp-block and icmp-type coverage
+    FWD_CHECK([--add-rich-rule='rule icmp-block name="destination-unreachable"'], 0, ignore)
+    FWD_CHECK([--add-rich-rule='rule priority=-10 icmp-block name="destination-unreachable"'], 0, ignore)
+    dnl
+    FWD_CHECK([--add-rich-rule='rule icmp-type name="echo-request" accept'], 0, ignore)
+    FWD_CHECK([--add-rich-rule='rule priority=-10 icmp-type name="echo-request" accept'], 0, ignore)
+    m4_if(nftables, FIREWALL_BACKEND, [
+    NFT_LIST_RULES([inet], [filter_IN_public_pre], 0, [dnl
+        table inet firewalld {
+        chain filter_IN_public_pre {
+        icmp type destination-unreachable reject with icmp type admin-prohibited
+        icmpv6 type destination-unreachable reject with icmpv6 type admin-prohibited
+        icmp type echo-request accept
+        icmpv6 type echo-request accept
+        }
+        }
+    ])
+    NFT_LIST_RULES([inet], [filter_IN_public_deny], 0, [dnl
+        table inet firewalld {
+        chain filter_IN_public_deny {
+        icmp type destination-unreachable reject with icmp type admin-prohibited
+        icmpv6 type destination-unreachable reject with icmpv6 type admin-prohibited
+        }
+        }
+    ])
+    NFT_LIST_RULES([inet], [filter_IN_public_allow], 0, [dnl
+        table inet firewalld {
+        chain filter_IN_public_allow {
+        tcp dport 22 ct state new,untracked accept
+        ip6 daddr fe80::/64 udp dport 546 ct state new,untracked accept
+        icmp type echo-request accept
+        icmpv6 type echo-request accept
+        }
+        }
+    ])
+    NFT_LIST_RULES([inet], [filter_FWDI_public_pre], 0, [dnl
+        table inet firewalld {
+        chain filter_FWDI_public_pre {
+        icmp type destination-unreachable reject with icmp type admin-prohibited
+        icmpv6 type destination-unreachable reject with icmpv6 type admin-prohibited
+        icmp type echo-request accept
+        icmpv6 type echo-request accept
+        }
+        }
+    ])
+    NFT_LIST_RULES([inet], [filter_FWDI_public_deny], 0, [dnl
+        table inet firewalld {
+        chain filter_FWDI_public_deny {
+        icmp type destination-unreachable reject with icmp type admin-prohibited
+        icmpv6 type destination-unreachable reject with icmpv6 type admin-prohibited
+        }
+        }
+    ])
+    NFT_LIST_RULES([inet], [filter_FWDI_public_allow], 0, [dnl
+        table inet firewalld {
+        chain filter_FWDI_public_allow {
+        icmp type echo-request accept
+        icmpv6 type echo-request accept
+        }
+        }
+    ])], [
+    IPTABLES_LIST_RULES([filter], [IN_public_pre], 0, [dnl
+        REJECT icmp -- 0.0.0.0/0 0.0.0.0/0 icmptype 3 reject-with icmp-host-prohibited
+        ACCEPT icmp -- 0.0.0.0/0 0.0.0.0/0 icmptype 8
+    ])
+    IPTABLES_LIST_RULES([filter], [IN_public_deny], 0, [dnl
+        REJECT icmp -- 0.0.0.0/0 0.0.0.0/0 icmptype 3 reject-with icmp-host-prohibited
+    ])
+    IPTABLES_LIST_RULES([filter], [IN_public_allow], 0, [dnl
+        ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:22 ctstate NEW,UNTRACKED
+        ACCEPT icmp -- 0.0.0.0/0 0.0.0.0/0 icmptype 8
+    ])
+    IPTABLES_LIST_RULES([filter], [FWDI_public_pre], 0, [dnl
+        REJECT icmp -- 0.0.0.0/0 0.0.0.0/0 icmptype 3 reject-with icmp-host-prohibited
+        ACCEPT icmp -- 0.0.0.0/0 0.0.0.0/0 icmptype 8
+    ])
+    IPTABLES_LIST_RULES([filter], [FWDI_public_deny], 0, [dnl
+        REJECT icmp -- 0.0.0.0/0 0.0.0.0/0 icmptype 3 reject-with icmp-host-prohibited
+    ])
+    IPTABLES_LIST_RULES([filter], [FWDI_public_allow], 0, [dnl
+        ACCEPT icmp -- 0.0.0.0/0 0.0.0.0/0 icmptype 8
+    ])
+    IP6TABLES_LIST_RULES([filter], [IN_public_pre], 0, [dnl
+        REJECT icmpv6 ::/0 ::/0 ipv6-icmptype 1 reject-with icmp6-adm-prohibited
+        ACCEPT icmpv6 ::/0 ::/0 ipv6-icmptype 128
+    ])
+    IP6TABLES_LIST_RULES([filter], [IN_public_deny], 0, [dnl
+        REJECT icmpv6 ::/0 ::/0 ipv6-icmptype 1 reject-with icmp6-adm-prohibited
+    ])
+    IP6TABLES_LIST_RULES([filter], [IN_public_allow], 0, [dnl
+        ACCEPT tcp ::/0 ::/0 tcp dpt:22 ctstate NEW,UNTRACKED
+        ACCEPT udp ::/0 fe80::/64 udp dpt:546 ctstate NEW,UNTRACKED
+        ACCEPT icmpv6 ::/0 ::/0 ipv6-icmptype 128
+    ])
+    IP6TABLES_LIST_RULES([filter], [FWDI_public_pre], 0, [dnl
+        REJECT icmpv6 ::/0 ::/0 ipv6-icmptype 1 reject-with icmp6-adm-prohibited
+        ACCEPT icmpv6 ::/0 ::/0 ipv6-icmptype 128
+    ])
+    IP6TABLES_LIST_RULES([filter], [FWDI_public_deny], 0, [dnl
+        REJECT icmpv6 ::/0 ::/0 ipv6-icmptype 1 reject-with icmp6-adm-prohibited
+    ])
+    IP6TABLES_LIST_RULES([filter], [FWDI_public_allow], 0, [dnl
+        ACCEPT icmpv6 ::/0 ::/0 ipv6-icmptype 128
+    ])])
+    FWD_RELOAD
+
+    dnl add many negative/positive priorities and make sure they're in the right order
+    FWD_CHECK([--add-rich-rule='rule priority=70   service name="smtps" accept'], 0, ignore)
+    FWD_CHECK([--add-rich-rule='rule priority=-111 service name="ntp" accept'], 0, ignore)
+    FWD_CHECK([--add-rich-rule='rule priority=-10  port port="1111" protocol="tcp" drop'], 0, ignore)
+    FWD_CHECK([--add-rich-rule='rule priority=-100 port port="1111" protocol="tcp" log'], 0, ignore)
+    FWD_CHECK([--add-rich-rule='rule priority="-77"    service name="smtp" accept'], 0, ignore)
+    FWD_CHECK([--remove-rich-rule='rule priority=-111 service name="ntp" accept'], 0, ignore)
+    FWD_CHECK([--add-rich-rule='rule family="ipv4" priority=-32768 source address="10.0.0.0/8" log'], 0, ignore)
+    FWD_CHECK([--add-rich-rule='rule family="ipv4" priority=-2 source address="10.0.0.0/8" log'], 0, ignore)
+    FWD_CHECK([--add-rich-rule='rule family="ipv4" priority=-1 source address="10.0.0.0/8" drop'], 0, ignore)
+    FWD_CHECK([--add-rich-rule='rule family="ipv4" priority=-5 source address="10.10.10.0/24" accept'], 0, ignore)
+    FWD_CHECK([--add-rich-rule='rule family="ipv4" priority=-3 source address="10.100.100.0/24" drop'], 0, ignore)
+    FWD_CHECK([--add-rich-rule='rule priority=127  drop'], 0, ignore)
+    FWD_CHECK([--add-rich-rule='rule priority=125 service name="imap" accept'], 0, ignore)
+    FWD_CHECK([--add-rich-rule='rule priority=126 log prefix="DROPPED: "'], 0, ignore)
+    FWD_CHECK([--add-rich-rule='rule priority=10  service name="ssh" accept'], 0, ignore)
+    FWD_CHECK([--add-rich-rule='rule priority=1   service name="http" accept'], 0, ignore)
+    FWD_CHECK([--add-rich-rule='rule priority=100 service name="https" accept'], 0, ignore)
+    FWD_CHECK([--add-rich-rule='rule priority=5   service name="https" accept'], 0, ignore)
+    FWD_CHECK([--add-rich-rule='rule priority=66  service name="smtp" accept'], 0, ignore)
+    FWD_CHECK([--remove-rich-rule='rule priority=66    service name="smtp" accept'], 0, ignore)
+    FWD_CHECK([--remove-rich-rule='rule priority=70    service name="smtps" accept'], 0, ignore)
+    FWD_CHECK([--remove-rich-rule='rule priority=5     service name="https" accept'], 0, ignore)
+    FWD_CHECK([--remove-rich-rule='rule priority="-77" service name="smtp" accept'], 0, ignore)
+    FWD_CHECK([--remove-rich-rule='rule family="ipv4" priority=-3 source address="10.100.100.0/24" drop'], 0, ignore)
+    m4_if(nftables, FIREWALL_BACKEND, [
+    NFT_LIST_RULES([inet], [filter_IN_public_pre], 0, [dnl
+        table inet firewalld {
+        chain filter_IN_public_pre {
+        ip saddr 10.0.0.0/8 log
+        tcp dport 1111 ct state new,untracked log
+        tcp dport 1111 ct state new,untracked drop
+        ip saddr 10.10.10.0/24 accept
+        ip saddr 10.0.0.0/8 log
+        ip saddr 10.0.0.0/8 drop
+        }
+        }
+    ])
+    NFT_LIST_RULES([inet], [filter_IN_public_allow], 0, [dnl
+        table inet firewalld {
+        chain filter_IN_public_allow {
+        tcp dport 22 ct state new,untracked accept
+        ip6 daddr fe80::/64 udp dport 546 ct state new,untracked accept
+        }
+        }
+    ])
+    NFT_LIST_RULES([inet], [filter_IN_public_deny], 0, [dnl
+        table inet firewalld {
+        chain filter_IN_public_deny {
+        }
+        }
+    ])
+    NFT_LIST_RULES([inet], [filter_IN_public_log], 0, [dnl
+        table inet firewalld {
+        chain filter_IN_public_log {
+        }
+        }
+    ])
+    NFT_LIST_RULES([inet], [filter_IN_public_post], 0, [dnl
+        table inet firewalld {
+        chain filter_IN_public_post {
+        tcp dport 80 ct state new,untracked accept
+        tcp dport 22 ct state new,untracked accept
+        tcp dport 443 ct state new,untracked accept
+        tcp dport 143 ct state new,untracked accept
+        log prefix "DROPPED: "
+        drop
+        }
+        }
+    ])], [
+    IPTABLES_LIST_RULES([filter], [IN_public_pre], 0, [dnl
+        LOG all -- 10.0.0.0/8 0.0.0.0/0 LOG flags 0 level 4
+        LOG tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:1111 ctstate NEW,UNTRACKED LOG flags 0 level 4
+        DROP tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:1111 ctstate NEW,UNTRACKED
+        ACCEPT all -- 10.10.10.0/24 0.0.0.0/0
+        LOG all -- 10.0.0.0/8 0.0.0.0/0 LOG flags 0 level 4
+        DROP all -- 10.0.0.0/8 0.0.0.0/0
+    ])
+    IPTABLES_LIST_RULES([filter], [IN_public_allow], 0, [dnl
+        ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:22 ctstate NEW,UNTRACKED
+    ])
+    IPTABLES_LIST_RULES([filter], [IN_public_deny], 0, [dnl
+    ])
+    IPTABLES_LIST_RULES([filter], [IN_public_log], 0, [dnl
+    ])
+    IPTABLES_LIST_RULES([filter], [IN_public_post], 0, [dnl
+        ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:80 ctstate NEW,UNTRACKED
+        ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:22 ctstate NEW,UNTRACKED
+        ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:443 ctstate NEW,UNTRACKED
+        ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:143 ctstate NEW,UNTRACKED
+        LOG all -- 0.0.0.0/0 0.0.0.0/0 LOG flags 0 level 4 prefix "'DROPPED: '"
+        DROP all -- 0.0.0.0/0 0.0.0.0/0
+    ])
+    IP6TABLES_LIST_RULES([filter], [IN_public_pre], 0, [dnl
+        LOG tcp ::/0 ::/0 tcp dpt:1111 ctstate NEW,UNTRACKED LOG flags 0 level 4
+        DROP tcp ::/0 ::/0 tcp dpt:1111 ctstate NEW,UNTRACKED
+    ])
+    IP6TABLES_LIST_RULES([filter], [IN_public_allow], 0, [dnl
+        ACCEPT tcp ::/0 ::/0 tcp dpt:22 ctstate NEW,UNTRACKED
+        ACCEPT udp ::/0 fe80::/64 udp dpt:546 ctstate NEW,UNTRACKED
+    ])
+    IP6TABLES_LIST_RULES([filter], [IN_public_deny], 0, [dnl
+    ])
+    IP6TABLES_LIST_RULES([filter], [IN_public_log], 0, [dnl
+    ])
+    IP6TABLES_LIST_RULES([filter], [IN_public_post], 0, [dnl
+        ACCEPT tcp ::/0 ::/0 tcp dpt:80 ctstate NEW,UNTRACKED
+        ACCEPT tcp ::/0 ::/0 tcp dpt:22 ctstate NEW,UNTRACKED
+        ACCEPT tcp ::/0 ::/0 tcp dpt:443 ctstate NEW,UNTRACKED
+        ACCEPT tcp ::/0 ::/0 tcp dpt:143 ctstate NEW,UNTRACKED
+        LOG all ::/0 ::/0 LOG flags 0 level 4 prefix "'DROPPED: '"
+        DROP all ::/0 ::/0
+    ])])
+    FWD_CHECK([-q --runtime-to-permanent])
+    FWD_RELOAD
+
+    dnl Verify the rules are displayed in order of priority, not by when they
+    dnl were added.
+    FWD_CHECK([--add-rich-rule='rule priority=0 service name="http" accept'], 0, ignore)
+    FWD_CHECK([--list-all | TRIM_WHITESPACE], 0, [m4_strip([dnl
+        public
+        target: default
+        icmp-block-inversion: no
+        interfaces:
+        sources:
+        services: dhcpv6-client ssh
+        ports:
+        protocols:
+        masquerade: no
+        forward-ports:
+        source-ports:
+        icmp-blocks:
+        rich rules:
+        rule priority="-32768" family="ipv4" source address="10.0.0.0/8" log
+        rule priority="-100" port port="1111" protocol="tcp" log
+        rule priority="-10" port port="1111" protocol="tcp" drop
+        rule priority="-5" family="ipv4" source address="10.10.10.0/24" accept
+        rule priority="-2" family="ipv4" source address="10.0.0.0/8" log
+        rule priority="-1" family="ipv4" source address="10.0.0.0/8" drop
+        rule service name="http" accept
+        rule priority="1" service name="http" accept
+        rule priority="10" service name="ssh" accept
+        rule priority="100" service name="https" accept
+        rule priority="125" service name="imap" accept
+        rule priority="126" log prefix="DROPPED: "
+        rule priority="127" drop
+    ])])
+
+FWD_END_TEST([-e '/INVALID_RULE: no element, no source, no destination/d'dnl
+              -e '/INVALID_RULE: no element, no action/d'dnl
+              -e '/ERROR: INVALID_PRIORITY: /d'])
 
 FWD_START_TEST([rich rules bad])
     m4_define([rich_rule_test], [

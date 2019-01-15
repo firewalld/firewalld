@@ -25,12 +25,12 @@ BuildRequires: docbook-style-xsl
 BuildRequires: libxslt
 BuildRequires: python2-devel
 BuildRequires: iptables, ebtables, ipset
-BuildRequires: nftables
+BuildRequires: nftables >= 0.9.0
 %if 0%{?with_python3}
 BuildRequires:  python3-devel
 %endif #0%{?with_python3}
 Requires: iptables, ebtables, ipset
-Requires: nftables
+Requires: nftables >= 0.9.0
 Requires(post): systemd
 Requires(preun): systemd
 Requires(postun): systemd
@@ -217,6 +217,8 @@ fi
 %{_bindir}/firewall-offline-cmd
 %dir %{_datadir}/bash-completion/completions
 %{_datadir}/bash-completion/completions/firewall-cmd
+%dir %{_datadir}/zsh/site-functions
+%{_datadir}/zsh/site-functions/_firewalld
 %{_prefix}/lib/firewalld/icmptypes/*.xml
 %{_prefix}/lib/firewalld/ipsets/README
 %{_prefix}/lib/firewalld/services/*.xml
@@ -304,7 +306,7 @@ fi
 %{_datadir}/firewalld/gtk3_chooserbutton.py*
 %{_datadir}/firewalld/gtk3_niceexpander.py*
 %{_datadir}/applications/firewall-config.desktop
-%{_datadir}/appdata/firewall-config.appdata.xml
+%{_datadir}/metainfo/firewall-config.appdata.xml
 %{_datadir}/icons/hicolor/*/apps/firewall-config*.*
 %{_datadir}/glib-2.0/schemas/org.fedoraproject.FirewallConfig.gschema.xml
 %{_mandir}/man1/firewall-config*.1*

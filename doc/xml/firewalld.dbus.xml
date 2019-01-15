@@ -2592,6 +2592,14 @@
               </para>
             </listitem>
           </varlistentry>
+          <varlistentry id="FirewallD1.config.Properties.FlushAllOnReload">
+            <term>FirewallBackend - s - (rw)</term>
+            <listitem>
+              <para>
+                Flush all runtime rules on a reload. Valid options are; yes, no.
+              </para>
+            </listitem>
+          </varlistentry>
           <varlistentry id="FirewallD1.config.Properties.IPv6_rpfilter">
             <term><parameter>IPv6_rpfilter</parameter> - s - (rw)</term>
             <listitem><para>Indicates whether the reverse path filter test on a packet for IPv6 is enabled. If a reply to the packet would be sent via the same interface that the packet arrived on, the packet will match and be accepted, otherwise dropped.</para></listitem>
@@ -2624,6 +2632,16 @@
               <para>
 		For some firewall settings several rules are needed in different tables to be able to handle packets in the correct way.
 		To achieve that these packets are marked using the MARK target. With the MinimalMark property a block of marks can be reserved for private use; only marks over this value are used.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.Properties.RFC3964_IPv4">
+            <term>FirewallBackend - s - (rw)</term>
+            <listitem>
+              <para>
+                As per RFC 3964, filter IPv6 traffic with 6to4 destination
+                addresses that correspond to IPv4 addresses that should not be
+                routed over the public internet. Valid options are; yes, no.
               </para>
             </listitem>
           </varlistentry>

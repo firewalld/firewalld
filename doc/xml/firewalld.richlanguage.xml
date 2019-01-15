@@ -99,9 +99,14 @@ rule
       <title>Rule</title>
       <para>
 	  <programlisting>
-rule [family="ipv4|ipv6"]
+rule [family="ipv4|ipv6"] [priority="priority"]
 	  </programlisting>
+      </para>
+      <para>
       If the rule family is provided, it can be either "ipv4" or "ipv6", which limits the rule to IPv4 or IPv6. If the rule family is not provided, the rule will be added for IPv4 and IPv6. If source or destination addresses are used in a rule, then the rule family need to be provided. This is also the case for port/packet forwarding.
+      </para>
+      <para>
+      If the rule priority is provided, it can be in the range of -32768 to 32767 where lower values have higher precendence. Rich rules are sorted by priority. Ordering for rules with the same priority value is undefined. A negative priority value will be executed before other firewalld primitives. A positive priority value will be executed after other firewalld primitives. A priority value of 0 will place the rule in a chain based on the action as per the "Information about logging and actions" below.
       </para>
     </refsect2>
 
@@ -332,20 +337,28 @@ limit value="rate/duration"
     <refsect2>
       <title>Information about logging and actions</title>
       <para>
-	Logging can be done with the log and also with audit. A new chain is added to all zones: zone_log. This will be jumped into before the deny chain to be able to have a proper ordering.
+	Logging can be done with the log and audit actions. A new chain is added to all zones: zone_log. This will be jumped into before the deny chain to be able to have a proper ordering.
       </para>
       <para>
-	The rules or parts of them are placed in separate chains according to the action of the rule:
+	The rules or parts of them are placed in separate chains according to the priority and action of the rule:
       </para>
       <para>
 	<programlisting>
+<replaceable>zone</replaceable>_pre
 <replaceable>zone</replaceable>_log
 <replaceable>zone</replaceable>_deny
 <replaceable>zone</replaceable>_allow
+<replaceable>zone</replaceable>_post
 	</programlisting>
       </para>
       <para>
-	Then all logging rules will be placed in the zone_log chain, which will be walked first. All reject and drop rules will be placed in the zone_deny chain, which will be walked after the log chain. All accept rules will be placed in the zone_allow chain, which will be walked after the deny chain. If a rule contains log and also deny or allow actions, the parts are placed in the matching chains.
+        When <emphasis>priority &lt; 0</emphasis>, the rich rule will be placed in the <replaceable>zone</replaceable>_pre chain.
+      </para>
+      <para>
+        When <emphasis>priority == 0</emphasis>Then all logging rules will be placed in the <replaceable>zone</replaceable>_log chain. All reject and drop rules will be placed in the <replaceable>zone</replaceable>_deny chain, which will be walked after the log chain. All accept rules will be placed in the <replaceable>zone</replaceable>_allow chain, which will be walked after the deny chain. If a rule contains log and also deny or allow actions, the parts are placed in the matching chains.
+      </para>
+      <para>
+        When <emphasis>priority &gt; 0</emphasis>, the rich rule will be placed in the <replaceable>zone</replaceable>_post chain.
       </para>
     </refsect2>
   </refsect1>

@@ -20,6 +20,7 @@
 #
 
 import os.path
+import copy
 
 from firewall.core.base import SHORTCUTS, DEFAULT_ZONE_TARGET
 from firewall.core.prog import runProg
@@ -27,8 +28,9 @@ from firewall.core.logger import log
 from firewall.functions import tempFile, readfile, splitArgs, check_mac, portStr, \
                                check_single_address
 from firewall import config
-from firewall.errors import FirewallError, INVALID_PASSTHROUGH, INVALID_RULE
-from firewall.core.rich import Rich_Accept, Rich_Reject, Rich_Drop, Rich_Mark
+from firewall.errors import FirewallError, INVALID_PASSTHROUGH, INVALID_RULE, UNKNOWN_ERROR
+from firewall.core.rich import Rich_Accept, Rich_Reject, Rich_Drop, Rich_Mark, \
+                               Rich_Masquerade, Rich_ForwardPort, Rich_IcmpBlock
 import string
 
 BUILT_IN_CHAINS = {
@@ -48,106 +50,6 @@ ICMP = {
     "ipv4": "icmp",
     "ipv6": "ipv6-icmp",
 }
-
-DEFAULT_RULES = { }
-LOG_RULES = { }
-OUR_CHAINS = {} # chains created by firewalld
-
-DEFAULT_RULES["security"] = [ ]
-OUR_CHAINS["security"] = set()
-for chain in BUILT_IN_CHAINS["security"]:
-    DEFAULT_RULES["security"].append("-N %s_direct" % chain)
-    DEFAULT_RULES["security"].append("-I %s 1 -j %s_direct" % (chain, chain))
-    OUR_CHAINS["security"].add("%s_direct" % chain)
-
-DEFAULT_RULES["raw"] = [ ]
-OUR_CHAINS["raw"] = set()
-for chain in BUILT_IN_CHAINS["raw"]:
-    DEFAULT_RULES["raw"].append("-N %s_direct" % chain)
-    DEFAULT_RULES["raw"].append("-I %s 1 -j %s_direct" % (chain, chain))
-    OUR_CHAINS["raw"].add("%s_direct" % chain)
-
-    if chain == "PREROUTING":
-        DEFAULT_RULES["raw"].append("-N %s_ZONES_SOURCE" % chain)
-        DEFAULT_RULES["raw"].append("-N %s_ZONES" % chain)
-        DEFAULT_RULES["raw"].append("-I %s 2 -j %s_ZONES_SOURCE" % (chain, chain))
-        DEFAULT_RULES["raw"].append("-I %s 3 -j %s_ZONES" % (chain, chain))
-        OUR_CHAINS["raw"].update(set(["%s_ZONES_SOURCE" % chain, "%s_ZONES" % chain]))
-
-DEFAULT_RULES["mangle"] = [ ]
-OUR_CHAINS["mangle"] = set()
-for chain in BUILT_IN_CHAINS["mangle"]:
-    DEFAULT_RULES["mangle"].append("-N %s_direct" % chain)
-    DEFAULT_RULES["mangle"].append("-I %s 1 -j %s_direct" % (chain, chain))
-    OUR_CHAINS["mangle"].add("%s_direct" % chain)
-
-    if chain == "PREROUTING":
-        DEFAULT_RULES["mangle"].append("-N %s_ZONES_SOURCE" % chain)
-        DEFAULT_RULES["mangle"].append("-N %s_ZONES" % chain)
-        DEFAULT_RULES["mangle"].append("-I %s 2 -j %s_ZONES_SOURCE" % (chain, chain))
-        DEFAULT_RULES["mangle"].append("-I %s 3 -j %s_ZONES" % (chain, chain))
-        OUR_CHAINS["mangle"].update(set(["%s_ZONES_SOURCE" % chain, "%s_ZONES" % chain]))
-
-DEFAULT_RULES["nat"] = [ ]
-OUR_CHAINS["nat"] = set()
-for chain in BUILT_IN_CHAINS["nat"]:
-    DEFAULT_RULES["nat"].append("-N %s_direct" % chain)
-    DEFAULT_RULES["nat"].append("-I %s 1 -j %s_direct" % (chain, chain))
-    OUR_CHAINS["nat"].add("%s_direct" % chain)
-
-    if chain in [ "PREROUTING", "POSTROUTING" ]:
-        DEFAULT_RULES["nat"].append("-N %s_ZONES_SOURCE" % chain)
-        DEFAULT_RULES["nat"].append("-N %s_ZONES" % chain)
-        DEFAULT_RULES["nat"].append("-I %s 2 -j %s_ZONES_SOURCE" % (chain, chain))
-        DEFAULT_RULES["nat"].append("-I %s 3 -j %s_ZONES" % (chain, chain))
-        OUR_CHAINS["nat"].update(set(["%s_ZONES_SOURCE" % chain, "%s_ZONES" % chain]))
-
-DEFAULT_RULES["filter"] = [
-    "-N INPUT_direct",
-    "-N INPUT_ZONES_SOURCE",
-    "-N INPUT_ZONES",
-
-    "-I INPUT 1 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT",
-    "-I INPUT 2 -i lo -j ACCEPT",
-    "-I INPUT 3 -j INPUT_direct",
-    "-I INPUT 4 -j INPUT_ZONES_SOURCE",
-    "-I INPUT 5 -j INPUT_ZONES",
-    "-I INPUT 6 -m conntrack --ctstate INVALID -j DROP",
-    "-I INPUT 7 -j %%REJECT%%",
-
-    "-N FORWARD_direct",
-    "-N FORWARD_IN_ZONES_SOURCE",
-    "-N FORWARD_IN_ZONES",
-    "-N FORWARD_OUT_ZONES_SOURCE",
-    "-N FORWARD_OUT_ZONES",
-
-    "-I FORWARD 1 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT",
-    "-I FORWARD 2 -i lo -j ACCEPT",
-    "-I FORWARD 3 -j FORWARD_direct",
-    "-I FORWARD 4 -j FORWARD_IN_ZONES_SOURCE",
-    "-I FORWARD 5 -j FORWARD_IN_ZONES",
-    "-I FORWARD 6 -j FORWARD_OUT_ZONES_SOURCE",
-    "-I FORWARD 7 -j FORWARD_OUT_ZONES",
-    "-I FORWARD 8 -m conntrack --ctstate INVALID -j DROP",
-    "-I FORWARD 9 -j %%REJECT%%",
-
-    "-N OUTPUT_direct",
-
-    "-I OUTPUT 1 -j OUTPUT_direct",
-]
-
-LOG_RULES["filter"] = [
-    "-I INPUT 6 -m conntrack --ctstate INVALID %%LOGTYPE%% -j LOG --log-prefix 'STATE_INVALID_DROP: '",
-    "-I INPUT 8 %%LOGTYPE%% -j LOG --log-prefix 'FINAL_REJECT: '",
-
-    "-I FORWARD 8 -m conntrack --ctstate INVALID %%LOGTYPE%% -j LOG --log-prefix 'STATE_INVALID_DROP: '",
-    "-I FORWARD 10 %%LOGTYPE%% -j LOG --log-prefix 'FINAL_REJECT: '",
-]
-
-OUR_CHAINS["filter"] = set(["INPUT_direct", "INPUT_ZONES_SOURCE", "INPUT_ZONES",
-                            "FORWARD_direct", "FORWARD_IN_ZONES_SOURCE",
-                            "FORWARD_IN_ZONES", "FORWARD_OUT_ZONES_SOURCE",
-                            "FORWARD_OUT_ZONES", "OUTPUT_direct"])
 
 # ipv ebtables also uses this
 #
@@ -275,6 +177,8 @@ class ip4tables(object):
         self.restore_wait_option = self._detect_restore_wait_option()
         self.fill_exists()
         self.available_tables = []
+        self.rich_rule_priority_counts = {}
+        self.our_chains = {} # chains created by firewalld
 
     def fill_exists(self):
         self.command_exists = os.path.exists(self._command)
@@ -385,10 +289,91 @@ class ip4tables(object):
                     chain = args[i+1]
         return (table, chain)
 
+    def _set_rule_replace_rich_rule_priority(self, rule, rich_rule_priority_counts):
+        """
+        Change something like
+          -t filter -I public_IN %%RICH_RULE_PRIORITY%% 123
+        or
+          -t filter -A public_IN %%RICH_RULE_PRIORITY%% 321
+        into
+          -t filter -I public_IN 4
+        or
+          -t filter -I public_IN
+        """
+        try:
+            i = rule.index("%%RICH_RULE_PRIORITY%%")
+        except ValueError:
+            pass
+        else:
+            rule_add = True
+            insert = False
+            insert_add_index = -1
+            rule.pop(i)
+            priority = rule.pop(i)
+            if type(priority) != int:
+                raise FirewallError(INVALID_RULE, "rich rule priority must be followed by a number")
+
+            table = "filter"
+            for opt in [ "-t", "--table" ]:
+                try:
+                    j = rule.index(opt)
+                except ValueError:
+                    pass
+                else:
+                    if len(rule) >= j+1:
+                        table = rule[j+1]
+            for opt in [ "-A", "--append",
+                         "-I", "--insert",
+                         "-D", "--delete" ]:
+                try:
+                    insert_add_index = rule.index(opt)
+                except ValueError:
+                    pass
+                else:
+                    if len(rule) >= insert_add_index+1:
+                        chain = rule[insert_add_index+1]
+
+                    if opt in [ "-I", "--insert" ]:
+                        insert = True
+                    if opt in [ "-D", "--delete" ]:
+                        rule_add = False
+
+            chain = (table, chain)
+
+            # Add the rule to the priority counts. We don't need to store the
+            # rule, just bump the ref count for the priority value.
+            if not rule_add:
+                if chain not in rich_rule_priority_counts or \
+                   priority not in rich_rule_priority_counts[chain] or \
+                   rich_rule_priority_counts[chain][priority] <= 0:
+                    raise FirewallError(UNKNOWN_ERROR, "nonexistent or underflow of rich rule priority count")
+
+                rich_rule_priority_counts[chain][priority] -= 1
+            else:
+                if chain not in rich_rule_priority_counts:
+                    rich_rule_priority_counts[chain] = {}
+                if priority not in rich_rule_priority_counts[chain]:
+                    rich_rule_priority_counts[chain][priority] = 0
+
+                # calculate index of new rule
+                index = 1
+                for p in sorted(rich_rule_priority_counts[chain].keys()):
+                    if p == priority and insert:
+                        break
+                    index += rich_rule_priority_counts[chain][p]
+                    if p == priority:
+                        break
+
+                rich_rule_priority_counts[chain][priority] += 1
+
+                rule[insert_add_index] = "-I"
+                rule.insert(insert_add_index+2, "%d" % index)
+
     def set_rules(self, rules, log_denied):
         temp_file = tempFile()
 
         table_rules = { }
+        rich_rule_priority_counts = copy.deepcopy(self.rich_rule_priority_counts)
         for _rule in rules:
             rule = _rule[:]
 
@@ -411,6 +396,8 @@ class ip4tables(object):
                     rule[i:i+1] = [ "-m", "pkttype", "--pkt-type", log_denied ]
                 else:
                     rule.pop(i)
+
+            self._set_rule_replace_rich_rule_priority(rule, rich_rule_priority_counts)
 
             table = "filter"
             # get table form rule
@@ -473,6 +460,7 @@ class ip4tables(object):
         if status != 0:
             raise ValueError("'%s %s' failed: %s" % (self._restore_command,
                                                      " ".join(args), ret))
+        self.rich_rule_priority_counts = rich_rule_priority_counts
         return ret
 
     def set_rule(self, rule, log_denied):
@@ -492,12 +480,15 @@ class ip4tables(object):
             if log_denied == "off":
                 return ""
             if log_denied in [ "unicast", "broadcast", "multicast" ]:
-                rule[i:i+1] = [ "-m", "pkttype", "--pkt-type",
-                                self._log_denied ]
+                rule[i:i+1] = [ "-m", "pkttype", "--pkt-type", log_denied ]
             else:
                 rule.pop(i)
 
-        return self.__run(rule)
+        rich_rule_priority_counts = copy.deepcopy(self.rich_rule_priority_counts)
+        self._set_rule_replace_rich_rule_priority(rule, self.rich_rule_priority_counts)
+        output = self.__run(rule)
+        self.rich_rule_priority_counts = rich_rule_priority_counts
+        return output
 
     def get_available_tables(self, table=None):
         ret = []
@@ -547,6 +538,7 @@ class ip4tables(object):
         return wait_option
 
     def build_flush_rules(self):
+        self.rich_rule_priority_counts = {}
         rules = []
         for table in BUILT_IN_CHAINS.keys():
             # Flush firewall rules: -F
@@ -603,20 +595,117 @@ class ip4tables(object):
         return []
 
     def build_default_rules(self, log_denied="off"):
-        default_rules = []
-        for table in DEFAULT_RULES:
+        default_rules = {}
+
+        default_rules["security"] = [ ]
+        self.our_chains["security"] = set()
+        for chain in BUILT_IN_CHAINS["security"]:
+            default_rules["security"].append("-N %s_direct" % chain)
+            default_rules["security"].append("-A %s -j %s_direct" % (chain, chain))
+            self.our_chains["security"].add("%s_direct" % chain)
+
+        default_rules["raw"] = [ ]
+        self.our_chains["raw"] = set()
+        for chain in BUILT_IN_CHAINS["raw"]:
+            default_rules["raw"].append("-N %s_direct" % chain)
+            default_rules["raw"].append("-A %s -j %s_direct" % (chain, chain))
+            self.our_chains["raw"].add("%s_direct" % chain)
+
+            if chain == "PREROUTING":
+                default_rules["raw"].append("-N %s_ZONES_SOURCE" % chain)
+                default_rules["raw"].append("-N %s_ZONES" % chain)
+                default_rules["raw"].append("-A %s -j %s_ZONES_SOURCE" % (chain, chain))
+                default_rules["raw"].append("-A %s -j %s_ZONES" % (chain, chain))
+                self.our_chains["raw"].update(set(["%s_ZONES_SOURCE" % chain, "%s_ZONES" % chain]))
+
+        default_rules["mangle"] = [ ]
+        self.our_chains["mangle"] = set()
+        for chain in BUILT_IN_CHAINS["mangle"]:
+            default_rules["mangle"].append("-N %s_direct" % chain)
+            default_rules["mangle"].append("-A %s -j %s_direct" % (chain, chain))
+            self.our_chains["mangle"].add("%s_direct" % chain)
+
+            if chain == "PREROUTING":
+                default_rules["mangle"].append("-N %s_ZONES_SOURCE" % chain)
+                default_rules["mangle"].append("-N %s_ZONES" % chain)
+                default_rules["mangle"].append("-A %s -j %s_ZONES_SOURCE" % (chain, chain))
+                default_rules["mangle"].append("-A %s -j %s_ZONES" % (chain, chain))
+                self.our_chains["mangle"].update(set(["%s_ZONES_SOURCE" % chain, "%s_ZONES" % chain]))
+
+        default_rules["nat"] = [ ]
+        self.our_chains["nat"] = set()
+        for chain in BUILT_IN_CHAINS["nat"]:
+            default_rules["nat"].append("-N %s_direct" % chain)
+            default_rules["nat"].append("-A %s -j %s_direct" % (chain, chain))
+            self.our_chains["nat"].add("%s_direct" % chain)
+
+            if chain in [ "PREROUTING", "POSTROUTING" ]:
+                default_rules["nat"].append("-N %s_ZONES_SOURCE" % chain)
+                default_rules["nat"].append("-N %s_ZONES" % chain)
+                default_rules["nat"].append("-A %s -j %s_ZONES_SOURCE" % (chain, chain))
+                default_rules["nat"].append("-A %s -j %s_ZONES" % (chain, chain))
+                self.our_chains["nat"].update(set(["%s_ZONES_SOURCE" % chain, "%s_ZONES" % chain]))
+
+        default_rules["filter"] = [
+            "-N INPUT_direct",
+            "-N INPUT_ZONES_SOURCE",
+            "-N INPUT_ZONES",
+
+            "-A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT",
+            "-A INPUT -i lo -j ACCEPT",
+            "-A INPUT -j INPUT_direct",
+            "-A INPUT -j INPUT_ZONES_SOURCE",
+            "-A INPUT -j INPUT_ZONES",
+        ]
+        if log_denied != "off":
+            default_rules["filter"].append("-A INPUT -m conntrack --ctstate INVALID %%LOGTYPE%% -j LOG --log-prefix 'STATE_INVALID_DROP: '")
+        default_rules["filter"].append("-A INPUT -m conntrack --ctstate INVALID -j DROP")
+        if log_denied != "off":
+            default_rules["filter"].append("-A INPUT %%LOGTYPE%% -j LOG --log-prefix 'FINAL_REJECT: '")
+        default_rules["filter"].append("-A INPUT -j %%REJECT%%")
+
+        default_rules["filter"] += [
+            "-N FORWARD_direct",
+            "-N FORWARD_IN_ZONES_SOURCE",
+            "-N FORWARD_IN_ZONES",
+            "-N FORWARD_OUT_ZONES_SOURCE",
+            "-N FORWARD_OUT_ZONES",
+
+            "-A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT",
+            "-A FORWARD -i lo -j ACCEPT",
+            "-A FORWARD -j FORWARD_direct",
+            "-A FORWARD -j FORWARD_IN_ZONES_SOURCE",
+            "-A FORWARD -j FORWARD_IN_ZONES",
+            "-A FORWARD -j FORWARD_OUT_ZONES_SOURCE",
+            "-A FORWARD -j FORWARD_OUT_ZONES",
+        ]
+        if log_denied != "off":
+            default_rules["filter"].append("-A FORWARD -m conntrack --ctstate INVALID %%LOGTYPE%% -j LOG --log-prefix 'STATE_INVALID_DROP: '")
+        default_rules["filter"].append("-A FORWARD -m conntrack --ctstate INVALID -j DROP")
+        if log_denied != "off":
+            default_rules["filter"].append("-A FORWARD %%LOGTYPE%% -j LOG --log-prefix 'FINAL_REJECT: '")
+        default_rules["filter"].append("-A FORWARD -j %%REJECT%%")
+
+        default_rules["filter"] += [
+            "-N OUTPUT_direct",
+
+            "-A OUTPUT -o lo -j ACCEPT",
+            "-A OUTPUT -j OUTPUT_direct",
+        ]
+
+        self.our_chains["filter"] = set(["INPUT_direct", "INPUT_ZONES_SOURCE", "INPUT_ZONES",
+                                    "FORWARD_direct", "FORWARD_IN_ZONES_SOURCE",
+                                    "FORWARD_IN_ZONES", "FORWARD_OUT_ZONES_SOURCE",
+                                    "FORWARD_OUT_ZONES", "OUTPUT_direct"])
+
+        final_default_rules = []
+        for table in default_rules:
             if table not in self.get_available_tables():
                 continue
-            _default_rules = DEFAULT_RULES[table][:]
-            if log_denied != "off" and table in LOG_RULES:
-                _default_rules.extend(LOG_RULES[table])
-            prefix = [ "-t", table ]
-            for rule in _default_rules:
-                if type(rule) == list:
-                    default_rules.append(prefix + rule)
-                else:
-                    default_rules.append(prefix + splitArgs(rule))
-        return default_rules
+            for rule in default_rules[table]:
+                final_default_rules.append(["-t", table] + splitArgs(rule))
+
+        return final_default_rules
 
     def get_zone_table_chains(self, table):
         if table == "filter":
@@ -710,19 +799,39 @@ class ip4tables(object):
     def build_zone_chain_rules(self, zone, table, chain):
         _zone = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[chain], zone=zone)
 
-        OUR_CHAINS[table].update(set([_zone,
+        self.our_chains[table].update(set([_zone,
                                       "%s_log" % _zone,
                                       "%s_deny" % _zone,
+                                      "%s_pre" % _zone,
+                                      "%s_post" % _zone,
                                       "%s_allow" % _zone]))
 
         rules = []
         rules.append([ "-N", _zone, "-t", table ])
+        rules.append([ "-N", "%s_pre" % _zone, "-t", table ])
         rules.append([ "-N", "%s_log" % _zone, "-t", table ])
         rules.append([ "-N", "%s_deny" % _zone, "-t", table ])
         rules.append([ "-N", "%s_allow" % _zone, "-t", table ])
-        rules.append([ "-I", _zone, "1", "-t", table, "-j", "%s_log" % _zone ])
-        rules.append([ "-I", _zone, "2", "-t", table, "-j", "%s_deny" % _zone ])
-        rules.append([ "-I", _zone, "3", "-t", table, "-j", "%s_allow" % _zone ])
+        rules.append([ "-N", "%s_post" % _zone, "-t", table ])
+        rules.append([ "-A", _zone, "-t", table, "-j", "%s_pre" % _zone ])
+        rules.append([ "-A", _zone, "-t", table, "-j", "%s_log" % _zone ])
+        rules.append([ "-A", _zone, "-t", table, "-j", "%s_deny" % _zone ])
+        rules.append([ "-A", _zone, "-t", table, "-j", "%s_allow" % _zone ])
+        rules.append([ "-A", _zone, "-t", table, "-j", "%s_post" % _zone ])
+
+        target = self._fw.zone._zones[zone].target
+
+        if self._fw.get_log_denied() != "off":
+            if table == "filter" and \
+               chain in [ "INPUT", "FORWARD_IN", "FORWARD_OUT", "OUTPUT" ]:
+                if target in [ "REJECT", "%%REJECT%%" ]:
+                    rules.append([ "-A", _zone, "-t", table, "%%LOGTYPE%%",
+                                   "-j", "LOG", "--log-prefix",
+                                   "\"%s_REJECT: \"" % _zone ])
+                if target == "DROP":
+                    rules.append([ "-A", _zone, "-t", table, "%%LOGTYPE%%",
+                                   "-j", "LOG", "--log-prefix",
+                                   "\"%s_DROP: \"" % _zone ])
 
         # Handle trust, block and drop zones:
         # Add an additional rule with the zone target (accept, reject
@@ -730,23 +839,11 @@ class ip4tables(object):
         # Otherwise it is not be possible to have a zone with drop
         # target, that is allowing traffic that is locally initiated
         # or that adds additional rules. (RHBZ#1055190)
-        target = self._fw.zone._zones[zone].target
         if table == "filter" and \
            target in [ "ACCEPT", "REJECT", "%%REJECT%%", "DROP" ] and \
            chain in [ "INPUT", "FORWARD_IN", "FORWARD_OUT", "OUTPUT" ]:
-            rules.append([ "-I", _zone, "4", "-t", table, "-j", target ])
+            rules.append([ "-A", _zone, "-t", table, "-j", target ])
 
-        if self._fw.get_log_denied() != "off":
-            if table == "filter" and \
-               chain in [ "INPUT", "FORWARD_IN", "FORWARD_OUT", "OUTPUT" ]:
-                if target in [ "REJECT", "%%REJECT%%" ]:
-                    rules.append([ "-I", _zone, "4", "-t", table, "%%LOGTYPE%%",
-                                   "-j", "LOG", "--log-prefix",
-                                   "\"%s_REJECT: \"" % _zone ])
-                if target == "DROP":
-                    rules.append([ "-I", _zone, "4", "-t", table, "%%LOGTYPE%%",
-                                   "-j", "LOG", "--log-prefix",
-                                   "\"%s_DROP: \"" % _zone ])
         return rules
 
     def _rule_limit(self, limit):
@@ -754,13 +851,53 @@ class ip4tables(object):
             return [ "-m", "limit", "--limit", limit.value ]
         return []
 
+    def _rich_rule_chain_suffix(self, rich_rule):
+        if type(rich_rule.element) in [Rich_Masquerade, Rich_ForwardPort, Rich_IcmpBlock]:
+            # These are special and don't have an explicit action
+            pass
+        elif rich_rule.action:
+            if type(rich_rule.action) not in [Rich_Accept, Rich_Reject, Rich_Drop, Rich_Mark]:
+                raise FirewallError(INVALID_RULE, "Unknown action %s" % type(rich_rule.action))
+        else:
+            raise FirewallError(INVALID_RULE, "No rule action specified.")
+
+        if rich_rule.priority == 0:
+            if type(rich_rule.element) in [Rich_Masquerade, Rich_ForwardPort] or \
+               type(rich_rule.action) in [Rich_Accept, Rich_Mark]:
+                return "allow"
+            elif type(rich_rule.element) in [Rich_IcmpBlock] or \
+                 type(rich_rule.action) in [Rich_Reject, Rich_Drop]:
+                return "deny"
+        elif rich_rule.priority < 0:
+            return "pre"
+        else:
+            return "post"
+
+    def _rich_rule_chain_suffix_from_log(self, rich_rule):
+        if not rich_rule.log and not rich_rule.audit:
+            raise FirewallError(INVALID_RULE, "Not log or audit")
+
+        if rich_rule.priority == 0:
+            return "log"
+        elif rich_rule.priority < 0:
+            return "pre"
+        else:
+            return "post"
+
+    def _rich_rule_priority_fragment(self, rich_rule):
+        if rich_rule.priority == 0:
+            return []
+        return ["%%RICH_RULE_PRIORITY%%", rich_rule.priority]
+
     def _rich_rule_log(self, rich_rule, enable, table, target, rule_fragment):
         if not rich_rule.log:
             return []
 
         add_del = { True: "-A", False: "-D" }[enable]
 
-        rule = [ add_del, "%s_log" % (target), "-t", table]
+        chain_suffix = self._rich_rule_chain_suffix_from_log(rich_rule)
+        rule = ["-t", table, add_del, "%s_%s" % (target, chain_suffix)]
+        rule += self._rich_rule_priority_fragment(rich_rule)
         rule += rule_fragment + [ "-j", "LOG" ]
         if rich_rule.log.prefix:
             rule += [ "--log-prefix", "'%s'" % rich_rule.log.prefix ]
@@ -776,7 +913,10 @@ class ip4tables(object):
 
         add_del = { True: "-A", False: "-D" }[enable]
 
-        rule = [add_del, "%s_log" % (target), "-t", table] + rule_fragment
+        chain_suffix = self._rich_rule_chain_suffix_from_log(rich_rule)
+        rule = ["-t", table, add_del, "%s_%s" % (target, chain_suffix)]
+        rule += self._rich_rule_priority_fragment(rich_rule)
+        rule += rule_fragment
         if type(rich_rule.action) == Rich_Accept:
             _type = "accept"
         elif type(rich_rule.action) == Rich_Reject:
@@ -796,28 +936,28 @@ class ip4tables(object):
 
         add_del = { True: "-A", False: "-D" }[enable]
 
+        chain_suffix = self._rich_rule_chain_suffix(rich_rule)
+        chain = "%s_%s" % (target, chain_suffix)
         if type(rich_rule.action) == Rich_Accept:
-            chain = "%s_allow" % target
             rule_action = [ "-j", "ACCEPT" ]
         elif type(rich_rule.action) == Rich_Reject:
-            chain = "%s_deny" % target
             rule_action = [ "-j", "REJECT" ]
             if rich_rule.action.type:
                 rule_action += [ "--reject-with", rich_rule.action.type ]
         elif type(rich_rule.action) ==  Rich_Drop:
-            chain = "%s_deny" % target
             rule_action = [ "-j", "DROP" ]
         elif type(rich_rule.action) == Rich_Mark:
-            chain = "%s_allow" % target
-            table = "mangle"
             target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["PREROUTING"],
                                                 zone=zone)
+            table = "mangle"
+            chain = "%s_%s" % (target, chain_suffix)
             rule_action = [ "-j", "MARK", "--set-xmark", rich_rule.action.set ]
         else:
             raise FirewallError(INVALID_RULE,
                                 "Unknown action %s" % type(rich_rule.action))
 
-        rule = [ add_del, chain, "-t", table ]
+        rule = ["-t", table, add_del, chain]
+        rule += self._rich_rule_priority_fragment(rich_rule)
         rule += rule_fragment + rule_action
         rule += self._rule_limit(rich_rule.action.limit)
 
@@ -958,11 +1098,15 @@ class ip4tables(object):
                                             zone=zone)
         rule_fragment = []
         if rich_rule:
+            chain_suffix = self._rich_rule_chain_suffix(rich_rule)
+            rule_fragment += self._rich_rule_priority_fragment(rich_rule)
             rule_fragment += self._rich_rule_destination_fragment(rich_rule.destination)
             rule_fragment += self._rich_rule_source_fragment(rich_rule.source)
+        else:
+            chain_suffix = "allow"
 
         rules = []
-        rules.append([ add_del, "%s_allow" % (target), "-t", "nat" ]
+        rules.append(["-t", "nat", add_del, "%s_%s" % (target, chain_suffix)]
                      + rule_fragment +
                      [ "!", "-o", "lo", "-j", "MASQUERADE" ])
         # FORWARD_OUT
@@ -970,10 +1114,14 @@ class ip4tables(object):
                                             zone=zone)
         rule_fragment = []
         if rich_rule:
+            chain_suffix = self._rich_rule_chain_suffix(rich_rule)
+            rule_fragment += self._rich_rule_priority_fragment(rich_rule)
             rule_fragment += self._rich_rule_destination_fragment(rich_rule.destination)
             rule_fragment += self._rich_rule_source_fragment(rich_rule.source)
+        else:
+            chain_suffix = "allow"
 
-        rules.append([ add_del, "%s_allow" % (target), "-t", "filter"]
+        rules.append(["-t", "filter", add_del, "%s_%s" % (target, chain_suffix)]
                      + rule_fragment +
                      ["-m", "conntrack", "--ctstate", "NEW,UNTRACKED", "-j", "ACCEPT" ])
 
@@ -999,28 +1147,35 @@ class ip4tables(object):
                                             zone=zone)
 
         rule_fragment = [ "-p", protocol, "--dport", portStr(port) ]
+        rich_rule_priority_fragment = []
         if rich_rule:
+            chain_suffix = self._rich_rule_chain_suffix(rich_rule)
+            rich_rule_priority_fragment = self._rich_rule_priority_fragment(rich_rule)
             rule_fragment += self._rich_rule_destination_fragment(rich_rule.destination)
             rule_fragment += self._rich_rule_source_fragment(rich_rule.source)
+        else:
+            chain_suffix = "allow"
 
         rules = []
         if rich_rule:
             rules.append(self._rich_rule_log(rich_rule, enable, "mangle", target, rule_fragment))
-        rules.append([ add_del, "%s_allow" % (target), "-t", "mangle"]
-                     + rule_fragment + 
+        rules.append(["-t", "mangle", add_del, "%s_%s" % (target, chain_suffix)]
+                     + rich_rule_priority_fragment + rule_fragment +
                      [ "-j", "MARK", "--set-mark", mark_str ])
 
         # local and remote
-        rules.append([ add_del, "%s_allow" % (target), "-t", "nat",
-                     "-p", protocol ] + mark +
+        rules.append(["-t", "nat", add_del, "%s_%s" % (target, chain_suffix)]
+                     + rich_rule_priority_fragment +
+                     ["-p", protocol ] + mark +
                      [ "-j", "DNAT", "--to-destination", to ])
 
         target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[filter_chain],
                                             zone=zone)
-        rules.append([ add_del, "%s_allow" % (target),
-                     "-t", "filter", "-m", "conntrack",
-                     "--ctstate", "NEW,UNTRACKED" ] +
-                     mark + [ "-j", "ACCEPT" ])
+        rules.append(["-t", "filter", add_del, "%s_%s" % (target, chain_suffix)]
+                     + rich_rule_priority_fragment +
+                     ["-m", "conntrack", "--ctstate", "NEW,UNTRACKED" ]
+                     + mark +
+                     [ "-j", "ACCEPT" ])
 
         return rules
 
@@ -1058,7 +1213,9 @@ class ip4tables(object):
                 if rich_rule.action:
                     rules.append(self._rich_rule_action(zone, rich_rule, enable, table, target, rule_fragment))
                 else:
-                    rules.append([ add_del, "%s_deny" % target, "-t", table ]
+                    chain_suffix = self._rich_rule_chain_suffix(rich_rule)
+                    rules.append(["-t", table, add_del, "%s_%s" % (target, chain_suffix)]
+                                 + self._rich_rule_priority_fragment(rich_rule)
                                  + rule_fragment +
                                  [ "-j", "%%REJECT%%" ])
             else:
@@ -1077,7 +1234,7 @@ class ip4tables(object):
         table = "filter"
         rules = []
         for chain in [ "INPUT", "FORWARD_IN" ]:
-            rule_idx = 4
+            rule_idx = 6
             _zone = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[chain],
                                                zone=zone)
 
@@ -1133,19 +1290,53 @@ class ip6tables(ip4tables):
 
     def build_rpfilter_rules(self, log_denied=False):
         rules = []
-        rules.append([ "-I", "PREROUTING", "1", "-t", "raw",
-                       "-p", "ipv6-icmp",
-                       "--icmpv6-type=neighbour-solicitation",
-                       "-j", "ACCEPT" ]) # RHBZ#1575431, kernel bug in 4.16-4.17
-        rules.append([ "-I", "PREROUTING", "2", "-t", "raw",
-                       "-p", "ipv6-icmp",
-                       "--icmpv6-type=router-advertisement",
-                       "-j", "ACCEPT" ]) # RHBZ#1058505
-        rules.append([ "-I", "PREROUTING", "3", "-t", "raw",
+        rules.append([ "-I", "PREROUTING", "-t", "raw",
                        "-m", "rpfilter", "--invert", "-j", "DROP" ])
         if log_denied != "off":
-            rules.append([ "-I", "PREROUTING", "3", "-t", "raw",
+            rules.append([ "-I", "PREROUTING", "-t", "raw",
                            "-m", "rpfilter", "--invert",
                            "-j", "LOG",
                            "--log-prefix", "rpfilter_DROP: " ])
+        rules.append([ "-I", "PREROUTING", "-t", "raw",
+                       "-p", "ipv6-icmp",
+                       "--icmpv6-type=neighbour-solicitation",
+                       "-j", "ACCEPT" ]) # RHBZ#1575431, kernel bug in 4.16-4.17
+        rules.append([ "-I", "PREROUTING", "-t", "raw",
+                       "-p", "ipv6-icmp",
+                       "--icmpv6-type=router-advertisement",
+                       "-j", "ACCEPT" ]) # RHBZ#1058505
+        return rules
+
+    def build_rfc3964_ipv4_rules(self):
+        daddr_list = [
+                     "::0.0.0.0/96", # IPv4 compatible
+                     "::ffff:0.0.0.0/96", # IPv4 mapped
+                     "2002:0000::/24", # 0.0.0.0/8 (the system has no address assigned yet)
+                     "2002:0a00::/24", # 10.0.0.0/8 (private)
+                     "2002:7f00::/24", # 127.0.0.0/8 (loopback)
+                     "2002:ac10::/28", # 172.16.0.0/12 (private)
+                     "2002:c0a8::/32", # 192.168.0.0/16 (private)
+                     "2002:a9fe::/32", # 169.254.0.0/16 (IANA Assigned DHCP link-local)
+                     "2002:e000::/19", # 224.0.0.0/4 (multicast), 240.0.0.0/4 (reserved and broadcast)
+                     ]
+
+        chain_name = "RFC3964_IPv4"
+        self.our_chains["filter"].add(chain_name)
+
+        rules = []
+        rules.append(["-t", "filter", "-N", chain_name])
+        for daddr in daddr_list:
+            rules.append(["-t", "filter", "-I", chain_name,
+                          "-d", daddr, "-j", "REJECT", "--reject-with",
+                          "addr-unreach"])
+            if self._fw._log_denied in ["unicast", "all"]:
+                rules.append(["-t", "filter", "-I", chain_name,
+                              "-d", daddr, "-j", "LOG",
+                              "--log-prefix", "\"RFC3964_IPv4_REJECT: \""])
+
+        # Inject into FORWARD and OUTPUT chains
+        rules.append(["-t", "filter", "-I", "OUTPUT", "3",
+                      "-j", chain_name])
+        rules.append(["-t", "filter", "-I", "FORWARD", "4",
+                      "-j", chain_name])
         return rules

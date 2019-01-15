@@ -12,7 +12,7 @@ m4_define([FWD_START_FIREWALLD], [
     FIREWALLD_ARGS="--nofork --nopid --log-file ./firewalld.log --system-config ./"
     dnl if testsuite ran with debug flag, add debug output
     case "${TESTSUITEFLAGS}" in
-        *-d*|*--debug*) FIREWALLD_ARGS="--debug=2 ${FIREWALLD_ARGS}";;
+        *-d*|*--debug*) FIREWALLD_ARGS="--debug=3 ${FIREWALLD_ARGS}";;
         *) :;;
     esac
     if test "x${FIREWALLD_DEFAULT_CONFIG}" != x ; then
@@ -217,6 +217,12 @@ m4_define([TRIMV], [[sed -e '/^[ \t]*$/d']])
 m4_define([TRIM_INTERNAL], [[sed -e 's/[ \t]\+/ /g']])
 m4_define([TRIM_WHITESPACE], [TRIM | TRIMV | TRIM_INTERNAL])
 
+dnl m4sugar's m4_strip has a bug that causes it to print a space after
+dnl newlines. So implement our own suck-less version.
+m4_define([m4_strip],
+[m4_bpatsubsts([$1], [[	 ]+], [ ],
+                     [^ ?\(.*\) ?$], [\1])])
+
 m4_define([NS_CMD], [dnl
     env DBUS_SYSTEM_BUS_ADDRESS="CURRENT_DBUS_ADDRESS" ip netns exec CURRENT_TEST_NS $1 dnl
 ])
@@ -226,30 +232,52 @@ m4_define([NS_CHECK], [
 ])
 
 m4_define([EBTABLES_LIST_RULES], [
-    NS_CHECK([ebtables --concurrent -t $1 -L $2 | TRIM_WHITESPACE | grep -v "^Bridge"], [$3], [$4], [$5], [$6], [$7])
+    dnl ebtables commit 5f508b76a0ce change list output for inversion.
+    m4_define([EBTABLES_LIST_RULES_NORMALIZE], [[sed -e 's/\([-][-][-a-zA-Z0-9]\+\)[ ]\+[!]/! \1/g']])
+    m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
+        NS_CHECK([ebtables --concurrent -t $1 -L $2 | TRIM_WHITESPACE | grep -v "^Bridge" | EBTABLES_LIST_RULES_NORMALIZE], [$3], [m4_strip([$4])], [m4_strip([$5])], [$6], [$7])
+    ])
+    m4_undefine([EBTABLES_LIST_RULES_NORMALIZE])
 ])
 
 m4_define([IPTABLES_LIST_RULES], [
-    NS_CHECK([iptables -w -n -t $1 -L $2 | TRIM_WHITESPACE | tail -n +3], [$3], [$4], [$5], [$6], [$7])
+    m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
+        NS_CHECK([iptables -w -n -t $1 -L $2 | TRIM_WHITESPACE | tail -n +3], [$3], [m4_strip([$4])], [m4_strip([$5])], [$6], [$7])
+    ])
 ])
 
 m4_define([IP6TABLES_LIST_RULES], [
-    NS_CHECK([ip6tables -w -n -t $1 -L $2 | TRIM_WHITESPACE | tail -n +3], [$3], [$4], [$5], [$6], [$7])
+    m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
+        NS_CHECK([ip6tables -w -n -t $1 -L $2 | TRIM_WHITESPACE | tail -n +3], [$3], [m4_strip([$4])], [m4_strip([$5])], [$6], [$7])
+    ])
 ])
 
 m4_define([NFT_LIST_RULES], [
-    NS_CHECK([nft -nn list chain $1 firewalld $2 | TRIM_WHITESPACE], [$3], [$4], [$5], [$6], [$7])
+    dnl nftables commit 6dd848339444 change list output to show "meta mark"
+    dnl instead of just "mark".
+    m4_define([NFT_LIST_RULES_NORMALIZE], [dnl
+        sed -e 's/meta mark/mark/g'dnl
+        | sed -e '/type.*hook.*priority.*policy.*/d'dnl
+    ])
+    m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
+        NS_CHECK([nft -nn list chain $1 firewalld $2 | TRIM_WHITESPACE | NFT_LIST_RULES_NORMALIZE], [$3], [m4_strip([$4])], [m4_strip([$5])], [$6], [$7])
+    ])
+    m4_undefine([NFT_LIST_RULES_NORMALIZE])
 ])
 
 m4_define([IPSET_LIST_SET], [
-    NS_CHECK([ipset list $1 | TRIM_WHITESPACE |dnl
-              grep -v "^\(Revision\|Header\|Size\|References\|Number\)" |dnl
-              awk 'NR <= 3; NR > 3 {print | "sort"}'],
-             [$2], [$3], [$4], [$5], [$6])
+    m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
+        NS_CHECK([ipset list $1 | TRIM_WHITESPACE |dnl
+                  grep -v "^\(Revision\|Header\|Size\|References\|Number\)" |dnl
+                  awk 'NR <= 3; NR > 3 {print | "sort"}'],
+                 [$2], [m4_strip([$3])], [m4_strip([$4])], [$5], [$6])
+    ])
 ])
 
 m4_define([NFT_LIST_SET], [
-    NS_CHECK([nft -nn list set inet firewalld $1 | TRIM_WHITESPACE], [$2], [$3], [$4], [$5], [$6])
+    m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
+        NS_CHECK([nft -nn list set inet firewalld $1 | TRIM_WHITESPACE], [$2], [m4_strip([$3])], [m4_strip([$4])], [$5], [$6])
+    ])
 ])
 
 m4_define([DBUS_CHECK], [
@@ -267,7 +295,7 @@ m4_define([DBUS_GETALL], [
               /org/fedoraproject/FirewallD1/$1 dnl
               org.freedesktop.DBus.Properties.GetAll string:"org.fedoraproject.FirewallD1.$2" dnl
               | TRIM_WHITESPACE | DBUS_GETALL_NORMALIZE],
-             [$3], [$4], [$5], [$6], [$7])
+             [$3], [m4_strip([$4])], [m4_strip([$5])], [$6], [$7])
 ])
 
 m4_define([DBUS_GET], [
@@ -275,7 +303,7 @@ m4_define([DBUS_GET], [
               /org/fedoraproject/FirewallD1/$1 dnl
               org.freedesktop.DBus.Properties.Get string:"org.fedoraproject.FirewallD1.$2" $3 dnl
               | tail -n +2 | TRIM_WHITESPACE],
-             [$4], [$5], [$6], [$7], [$8])
+             [$4], [m4_strip([$5])], [m4_strip([$6])], [$7], [$8])
 ])
 
 m4_define([DBUS_SET], [

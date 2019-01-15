@@ -88,7 +88,7 @@ class Zone(IO_Object):
         "zone": [ "name", "immutable", "target", "version" ],
         "masquerade": [ "enabled" ],
         "forward-port": [ "to-port", "to-addr" ],
-        "rule": [ "family" ],
+        "rule": [ "family", "priority" ],
         "source": [ "address", "mac", "invert", "family", "ipset" ],
         "destination": [ "invert" ],
         "log": [ "prefix", "level" ],
@@ -627,6 +627,7 @@ class zone_ContentHandler(IO_Object_ContentHandler):
 
         elif name == "rule":
             family = None
+            priority = 0
             if "family" in attrs:
                 family = attrs["family"]
                 if family not in [ "ipv4", "ipv6" ]:
@@ -634,7 +635,9 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                                 attrs["family"])
                     self._rule_error = True
                     return
-            self._rule = rich.Rich_Rule(family)
+            if "priority" in attrs:
+                priority = int(attrs["priority"])
+            self._rule = rich.Rich_Rule(family=family, priority=priority)
 
         elif name == "limit":
             if not self._limit_ok:
@@ -834,6 +837,8 @@ def zone_writer(zone, path=None):
         attrs = { }
         if rule.family:
             attrs["family"] = rule.family
+        if rule.priority != 0:
+            attrs["priority"] = str(rule.priority)
         handler.ignorableWhitespace("  ")
         handler.startElement("rule", attrs)
         handler.ignorableWhitespace("\n")

@@ -28,8 +28,8 @@ import sys
 import time
 import unittest
 
-from firewall.config.dbus import DBUS_PATH, DBUS_INTERFACE, \
-                                 DBUS_INTERFACE_ZONE
+from firewall.config.dbus import DBUS_PATH, DBUS_PATH_CONFIG, DBUS_INTERFACE, \
+                                 DBUS_INTERFACE_ZONE, DBUS_INTERFACE_CONFIG
 from firewall.dbus_utils import dbus_to_python
 from pprint import pprint
 
@@ -43,9 +43,14 @@ class TestFirewallD(unittest.TestCase):
         unittest.TestCase.setUp(self)
         bus = dbus.SystemBus()
         dbus_obj = bus.get_object(DBUS_INTERFACE, DBUS_PATH)
+        dbus_obj_config = bus.get_object(DBUS_INTERFACE, DBUS_PATH_CONFIG)
         self.fw = dbus.Interface(dbus_obj, dbus_interface=DBUS_INTERFACE)
         self.fw_zone = dbus.Interface(dbus_obj,
                                      dbus_interface=DBUS_INTERFACE_ZONE)
+        self.config_properties = dbus.Interface(dbus_obj_config,
+                                    dbus_interface='org.freedesktop.DBus.Properties')
+        self.config_properties.Set(DBUS_INTERFACE_CONFIG, "FlushAllOnReload", "no")
+        self.fw.reload()
 
     def test_get_setDefaultZone(self):
         old_zone = dbus_to_python(self.fw.getDefaultZone())
