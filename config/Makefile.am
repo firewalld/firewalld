@@ -220,6 +220,7 @@ CONFIG_FILES = \
 	services/quassel.xml \
 	services/radius.xml \
 	services/redis.xml \
+  services/redis-sentinel.xml \
 	services/RH-Satellite-6.xml \
 	services/rpc-bind.xml \
 	services/rsh.xml \
