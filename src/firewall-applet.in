@@ -809,6 +809,8 @@ class TrayApplet(QtWidgets.QSystemTrayIcon):
         else:
             zone = str(self.shields_down)
 
+        # let default_zone_changed update the checked state
+        self.shieldsupAction.setChecked(not self.shieldsupAction.isChecked())
         if self.fw.connected and self.default_zone != zone:
             try:
                 self.fw.setDefaultZone(zone)
