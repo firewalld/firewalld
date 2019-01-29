@@ -174,12 +174,6 @@ class FirewallIPSet(object):
 
     # ENTRIES
 
-    def __entry_id(self, entry):
-        return entry
-
-    def __entry(self, enable, name, entry):
-        pass
-
     def add_entry(self, name, entry):
         obj = self.get_ipset(name, applied=True)
 
