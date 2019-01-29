@@ -382,11 +382,11 @@ install-config:
 	$(MKDIR_P) $(DESTDIR)$(sconfdir)/zones
 	$(MKDIR_P) $(DESTDIR)$(sconfdir)/helpers
 	$(MKDIR_P) $(DESTDIR)$(prefixlibdir)
-	cp -r icmptypes $(DESTDIR)$(prefixlibdir)
-	cp -r ipsets $(DESTDIR)$(prefixlibdir)
-	cp -r services $(DESTDIR)$(prefixlibdir)
-	cp -r zones $(DESTDIR)$(prefixlibdir)
-	cp -r helpers $(DESTDIR)$(prefixlibdir)
+	cp -r $(srcdir)/icmptypes $(DESTDIR)$(prefixlibdir)
+	cp -r $(srcdir)/ipsets $(DESTDIR)$(prefixlibdir)
+	cp -r $(srcdir)/services $(DESTDIR)$(prefixlibdir)
+	cp -r $(srcdir)/zones $(DESTDIR)$(prefixlibdir)
+	cp -r $(srcdir)/helpers $(DESTDIR)$(prefixlibdir)
 
 uninstall-config:
 	rmdir $(DESTDIR)$(sconfdir)/icmptypes

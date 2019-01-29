@@ -69,7 +69,8 @@ edit = sed \
 	-e 's|\@PREFIX\@|$(prefix)|' \
 	-e 's|\@SYSCONFDIR\@|$(sysconfdir)|' \
 	-e 's|\@PACKAGE_STRING\@|$(PACKAGE_STRING)|' \
-	-e 's|\@IFCFGDIR\@|$(IFCFGDIR)|'
+	-e 's|\@IFCFGDIR\@|$(IFCFGDIR)|' \
+	-e 's|@SRCDIR@|$(srcdir)|'
 
 transform-man.xsl: transform-man.xsl.in
 	$(edit) $< >$@
