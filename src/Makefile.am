@@ -29,7 +29,6 @@ nobase_dist_python_DATA = \
 	firewall/core/fw_policies.py \
 	firewall/core/fw.py \
 	firewall/core/fw_service.py \
-	firewall/core/fw_test.py \
 	firewall/core/fw_transaction.py \
 	firewall/core/fw_zone.py \
 	firewall/core/helper.py \

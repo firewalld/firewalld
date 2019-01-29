@@ -50,6 +50,7 @@ from firewall.core.io.service import service_reader
 from firewall.core.io.icmptype import icmptype_reader
 from firewall.core.io.zone import zone_reader, Zone
 from firewall.core.io.ipset import ipset_reader
+from firewall.core.ipset import IPSET_TYPES
 from firewall.core.io.helper import helper_reader
 from firewall import errors
 from firewall.errors import FirewallError
@@ -61,24 +62,33 @@ from firewall.errors import FirewallError
 ############################################################################
 
 class Firewall(object):
-    def __init__(self):
+    def __init__(self, offline=False):
         self._firewalld_conf = firewalld_conf(config.FIREWALLD_CONF)
+        self._offline = offline
 
-        self.ip4tables_backend = ipXtables.ip4tables(self)
-        self.ip4tables_enabled = True
-        self.ip4tables_supported_icmp_types = [ ]
-        self.ip6tables_backend = ipXtables.ip6tables(self)
-        self.ip6tables_enabled = True
-        self.ip6tables_supported_icmp_types = [ ]
-        self.ebtables_backend = ebtables.ebtables()
-        self.ebtables_enabled = True
-        self.ipset_backend = ipset.ipset()
-        self.ipset_enabled = True
-        self.ipset_supported_types = [ ]
-        self.nftables_backend = nftables.nftables(self)
-        self.nftables_enabled = True
+        if self._offline:
+            self.ip4tables_enabled = False
+            self.ip6tables_enabled = False
+            self.ebtables_enabled = False
+            self.ipset_enabled = False
+            self.ipset_supported_types = IPSET_TYPES
+            self.nftables_enabled = False
+        else:
+            self.ip4tables_backend = ipXtables.ip4tables(self)
+            self.ip4tables_enabled = True
+            self.ip4tables_supported_icmp_types = [ ]
+            self.ip6tables_backend = ipXtables.ip6tables(self)
+            self.ip6tables_enabled = True
+            self.ip6tables_supported_icmp_types = [ ]
+            self.ebtables_backend = ebtables.ebtables()
+            self.ebtables_enabled = True
+            self.ipset_backend = ipset.ipset()
+            self.ipset_enabled = True
+            self.ipset_supported_types = [ ]
+            self.nftables_backend = nftables.nftables(self)
+            self.nftables_enabled = True
 
-        self.modules_backend = modules.modules()
+            self.modules_backend = modules.modules()
 
         self.icmptype = FirewallIcmpType(self)
         self.service = FirewallService(self)
@@ -322,7 +332,8 @@ class Firewall(object):
 
         self._select_firewall_backend(self._firewall_backend)
 
-        self._start_check()
+        if not self._offline:
+            self._start_check()
 
         # load lockdown whitelist
         log.debug1("Loading lockdown whitelist")
@@ -406,6 +417,11 @@ class Firewall(object):
         self.direct.set_permanent_config(obj)
         self.config.set_direct(copy.deepcopy(obj))
 
+        self._default_zone = self.check_zone(default_zone)
+
+        if self._offline:
+            return
+
         # automatic helpers
         #
         # NOTE: must force loading of nf_conntrack to make sure the values are
@@ -467,7 +483,6 @@ class Firewall(object):
         log.debug1("Applying used zones")
         self.zone.apply_zones(use_transaction=transaction)
 
-        self._default_zone = self.check_zone(default_zone)
         self.zone.change_default_zone(None, self._default_zone,
                                       use_transaction=transaction)
 
@@ -666,7 +681,7 @@ class Firewall(object):
         self.__init_vars()
 
     def stop(self):
-        if self.cleanup_on_exit:
+        if self.cleanup_on_exit and not self._offline:
             self.flush()
             self.set_policy("ACCEPT")
             self.modules_backend.unload_firewall_modules()
