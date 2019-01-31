@@ -148,7 +148,7 @@ def portInPortRange(port, range):
         return _port == getPortID(_range[0])
     if len(_range) == 2 and \
        _port >= getPortID(_range[0]) and _port <= getPortID(_range[1]):
-            return True
+        return True
 
     return False
 
