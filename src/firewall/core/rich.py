@@ -385,7 +385,7 @@ class Rich_Rule(object):
                 elif element in ['not', 'NOT']:
                     attrs['invert'] = True
                 else:
-                    self.source = Rich_Source(attrs.get('address'), attrs.get('mac'), attrs.get('ipset'), attrs.get('invert'))
+                    self.source = Rich_Source(attrs.get('address'), attrs.get('mac'), attrs.get('ipset'), attrs.get('invert', False))
                     in_elements.pop() # source
                     attrs.clear()
                     index = index -1 # return token to input
