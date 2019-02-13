@@ -253,6 +253,7 @@ CONFIG_FILES = \
 	services/syslog-tls.xml \
 	services/syslog.xml \
 	services/telnet.xml \
+	services/tentacle.xml \
 	services/tftp-client.xml \
 	services/tftp.xml \
 	services/tile38.xml \
