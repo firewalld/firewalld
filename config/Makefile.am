@@ -216,6 +216,7 @@ CONFIG_FILES = \
 	services/pop3.xml \
 	services/postgresql.xml \
 	services/privoxy.xml \
+	services/prometheus.xml \
 	services/proxy-dhcp.xml \
 	services/ptp.xml \
 	services/pulseaudio.xml \
