@@ -220,6 +220,7 @@ CONFIG_FILES = \
 	services/puppetmaster.xml \
 	services/quassel.xml \
 	services/radius.xml \
+	services/redis-sentinel.xml \
 	services/redis.xml \
 	services/RH-Satellite-6.xml \
 	services/rpc-bind.xml \
