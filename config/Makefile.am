@@ -186,7 +186,7 @@ CONFIG_FILES = \
 	services/managesieve.xml \
 	services/matrix.xml \
 	services/mdns.xml \
-	services/memcache.xml \
+	services/memcached.xml \
 	services/minidlna.xml \
 	services/mongodb.xml \
 	services/mosh.xml \
