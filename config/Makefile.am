@@ -147,6 +147,7 @@ CONFIG_FILES = \
 	services/etcd-client.xml \
 	services/etcd-server.xml \
 	services/finger.xml \
+	services/freeipa-4.xml \
 	services/freeipa-ldaps.xml \
 	services/freeipa-ldap.xml \
 	services/freeipa-replication.xml \
