@@ -127,6 +127,7 @@ CONFIG_FILES = \
 	services/bitcoin-testnet-rpc.xml \
 	services/bitcoin-testnet.xml \
 	services/bitcoin.xml \
+	services/bittorrent-lsd.xml \
 	services/lightning-network.xml \
 	services/ceph-mon.xml \
 	services/ceph.xml \
