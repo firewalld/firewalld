@@ -1009,7 +1009,8 @@ class Firewall(object):
         # stop
         self.cleanup()
 
-        self.set_policy("DROP")
+        if not _panic:
+            self.set_policy("DROP")
 
         start_exception = None
         try:
@@ -1063,11 +1064,8 @@ class Firewall(object):
                 for interface in nm_get_interfaces_in_zone(zone):
                     self.zone.add_interface(zone, interface, sender=nm_bus_name)
 
-        # enable panic mode again if it has been enabled before or set policy
-        # to ACCEPT
-        if _panic:
-            self.enable_panic_mode()
-        else:
+        self._panic = _panic
+        if not self._panic:
             self.set_policy("ACCEPT")
 
         if start_exception:
@@ -1089,7 +1087,7 @@ class Firewall(object):
                                 "panic mode already enabled")
 
         try:
-            self.set_policy("DROP")
+            self.set_policy("PANIC")
         except Exception as msg:
             raise FirewallError(errors.COMMAND_FAILED, msg)
         self._panic = True

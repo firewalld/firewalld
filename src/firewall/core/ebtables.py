@@ -237,9 +237,10 @@ class ebtables(object):
 
     def build_set_policy_rules(self, policy):
         rules = []
+        _policy = "DROP" if policy == "PANIC" else policy
         for table in BUILT_IN_CHAINS.keys():
             for chain in BUILT_IN_CHAINS[table]:
-                rules.append(["-t", table, "-P", chain, policy])
+                rules.append(["-t", table, "-P", chain, _policy])
         return rules
 
     def build_default_tables(self):

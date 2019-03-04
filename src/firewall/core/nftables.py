@@ -163,17 +163,17 @@ class nftables(object):
         self.command_exists = os.path.exists(self._command)
         self.restore_command_exists = False
 
+    def _rule_key_from_rule(self, rule):
+        rule_key = rule[2:]
+        # "insert rule family table chain index <num>"
+        #              ^^ rule_key starts here
+        if rule_key[3] in ["position", "handle"]:
+            raise FirewallError(INVALID_RULE, "position/handle not allowed in rule")
+        return " ".join([str(x) for x in rule_key])
+
     def __run(self, args):
         nft_opts = ["--echo", "--handle"]
         _args = args[:]
-
-        def rule_key_from_rule(rule):
-            rule_key = rule[2:]
-            # "insert rule family table chain index <num>"
-            #              ^^ rule_key starts here
-            if rule_key[3] in ["position", "handle"]:
-                raise FirewallError(INVALID_RULE, "position/handle not allowed in rule")
-            return " ".join([str(x) for x in rule_key])
 
         # If we're deleting a table (i.e. build_flush_rules())
         # then check if its exist first to avoid nft throwing an error
@@ -187,10 +187,10 @@ class nftables(object):
         rule_key = None
         if _args[0] in ["add", "insert"] and _args[1] == "rule":
             rule_add = True
-            rule_key = rule_key_from_rule(_args)
+            rule_key = self._rule_key_from_rule(_args)
         elif _args[0] in ["delete"] and _args[1] == "rule":
             rule_add = False
-            rule_key = rule_key_from_rule(_args)
+            rule_key = self._rule_key_from_rule(_args)
 
         # rule deduplication
         if rule_key in self.rule_ref_count:
@@ -349,8 +349,18 @@ class nftables(object):
         return [table] if table else IPTABLES_TO_NFT_HOOK.keys()
 
     def build_flush_rules(self):
-        self.rule_to_handle = {}
-        self.rule_ref_count = {}
+        # Policy is stashed in a separate table that we're _not_ going to
+        # flush. As such, we retain the policy rule handles and ref counts.
+        saved_rule_to_handle = {}
+        saved_rule_ref_count = {}
+        for rule in self._build_set_policy_rules_ct_rules(True):
+            policy_key = self._rule_key_from_rule(rule)
+            if policy_key in self.rule_to_handle:
+                saved_rule_to_handle[policy_key] = self.rule_to_handle[policy_key]
+                saved_rule_ref_count[policy_key] = self.rule_ref_count[policy_key]
+
+        self.rule_to_handle = saved_rule_to_handle
+        self.rule_ref_count = saved_rule_ref_count
         self.rich_rule_priority_counts = {}
 
         rules = []
@@ -358,21 +368,46 @@ class nftables(object):
             rules.append(["delete", "table", family, "%s" % TABLE_NAME])
         return rules
 
+    def _build_set_policy_rules_ct_rules(self, enable):
+        add_del = { True: "add", False: "delete" }[enable]
+        rules = []
+        for hook in ["input", "forward", "output"]:
+            rules.append([add_del, "rule", "inet", TABLE_NAME_POLICY,
+                          "%s_%s" % ("filter", hook),
+                          "ct", "state", "established,related", "accept"])
+        return rules
+
     def build_set_policy_rules(self, policy):
         # Policy is not exposed to the user. It's only to make sure we DROP
-        # packets while initially starting and for panic mode. As such, using
-        # hooks with a higher priority than our base chains is sufficient.
+        # packets while reloading and for panic mode. As such, using hooks with
+        # a higher priority than our base chains is sufficient.
         rules = []
-        if policy == "DROP":
+        if policy == "PANIC":
             rules.append(["add", "table", "inet", TABLE_NAME_POLICY])
 
-            # To drop everything we need to use the "raw" priority. These occur
-            # before conntrack, mangle, nat, etc
+            # Use "raw" priority for panic mode. This occurs before
+            # conntrack, mangle, nat, etc
             for hook in ["prerouting", "output"]:
                 _add_chain = "add chain inet %s %s_%s '{ type filter hook %s priority %d ; policy drop ; }'" % \
                              (TABLE_NAME_POLICY, "raw", hook, hook, -300 + NFT_HOOK_OFFSET - 1)
                 rules.append(splitArgs(_add_chain))
+        if policy == "DROP":
+            rules.append(["add", "table", "inet", TABLE_NAME_POLICY])
+
+            # To drop everything except existing connections we use
+            # "filter" because it occurs _after_ conntrack.
+            for hook in ["input", "forward", "output"]:
+                _add_chain = "add chain inet %s %s_%s '{ type filter hook %s priority %d ; policy drop ; }'" % \
+                             (TABLE_NAME_POLICY, "filter", hook, hook, 0 + NFT_HOOK_OFFSET - 1)
+                rules.append(splitArgs(_add_chain))
+
+            rules += self._build_set_policy_rules_ct_rules(True)
         elif policy == "ACCEPT":
+            for rule in self._build_set_policy_rules_ct_rules(False):
+                policy_key = self._rule_key_from_rule(rule)
+                if policy_key in self.rule_to_handle:
+                    rules.append(rule)
+
             rules.append(["delete", "table", "inet", TABLE_NAME_POLICY])
         else:
             FirewallError(UNKNOWN_ERROR, "not implemented")
