@@ -52,6 +52,7 @@ config/services/amanda-k5-client.xml
 config/services/amqps.xml
 config/services/amqp.xml
 config/services/apcupsd.xml
+config/services/audit.xml
 config/services/bacula-client.xml
 config/services/bacula.xml
 config/services/bb.xml
@@ -70,6 +71,7 @@ config/services/dhcpv6-client.xml
 config/services/dhcpv6.xml
 config/services/dhcp.xml
 config/services/distcc.xml
+config/services/dns-over-tls.xml
 config/services/dns.xml
 config/services/docker-registry.xml
 config/services/docker-swarm.xml
@@ -86,6 +88,7 @@ config/services/ftp.xml
 config/services/ganglia-client.xml
 config/services/ganglia-master.xml
 config/services/git.xml
+config/services/grafana.xml
 config/services/gre.xml
 config/services/high-availability.xml
 config/services/https.xml
@@ -117,6 +120,7 @@ config/services/llmnr.xml
 config/services/managesieve.xml
 config/services/matrix.xml
 config/services/mdns.xml
+config/services/memcache.xml
 config/services/minidlna.xml
 config/services/mongodb.xml
 config/services/mosh.xml
@@ -146,12 +150,15 @@ config/services/pop3s.xml
 config/services/pop3.xml
 config/services/postgresql.xml
 config/services/privoxy.xml
+config/services/prometheus.xml
 config/services/proxy-dhcp.xml
 config/services/ptp.xml
 config/services/pulseaudio.xml
 config/services/puppetmaster.xml
 config/services/quassel.xml
 config/services/radius.xml
+config/services/rdp.xml
+config/services/redis-sentinel.xml
 config/services/redis.xml
 config/services/RH-Satellite-6.xml
 config/services/rpc-bind.xml
@@ -184,8 +191,10 @@ config/services/synergy.xml
 config/services/syslog-tls.xml
 config/services/syslog.xml
 config/services/telnet.xml
+config/services/tentacle.xml
 config/services/tftp-client.xml
 config/services/tftp.xml
+config/services/tile38.xml
 config/services/tinc.xml
 config/services/tor-socks.xml
 config/services/transmission-client.xml
@@ -231,7 +240,6 @@ src/firewall/core/fw_nm.py
 src/firewall/core/fw_policies.py
 src/firewall/core/fw.py
 src/firewall/core/fw_service.py
-src/firewall/core/fw_test.py
 src/firewall/core/fw_transaction.py
 src/firewall/core/fw_zone.py
 src/firewall/core/helper.py

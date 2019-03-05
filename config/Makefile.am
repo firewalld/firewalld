@@ -22,7 +22,7 @@ polkit1_action_FILES = org.fedoraproject.FirewallD1.server.policy.in \
 polkit1_actiondir = $(datadir)/polkit-1/actions
 polkit1_action_DATA = $(polkit1_action_FILES:.in=)
 
-dbus_policydir = $(sysconfdir)/dbus-1/system.d
+dbus_policydir = $(datadir)/dbus-1/system.d
 dist_dbus_policy_DATA = FirewallD.conf
 
 gsettings_in_file = org.fedoraproject.FirewallConfig.gschema.xml.in
@@ -118,6 +118,7 @@ CONFIG_FILES = \
 	services/amqp.xml \
 	services/amqps.xml \
 	services/apcupsd.xml \
+	services/audit.xml \
 	services/bacula-client.xml \
 	services/bacula.xml \
 	services/bb.xml \
@@ -137,6 +138,7 @@ CONFIG_FILES = \
 	services/dhcpv6.xml \
 	services/dhcp.xml \
 	services/distcc.xml \
+	services/dns-over-tls.xml \
 	services/dns.xml \
 	services/docker-registry.xml \
 	services/docker-swarm.xml \
@@ -153,6 +155,7 @@ CONFIG_FILES = \
 	services/ganglia-client.xml \
 	services/ganglia-master.xml \
 	services/git.xml \
+	services/grafana \
 	services/gre.xml \
 	services/high-availability.xml \
 	services/https.xml \
@@ -183,6 +186,7 @@ CONFIG_FILES = \
 	services/managesieve.xml \
 	services/matrix.xml \
 	services/mdns.xml \
+	services/memcache.xml \
 	services/minidlna.xml \
 	services/mongodb.xml \
 	services/mosh.xml \
@@ -212,12 +216,15 @@ CONFIG_FILES = \
 	services/pop3.xml \
 	services/postgresql.xml \
 	services/privoxy.xml \
+	services/prometheus.xml \
 	services/proxy-dhcp.xml \
 	services/ptp.xml \
 	services/pulseaudio.xml \
 	services/puppetmaster.xml \
 	services/quassel.xml \
 	services/radius.xml \
+	services/rdp.xml \
+	services/redis-sentinel.xml \
 	services/redis.xml \
 	services/RH-Satellite-6.xml \
 	services/rpc-bind.xml \
@@ -250,8 +257,10 @@ CONFIG_FILES = \
 	services/syslog-tls.xml \
 	services/syslog.xml \
 	services/telnet.xml \
+	services/tentacle.xml \
 	services/tftp-client.xml \
 	services/tftp.xml \
+	services/tile38.xml \
 	services/tinc.xml \
 	services/tor-socks.xml \
 	services/transmission-client.xml \
@@ -379,11 +388,11 @@ install-config:
 	$(MKDIR_P) $(DESTDIR)$(sconfdir)/zones
 	$(MKDIR_P) $(DESTDIR)$(sconfdir)/helpers
 	$(MKDIR_P) $(DESTDIR)$(prefixlibdir)
-	cp -r icmptypes $(DESTDIR)$(prefixlibdir)
-	cp -r ipsets $(DESTDIR)$(prefixlibdir)
-	cp -r services $(DESTDIR)$(prefixlibdir)
-	cp -r zones $(DESTDIR)$(prefixlibdir)
-	cp -r helpers $(DESTDIR)$(prefixlibdir)
+	cp -r $(srcdir)/icmptypes $(DESTDIR)$(prefixlibdir)
+	cp -r $(srcdir)/ipsets $(DESTDIR)$(prefixlibdir)
+	cp -r $(srcdir)/services $(DESTDIR)$(prefixlibdir)
+	cp -r $(srcdir)/zones $(DESTDIR)$(prefixlibdir)
+	cp -r $(srcdir)/helpers $(DESTDIR)$(prefixlibdir)
 
 uninstall-config:
 	rmdir $(DESTDIR)$(sconfdir)/icmptypes

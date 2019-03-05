@@ -20,12 +20,6 @@ This will create a local copy of the repository.
 
 Working With The Source Repository
 ----------------------------------
-You can use the source repository directly to test out changes. Change into the 
-firewalld base directory and set the following environment variables.
-
-  export FIREWALLD_DEVEL_ENV=$(pwd)/src
-  export PYTHONPATH=$FIREWALLD_DEVEL_ENV
-
 Install the following requirements or packages:
 
   desktop-file-utils: /usr/bin/desktop-file-install
@@ -58,11 +52,15 @@ To be able to create man pages and documentation from docbook files:
   docbook-style-xsl
 
 
-Use
+Use the usual autoconf/automake incantation to generate makefiles
 
   ./autogen.sh
+  ./configure
 
-in the base directory to create for example src/firewall/config/__init__.py
+You can use a specific python interpreter by passing the PYTHON variable. This
+is also used by the testsuite.
+
+  ./configure PYTHON=/path/to/python3
 
 Use
 
@@ -74,8 +72,11 @@ Use
 
   make check
 
-to run the testsuite. This assumes full control of the host and also requires
-the host's firewalld to be stopped.
+to run the testsuite. Tests are run inside network namespaces and do not
+interfere with the host's running firewalld. They can also be run in parallel
+by passing flags to autotest.
+
+  make check TESTSUITEFLAGS="-j4"
 
 
 RPM package
@@ -112,10 +113,8 @@ doc/                    Documentation
 doc/man/                Base directory for man pages
 doc/man/man1/           Man(1) pages
 doc/man/man5/           Man(5) pages
-patches/                Common patches
 po/                     Translations
 shell-completion/       Base directory for auto completion scripts
-shell-completion/bash/  Bash auto completion scripts
 src/                    Source tree
 src/firewall/           Import tree for the sevice and all applications
 src/icons/              Icons in the sizes: 16, 22, 24, 32, 48 and scalable

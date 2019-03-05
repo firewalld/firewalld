@@ -1519,7 +1519,7 @@ class FirewallZone(object):
     def __ipset_type(self, name):
         return self._fw.ipset.get_type(name)
 
-    def __ipset_match_flags(self, name, flag):
+    def _ipset_match_flags(self, name, flag):
         return ",".join([flag] * self._fw.ipset.get_dimension(name))
 
     def _check_ipset_applied(self, name):
@@ -1690,7 +1690,7 @@ class FirewallZone(object):
                         if backend.is_ipv_supported(ipv):
                             zone_transaction.add_post(enable_ip_forwarding, ipv)
 
-                rules = backend.build_zone_masquerade_rules(enable, zone)
+                rules = backend.build_zone_masquerade_rules(enable, zone, rule)
                 zone_transaction.add_rules(backend, rules)
 
             # FORWARD PORT
@@ -1702,17 +1702,10 @@ class FirewallZone(object):
                 for ipv in ipvs:
                     if backend.is_ipv_supported(ipv):
                         self.check_forward_port(ipv, port, protocol, toport, toaddr)
-
-                if check_single_address("ipv6", toaddr):
-                    ipv = "ipv6"
-                else:
-                    ipv = "ipv4"
-
-                if not backend.is_ipv_supported(ipv):
-                    continue
+                    if enable:
+                        zone_transaction.add_post(enable_ip_forwarding, ipv)
 
                 if enable:
-                    zone_transaction.add_post(enable_ip_forwarding, ipv)
                     mark_id = self._fw.new_mark()
 
                 filter_chain = "INPUT" if not toaddr else "FORWARD_IN"
@@ -1967,12 +1960,6 @@ class FirewallZone(object):
 
         zone_transaction.add_chain("filter", "INPUT")
         zone_transaction.add_chain("filter", "FORWARD_IN")
-
-        # To satisfy nftables backend rule lookup we must execute pending
-        # rules. See nftables.build_zone_icmp_block_inversion_rules()
-        if enable:
-            zone_transaction.execute(enable)
-            zone_transaction.clear()
 
         for backend in self._fw.enabled_backends():
             if not backend.zones_supported:

@@ -5,5 +5,7 @@ FWD_RELOAD
 FWD_CHECK([-q --set-log-denied=all])
 AT_CHECK([sed -i 's/^IndividualCalls.*/IndividualCalls=yes/' ./firewalld.conf])
 FWD_RELOAD
+FWD_CHECK([-q --set-log-denied=broadcast])
+FWD_RELOAD
 
 FWD_END_TEST

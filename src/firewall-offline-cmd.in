@@ -33,7 +33,7 @@ from firewall.client import FirewallClientIPSetSettings, \
     FirewallClientIcmpTypeSettings, FirewallClientHelperSettings
 from firewall.errors import FirewallError
 from firewall import config
-from firewall.core.fw_test import Firewall_test
+from firewall.core.fw import Firewall
 from firewall.functions import joinArgs, splitArgs
 from firewall.core.io.functions import check_config
 from firewall.core.io.zone import zone_reader
@@ -1041,7 +1041,7 @@ if a.default_config:
     config.set_default_config_paths(a.default_config)
 if a.check_config:
     try:
-        fw = Firewall_test()
+        fw = Firewall(offline=True)
         fw.start()
         check_config(fw)
     except FirewallError as error:
@@ -1051,7 +1051,7 @@ if a.check_config:
     sys.exit(0)
 
 zone = a.zone
-fw = Firewall_test()
+fw = Firewall(offline=True)
 fw.start()
 
 try:
@@ -2102,7 +2102,7 @@ try:
         # service
         if a.list_services:
             l = fw_settings.getServices()
-            cmd.print_and_exit(" ".join(l))
+            cmd.print_and_exit(" ".join(sorted(l)))
         elif a.add_service:
             cmd.add_sequence(a.add_service, fw_settings.addService,
                              fw_settings.queryService, None, "'%s'")
@@ -2131,7 +2131,7 @@ try:
         # protocol
         elif a.list_protocols:
             l = fw_settings.getProtocols()
-            cmd.print_and_exit(" ".join(l))
+            cmd.print_and_exit(" ".join(sorted(l)))
         elif a.add_protocol:
             cmd.add_sequence(a.add_protocol, fw_settings.addProtocol,
                              fw_settings.queryProtocol, None, "'%s'")

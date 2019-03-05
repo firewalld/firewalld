@@ -158,6 +158,31 @@
 	        </listitem>
         </varlistentry>
 
+        <varlistentry>
+            <term><option>FlushAllOnReload</option></term>
+            <listitem>
+                <para>
+                Flush all runtime rules on a reload. In previous releases some
+                runtime configuration was retained during a reload, namely;
+                interface to zone assignment, and direct rules. This was
+                confusing to users. To get the old behavior set this to "no".
+                Defaults to "yes".
+                </para>
+            </listitem>
+        </varlistentry>
+
+        <varlistentry>
+            <term><option>RFC3964_IPv4</option></term>
+            <listitem>
+                <para>
+                As per RFC 3964, filter IPv6 traffic with 6to4 destination
+                addresses that correspond to IPv4 addresses that should not
+                be routed over the public internet.
+                Defaults to "yes".
+                </para>
+            </listitem>
+        </varlistentry>
+
     </variablelist>
 
   </refsect1>

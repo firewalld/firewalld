@@ -390,9 +390,11 @@ def ipset_reader(filename, path):
     parser = sax.make_parser()
     parser.setContentHandler(handler)
     name = "%s/%s" % (path, filename)
-    with open(name, "r") as f:
+    with open(name, "rb") as f:
+        source = sax.InputSource(None)
+        source.setByteStream(f)
         try:
-            parser.parse(f)
+            parser.parse(source)
         except sax.SAXParseException as msg:
             raise FirewallError(errors.INVALID_IPSET,
                                 "not a valid ipset file: %s" % \

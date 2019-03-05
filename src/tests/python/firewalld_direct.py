@@ -36,10 +36,16 @@ class TestFirewallDInterfaceDirect(unittest.TestCase):
         bus = dbus.SystemBus()
         dbus_obj = bus.get_object(config.dbus.DBUS_INTERFACE,
                                   config.dbus.DBUS_PATH)
+        dbus_obj_config = bus.get_object(config.dbus.DBUS_INTERFACE,
+                                         config.dbus.DBUS_PATH_CONFIG)
         self.fw = dbus.Interface(dbus_obj,
                                  dbus_interface=config.dbus.DBUS_INTERFACE)
         self.fw_direct = dbus.Interface(
             dbus_obj, dbus_interface=config.dbus.DBUS_INTERFACE_DIRECT)
+        self.config_properties = dbus.Interface(dbus_obj_config,
+                                    dbus_interface='org.freedesktop.DBus.Properties')
+        self.config_properties.Set(config.dbus.DBUS_INTERFACE_CONFIG, "FlushAllOnReload", "no")
+        self.fw.reload()
         # always have "direct_foo1" available
         self.fw_direct.addChain("ipv4", "filter", "direct_foo1")
 

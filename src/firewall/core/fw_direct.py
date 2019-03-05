@@ -181,7 +181,10 @@ class FirewallDirect(object):
     def _check_builtin_chain(self, ipv, table, chain):
         if ipv in ['ipv4', 'ipv6']:
             built_in_chains = ipXtables.BUILT_IN_CHAINS[table]
-            our_chains = ipXtables.OUR_CHAINS[table]
+            if self._fw.nftables_enabled:
+                our_chains = {}
+            else:
+                our_chains = self._fw.get_direct_backend_by_ipv(ipv).our_chains[table]
         else:
             built_in_chains = ebtables.BUILT_IN_CHAINS[table]
             our_chains = ebtables.OUR_CHAINS[table]

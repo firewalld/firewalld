@@ -231,9 +231,19 @@ class FirewallZoneTransaction(SimpleFirewallTransaction):
         self.modules = [ ] # [ module,.. ]
 
     def clear(self):
-        super(FirewallZoneTransaction, self).clear()
-        del self.chains[:]
-        del self.modules[:]
+        # calling clear on a zone_transaction that was spawned from a
+        # FirewallTransaction needs to clear the fw_transaction and all the
+        # other zones otherwise we end up with a partially cleared transaction.
+        if self.fw_transaction:
+            super(FirewallTransaction, self.fw_transaction).clear()
+            for zone in self.fw_transaction.zone_transactions.keys():
+                super(FirewallZoneTransaction, self.fw_transaction.zone_transactions[zone]).clear()
+                del self.fw_transaction.zone_transactions[zone].chains[:]
+                del self.fw_transaction.zone_transactions[zone].modules[:]
+        else:
+            super(FirewallZoneTransaction, self).clear()
+            del self.chains[:]
+            del self.modules[:]
 
     def prepare(self, enable, rules=None, modules=None):
         log.debug4("%s.prepare(%s, %s)" % (type(self), enable, "..."))

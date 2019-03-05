@@ -441,8 +441,8 @@ class FirewallD(slip.dbus.service.Object):
         nm_bus_name = nm_get_bus_name()
         for name in self.fw.zone.get_zones():
             conf = self.getZoneSettings(name)
+            settings = FirewallClientZoneSettings(conf)
             if nm_bus_name is not None:
-                settings = FirewallClientZoneSettings(conf)
                 changed = False
                 for interface in settings.getInterfaces():
                     if self.fw.zone.interface_get_sender(name, interface) == nm_bus_name:
