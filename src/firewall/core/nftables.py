@@ -34,6 +34,7 @@ from firewall.core.rich import Rich_Accept, Rich_Reject, Rich_Drop, Rich_Mark, \
                                Rich_Masquerade, Rich_ForwardPort, Rich_IcmpBlock
 
 TABLE_NAME = "firewalld"
+TABLE_NAME_POLICY = TABLE_NAME + "_" + "policy_drop"
 
 # Map iptables (table, chain) to hooks and priorities.
 # These are well defined by NF_IP_PRI_* defines in netfilter.
@@ -366,21 +367,18 @@ class nftables(object):
         # Policy is not exposed to the user. It's only to make sure we DROP
         # packets while initially starting and for panic mode. As such, using
         # hooks with a higher priority than our base chains is sufficient.
-        #
-        table_name = TABLE_NAME + "_" + "policy_drop"
-
         rules = []
         if policy == "DROP":
-            rules.append(["add", "table", "inet", table_name])
+            rules.append(["add", "table", "inet", TABLE_NAME_POLICY])
 
             # To drop everything we need to use the "raw" priority. These occur
             # before conntrack, mangle, nat, etc
             for hook in ["prerouting", "output"]:
                 _add_chain = "add chain inet %s %s_%s '{ type filter hook %s priority %d ; policy drop ; }'" % \
-                             (table_name, "raw", hook, hook, -300 + NFT_HOOK_OFFSET - 1)
+                             (TABLE_NAME_POLICY, "raw", hook, hook, -300 + NFT_HOOK_OFFSET - 1)
                 rules.append(splitArgs(_add_chain))
         elif policy == "ACCEPT":
-            rules.append(["delete", "table", "inet", table_name])
+            rules.append(["delete", "table", "inet", TABLE_NAME_POLICY])
         else:
             FirewallError(UNKNOWN_ERROR, "not implemented")
 
