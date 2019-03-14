@@ -15,6 +15,7 @@ FWD_START_TEST([basic options])
     FWD_CHECK([--permanent --complete-reload], 2, ignore, ignore)
 
     FWD_CHECK([--panic-on], 0, ignore)
+    FWD_RELOAD
     FWD_CHECK([--query-panic], 0, [yes
 ])
     FWD_CHECK([--panic-off], 0, ignore)
