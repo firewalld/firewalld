@@ -1088,7 +1088,6 @@ class Firewall(object):
             raise FirewallError(errors.ALREADY_ENABLED,
                                 "panic mode already enabled")
 
-        # TODO: use rule in raw table not default chain policy
         try:
             self.set_policy("DROP")
         except Exception as msg:
@@ -1100,7 +1099,6 @@ class Firewall(object):
             raise FirewallError(errors.NOT_ENABLED,
                                 "panic mode is not enabled")
 
-        # TODO: use rule in raw table not default chain policy
         try:
             self.set_policy("ACCEPT")
         except Exception as msg:
