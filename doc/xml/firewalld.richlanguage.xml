@@ -235,6 +235,9 @@ forward-port port="port value" protocol="tcp|udp" to-port="port value" to-addr="
       <para>
 	It is not allowed to specify an action here. forward-port uses the action accept internally.
       </para>
+      <para>
+        <emphasis>Note:</emphasis> IP forwarding will be implicitly enabled if <option>to-addr</option> is specified.
+      </para>
     </refsect2>
 
     <refsect2>
