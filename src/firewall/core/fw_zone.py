@@ -1702,7 +1702,7 @@ class FirewallZone(object):
                 for ipv in ipvs:
                     if backend.is_ipv_supported(ipv):
                         self.check_forward_port(ipv, port, protocol, toport, toaddr)
-                    if enable:
+                    if toaddr and enable:
                         zone_transaction.add_post(enable_ip_forwarding, ipv)
 
                 if enable:
@@ -1914,7 +1914,8 @@ class FirewallZone(object):
             zone_transaction.add_chain("nat", "PREROUTING")
             zone_transaction.add_chain("filter", filter_chain)
 
-        zone_transaction.add_post(enable_ip_forwarding, ipv)
+        if toaddr and enable:
+            zone_transaction.add_post(enable_ip_forwarding, ipv)
         backend = self._fw.get_backend_by_ipv(ipv)
         rules = backend.build_zone_forward_port_rules(
                             enable, zone, filter_chain, port, protocol, toport,
