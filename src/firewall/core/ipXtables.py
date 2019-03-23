@@ -870,7 +870,7 @@ class ip4tables(object):
         if rich_rule:
             rule_fragment += self._rich_rule_destination_fragment(rich_rule.destination)
             rule_fragment += self._rich_rule_source_fragment(rich_rule.source)
-        if not rich_rule or rich_rule.action != Rich_Mark:
+        if not rich_rule or type(rich_rule.action) != Rich_Mark:
             rule_fragment += [ "-m", "conntrack", "--ctstate", "NEW,UNTRACKED" ]
 
         rules = []
@@ -895,7 +895,7 @@ class ip4tables(object):
         if rich_rule:
             rule_fragment += self._rich_rule_destination_fragment(rich_rule.destination)
             rule_fragment += self._rich_rule_source_fragment(rich_rule.source)
-        if not rich_rule or rich_rule.action != Rich_Mark:
+        if not rich_rule or type(rich_rule.action) != Rich_Mark:
             rule_fragment += [ "-m", "conntrack", "--ctstate", "NEW,UNTRACKED" ]
 
         rules = []
@@ -923,7 +923,7 @@ class ip4tables(object):
         if rich_rule:
             rule_fragment += self._rich_rule_destination_fragment(rich_rule.destination)
             rule_fragment += self._rich_rule_source_fragment(rich_rule.source)
-        if not rich_rule or rich_rule.action != Rich_Mark:
+        if not rich_rule or type(rich_rule.action) != Rich_Mark:
             rule_fragment += [ "-m", "conntrack", "--ctstate", "NEW,UNTRACKED" ]
 
         rules = []
