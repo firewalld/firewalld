@@ -31,6 +31,7 @@ from firewall.core.ipset import check_ipset_name
 from firewall.core.base import REJECT_TYPES
 from firewall import errors
 from firewall.errors import FirewallError
+from firewall.functions import removeCharacters, CONTROL_CHARS
 
 class Rich_Source(object):
     def __init__(self, addr, mac, ipset, invert=False):
@@ -307,6 +308,7 @@ class Rich_Rule(object):
         if not rule_str:
             raise FirewallError(errors.INVALID_RULE, 'empty rule')
 
+        rule_str = removeCharacters(rule_str, CONTROL_CHARS)
         self.priority = 0
         self.family = None
         self.source = None
