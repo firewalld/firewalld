@@ -28,8 +28,8 @@ __all__ = [ "PY2", "getPortID", "getPortRange", "portStr", "getServiceName",
             "get_nf_nat_helpers", "check_port", "check_address",
             "check_single_address", "check_mac", "uniqify", "ppid_of_pid",
             "max_zone_name_len", "checkUser", "checkUid", "checkCommand",
-            "checkContext", "joinArgs", "splitArgs",
-            "b2u", "u2b", "u2b_if_py2" ]
+            "checkContext", "removeCharacters", "joinArgs", "splitArgs",
+            "b2u", "u2b", "u2b_if_py2", "CONTROL_CHARS" ]
 
 import socket
 import os
@@ -40,6 +40,7 @@ import re
 import string
 import sys
 import tempfile
+from itertools import chain
 from firewall.core.logger import log
 from firewall.core.prog import runProg
 from firewall.config import FIREWALLD_TEMPDIR, FIREWALLD_PIDFILE, COMMANDS
@@ -541,6 +542,11 @@ def checkContext(context):
     if len(splits[3]) < 1:
         return False
     return True
+
+CONTROL_CHARS = set(map(chr, chain(range(0, 32), range(127, 160))))
+
+def removeCharacters(string, chars):
+    return ''.join(c for c in string if c not in chars)
 
 def joinArgs(args):
     if "quote" in dir(shlex):
