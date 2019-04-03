@@ -141,7 +141,7 @@ class Rich_ForwardPort(object):
 class Rich_Log(object):
     def __init__(self, prefix=None, level=None, limit=None):
         #TODO check default level in iptables
-        self.prefix = prefix
+        self.prefix = removeCharacters(prefix, '\'"')
         self.level = level
         self.limit = limit
 
@@ -465,7 +465,7 @@ class Rich_Rule(object):
                     index = index -1 # return token to input
             elif in_element == 'log':
                 if attr_name in ['prefix', 'level']:
-                    attrs[attr_name] = attr_value
+                    attrs[attr_name] = removeCharacters(attr_value, '\'"')
                 elif element == 'limit':
                     in_elements.append('limit')
                 else:
