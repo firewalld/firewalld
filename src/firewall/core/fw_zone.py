@@ -323,8 +323,12 @@ class FirewallZone(object):
                     elif key == "masquerade":
                         self._masquerade(enable, _zone, zone_transaction)
                     elif key == "rules":
+                        if "mark" in obj.settings["rules"][args]:
+                            mark = obj.settings["rules"][args]["mark"]
+                        else:
+                            mark = None
                         self.__rule(enable, _zone,
-                                    Rich_Rule(rule_str=args), None,
+                                    Rich_Rule(rule_str=args), mark,
                                     zone_transaction)
                     elif key == "interfaces":
                         self._interface(enable, _zone, args, zone_transaction)
@@ -672,8 +676,7 @@ class FirewallZone(object):
         return None
 
     def __rule(self, enable, zone, rule, mark_id, zone_transaction):
-        return self._rule_prepare(enable, zone, rule, mark_id,
-                                  zone_transaction)
+        self._rule_prepare(enable, zone, rule, mark_id, zone_transaction)
 
     def add_rule(self, zone, rule, timeout=0, sender=None,
                  use_zone_transaction=None):
@@ -692,13 +695,16 @@ class FirewallZone(object):
         else:
             zone_transaction = use_zone_transaction
 
-        if _obj.applied:
-            mark = self.__rule(True, _zone, rule, None, zone_transaction)
+        if type(rule.element) == Rich_ForwardPort:
+            mark = self._fw.new_mark()
         else:
             mark = None
 
+        if _obj.applied:
+            self.__rule(True, _zone, rule, mark, zone_transaction)
+
         self.__register_rule(_obj, rule_id, mark, timeout, sender)
-        zone_transaction.add_fail(self.__unregister_rule, _obj, rule_id)
+        zone_transaction.add_fail(self.__unregister_rule, _obj, rule_id, mark)
 
         if use_zone_transaction is None:
             zone_transaction.execute(True)
@@ -720,28 +726,31 @@ class FirewallZone(object):
             raise FirewallError(errors.NOT_ENABLED,
                                 "'%s' not in '%s'" % (rule, _zone))
 
+        if "mark" in _obj.settings["rules"][rule_id]:
+            mark = _obj.settings["rules"][rule_id]["mark"]
+        else:
+            mark = None
+
         if use_zone_transaction is None:
             zone_transaction = self.new_zone_transaction(_zone)
         else:
             zone_transaction = use_zone_transaction
 
-        if "mark" in _obj.settings["rules"][rule_id]:
-            mark = _obj.settings["rules"][rule_id]["mark"]
-        else:
-            mark = None
         if _obj.applied:
             self.__rule(False, _zone, rule, mark, zone_transaction)
 
-        zone_transaction.add_post(self.__unregister_rule, _obj, rule_id)
+        zone_transaction.add_post(self.__unregister_rule, _obj, rule_id, mark)
 
         if use_zone_transaction is None:
             zone_transaction.execute(True)
 
         return _zone
 
-    def __unregister_rule(self, _obj, rule_id):
+    def __unregister_rule(self, _obj, rule_id, mark=None):
         if rule_id in _obj.settings["rules"]:
             del _obj.settings["rules"][rule_id]
+        if mark:
+            self._fw.del_mark(mark)
 
     def query_rule(self, zone, rule):
         return self.__rule_id(rule) in self.get_settings(zone)["rules"]
@@ -1705,9 +1714,6 @@ class FirewallZone(object):
                     if toaddr and enable:
                         zone_transaction.add_post(enable_ip_forwarding, ipv)
 
-                if enable:
-                    mark_id = self._fw.new_mark()
-
                 filter_chain = "INPUT" if not toaddr else "FORWARD_IN"
 
                 if enable:
@@ -1719,10 +1725,6 @@ class FirewallZone(object):
                                     enable, zone, filter_chain, port, protocol, toport,
                                     toaddr, mark_id, rule)
                 zone_transaction.add_rules(backend, rules)
-
-                if not enable:
-                    zone_transaction.add_post(self._fw.del_mark, mark_id)
-                    mark_id = None
 
             # SOURCE PORT
             elif type(rule.element) == Rich_SourcePort:
