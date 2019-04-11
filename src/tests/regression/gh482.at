@@ -1,0 +1,17 @@
+FWD_START_TEST([remove forward-port after reload])
+AT_KEYWORDS(gh482 rhbz1637675)
+
+FWD_CHECK([-q             --add-rich-rule='rule family="ipv4" forward-port port="49152" protocol="tcp" to-port="49153"'])
+FWD_CHECK([-q             --remove-rich-rule='rule family="ipv4" forward-port port="49152" protocol="tcp" to-port="49153"'])
+
+FWD_CHECK([-q --permanent --add-rich-rule='rule family="ipv4" forward-port port="49152" protocol="tcp" to-port="49153"'])
+FWD_RELOAD
+FWD_CHECK([-q             --remove-rich-rule='rule family="ipv4" forward-port port="49152" protocol="tcp" to-port="49153"'])
+FWD_CHECK([-q --permanent --remove-rich-rule='rule family="ipv4" forward-port port="49152" protocol="tcp" to-port="49153"'])
+
+FWD_CHECK([-q --permanent --add-forward-port=port=1234:proto=tcp:toport=4321])
+FWD_RELOAD
+FWD_CHECK([-q             --remove-forward-port=port=1234:proto=tcp:toport=4321])
+FWD_CHECK([-q --permanent --remove-forward-port=port=1234:proto=tcp:toport=4321])
+
+FWD_END_TEST
