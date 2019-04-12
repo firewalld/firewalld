@@ -83,7 +83,7 @@
 	<term><option>MinimalMark</option></term>
         <listitem>
 	  <para>
-            For some firewall settings several rules are needed in different tables to be able to handle packets in the correct way. To achieve that these packets are marked using the MARK target <citerefentry><refentrytitle>iptables</refentrytitle><manvolnum>8</manvolnum></citerefentry> and <citerefentry><refentrytitle>ip6tables</refentrytitle><manvolnum>8</manvolnum></citerefentry>. With the MinimalMark option a block of marks can be reserved for private use; only marks over this value are used. The default MinimalMark value is 100.
+        Deprecated. This option is ignored and no longer used. Marks are no longer used internally.
 	  </para>
 	</listitem>
       </varlistentry>

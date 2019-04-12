@@ -2630,8 +2630,7 @@
             <term>MinimalMark - i - (rw)</term>
             <listitem>
               <para>
-		For some firewall settings several rules are needed in different tables to be able to handle packets in the correct way.
-		To achieve that these packets are marked using the MARK target. With the MinimalMark property a block of marks can be reserved for private use; only marks over this value are used.
+        Deprecated. This option is ignored and no longer used. Marks are no longer used internally.
               </para>
             </listitem>
           </varlistentry>

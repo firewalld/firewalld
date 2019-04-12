@@ -118,7 +118,7 @@ class firewalld_conf(object):
         value = self.get("MinimalMark")
         try:
             int(value)
-        except ValueError:
+        except (ValueError, TypeError):
             if value is not None:
                 log.warning("MinimalMark '%s' is not valid, using default "
                             "value '%d'", value if value else '',
@@ -276,6 +276,8 @@ class firewalld_conf(object):
         if len(self._config) > 0:
             for (key,value) in self._config.items():
                 if key in done:
+                    continue
+                if key in ["MinimalMark"]: # omit deprecated from new config
                     continue
                 if not empty:
                     temp_file.write(u"\n")

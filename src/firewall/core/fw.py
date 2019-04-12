@@ -102,11 +102,11 @@ class Firewall(object):
         self.__init_vars()
 
     def __repr__(self):
-        return '%s(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)' % \
+        return '%s(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)' % \
             (self.__class__, self.ip4tables_enabled, self.ip6tables_enabled,
              self.ebtables_enabled, self._state, self._panic,
              self._default_zone, self._module_refcount, self._marks,
-             self._min_mark, self.cleanup_on_exit, self.ipv6_rpfilter_enabled,
+             self.cleanup_on_exit, self.ipv6_rpfilter_enabled,
              self.ipset_enabled, self._individual_calls, self._log_denied,
              self._automatic_helpers)
 
@@ -117,7 +117,6 @@ class Firewall(object):
         self._module_refcount = { }
         self._marks = [ ]
         # fallback settings will be overloaded by firewalld.conf
-        self._min_mark = config.FALLBACK_MINIMAL_MARK
         self.cleanup_on_exit = config.FALLBACK_CLEANUP_ON_EXIT
         self.ipv6_rpfilter_enabled = config.FALLBACK_IPV6_RPFILTER
         self._individual_calls = config.FALLBACK_INDIVIDUAL_CALLS
@@ -246,9 +245,6 @@ class Firewall(object):
         else:
             if self._firewalld_conf.get("DefaultZone"):
                 default_zone = self._firewalld_conf.get("DefaultZone")
-
-            if self._firewalld_conf.get("MinimalMark"):
-                self._min_mark = int(self._firewalld_conf.get("MinimalMark"))
 
             if self._firewalld_conf.get("CleanupOnExit"):
                 value = self._firewalld_conf.get("CleanupOnExit")
