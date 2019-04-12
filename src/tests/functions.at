@@ -67,6 +67,8 @@ m4_define([FWD_START_TEST], [
     m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
         m4_define_default([FIREWALL_BACKEND], [nftables])
 
+        AT_KEYWORDS(FIREWALL_BACKEND)
+
         dnl don't unload modules or bother cleaning up, the namespace will be deleted
         AT_CHECK([sed -i 's/^CleanupOnExit.*/CleanupOnExit=no/' ./firewalld.conf])
 
