@@ -230,15 +230,13 @@ class FirewallZone(object):
 
     # settings
 
-    # generate settings record with sender, timeout, mark
-    def __gen_settings(self, timeout, sender, mark=None):
+    # generate settings record with sender, timeout
+    def __gen_settings(self, timeout, sender):
         ret = {
             "date": time.time(),
             "sender": sender,
             "timeout": timeout,
         }
-        if mark:
-            ret["mark"] = mark
         return ret
 
     def get_settings(self, zone):
@@ -307,9 +305,8 @@ class FirewallZone(object):
                     elif key == "icmp_block_inversion":
                         continue
                     elif key == "forward_ports":
-                        mark = obj.settings["forward_ports"][args]["mark"]
                         self._forward_port(enable, _zone, zone_transaction,
-                                            *args, mark_id=mark)
+                                           *args)
                     elif key == "services":
                         self._service(enable, _zone, args, zone_transaction)
                     elif key == "ports":
@@ -323,12 +320,7 @@ class FirewallZone(object):
                     elif key == "masquerade":
                         self._masquerade(enable, _zone, zone_transaction)
                     elif key == "rules":
-                        if "mark" in obj.settings["rules"][args]:
-                            mark = obj.settings["rules"][args]["mark"]
-                        else:
-                            mark = None
-                        self.__rule(enable, _zone,
-                                    Rich_Rule(rule_str=args), mark,
+                        self.__rule(enable, _zone, Rich_Rule(rule_str=args),
                                     zone_transaction)
                     elif key == "interfaces":
                         self._interface(enable, _zone, args, zone_transaction)
@@ -675,8 +667,8 @@ class FirewallZone(object):
 
         return None
 
-    def __rule(self, enable, zone, rule, mark_id, zone_transaction):
-        self._rule_prepare(enable, zone, rule, mark_id, zone_transaction)
+    def __rule(self, enable, zone, rule, zone_transaction):
+        self._rule_prepare(enable, zone, rule, zone_transaction)
 
     def add_rule(self, zone, rule, timeout=0, sender=None,
                  use_zone_transaction=None):
@@ -695,25 +687,20 @@ class FirewallZone(object):
         else:
             zone_transaction = use_zone_transaction
 
-        if type(rule.element) == Rich_ForwardPort:
-            mark = self._fw.new_mark()
-        else:
-            mark = None
-
         if _obj.applied:
-            self.__rule(True, _zone, rule, mark, zone_transaction)
+            self.__rule(True, _zone, rule, zone_transaction)
 
-        self.__register_rule(_obj, rule_id, mark, timeout, sender)
-        zone_transaction.add_fail(self.__unregister_rule, _obj, rule_id, mark)
+        self.__register_rule(_obj, rule_id, timeout, sender)
+        zone_transaction.add_fail(self.__unregister_rule, _obj, rule_id)
 
         if use_zone_transaction is None:
             zone_transaction.execute(True)
 
         return _zone
 
-    def __register_rule(self, _obj, rule_id, mark, timeout, sender):
+    def __register_rule(self, _obj, rule_id, timeout, sender):
         _obj.settings["rules"][rule_id] = self.__gen_settings(
-            timeout, sender, mark=mark)
+            timeout, sender)
 
     def remove_rule(self, zone, rule,
                     use_zone_transaction=None):
@@ -726,31 +713,24 @@ class FirewallZone(object):
             raise FirewallError(errors.NOT_ENABLED,
                                 "'%s' not in '%s'" % (rule, _zone))
 
-        if "mark" in _obj.settings["rules"][rule_id]:
-            mark = _obj.settings["rules"][rule_id]["mark"]
-        else:
-            mark = None
-
         if use_zone_transaction is None:
             zone_transaction = self.new_zone_transaction(_zone)
         else:
             zone_transaction = use_zone_transaction
 
         if _obj.applied:
-            self.__rule(False, _zone, rule, mark, zone_transaction)
+            self.__rule(False, _zone, rule, zone_transaction)
 
-        zone_transaction.add_post(self.__unregister_rule, _obj, rule_id, mark)
+        zone_transaction.add_post(self.__unregister_rule, _obj, rule_id)
 
         if use_zone_transaction is None:
             zone_transaction.execute(True)
 
         return _zone
 
-    def __unregister_rule(self, _obj, rule_id, mark=None):
+    def __unregister_rule(self, _obj, rule_id):
         if rule_id in _obj.settings["rules"]:
             del _obj.settings["rules"][rule_id]
-        if mark:
-            self._fw.del_mark(mark)
 
     def query_rule(self, zone, rule):
         return self.__rule_id(rule) in self.get_settings(zone)["rules"]
@@ -1216,8 +1196,6 @@ class FirewallZone(object):
                                 "'%s:%s:%s:%s' already in '%s'" % \
                                 (port, protocol, toport, toaddr, _zone))
 
-        mark = self._fw.new_mark()
-
         if use_zone_transaction is None:
             zone_transaction = self.new_zone_transaction(_zone)
         else:
@@ -1225,20 +1203,20 @@ class FirewallZone(object):
 
         if _obj.applied:
             self._forward_port(True, _zone, zone_transaction, port, protocol,
-                                toport, toaddr, mark_id=mark)
+                                toport, toaddr)
 
-        self.__register_forward_port(_obj, forward_id, timeout, sender, mark)
+        self.__register_forward_port(_obj, forward_id, timeout, sender)
         zone_transaction.add_fail(self.__unregister_forward_port, _obj,
-                                  forward_id, mark)
+                                  forward_id)
 
         if use_zone_transaction is None:
             zone_transaction.execute(True)
 
         return _zone
 
-    def __register_forward_port(self, _obj, forward_id, timeout, sender, mark):
+    def __register_forward_port(self, _obj, forward_id, timeout, sender):
         _obj.settings["forward_ports"][forward_id] = \
-            self.__gen_settings(timeout, sender, mark=mark)
+            self.__gen_settings(timeout, sender)
 
     def remove_forward_port(self, zone, port, protocol, toport=None,
                             toaddr=None, use_zone_transaction=None):
@@ -1252,8 +1230,6 @@ class FirewallZone(object):
                                 "'%s:%s:%s:%s' not in '%s'" % \
                                 (port, protocol, toport, toaddr, _zone))
 
-        mark = _obj.settings["forward_ports"][forward_id]["mark"]
-
         if use_zone_transaction is None:
             zone_transaction = self.new_zone_transaction(_zone)
         else:
@@ -1261,20 +1237,19 @@ class FirewallZone(object):
 
         if _obj.applied:
             self._forward_port(False, _zone, zone_transaction, port, protocol,
-                                toport, toaddr, mark_id=mark)
+                                toport, toaddr)
 
         zone_transaction.add_post(self.__unregister_forward_port, _obj,
-                                  forward_id, mark)
+                                  forward_id)
 
         if use_zone_transaction is None:
             zone_transaction.execute(True)
 
         return _zone
 
-    def __unregister_forward_port(self, _obj, forward_id, mark):
+    def __unregister_forward_port(self, _obj, forward_id):
         if forward_id in _obj.settings["forward_ports"]:
             del _obj.settings["forward_ports"][forward_id]
-        self._fw.del_mark(mark)
 
     def query_forward_port(self, zone, port, protocol, toport=None,
                            toaddr=None):
@@ -1559,7 +1534,7 @@ class FirewallZone(object):
                                     chain)
                     zone_transaction.add_rules(backend, rules)
 
-    def _rule_prepare(self, enable, zone, rule, mark_id, zone_transaction):
+    def _rule_prepare(self, enable, zone, rule, zone_transaction):
         if rule.family is not None:
             ipvs = [ rule.family ]
         else:
@@ -1723,7 +1698,7 @@ class FirewallZone(object):
 
                 rules = backend.build_zone_forward_port_rules(
                                     enable, zone, filter_chain, port, protocol, toport,
-                                    toaddr, mark_id, rule)
+                                    toaddr, rule)
                 zone_transaction.add_rules(backend, rules)
 
             # SOURCE PORT
@@ -1782,7 +1757,6 @@ class FirewallZone(object):
             else:
                 raise FirewallError(errors.INVALID_RULE, "Unknown element %s" %
                                     type(rule.element))
-        return mark_id
 
     def _service(self, enable, zone, service, zone_transaction):
         svc = self._fw.service.get_service(service)
@@ -1903,7 +1877,7 @@ class FirewallZone(object):
             zone_transaction.add_rules(backend, rules)
 
     def _forward_port(self, enable, zone, zone_transaction, port, protocol,
-                       toport=None, toaddr=None, mark_id=None):
+                       toport=None, toaddr=None):
         if check_single_address("ipv6", toaddr):
             ipv = "ipv6"
         else:
@@ -1921,7 +1895,7 @@ class FirewallZone(object):
         backend = self._fw.get_backend_by_ipv(ipv)
         rules = backend.build_zone_forward_port_rules(
                             enable, zone, filter_chain, port, protocol, toport,
-                            toaddr, mark_id)
+                            toaddr)
         zone_transaction.add_rules(backend, rules)
 
     def _icmp_block(self, enable, zone, icmp, zone_transaction):

@@ -688,19 +688,6 @@ class Firewall(object):
 
         self.cleanup()
 
-    # marks
-
-    def new_mark(self):
-        # return first unused mark
-        i = self._min_mark
-        while i in self._marks:
-            i += 1
-        self._marks.append(i)
-        return i
-
-    def del_mark(self, mark):
-        self._marks.remove(mark)
-
     # handle modules
 
     def handle_modules(self, _modules, enable):
