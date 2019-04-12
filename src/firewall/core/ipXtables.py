@@ -652,7 +652,7 @@ class ip4tables(object):
             "-N INPUT_ZONES_SOURCE",
             "-N INPUT_ZONES",
 
-            "-A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT",
+            "-A INPUT -m conntrack --ctstate RELATED,ESTABLISHED,DNAT -j ACCEPT",
             "-A INPUT -i lo -j ACCEPT",
             "-A INPUT -j INPUT_direct",
             "-A INPUT -j INPUT_ZONES_SOURCE",
@@ -672,7 +672,7 @@ class ip4tables(object):
             "-N FORWARD_OUT_ZONES_SOURCE",
             "-N FORWARD_OUT_ZONES",
 
-            "-A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT",
+            "-A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED,DNAT -j ACCEPT",
             "-A FORWARD -i lo -j ACCEPT",
             "-A FORWARD -j FORWARD_direct",
             "-A FORWARD -j FORWARD_IN_ZONES_SOURCE",
@@ -1132,9 +1132,6 @@ class ip4tables(object):
                                       protocol, toport, toaddr, mark_id, rich_rule=None):
         add_del = { True: "-A", False: "-D" }[enable]
 
-        mark_str = "0x%x" % mark_id
-        mark = [ "-m", "mark", "--mark", mark_str ]
-
         to = ""
         if toaddr:
             if check_single_address("ipv6", toaddr):
@@ -1147,11 +1144,10 @@ class ip4tables(object):
         target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["PREROUTING"],
                                             zone=zone)
 
-        rule_fragment = [ "-p", protocol, "--dport", portStr(port) ]
-        rich_rule_priority_fragment = []
+        rule_fragment = []
         if rich_rule:
             chain_suffix = self._rich_rule_chain_suffix(rich_rule)
-            rich_rule_priority_fragment = self._rich_rule_priority_fragment(rich_rule)
+            rule_fragment = self._rich_rule_priority_fragment(rich_rule)
             rule_fragment += self._rich_rule_destination_fragment(rich_rule.destination)
             rule_fragment += self._rich_rule_source_fragment(rich_rule.source)
         else:
@@ -1159,24 +1155,11 @@ class ip4tables(object):
 
         rules = []
         if rich_rule:
-            rules.append(self._rich_rule_log(rich_rule, enable, "mangle", target, rule_fragment))
-        rules.append(["-t", "mangle", add_del, "%s_%s" % (target, chain_suffix)]
-                     + rich_rule_priority_fragment + rule_fragment +
-                     [ "-j", "MARK", "--set-mark", mark_str ])
-
-        # local and remote
+            rules.append(self._rich_rule_log(rich_rule, enable, "nat", target, rule_fragment))
         rules.append(["-t", "nat", add_del, "%s_%s" % (target, chain_suffix)]
-                     + rich_rule_priority_fragment +
-                     ["-p", protocol ] + mark +
-                     [ "-j", "DNAT", "--to-destination", to ])
-
-        target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[filter_chain],
-                                            zone=zone)
-        rules.append(["-t", "filter", add_del, "%s_%s" % (target, chain_suffix)]
-                     + rich_rule_priority_fragment +
-                     ["-m", "conntrack", "--ctstate", "NEW,UNTRACKED" ]
-                     + mark +
-                     [ "-j", "ACCEPT" ])
+                     + rule_fragment +
+                     ["-p", protocol, "--dport", portStr(port),
+                      "-j", "DNAT", "--to-destination", to])
 
         return rules
 
