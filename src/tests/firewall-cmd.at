@@ -1070,11 +1070,22 @@ FWD_START_TEST([rich rules priority])
     FWD_CHECK([--add-rich-rule='rule family="ipv6" priority=-123 forward-port port="999" protocol="tcp" to-port="99"'], 0, ignore)
     FWD_CHECK([--add-rich-rule='rule family="ipv6" priority=-123 forward-port port="9999" protocol="tcp" to-port="9999" to-addr="1234::4321"'], 0, ignore)
     m4_if(nftables, FIREWALL_BACKEND, [
+    NFT_LIST_RULES([inet], [filter_INPUT], 0, [dnl
+        table inet firewalld {
+        chain filter_INPUT {
+        ct state established,related accept
+        ct status dnat accept
+        iifname "lo" accept
+        jump filter_INPUT_ZONES_SOURCE
+        jump filter_INPUT_ZONES
+        ct state invalid drop
+        reject with icmpx type admin-prohibited
+        }
+        }
+    ])
     NFT_LIST_RULES([inet], [filter_IN_public_pre], 0, [dnl
         table inet firewalld {
         chain filter_IN_public_pre {
-        ct state new,untracked mark 0x00000069 accept
-        ct state new,untracked mark 0x00000066 accept
         ip saddr 10.1.0.0/16 drop
         }
         }
@@ -1084,23 +1095,18 @@ FWD_START_TEST([rich rules priority])
         chain filter_IN_public_allow {
         tcp dport 22 ct state new,untracked accept
         ip6 daddr fe80::/64 udp dport 546 ct state new,untracked accept
-        ct state new,untracked mark 0x00000064 accept
-        ct state new,untracked mark 0x00000068 accept
         }
         }
     ])
     NFT_LIST_RULES([inet], [filter_FWDI_public_pre], 0, [dnl
         table inet firewalld {
         chain filter_FWDI_public_pre {
-        ct state new,untracked mark 0x0000006a accept
-        ct state new,untracked mark 0x00000067 accept
         }
         }
     ])
     NFT_LIST_RULES([inet], [filter_FWDI_public_allow], 0, [dnl
         table inet firewalld {
         chain filter_FWDI_public_allow {
-        ct state new,untracked mark 0x00000065 accept
         }
         }
     ])
@@ -1121,16 +1127,16 @@ FWD_START_TEST([rich rules priority])
     NFT_LIST_RULES([ip], [nat_PRE_public_pre], 0, [dnl
         table ip firewalld {
         chain nat_PRE_public_pre {
-        meta l4proto tcp mark 0x00000066 redirect to :80
-        meta l4proto tcp mark 0x00000067 dnat to 10.1.1.1:80
+        tcp dport 8888 redirect to :80
+        tcp dport 8080 dnat to 10.1.1.1:80
         }
         }
     ])
     NFT_LIST_RULES([ip], [nat_PRE_public_allow], 0, [dnl
         table ip firewalld {
         chain nat_PRE_public_allow {
-        meta l4proto tcp mark 0x00000064 redirect to :22
-        meta l4proto tcp mark 0x00000065 dnat to 10.1.1.1:22
+        tcp dport 222 redirect to :22
+        tcp dport 2222 dnat to 10.1.1.1:22
         }
         }
     ])
@@ -1151,15 +1157,15 @@ FWD_START_TEST([rich rules priority])
     NFT_LIST_RULES([ip6], [nat_PRE_public_pre], 0,
         [[table ip6 firewalld {
         chain nat_PRE_public_pre {
-        meta l4proto tcp mark 0x00000069 redirect to :99
-        meta l4proto tcp mark 0x0000006a dnat to [1234::4321]:9999
+        tcp dport 999 redirect to :99
+        tcp dport 9999 dnat to [1234::4321]:9999
         }
         }
     ]])
     NFT_LIST_RULES([ip6], [nat_PRE_public_allow], 0, [dnl
         table ip6 firewalld {
         chain nat_PRE_public_allow {
-        meta l4proto tcp mark 0x00000068 redirect to :90
+        tcp dport 9090 redirect to :90
         }
         }
     ])
@@ -1178,19 +1184,12 @@ FWD_START_TEST([rich rules priority])
     NFT_LIST_RULES([inet], [mangle_PRE_public_pre], 0, [dnl
         table inet firewalld {
         chain mangle_PRE_public_pre {
-        meta nfproto ipv6 tcp dport 999 mark set 0x00000069
-        meta nfproto ipv6 tcp dport 9999 mark set 0x0000006a
-        meta nfproto ipv4 tcp dport 8888 mark set 0x00000066
-        meta nfproto ipv4 tcp dport 8080 mark set 0x00000067
         }
         }
     ])
     NFT_LIST_RULES([inet], [mangle_PRE_public_allow], 0, [dnl
         table inet firewalld {
         chain mangle_PRE_public_allow {
-        meta nfproto ipv4 tcp dport 222 mark set 0x00000064
-        meta nfproto ipv4 tcp dport 2222 mark set 0x00000065
-        meta nfproto ipv6 tcp dport 9090 mark set 0x00000068
         }
         }
     ])], [

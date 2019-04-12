@@ -9,6 +9,7 @@ m4_if(nftables, FIREWALL_BACKEND, [
         table inet firewalld {
         chain filter_FORWARD {
         ct state established,related accept
+        ct status dnat accept
         iifname "lo" accept
         ip6 daddr { ::/96, ::ffff:0.0.0.0/96, 2002::/24, 2002:a00::/24, 2002:7f00::/24, 2002:a9fe::/32, 2002:ac10::/28, 2002:c0a8::/32, 2002:e000::/19 } log prefix "RFC3964_IPv4_REJECT: " reject with icmpv6 type addr-unreachable
         jump filter_FORWARD_IN_ZONES_SOURCE
@@ -80,6 +81,7 @@ m4_if(nftables, FIREWALL_BACKEND, [
         table inet firewalld {
         chain filter_FORWARD {
         ct state established,related accept
+        ct status dnat accept
         iifname "lo" accept
         jump filter_FORWARD_IN_ZONES_SOURCE
         jump filter_FORWARD_IN_ZONES

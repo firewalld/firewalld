@@ -477,6 +477,7 @@ class nftables(object):
         default_rules.append("add chain inet %s filter_%s_ZONES_SOURCE" % (TABLE_NAME, "INPUT"))
         default_rules.append("add chain inet %s filter_%s_ZONES" % (TABLE_NAME, "INPUT"))
         default_rules.append("add rule inet %s filter_%s ct state established,related accept" % (TABLE_NAME, "INPUT"))
+        default_rules.append("add rule inet %s filter_%s ct status dnat accept" % (TABLE_NAME, "INPUT"))
         default_rules.append("add rule inet %s filter_%s iifname lo accept" % (TABLE_NAME, "INPUT"))
         default_rules.append("add rule inet %s filter_%s jump filter_%s_ZONES_SOURCE" % (TABLE_NAME, "INPUT", "INPUT"))
         default_rules.append("add rule inet %s filter_%s jump filter_%s_ZONES" % (TABLE_NAME, "INPUT", "INPUT"))
@@ -493,6 +494,7 @@ class nftables(object):
         default_rules.append("add chain inet %s filter_%s_OUT_ZONES_SOURCE" % (TABLE_NAME, "FORWARD"))
         default_rules.append("add chain inet %s filter_%s_OUT_ZONES" % (TABLE_NAME, "FORWARD"))
         default_rules.append("add rule inet %s filter_%s ct state established,related accept" % (TABLE_NAME, "FORWARD"))
+        default_rules.append("add rule inet %s filter_%s ct status dnat accept" % (TABLE_NAME, "FORWARD"))
         default_rules.append("add rule inet %s filter_%s iifname lo accept" % (TABLE_NAME, "FORWARD"))
         default_rules.append("add rule inet %s filter_%s jump filter_%s_IN_ZONES_SOURCE" % (TABLE_NAME, "FORWARD", "FORWARD"))
         default_rules.append("add rule inet %s filter_%s jump filter_%s_IN_ZONES" % (TABLE_NAME, "FORWARD", "FORWARD"))
@@ -1063,9 +1065,9 @@ class nftables(object):
 
         return rules
 
-    def _build_zone_forward_port_nat_rules(self, enable, zone, protocol,
-                                           mark_fragment, toaddr, toport,
-                                           family, rich_rule=None):
+    def _build_zone_forward_port_nat_rules(self, enable, zone, port, protocol,
+                                           toaddr, toport, family,
+                                           rich_rule=None):
         add_del = { True: "add", False: "delete" }[enable]
         target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["PREROUTING"],
                                             zone=zone)
@@ -1079,70 +1081,39 @@ class nftables(object):
         if toport and toport != "":
             dnat_fragment += [":%s" % portStr(toport, "-")]
 
-        rich_rule_priority_fragment = []
-        if rich_rule:
-            rich_rule_priority_fragment += self._rich_rule_priority_fragment(rich_rule)
-            chain_suffix = self._rich_rule_chain_suffix(rich_rule)
-        else:
-            chain_suffix = "allow"
-
-        return [[add_del, "rule", family, "%s" % TABLE_NAME,
-                "nat_%s_%s" % (target, chain_suffix)]
-                + rich_rule_priority_fragment +
-                ["meta", "l4proto", protocol]
-                + mark_fragment + dnat_fragment]
-
-    def build_zone_forward_port_rules(self, enable, zone, filter_chain, port,
-                                      protocol, toport, toaddr, mark_id, rich_rule=None):
-        add_del = { True: "add", False: "delete" }[enable]
-
-        mark_str = "0x%x" % mark_id
-        mark_fragment = ["meta", "mark", mark_str]
-
-        target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["PREROUTING"],
-                                            zone=zone)
         rule_fragment = []
         if rich_rule:
             rule_fragment += self._rich_rule_priority_fragment(rich_rule)
-            rule_fragment += self._rich_rule_family_fragment(rich_rule.family)
             rule_fragment += self._rich_rule_destination_fragment(rich_rule.destination)
             rule_fragment += self._rich_rule_source_fragment(rich_rule.source)
             chain_suffix = self._rich_rule_chain_suffix(rich_rule)
         else:
             chain_suffix = "allow"
 
-        rules = []
-        rules.append([add_del, "rule", "inet", "%s" % TABLE_NAME,
-                      "mangle_%s_%s" % (target, chain_suffix)]
-                      + rule_fragment +
-                      [protocol, "dport", port, "meta", "mark", "set", mark_str])
+        return [[add_del, "rule", family, "%s" % TABLE_NAME,
+                "nat_%s_%s" % (target, chain_suffix)]
+                + rule_fragment +
+                [protocol, "dport", port]
+                + dnat_fragment]
 
+    def build_zone_forward_port_rules(self, enable, zone, filter_chain, port,
+                                      protocol, toport, toaddr, mark_id, rich_rule=None):
+        rules = []
         if rich_rule and (rich_rule.family and rich_rule.family == "ipv6"
            or toaddr and check_single_address("ipv6", toaddr)):
             rules.extend(self._build_zone_forward_port_nat_rules(enable, zone,
-                                protocol, mark_fragment, toaddr, toport, "ip6", rich_rule))
+                                port, protocol, toaddr, toport, "ip6", rich_rule))
         elif rich_rule and (rich_rule.family and rich_rule.family == "ipv4"
            or toaddr and check_single_address("ipv4", toaddr)):
             rules.extend(self._build_zone_forward_port_nat_rules(enable, zone,
-                                protocol, mark_fragment, toaddr, toport, "ip", rich_rule))
+                                port, protocol, toaddr, toport, "ip", rich_rule))
         else:
             if not toaddr or check_single_address("ipv6", toaddr):
                 rules.extend(self._build_zone_forward_port_nat_rules(enable, zone,
-                                    protocol, mark_fragment, toaddr, toport, "ip6", rich_rule))
+                                    port, protocol, toaddr, toport, "ip6", rich_rule))
             if not toaddr or check_single_address("ipv4", toaddr):
                 rules.extend(self._build_zone_forward_port_nat_rules(enable, zone,
-                                    protocol, mark_fragment, toaddr, toport, "ip", rich_rule))
-
-        target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[filter_chain],
-                                            zone=zone)
-        rule_fragment = []
-        if rich_rule:
-            rule_fragment += self._rich_rule_priority_fragment(rich_rule)
-        rules.append([add_del, "rule", "inet", "%s" % TABLE_NAME,
-                      "filter_%s_%s" % (target, chain_suffix)]
-                      + rule_fragment +
-                      ["ct", "state", "new,untracked"]
-                      + mark_fragment + ["accept"])
+                                    port, protocol, toaddr, toport, "ip", rich_rule))
 
         return rules
 
@@ -1278,7 +1249,7 @@ class nftables(object):
         rules.append(["add", "rule", "inet", "%s" % TABLE_NAME,
                       "filter_OUTPUT", "index", "0"] + rule_fragment)
         rules.append(["add", "rule", "inet", "%s" % TABLE_NAME,
-                      "filter_FORWARD", "index", "1"] + rule_fragment)
+                      "filter_FORWARD", "index", "2"] + rule_fragment)
         return rules
 
     def build_zone_rich_source_destination_rules(self, enable, zone, rich_rule):
