@@ -3,6 +3,8 @@ m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
 ])
 
 FWD_START_TEST([basic options])
+    AT_KEYWORDS(panic reload)
+
     FWD_CHECK([-h], 0, ignore)
     FWD_CHECK([--help], 0, ignore)
     FWD_CHECK([-V], 0, ignore)
@@ -24,6 +26,8 @@ FWD_START_TEST([basic options])
 FWD_END_TEST
 
 FWD_START_TEST([get/list options])
+    AT_KEYWORDS(zone service icmp)
+
     FWD_CHECK([--get-zones], 0, ignore)
     FWD_CHECK([--get-services], 0, ignore)
     FWD_CHECK([--get-icmptypes], 0, ignore)
@@ -38,6 +42,8 @@ FWD_START_TEST([get/list options])
 FWD_END_TEST
 
 FWD_START_TEST([default zone])
+    AT_KEYWORDS(zone)
+
     FWD_CHECK([--get-default-zone], 0, [public
 ])
     FWD_CHECK([--set-default-zone="home"], 0, ignore)
@@ -48,6 +54,8 @@ FWD_START_TEST([default zone])
 FWD_END_TEST
 
 FWD_START_TEST([user zone])
+    AT_KEYWORDS(zone)
+
     FWD_CHECK([--new-zone=foobar], 2, ignore, ignore) dnl no --permanent
     FWD_CHECK([--permanent --new-zone=foobar], 0, ignore)
     FWD_CHECK([--permanent --get-zones | grep foobar], 0, ignore)
@@ -61,6 +69,8 @@ FWD_START_TEST([user zone])
 FWD_END_TEST([-e '/ERROR: INVALID_TARGET: BAD/d'])
 
 FWD_START_TEST([zone interfaces])
+    AT_KEYWORDS(zone)
+
     FWD_CHECK([--zone=work --add-interface=dummy], 0, ignore)
     FWD_CHECK([--get-zone-of-interface=dummy], 0, [work
 ])
@@ -158,6 +168,8 @@ FWD_START_TEST([zone interfaces])
 FWD_END_TEST([-e '/ERROR: ZONE_CONFLICT: perm_dummy/d'])
 
 FWD_START_TEST([zone sources])
+    AT_KEYWORDS(zone)
+
     m4_define([check_zone_source], [
         FWD_CHECK([--zone=public --add-source=$1], 0, ignore)
         FWD_CHECK([--get-zone-of-source=$1], 0, [public
@@ -206,6 +218,8 @@ sources: $1
 FWD_END_TEST([ -e '/ERROR: ZONE_CONFLICT/d'])
 
 FWD_START_TEST([services])
+    AT_KEYWORDS(service)
+
     FWD_CHECK([--add-service=dns --timeout 60 --zone=public], 0, ignore)
     FWD_CHECK([--query-service dns], 0, ignore)
     FWD_CHECK([--remove-service=dns], 0, ignore)
@@ -248,6 +262,8 @@ FWD_START_TEST([services])
 FWD_END_TEST([-e '/ERROR: INVALID_SERVICE:/d'])
 
 FWD_START_TEST([user services])
+    AT_KEYWORDS(service)
+
     FWD_CHECK([--permanent --new-service=ssh], 26, ignore, ignore) dnl already exists
 
     FWD_CHECK([--permanent --new-service=foobar], 0, ignore)
@@ -304,6 +320,8 @@ FWD_END_TEST([-e '/ERROR: NAME_CONFLICT: new_service():/d' dnl
               -e '/ERROR: INVALID_ADDR:/d'])
 
 FWD_START_TEST([ports])
+    AT_KEYWORDS(port)
+
     FWD_CHECK([--zone home --list-ports], 0, ignore)
     FWD_CHECK([--add-port=666], 102, ignore, ignore) dnl no protocol
     FWD_CHECK([--add-port=666/dummy], 103, ignore, ignore) dnl bad protocol
@@ -359,6 +377,8 @@ FWD_START_TEST([ports])
 FWD_END_TEST
 
 FWD_START_TEST([source ports])
+    AT_KEYWORDS(port)
+
     FWD_CHECK([--zone home --list-source-ports], 0, ignore)
     FWD_CHECK([--add-source-port=666], 102, ignore, ignore) dnl no protocol
     FWD_CHECK([--add-source-port=666/dummy], 103, ignore, ignore) dnl bad protocol
@@ -394,6 +414,8 @@ FWD_START_TEST([source ports])
 FWD_END_TEST
 
 FWD_START_TEST([protocols])
+    AT_KEYWORDS(protocol)
+
     FWD_CHECK([--add-protocol=dummy], 103, ignore, ignore)
     FWD_CHECK([--add-protocol=dccp --zone=public], 0, ignore)
     FWD_CHECK([--query-protocol=dccp], 0, ignore)
@@ -420,6 +442,8 @@ FWD_START_TEST([protocols])
 FWD_END_TEST([-e '/ERROR: INVALID_PROTOCOL: dummy/d'])
 
 FWD_START_TEST([masquerade])
+    AT_KEYWORDS(masquerade nat)
+
     FWD_CHECK([--add-masquerade --zone=public], 0, ignore)
     FWD_CHECK([--query-masquerade], 0, ignore)
     FWD_CHECK([--remove-masquerade], 0, ignore)
@@ -432,6 +456,8 @@ FWD_START_TEST([masquerade])
 FWD_END_TEST
 
 FWD_START_TEST([forward ports])
+    AT_KEYWORDS(port forward_port)
+
     FWD_CHECK([--add-forward-port=666], 106, ignore, ignore)
     FWD_CHECK([--add-forward-port=port=11:proto=tcp:toport=22], 0, ignore)
     FWD_CHECK([--remove-forward-port=port=11:proto=tcp:toport=22 --zone=public], 0, ignore)
@@ -486,6 +512,8 @@ FWD_START_TEST([forward ports])
 FWD_END_TEST
 
 FWD_START_TEST([ICMP block])
+    AT_KEYWORDS(icmp)
+
     FWD_CHECK([--list-icmp-blocks], 0, ignore)
 
     FWD_CHECK([--zone=external --add-icmp-block=dummyblock], 107, ignore, ignore)
@@ -530,6 +558,8 @@ FWD_START_TEST([ICMP block])
 FWD_END_TEST([-e '/ERROR: INVALID_ICMPTYPE:/d'])
 
 FWD_START_TEST([user ICMP types])
+    AT_KEYWORDS(icmp)
+
     FWD_CHECK([--permanent --new-icmptype=redirect], 26, ignore, ignore) dnl already exists
 
     FWD_CHECK([--permanent --new-icmptype=foobar], 0, ignore)
@@ -551,6 +581,8 @@ FWD_START_TEST([user ICMP types])
 FWD_END_TEST([-e '/NAME_CONFLICT: new_icmptype():/d'])
 
 FWD_START_TEST([ipset])
+    AT_KEYWORDS(ipset)
+
     CHECK_IPSET
     CHECK_IPSET_HASH_MAC
 
@@ -600,6 +632,8 @@ FWD_START_TEST([ipset])
 FWD_END_TEST([-e '/ERROR: INVALID_ENTRY: invalid address/d'])
 
 FWD_START_TEST([user helpers])
+    AT_KEYWORDS(helper)
+
     FWD_CHECK([--permanent --new-helper=foobar --module=foo], 132, ignore, ignore)
     FWD_CHECK([--permanent --new-helper=foobar --module=nf_conntrack_foo], 0, ignore)
     FWD_CHECK([--permanent --get-helpers | grep foobar], 0, ignore)
@@ -626,6 +660,8 @@ FWD_START_TEST([user helpers])
 FWD_END_TEST([-e '/ERROR: INVALID_MODULE:/d'])
 
 FWD_START_TEST([direct])
+    AT_KEYWORDS(direct)
+
     FWD_CHECK([--direct --add-chain ipv4 filter mychain], 0, ignore)
     FWD_CHECK([--direct --get-chains ipv4 filter | grep mychain], 0, ignore)
     FWD_CHECK([--direct --get-all-chains | grep "ipv4 filter mychain"], 0, ignore)
@@ -697,6 +733,8 @@ FWD_END_TEST([-e '/ERROR: INVALID_TABLE:/d' dnl
               -e '/WARNING: NOT_ENABLED: chain/d'])
 
 FWD_START_TEST([direct nat])
+    AT_KEYWORDS(direct nat)
+
     CHECK_NAT_COEXISTENCE
 
     m4_define([direct_rule1], [ipv4 nat OUTPUT 0 -s 1.2.3.4 -d 1.2.3.4 -p tcp --dport 80 -j REDIRECT --to-ports 81])
@@ -719,6 +757,8 @@ FWD_START_TEST([direct nat])
 FWD_END_TEST
 
 FWD_START_TEST([direct passthrough])
+    AT_KEYWORDS(direct passthrough)
+
     AT_CHECK([if ! modprobe dummy; then exit 77; fi])
 
     FWD_CHECK([--direct --passthrough ipv4 --table mangle --append POSTROUTING --out-interface dummy0 --protocol udp --destination-port 68 --jump CHECKSUM --checksum-fill], 0, ignore)
@@ -754,6 +794,8 @@ FWD_START_TEST([direct passthrough])
 FWD_END_TEST([-e '/WARNING: NOT_ENABLED: passthrough/d'])
 
 FWD_START_TEST([direct ebtables])
+    AT_KEYWORDS(direct ebtables)
+
     FWD_CHECK([--direct --add-chain eb filter mychain], 0, ignore)
     FWD_CHECK([--direct --get-chains eb filter | grep mychain], 0, ignore)
     FWD_CHECK([--direct --add-rule eb filter mychain 1 -p 0x86dd -j DROP], 0, ignore)
@@ -797,6 +839,8 @@ FWD_START_TEST([direct ebtables])
 FWD_END_TEST
 
 FWD_START_TEST([lockdown])
+    AT_KEYWORDS(lockdown)
+
     FWD_CHECK([--add-lockdown-whitelist-command /usr/bin/command], 0, ignore)
     FWD_CHECK([--query-lockdown-whitelist-command /usr/bin/command], 0, ignore)
     FWD_CHECK([--list-lockdown-whitelist-commands | grep "/usr/bin/command"], 0, ignore)
@@ -862,6 +906,8 @@ m4_define([rich_rule_test], [
     FWD_CHECK([--permanent --query-rich-rule='$1'], 1, ignore)
 ])
 FWD_START_TEST([rich rules good])
+    AT_KEYWORDS(rich)
+
     rich_rule_test([rule protocol value="ah" reject])
     rich_rule_test([rule protocol value="esp" accept])
     rich_rule_test([rule protocol value="sctp" log])
@@ -885,12 +931,16 @@ FWD_START_TEST([rich rules good])
     rich_rule_test([rule family="ipv4" port port="222" protocol="tcp" mark set="0xff"])
 FWD_END_TEST
 FWD_START_TEST([rich rules audit])
+    AT_KEYWORDS(rich)
+
     CHECK_LOG_AUDIT
     rich_rule_test([rule service name="ftp" audit limit value="1/m" accept])
 FWD_END_TEST
 m4_undefine([rich_rule_test])
 
 FWD_START_TEST([rich rules priority])
+    AT_KEYWORDS(rich)
+
     CHECK_LOG_AUDIT
 
     dnl Verify generic layout of zone
@@ -1509,6 +1559,8 @@ FWD_END_TEST([-e '/INVALID_RULE: no element, no source, no destination/d'dnl
               -e '/ERROR: INVALID_PRIORITY: /d'])
 
 FWD_START_TEST([rich rules bad])
+    AT_KEYWORDS(rich)
+
     m4_define([rich_rule_test], [
         FWD_CHECK([--add-rich-rule='$1'], $2, ignore, ignore)
         FWD_CHECK([--permanent --add-rich-rule='$1'], $2, ignore, ignore)
@@ -1541,6 +1593,8 @@ FWD_END_TEST([-e '/ERROR: INVALID_RULE:/d' dnl
               -e '/ERROR: INVALID_LIMIT: 1\/2m/d'])
 
 FWD_START_TEST([config validation])
+    AT_KEYWORDS(check_config)
+
     dnl default config
     FWD_CHECK([--check-config], 0, ignore)
 

@@ -1,4 +1,6 @@
 FWD_START_TEST([ipset with timeout])
+AT_KEYWORDS(ipset rhbz1506742)
+
 CHECK_IPSET
 
 FWD_CHECK([-q --permanent --new-ipset=foobar --type=hash:ip --option=maxelem=1000000 --option=family=inet --option=hashsize=4096 --option=timeout=600])

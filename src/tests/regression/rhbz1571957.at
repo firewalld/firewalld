@@ -1,4 +1,5 @@
 FWD_START_TEST([set-log-denied w/ ICMP block inversion])
+AT_KEYWORDS(log_denied rhbz1571957 icmp)
 
 FWD_CHECK([-q --permanent --zone=public --add-icmp-block-inversion])
 FWD_RELOAD

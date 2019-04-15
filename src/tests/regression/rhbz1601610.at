@@ -1,4 +1,5 @@
 FWD_START_TEST([ipset duplicate entries])
+AT_KEYWORDS(ipset rhbz1601610)
 
 FWD_CHECK([-q --new-ipset=foobar --permanent --type=hash:net])
 FWD_RELOAD

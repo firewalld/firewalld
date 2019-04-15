@@ -1,4 +1,5 @@
 FWD_START_TEST([RFC3964_IPv4])
+AT_KEYWORDS(rfc3964_ipv4)
 
 AT_CHECK([sed -i 's/^LogDenied.*/LogDenied=all/' ./firewalld.conf])
 AT_CHECK([sed -i 's/^RFC3964_IPv4.*/RFC3964_IPv4=yes/' ./firewalld.conf])

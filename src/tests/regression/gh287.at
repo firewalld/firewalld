@@ -1,4 +1,5 @@
 FWD_START_TEST([ICMP block inversion])
+AT_KEYWORDS(icmp gh287)
 
 AT_CHECK([mkdir -p ./zones])
 AT_CHECK([echo '<?xml version="1.0" encoding="utf-8"?>' > ./zones/foobar.xml])

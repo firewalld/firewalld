@@ -1,4 +1,6 @@
 FWD_START_TEST([--set-log-denied does not zero config])
+AT_KEYWORDS(log_denied rhbz1514043)
+
 FWD_CHECK([-q --set-log-denied=all])
 FWD_CHECK([-q --permanent --zone=public --add-service=samba])
 FWD_RELOAD

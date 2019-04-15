@@ -1,4 +1,5 @@
 FWD_START_TEST([ICMP block present FORWARD chain])
+AT_KEYWORDS(icmp)
 
 FWD_CHECK([-q --zone=public --add-icmp-block=host-prohibited])
 m4_if(iptables, FIREWALL_BACKEND, [

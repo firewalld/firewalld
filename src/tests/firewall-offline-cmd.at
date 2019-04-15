@@ -15,6 +15,8 @@ dnl
 m4_define([TESTING_FIREWALL_OFFLINE_CMD_PASSTHROUGH])
 
 FWD_START_TEST([lokkit migration])
+    AT_KEYWORDS(lokkit)
+
     dnl from command line
     FWD_CHECK([--addmodule=abc --addmodule=efg --removemodule=xyz dnl
         --trust=eth+ --trust=em0 dnl

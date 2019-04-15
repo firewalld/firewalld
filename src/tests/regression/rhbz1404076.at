@@ -1,4 +1,5 @@
 FWD_START_TEST([query single port added with range])
+AT_KEYWORDS(port rhbz1404076)
 
 dnl add a set of ports by range, then query a specific port inside that range.
 FWD_CHECK([-q --add-port=8080-8090/tcp])

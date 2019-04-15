@@ -1,4 +1,5 @@
 FWD_START_TEST([forward-port toaddr enables IP forwarding])
+AT_KEYWORDS(port forward_port gh335)
 
 NS_CHECK([sysctl -w net.ipv4.conf.all.forwarding=0], 0, [ignore], [ignore])
 NS_CHECK([sysctl -w net.ipv6.conf.all.forwarding=0], 0, [ignore], [ignore])

@@ -1,4 +1,5 @@
 FWD_START_TEST([firewalld.conf])
+AT_KEYWORDS(dbus)
 
 dnl Verify defaults over dbus. Should be inline with default firewalld.conf.
 DBUS_GETALL([config], [config], 0, [dnl

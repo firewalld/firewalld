@@ -1,6 +1,7 @@
 dnl Either don't deduplicate rules, or make sure deduplication does not break
 dnl cleanup of those rules. Both removes should succeed.
 FWD_START_TEST([rule deduplication])
+AT_KEYWORDS(rhbz1534571)
 
 dnl runtime config
 FWD_CHECK([-q --add-service nfs --add-service nfs3])

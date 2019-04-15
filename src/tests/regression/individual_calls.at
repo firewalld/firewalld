@@ -1,4 +1,5 @@
 FWD_START_TEST([individual calls])
+AT_KEYWORDS(individual_calls)
 
 AT_CHECK([sed -i 's/^IndividualCalls.*/IndividualCalls=yes/' ./firewalld.conf])
 FWD_RELOAD

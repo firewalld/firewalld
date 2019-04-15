@@ -1,4 +1,5 @@
 FWD_START_TEST([invalid syntax in xml files])
+AT_KEYWORDS(xml direct zone gh290)
 
 dnl direct.xml
 AT_CHECK([mkdir -p ./zones])

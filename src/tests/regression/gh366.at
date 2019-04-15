@@ -1,4 +1,5 @@
 FWD_START_TEST([service destination multiple IP versions])
+AT_KEYWORDS(service gh366)
 
 m4_define([check_firewall_backend_output], [
 m4_if(nftables, FIREWALL_BACKEND, [

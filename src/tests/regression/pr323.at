@@ -1,4 +1,5 @@
 FWD_START_TEST([GRE proto helper])
+AT_KEYWORDS(helper gh323)
 
 FWD_CHECK([-q --add-protocol=gre])
 FWD_CHECK([-q --remove-protocol=gre])

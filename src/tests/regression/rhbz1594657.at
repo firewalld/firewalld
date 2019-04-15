@@ -1,4 +1,6 @@
 FWD_START_TEST([no log untracked passthrough queries])
+AT_KEYWORDS(direct passthrough rhbz1594657)
+
 FWD_CHECK([--direct --passthrough eb -t filter -L dummy_chain], 13, [ignore], [ignore])
 FWD_CHECK([--direct --passthrough eb -t filter -L INPUT], 0, [ignore])
 
