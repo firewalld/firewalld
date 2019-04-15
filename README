@@ -78,6 +78,28 @@ by passing flags to autotest.
 
   make check TESTSUITEFLAGS="-j4"
 
+The testsuite also uses keywords to allow running a subset of tests that
+exercise a specific area.
+For example:
+
+  make check TESTSUITEFLAGS="-k rich -j4"
+   24: rich rules audit                                ok
+   25: rich rules priority                             ok
+   26: rich rules bad                                  ok
+   53: rich rules audit                                ok
+   23: rich rules good                                 ok
+   55: rich rules bad                                  ok
+   74: remove forward-port after reload                ok
+
+You can get a list of tests and keywords
+
+  make -C src/tests check TESTSUITEFLAGS="-l"
+
+Or just the keywords
+
+  make -C src/tests check TESTSUITEFLAGS="-l" \
+    |awk '/^[[:space:]]*[[:digit:]]+/{getline; print $0}' \
+    |tr ' ' '\n' |sort |uniq
 
 RPM package
 -----------
