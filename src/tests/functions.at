@@ -64,7 +64,9 @@ m4_define([FWD_START_TEST], [
         AT_CHECK([if ! cp /etc/firewalld/firewalld.conf ./firewalld.conf; then exit 77; fi])
     fi
 
-    m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
+    m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [
+        AT_KEYWORDS(offline)
+    ], [
         m4_define_default([FIREWALL_BACKEND], [nftables])
 
         AT_KEYWORDS(FIREWALL_BACKEND)
