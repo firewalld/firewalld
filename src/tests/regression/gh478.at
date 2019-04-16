@@ -1,0 +1,30 @@
+FWD_START_TEST([rich rule marks every packet])
+AT_KEYWORDS(rich mark gh478)
+
+FWD_CHECK([-q --add-rich-rule='rule port port=1234 protocol=tcp mark set=10'])
+FWD_CHECK([-q --add-rich-rule='rule protocol value=icmp mark set=11'])
+FWD_CHECK([-q --add-rich-rule='rule source-port port=4321 protocol=tcp mark set=12'])
+
+m4_if(nftables, FIREWALL_BACKEND, [
+	NFT_LIST_RULES([inet], [mangle_PRE_public_allow], 0, [dnl
+		table inet firewalld {
+		chain mangle_PRE_public_allow {
+		tcp dport 1234 mark set 0x0000000a
+		meta l4proto icmp mark set 0x0000000b
+		tcp sport 4321 mark set 0x0000000c
+		}
+		}
+	])], [
+    IPTABLES_LIST_RULES([mangle], [PRE_public_allow], 0, [dnl
+		MARK tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:1234 MARK set 0xa
+		MARK icmp -- 0.0.0.0/0 0.0.0.0/0 MARK set 0xb
+		MARK tcp -- 0.0.0.0/0 0.0.0.0/0 tcp spt:4321 MARK set 0xc
+    ])
+    IP6TABLES_LIST_RULES([mangle], [PRE_public_allow], 0, [dnl
+		MARK tcp ::/0 ::/0 tcp dpt:1234 MARK set 0xa
+		MARK icmp ::/0 ::/0 MARK set 0xb
+		MARK tcp ::/0 ::/0 tcp spt:4321 MARK set 0xc
+    ])
+])
+
+FWD_END_TEST
