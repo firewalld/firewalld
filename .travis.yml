@@ -12,6 +12,13 @@ python:
   - "2.7"
   - "3.4"
 
+# Use keywords to split the tests into smaller groups and therefore decrease
+# the time CI takes to run.
+env:
+  - TESTSUITEFLAGS="-k offline -j3"
+  - TESTSUITEFLAGS="-k nftables -j3"
+  - TESTSUITEFLAGS="-k iptables -j3"
+
 # Install necessary dependencies
 before_install:
   - sudo apt-get update -qq
@@ -52,7 +59,8 @@ script:
   # Do a parallel build to spot potential dependency problems.
   # No ebtables-restore in ubuntu 14.04
   - ./autogen.sh --with-ebtables-restore=/bin/false --sysconfdir=/etc && make -j32
-  - sudo env PATH="$PATH" make check TESTSUITEFLAGS="-j3" ||
+  # Note: TESTSUITEFLAGS implicit from env above
+  - sudo env PATH="$PATH" make check ||
     sudo env PATH="$PATH" make check TESTSUITEFLAGS="--recheck --errexit -v -d"
 
 # uncomment to add IRC notifications
