@@ -541,6 +541,8 @@ class ip4tables(object):
         self.rich_rule_priority_counts = {}
         rules = []
         for table in BUILT_IN_CHAINS.keys():
+            if not self.get_available_tables(table):
+                continue
             # Flush firewall rules: -F
             # Delete firewall chains: -X
             # Set counter to zero: -Z
@@ -552,6 +554,8 @@ class ip4tables(object):
         rules = []
         _policy = "DROP" if policy == "PANIC" else policy
         for table in BUILT_IN_CHAINS.keys():
+            if not self.get_available_tables(table):
+                continue
             if table == "nat":
                 continue
             for chain in BUILT_IN_CHAINS[table]:
@@ -598,54 +602,58 @@ class ip4tables(object):
     def build_default_rules(self, log_denied="off"):
         default_rules = {}
 
-        default_rules["security"] = [ ]
-        self.our_chains["security"] = set()
-        for chain in BUILT_IN_CHAINS["security"]:
-            default_rules["security"].append("-N %s_direct" % chain)
-            default_rules["security"].append("-A %s -j %s_direct" % (chain, chain))
-            self.our_chains["security"].add("%s_direct" % chain)
+        if self.get_available_tables("security"):
+            default_rules["security"] = [ ]
+            self.our_chains["security"] = set()
+            for chain in BUILT_IN_CHAINS["security"]:
+                default_rules["security"].append("-N %s_direct" % chain)
+                default_rules["security"].append("-A %s -j %s_direct" % (chain, chain))
+                self.our_chains["security"].add("%s_direct" % chain)
 
-        default_rules["raw"] = [ ]
-        self.our_chains["raw"] = set()
-        for chain in BUILT_IN_CHAINS["raw"]:
-            default_rules["raw"].append("-N %s_direct" % chain)
-            default_rules["raw"].append("-A %s -j %s_direct" % (chain, chain))
-            self.our_chains["raw"].add("%s_direct" % chain)
+        if self.get_available_tables("raw"):
+            default_rules["raw"] = [ ]
+            self.our_chains["raw"] = set()
+            for chain in BUILT_IN_CHAINS["raw"]:
+                default_rules["raw"].append("-N %s_direct" % chain)
+                default_rules["raw"].append("-A %s -j %s_direct" % (chain, chain))
+                self.our_chains["raw"].add("%s_direct" % chain)
 
-            if chain == "PREROUTING":
-                default_rules["raw"].append("-N %s_ZONES_SOURCE" % chain)
-                default_rules["raw"].append("-N %s_ZONES" % chain)
-                default_rules["raw"].append("-A %s -j %s_ZONES_SOURCE" % (chain, chain))
-                default_rules["raw"].append("-A %s -j %s_ZONES" % (chain, chain))
-                self.our_chains["raw"].update(set(["%s_ZONES_SOURCE" % chain, "%s_ZONES" % chain]))
+                if chain == "PREROUTING":
+                    default_rules["raw"].append("-N %s_ZONES_SOURCE" % chain)
+                    default_rules["raw"].append("-N %s_ZONES" % chain)
+                    default_rules["raw"].append("-A %s -j %s_ZONES_SOURCE" % (chain, chain))
+                    default_rules["raw"].append("-A %s -j %s_ZONES" % (chain, chain))
+                    self.our_chains["raw"].update(set(["%s_ZONES_SOURCE" % chain, "%s_ZONES" % chain]))
 
-        default_rules["mangle"] = [ ]
-        self.our_chains["mangle"] = set()
-        for chain in BUILT_IN_CHAINS["mangle"]:
-            default_rules["mangle"].append("-N %s_direct" % chain)
-            default_rules["mangle"].append("-A %s -j %s_direct" % (chain, chain))
-            self.our_chains["mangle"].add("%s_direct" % chain)
+        if self.get_available_tables("mangle"):
+            default_rules["mangle"] = [ ]
+            self.our_chains["mangle"] = set()
+            for chain in BUILT_IN_CHAINS["mangle"]:
+                default_rules["mangle"].append("-N %s_direct" % chain)
+                default_rules["mangle"].append("-A %s -j %s_direct" % (chain, chain))
+                self.our_chains["mangle"].add("%s_direct" % chain)
 
-            if chain == "PREROUTING":
-                default_rules["mangle"].append("-N %s_ZONES_SOURCE" % chain)
-                default_rules["mangle"].append("-N %s_ZONES" % chain)
-                default_rules["mangle"].append("-A %s -j %s_ZONES_SOURCE" % (chain, chain))
-                default_rules["mangle"].append("-A %s -j %s_ZONES" % (chain, chain))
-                self.our_chains["mangle"].update(set(["%s_ZONES_SOURCE" % chain, "%s_ZONES" % chain]))
+                if chain == "PREROUTING":
+                    default_rules["mangle"].append("-N %s_ZONES_SOURCE" % chain)
+                    default_rules["mangle"].append("-N %s_ZONES" % chain)
+                    default_rules["mangle"].append("-A %s -j %s_ZONES_SOURCE" % (chain, chain))
+                    default_rules["mangle"].append("-A %s -j %s_ZONES" % (chain, chain))
+                    self.our_chains["mangle"].update(set(["%s_ZONES_SOURCE" % chain, "%s_ZONES" % chain]))
 
-        default_rules["nat"] = [ ]
-        self.our_chains["nat"] = set()
-        for chain in BUILT_IN_CHAINS["nat"]:
-            default_rules["nat"].append("-N %s_direct" % chain)
-            default_rules["nat"].append("-A %s -j %s_direct" % (chain, chain))
-            self.our_chains["nat"].add("%s_direct" % chain)
+        if self.get_available_tables("nat"):
+            default_rules["nat"] = [ ]
+            self.our_chains["nat"] = set()
+            for chain in BUILT_IN_CHAINS["nat"]:
+                default_rules["nat"].append("-N %s_direct" % chain)
+                default_rules["nat"].append("-A %s -j %s_direct" % (chain, chain))
+                self.our_chains["nat"].add("%s_direct" % chain)
 
-            if chain in [ "PREROUTING", "POSTROUTING" ]:
-                default_rules["nat"].append("-N %s_ZONES_SOURCE" % chain)
-                default_rules["nat"].append("-N %s_ZONES" % chain)
-                default_rules["nat"].append("-A %s -j %s_ZONES_SOURCE" % (chain, chain))
-                default_rules["nat"].append("-A %s -j %s_ZONES" % (chain, chain))
-                self.our_chains["nat"].update(set(["%s_ZONES_SOURCE" % chain, "%s_ZONES" % chain]))
+                if chain in [ "PREROUTING", "POSTROUTING" ]:
+                    default_rules["nat"].append("-N %s_ZONES_SOURCE" % chain)
+                    default_rules["nat"].append("-N %s_ZONES" % chain)
+                    default_rules["nat"].append("-A %s -j %s_ZONES_SOURCE" % (chain, chain))
+                    default_rules["nat"].append("-A %s -j %s_ZONES" % (chain, chain))
+                    self.our_chains["nat"].update(set(["%s_ZONES_SOURCE" % chain, "%s_ZONES" % chain]))
 
         default_rules["filter"] = [
             "-N INPUT_direct",
