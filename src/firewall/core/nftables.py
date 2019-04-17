@@ -1003,20 +1003,25 @@ class nftables(object):
     def build_zone_helper_ports_rules(self, enable, zone, proto, port,
                                       destination, helper_name):
         add_del = { True: "add", False: "delete" }[enable]
-        target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["PREROUTING"],
+        target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["INPUT"],
                                             zone=zone)
         rule = [add_del, "rule", "inet", "%s" % TABLE_NAME,
-                "raw_%s_allow" % (target), proto]
+                "filter_%s_allow" % (target)]
         if destination:
             if check_address("ipv4", destination):
                 rule += ["ip"]
             else:
                 rule += ["ip6"]
             rule += ["daddr", destination]
-        rule += ["dport", "%s" % portStr(port, "-")]
-        rule += ["ct", "helper", helper_name]
+        rule += [proto, "dport", "%s" % portStr(port, "-")]
+        rule += ["ct", "helper", "set", "\"helper-%s-%s\"" % (helper_name, proto)]
 
-        return [rule]
+        helper_object = ["ct", "helper", "inet", TABLE_NAME,
+                         "helper-%s-%s" % (helper_name, proto),
+                         "{", "type", "\"%s\"" % (helper_name), "protocol",
+                         proto, ";", "}"]
+
+        return [helper_object, rule]
 
     def _build_zone_masquerade_nat_rules(self, enable, zone, family, rich_rule=None):
         add_del = { True: "add", False: "delete" }[enable]
