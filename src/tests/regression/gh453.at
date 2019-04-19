@@ -2,6 +2,10 @@ m4_if(nftables, FIREWALL_BACKEND, [
 FWD_START_TEST([nftables helper objects])
 AT_KEYWORDS(helper gh453)
 
+CHECK_NFT_CT_HELPER
+
+FWD_CHECK([-q --set-automatic-helpers=no])
+
 FWD_CHECK([-q --add-service=ftp])
 NS_CHECK([nft list ruleset | TRIM_WHITESPACE |grep -A3 "ct helper helper-ftp-tcp"], 0, [m4_strip([dnl
 	ct helper helper-ftp-tcp {
