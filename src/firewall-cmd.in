@@ -228,6 +228,14 @@ Service Options
                        Return whether destination ipv is set for service [P only]
   --service=<service> --get-destinations
                        List destinations in service [P only]
+  --service=<service> --add-include=<service>
+                       Add a new include to service [P only]
+  --service=<service> --remove-include=<service>
+                       Remove a include from service [P only]
+  --service=<service> --query-include=<service>
+                       Return whether the include has been added for service [P only]
+  --service=<service> --get-includes
+                       List includes of service [P only]
 
 Options to Adapt and Query Zones
   --list-all           List everything added for or enabled in a zone [P] [Z]
@@ -676,6 +684,11 @@ parser_service.add_argument("--remove-module", metavar="<module>", action='appen
 parser_service.add_argument("--query-module", metavar="<module>", action='append')
 parser_service.add_argument("--get-modules", action="store_true")
 
+parser_service.add_argument("--add-include", metavar="<service>", action='append')
+parser_service.add_argument("--remove-include", metavar="<service>", action='append')
+parser_service.add_argument("--query-include", metavar="<service>", action='append')
+parser_service.add_argument("--get-includes", action="store_true")
+
 parser_service.add_argument("--set-destination", metavar="<destination>", action='append')
 parser_service.add_argument("--get-destination", action="store_true")
 
@@ -845,7 +858,9 @@ options_service = a.add_port or a.remove_port or a.query_port or \
                   a.get_modules or \
                   a.set_destination or a.remove_destination or \
                   a.query_destination or a.get_destinations or \
-                  options_desc_xml_file
+                  options_desc_xml_file or \
+                  a.add_include or a.remove_include or a.query_include or \
+                  a.get_includes
 
 options_helper = a.add_port or a.remove_port or a.query_port or \
                  a.get_ports or a.set_module or a.get_module or \
@@ -1583,6 +1598,24 @@ if a.permanent:
         elif a.get_destinations:
             l = settings.getDestinations()
             cmd.print_and_exit(" ".join(["%s:%s" % (dest[0], dest[1]) for dest in l.items()]))
+
+        elif a.add_include:
+            cmd.add_sequence(a.add_include, settings.addInclude,
+                             settings.queryInclude, None, "'%s'")
+            service.update(settings)
+
+        elif a.remove_include:
+            cmd.remove_sequence(a.remove_include, settings.removeInclude,
+                                settings.queryInclude, None, "'%s'")
+            service.update(settings)
+
+        elif a.query_include:
+            cmd.query_sequence(a.query_include, settings.queryInclude,
+                               None, "'%s'")
+
+        elif a.get_includes:
+            l = settings.getIncludes()
+            cmd.print_and_exit(" ".join(["%s" % include for include in sorted(l)]))
 
         elif a.set_description:
             settings.setDescription(a.set_description)

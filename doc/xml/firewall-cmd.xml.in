@@ -1473,6 +1473,39 @@ For interfaces that are not under control of NetworkManager, firewalld tries to 
            </para>
          </listitem>
        </varlistentry>
+
+       <varlistentry>
+         <term><option>--permanent</option> <option>--service</option>=<replaceable>service</replaceable> <option>--add-include</option>=<replaceable>service</replaceable></term>
+         <listitem>
+           <para>
+             Add a new include to the permanent service.
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--permanent</option> <option>--service</option>=<replaceable>service</replaceable> <option>--remove-include</option>=<replaceable>service</replaceable></term>
+         <listitem>
+           <para>
+             Remove a include from the permanent service.
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--permanent</option> <option>--service</option>=<replaceable>service</replaceable> <option>--query-include</option>=<replaceable>service</replaceable></term>
+         <listitem>
+           <para>
+             Return wether the include has been added to the permanent service.
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--permanent</option> <option>--service</option>=<replaceable>service</replaceable> <option>--get-includes</option></term>
+         <listitem>
+           <para>
+             List includes added to the permanent service.
+           </para>
+         </listitem>
+       </varlistentry>
       </variablelist>
     </refsect2>
 
