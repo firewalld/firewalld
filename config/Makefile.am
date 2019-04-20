@@ -249,6 +249,7 @@ CONFIG_FILES = \
 	services/spideroak-lansync.xml \
 	services/spotify-sync.xml \
 	services/squid.xml \
+	services/ssdp.xml \
 	services/ssh.xml \
 	services/steam-streaming.xml \
 	services/svdrp.xml \
