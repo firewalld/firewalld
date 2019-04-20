@@ -159,6 +159,15 @@ m4_define([FWD_END_TEST], [
     AT_CLEANUP
 ])
 
+m4_define([FWD_OFFLINE_CHECK], [
+	FIREWALL_OFFLINE_CMD_ARGS="--system-config ./"
+	if test "x${FIREWALLD_DEFAULT_CONFIG}" != x ; then
+		FIREWALL_OFFLINE_CMD_ARGS+=" --default-config ${FIREWALLD_DEFAULT_CONFIG}"
+	fi
+
+	AT_CHECK([firewall-offline-cmd $FIREWALL_OFFLINE_CMD_ARGS $1], [$2], [$3], [$4], [$5], [$6])
+])
+
 m4_define([FWD_CHECK], [
     m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [
         dnl Silently skip tests that don't affect permanent config or other
@@ -194,12 +203,7 @@ m4_define([FWD_CHECK], [
         m4_ifdef([FWD_CHECK_RUN_FIREWALL_OFFLINE_CMD], [
             m4_undefine([FWD_CHECK_RUN_FIREWALL_OFFLINE_CMD])
 
-            FIREWALL_OFFLINE_CMD_ARGS="--system-config ./"
-            if test "x${FIREWALLD_DEFAULT_CONFIG}" != x ; then
-                FIREWALL_OFFLINE_CMD_ARGS+=" --default-config ${FIREWALLD_DEFAULT_CONFIG}"
-            fi
-
-            AT_CHECK([firewall-offline-cmd $FIREWALL_OFFLINE_CMD_ARGS dnl
+            FWD_OFFLINE_CHECK([dnl
                 dnl This m4 mess is all about stripping --permanent
                 dnl flag if it exists, otherwise we pass arg 1 verbatim.
                 m4_if(-1, m4_index([$1], [--permanent]), [$1], [ dnl
