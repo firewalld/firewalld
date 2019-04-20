@@ -45,8 +45,9 @@ class Service(IO_Object):
         ( "destination", { "": "", }, ),      # a{ss}
         ( "protocols", [ "", ], ),            # as
         ( "source_ports", [ ( "", "" ), ], ), # a(ss)
+        ( "includes", [ "" ], ),              # as
         )
-    DBUS_SIGNATURE = '(sssa(ss)asa{ss}asa(ss))'
+    DBUS_SIGNATURE = '(sssa(ss)asa{ss}asa(ss)as)'
     ADDITIONAL_ALNUM_CHARS = [ "_", "-" ]
     PARSER_REQUIRED_ELEMENT_ATTRS = {
         "short": None,
@@ -60,6 +61,7 @@ class Service(IO_Object):
         "module": [ "name" ],
         "destination": [ "ipv4", "ipv6" ],
         "source-port": [ "port", "protocol" ],
+        "include": [ "service" ],
         }
 
     def __init__(self):
@@ -72,6 +74,7 @@ class Service(IO_Object):
         self.modules = [ ]
         self.destination = { }
         self.source_ports = [ ]
+        self.includes = [ ]
 
     def cleanup(self):
         self.version = ""
@@ -82,6 +85,7 @@ class Service(IO_Object):
         del self.modules[:]
         self.destination.clear()
         del self.source_ports[:]
+        del self.includes[:]
 
     def encode_strings(self):
         """ HACK. I haven't been able to make sax parser return
@@ -96,6 +100,7 @@ class Service(IO_Object):
         self.protocols = [u2b_if_py2(pr) for pr in self.protocols]
         self.source_ports = [(u2b_if_py2(po),u2b_if_py2(pr)) for (po,pr)
                              in self.source_ports]
+        self.includes = [u2b_if_py2(s) for s in self.includes]
 
     def _check_config(self, config, item):
         if item == "ports":
@@ -132,6 +137,9 @@ class Service(IO_Object):
                         module = module.replace("_", "-")
                 if len(module) < 2:
                     raise FirewallError(errors.INVALID_MODULE, module)
+
+        elif item == "includes":
+            pass
 
 # PARSER
 
@@ -202,6 +210,12 @@ class service_ContentHandler(IO_Object_ContentHandler):
             else:
                 log.warning("Module '%s' already set, ignoring.",
                             module)
+        elif name == "include":
+            if attrs["service"] not in self.item.includes:
+                self.item.includes.append(attrs["service"])
+            else:
+                log.warning("Include '%s' already set, ignoring.",
+                            attrs["service"])
 
 
 def service_reader(filename, path):
@@ -310,6 +324,12 @@ def service_writer(service, path=None):
     if len(service.destination) > 0:
         handler.ignorableWhitespace("  ")
         handler.simpleElement("destination", service.destination)
+        handler.ignorableWhitespace("\n")
+
+    # includes
+    for include in service.includes:
+        handler.ignorableWhitespace("  ")
+        handler.simpleElement("include", { "service": include })
         handler.ignorableWhitespace("\n")
 
     # end service element

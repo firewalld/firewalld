@@ -821,7 +821,7 @@ class FirewallClientServiceSettings(object):
         if settings:
             self.settings = settings
         else:
-            self.settings = ["", "", "", [], [], {}, [], []]
+            self.settings = ["", "", "", [], [], {}, [], [], []]
 
     @handle_exceptions
     def __repr__(self):
@@ -967,6 +967,28 @@ class FirewallClientServiceSettings(object):
     def queryDestination(self, dest_type, address):
         return (dest_type in self.settings[5] and \
                     address == self.settings[5][dest_type])
+
+    @handle_exceptions
+    def getIncludes(self):
+        return self.settings[8]
+    @handle_exceptions
+    def setIncludes(self, includes):
+        self.settings[8] = includes
+    @handle_exceptions
+    def addInclude(self, include):
+        if include not in self.settings[8]:
+            self.settings[8].append(include)
+        else:
+            raise FirewallError(errors.ALREADY_ENABLED, include)
+    @handle_exceptions
+    def removeInclude(self, include):
+        if include in self.settings[8]:
+            self.settings[8].remove(include)
+        else:
+            raise FirewallError(errors.NOT_ENABLED, include)
+    @handle_exceptions
+    def queryInclude(self, include):
+        return include in self.settings[8]
 
 # ipset config settings
 
@@ -1647,6 +1669,32 @@ class FirewallClientConfigService(object):
     def queryDestination(self, destination, address):
         return self.fw_service.queryDestination(destination, address)
 
+    # include
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getIncludes(self):
+        return self.fw_service.getIncludes()
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def setIncludes(self, includes):
+        self.fw_service.setIncludes(includes)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def addInclude(self, include):
+        self.fw_service.addInclude(include)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def removeInclude(self, include):
+        self.fw_service.removeInclude(include)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def queryInclude(self, include):
+        return self.fw_service.queryInclude(include)
 
 
 # icmptype config settings

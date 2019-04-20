@@ -242,12 +242,12 @@
             </listitem>
           </varlistentry>
 	  <varlistentry id="FirewallD1.Methods.getServiceSettings">
-            <term><methodname>getServiceSettings</methodname>(s: <parameter>service</parameter>) &rarr; (sssa(ss)asa{ss}asa(ss))</term>
+            <term><methodname>getServiceSettings</methodname>(s: <parameter>service</parameter>) &rarr; (sssa(ss)asa{ss}asa(ss)as)</term>
             <listitem>
               <para>
                 Return runtime settings of given <replaceable>service</replaceable>.
                 For getting permanent settings see <link linkend="FirewallD1.config.service.Methods.getSettings">org.fedoraproject.FirewallD1.config.service.Methods.getSettings</link>.
-                Settings are in format: <parameter>version</parameter>, <parameter>name</parameter>, <parameter>description</parameter>, array of <parameter>ports</parameter> (port, protocol), array of <parameter>module names</parameter>, dictionary of <parameter>destinations</parameter>, array of <parameter>protocols</parameter> and array of <parameter>source-ports</parameter> (port, protocol).
+                Settings are in format: <parameter>version</parameter>, <parameter>name</parameter>, <parameter>description</parameter>, array of <parameter>ports</parameter> (port, protocol), array of <parameter>module names</parameter>, dictionary of <parameter>destinations</parameter>, array of <parameter>protocols</parameter>, array of <parameter>source-ports</parameter> (port, protocol) and array of service <parameter>includes</parameter>.
               </para>
               <para>
                 <variablelist>
@@ -259,6 +259,7 @@
                   <varlistentry><term><parameter>destinations (a{ss})</parameter>: dictionary of {IP family : IP address} where 'IP family' key can be either 'ipv4' or 'ipv6'. See <literal>destination</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                   <varlistentry><term><parameter>protocols (as)</parameter>: array of protocols, see <literal>protocol</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
 		  <varlistentry><term><parameter>source-ports (a(ss))</parameter>: array of port and protocol pairs. See <literal>source-port</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>includes (as)</parameter>: array of service includes, see <literal>include</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                 </variablelist>
               </para>
 	      <para>

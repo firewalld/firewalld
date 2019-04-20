@@ -1762,9 +1762,19 @@ class FirewallZone(object):
                 raise FirewallError(errors.INVALID_RULE, "Unknown element %s" %
                                     type(rule.element))
 
-    def _service(self, enable, zone, service, zone_transaction):
+    def _service(self, enable, zone, service, zone_transaction, included_services=None):
         svc = self._fw.service.get_service(service)
         helpers = self.get_helpers_for_service_modules(svc.modules, enable)
+
+        # First apply any services this service may include
+        if included_services is None:
+            included_services = [service]
+        for include in svc.includes:
+            if include in included_services:
+                continue
+            self.check_service(include)
+            included_services.append(include)
+            self._service(enable, zone, include, zone_transaction, included_services=included_services)
 
         if enable:
             if self._fw.nf_conntrack_helper_setting == 0:
