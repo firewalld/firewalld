@@ -3,15 +3,12 @@
   <short>FreeIPA 4 server</short>
   <description>FreeIPA is an integrated identity and authentication solution with Kerberos, LDAP, PKI, and web UI. Enable this option if you plan to provide a FreeIPA server. Enable the 'dns' service if this FreeIPA server provides DNS services, 'ntp' service if this FreeIPA server provides NTP services, and 'freeipa-trust' for cross-forest trusts with Active Directory.</description>
   <!-- CRL and OCSP -->
-  <port protocol="tcp" port="80"/>
+  <include service="http"/>
   <!-- API and web UI -->
-  <port protocol="tcp" port="443"/>
-  <!-- Kerberos and kpasswd -->
-  <port protocol="tcp" port="88"/>
-  <port protocol="udp" port="88"/>
-  <port protocol="tcp" port="464"/>
-  <port protocol="udp" port="464"/>
-  <!-- LDAP and LDAPS -->
-  <port protocol="tcp" port="389"/>
-  <port protocol="tcp" port="636"/>
+  <include service="https"/>
+
+  <include service="kerberos"/>
+  <include service="kpasswd"/>
+  <include service="ldap"/>
+  <include service="ldaps"/>
 </service>
