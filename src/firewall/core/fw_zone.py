@@ -82,13 +82,13 @@ class FirewallZone(object):
         z = self._fw.check_zone(zone)
         return self._zones[z]
 
-    def _error2warning(self, f, name, *args, **kwargs):
-        # transform errors into warnings
+    def _first_except(self, e, f, name, *args, **kwargs):
         try:
             f(name, *args, **kwargs)
         except FirewallError as error:
-            msg = str(error)
-            log.warning("%s: %s" % (name, msg))
+            if not e:
+                return error
+        return e
 
     def add_zone(self, obj):
         obj.settings = { x : LastUpdatedOrderedDict()
@@ -114,6 +114,7 @@ class FirewallZone(object):
         else:
             transaction = use_transaction
 
+        error = None
         for zone in self.get_zones():
             obj = self._zones[zone]
 
@@ -121,8 +122,8 @@ class FirewallZone(object):
 
             # register icmp block inversion setting but don't apply
             if obj.icmp_block_inversion:
-                self._error2warning(self.add_icmp_block_inversion, obj.name,
-                                    use_zone_transaction=zone_transaction)
+                error = self._first_except(error, self.add_icmp_block_inversion, obj.name,
+                                           use_zone_transaction=zone_transaction)
 
             if len(obj.interfaces) > 0 or len(obj.sources) > 0:
                 obj.applied = True
@@ -131,42 +132,45 @@ class FirewallZone(object):
 
             # load zone in case of missing services, icmptypes etc.
             for args in obj.icmp_blocks:
-                self._error2warning(self.add_icmp_block, obj.name, args,
-                                    use_zone_transaction=zone_transaction)
+                error = self._first_except(error, self.add_icmp_block, obj.name, args,
+                                           use_zone_transaction=zone_transaction)
             for args in obj.forward_ports:
-                self._error2warning(self.add_forward_port, obj.name, *args,
-                                    use_zone_transaction=zone_transaction)
+                error = self._first_except(error, self.add_forward_port, obj.name, *args,
+                                           use_zone_transaction=zone_transaction)
             for args in obj.services:
-                self._error2warning(self.add_service, obj.name, args,
-                                    use_zone_transaction=zone_transaction)
+                error = self._first_except(error, self.add_service, obj.name, args,
+                                           use_zone_transaction=zone_transaction)
             for args in obj.ports:
-                self._error2warning(self.add_port, obj.name, *args,
-                                    use_zone_transaction=zone_transaction)
+                error = self._first_except(error, self.add_port, obj.name, *args,
+                                           use_zone_transaction=zone_transaction)
             for args in obj.protocols:
-                self._error2warning(self.add_protocol, obj.name, args,
-                                    use_zone_transaction=zone_transaction)
+                error = self._first_except(error, self.add_protocol, obj.name, args,
+                                           use_zone_transaction=zone_transaction)
             for args in obj.source_ports:
-                self._error2warning(self.add_source_port, obj.name, *args,
-                                    use_zone_transaction=zone_transaction)
+                error = self._first_except(error, self.add_source_port, obj.name, *args,
+                                           use_zone_transaction=zone_transaction)
             if obj.masquerade:
-                self._error2warning(self.add_masquerade, obj.name,
-                                    use_zone_transaction=zone_transaction)
+                error = self._first_except(error, self.add_masquerade, obj.name,
+                                           use_zone_transaction=zone_transaction)
             for args in obj.rules:
-                self._error2warning(self.add_rule, obj.name, args,
-                                    use_zone_transaction=zone_transaction)
+                error = self._first_except(error, self.add_rule, obj.name, args,
+                                           use_zone_transaction=zone_transaction)
             for args in obj.interfaces:
-                self._error2warning(self.add_interface, obj.name, args,
-                                    use_zone_transaction=zone_transaction)
+                error = self._first_except(error, self.add_interface, obj.name, args,
+                                           use_zone_transaction=zone_transaction)
             for args in obj.sources:
-                self._error2warning(self.add_source, obj.name, args,
-                                    use_zone_transaction=zone_transaction)
+                error = self._first_except(error, self.add_source, obj.name, args,
+                                           use_zone_transaction=zone_transaction)
             # apply icmp accept/reject rule always
             if obj.applied:
-                self._error2warning(self._icmp_block_inversion, True,
-                                    obj.name, zone_transaction)
+                error = self._first_except(error, self._icmp_block_inversion, True,
+                                           obj.name, zone_transaction)
 
         if use_transaction is None:
             transaction.execute(True)
+
+        if error:
+            raise error
 
     def set_zone_applied(self, zone, applied):
         obj = self._zones[zone]
