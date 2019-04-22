@@ -62,14 +62,6 @@ class FirewallIPSet(object):
             self.check_applied_obj(obj)
         return obj
 
-    def _error2warning(self, f, name, *args):
-        # transform errors into warnings
-        try:
-            f(name, *args)
-        except FirewallError as error:
-            msg = str(error)
-            log.warning("%s: %s" % (name, msg))
-
     def backends(self):
         backends = []
         if self._fw.nftables_enabled:
