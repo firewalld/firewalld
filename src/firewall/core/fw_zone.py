@@ -1693,15 +1693,11 @@ class FirewallZone(object):
                     if toaddr and enable:
                         zone_transaction.add_post(enable_ip_forwarding, ipv)
 
-                filter_chain = "INPUT" if not toaddr else "FORWARD_IN"
-
                 if enable:
-                    zone_transaction.add_chain("mangle", "PREROUTING")
                     zone_transaction.add_chain("nat", "PREROUTING")
-                    zone_transaction.add_chain("filter", filter_chain)
 
                 rules = backend.build_zone_forward_port_rules(
-                                    enable, zone, filter_chain, port, protocol, toport,
+                                    enable, zone, port, protocol, toport,
                                     toaddr, rule)
                 zone_transaction.add_rules(backend, rules)
 
@@ -1897,18 +1893,14 @@ class FirewallZone(object):
         else:
             ipv = "ipv4"
 
-        filter_chain = "INPUT" if not toaddr else "FORWARD_IN"
-
         if enable:
-            zone_transaction.add_chain("mangle", "PREROUTING")
             zone_transaction.add_chain("nat", "PREROUTING")
-            zone_transaction.add_chain("filter", filter_chain)
 
         if toaddr and enable:
             zone_transaction.add_post(enable_ip_forwarding, ipv)
         backend = self._fw.get_backend_by_ipv(ipv)
         rules = backend.build_zone_forward_port_rules(
-                            enable, zone, filter_chain, port, protocol, toport,
+                            enable, zone, port, protocol, toport,
                             toaddr)
         zone_transaction.add_rules(backend, rules)
 

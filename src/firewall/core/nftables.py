@@ -1107,7 +1107,7 @@ class nftables(object):
                 [protocol, "dport", port]
                 + dnat_fragment]
 
-    def build_zone_forward_port_rules(self, enable, zone, filter_chain, port,
+    def build_zone_forward_port_rules(self, enable, zone, port,
                                       protocol, toport, toaddr, rich_rule=None):
         rules = []
         if rich_rule and (rich_rule.family and rich_rule.family == "ipv6"

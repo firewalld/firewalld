@@ -1135,7 +1135,7 @@ class ip4tables(object):
 
         return rules
 
-    def build_zone_forward_port_rules(self, enable, zone, filter_chain, port,
+    def build_zone_forward_port_rules(self, enable, zone, port,
                                       protocol, toport, toaddr, rich_rule=None):
         add_del = { True: "-A", False: "-D" }[enable]
 
