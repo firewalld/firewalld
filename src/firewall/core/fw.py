@@ -989,11 +989,11 @@ class Firewall(object):
             _direct_config = self.direct.get_runtime_config()
             _old_dz = self.get_default_zone()
 
-        # stop
-        self.cleanup()
-
         if not _panic:
             self.set_policy("DROP")
+
+        # stop
+        self.cleanup()
 
         start_exception = None
         try:
