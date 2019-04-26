@@ -1016,7 +1016,7 @@ class nftables(object):
         rule += [proto, "dport", "%s" % portStr(port, "-")]
         rule += ["ct", "helper", "set", "\"helper-%s-%s\"" % (helper_name, proto)]
 
-        if add_del:
+        if enable:
             helper_object = ["add", "ct", "helper", "inet", TABLE_NAME,
                              "helper-%s-%s" % (helper_name, proto),
                              "{", "type", "\"%s\"" % (helper_name), "protocol",
