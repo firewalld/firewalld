@@ -925,7 +925,7 @@ For interfaces that are not under control of NetworkManager, firewalld tries to 
 	</varlistentry>
 
 	<varlistentry>
-	  <term><optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--change-interface</option>=<replaceable>interface</replaceable></term>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--change-interface</option>=<replaceable>interface</replaceable></term>
 	  <listitem>
 	    <para>
 	      If the interface is under control of NetworkManager, it is at first connected to change the zone for the connection that is using the interface. If this fails, the zone binding is created in firewalld and the limitations below apply.
