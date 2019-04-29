@@ -259,8 +259,9 @@ m4_define([NFT_LIST_RULES], [
         sed -e 's/meta mark/mark/g'dnl
         | sed -e '/type.*hook.*priority.*policy.*/d'dnl
     ])
+
     m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
-        NS_CHECK([nft -nn list chain $1 firewalld $2 | TRIM_WHITESPACE | NFT_LIST_RULES_NORMALIZE], [$3], [m4_strip([$4])], [m4_strip([$5])], [$6], [$7])
+        NS_CHECK([nft NFT_NUMERIC_ARGS list chain $1 firewalld $2 | TRIM_WHITESPACE | NFT_LIST_RULES_NORMALIZE], [$3], [m4_strip([$4])], [m4_strip([$5])], [$6], [$7])
     ])
     m4_undefine([NFT_LIST_RULES_NORMALIZE])
 ])
@@ -276,7 +277,7 @@ m4_define([IPSET_LIST_SET], [
 
 m4_define([NFT_LIST_SET], [
     m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
-        NS_CHECK([nft -nn list set inet firewalld $1 | TRIM_WHITESPACE], [$2], [m4_strip([$3])], [m4_strip([$4])], [$5], [$6])
+        NS_CHECK([nft NFT_NUMERIC_ARGS list set inet firewalld $1 | TRIM_WHITESPACE], [$2], [m4_strip([$3])], [m4_strip([$4])], [$5], [$6])
     ])
 ])
 
@@ -380,3 +381,5 @@ m4_ifnblank(
     [m4_define([HOST_SUPPORTS_NFT_FIB], [yes])],
     [m4_define([HOST_SUPPORTS_NFT_FIB], [no])]
 )
+
+m4_define([NFT_NUMERIC_ARGS], m4_esyscmd([nft -h |grep "numeric-protocol" >/dev/null && echo -n "" || { echo -n "-" && echo -n "nn"; } ]))
