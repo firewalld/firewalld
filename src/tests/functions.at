@@ -378,16 +378,14 @@ m4_define([CHECK_NFT_CT_HELPER], [
     ])
 ])
 
-m4_ifnblank(
-    m4_esyscmd([
-        KERNEL_MAJOR=`uname -r | cut -d. -f1`
-        KERNEL_MINOR=`uname -r | cut -d. -f2`
-        if test ${KERNEL_MAJOR} -eq 4 && test ${KERNEL_MINOR} -ge 10 || test ${KERNEL_MAJOR} -gt 4; then
-            echo -n "yes"
-        fi
-    ]),
-    [m4_define([HOST_SUPPORTS_NFT_FIB], [yes])],
-    [m4_define([HOST_SUPPORTS_NFT_FIB], [no])]
-)
+m4_define([HOST_SUPPORTS_NFT_FIB], m4_esyscmd([
+    KERNEL_MAJOR=`uname -r | cut -d. -f1`
+    KERNEL_MINOR=`uname -r | cut -d. -f2`
+    if test ${KERNEL_MAJOR} -eq 4 && test ${KERNEL_MINOR} -ge 10 || test ${KERNEL_MAJOR} -gt 4; then
+        echo -n "yes"
+    else
+        echo -n "no"
+    fi
+]))
 
 m4_define([NFT_NUMERIC_ARGS], m4_esyscmd([nft -h |grep "numeric-protocol" >/dev/null && echo -n "" || { echo -n "-" && echo -n "nn"; } ]))
