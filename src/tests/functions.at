@@ -265,7 +265,9 @@ m4_define([NFT_LIST_RULES], [
     dnl instead of just "mark".
     m4_define([NFT_LIST_RULES_NORMALIZE], [dnl
         sed -e 's/meta mark/mark/g'dnl
-        | sed -e '/type.*hook.*priority.*policy.*/d'dnl
+            -e '/type.*hook.*priority.*policy.*/d'dnl
+            dnl tranform ct state { established,related } to ct state established,related
+            -e '/ct \(state\|status\)/{s/\(ct \(state\|status\)\) {/\1/g; s/ }//; s/\(@<:@a-z@:>@*\), /\1,/g;}' dnl
     ])
 
     m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
