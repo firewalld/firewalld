@@ -901,7 +901,6 @@ class Firewall(object):
                     backend.set_rule(rule, self._log_denied)
                 except Exception as msg:
                     log.debug1(traceback.format_exc())
-                    log.error("Failed to apply rules. A firewall reload might solve the issue if the firewall has been modified using ip*tables or ebtables.")
                     log.error(msg)
                     for rule in reversed(_rules[:i]):
                         try:
@@ -909,7 +908,7 @@ class Firewall(object):
                         except Exception:
                             # ignore errors here
                             pass
-                    return False
+                    raise msg
             return True
         else:
             return backend.set_rules(_rules, self._log_denied)
