@@ -348,7 +348,7 @@ m4_define([CHECK_NAT_COEXISTENCE], [
             AT_SKIP_IF([! modprobe iptable_nat])
             AT_SKIP_IF([! NS_CMD([nft add table ip foobar])])
             AT_SKIP_IF([! NS_CMD([nft add chain ip foobar foobar_chain { type nat hook postrouting priority 100 \; }])])
-            NS_CHECK([nft flush ruleset])
+            NS_CHECK([nft delete table ip foobar])
         else
             AT_SKIP_IF([true])
         fi
