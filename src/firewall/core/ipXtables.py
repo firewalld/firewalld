@@ -485,7 +485,7 @@ class ip4tables(object):
                 rule.pop(i)
 
         rich_rule_priority_counts = copy.deepcopy(self.rich_rule_priority_counts)
-        self._set_rule_replace_rich_rule_priority(rule, self.rich_rule_priority_counts)
+        self._set_rule_replace_rich_rule_priority(rule, rich_rule_priority_counts)
         output = self.__run(rule)
         self.rich_rule_priority_counts = rich_rule_priority_counts
         return output
