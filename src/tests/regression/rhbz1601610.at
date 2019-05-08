@@ -102,4 +102,5 @@ Members:
 ])])
 
 FWD_END_TEST([-e '/ERROR: COMMAND_FAILED:.*already added.*/d'dnl
-              -e '/ERROR: COMMAND_FAILED:.*element.*exists/d'])
+              -e '/ERROR: COMMAND_FAILED:.*element.*exists/d'dnl
+              -e '/Kernel support protocol versions/d'])
