@@ -1,5 +1,7 @@
 FWD_START_TEST([ipset duplicate entries])
 
+CHECK_IPSET
+
 FWD_CHECK([-q --new-ipset=foobar --permanent --type=hash:net])
 FWD_RELOAD
 
