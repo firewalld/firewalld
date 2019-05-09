@@ -892,7 +892,7 @@ class Firewall(object):
                                 "'%s' is not a valid backend" % backend_name)
 
         if not self.is_backend_enabled(backend_name):
-            return ""
+            return
 
         if self._individual_calls or \
            not backend.restore_command_exists or \
@@ -910,9 +910,8 @@ class Firewall(object):
                             # ignore errors here
                             pass
                     raise msg
-            return True
         else:
-            return backend.set_rules(_rules, self._log_denied)
+            backend.set_rules(_rules, self._log_denied)
 
     # check functions
 

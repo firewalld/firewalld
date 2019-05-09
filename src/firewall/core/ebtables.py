@@ -200,7 +200,6 @@ class ebtables(object):
         if status != 0:
             raise ValueError("'%s %s' failed: %s" % (self._restore_command,
                                                      " ".join(args), ret))
-        return ret
 
     def set_rule(self, rule, log_denied):
         self._rule_validate(rule)

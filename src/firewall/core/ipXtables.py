@@ -503,7 +503,6 @@ class ip4tables(object):
                                                      " ".join(args), ret))
         self.rich_rule_priority_counts = rich_rule_priority_counts
         self.zone_source_index_cache = zone_source_index_cache
-        return ret
 
     def set_rule(self, rule, log_denied):
         # replace %%REJECT%%
