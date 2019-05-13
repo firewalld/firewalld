@@ -1563,7 +1563,7 @@ class FirewallZone(object):
         if rule.family is not None:
             ipvs = [ rule.family ]
         else:
-            ipvs = [ "ipv4", "ipv6" ]
+            ipvs = [ipv for ipv in ["ipv4", "ipv6"] if self._fw.is_ipv_enabled(ipv)]
 
         source_ipv = self._rule_source_ipv(rule.source)
         if source_ipv is not None and source_ipv != "":
@@ -1806,6 +1806,8 @@ class FirewallZone(object):
         #
         backends_ipv = []
         for ipv in ["ipv4", "ipv6"]:
+            if not self._fw.is_ipv_enabled(ipv):
+                continue
             backend = self._fw.get_backend_by_ipv(ipv)
             if len(svc.destination) > 0:
                 if ipv in svc.destination:

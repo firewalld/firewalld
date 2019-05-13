@@ -708,24 +708,24 @@ class Firewall(object):
     def get_backend_by_ipv(self, ipv):
         if self.nftables_enabled:
             return self.nftables_backend
-        if ipv == "ipv4":
+        if ipv == "ipv4" and self.ip4tables_enabled:
             return self.ip4tables_backend
-        elif ipv == "ipv6":
+        elif ipv == "ipv6" and self.ip6tables_enabled:
             return self.ip6tables_backend
-        elif ipv == "eb":
+        elif ipv == "eb" and self.ebtables_enabled:
             return self.ebtables_backend
         raise FirewallError(errors.INVALID_IPV,
-                            "'%s' is not a valid backend" % ipv)
+                            "'%s' is not a valid backend or is unavailable" % ipv)
 
     def get_direct_backend_by_ipv(self, ipv):
-        if ipv == "ipv4":
+        if ipv == "ipv4" and self.ip4tables_enabled:
             return self.ip4tables_backend
-        elif ipv == "ipv6":
+        elif ipv == "ipv6" and self.ip6tables_enabled:
             return self.ip6tables_backend
-        elif ipv == "eb":
+        elif ipv == "eb" and self.ebtables_enabled:
             return self.ebtables_backend
         raise FirewallError(errors.INVALID_IPV,
-                            "'%s' is not a valid backend" % ipv)
+                            "'%s' is not a valid backend or is unavailable" % ipv)
 
     def is_backend_enabled(self, name):
         if name == "ip4tables":
@@ -796,29 +796,29 @@ class Firewall(object):
             rules = backend.build_default_rules(self._log_denied)
             transaction.add_rules(backend, rules)
 
-        ipv6_backend = self.get_backend_by_ipv("ipv6")
-        if self.ipv6_rpfilter_enabled and \
-           "raw" in ipv6_backend.get_available_tables():
+        if self.is_ipv_enabled("ipv6"):
+            ipv6_backend = self.get_backend_by_ipv("ipv6")
+            if self.ipv6_rpfilter_enabled and \
+               "raw" in ipv6_backend.get_available_tables():
 
-            # Execute existing transaction
+                # Execute existing transaction
+                transaction.execute(True)
+                # Start new transaction
+                transaction.clear()
+
+                rules = ipv6_backend.build_rpfilter_rules(self._log_denied)
+                transaction.add_rules(ipv6_backend, rules)
+
+                # Execute ipv6_rpfilter transaction, it might fail
+                try:
+                    transaction.execute(True)
+                except FirewallError as msg:
+                    log.warning("Applying rules for ipv6_rpfilter failed: %s", msg)
+                # Start new transaction
+                transaction.clear()
+
+        if use_transaction is None:
             transaction.execute(True)
-            # Start new transaction
-            transaction.clear()
-
-            rules = ipv6_backend.build_rpfilter_rules(self._log_denied)
-            transaction.add_rules(ipv6_backend, rules)
-
-            # Execute ipv6_rpfilter transaction, it might fail
-            try:
-                transaction.execute(True)
-            except FirewallError as msg:
-                log.warning("Applying rules for ipv6_rpfilter failed: %s", msg)
-            # Start new transaction
-            transaction.clear()
-
-        else:
-            if use_transaction is None:
-                transaction.execute(True)
 
     # flush and policy
 
