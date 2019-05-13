@@ -18,6 +18,8 @@ env:
   - TESTSUITEFLAGS="-k offline -j3"
   - TESTSUITEFLAGS="-k nftables -j3"
   - TESTSUITEFLAGS="-k iptables -j3"
+  - TESTSUITEFLAGS="-k iptables -j3"
+    IP6TABLES="/bin/false" IP6TABLES_RESTORE="/bin/false"
 
 # Install necessary dependencies
 before_install:
