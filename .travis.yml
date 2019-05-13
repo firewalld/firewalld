@@ -1,13 +1,10 @@
 sudo: required
-dist: trusty
+dist: bionic
 
 language: python
-virtualenv:
-  system_site_packages: true
-
 python:
   - "2.7"
-  - "3.4"
+  - "3.7"
 
 # Use keywords to split the tests into smaller groups and therefore decrease
 # the time CI takes to run.
@@ -22,15 +19,15 @@ before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -qq -y autoconf automake pkg-config intltool
     libglib2.0-dev xsltproc docbook-xsl docbook-xml iptables ipset ebtables
-    libxml2-utils realpath python-dbus python3-dbus python-gi python3-gi
+    libxml2-utils libdbus-1-dev libgirepository1.0-dev
 
 install:
-  - pip install flake8 decorator
+  - pip install flake8 decorator dbus-python PyGObject
     && pushd /tmp
     && tar xf ${OLDPWD}/.travis/python-slip-0.6.5.tar.bz2
     && cd python-slip-0.6.5
     && make
-    && sudo env PATH="$PATH" make install
+    && pip install .
     && popd
   - echo "/usr/local/lib" | sudo tee /etc/ld.so.conf.d/local.conf
   - sudo apt-get -qq -y install libmnl-dev libgmp-dev libreadline-dev
@@ -54,7 +51,7 @@ install:
 
 script:
   - ./autogen.sh
-    && ./configure --with-ebtables-restore=/bin/false --sysconfdir=/etc
+    && ./configure --sysconfdir=/etc
     && make -j32
   # Note: TESTSUITEFLAGS implicit from env above
   - sudo env PATH="$PATH" make check ||
