@@ -417,6 +417,12 @@ m4_define([CHECK_IPSET], [
         NS_CHECK([nft add table inet firewalld_check_ipset])
         NS_CHECK([nft add set inet firewalld_check_ipset foobar { type ipv4_addr \; }])
         AT_SKIP_IF([! NS_CMD([nft flush set inet firewalld_check_ipset foobar >/dev/null 2>&1])])
+        dnl If nft set has has no timeout support, then skip the test
+        AT_SKIP_IF([! NS_CMD([nft add set inet firewalld_check_ipset foobar_timeout { type ipv4_addr \; timeout 600s \; } >/dev/null 2>&1])])
+        dnl If nft set has has no size support, then skip the test
+        AT_SKIP_IF([! NS_CMD([nft add set inet firewalld_check_ipset foobar_size { type ipv4_addr \; size 100000 \; } >/dev/null 2>&1])])
+        AT_SKIP_IF([! NS_CMD([nft add set inet firewalld_check_ipset foobar_timeout_size { type ipv4_addr \; timeout 600s \; size 100000 \; } >/dev/null 2>&1])])
+
         NS_CHECK([nft delete table inet firewalld_check_ipset])
     ])
 ])
