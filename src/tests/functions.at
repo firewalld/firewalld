@@ -256,7 +256,9 @@ m4_define([IPTABLES_LIST_RULES], [
 
 m4_define([IP6TABLES_LIST_RULES], [
     m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
+    m4_if(yes, HOST_SUPPORTS_IP6TABLES, [
         NS_CHECK([IP6TABLES -w -n -t $1 -L $2 | TRIM_WHITESPACE | tail -n +3], [$3], [m4_strip([$4])], [m4_strip([$5])], [$6], [$7])
+    ])
     ])
 ])
 
@@ -391,3 +393,11 @@ m4_define([HOST_SUPPORTS_NFT_FIB], m4_esyscmd([
 ]))
 
 m4_define([NFT_NUMERIC_ARGS], m4_esyscmd([nft -h |grep "numeric-protocol" >/dev/null && echo -n "" || { echo -n "-" && echo -n "nn"; } ]))
+
+m4_define([HOST_SUPPORTS_IP6TABLES], [m4_esyscmd(
+    if IP6TABLES -L >/dev/null 2>&1; then
+        echo -n "yes"
+    else
+        echo -n "no"
+    fi
+)])
