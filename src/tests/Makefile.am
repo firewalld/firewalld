@@ -16,7 +16,11 @@ $(srcdir)/package.m4: $(top_srcdir)/configure.ac $(top_srcdir)/firewalld.spec
 	echo 'm4_define([AT_PACKAGE_VERSION],[$(PACKAGE_VERSION)])' && \
 	echo 'm4_define([AT_PACKAGE_STRING],[$(PACKAGE_STRING)])' && \
 	echo 'm4_define([AT_PACKAGE_URL],[http://firewalld.org/])' && \
-	echo 'm4_define([AT_PACKAGE_BUGREPORT],[https://github.com/firewalld/firewalld])'; \
+	echo 'm4_define([AT_PACKAGE_BUGREPORT],[https://github.com/firewalld/firewalld])' && \
+	echo 'm4_define([IPTABLES],[$(IPTABLES)])' && \
+	echo 'm4_define([IPTABLES_RESTORE],[$(IPTABLES_RESTORE)])' && \
+	echo 'm4_define([IP6TABLES],[$(IP6TABLES)])' && \
+	echo 'm4_define([IP6TABLES_RESTORE],[$(IP6TABLES_RESTORE)])' ; \
 	} > "$@"
 
 check-local: atconfig $(TESTSUITE)
@@ -32,6 +36,7 @@ installcheck-local: atconfig $(TESTSUITE)
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
+	-rm $(srcdir)/package.m4
 
 AUTOM4TE = $(SHELL) $(top_srcdir)/missing --run autom4te
 AUTOTEST = $(AUTOM4TE) --language=autotest
