@@ -395,3 +395,10 @@ m4_define([HOST_SUPPORTS_IP6TABLES], [m4_esyscmd(
         echo -n "no"
     fi
 )])
+
+m4_define([IF_IPV6_SUPPORTED], [
+    m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [$1], [
+    m4_if(nftables, FIREWALL_BACKEND, [$1], [
+    m4_if(yes, HOST_SUPPORTS_IP6TABLES, [$1], [$2])
+    ])])
+])
