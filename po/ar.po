@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Abdalrahim Fakhouri <abdilra7eem@yahoo.com>, 2010
 # Abdalrahim Fakhouri <abdilra7eem@yahoo.com>, 2010
@@ -17,15 +17,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-11 15:05-0400\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2019-05-17 12:53-0400\n"
 "PO-Revision-Date: 2018-11-16 08:20+0000\n"
 "Last-Translator: Copied by Zanata <copied-by-zanata@zanata.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/projects/p/firewalld/"
 "language/ar/)\n"
 "Language: ar\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
 "X-Generator: Zanata 4.6.2\n"
@@ -211,8 +211,7 @@ msgstr ""
 
 #: ../src/firewall-applet.in:880
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface "
-"'{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
 msgstr "المنطقة '{zone}' نشطة للاتصال '{connection}' في الواجهة '{interface}'"
 
 #: ../src/firewall-applet.in:892
@@ -655,7 +654,8 @@ msgstr "ipv6"
 
 #: ../src/firewall-config.in:5014
 msgid ""
-"Forwarding to another system is only useful if the interface is masqueraded.\n"
+"Forwarding to another system is only useful if the interface is "
+"masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 "تعد إعادة التوجيه إلى نظام آخر مفيدة فقط إذا كانت الواجهة متنكرة.\n"
@@ -689,7 +689,8 @@ msgstr "الرجاء إدخال عنوان ipv4 أو ipv6 بعنوان نموذ�
 msgid ""
 "The mask can be a network mask or a number for ipv4.\n"
 "The mask is a number for ipv6."
-msgstr "قد يكون القناع، قناع شبكة أو رقمًا لـ ipv4.\n"
+msgstr ""
+"قد يكون القناع، قناع شبكة أو رقمًا لـ ipv4.\n"
 "القناع رقم لـ ipv6."
 
 #: ../src/firewall-config.in:5776
@@ -1181,9 +1182,9 @@ msgid ""
 "network to the internet. Your local network will not be visible and the "
 "hosts appear as a single address on the internet. Masquerading is IPv4 only."
 msgstr ""
-"يسمح لك التقنيع أن تعدّ مضيفاً أو موجّهاً ليوصل شبكتك المحلّية بالشبكة "
-"العالميّة. ستظهر جميع الأجهزة على هذه الشبكة كعنوان واحد على الإنترنت. "
-"التقنيع لـIPv4 فقط."
+"يسمح لك التقنيع أن تعدّ مضيفاً أو موجّهاً ليوصل شبكتك المحلّية بالشبكة العالميّة. "
+"ستظهر جميع الأجهزة على هذه الشبكة كعنوان واحد على الإنترنت. التقنيع لـIPv4 "
+"فقط."
 
 #: ../src/firewall-config.glade.h:109
 msgid "Masquerade zone"
@@ -1236,8 +1237,8 @@ msgid ""
 "Mark the ICMP types in the list, which should be rejected. All other ICMP "
 "types are allowed to pass the firewall. The default is no limitation."
 msgstr ""
-"علّم أنواع ICMP التي سترفض في القائمة. كلّ أنواع ICMP الأخرى سيسمح لها "
-"بالمرور عبر الجدار الناريّ. المبدئيّ هو عدم وجود قيود."
+"علّم أنواع ICMP التي سترفض في القائمة. كلّ أنواع ICMP الأخرى سيسمح لها بالمرور "
+"عبر الجدار الناريّ. المبدئيّ هو عدم وجود قيود."
 
 #: ../src/firewall-config.glade.h:118
 msgid ""
@@ -1365,7 +1366,6 @@ msgid ""
 "all hosts or networks."
 msgstr ""
 "إضافة منافذ مصادر أو نطاقات منافذ يجب الوصول إليها من كل المضيفين أو الشبكات."
-""
 
 #: ../src/firewall-config.glade.h:147
 msgid "Source Port"
@@ -1402,7 +1402,6 @@ msgid ""
 "runtime configuration of services is fixed."
 msgstr ""
 "لا يمكن تغيير الخدمات إلا في عرض التكوين الدائم. تكوين وقت تشغيل الخدمة ثابت."
-""
 
 #: ../src/firewall-config.glade.h:154
 msgid ""
@@ -1522,10 +1521,10 @@ msgid ""
 "commands, parameters and targets. Direct configuration should be used only "
 "as a last resort when it is not possible to use other firewalld features."
 msgstr ""
-"يوفر التكوين المباشر وصولاً أكثر مباشرة إلى الجدار الناري. تتطلب هذه "
-"الخيارات من المستخدم معرفة مفاهيم iptables الأساسية وهي الجداول والسلاسل "
-"والأوامر والمعلمات والأهداف. يجب استخدام التكوين المباشر كملاذ أخير فقط "
-"عندما لا يمكن استخدام ميزات firewalld الأخرى."
+"يوفر التكوين المباشر وصولاً أكثر مباشرة إلى الجدار الناري. تتطلب هذه الخيارات "
+"من المستخدم معرفة مفاهيم iptables الأساسية وهي الجداول والسلاسل والأوامر "
+"والمعلمات والأهداف. يجب استخدام التكوين المباشر كملاذ أخير فقط عندما لا يمكن "
+"استخدام ميزات firewalld الأخرى."
 
 #: ../src/firewall-config.glade.h:176
 msgid ""
@@ -1603,8 +1602,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:189
 msgid "Please be careful with passthrough rules to not damage the firewall."
-msgstr ""
-"الرجاء الحذر في التعامل مع قاعد المرور حتى لا يتم تدمير الجدار الناري."
+msgstr "الرجاء الحذر في التعامل مع قاعد المرور حتى لا يتم تدمير الجدار الناري."
 
 #: ../src/firewall-config.glade.h:190
 msgid "Add Passthrough"
@@ -1907,8 +1905,8 @@ msgstr "معكوس"
 
 #: ../src/firewall-config.glade.h:266
 msgid ""
-"To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
-"(not both)."
+"To enable this Action has to be 'reject' and Family either 'ipv4' or "
+"'ipv6' (not both)."
 msgstr ""
 "لتمكين هذا، يجب أن يكون الإجراء 'رفض' والعائلة إما 'ipv4' أو 'ipv6' (ليس "
 "كلاهما)"
