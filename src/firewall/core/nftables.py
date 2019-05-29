@@ -439,10 +439,10 @@ class nftables(object):
                                   IPTABLES_TO_NFT_HOOK["raw"][chain][1]))
 
         for chain in ["PREROUTING"]:
-            default_rules.append("add chain inet %s raw_%s_ZONES_SOURCE" % (TABLE_NAME, chain))
             default_rules.append("add chain inet %s raw_%s_ZONES" % (TABLE_NAME, chain))
-            default_rules.append("add rule inet %s raw_%s jump raw_%s_ZONES_SOURCE" % (TABLE_NAME, chain, chain))
+            default_rules.append("add chain inet %s raw_%s_ZONES_IFACES" % (TABLE_NAME, chain))
             default_rules.append("add rule inet %s raw_%s jump raw_%s_ZONES" % (TABLE_NAME, chain, chain))
+            default_rules.append("add rule inet %s raw_%s_ZONES goto raw_%s_ZONES_IFACES" % (TABLE_NAME, chain, chain))
 
         for chain in IPTABLES_TO_NFT_HOOK["mangle"].keys():
             default_rules.append("add chain inet %s mangle_%s '{ type filter hook %s priority %d ; }'" %
@@ -450,10 +450,10 @@ class nftables(object):
                                   IPTABLES_TO_NFT_HOOK["mangle"][chain][0],
                                   IPTABLES_TO_NFT_HOOK["mangle"][chain][1]))
 
-            default_rules.append("add chain inet %s mangle_%s_ZONES_SOURCE" % (TABLE_NAME, chain))
             default_rules.append("add chain inet %s mangle_%s_ZONES" % (TABLE_NAME, chain))
-            default_rules.append("add rule inet %s mangle_%s jump mangle_%s_ZONES_SOURCE" % (TABLE_NAME, chain, chain))
+            default_rules.append("add chain inet %s mangle_%s_ZONES_IFACES" % (TABLE_NAME, chain))
             default_rules.append("add rule inet %s mangle_%s jump mangle_%s_ZONES" % (TABLE_NAME, chain, chain))
+            default_rules.append("add rule inet %s mangle_%s_ZONES goto mangle_%s_ZONES_IFACES" % (TABLE_NAME, chain, chain))
 
         for family in ["ip", "ip6"]:
             for chain in IPTABLES_TO_NFT_HOOK["nat"].keys():
@@ -462,10 +462,10 @@ class nftables(object):
                                       IPTABLES_TO_NFT_HOOK["nat"][chain][0],
                                       IPTABLES_TO_NFT_HOOK["nat"][chain][1]))
 
-                default_rules.append("add chain %s %s nat_%s_ZONES_SOURCE" % (family, TABLE_NAME, chain))
                 default_rules.append("add chain %s %s nat_%s_ZONES" % (family, TABLE_NAME, chain))
-                default_rules.append("add rule %s %s nat_%s jump nat_%s_ZONES_SOURCE" % (family, TABLE_NAME, chain, chain))
+                default_rules.append("add chain %s %s nat_%s_ZONES_IFACES" % (family, TABLE_NAME, chain))
                 default_rules.append("add rule %s %s nat_%s jump nat_%s_ZONES" % (family, TABLE_NAME, chain, chain))
+                default_rules.append("add rule %s %s nat_%s_ZONES goto nat_%s_ZONES_IFACES" % (family, TABLE_NAME, chain, chain))
 
         for chain in IPTABLES_TO_NFT_HOOK["filter"].keys():
             default_rules.append("add chain inet %s filter_%s '{ type filter hook %s priority %d ; }'" %
@@ -474,13 +474,13 @@ class nftables(object):
                                   IPTABLES_TO_NFT_HOOK["filter"][chain][1]))
 
         # filter, INPUT
-        default_rules.append("add chain inet %s filter_%s_ZONES_SOURCE" % (TABLE_NAME, "INPUT"))
         default_rules.append("add chain inet %s filter_%s_ZONES" % (TABLE_NAME, "INPUT"))
+        default_rules.append("add chain inet %s filter_%s_ZONES_IFACES" % (TABLE_NAME, "INPUT"))
         default_rules.append("add rule inet %s filter_%s ct state established,related accept" % (TABLE_NAME, "INPUT"))
         default_rules.append("add rule inet %s filter_%s ct status dnat accept" % (TABLE_NAME, "INPUT"))
         default_rules.append("add rule inet %s filter_%s iifname lo accept" % (TABLE_NAME, "INPUT"))
-        default_rules.append("add rule inet %s filter_%s jump filter_%s_ZONES_SOURCE" % (TABLE_NAME, "INPUT", "INPUT"))
         default_rules.append("add rule inet %s filter_%s jump filter_%s_ZONES" % (TABLE_NAME, "INPUT", "INPUT"))
+        default_rules.append("add rule inet %s filter_%s_ZONES goto filter_%s_ZONES_IFACES" % (TABLE_NAME, "INPUT", "INPUT"))
         if log_denied != "off":
             default_rules.append("add rule inet %s filter_%s ct state invalid %%%%LOGTYPE%%%% log prefix '\"STATE_INVALID_DROP: \"'" % (TABLE_NAME, "INPUT"))
         default_rules.append("add rule inet %s filter_%s ct state invalid drop" % (TABLE_NAME, "INPUT"))
@@ -489,17 +489,17 @@ class nftables(object):
         default_rules.append("add rule inet %s filter_%s reject with icmpx type admin-prohibited" % (TABLE_NAME, "INPUT"))
 
         # filter, FORWARD
-        default_rules.append("add chain inet %s filter_%s_IN_ZONES_SOURCE" % (TABLE_NAME, "FORWARD"))
         default_rules.append("add chain inet %s filter_%s_IN_ZONES" % (TABLE_NAME, "FORWARD"))
-        default_rules.append("add chain inet %s filter_%s_OUT_ZONES_SOURCE" % (TABLE_NAME, "FORWARD"))
+        default_rules.append("add chain inet %s filter_%s_IN_ZONES_IFACES" % (TABLE_NAME, "FORWARD"))
         default_rules.append("add chain inet %s filter_%s_OUT_ZONES" % (TABLE_NAME, "FORWARD"))
+        default_rules.append("add chain inet %s filter_%s_OUT_ZONES_IFACES" % (TABLE_NAME, "FORWARD"))
         default_rules.append("add rule inet %s filter_%s ct state established,related accept" % (TABLE_NAME, "FORWARD"))
         default_rules.append("add rule inet %s filter_%s ct status dnat accept" % (TABLE_NAME, "FORWARD"))
         default_rules.append("add rule inet %s filter_%s iifname lo accept" % (TABLE_NAME, "FORWARD"))
-        default_rules.append("add rule inet %s filter_%s jump filter_%s_IN_ZONES_SOURCE" % (TABLE_NAME, "FORWARD", "FORWARD"))
         default_rules.append("add rule inet %s filter_%s jump filter_%s_IN_ZONES" % (TABLE_NAME, "FORWARD", "FORWARD"))
-        default_rules.append("add rule inet %s filter_%s jump filter_%s_OUT_ZONES_SOURCE" % (TABLE_NAME, "FORWARD", "FORWARD"))
         default_rules.append("add rule inet %s filter_%s jump filter_%s_OUT_ZONES" % (TABLE_NAME, "FORWARD", "FORWARD"))
+        default_rules.append("add rule inet %s filter_%s_IN_ZONES goto filter_%s_IN_ZONES_IFACES" % (TABLE_NAME, "FORWARD", "FORWARD"))
+        default_rules.append("add rule inet %s filter_%s_OUT_ZONES goto filter_%s_OUT_ZONES_IFACES" % (TABLE_NAME, "FORWARD", "FORWARD"))
         if log_denied != "off":
             default_rules.append("add rule inet %s filter_%s ct state invalid %%%%LOGTYPE%%%% log prefix '\"STATE_INVALID_DROP: \"'" % (TABLE_NAME, "FORWARD"))
         default_rules.append("add rule inet %s filter_%s ct state invalid drop" % (TABLE_NAME, "FORWARD"))
@@ -524,16 +524,16 @@ class nftables(object):
 
         return {}
 
-    def build_zone_source_interface_rules(self, enable, zone, zone_target,
-                                          interface, table, chain,
-                                          append=False, family="inet"):
+    def build_zone_source_interface_rules(self, enable, zone, interface,
+                                          table, chain, append=False,
+                                          family="inet"):
         # nat tables needs to use ip/ip6 family
         if table == "nat" and family == "inet":
             rules = []
             rules.extend(self.build_zone_source_interface_rules(enable, zone,
-                            zone_target, interface, table, chain, append, "ip"))
+                            interface, table, chain, append, "ip"))
             rules.extend(self.build_zone_source_interface_rules(enable, zone,
-                            zone_target, interface, table, chain, append, "ip6"))
+                            interface, table, chain, append, "ip6"))
             return rules
 
         # handle all zones in the same way here, now
@@ -551,36 +551,34 @@ class nftables(object):
             interface = interface[:len(interface)-1] + "*"
 
         target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[chain], zone=zone)
-        if zone_target == DEFAULT_ZONE_TARGET:
-            action = "goto"
-        else:
-            action = "jump"
+        action = "goto"
+
         if enable and not append:
-            rule = ["insert", "rule", family, "%s" % TABLE_NAME, "%s_%s_ZONES" % (table, chain)]
+            rule = ["insert", "rule", family, "%s" % TABLE_NAME, "%s_%s_ZONES_IFACES" % (table, chain)]
         elif enable:
-            rule = ["add", "rule", family, "%s" % TABLE_NAME, "%s_%s_ZONES" % (table, chain)]
+            rule = ["add", "rule", family, "%s" % TABLE_NAME, "%s_%s_ZONES_IFACES" % (table, chain)]
         else:
-            rule = ["delete", "rule", family, "%s" % TABLE_NAME, "%s_%s_ZONES" % (table, chain)]
+            rule = ["delete", "rule", family, "%s" % TABLE_NAME, "%s_%s_ZONES_IFACES" % (table, chain)]
         if interface == "*":
             rule += [action, "%s_%s" % (table, target)]
         else:
             rule += [opt, "\"" + interface + "\"", action, "%s_%s" % (table, target)]
         return [rule]
 
-    def build_zone_source_address_rules(self, enable, zone, zone_target,
+    def build_zone_source_address_rules(self, enable, zone,
                                         address, table, chain, family="inet"):
         # nat tables needs to use ip/ip6 family
         if table == "nat" and family == "inet":
             rules = []
             if check_address("ipv4", address) or check_mac(address):
                 rules.extend(self.build_zone_source_address_rules(enable, zone,
-                                    zone_target, address, table, chain, "ip"))
+                                    address, table, chain, "ip"))
             if check_address("ipv6", address) or check_mac(address):
                 rules.extend(self.build_zone_source_address_rules(enable, zone,
-                                    zone_target, address, table, chain, "ip6"))
+                                    address, table, chain, "ip6"))
             return rules
 
-        add_del = { True: "add", False: "delete" }[enable]
+        add_del = { True: "insert", False: "delete" }[enable]
 
         opt = {
             "PREROUTING": "saddr",
@@ -592,10 +590,7 @@ class nftables(object):
         }[chain]
 
         target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[chain], zone=zone)
-        if zone_target == DEFAULT_ZONE_TARGET:
-            action = "goto"
-        else:
-            action = "jump"
+        action = "goto"
 
         if address.startswith("ipset:"):
             ipset = address[len("ipset:"):]
@@ -613,7 +608,7 @@ class nftables(object):
                 rule_family = "ip6"
 
         rule = [add_del, "rule", family, "%s" % TABLE_NAME,
-                "%s_%s_ZONES_SOURCE" % (table, chain),
+                "%s_%s_ZONES" % (table, chain),
                 rule_family, opt, address, action, "%s_%s" % (table, target)]
         return [rule]
 

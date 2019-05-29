@@ -13,9 +13,7 @@ m4_if(nftables, FIREWALL_BACKEND, [
         ct status dnat accept
         iifname "lo" accept
         ip6 daddr { ::/96, ::ffff:0.0.0.0/96, 2002::/24, 2002:a00::/24, 2002:7f00::/24, 2002:a9fe::/32, 2002:ac10::/28, 2002:c0a8::/32, 2002:e000::/19 } log prefix "RFC3964_IPv4_REJECT: " reject with icmpv6 type addr-unreachable
-        jump filter_FORWARD_IN_ZONES_SOURCE
         jump filter_FORWARD_IN_ZONES
-        jump filter_FORWARD_OUT_ZONES_SOURCE
         jump filter_FORWARD_OUT_ZONES
         ct state invalid log prefix "STATE_INVALID_DROP: "
         ct state invalid drop
@@ -58,9 +56,7 @@ m4_if(nftables, FIREWALL_BACKEND, [
         ACCEPT all ::/0 ::/0
         FORWARD_direct all ::/0 ::/0
         RFC3964_IPv4 all ::/0 ::/0
-        FORWARD_IN_ZONES_SOURCE all ::/0 ::/0
         FORWARD_IN_ZONES all ::/0 ::/0
-        FORWARD_OUT_ZONES_SOURCE all ::/0 ::/0
         FORWARD_OUT_ZONES all ::/0 ::/0
         LOG all ::/0 ::/0 ctstate INVALID LOG flags 0 level 4 prefix "STATE_INVALID_DROP: "
         DROP all ::/0 ::/0 ctstate INVALID
@@ -84,9 +80,7 @@ m4_if(nftables, FIREWALL_BACKEND, [
         ct state established,related accept
         ct status dnat accept
         iifname "lo" accept
-        jump filter_FORWARD_IN_ZONES_SOURCE
         jump filter_FORWARD_IN_ZONES
-        jump filter_FORWARD_OUT_ZONES_SOURCE
         jump filter_FORWARD_OUT_ZONES
         ct state invalid log prefix "STATE_INVALID_DROP: "
         ct state invalid drop
@@ -108,9 +102,7 @@ m4_if(nftables, FIREWALL_BACKEND, [
         ACCEPT all ::/0 ::/0 ctstate RELATED,ESTABLISHED,DNAT
         ACCEPT all ::/0 ::/0
         FORWARD_direct all ::/0 ::/0
-        FORWARD_IN_ZONES_SOURCE all ::/0 ::/0
         FORWARD_IN_ZONES all ::/0 ::/0
-        FORWARD_OUT_ZONES_SOURCE all ::/0 ::/0
         FORWARD_OUT_ZONES all ::/0 ::/0
         LOG all ::/0 ::/0 ctstate INVALID LOG flags 0 level 4 prefix "STATE_INVALID_DROP: "
         DROP all ::/0 ::/0 ctstate INVALID

@@ -1493,8 +1493,7 @@ class FirewallZone(object):
                         zone_transaction.add_chain(table, chain)
 
                     rules = backend.build_zone_source_interface_rules(enable,
-                                        zone, self._zones[zone].target,
-                                        interface, table, chain, append)
+                                        zone, interface, table, chain, append)
                     zone_transaction.add_rules(backend, rules)
 
     # IPSETS
@@ -1534,8 +1533,7 @@ class FirewallZone(object):
                         zone_transaction.add_chain(table, chain)
 
                     rules = backend.build_zone_source_address_rules(enable, zone,
-                                    self._zones[zone].target, source, table,
-                                    chain)
+                                                        source, table, chain)
                     zone_transaction.add_rules(backend, rules)
 
     def _rule_prepare(self, enable, zone, rule, zone_transaction):

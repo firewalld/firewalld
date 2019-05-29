@@ -619,11 +619,11 @@ class ip4tables(object):
                 self.our_chains["raw"].add("%s_direct" % chain)
 
                 if chain == "PREROUTING":
-                    default_rules["raw"].append("-N %s_ZONES_SOURCE" % chain)
                     default_rules["raw"].append("-N %s_ZONES" % chain)
-                    default_rules["raw"].append("-A %s -j %s_ZONES_SOURCE" % (chain, chain))
+                    default_rules["raw"].append("-N %s_ZONES_IFACES" % chain)
                     default_rules["raw"].append("-A %s -j %s_ZONES" % (chain, chain))
-                    self.our_chains["raw"].update(set(["%s_ZONES_SOURCE" % chain, "%s_ZONES" % chain]))
+                    default_rules["raw"].append("-A %s_ZONES -g %s_ZONES_IFACES" % (chain, chain))
+                    self.our_chains["raw"].update(set(["%s_ZONES" % chain, "%s_ZONES_IFACES" % chain]))
 
         if self.get_available_tables("mangle"):
             default_rules["mangle"] = [ ]
@@ -634,11 +634,11 @@ class ip4tables(object):
                 self.our_chains["mangle"].add("%s_direct" % chain)
 
                 if chain == "PREROUTING":
-                    default_rules["mangle"].append("-N %s_ZONES_SOURCE" % chain)
                     default_rules["mangle"].append("-N %s_ZONES" % chain)
-                    default_rules["mangle"].append("-A %s -j %s_ZONES_SOURCE" % (chain, chain))
+                    default_rules["mangle"].append("-N %s_ZONES_IFACES" % chain)
                     default_rules["mangle"].append("-A %s -j %s_ZONES" % (chain, chain))
-                    self.our_chains["mangle"].update(set(["%s_ZONES_SOURCE" % chain, "%s_ZONES" % chain]))
+                    default_rules["mangle"].append("-A %s_ZONES -g %s_ZONES_IFACES" % (chain, chain))
+                    self.our_chains["mangle"].update(set(["%s_ZONES" % chain, "%s_ZONES_IFACES" % chain]))
 
         if self.get_available_tables("nat"):
             default_rules["nat"] = [ ]
@@ -649,22 +649,22 @@ class ip4tables(object):
                 self.our_chains["nat"].add("%s_direct" % chain)
 
                 if chain in [ "PREROUTING", "POSTROUTING" ]:
-                    default_rules["nat"].append("-N %s_ZONES_SOURCE" % chain)
                     default_rules["nat"].append("-N %s_ZONES" % chain)
-                    default_rules["nat"].append("-A %s -j %s_ZONES_SOURCE" % (chain, chain))
+                    default_rules["nat"].append("-N %s_ZONES_IFACES" % chain)
                     default_rules["nat"].append("-A %s -j %s_ZONES" % (chain, chain))
-                    self.our_chains["nat"].update(set(["%s_ZONES_SOURCE" % chain, "%s_ZONES" % chain]))
+                    default_rules["nat"].append("-A %s_ZONES -g %s_ZONES_IFACES" % (chain, chain))
+                    self.our_chains["nat"].update(set(["%s_ZONES" % chain, "%s_ZONES_IFACES" % chain]))
 
         default_rules["filter"] = [
             "-N INPUT_direct",
-            "-N INPUT_ZONES_SOURCE",
             "-N INPUT_ZONES",
+            "-N INPUT_ZONES_IFACES",
 
             "-A INPUT -m conntrack --ctstate RELATED,ESTABLISHED,DNAT -j ACCEPT",
             "-A INPUT -i lo -j ACCEPT",
             "-A INPUT -j INPUT_direct",
-            "-A INPUT -j INPUT_ZONES_SOURCE",
             "-A INPUT -j INPUT_ZONES",
+            "-A INPUT_ZONES -g INPUT_ZONES_IFACES",
         ]
         if log_denied != "off":
             default_rules["filter"].append("-A INPUT -m conntrack --ctstate INVALID %%LOGTYPE%% -j LOG --log-prefix 'STATE_INVALID_DROP: '")
@@ -675,18 +675,18 @@ class ip4tables(object):
 
         default_rules["filter"] += [
             "-N FORWARD_direct",
-            "-N FORWARD_IN_ZONES_SOURCE",
             "-N FORWARD_IN_ZONES",
-            "-N FORWARD_OUT_ZONES_SOURCE",
             "-N FORWARD_OUT_ZONES",
+            "-N FORWARD_IN_ZONES_IFACES",
+            "-N FORWARD_OUT_ZONES_IFACES",
 
             "-A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED,DNAT -j ACCEPT",
             "-A FORWARD -i lo -j ACCEPT",
             "-A FORWARD -j FORWARD_direct",
-            "-A FORWARD -j FORWARD_IN_ZONES_SOURCE",
             "-A FORWARD -j FORWARD_IN_ZONES",
-            "-A FORWARD -j FORWARD_OUT_ZONES_SOURCE",
             "-A FORWARD -j FORWARD_OUT_ZONES",
+            "-A FORWARD_IN_ZONES -g FORWARD_IN_ZONES_IFACES",
+            "-A FORWARD_OUT_ZONES -g FORWARD_OUT_ZONES_IFACES",
         ]
         if log_denied != "off":
             default_rules["filter"].append("-A FORWARD -m conntrack --ctstate INVALID %%LOGTYPE%% -j LOG --log-prefix 'STATE_INVALID_DROP: '")
@@ -702,10 +702,10 @@ class ip4tables(object):
             "-A OUTPUT -j OUTPUT_direct",
         ]
 
-        self.our_chains["filter"] = set(["INPUT_direct", "INPUT_ZONES_SOURCE", "INPUT_ZONES",
-                                    "FORWARD_direct", "FORWARD_IN_ZONES_SOURCE",
-                                    "FORWARD_IN_ZONES", "FORWARD_OUT_ZONES_SOURCE",
-                                    "FORWARD_OUT_ZONES", "OUTPUT_direct"])
+        self.our_chains["filter"] = set(["INPUT_direct", "INPUT_ZONES", "INPUT_ZONES_IFACES"
+                                         "FORWARD_direct", "FORWARD_IN_ZONES",
+                                         "FORWARD_IN_ZONES_IFACES" "FORWARD_OUT_ZONES",
+                                         "FORWARD_OUT_ZONES_IFACES", "OUTPUT_direct"])
 
         final_default_rules = []
         for table in default_rules:
@@ -731,9 +731,8 @@ class ip4tables(object):
 
         return {}
 
-    def build_zone_source_interface_rules(self, enable, zone, zone_target,
-                                          interface, table, chain,
-                                          append=False):
+    def build_zone_source_interface_rules(self, enable, zone, interface,
+                                          table, chain, append=False):
         # handle all zones in the same way here, now
         # trust and block zone targets are handled now in __chain
         opt = {
@@ -746,22 +745,20 @@ class ip4tables(object):
         }[chain]
 
         target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[chain], zone=zone)
-        if zone_target == DEFAULT_ZONE_TARGET:
-            action = "-g"
-        else:
-            action = "-j"
+        action = "-g"
+
         if enable and not append:
-            rule = [ "-I", "%s_ZONES" % chain, "1" ]
+            rule = [ "-I", "%s_ZONES_IFACES" % chain, "1" ]
         elif enable:
-            rule = [ "-A", "%s_ZONES" % chain ]
+            rule = [ "-A", "%s_ZONES_IFACES" % chain ]
         else:
-            rule = [ "-D", "%s_ZONES" % chain ]
+            rule = [ "-D", "%s_ZONES_IFACES" % chain ]
         rule += [ "-t", table, opt, interface, action, target ]
         return [rule]
 
-    def build_zone_source_address_rules(self, enable, zone, zone_target,
+    def build_zone_source_address_rules(self, enable, zone,
                                         address, table, chain):
-        add_del = { True: "-A", False: "-D" }[enable]
+        add_del = { True: "-I", False: "-D" }[enable]
 
         opt = {
             "PREROUTING": "-s",
@@ -773,10 +770,7 @@ class ip4tables(object):
         }[chain]
 
         target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[chain], zone=zone)
-        if zone_target == DEFAULT_ZONE_TARGET:
-            action = "-g"
-        else:
-            action = "-j"
+        action = "-g"
 
         if address.startswith("ipset:"):
             name = address[6:]
@@ -786,7 +780,7 @@ class ip4tables(object):
                 opt = "src"
             flags = ",".join([opt] * self._fw.ipset.get_dimension(name))
             rule = [ add_del,
-                     "%s_ZONES_SOURCE" % chain, "-t", table,
+                     "%s_ZONES" % chain, "-t", table,
                      "-m", "set", "--match-set", name,
                      flags, action, target ]
         else:
@@ -795,12 +789,12 @@ class ip4tables(object):
                 if opt == "-d":
                     return ""
                 rule = [ add_del,
-                         "%s_ZONES_SOURCE" % chain, "-t", table,
+                         "%s_ZONES" % chain, "-t", table,
                          "-m", "mac", "--mac-source", address.upper(),
                          action, target ]
             else:
                 rule = [ add_del,
-                         "%s_ZONES_SOURCE" % chain, "-t", table,
+                         "%s_ZONES" % chain, "-t", table,
                          opt, address, action, target ]
         return [rule]
 
