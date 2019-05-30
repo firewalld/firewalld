@@ -397,13 +397,13 @@ m4_define([HOST_SUPPORTS_NFT_FIB], m4_esyscmd([
 
 m4_define([NFT_NUMERIC_ARGS], m4_esyscmd([nft -h |grep "numeric-protocol" >/dev/null && echo -n "" || { echo -n "-" && echo -n "nn"; } ]))
 
-m4_define([HOST_SUPPORTS_IP6TABLES], [m4_esyscmd(
+m4_define([HOST_SUPPORTS_IP6TABLES], m4_esyscmd(
     if IP6TABLES -L >/dev/null 2>&1; then
         echo -n "yes"
     else
         echo -n "no"
     fi
-)])
+))
 
 m4_define([IF_IPV6_SUPPORTED], [
     m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [$1], [
