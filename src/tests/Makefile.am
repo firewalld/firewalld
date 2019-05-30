@@ -9,7 +9,7 @@ EXTRA_DIST = \
 	$(TESTSUITE_FILES) \
 	$(srcdir)/package.m4
 
-$(srcdir)/package.m4: $(top_srcdir)/configure.ac $(top_srcdir)/firewalld.spec
+$(srcdir)/package.m4: $(top_srcdir)/configure.ac $(top_srcdir)/firewalld.spec $(srcdir)/Makefile
 	:;{ \
 	echo 'm4_define([AT_PACKAGE_NAME],[$(PACKAGE_NAME)])' && \
 	echo 'm4_define([AT_PACKAGE_VERSION],[$(PACKAGE_VERSION)])' && \
