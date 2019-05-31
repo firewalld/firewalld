@@ -1,5 +1,5 @@
 FWD_START_TEST([zone dispatch layout])
-AT_KEYWORDS(zone gh258 gh441)
+AT_KEYWORDS(zone gh258 gh441 rhbz1713823)
 
 FWD_CHECK([--zone=work --add-source="1.2.3.0/24"], 0, ignore)
 IF_IPV6_SUPPORTED([
