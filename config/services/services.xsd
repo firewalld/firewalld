@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:simpleType name="transport-layer-protocol">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="tcp"/>
+            <xs:enumeration value="udp"/>
+            <xs:enumeration value="sctp"/>
+            <xs:enumeration value="dccp"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:element name="service">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="short" type="xs:string" minOccurs="0"/>
+                <xs:element name="description" type="xs:string" minOccurs="0"/>
+                <xs:element name="port" maxOccurs="unbounded" minOccurs="0">
+                    <xs:complexType>
+                        <xs:simpleContent>
+                            <xs:extension base="xs:string">
+                                <xs:attribute name="protocol" type="transport-layer-protocol"/>
+                                <xs:attribute name="port" type="xs:string"/>
+                            </xs:extension>
+                        </xs:simpleContent>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="source-port" maxOccurs="unbounded" minOccurs="0">
+                    <xs:complexType>
+                        <xs:simpleContent>
+                            <xs:extension base="xs:string">
+                                <xs:attribute name="protocol" type="transport-layer-protocol"/>
+                                <xs:attribute name="port" type="xs:string"/>
+                            </xs:extension>
+                        </xs:simpleContent>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="module" maxOccurs="unbounded" minOccurs="0">
+                    <xs:complexType>
+                        <xs:simpleContent>
+                            <xs:extension base="xs:string">
+                                <xs:attribute name="name" type="xs:string"/>
+                            </xs:extension>
+                        </xs:simpleContent>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="destination" maxOccurs="1" minOccurs="0">
+                    <xs:complexType>
+                        <xs:simpleContent>
+                            <xs:extension base="xs:string">
+                                <xs:attribute name="ipv4" type="xs:string"/>
+                                <xs:attribute name="ipv6" type="xs:string"/>
+                            </xs:extension>
+                        </xs:simpleContent>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+            <xs:attribute name="version" type="xs:string">
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
