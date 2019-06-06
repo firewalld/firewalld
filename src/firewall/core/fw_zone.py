@@ -1561,17 +1561,18 @@ class FirewallZone(object):
             if type(rule.element) == Rich_Service:
                 svc = self._fw.service.get_service(rule.element.name)
 
-                destinations = [rule.destination] if rule.destination else [None]
-
+                destinations = []
                 if len(svc.destination) > 0:
                     if rule.destination:
                         # we can not use two destinations at the same time
                         raise FirewallError(errors.INVALID_RULE,
                                             "Destination conflict with service.")
-                    destinations = []
                     for ipv in ipvs:
                         if ipv in svc.destination and backend.is_ipv_supported(ipv):
                             destinations.append(svc.destination[ipv])
+                else:
+                    # dummy for the following for loop
+                    destinations.append(None)
 
                 for destination in destinations:
                     if enable:
