@@ -1,0 +1,12 @@
+FWD_START_TEST([rich rule destination with service destination])
+AT_KEYWORDS(rich service rhbz1715977)
+
+FWD_CHECK([-q --permanent --zone=internal --add-interface=foobar0])
+FWD_CHECK([-q --permanent --zone=internal --add-rich-rule='rule family=ipv4 destination address="192.168.122.235/32" service name="ssh" accept'])
+FWD_RELOAD
+
+FWD_CHECK([-q --zone=internal --add-rich-rule='rule family=ipv4 destination address="192.168.122.235/32" service name="mdns" accept'], 122, [ignore], [ignore])
+FWD_CHECK([-q --permanent --zone=internal --add-rich-rule='rule family=ipv4 destination address="192.168.122.235/32" service name="mdns" accept'])
+FWD_RELOAD(122, [ignore], [ignore], 251)
+
+FWD_END_TEST([-e '/ERROR: INVALID_RULE: Destination conflict with service/d'])
