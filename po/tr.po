@@ -1,26 +1,26 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Automatically generated, 2004
 # Hasan Alp İNAN, 2011
 # Irmak Bıçakçıgil <red.nihi@gmail.com>, 2014
 # Onuralp SEZER <thunderbirdtr@gmail.com>, 2012
-# Thomas Woerner <twoerner@redhat.com>, 2016. #zanata
+# Serdar Sağlam <teknomobil@msn.com>, 2019. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-11 15:05-0400\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2016-01-04 12:45+0000\n"
-"Last-Translator: Copied by Zanata <copied-by-zanata@zanata.org>\n"
+"POT-Creation-Date: 2019-06-11 18:21-0400\n"
+"PO-Revision-Date: 2019-03-08 01:23+0000\n"
+"Last-Translator: Serdar Sağlam <teknomobil@msn.com>\n"
 "Language-Team: Turkish (http://www.transifex.com/projects/p/firewalld/"
 "language/tr/)\n"
 "Language: tr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Zanata 4.6.2\n"
 
@@ -41,31 +41,31 @@ msgstr "Güvenlik Duvarı Yapılandırması"
 msgid "firewall;network;security;iptables;netfilter;"
 msgstr ""
 
-#: ../src/firewall-applet.in:92 ../src/firewall-config.in:7967
+#: ../src/firewall-applet.in:92 ../src/firewall-config.in:7984
 #, c-format
 msgid "Select zone for interface '%s'"
-msgstr ""
+msgstr "Arayüz için bölge seç '%s'"
 
 #: ../src/firewall-applet.in:132 ../src/firewall-applet.in:139
-#: ../src/firewall-applet.in:145 ../src/firewall-config.in:2439
-#: ../src/firewall-config.in:8012 ../src/firewall-config.in:8020
-#: ../src/firewall-config.in:8053 ../src/firewall-config.glade.h:8
+#: ../src/firewall-applet.in:145 ../src/firewall-config.in:2448
+#: ../src/firewall-config.in:8029 ../src/firewall-config.in:8037
+#: ../src/firewall-config.in:8070 ../src/firewall-config.glade.h:8
 msgid "Default Zone"
-msgstr ""
+msgstr "Öntanımlı Bölge"
 
-#: ../src/firewall-applet.in:166 ../src/firewall-config.in:8046
+#: ../src/firewall-applet.in:166 ../src/firewall-config.in:8063
 #, c-format
 msgid "Select zone for connection '%s'"
-msgstr ""
+msgstr "'%s' bağlantısı için bölge seç"
 
-#: ../src/firewall-applet.in:176 ../src/firewall-config.in:3910
+#: ../src/firewall-applet.in:176 ../src/firewall-config.in:3927
 msgid "Failed to set zone {zone} for connection {connection_name}"
 msgstr ""
 
 #: ../src/firewall-applet.in:190
 #, c-format
 msgid "Select zone for source '%s'"
-msgstr ""
+msgstr "'%s' kaynağı için bölge seç"
 
 #: ../src/firewall-applet.in:207
 msgid "Configure Shields Up/Down Zones"
@@ -92,7 +92,7 @@ msgstr "Alan kalkanı açıldı."
 
 #: ../src/firewall-applet.in:244 ../src/firewall-applet.in:257
 msgid "Reset To Default"
-msgstr ""
+msgstr "Öntanımlılara sıfırla"
 
 #: ../src/firewall-applet.in:248
 msgid "Shields Down Zone:"
@@ -101,164 +101,163 @@ msgstr "Alan kalkanı kapatıldı."
 #: ../src/firewall-applet.in:340
 #, c-format
 msgid "About %s"
-msgstr ""
+msgstr "%s hakkında"
 
 #: ../src/firewall-applet.in:391
 msgid "Authors"
-msgstr ""
+msgstr "Yazarlar"
 
 #: ../src/firewall-applet.in:401
 msgid "License"
-msgstr ""
+msgstr "Lisans"
 
-#: ../src/firewall-applet.in:468
+#: ../src/firewall-applet.in:470
 msgid "Shields Up"
 msgstr "Kalkanlar açık"
 
-#: ../src/firewall-applet.in:475
+#: ../src/firewall-applet.in:477
 msgid "Enable Notifications"
 msgstr "Bildirimler açık"
 
-#: ../src/firewall-applet.in:481
+#: ../src/firewall-applet.in:483
 msgid "Edit Firewall Settings..."
 msgstr "Güvenlik Duvarı ayarlarını değiştir..."
 
-#: ../src/firewall-applet.in:485 ../src/firewall-config.glade.h:61
+#: ../src/firewall-applet.in:487 ../src/firewall-config.glade.h:61
 msgid "Change Zones of Connections..."
-msgstr ""
+msgstr "Bağlantı Bölgelerini Değiştir..."
 
-#: ../src/firewall-applet.in:489
+#: ../src/firewall-applet.in:491
 msgid "Configure Shields UP/Down Zones..."
 msgstr "Artan/Azalan alanların kalkanlarını yapılandır..."
 
-#: ../src/firewall-applet.in:493
+#: ../src/firewall-applet.in:495
 msgid "Block all network traffic"
 msgstr "Bütün ağ trafiğini bloke et"
 
-#: ../src/firewall-applet.in:498
+#: ../src/firewall-applet.in:500
 msgid "About"
-msgstr ""
+msgstr "Hakkında"
 
-#: ../src/firewall-applet.in:506 ../src/firewall-config.in:618
-#: ../src/firewall-config.in:2380 ../src/firewall-config.in:2661
-#: ../src/firewall-config.in:2687
+#: ../src/firewall-applet.in:508 ../src/firewall-config.in:618
+#: ../src/firewall-config.in:2389 ../src/firewall-config.in:2670
+#: ../src/firewall-config.in:2696
 msgid "Connections"
-msgstr "Bağlantı yok"
+msgstr "Bağlantılar"
 
-#: ../src/firewall-applet.in:510 ../src/firewall-config.in:620
-#: ../src/firewall-config.in:2468 ../src/firewall-config.in:2664
-#: ../src/firewall-config.in:2689 ../src/firewall-config.glade.h:130
+#: ../src/firewall-applet.in:512 ../src/firewall-config.in:620
+#: ../src/firewall-config.in:2477 ../src/firewall-config.in:2673
+#: ../src/firewall-config.in:2698 ../src/firewall-config.glade.h:130
 msgid "Interfaces"
 msgstr "<interface>"
 
-#: ../src/firewall-applet.in:514 ../src/firewall-config.in:622
-#: ../src/firewall-config.in:2499 ../src/firewall-config.in:2667
-#: ../src/firewall-config.in:2691 ../src/firewall-config.glade.h:135
+#: ../src/firewall-applet.in:516 ../src/firewall-config.in:622
+#: ../src/firewall-config.in:2508 ../src/firewall-config.in:2676
+#: ../src/firewall-config.in:2700 ../src/firewall-config.glade.h:135
 msgid "Sources"
 msgstr "Kaynaklar"
 
-#: ../src/firewall-applet.in:590 ../src/firewall-config.in:2279
+#: ../src/firewall-applet.in:592 ../src/firewall-config.in:2288
 msgid "Authorization failed."
 msgstr "Yetkilendirme başarısız"
 
-#: ../src/firewall-applet.in:592 ../src/firewall-config.in:2282
+#: ../src/firewall-applet.in:594 ../src/firewall-config.in:2291
 msgid "Invalid name"
 msgstr "Argumento inválido %s"
 
-#: ../src/firewall-applet.in:596 ../src/firewall-config.in:2286
+#: ../src/firewall-applet.in:598 ../src/firewall-config.in:2295
 msgid "Name already exists"
 msgstr "Bu isim zaten kullanılıyor"
 
-#: ../src/firewall-applet.in:681
+#: ../src/firewall-applet.in:690
 msgid "{entry} (Zone: {zone})"
 msgstr ""
 
-#: ../src/firewall-applet.in:688
+#: ../src/firewall-applet.in:697
 msgid "{entry} (Default Zone: {default_zone})"
 msgstr ""
 
-#: ../src/firewall-applet.in:769 ../src/firewall-config.in:1568
+#: ../src/firewall-applet.in:778 ../src/firewall-config.in:1574
 msgid "Failed to get connections from NetworkManager"
 msgstr ""
 
-#: ../src/firewall-applet.in:781 ../src/firewall-config.in:1380
+#: ../src/firewall-applet.in:790 ../src/firewall-config.in:1386
 msgid "No NetworkManager imports available"
 msgstr ""
 
-#: ../src/firewall-applet.in:859
+#: ../src/firewall-applet.in:868
 msgid "No connection to firewall daemon"
 msgstr "Ateş Duvarı artalan sürecine bağlantı yok"
 
-#: ../src/firewall-applet.in:867 ../src/firewall-applet.in:1004
+#: ../src/firewall-applet.in:876 ../src/firewall-applet.in:1014
 msgid "All network traffic is blocked."
 msgstr "Bütün ağ trafiği bloke edildi."
 
-#: ../src/firewall-applet.in:871
+#: ../src/firewall-applet.in:880
 #, c-format
 msgid "Default Zone: '%s'"
 msgstr ""
 
-#: ../src/firewall-applet.in:877
+#: ../src/firewall-applet.in:886
 msgid ""
 "Default Zone '{default_zone}' active for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet.in:880
+#: ../src/firewall-applet.in:889
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface "
-"'{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
 msgstr ""
 "Alanı '{zone}' etkin bağlantısı '{connection}' arayüzünde '{interface}'"
 
-#: ../src/firewall-applet.in:892
+#: ../src/firewall-applet.in:901
 msgid "Zone '{zone}' active for interface '{interface}'"
 msgstr "Alan '{zone}' arayüz'{interface}' için etkin"
 
-#: ../src/firewall-applet.in:900
+#: ../src/firewall-applet.in:909
 msgid "Zone '{zone}' active for source {source}"
 msgstr ""
 
-#: ../src/firewall-applet.in:904
+#: ../src/firewall-applet.in:913
 msgid "No Active Zones."
 msgstr "Aktif alan yok"
 
-#: ../src/firewall-applet.in:962
+#: ../src/firewall-applet.in:972
 msgid "Connection to FirewallD established."
 msgstr "FirewallD ile bağlantı sağlandı."
 
-#: ../src/firewall-applet.in:974
+#: ../src/firewall-applet.in:984
 msgid "Connection to FirewallD lost."
 msgstr "FirewallD ile bağlantı kaybedildi."
 
-#: ../src/firewall-applet.in:979
+#: ../src/firewall-applet.in:989
 msgid "FirewallD has been reloaded."
 msgstr "FirewallD yeniden yüklendi."
 
-#: ../src/firewall-applet.in:986
+#: ../src/firewall-applet.in:996
 #, c-format
 msgid "Default zone changed to '%s'."
 msgstr "Varsayılan alan '%s'. olarak değiştirildi."
 
-#: ../src/firewall-applet.in:1005
+#: ../src/firewall-applet.in:1015
 msgid "Network traffic is not blocked anymore."
 msgstr "Artık Ağ trafği bloke edilmiyor."
 
-#: ../src/firewall-applet.in:1031 ../src/firewall-applet.in:1085
+#: ../src/firewall-applet.in:1041 ../src/firewall-applet.in:1095
 msgid "activated"
 msgstr "Aktifleştirildi."
 
-#: ../src/firewall-applet.in:1032 ../src/firewall-applet.in:1086
+#: ../src/firewall-applet.in:1042 ../src/firewall-applet.in:1096
 msgid "deactivated"
 msgstr "Etkisizleştirildi."
 
-#: ../src/firewall-applet.in:1037
+#: ../src/firewall-applet.in:1047
 msgid ""
 "Default zone '{default_zone}' {activated_deactivated} for connection "
 "'{connection}' on interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet.in:1042
+#: ../src/firewall-applet.in:1052
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
@@ -266,27 +265,27 @@ msgstr ""
 "Alanı '{zone}' {activated_deactivated} bağlantısı için '{connection}' "
 "arayüzde  '{interface}'"
 
-#: ../src/firewall-applet.in:1047
+#: ../src/firewall-applet.in:1057
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
 msgstr "Alanı '{zone}' {activated_deactivated} arayüzünde '{interface}'"
 
-#: ../src/firewall-applet.in:1070
+#: ../src/firewall-applet.in:1080
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
 msgstr "Alan '%s' arayüzü için '%s' etkinleştirildi."
 
-#: ../src/firewall-applet.in:1087
+#: ../src/firewall-applet.in:1097
 msgid "Zone '{zone}' {activated_deactivated} for source '{source}'"
 msgstr ""
 
-#: ../src/firewall-applet.in:1111
+#: ../src/firewall-applet.in:1121
 #, c-format
 msgid "Zone '%s' activated for source '%s'"
 msgstr ""
 
 #: ../src/firewall-config.in:89
 msgid "Connection to firewalld established."
-msgstr ""
+msgstr "Firewalld ile bağlantı kuruldu."
 
 #: ../src/firewall-config.in:91
 msgid "Trying to connect to firewalld, waiting..."
@@ -326,15 +325,15 @@ msgstr "Ikonların yüklenmesi başarısız."
 
 #: ../src/firewall-config.in:187 ../src/firewall-config.glade.h:6
 msgid "Context"
-msgstr ""
+msgstr "İçerik"
 
 #: ../src/firewall-config.in:206 ../src/firewall-config.glade.h:4
 msgid "Command line"
-msgstr ""
+msgstr "Komut satırı"
 
 #: ../src/firewall-config.in:225 ../src/firewall-config.glade.h:300
 msgid "User name"
-msgstr ""
+msgstr "Kullanıcı adı"
 
 #: ../src/firewall-config.in:244
 msgid "User id"
@@ -342,21 +341,21 @@ msgstr ""
 
 #: ../src/firewall-config.in:284 ../src/firewall-config.in:318
 msgid "Table"
-msgstr ""
+msgstr "Tablo"
 
 #: ../src/firewall-config.in:286 ../src/firewall-config.in:320
 msgid "Chain"
 msgstr ""
 
-#: ../src/firewall-config.in:322
+#: ../src/firewall-config.in:322 ../src/firewall-config.in:824
 msgid "Priority"
-msgstr ""
+msgstr "Öncelik"
 
 #: ../src/firewall-config.in:324 ../src/firewall-config.in:361
 msgid "Args"
 msgstr ""
 
-#: ../src/firewall-config.in:401 ../src/firewall-config.in:2329
+#: ../src/firewall-config.in:401 ../src/firewall-config.in:2338
 msgid "Runtime"
 msgstr ""
 
@@ -370,14 +369,14 @@ msgstr "Servis"
 
 #: ../src/firewall-config.in:488 ../src/firewall-config.in:535
 #: ../src/firewall-config.in:560 ../src/firewall-config.in:802
-#: ../src/firewall-config.in:990 ../src/firewall-config.in:1024
+#: ../src/firewall-config.in:996 ../src/firewall-config.in:1030
 msgid "Port"
 msgstr "Port"
 
 #: ../src/firewall-config.in:490 ../src/firewall-config.in:510
 #: ../src/firewall-config.in:537 ../src/firewall-config.in:562
-#: ../src/firewall-config.in:804 ../src/firewall-config.in:992
-#: ../src/firewall-config.in:1007 ../src/firewall-config.in:1026
+#: ../src/firewall-config.in:804 ../src/firewall-config.in:998
+#: ../src/firewall-config.in:1013 ../src/firewall-config.in:1032
 #: ../src/firewall-config.glade.h:250
 msgid "Protocol"
 msgstr "Protocolo"
@@ -402,330 +401,331 @@ msgstr ""
 msgid "Icmp Type"
 msgstr "Icmp tipi"
 
-#: ../src/firewall-config.in:821
+#: ../src/firewall-config.in:822
 msgid "Family"
 msgstr ""
 
-#: ../src/firewall-config.in:823
+#: ../src/firewall-config.in:826
 msgid "Action"
-msgstr ""
+msgstr "Eylem"
 
-#: ../src/firewall-config.in:825
+#: ../src/firewall-config.in:828
 msgid "Element"
 msgstr ""
 
-#: ../src/firewall-config.in:827
+#: ../src/firewall-config.in:830
 msgid "Src"
 msgstr ""
 
-#: ../src/firewall-config.in:829
+#: ../src/firewall-config.in:832
 msgid "Dest"
 msgstr ""
 
-#: ../src/firewall-config.in:831
+#: ../src/firewall-config.in:834
 msgid "log"
-msgstr ""
+msgstr "günlük"
 
-#: ../src/firewall-config.in:833
+#: ../src/firewall-config.in:836
 msgid "Audit"
-msgstr ""
+msgstr "Denetim"
 
-#: ../src/firewall-config.in:934 ../src/firewall-config.glade.h:221
+#: ../src/firewall-config.in:940 ../src/firewall-config.glade.h:221
 msgid "Interface"
-msgstr ""
+msgstr "Arayüz"
 
-#: ../src/firewall-config.in:936
+#: ../src/firewall-config.in:942
 msgid "Comment"
-msgstr ""
+msgstr "Açıklama"
 
-#: ../src/firewall-config.in:955 ../src/firewall-config.glade.h:27
+#: ../src/firewall-config.in:961 ../src/firewall-config.glade.h:27
 msgid "Source"
 msgstr "Kaynak"
 
-#: ../src/firewall-config.in:1609 ../src/firewall-config.in:2802
-#: ../src/firewall-config.in:2850
+#: ../src/firewall-config.in:1615 ../src/firewall-config.in:2811
+#: ../src/firewall-config.in:2859
 msgid "Warning"
 msgstr "Uyarı"
 
-#: ../src/firewall-config.in:1618 ../src/firewall-config.in:1624
+#: ../src/firewall-config.in:1624 ../src/firewall-config.in:1630
 msgid "Error"
 msgstr "Erro"
 
-#: ../src/firewall-config.in:2035 ../src/firewall-config.in:3199
-#: ../src/firewall-config.in:3692 ../src/firewall-config.glade.h:262
+#: ../src/firewall-config.in:2044 ../src/firewall-config.in:3211
+#: ../src/firewall-config.in:3709 ../src/firewall-config.glade.h:262
 msgid "accept"
 msgstr "kabul et"
 
-#: ../src/firewall-config.in:2037 ../src/firewall-config.in:3201
-#: ../src/firewall-config.in:3694 ../src/firewall-config.in:3842
+#: ../src/firewall-config.in:2046 ../src/firewall-config.in:3213
+#: ../src/firewall-config.in:3711 ../src/firewall-config.in:3859
 #: ../src/firewall-config.glade.h:263
 msgid "reject"
 msgstr "reddet"
 
-#: ../src/firewall-config.in:2041 ../src/firewall-config.in:3216
-#: ../src/firewall-config.in:3699 ../src/firewall-config.glade.h:264
+#: ../src/firewall-config.in:2050 ../src/firewall-config.in:3228
+#: ../src/firewall-config.in:3716 ../src/firewall-config.glade.h:264
 msgid "drop"
 msgstr ""
 
-#: ../src/firewall-config.in:2043 ../src/firewall-config.in:3218
-#: ../src/firewall-config.in:3701 ../src/firewall-config.in:3843
+#: ../src/firewall-config.in:2052 ../src/firewall-config.in:3230
+#: ../src/firewall-config.in:3718 ../src/firewall-config.in:3860
 #: ../src/firewall-config.glade.h:265
 msgid "mark"
 msgstr ""
 
-#: ../src/firewall-config.in:2046 ../src/firewall-config.in:2090
-#: ../src/firewall-config.in:2095
+#: ../src/firewall-config.in:2055 ../src/firewall-config.in:2099
+#: ../src/firewall-config.in:2104
 msgid "limit"
 msgstr ""
 
-#: ../src/firewall-config.in:2062 ../src/firewall-config.in:3153
-#: ../src/firewall-config.in:3333 ../src/firewall-config.in:3639
+#: ../src/firewall-config.in:2071 ../src/firewall-config.in:3165
+#: ../src/firewall-config.in:3345 ../src/firewall-config.in:3656
 #: ../src/firewall-config.glade.h:284
 msgid "service"
-msgstr ""
+msgstr "servis"
 
-#: ../src/firewall-config.in:2064 ../src/firewall-config.in:3159
-#: ../src/firewall-config.in:3335 ../src/firewall-config.in:3642
+#: ../src/firewall-config.in:2073 ../src/firewall-config.in:3171
+#: ../src/firewall-config.in:3347 ../src/firewall-config.in:3659
 #: ../src/firewall-config.glade.h:285
 msgid "port"
 msgstr ""
 
-#: ../src/firewall-config.in:2067 ../src/firewall-config.in:3164
-#: ../src/firewall-config.in:3344 ../src/firewall-config.in:3652
+#: ../src/firewall-config.in:2076 ../src/firewall-config.in:3176
+#: ../src/firewall-config.in:3356 ../src/firewall-config.in:3669
 #: ../src/firewall-config.glade.h:286
 msgid "protocol"
-msgstr ""
+msgstr "protokol"
 
-#: ../src/firewall-config.in:2069 ../src/firewall-config.in:3169
-#: ../src/firewall-config.in:3669 ../src/firewall-config.in:3855
+#: ../src/firewall-config.in:2078 ../src/firewall-config.in:3181
+#: ../src/firewall-config.in:3686 ../src/firewall-config.in:3872
 #: ../src/firewall-config.glade.h:291
 msgid "masquerade"
 msgstr ""
 
-#: ../src/firewall-config.in:2071 ../src/firewall-config.in:3172
-#: ../src/firewall-config.in:3346 ../src/firewall-config.in:3655
-#: ../src/firewall-config.in:3870 ../src/firewall-config.glade.h:287
+#: ../src/firewall-config.in:2080 ../src/firewall-config.in:3184
+#: ../src/firewall-config.in:3358 ../src/firewall-config.in:3672
+#: ../src/firewall-config.in:3887 ../src/firewall-config.glade.h:287
 msgid "icmp-block"
 msgstr ""
 
-#: ../src/firewall-config.in:2073 ../src/firewall-config.in:3177
-#: ../src/firewall-config.in:3348 ../src/firewall-config.in:3658
+#: ../src/firewall-config.in:2082 ../src/firewall-config.in:3189
+#: ../src/firewall-config.in:3360 ../src/firewall-config.in:3675
 #: ../src/firewall-config.glade.h:288
 msgid "icmp-type"
 msgstr ""
 
-#: ../src/firewall-config.in:2075 ../src/firewall-config.in:3182
-#: ../src/firewall-config.in:3350 ../src/firewall-config.in:3661
-#: ../src/firewall-config.in:3863 ../src/firewall-config.glade.h:289
+#: ../src/firewall-config.in:2084 ../src/firewall-config.in:3194
+#: ../src/firewall-config.in:3362 ../src/firewall-config.in:3678
+#: ../src/firewall-config.in:3880 ../src/firewall-config.glade.h:289
 msgid "forward-port"
 msgstr ""
 
-#: ../src/firewall-config.in:2079 ../src/firewall-config.in:3191
-#: ../src/firewall-config.in:3352 ../src/firewall-config.in:3671
+#: ../src/firewall-config.in:2088 ../src/firewall-config.in:3203
+#: ../src/firewall-config.in:3364 ../src/firewall-config.in:3688
 #: ../src/firewall-config.glade.h:290
 msgid "source-port"
 msgstr ""
 
-#: ../src/firewall-config.in:2088
+#: ../src/firewall-config.in:2097
 msgid "level"
-msgstr ""
+msgstr "seviye"
 
-#: ../src/firewall-config.in:2092 ../src/firewall-config.in:2097
+#: ../src/firewall-config.in:2101 ../src/firewall-config.in:2106
 msgid "yes"
-msgstr ""
+msgstr "evet"
 
-#: ../src/firewall-config.in:2443 ../src/firewall-config.in:2483
-#: ../src/firewall-config.in:2513 ../src/firewall-config.glade.h:89
+#: ../src/firewall-config.in:2452 ../src/firewall-config.in:2492
+#: ../src/firewall-config.in:2522 ../src/firewall-config.glade.h:89
 msgid "Zone"
 msgstr "Alan"
 
-#: ../src/firewall-config.in:2456
+#: ../src/firewall-config.in:2465
 #, c-format
 msgid "Default Zone: %s"
 msgstr ""
 
-#: ../src/firewall-config.in:2463 ../src/firewall-config.in:2494
-#: ../src/firewall-config.in:2524
+#: ../src/firewall-config.in:2472 ../src/firewall-config.in:2503
+#: ../src/firewall-config.in:2533
 #, c-format
 msgid "Zone: %s"
 msgstr ""
 
-#: ../src/firewall-config.in:2799
+#: ../src/firewall-config.in:2808
 #, c-format
 msgid "Zone '%s': Service '%s' is not available."
 msgstr ""
 
-#: ../src/firewall-config.in:2803 ../src/firewall-config.in:2851
+#: ../src/firewall-config.in:2812 ../src/firewall-config.in:2860
 #: ../src/firewall-config.glade.h:163
 msgid "Remove"
 msgstr "Alanı sil"
 
-#: ../src/firewall-config.in:2803 ../src/firewall-config.in:2851
+#: ../src/firewall-config.in:2812 ../src/firewall-config.in:2860
 msgid "Ignore"
-msgstr ""
+msgstr "Yoksay"
 
-#: ../src/firewall-config.in:2847
+#: ../src/firewall-config.in:2856
 #, c-format
 msgid "Zone '%s': ICMP type '%s' is not available."
 msgstr ""
 
-#: ../src/firewall-config.in:3002
+#: ../src/firewall-config.in:3011
 msgid "Built-in zone, rename not supported."
 msgstr "Dahili Alan, Yeniden isimlendirme desteklenmiyor."
 
-#: ../src/firewall-config.in:3116 ../src/firewall-config.in:3614
+#: ../src/firewall-config.in:3126 ../src/firewall-config.in:3626
 #: ../src/firewall-config.glade.h:270
 msgid "second"
-msgstr ""
+msgstr "saniye"
 
-#: ../src/firewall-config.in:3117 ../src/firewall-config.in:3615
+#: ../src/firewall-config.in:3127 ../src/firewall-config.in:3627
 #: ../src/firewall-config.glade.h:271
 msgid "minute"
-msgstr ""
+msgstr "dakika"
 
-#: ../src/firewall-config.in:3118 ../src/firewall-config.in:3616
+#: ../src/firewall-config.in:3128 ../src/firewall-config.in:3628
 #: ../src/firewall-config.glade.h:272
 msgid "hour"
-msgstr ""
+msgstr "saat"
 
-#: ../src/firewall-config.in:3119 ../src/firewall-config.in:3617
+#: ../src/firewall-config.in:3129 ../src/firewall-config.in:3629
 #: ../src/firewall-config.glade.h:273
 msgid "day"
-msgstr ""
+msgstr "gün"
 
-#: ../src/firewall-config.in:3120 ../src/firewall-config.in:3618
+#: ../src/firewall-config.in:3130 ../src/firewall-config.in:3630
 #: ../src/firewall-config.glade.h:276
 msgid "emergency"
-msgstr ""
+msgstr "acil durum"
 
-#: ../src/firewall-config.in:3121 ../src/firewall-config.in:3619
+#: ../src/firewall-config.in:3131 ../src/firewall-config.in:3631
 #: ../src/firewall-config.glade.h:277
 msgid "alert"
-msgstr ""
+msgstr "alarm"
 
-#: ../src/firewall-config.in:3122 ../src/firewall-config.in:3620
+#: ../src/firewall-config.in:3132 ../src/firewall-config.in:3632
 #: ../src/firewall-config.glade.h:278
 msgid "critical"
-msgstr ""
+msgstr "kritik"
 
-#: ../src/firewall-config.in:3123 ../src/firewall-config.in:3621
+#: ../src/firewall-config.in:3133 ../src/firewall-config.in:3633
 #: ../src/firewall-config.glade.h:279
 msgid "error"
-msgstr ""
+msgstr "hata"
 
-#: ../src/firewall-config.in:3124 ../src/firewall-config.in:3622
+#: ../src/firewall-config.in:3134 ../src/firewall-config.in:3634
 #: ../src/firewall-config.glade.h:280
 msgid "warning"
-msgstr ""
+msgstr "uyarı"
 
-#: ../src/firewall-config.in:3125 ../src/firewall-config.in:3623
+#: ../src/firewall-config.in:3135 ../src/firewall-config.in:3635
 #: ../src/firewall-config.glade.h:281
 msgid "notice"
-msgstr ""
+msgstr "ikaz"
 
-#: ../src/firewall-config.in:3126 ../src/firewall-config.in:3624
+#: ../src/firewall-config.in:3136 ../src/firewall-config.in:3636
 #: ../src/firewall-config.glade.h:282
 msgid "info"
-msgstr ""
+msgstr "bilgi"
 
-#: ../src/firewall-config.in:3127 ../src/firewall-config.in:3625
+#: ../src/firewall-config.in:3137 ../src/firewall-config.in:3637
 #: ../src/firewall-config.glade.h:283
 msgid "debug"
-msgstr ""
+msgstr "hata ayıkla"
 
-#: ../src/firewall-config.in:3325 ../src/firewall-config.in:3550
-#: ../src/firewall-config.in:3574 ../src/firewall-config.in:3629
-#: ../src/firewall-config.in:3759 ../src/firewall-config.in:3806
+#: ../src/firewall-config.in:3337 ../src/firewall-config.in:3562
+#: ../src/firewall-config.in:3586 ../src/firewall-config.in:3641
+#: ../src/firewall-config.in:3776 ../src/firewall-config.in:3823
 msgid "ipv4"
 msgstr "ipv4"
 
-#: ../src/firewall-config.in:3327 ../src/firewall-config.in:3552
-#: ../src/firewall-config.in:3576 ../src/firewall-config.in:3631
-#: ../src/firewall-config.in:3761 ../src/firewall-config.in:3808
+#: ../src/firewall-config.in:3339 ../src/firewall-config.in:3564
+#: ../src/firewall-config.in:3588 ../src/firewall-config.in:3643
+#: ../src/firewall-config.in:3778 ../src/firewall-config.in:3825
 msgid "ipv6"
-msgstr ""
+msgstr "ipv6"
 
-#: ../src/firewall-config.in:5014
+#: ../src/firewall-config.in:5031
 msgid ""
-"Forwarding to another system is only useful if the interface is masqueraded.\n"
+"Forwarding to another system is only useful if the interface is "
+"masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 
-#: ../src/firewall-config.in:5376
+#: ../src/firewall-config.in:5393
 msgid "Built-in service, rename not supported."
 msgstr "Dahili servis, Yeniden isimlendirme desteklenmiyor."
 
-#: ../src/firewall-config.in:5585
+#: ../src/firewall-config.in:5602
 msgid "Please enter an ipv4 address with the form address[/mask]."
 msgstr ""
 
-#: ../src/firewall-config.in:5586
+#: ../src/firewall-config.in:5603
 msgid "The mask can be a network mask or a number."
 msgstr ""
 
-#: ../src/firewall-config.in:5588
+#: ../src/firewall-config.in:5605
 msgid "Please enter an ipv6 address with the form address[/mask]."
 msgstr ""
 
-#: ../src/firewall-config.in:5589
+#: ../src/firewall-config.in:5606
 msgid "The mask is a number."
 msgstr ""
 
-#: ../src/firewall-config.in:5591
+#: ../src/firewall-config.in:5608
 msgid "Please enter an ipv4 or ipv6 address with the form address[/mask]."
 msgstr ""
 
-#: ../src/firewall-config.in:5592
+#: ../src/firewall-config.in:5609
 msgid ""
 "The mask can be a network mask or a number for ipv4.\n"
 "The mask is a number for ipv6."
 msgstr ""
 
-#: ../src/firewall-config.in:5776
+#: ../src/firewall-config.in:5793
 msgid "Built-in ipset, rename not supported."
 msgstr ""
 
-#: ../src/firewall-config.in:5868 ../src/firewall-config.in:5950
+#: ../src/firewall-config.in:5885 ../src/firewall-config.in:5967
 msgid "Please select a file"
-msgstr ""
+msgstr "Lütfen bir dosya seç"
 
-#: ../src/firewall-config.in:5875 ../src/firewall-config.in:5957
+#: ../src/firewall-config.in:5892 ../src/firewall-config.in:5974
 msgid "Text Files"
-msgstr ""
+msgstr "Metin Dosyası"
 
-#: ../src/firewall-config.in:5880 ../src/firewall-config.in:5962
+#: ../src/firewall-config.in:5897 ../src/firewall-config.in:5979
 msgid "All Files"
-msgstr ""
+msgstr "Tüm Dosyalar"
 
-#: ../src/firewall-config.in:6383 ../src/firewall-config.in:6412
+#: ../src/firewall-config.in:6400 ../src/firewall-config.in:6429
 #: ../src/firewall-config.glade.h:40
 msgid "All"
-msgstr ""
+msgstr "Tümü"
 
-#: ../src/firewall-config.in:6383 ../src/firewall-config.in:6412
+#: ../src/firewall-config.in:6400 ../src/firewall-config.in:6429
 #: ../src/firewall-config.glade.h:41
 msgid "IPv4"
 msgstr "IPv4"
 
-#: ../src/firewall-config.in:6384 ../src/firewall-config.in:6412
+#: ../src/firewall-config.in:6401 ../src/firewall-config.in:6429
 #: ../src/firewall-config.glade.h:42
 msgid "IPv6"
 msgstr "IPv6"
 
-#: ../src/firewall-config.in:6389
+#: ../src/firewall-config.in:6406
 msgid "Built-in helper, rename not supported."
 msgstr ""
 
-#: ../src/firewall-config.in:6867
+#: ../src/firewall-config.in:6884
 msgid "Built-in icmp, rename not supported."
 msgstr "Dahili icmp, Yeniden isimlendirme desteklenmiyor."
 
-#: ../src/firewall-config.in:7935
+#: ../src/firewall-config.in:7952
 #, c-format
 msgid "Failed to read file '%s': %s"
 msgstr ""
 
-#: ../src/firewall-config.in:8068
+#: ../src/firewall-config.in:8085
 #, c-format
 msgid "Select zone for source %s"
 msgstr ""
@@ -737,7 +737,7 @@ msgstr "Adres"
 
 #: ../src/firewall-config.glade.h:2
 msgid "Automatic Helpers"
-msgstr ""
+msgstr "Otomatik Yardımcılar"
 
 #: ../src/firewall-config.glade.h:3
 msgid "Please select the automatic helpers value:"
@@ -785,11 +785,11 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:17
 msgid "security"
-msgstr ""
+msgstr "güvenlik"
 
 #: ../src/firewall-config.glade.h:18
 msgid "Table:"
-msgstr ""
+msgstr "Tablo:"
 
 #: ../src/firewall-config.glade.h:19
 msgid "Direct Passthrough Rule"
@@ -856,8 +856,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:34
 msgid "Bold entries are mandatory, all others are optional."
-msgstr ""
-"Kalın girişlerin hepsi zorunludur. Diğer tüm girişler isteğe bağlıdır."
+msgstr "Kalın girişlerin hepsi zorunludur. Diğer tüm girişler isteğe bağlıdır."
 
 #: ../src/firewall-config.glade.h:35
 msgid "Name:"
@@ -881,11 +880,11 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:43
 msgid "Module:"
-msgstr ""
+msgstr "Modül:"
 
 #: ../src/firewall-config.glade.h:44
 msgid "Helper"
-msgstr ""
+msgstr "Yardımcılar"
 
 #: ../src/firewall-config.glade.h:45
 msgid "Please select a helper:"
@@ -980,7 +979,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:69
 msgid "Panic Mode"
-msgstr ""
+msgstr "Panik Kipi"
 
 #: ../src/firewall-config.glade.h:70
 msgid ""
@@ -1002,7 +1001,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:74
 msgid "_View"
-msgstr ""
+msgstr "_Görünüm"
 
 #: ../src/firewall-config.glade.h:75
 msgid "IPSets"
@@ -1014,11 +1013,11 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:77
 msgid "Helpers"
-msgstr ""
+msgstr "Yardımcılar"
 
 #: ../src/firewall-config.glade.h:78
 msgid "Direct Configuration"
-msgstr ""
+msgstr "Doğrudan Yapılandırma"
 
 #: ../src/firewall-config.glade.h:79
 msgid "Lockdown Whitelist"
@@ -1052,7 +1051,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:86
 msgid "Configuration:"
-msgstr ""
+msgstr "Yapılandırma:"
 
 #: ../src/firewall-config.glade.h:87
 msgid ""
@@ -1127,19 +1126,19 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:102
 msgid "Add Protocol"
-msgstr ""
+msgstr "Protokol Ekle"
 
 #: ../src/firewall-config.glade.h:103
 msgid "Edit Protocol"
-msgstr ""
+msgstr "Protokol Düzenle"
 
 #: ../src/firewall-config.glade.h:104
 msgid "Remove Protocol"
-msgstr ""
+msgstr "Protokol Kaldır"
 
 #: ../src/firewall-config.glade.h:105
 msgid "Protocols"
-msgstr ""
+msgstr "Protokoller"
 
 #: ../src/firewall-config.glade.h:106
 msgid ""
@@ -1207,9 +1206,10 @@ msgid ""
 "messages between networked computers, but additionally for informational "
 "messages like ping requests and replies."
 msgstr ""
-"İnternet Kontrol Mesaj Protokolü \"The Internet Control Message Protocol\" "
-"(ICMP) genellikle bilgisayarlar arasındaki hata mesajları için kullanılır, "
-"fakat ek olarak bilgi mesajları ping istek ve cevapları içinde kullanılır."
+"İnternet Kontrol Mesaj Protokolü \"The Internet Control Message Protocol"
+"\" (ICMP) genellikle bilgisayarlar arasındaki hata mesajları için "
+"kullanılır, fakat ek olarak bilgi mesajları ping istek ve cevapları içinde "
+"kullanılır."
 
 #: ../src/firewall-config.glade.h:117
 msgid ""
@@ -1240,19 +1240,19 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:122
 msgid "Add Rich Rule"
-msgstr ""
+msgstr "Geliştirilmiş Kural Ekle"
 
 #: ../src/firewall-config.glade.h:123
 msgid "Edit Rich Rule"
-msgstr ""
+msgstr "Geliştirilmiş Kural Düzenle"
 
 #: ../src/firewall-config.glade.h:124
 msgid "Remove Rich Rule"
-msgstr ""
+msgstr "Geliştirilmiş Kural Kaldır"
 
 #: ../src/firewall-config.glade.h:125
 msgid "Rich Rules"
-msgstr ""
+msgstr "Geliştirilmiş Kurallar"
 
 #: ../src/firewall-config.glade.h:126
 msgid ""
@@ -1262,15 +1262,15 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:127
 msgid "Add Interface"
-msgstr ""
+msgstr "Arayüz Ekle"
 
 #: ../src/firewall-config.glade.h:128
 msgid "Edit Interface"
-msgstr ""
+msgstr "Arayüz Düzenle"
 
 #: ../src/firewall-config.glade.h:129
 msgid "Remove Interface"
-msgstr ""
+msgstr "Arayüz Kaldır"
 
 #: ../src/firewall-config.glade.h:131
 msgid ""
@@ -1281,15 +1281,15 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:132
 msgid "Add Source"
-msgstr ""
+msgstr "Kaynak Ekle"
 
 #: ../src/firewall-config.glade.h:133
 msgid "Edit Source"
-msgstr ""
+msgstr "Kaynak Düzenle"
 
 #: ../src/firewall-config.glade.h:134
 msgid "Remove Source"
-msgstr ""
+msgstr "Kaynak Kaldır"
 
 #: ../src/firewall-config.glade.h:136
 msgid "Zones"
@@ -1415,11 +1415,11 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:162
 msgid "Add"
-msgstr ""
+msgstr "Ekle"
 
 #: ../src/firewall-config.glade.h:164
 msgid "Entries"
-msgstr ""
+msgstr "Girdiler"
 
 #: ../src/firewall-config.glade.h:165
 msgid ""
@@ -1522,19 +1522,19 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:184
 msgid "Add Rule"
-msgstr ""
+msgstr "Kural Ekle"
 
 #: ../src/firewall-config.glade.h:185
 msgid "Edit Rule"
-msgstr ""
+msgstr "Kural Düzenle"
 
 #: ../src/firewall-config.glade.h:186
 msgid "Remove Rule"
-msgstr ""
+msgstr "Kural Kaldır"
 
 #: ../src/firewall-config.glade.h:187
 msgid "Rules"
-msgstr ""
+msgstr "Kurallar"
 
 #: ../src/firewall-config.glade.h:188
 msgid ""
@@ -1579,19 +1579,19 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:196
 msgid "Add Context"
-msgstr ""
+msgstr "İçerik Ekle"
 
 #: ../src/firewall-config.glade.h:197
 msgid "Edit Context"
-msgstr ""
+msgstr "İçerik Düzenle"
 
 #: ../src/firewall-config.glade.h:198
 msgid "Remove Context"
-msgstr ""
+msgstr "İçerik Kaldır"
 
 #: ../src/firewall-config.glade.h:199
 msgid "Contexts"
-msgstr ""
+msgstr "İçerikler"
 
 #: ../src/firewall-config.glade.h:200
 msgid ""
@@ -1602,15 +1602,15 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:201
 msgid "Add Command Line"
-msgstr ""
+msgstr "Komut Satırı Ekle"
 
 #: ../src/firewall-config.glade.h:202
 msgid "Edit Command Line"
-msgstr ""
+msgstr "Komut Satırı Düzenle"
 
 #: ../src/firewall-config.glade.h:203
 msgid "Remove Command Line"
-msgstr ""
+msgstr "Komut Satırı Kaldır"
 
 #: ../src/firewall-config.glade.h:204
 msgid "Command lines"
@@ -1618,19 +1618,19 @@ msgstr "Komut satırları"
 
 #: ../src/firewall-config.glade.h:205
 msgid "User names."
-msgstr ""
+msgstr "Kullanıcı adları."
 
 #: ../src/firewall-config.glade.h:206
 msgid "Add User Name"
-msgstr ""
+msgstr "Kullanıcı Adı Ekle"
 
 #: ../src/firewall-config.glade.h:207
 msgid "Edit User Name"
-msgstr ""
+msgstr "Kullanıcı Adı Düzenle"
 
 #: ../src/firewall-config.glade.h:208
 msgid "Remove User Name"
-msgstr ""
+msgstr "Kullanıcı Adı Kaldır"
 
 #: ../src/firewall-config.glade.h:209
 msgid "User names"
@@ -1638,19 +1638,19 @@ msgstr "Kullanıcı isimleri"
 
 #: ../src/firewall-config.glade.h:210
 msgid "User ids."
-msgstr ""
+msgstr "Kullanıcı kimlikleri."
 
 #: ../src/firewall-config.glade.h:211
 msgid "Add User Id"
-msgstr ""
+msgstr "Kullanıcı Kimliği Ekle"
 
 #: ../src/firewall-config.glade.h:212
 msgid "Edit User Id"
-msgstr ""
+msgstr "Kullanıcı Kimliği Düzenle"
 
 #: ../src/firewall-config.glade.h:213
 msgid "Remove User Id"
-msgstr ""
+msgstr "Kullanıcı Kimliği Kaldır"
 
 #: ../src/firewall-config.glade.h:214
 msgid "User Ids"
@@ -1665,18 +1665,18 @@ msgctxt ""
 "Meaning: Log of denied packets. But this is too long. LogDenied is also the "
 "parameter used in firewalld.conf."
 msgid "Log Denied:"
-msgstr ""
+msgstr "Günlük Reddedildi:"
 
 #: ../src/firewall-config.glade.h:217
 msgid "Panic Mode:"
-msgstr ""
+msgstr "Panik Kipi:"
 
 #: ../src/firewall-config.glade.h:218
 msgctxt ""
 "Meaning: Log of denied packets. But this is too long. LogDenied is also the "
 "parameter used in firewalld.conf."
 msgid "Automatic Helpers:"
-msgstr ""
+msgstr "Otomatik Yardımcılar:"
 
 #: ../src/firewall-config.glade.h:219
 msgid "Lockdown:"
@@ -1700,11 +1700,11 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:225
 msgid "Type:"
-msgstr ""
+msgstr "Tür:"
 
 #: ../src/firewall-config.glade.h:226
 msgid "Timeout:"
-msgstr ""
+msgstr "Zaman aşımı:"
 
 #: ../src/firewall-config.glade.h:227
 msgid "Hashsize:"
@@ -1736,7 +1736,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:235
 msgid "Log Denied"
-msgstr ""
+msgstr "Günlük Reddedildi"
 
 #: ../src/firewall-config.glade.h:236
 msgid "Please select the log denied value:"
@@ -1768,11 +1768,11 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:243
 msgid "- Select -"
-msgstr ""
+msgstr "- Seç -"
 
 #: ../src/firewall-config.glade.h:244
 msgid "Other Module:"
-msgstr ""
+msgstr "Diğer Modüller:"
 
 #: ../src/firewall-config.glade.h:245
 msgid "Port and Protocol"
@@ -1792,7 +1792,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:249
 msgid "Priority:"
-msgstr ""
+msgstr "Öncelik:"
 
 #: ../src/firewall-config.glade.h:251
 msgid "Please enter a protocol."
@@ -1804,7 +1804,7 @@ msgstr "Diğer Protokol"
 
 #: ../src/firewall-config.glade.h:253
 msgid "Rich Rule"
-msgstr ""
+msgstr "Geliştirilmiş Kural"
 
 #: ../src/firewall-config.glade.h:254
 msgid "Please enter a rich rule."
@@ -1820,19 +1820,19 @@ msgstr "Kaynak:"
 
 #: ../src/firewall-config.glade.h:257
 msgid "Destination:"
-msgstr ""
+msgstr "Hedef:"
 
 #: ../src/firewall-config.glade.h:258
 msgid "Log:"
-msgstr ""
+msgstr "Günlük:"
 
 #: ../src/firewall-config.glade.h:259
 msgid "Audit:"
-msgstr ""
+msgstr "Denetim:"
 
 #: ../src/firewall-config.glade.h:260
 msgid "ipv4 and ipv6"
-msgstr ""
+msgstr "ipv4 ve ipv6"
 
 #: ../src/firewall-config.glade.h:261
 msgid "inverted"
@@ -1840,8 +1840,8 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:266
 msgid ""
-"To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
-"(not both)."
+"To enable this Action has to be 'reject' and Family either 'ipv4' or "
+"'ipv6' (not both)."
 msgstr ""
 
 #: ../src/firewall-config.glade.h:267
@@ -1862,7 +1862,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:275
 msgid "Level:"
-msgstr ""
+msgstr "Seviye:"
 
 #: ../src/firewall-config.glade.h:292
 msgid "Element:"
@@ -1870,7 +1870,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:293
 msgid "Action:"
-msgstr ""
+msgstr "Eylem:"
 
 #: ../src/firewall-config.glade.h:294
 msgid "Base Service Settings"
@@ -1898,11 +1898,11 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:301
 msgid "Please enter the user name."
-msgstr ""
+msgstr "Lütfen kullanıcı adını gir."
 
 #: ../src/firewall-config.glade.h:302
 msgid "label"
-msgstr ""
+msgstr "etiket"
 
 #: ../src/firewall-config.glade.h:303
 msgid "Base Zone Settings"
