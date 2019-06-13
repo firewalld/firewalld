@@ -16,7 +16,3 @@ intltoolize --force --automake
 
 autoreconf --force -v --install --symlink || exit 1
 cd $ORIGDIR || exit $?
-
-if test -z "$NOCONFIGURE"; then
-	$srcdir/configure "$@"
-fi
