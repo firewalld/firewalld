@@ -1,5 +1,5 @@
 FWD_START_TEST([service include])
-AT_KEYWORDS(service xml gh273)
+AT_KEYWORDS(service xml gh273 rhbz1720300)
 
 AT_CHECK([mkdir -p ./services])
 AT_CHECK([cat <<HERE > ./services/my-service-with-include.xml
@@ -68,6 +68,24 @@ AT_CHECK([grep '<include service="ssh"/>' ./services/my-service-with-include.xml
 FWD_CHECK([--permanent --service=my-service-with-include --get-includes], 0, [dnl
 mdns recursive-service ssdp
 ])
+FWD_CHECK([--permanent --info-service=my-service-with-include | TRIM_WHITESPACE], 0, [m4_strip([dnl
+my-service-with-include
+  ports: 12345/tcp
+  protocols:
+  source-ports:
+  modules:
+  destination:
+  includes: mdns recursive-service ssdp
+])])
+FWD_CHECK([--info-service=my-service-with-include | TRIM_WHITESPACE], 0, [m4_strip([dnl
+my-service-with-include
+  ports: 12345/tcp
+  protocols:
+  source-ports:
+  modules:
+  destination:
+  includes: mdns recursive-service ssdp
+])])
 
 dnl firewall-offline-cmd
 FWD_OFFLINE_CHECK([--service=my-service-with-include --query-include=recursive-service], 0, [ignore], [ignore])
@@ -80,6 +98,15 @@ AT_CHECK([grep '<include service="ssh"/>' ./services/my-service-with-include.xml
 FWD_OFFLINE_CHECK([--service=my-service-with-include --get-includes], 0, [dnl
 mdns recursive-service ssdp
 ])
+FWD_OFFLINE_CHECK([--info-service=my-service-with-include | TRIM_WHITESPACE], 0, [m4_strip([dnl
+my-service-with-include
+  ports: 12345/tcp
+  protocols:
+  source-ports:
+  modules:
+  destination:
+  includes: mdns recursive-service ssdp
+])])
 
 dnl negative test for including service that doesn't exist
 FWD_CHECK([-q --permanent --zone=drop --add-interface=foobar0])

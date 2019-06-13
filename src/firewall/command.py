@@ -448,6 +448,7 @@ class FirewallCommand(object):
         description = settings.getDescription()
         destinations = settings.getDestinations()
         short_description = settings.getShort()
+        includes = settings.getIncludes()
         self.print_msg(service)
         if self.verbose:
             self.print_msg("  summary: " + short_description)
@@ -462,6 +463,7 @@ class FirewallCommand(object):
         self.print_msg("  destination: " +
                        " ".join(["%s:%s" % (k, v)
                                  for k, v in destinations.items()]))
+        self.print_msg("  includes: " + " ".join(sorted(includes)))
 
     def print_icmptype_info(self, icmptype, settings):
         destinations = settings.getDestinations()
