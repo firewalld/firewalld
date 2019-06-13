@@ -7,6 +7,7 @@ TESTSUITE_FILES = \
 EXTRA_DIST = \
 	$(TESTSUITE) \
 	$(TESTSUITE_FILES) \
+	$(srcdir)/python/*.py \
 	$(srcdir)/package.m4
 
 $(srcdir)/package.m4: $(top_srcdir)/configure.ac $(top_srcdir)/firewalld.spec $(srcdir)/Makefile
