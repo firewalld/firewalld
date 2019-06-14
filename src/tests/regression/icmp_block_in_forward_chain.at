@@ -1,12 +1,30 @@
 FWD_START_TEST([ICMP block present FORWARD chain])
 
 FWD_CHECK([-q --zone=public --add-icmp-block=host-prohibited])
-m4_if(iptables, FIREWALL_BACKEND, [
-    NS_CHECK([IPTABLES -L IN_public_deny | grep "host-prohibited"], 0, ignore)
-    NS_CHECK([IPTABLES -L FWDI_public_deny | grep "host-prohibited"], 0, ignore)
+
+m4_if(nftables, FIREWALL_BACKEND, [
+NFT_LIST_RULES([inet], [filter_IN_public_deny | sed -e 's/icmp code 10/icmp code host-prohibited/'], 0, [dnl
+    table inet firewalld {
+        chain filter_IN_public_deny {
+            icmp type destination-unreachable icmp code host-prohibited reject with icmp type admin-prohibited
+        }
+    }
+])
+NFT_LIST_RULES([inet], [filter_FWDI_public_deny | sed -e 's/icmp code 10/icmp code host-prohibited/'], 0, [dnl
+    table inet firewalld {
+        chain filter_FWDI_public_deny {
+            icmp type destination-unreachable icmp code host-prohibited reject with icmp type admin-prohibited
+        }
+    }
+])
 ], [
-    NS_CHECK([nft list chain inet firewalld filter_IN_public_deny | grep "destination-unreachable" |grep "\(code 10\|host-prohibited\)"], 0, ignore)
-    NS_CHECK([nft list chain inet firewalld filter_FWDI_public_deny | grep "destination-unreachable" |grep "\(code 10\|host-prohibited\)"], 0, ignore)
+
+IPTABLES_LIST_RULES([filter], [IN_public_deny], 0, [dnl
+    REJECT icmp -- 0.0.0.0/0 0.0.0.0/0 icmptype 3 code 10 reject-with icmp-host-prohibited
+])
+IPTABLES_LIST_RULES([filter], [FWDI_public_deny], 0, [dnl
+    REJECT icmp -- 0.0.0.0/0 0.0.0.0/0 icmptype 3 code 10 reject-with icmp-host-prohibited
+])
 ])
 
 FWD_END_TEST
