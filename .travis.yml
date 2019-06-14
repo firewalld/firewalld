@@ -60,7 +60,9 @@ install:
 script:
   # Do a parallel build to spot potential dependency problems.
   # No ebtables-restore in ubuntu 14.04
-  - ./autogen.sh --with-ebtables-restore=/bin/false --sysconfdir=/etc && make -j32
+  - ./autogen.sh
+    && ./configure --with-ebtables-restore=/bin/false --sysconfdir=/etc
+    && make -j32
   # Note: TESTSUITEFLAGS implicit from env above
   - sudo env PATH="$PATH" make check ||
     sudo env PATH="$PATH" make check TESTSUITEFLAGS="--recheck --errexit -v -d"
