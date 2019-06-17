@@ -250,18 +250,29 @@ m4_define([PIPESTATUS0], [dnl
 HERE
 ])
 
+m4_define([EBTABLES_LIST_RULES_NORMALIZE], [dnl
+    TRIM_WHITESPACE | dnl
+    grep -v "^Bridge" | dnl
+    [sed -e 's/\([-][-][-a-zA-Z0-9]\+\)[ ]\+[!]/! \1/g'] dnl
+])
+
 m4_define([EBTABLES_LIST_RULES], [
     dnl ebtables commit 5f508b76a0ce change list output for inversion.
-    m4_define([EBTABLES_LIST_RULES_NORMALIZE], [[sed -e 's/\([-][-][-a-zA-Z0-9]\+\)[ ]\+[!]/! \1/g']])
     m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
-        NS_CHECK([ebtables --concurrent -t $1 -L $2 | TRIM_WHITESPACE | grep -v "^Bridge" | EBTABLES_LIST_RULES_NORMALIZE], [$3], [m4_strip([$4])], [m4_strip([$5])], [$6], [$7])
+        NS_CHECK([PIPESTATUS0([ebtables --concurrent -t $1 -L $2], [EBTABLES_LIST_RULES_NORMALIZE])],
+                 [$3], [m4_strip([$4])], [m4_strip([$5])], [$6], [$7])
     ])
-    m4_undefine([EBTABLES_LIST_RULES_NORMALIZE])
+])
+
+m4_define([IPTABLES_LIST_RULES_NORMALIZE], [dnl
+    TRIM_WHITESPACE | dnl
+    tail -n +3 dnl
 ])
 
 m4_define([IPTABLES_LIST_RULES_ALWAYS], [
     m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
-        NS_CHECK([IPTABLES -w -n -t $1 -L $2 | TRIM_WHITESPACE | tail -n +3], [$3], [m4_strip([$4])], [m4_strip([$5])], [$6], [$7])
+        NS_CHECK([PIPESTATUS0([IPTABLES -w -n -t $1 -L $2], [IPTABLES_LIST_RULES_NORMALIZE])],
+                 [$3], [m4_strip([$4])], [m4_strip([$5])], [$6], [$7])
     ])
 ])
 
@@ -271,11 +282,17 @@ m4_define([IPTABLES_LIST_RULES], [
     ])
 ])
 
+m4_define([IP6TABLES_LIST_RULES_NORMALIZE], [dnl
+    TRIM_WHITESPACE | dnl
+    tail -n +3 dnl
+])
+
 m4_define([IP6TABLES_LIST_RULES_ALWAYS], [
     m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
-    m4_if(yes, HOST_SUPPORTS_IP6TABLES, [
-        NS_CHECK([IP6TABLES -w -n -t $1 -L $2 | TRIM_WHITESPACE | tail -n +3], [$3], [m4_strip([$4])], [m4_strip([$5])], [$6], [$7])
-    ])
+        m4_if(yes, HOST_SUPPORTS_IP6TABLES, [
+            NS_CHECK([PIPESTATUS0([IP6TABLES -w -n -t $1 -L $2], [IP6TABLES_LIST_RULES_NORMALIZE])],
+                     [$3], [m4_strip([$4])], [m4_strip([$5])], [$6], [$7])
+        ])
     ])
 ])
 
@@ -285,20 +302,21 @@ m4_define([IP6TABLES_LIST_RULES], [
     ])
 ])
 
-m4_define([NFT_LIST_RULES_ALWAYS], [
+m4_define([NFT_LIST_RULES_NORMALIZE], [dnl
+    TRIM_WHITESPACE | dnl
     dnl nftables commit 6dd848339444 change list output to show "meta mark"
     dnl instead of just "mark".
-    m4_define([NFT_LIST_RULES_NORMALIZE], [dnl
-        sed -e 's/meta mark/mark/g'dnl
-            -e '/type.*hook.*priority.*policy.*/d'dnl
-            dnl tranform ct state { established,related } to ct state established,related
-            -e '/ct \(state\|status\)/{s/\(ct \(state\|status\)\) {/\1/g; s/ }//; s/\(@<:@a-z@:>@*\), /\1,/g;}' dnl
-    ])
+    sed -e 's/meta mark/mark/g'dnl
+        -e '/type.*hook.*priority.*policy.*/d'dnl
+        dnl tranform ct state { established,related } to ct state established,related
+        -e '/ct \(state\|status\)/{s/\(ct \(state\|status\)\) {/\1/g; s/ }//; s/\(@<:@a-z@:>@*\), /\1,/g;}' dnl
+])
 
+m4_define([NFT_LIST_RULES_ALWAYS], [
     m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
-        NS_CHECK([nft NFT_NUMERIC_ARGS list chain $1 firewalld $2 | TRIM_WHITESPACE | NFT_LIST_RULES_NORMALIZE], [$3], [m4_strip([$4])], [m4_strip([$5])], [$6], [$7])
+        NS_CHECK([PIPESTATUS0([nft NFT_NUMERIC_ARGS list chain $1 firewalld $2], [NFT_LIST_RULES_NORMALIZE])],
+                 [$3], [m4_strip([$4])], [m4_strip([$5])], [$6], [$7])
     ])
-    m4_undefine([NFT_LIST_RULES_NORMALIZE])
 ])
 
 m4_define([NFT_LIST_RULES], [
@@ -307,18 +325,27 @@ m4_define([NFT_LIST_RULES], [
     ])
 ])
 
+m4_define([IPSET_LIST_SET_NORMALIZE], [dnl
+    TRIM_WHITESPACE |dnl
+    grep -v "^\(Revision\|Header\|Size\|References\|Number\)" |dnl
+    awk 'NR <= 3; NR > 3 {print | "sort"}' dnl
+])
+
 m4_define([IPSET_LIST_SET], [
     m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
-        NS_CHECK([ipset list $1 | TRIM_WHITESPACE |dnl
-                  grep -v "^\(Revision\|Header\|Size\|References\|Number\)" |dnl
-                  awk 'NR <= 3; NR > 3 {print | "sort"}'],
+        NS_CHECK([PIPESTATUS0([ipset list $1], [IPSET_LIST_SET_NORMALIZE])],
                  [$2], [m4_strip([$3])], [m4_strip([$4])], [$5], [$6])
     ])
 ])
 
+m4_define([NFT_LIST_SET_NORMALIZE], [dnl
+    TRIM_WHITESPACE dnl
+])
+
 m4_define([NFT_LIST_SET_ALWAYS], [
     m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
-        NS_CHECK([nft NFT_NUMERIC_ARGS list set inet firewalld $1 | TRIM_WHITESPACE], [$2], [m4_strip([$3])], [m4_strip([$4])], [$5], [$6])
+        NS_CHECK([PIPESTATUS0([nft NFT_NUMERIC_ARGS list set inet firewalld $1], [NFT_LIST_SET_NORMALIZE])],
+                 [$2], [m4_strip([$3])], [m4_strip([$4])], [$5], [$6])
     ])
 ])
 
