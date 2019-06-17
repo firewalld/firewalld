@@ -242,6 +242,14 @@ m4_define([NS_CHECK], [
     AT_CHECK([NS_CMD([$1])], [$2], [$3], [$4], [$5], [$6])
 ])
 
+dnl implement PIPESTATUS[0] in a portable way
+dnl
+m4_define([PIPESTATUS0], [dnl
+    sh <<-"HERE"
+    { { { { $1; echo $? >&3; } | $2 >&4; } 3>&1; } | { read RC; exit $RC; } } 4>&1
+HERE
+])
+
 m4_define([EBTABLES_LIST_RULES], [
     dnl ebtables commit 5f508b76a0ce change list output for inversion.
     m4_define([EBTABLES_LIST_RULES_NORMALIZE], [[sed -e 's/\([-][-][-a-zA-Z0-9]\+\)[ ]\+[!]/! \1/g']])
