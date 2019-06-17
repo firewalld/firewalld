@@ -444,6 +444,10 @@ m4_define([CHECK_NFT_CT_HELPER], [
     ])
 ])
 
+m4_define([CHECK_MODULE_PROTO_GRE], [
+    AT_SKIP_IF([! NS_CMD([modinfo nf_conntrack_proto_gre])])
+])
+
 m4_define([HOST_SUPPORTS_NFT_FIB], m4_esyscmd([
     KERNEL_MAJOR=`uname -r | cut -d. -f1`
     KERNEL_MINOR=`uname -r | cut -d. -f2`
