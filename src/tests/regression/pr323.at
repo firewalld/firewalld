@@ -1,5 +1,7 @@
 FWD_START_TEST([GRE proto helper])
 
+CHECK_MODULE_PROTO_GRE
+
 FWD_CHECK([-q --add-protocol=gre])
 FWD_CHECK([-q --remove-protocol=gre])
 
