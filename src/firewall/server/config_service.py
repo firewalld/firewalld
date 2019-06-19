@@ -32,7 +32,6 @@ from firewall import config
 from firewall.dbus_utils import dbus_to_python, \
     dbus_introspection_prepare_properties, \
     dbus_introspection_add_properties
-from firewall.core.io.service import Service
 from firewall.core.logger import log
 from firewall.server.decorators import handle_exceptions, \
     dbus_handle_exceptions, dbus_service_method
@@ -173,7 +172,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
     # S E T T I N G S
 
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_SERVICE,
-                         out_signature=Service.DBUS_SIGNATURE)
+                         out_signature='(sssa(ss)asa{ss}asa(ss))')
     @dbus_handle_exceptions
     def getSettings(self, sender=None): # pylint: disable=W0613
         """get settings for service
@@ -182,7 +181,16 @@ class FirewallDConfigService(slip.dbus.service.Object):
         return self.config.get_service_config(self.obj)
 
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_SERVICE,
-                         in_signature=Service.DBUS_SIGNATURE)
+                         out_signature='a{sv}')
+    @dbus_handle_exceptions
+    def getSettings2(self, sender=None):
+        """get settings for service
+        """
+        log.debug1("%s.getSettings2()", self._log_prefix)
+        return self.config.get_service_config_dict(self.obj)
+
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_SERVICE,
+                         in_signature='(sssa(ss)asa{ss}asa(ss))')
     @dbus_handle_exceptions
     def update(self, settings, sender=None):
         """update settings for service
@@ -191,6 +199,16 @@ class FirewallDConfigService(slip.dbus.service.Object):
         log.debug1("%s.update('...')", self._log_prefix)
         self.parent.accessCheck(sender)
         self.obj = self.config.set_service_config(self.obj, settings)
+        self.Updated(self.obj.name)
+
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_SERVICE,
+                         in_signature='a{sv}')
+    @dbus_handle_exceptions
+    def update2(self, settings, sender=None):
+        settings = dbus_to_python(settings)
+        log.debug1("%s.update2('...')", self._log_prefix)
+        self.parent.accessCheck(sender)
+        self.obj = self.config.set_service_config_dict(self.obj, settings)
         self.Updated(self.obj.name)
 
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_SERVICE)
