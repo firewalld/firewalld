@@ -49,7 +49,6 @@ from firewall.dbus_utils import dbus_to_python, \
 from firewall.core.io.functions import check_config
 from firewall.core.io.zone import Zone
 from firewall.core.io.ipset import IPSet
-from firewall.core.io.service import Service
 from firewall.core.io.icmptype import IcmpType
 from firewall.core.io.helper import Helper
 from firewall.core.fw_nm import nm_get_bus_name, nm_get_connection_of_interface, \
@@ -916,7 +915,7 @@ class FirewallD(slip.dbus.service.Object):
 
     @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG_INFO)
     @dbus_service_method(config.dbus.DBUS_INTERFACE, in_signature='s',
-                         out_signature=Service.DBUS_SIGNATURE)
+                         out_signature='(sssa(ss)asa{ss}asa(ss))')
     @dbus_handle_exceptions
     def getServiceSettings(self, service, sender=None): # pylint: disable=W0613
         # returns service settings for service
@@ -933,6 +932,16 @@ class FirewallD(slip.dbus.service.Object):
             else:
                 conf_list.append(conf_dict[obj.IMPORT_EXPORT_STRUCTURE[i][0]])
         return tuple(conf_list)
+
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE, in_signature='s',
+                         out_signature='a{sv}')
+    @dbus_handle_exceptions
+    def getServiceSettings2(self, service, sender=None): # pylint: disable=W0613
+        service = dbus_to_python(service, str)
+        log.debug1("getServiceSettings2(%s)", service)
+        obj = self.fw.service.get_service(service)
+        return obj.export_config()
 
     @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_INFO)
     @dbus_service_method(config.dbus.DBUS_INTERFACE, in_signature='',

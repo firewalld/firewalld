@@ -39,17 +39,16 @@ from firewall.errors import FirewallError
 
 class Service(IO_Object):
     IMPORT_EXPORT_STRUCTURE = (
-        ( "version",  "" ),                   # s
-        ( "short", "" ),                      # s
-        ( "description", "" ),                # s
-        ( "ports", [ ( "", "" ), ], ),        # a(ss)
-        ( "modules", [ "", ], ),              # as
-        ( "destination", { "": "", }, ),      # a{ss}
-        ( "protocols", [ "", ], ),            # as
-        ( "source_ports", [ ( "", "" ), ], ), # a(ss)
-        ( "includes", [ "" ], ),              # as
+        ( "version",  "" ),
+        ( "short", "" ),
+        ( "description", "" ),
+        ( "ports", [ ( "", "" ), ], ),
+        ( "modules", [ "", ], ),
+        ( "destination", { "": "", }, ),
+        ( "protocols", [ "", ], ),
+        ( "source_ports", [ ( "", "" ), ], ),
+        ( "includes", [ "" ], ),
         )
-    DBUS_SIGNATURE = '(sssa(ss)asa{ss}asa(ss))'
     ADDITIONAL_ALNUM_CHARS = [ "_", "-" ]
     PARSER_REQUIRED_ELEMENT_ATTRS = {
         "short": None,

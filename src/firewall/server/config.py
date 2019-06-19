@@ -41,7 +41,6 @@ from firewall.server.config_zone import FirewallDConfigZone
 from firewall.server.config_ipset import FirewallDConfigIPSet
 from firewall.server.config_helper import FirewallDConfigHelper
 from firewall.core.io.zone import Zone
-from firewall.core.io.service import Service
 from firewall.core.io.icmptype import IcmpType
 from firewall.core.io.ipset import IPSet
 from firewall.core.io.helper import Helper
@@ -1065,7 +1064,7 @@ class FirewallDConfig(slip.dbus.service.Object):
         raise FirewallError(errors.INVALID_SERVICE, service)
 
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG,
-                         in_signature='s'+Service.DBUS_SIGNATURE,
+                         in_signature='s(sssa(ss)asa{ss}asa(ss))',
                          out_signature='o')
     @dbus_handle_exceptions
     def addService(self, service, settings, sender=None):
@@ -1076,6 +1075,21 @@ class FirewallDConfig(slip.dbus.service.Object):
         log.debug1("config.addService('%s')", service)
         self.accessCheck(sender)
         obj = self.config.new_service(service, settings)
+        config_service = self._addService(obj)
+        return config_service
+
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG,
+                         in_signature='sa{sv}',
+                         out_signature='o')
+    @dbus_handle_exceptions
+    def addService2(self, service, settings, sender=None):
+        """add service with given name and settings
+        """
+        service = dbus_to_python(service, str)
+        settings = dbus_to_python(settings)
+        log.debug1("config.addService2('%s')", service)
+        self.accessCheck(sender)
+        obj = self.config.new_service_dict(service, settings)
         config_service = self._addService(obj)
         return config_service
 
