@@ -26,6 +26,7 @@ from gi.repository import GLib, GObject
 import sys
 sys.modules['gobject'] = GObject
 
+import copy
 import dbus
 import dbus.service
 import slip.dbus
@@ -921,7 +922,17 @@ class FirewallD(slip.dbus.service.Object):
         # returns service settings for service
         service = dbus_to_python(service, str)
         log.debug1("getServiceSettings(%s)", service)
-        return self.fw.service.get_service(service).export_config()
+        obj = self.fw.service.get_service(service)
+        conf_dict = obj.export_config()
+        conf_list = []
+        for i in range(8): # tuple based dbus API has 8 elements
+            if obj.IMPORT_EXPORT_STRUCTURE[i][0] not in conf_dict:
+                # old API needs the empty elements as well. Grab it from the
+                # object otherwise we don't know the type.
+                conf_list.append(copy.deepcopy(getattr(obj, obj.IMPORT_EXPORT_STRUCTURE[i][0])))
+            else:
+                conf_list.append(conf_dict[obj.IMPORT_EXPORT_STRUCTURE[i][0]])
+        return tuple(conf_list)
 
     @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_INFO)
     @dbus_service_method(config.dbus.DBUS_INTERFACE, in_signature='',
