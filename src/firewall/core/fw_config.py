@@ -545,9 +545,43 @@ class FirewallConfig(object):
         return self._builtin_services[obj.name]
 
     def get_service_config(self, obj):
+        conf_dict = obj.export_config()
+        conf_list = []
+        for i in range(8): # tuple based dbus API has 8 elements
+            if obj.IMPORT_EXPORT_STRUCTURE[i][0] not in conf_dict:
+                # old API needs the empty elements as well. Grab it from the
+                # object otherwise we don't know the type.
+                conf_list.append(copy.deepcopy(getattr(obj, obj.IMPORT_EXPORT_STRUCTURE[i][0])))
+            else:
+                conf_list.append(conf_dict[obj.IMPORT_EXPORT_STRUCTURE[i][0]])
+        return tuple(conf_list)
+
+    def get_service_config_dict(self, obj):
         return obj.export_config()
 
     def set_service_config(self, obj, conf):
+        conf_dict = {}
+        for i,value in enumerate(conf):
+            conf_dict[obj.IMPORT_EXPORT_STRUCTURE[i][0]] = value
+
+        if obj.builtin:
+            x = copy.copy(obj)
+            x.cleanup()
+            x.import_config(conf_dict)
+            x.path = config.ETC_FIREWALLD_SERVICES
+            x.builtin = False
+            if obj.path != x.path:
+                x.default = False
+            self.add_service(x)
+            service_writer(x)
+            return x
+        else:
+            obj.cleanup()
+            obj.import_config(conf_dict)
+            service_writer(obj)
+            return obj
+
+    def set_service_config_dict(self, obj, conf):
         if obj.builtin:
             x = copy.copy(obj)
             x.import_config(conf)
@@ -564,6 +598,29 @@ class FirewallConfig(object):
             return obj
 
     def new_service(self, name, conf):
+        if name in self._services or name in self._builtin_services:
+            raise FirewallError(errors.NAME_CONFLICT,
+                                "new_service(): '%s'" % name)
+
+        conf_dict = {}
+        for i,value in enumerate(conf):
+            conf_dict[Service.IMPORT_EXPORT_STRUCTURE[i][0]] = value
+
+        x = Service()
+        x.check_name(name)
+        x.import_config(conf_dict)
+        x.name = name
+        x.filename = "%s.xml" % name
+        x.path = config.ETC_FIREWALLD_SERVICES
+        # It is not possible to add a new one with a name of a buitin
+        x.builtin = False
+        x.default = True
+
+        service_writer(x)
+        self.add_service(x)
+        return x
+
+    def new_service_dict(self, name, conf):
         if name in self._services or name in self._builtin_services:
             raise FirewallError(errors.NAME_CONFLICT,
                                 "new_service(): '%s'" % name)
@@ -684,7 +741,7 @@ class FirewallConfig(object):
         return new_service
 
     def _copy_service(self, obj, name):
-        return self.new_service(name, obj.export_config())
+        return self.new_service_dict(name, obj.export_config())
 
     # zones
 
