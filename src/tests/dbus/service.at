@@ -1,0 +1,290 @@
+FWD_START_TEST([dbus api - services])
+AT_KEYWORDS(dbus service rhbz1721414)
+
+DBUS_INTROSPECT([config], [[//method[@name="addService"]]], 0, [dnl
+    <method name="addService">
+        <arg direction="in" name="service" type="s"/>
+        <arg direction="in" name="settings" type="(sssa(ss)asa{ss}asa(ss))"/>
+        <arg direction="out" type="o"/>
+    </method>
+])
+DBUS_CHECK([config], [config.addService],
+    ["foobar" dnl name
+     '("1.0", dnl version
+       "foobar", dnl short
+       "foobar service is for foobar", dnl description
+       @<:@("1234", "udp"), ("22", "tcp"), ("1234", "udp")@:>@, dnl ports, deliberate duplicate
+       @<:@"ftp"@:>@, dnl modules
+       {"ipv4": "1.2.3.4"}, dnl destination
+       @<:@"icmp", "igmp"@:>@, dnl protocols
+       @<:@("4321", "tcp"), ("4321", "udp")@:>@ dnl source ports
+     )'dnl
+    ], 0, [stdout])
+SERVICE_OBJ=[$(sed -e "s/.*config\/service\/\([^']\+\)['].*/\1/" ./stdout)]
+export SERVICE_OBJ
+
+DBUS_INTROSPECT([config/service/${SERVICE_OBJ}], [[//method[@name="getSettings"]]], 0, [dnl
+    <method name="getSettings">
+        <arg direction="out" type="(sssa(ss)asa{ss}asa(ss))"/>
+    </method>
+])
+DBUS_CHECK([config/service/${SERVICE_OBJ}], [config.service.getSettings], [], 0, [dnl
+    [(('1.0', 'foobar', 'foobar service is for foobar', [('1234', 'udp'), ('22', 'tcp')], ['ftp'], {'ipv4': '1.2.3.4'}, ['icmp', 'igmp'], [('4321', 'tcp'), ('4321', 'udp')]),)]
+])
+
+DBUS_INTROSPECT([config/service/${SERVICE_OBJ}], [[//method[@name="update"]]], 0, [dnl
+    <method name="update">
+        <arg direction="in" name="settings" type="(sssa(ss)asa{ss}asa(ss))"/>
+    </method>
+])
+DBUS_CHECK([config/service/${SERVICE_OBJ}], [config.service.update],
+    ['("1.1", dnl version
+       "foobar new", dnl short
+       "foobar new service is for foobar", dnl description
+       @<:@("12345", "udp"), ("2222", "tcp")@:>@, dnl ports
+       @<:@"ftp"@:>@, dnl modules
+       {}, dnl destination
+       @<:@"icmp"@:>@, dnl protocols
+       @<:@("4321", "tcp")@:>@ dnl source ports
+     )'dnl
+    ], 0, [ignore])
+
+DBUS_CHECK([config/service/${SERVICE_OBJ}], [config.service.getSettings], [], 0, [dnl
+    [(('1.1', 'foobar new', 'foobar new service is for foobar', [('12345', 'udp'), ('2222', 'tcp')], ['ftp'], @a{ss} {}, ['icmp'], [('4321', 'tcp')]),)]
+])
+
+DBUS_INTROSPECT([config/service/${SERVICE_OBJ}], [[//method[@name="loadDefaults"]]], 0, [dnl
+    <method name="loadDefaults">
+    </method>
+])
+DBUS_INTROSPECT([config/service/${SERVICE_OBJ}], [[//method[@name="remove"]]], 0, [dnl
+    <method name="remove">
+    </method>
+])
+DBUS_INTROSPECT([config/service/${SERVICE_OBJ}], [[//method[@name="rename"]]], 0, [dnl
+    <method name="rename">
+        <arg direction="in" name="name" type="s"/>
+    </method>
+])
+
+DBUS_INTROSPECT([config/service/${SERVICE_OBJ}], [[//method[@name="getVersion"]]], 0, [dnl
+    <method name="getVersion">
+        <arg direction="out" type="s"/>
+    </method>
+])
+DBUS_INTROSPECT([config/service/${SERVICE_OBJ}], [[//method[@name="setVersion"]]], 0, [dnl
+    <method name="setVersion">
+        <arg direction="in" name="version" type="s"/>
+    </method>
+])
+
+DBUS_INTROSPECT([config/service/${SERVICE_OBJ}], [[//method[@name="getShort"]]], 0, [dnl
+    <method name="getShort">
+        <arg direction="out" type="s"/>
+    </method>
+])
+DBUS_INTROSPECT([config/service/${SERVICE_OBJ}], [[//method[@name="setShort"]]], 0, [dnl
+    <method name="setShort">
+        <arg direction="in" name="short" type="s"/>
+    </method>
+])
+
+DBUS_INTROSPECT([config/service/${SERVICE_OBJ}], [[//method[@name="getDescription"]]], 0, [dnl
+    <method name="getDescription">
+        <arg direction="out" type="s"/>
+    </method>
+])
+DBUS_INTROSPECT([config/service/${SERVICE_OBJ}], [[//method[@name="setDescription"]]], 0, [dnl
+    <method name="setDescription">
+        <arg direction="in" name="description" type="s"/>
+    </method>
+])
+
+DBUS_INTROSPECT([config/service/${SERVICE_OBJ}], [[//method[@name="getPorts"]]], 0, [dnl
+    <method name="getPorts">
+        <arg direction="out" type="a(ss)"/>
+    </method>
+])
+DBUS_INTROSPECT([config/service/${SERVICE_OBJ}], [[//method[@name="setPorts"]]], 0, [dnl
+    <method name="setPorts">
+        <arg direction="in" name="ports" type="a(ss)"/>
+    </method>
+])
+DBUS_INTROSPECT([config/service/${SERVICE_OBJ}], [[//method[@name="addPort"]]], 0, [dnl
+    <method name="addPort">
+        <arg direction="in" name="port" type="s"/>
+        <arg direction="in" name="protocol" type="s"/>
+    </method>
+])
+DBUS_INTROSPECT([config/service/${SERVICE_OBJ}], [[//method[@name="removePort"]]], 0, [dnl
+    <method name="removePort">
+        <arg direction="in" name="port" type="s"/>
+        <arg direction="in" name="protocol" type="s"/>
+    </method>
+])
+DBUS_INTROSPECT([config/service/${SERVICE_OBJ}], [[//method[@name="queryPort"]]], 0, [dnl
+    <method name="queryPort">
+        <arg direction="in" name="port" type="s"/>
+        <arg direction="in" name="protocol" type="s"/>
+        <arg direction="out" type="b"/>
+    </method>
+])
+
+DBUS_INTROSPECT([config/service/${SERVICE_OBJ}], [[//method[@name="getSourcePorts"]]], 0, [dnl
+    <method name="getSourcePorts">
+        <arg direction="out" type="a(ss)"/>
+    </method>
+])
+DBUS_INTROSPECT([config/service/${SERVICE_OBJ}], [[//method[@name="setSourcePorts"]]], 0, [dnl
+    <method name="setSourcePorts">
+        <arg direction="in" name="ports" type="a(ss)"/>
+    </method>
+])
+DBUS_INTROSPECT([config/service/${SERVICE_OBJ}], [[//method[@name="addSourcePort"]]], 0, [dnl
+    <method name="addSourcePort">
+        <arg direction="in" name="port" type="s"/>
+        <arg direction="in" name="protocol" type="s"/>
+    </method>
+])
+DBUS_INTROSPECT([config/service/${SERVICE_OBJ}], [[//method[@name="removeSourcePort"]]], 0, [dnl
+    <method name="removeSourcePort">
+        <arg direction="in" name="port" type="s"/>
+        <arg direction="in" name="protocol" type="s"/>
+    </method>
+])
+DBUS_INTROSPECT([config/service/${SERVICE_OBJ}], [[//method[@name="querySourcePort"]]], 0, [dnl
+    <method name="querySourcePort">
+        <arg direction="in" name="port" type="s"/>
+        <arg direction="in" name="protocol" type="s"/>
+        <arg direction="out" type="b"/>
+    </method>
+])
+
+DBUS_INTROSPECT([config/service/${SERVICE_OBJ}], [[//method[@name="getProtocols"]]], 0, [dnl
+    <method name="getProtocols">
+        <arg direction="out" type="as"/>
+    </method>
+])
+DBUS_INTROSPECT([config/service/${SERVICE_OBJ}], [[//method[@name="setProtocols"]]], 0, [dnl
+    <method name="setProtocols">
+        <arg direction="in" name="protocols" type="as"/>
+    </method>
+])
+DBUS_INTROSPECT([config/service/${SERVICE_OBJ}], [[//method[@name="addProtocol"]]], 0, [dnl
+    <method name="addProtocol">
+        <arg direction="in" name="protocol" type="s"/>
+    </method>
+])
+DBUS_INTROSPECT([config/service/${SERVICE_OBJ}], [[//method[@name="removeProtocol"]]], 0, [dnl
+    <method name="removeProtocol">
+        <arg direction="in" name="protocol" type="s"/>
+    </method>
+])
+DBUS_INTROSPECT([config/service/${SERVICE_OBJ}], [[//method[@name="queryProtocol"]]], 0, [dnl
+    <method name="queryProtocol">
+        <arg direction="in" name="protocol" type="s"/>
+        <arg direction="out" type="b"/>
+    </method>
+])
+
+DBUS_INTROSPECT([config/service/${SERVICE_OBJ}], [[//method[@name="getModules"]]], 0, [dnl
+    <method name="getModules">
+        <arg direction="out" type="as"/>
+    </method>
+])
+DBUS_INTROSPECT([config/service/${SERVICE_OBJ}], [[//method[@name="setModules"]]], 0, [dnl
+    <method name="setModules">
+        <arg direction="in" name="modules" type="as"/>
+    </method>
+])
+DBUS_INTROSPECT([config/service/${SERVICE_OBJ}], [[//method[@name="addModule"]]], 0, [dnl
+    <method name="addModule">
+        <arg direction="in" name="module" type="s"/>
+    </method>
+])
+DBUS_INTROSPECT([config/service/${SERVICE_OBJ}], [[//method[@name="removeModule"]]], 0, [dnl
+    <method name="removeModule">
+        <arg direction="in" name="module" type="s"/>
+    </method>
+])
+DBUS_INTROSPECT([config/service/${SERVICE_OBJ}], [[//method[@name="queryModule"]]], 0, [dnl
+    <method name="queryModule">
+        <arg direction="in" name="module" type="s"/>
+        <arg direction="out" type="b"/>
+    </method>
+])
+
+DBUS_INTROSPECT([config/service/${SERVICE_OBJ}], [[//method[@name="getDestinations"]]], 0, [dnl
+    <method name="getDestinations">
+        <arg direction="out" type="a{ss}"/>
+    </method>
+])
+DBUS_INTROSPECT([config/service/${SERVICE_OBJ}], [[//method[@name="setDestinations"]]], 0, [dnl
+    <method name="setDestinations">
+        <arg direction="in" name="destinations" type="a{ss}"/>
+    </method>
+])
+DBUS_INTROSPECT([config/service/${SERVICE_OBJ}], [[//method[@name="setDestination"]]], 0, [dnl
+    <method name="setDestination">
+        <arg direction="in" name="family" type="s"/>
+        <arg direction="in" name="address" type="s"/>
+    </method>
+])
+DBUS_INTROSPECT([config/service/${SERVICE_OBJ}], [[//method[@name="getDestination"]]], 0, [dnl
+    <method name="getDestination">
+        <arg direction="in" name="family" type="s"/>
+        <arg direction="out" type="s"/>
+    </method>
+])
+DBUS_INTROSPECT([config/service/${SERVICE_OBJ}], [[//method[@name="removeDestination"]]], 0, [dnl
+    <method name="removeDestination">
+        <arg direction="in" name="family" type="s"/>
+    </method>
+])
+DBUS_INTROSPECT([config/service/${SERVICE_OBJ}], [[//method[@name="queryDestination"]]], 0, [dnl
+    <method name="queryDestination">
+        <arg direction="in" name="family" type="s"/>
+        <arg direction="in" name="address" type="s"/>
+        <arg direction="out" type="b"/>
+    </method>
+])
+
+DBUS_INTROSPECT([config/service/${SERVICE_OBJ}], [[//method[@name="getIncludes"]]], 0, [dnl
+    <method name="getIncludes">
+        <arg direction="out" type="as"/>
+    </method>
+])
+DBUS_INTROSPECT([config/service/${SERVICE_OBJ}], [[//method[@name="setIncludes"]]], 0, [dnl
+    <method name="setIncludes">
+        <arg direction="in" name="includes" type="as"/>
+    </method>
+])
+DBUS_INTROSPECT([config/service/${SERVICE_OBJ}], [[//method[@name="addInclude"]]], 0, [dnl
+    <method name="addInclude">
+        <arg direction="in" name="include" type="s"/>
+    </method>
+])
+DBUS_INTROSPECT([config/service/${SERVICE_OBJ}], [[//method[@name="removeInclude"]]], 0, [dnl
+    <method name="removeInclude">
+        <arg direction="in" name="include" type="s"/>
+    </method>
+])
+DBUS_INTROSPECT([config/service/${SERVICE_OBJ}], [[//method[@name="queryInclude"]]], 0, [dnl
+    <method name="queryInclude">
+        <arg direction="in" name="include" type="s"/>
+        <arg direction="out" type="b"/>
+    </method>
+])
+
+FWD_RELOAD
+DBUS_INTROSPECT([], [[//method[@name="getServiceSettings"]]], 0, [dnl
+    <method name="getServiceSettings">
+        <arg direction="in" name="service" type="s"/>
+        <arg direction="out" type="(sssa(ss)asa{ss}asa(ss))"/>
+    </method>
+])
+DBUS_CHECK([], [getServiceSettings], ["foobar"], 0, [dnl
+    [(('1.1', 'foobar new', 'foobar new service is for foobar', [('12345', 'udp'), ('2222', 'tcp')], ['ftp'], @a{ss} {}, ['icmp'], [('4321', 'tcp')]),)]
+])
+
+FWD_END_TEST
