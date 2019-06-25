@@ -355,10 +355,20 @@ m4_define([NFT_LIST_SET], [
     ])
 ])
 
+m4_define([DBUS_CHECK_NORMALIZE], [dnl
+    [sed -e 's/^({//' -e 's/},)$//' -e 's/>,/>\n/g'] | dnl truncate dictionary output
+    TRIM_WHITESPACE | dnl
+    sort dnl sort dictionaries by keys
+])
+
 m4_define([DBUS_CHECK], [
-    NS_CHECK([dbus-send --system --print-reply --dest=org.fedoraproject.FirewallD1 dnl
-              /org/fedoraproject/FirewallD1/$1 org.fedoraproject.FirewallD1.$2 $3],
-             [$4], [$5], [$6], [$7], [$8])
+    AT_SKIP_IF([! NS_CMD([which gdbus >/dev/null 2>&1])])
+    NS_CHECK([PIPESTATUS0([gdbus call --system --dest=org.fedoraproject.FirewallD1 dnl
+                           m4_ifblank([$1], [--object-path /org/fedoraproject/FirewallD1],
+                                            [--object-path /org/fedoraproject/FirewallD1/$1]) dnl
+                           --method org.fedoraproject.FirewallD1.$2 $3],
+                          [DBUS_CHECK_NORMALIZE])],
+             [$4], [m4_strip([$5])], [m4_strip([$6])], [$7], [$8])
 ])
 
 m4_define([DBUS_GETALL_NORMALIZE], dnl
