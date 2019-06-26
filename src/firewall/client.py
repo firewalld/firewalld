@@ -818,14 +818,45 @@ class FirewallClientConfigZone(object):
 class FirewallClientServiceSettings(object):
     @handle_exceptions
     def __init__(self, settings=None):
+        self.settings = ["", "", "", [], [], {}, [], [], []]
+        self.settings_name = ["version", "short", "description", "ports",
+                              "modules", "destination", "protocols",
+                              "source_ports", "includes"]
+        self.settings_dbus_type = ["s", "s", "s", "(ss)",
+                                   "s", "ss", "s",
+                                   "(ss)", "s"]
         if settings:
-            self.settings = settings
-        else:
-            self.settings = ["", "", "", [], [], {}, [], [], []]
+            if type(settings) is list:
+                for i,v in enumerate(settings):
+                    self.settings[i] = settings[i]
+            elif type(settings) is dict:
+                self.setSettingsDict(settings)
 
     @handle_exceptions
     def __repr__(self):
         return '%s(%r)' % (self.__class__, self.settings)
+
+    @handle_exceptions
+    def getSettingsDict(self):
+        settings = {}
+        for key,value in zip(self.settings_name, self.settings):
+            settings[key] = value
+        return settings
+    @handle_exceptions
+    def setSettingsDict(self, settings):
+        for key in settings:
+            self.settings[self.settings_name.index(key)] = settings[key]
+    @handle_exceptions
+    def getSettingsDbusDict(self):
+        settings = {}
+        for key,value,sig in zip(self.settings_name, self.settings, self.settings_dbus_type):
+            if type(value) is list:
+                settings[key] = dbus.Array(value, signature=sig)
+            elif type(value) is dict:
+                settings[key] = dbus.Dictionary(value, signature=sig)
+            else:
+                settings[key] = value
+        return settings
 
     @handle_exceptions
     def getVersion(self):
@@ -1467,13 +1498,13 @@ class FirewallClientConfigService(object):
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def getSettings(self):
-        return FirewallClientServiceSettings(list(dbus_to_python(\
-                    self.fw_service.getSettings())))
+        return FirewallClientServiceSettings(dbus_to_python(
+                    self.fw_service.getSettings2()))
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def update(self, settings):
-        self.fw_service.update(tuple(settings.settings))
+        self.fw_service.update2(settings.getSettingsDbusDict())
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
@@ -2431,7 +2462,9 @@ class FirewallClientConfig(object):
     @handle_exceptions
     def addService(self, name, settings):
         if isinstance(settings, FirewallClientServiceSettings):
-            path = self.fw_config.addService(name, tuple(settings.settings))
+            path = self.fw_config.addService2(name, settings.getSettingsDbusDict())
+        elif type(settings) is dict:
+            path = self.fw_config.addService2(name, settings)
         else:
             path = self.fw_config.addService(name, tuple(settings))
         return FirewallClientConfigService(self.bus, path)
@@ -2899,8 +2932,8 @@ class FirewallClient(object):
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def getServiceSettings(self, service):
-        return FirewallClientServiceSettings(list(dbus_to_python(\
-                    self.fw.getServiceSettings(service))))
+        return FirewallClientServiceSettings(dbus_to_python(
+                    self.fw.getServiceSettings2(service)))
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
