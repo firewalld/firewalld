@@ -652,3 +652,64 @@ class FirewallDConfigService(slip.dbus.service.Object):
         settings = self.getSettings()
         return (family in settings[5] and
                 address == settings[5][family])
+
+    # includes
+
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_SERVICE,
+                         out_signature='as')
+    @dbus_handle_exceptions
+    def getIncludes(self, sender=None):
+        log.debug1("%s.getIncludes()", self._log_prefix)
+        self.parent.accessCheck(sender)
+        settings = list(self.config.get_service_config(self.obj))
+        return settings[8]
+
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_SERVICE,
+                         in_signature='as')
+    @dbus_handle_exceptions
+    def setIncludes(self, includes, sender=None):
+        includes = dbus_to_python(includes, list)
+        log.debug1("%s.setIncludes('%s')", self._log_prefix, includes)
+        self.parent.accessCheck(sender)
+        settings = list(self.config.get_service_config(self.obj))
+        settings[8] = includes[:]
+        self.config.set_service_config(self.obj, tuple(settings))
+        self.Updated(self.obj.name)
+
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_SERVICE,
+                         in_signature='s')
+    @dbus_handle_exceptions
+    def addInclude(self, include, sender=None):
+        include = dbus_to_python(include, str)
+        log.debug1("%s.addInclude('%s')", self._log_prefix, include)
+        self.parent.accessCheck(sender)
+        settings = list(self.config.get_service_config(self.obj))
+        settings[8].append(include)
+        self.config.set_service_config(self.obj, tuple(settings))
+        self.Updated(self.obj.name)
+
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_SERVICE,
+                         in_signature='s')
+    @dbus_handle_exceptions
+    def removeInclude(self, include, sender=None):
+        include = dbus_to_python(include, str)
+        log.debug1("%s.removeInclude('%s')", self._log_prefix, include)
+        self.parent.accessCheck(sender)
+        settings = list(self.config.get_service_config(self.obj))
+        settings[8].remove(include)
+        self.config.set_service_config(self.obj, tuple(settings))
+        self.Updated(self.obj.name)
+
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_SERVICE,
+                         in_signature='s', out_signature='b')
+    @dbus_handle_exceptions
+    def queryInclude(self, include, sender=None):
+        include = dbus_to_python(include, str)
+        log.debug1("%s.queryInclude('%s')", self._log_prefix, include)
+        settings = list(self.config.get_service_config(self.obj))
+        try:
+            settings[8].index(include)
+        except ValueError:
+            return False
+        else:
+            return True
