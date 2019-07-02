@@ -1245,8 +1245,8 @@ try:
         cmd.print_and_exit(" ".join(services))
 
     elif a.new_service:
-        fw.config.new_service(a.new_service,
-                              FirewallClientServiceSettings().settings)
+        fw.config.new_service_dict(a.new_service,
+                        FirewallClientServiceSettings().getSettingsDict())
 
     elif a.new_service_from_file:
         filename = os.path.basename(a.new_service_from_file)
@@ -1287,7 +1287,7 @@ try:
     elif a.info_service:
         service = fw.config.get_service(a.info_service)
         settings = FirewallClientServiceSettings(
-            list(fw.config.get_service_config(service)))
+                        fw.config.get_service_config_dict(service))
         cmd.print_service_info(a.info_service, settings)
         sys.exit(0)
 
@@ -1402,17 +1402,17 @@ try:
     elif a.service and options_service:
         service = fw.config.get_service(a.service)
         settings = FirewallClientServiceSettings(
-            list(fw.config.get_service_config(service)))
+                        fw.config.get_service_config_dict(service))
 
         if a.add_port:
             cmd.add_sequence(a.add_port, settings.addPort,
                              settings.queryPort, cmd.parse_port, "%s/%s")
-            fw.config.set_service_config(service, settings.settings)
+            fw.config.set_service_config_dict(service, settings.getSettingsDict())
 
         elif a.remove_port:
             cmd.remove_sequence(a.remove_port, settings.removePort,
                                 settings.queryPort, cmd.parse_port, "%s/%s")
-            fw.config.set_service_config(service, settings.settings)
+            fw.config.set_service_config_dict(service, settings.getSettingsDict())
 
         elif a.query_port:
             cmd.query_sequence(a.query_port, settings.queryPort,
@@ -1425,12 +1425,12 @@ try:
         elif a.add_protocol:
             cmd.add_sequence(a.add_protocol, settings.addProtocol,
                              settings.queryProtocol, None, "'%s'")
-            fw.config.set_service_config(service, settings.settings)
+            fw.config.set_service_config_dict(service, settings.getSettingsDict())
 
         elif a.remove_protocol:
             cmd.remove_sequence(a.remove_protocol, settings.removeProtocol,
                                 settings.queryProtocol, None, "'%s'")
-            fw.config.set_service_config(service, settings.settings)
+            fw.config.set_service_config_dict(service, settings.getSettingsDict())
 
         elif a.query_protocol:
             cmd.query_sequence(a.query_protocol, settings.queryProtocol,
@@ -1443,13 +1443,13 @@ try:
         elif a.add_source_port:
             cmd.add_sequence(a.add_source_port, settings.addSourcePort,
                              settings.querySourcePort, cmd.parse_port, "%s/%s")
-            fw.config.set_service_config(service, settings.settings)
+            fw.config.set_service_config_dict(service, settings.getSettingsDict())
 
         elif a.remove_source_port:
             cmd.remove_sequence(a.remove_source_port, settings.removeSourcePort,
                                 settings.querySourcePort, cmd.parse_port,
                                 "%s/%s")
-            fw.config.set_service_config(service, settings.settings)
+            fw.config.set_service_config_dict(service, settings.getSettingsDict())
 
         elif a.query_source_port:
             cmd.query_sequence(a.query_source_port, settings.querySourcePort,
@@ -1462,12 +1462,12 @@ try:
         elif a.add_module:
             cmd.add_sequence(a.add_module, settings.addModule,
                              settings.queryModule, None, "'%s'")
-            fw.config.set_service_config(service, settings.settings)
+            fw.config.set_service_config_dict(service, settings.getSettingsDict())
 
         elif a.remove_module:
             cmd.remove_sequence(a.remove_module, settings.removeModule,
                                 settings.queryModule, None, "'%s'")
-            fw.config.set_service_config(service, settings.settings)
+            fw.config.set_service_config_dict(service, settings.getSettingsDict())
 
         elif a.query_module:
             cmd.query_sequence(a.query_module, settings.queryModule,
@@ -1481,7 +1481,7 @@ try:
             cmd.add_sequence(a.set_destination, settings.setDestination,
                              settings.queryDestination,
                              cmd.parse_service_destination, "%s:%s")
-            fw.config.set_service_config(service, settings.settings)
+            fw.config.set_service_config_dict(service, settings.getSettingsDict())
 
         elif a.remove_destination:
             # special case for removeDestination: Only ipv, no address
@@ -1496,7 +1496,7 @@ try:
                                            code)
                 else:
                     settings.removeDestination(ipv)
-            fw.config.set_service_config(service, settings.settings)
+            fw.config.set_service_config_dict(service, settings.getSettingsDict())
 
         elif a.query_destination:
             cmd.query_sequence(a.query_destination, settings.queryDestination,
@@ -1509,12 +1509,12 @@ try:
         elif a.add_include:
             cmd.add_sequence(a.add_include, settings.addInclude,
                              settings.queryInclude, None, "'%s'")
-            fw.config.set_service_config(service, settings.settings)
+            fw.config.set_service_config_dict(service, settings.getSettingsDict())
 
         elif a.remove_include:
             cmd.remove_sequence(a.remove_include, settings.removeInclude,
                                 settings.queryInclude, None, "'%s'")
-            fw.config.set_service_config(service, settings.settings)
+            fw.config.set_service_config_dict(service, settings.getSettingsDict())
 
         elif a.query_include:
             cmd.query_sequence(a.query_include, settings.queryInclude,
@@ -1526,14 +1526,14 @@ try:
 
         elif a.set_description:
             settings.setDescription(a.set_description)
-            fw.config.set_service_config(service, settings.settings)
+            fw.config.set_service_config_dict(service, settings.getSettingsDict())
 
         elif a.get_description:
             cmd.print_and_exit(settings.getDescription())
 
         elif a.set_short:
             settings.setShort(a.set_short)
-            fw.config.set_service_config(service, settings.settings)
+            fw.config.set_service_config_dict(service, settings.getSettingsDict())
 
         elif a.get_short:
             cmd.print_and_exit(settings.getShort())
