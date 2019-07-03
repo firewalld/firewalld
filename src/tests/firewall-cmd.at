@@ -319,6 +319,18 @@ FWD_START_TEST([user services])
     FWD_CHECK([--permanent --zone=public --list-services | grep foobar], 0, ignore)
     FWD_CHECK([--permanent --delete-service=foobar], 0, ignore)
     FWD_CHECK([--permanent --zone=public --list-services | grep foobar], 1, ignore)
+
+    AT_DATA([./foobar-to-be-renamed], [m4_strip([dnl
+        <?xml version="1.0" encoding="utf-8"?>
+        <service>
+        <protocol value="icmp" />
+        <port protocol="tcp" port="1234" />
+        </service>
+    ])
+    FWD_CHECK([--permanent --new-service-from-file="./foobar-to-be-renamed" --name="foobar-from-file"])
+    FWD_CHECK([--permanent --get-services | grep foobar-from-file], 0, [ignore])
+])
+
 FWD_END_TEST([-e '/ERROR: NAME_CONFLICT: new_service():/d' dnl
               -e '/ERROR: INVALID_ADDR:/d'])
 
