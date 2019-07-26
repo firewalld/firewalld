@@ -19,10 +19,10 @@ FWD_RELOAD
 FWD_CHECK([--direct --get-all-rules], 0, [dnl
 ipv4 filter OUTPUT 0 -d 127.0.0.1 -p tcp --dport 22 -j ACCEPT
 ])
-FWD_CHECK([-q --direct --add-rule ipv6 filter INPUT 0 -p tcp --dport 22 -j ACCEPT])
+FWD_CHECK([-q --direct --add-rule ipv4 filter INPUT 0 -p tcp --dport 22 -j ACCEPT])
 FWD_CHECK([-q --direct --remove-rules ipv4 filter OUTPUT])
 FWD_CHECK([--direct --get-all-rules], 0, [dnl
-ipv6 filter INPUT 0 -p tcp --dport 22 -j ACCEPT
+ipv4 filter INPUT 0 -p tcp --dport 22 -j ACCEPT
 ])
 
 FWD_END_TEST
