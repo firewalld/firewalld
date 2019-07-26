@@ -1,0 +1,30 @@
+FWD_START_TEST([direct remove-rules per family])
+AT_KEYWORDS(direct rhbz1723610 gh385)
+
+FWD_CHECK([-q --permanent --direct --add-rule ipv4 filter OUTPUT 0 -d 127.0.0.1 -p tcp --dport 22 -j ACCEPT])
+FWD_CHECK([--permanent --direct --get-all-rules], 0, [dnl
+ipv4 filter OUTPUT 0 -d 127.0.0.1 -p tcp --dport 22 -j ACCEPT
+])
+FWD_RELOAD
+FWD_CHECK([--direct --get-all-rules], 0, [dnl
+ipv4 filter OUTPUT 0 -d 127.0.0.1 -p tcp --dport 22 -j ACCEPT
+])
+
+FWD_CHECK([-q --permanent --direct --remove-rules ipv6 filter input])
+FWD_CHECK([-q --permanent --direct --remove-rules ipv4 filter INPUT])
+FWD_CHECK([--permanent --direct --get-all-rules], 0, [dnl
+ipv4 filter OUTPUT 0 -d 127.0.0.1 -p tcp --dport 22 -j ACCEPT
+])
+FWD_RELOAD
+FWD_CHECK([--direct --get-all-rules], 0, [dnl
+ipv4 filter OUTPUT 0 -d 127.0.0.1 -p tcp --dport 22 -j ACCEPT
+])
+FWD_CHECK([-q --direct --add-rule ipv4 filter INPUT 0 -p tcp --dport 22 -j ACCEPT])
+FWD_CHECK([-q --direct --add-rule ipv6 filter INPUT 0 -p tcp --dport 22 -j ACCEPT])
+FWD_CHECK([-q --direct --remove-rules ipv4 filter OUTPUT])
+FWD_CHECK([--direct --get-all-rules], 0, [dnl
+ipv4 filter INPUT 0 -p tcp --dport 22 -j ACCEPT
+ipv6 filter INPUT 0 -p tcp --dport 22 -j ACCEPT
+])
+
+FWD_END_TEST
