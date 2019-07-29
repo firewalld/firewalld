@@ -627,7 +627,8 @@ class ip4tables(object):
         if table == "filter":
             return { "INPUT", "FORWARD_IN", "FORWARD_OUT" }
         if table == "mangle":
-            if "mangle" in self.get_available_tables():
+            if "mangle" in self.get_available_tables() and \
+               "nat" in self.get_available_tables():
                 return { "PREROUTING" }
         if table == "nat":
             if "nat" in self.get_available_tables():
