@@ -9,7 +9,6 @@ FWD_CHECK([--zone=work --add-interface=dummy0], 0, ignore)
 FWD_CHECK([--zone=public --add-interface=dummy1], 0, ignore)
 
 dnl verify layout of zone dispatch
-m4_if(nftables, FIREWALL_BACKEND, [
 NFT_LIST_RULES([inet], [filter_INPUT], 0, [dnl
     table inet firewalld {
         chain filter_INPUT {
@@ -27,13 +26,6 @@ NFT_LIST_RULES([inet], [filter_INPUT_ZONES], 0, [dnl
         chain filter_INPUT_ZONES {
             ip6 saddr dead:beef::/54 goto filter_IN_public
             ip saddr 1.2.3.0/24 goto filter_IN_work
-            goto filter_INPUT_ZONES_IFACES
-        }
-    }
-])
-NFT_LIST_RULES([inet], [filter_INPUT_ZONES_IFACES], 0, [dnl
-    table inet firewalld {
-        chain filter_INPUT_ZONES_IFACES {
             iifname "dummy1" goto filter_IN_public
             iifname "dummy0" goto filter_IN_work
             goto filter_IN_public
@@ -59,13 +51,6 @@ NFT_LIST_RULES([inet], [filter_FORWARD_IN_ZONES], 0, [dnl
         chain filter_FORWARD_IN_ZONES {
             ip6 saddr dead:beef::/54 goto filter_FWDI_public
             ip saddr 1.2.3.0/24 goto filter_FWDI_work
-            goto filter_FORWARD_IN_ZONES_IFACES
-        }
-    }
-])
-NFT_LIST_RULES([inet], [filter_FORWARD_IN_ZONES_IFACES], 0, [dnl
-    table inet firewalld {
-        chain filter_FORWARD_IN_ZONES_IFACES {
             iifname "dummy1" goto filter_FWDI_public
             iifname "dummy0" goto filter_FWDI_work
             goto filter_FWDI_public
@@ -77,13 +62,6 @@ NFT_LIST_RULES([inet], [filter_FORWARD_OUT_ZONES], 0, [dnl
         chain filter_FORWARD_OUT_ZONES {
             ip6 daddr dead:beef::/54 goto filter_FWDO_public
             ip daddr 1.2.3.0/24 goto filter_FWDO_work
-            goto filter_FORWARD_OUT_ZONES_IFACES
-        }
-    }
-])
-NFT_LIST_RULES([inet], [filter_FORWARD_OUT_ZONES_IFACES], 0, [dnl
-    table inet firewalld {
-        chain filter_FORWARD_OUT_ZONES_IFACES {
             oifname "dummy1" goto filter_FWDO_public
             oifname "dummy0" goto filter_FWDO_work
             goto filter_FWDO_public
@@ -106,13 +84,6 @@ NFT_LIST_RULES([inet], [raw_PREROUTING_ZONES], 0, [dnl
         chain raw_PREROUTING_ZONES {
             ip6 saddr dead:beef::/54 goto raw_PRE_public
             ip saddr 1.2.3.0/24 goto raw_PRE_work
-            goto raw_PREROUTING_ZONES_IFACES
-        }
-    }
-])
-NFT_LIST_RULES([inet], [raw_PREROUTING_ZONES_IFACES], 0, [dnl
-    table inet firewalld {
-        chain raw_PREROUTING_ZONES_IFACES {
             iifname "dummy1" goto raw_PRE_public
             iifname "dummy0" goto raw_PRE_work
             goto raw_PRE_public
@@ -131,13 +102,6 @@ NFT_LIST_RULES([inet], [mangle_PREROUTING_ZONES], 0, [dnl
         chain mangle_PREROUTING_ZONES {
             ip6 saddr dead:beef::/54 goto mangle_PRE_public
             ip saddr 1.2.3.0/24 goto mangle_PRE_work
-            goto mangle_PREROUTING_ZONES_IFACES
-        }
-    }
-])
-NFT_LIST_RULES([inet], [mangle_PREROUTING_ZONES_IFACES], 0, [dnl
-    table inet firewalld {
-        chain mangle_PREROUTING_ZONES_IFACES {
             iifname "dummy1" goto mangle_PRE_public
             iifname "dummy0" goto mangle_PRE_work
             goto mangle_PRE_public
@@ -155,13 +119,6 @@ NFT_LIST_RULES([ip], [nat_PREROUTING_ZONES], 0, [dnl
     table ip firewalld {
         chain nat_PREROUTING_ZONES {
             ip saddr 1.2.3.0/24 goto nat_PRE_work
-            goto nat_PREROUTING_ZONES_IFACES
-        }
-    }
-])
-NFT_LIST_RULES([ip], [nat_PREROUTING_ZONES_IFACES], 0, [dnl
-    table ip firewalld {
-        chain nat_PREROUTING_ZONES_IFACES {
             iifname "dummy1" goto nat_PRE_public
             iifname "dummy0" goto nat_PRE_work
             goto nat_PRE_public
@@ -179,13 +136,6 @@ NFT_LIST_RULES([ip], [nat_POSTROUTING_ZONES], 0, [dnl
     table ip firewalld {
         chain nat_POSTROUTING_ZONES {
             ip daddr 1.2.3.0/24 goto nat_POST_work
-            goto nat_POSTROUTING_ZONES_IFACES
-        }
-    }
-])
-NFT_LIST_RULES([ip], [nat_POSTROUTING_ZONES_IFACES], 0, [dnl
-    table ip firewalld {
-        chain nat_POSTROUTING_ZONES_IFACES {
             oifname "dummy1" goto nat_POST_public
             oifname "dummy0" goto nat_POST_work
             goto nat_POST_public
@@ -203,13 +153,6 @@ NFT_LIST_RULES([ip6], [nat_PREROUTING_ZONES], 0, [dnl
     table ip6 firewalld {
         chain nat_PREROUTING_ZONES {
             ip6 saddr dead:beef::/54 goto nat_PRE_public
-            goto nat_PREROUTING_ZONES_IFACES
-        }
-    }
-])
-NFT_LIST_RULES([ip6], [nat_PREROUTING_ZONES_IFACES], 0, [dnl
-    table ip6 firewalld {
-        chain nat_PREROUTING_ZONES_IFACES {
             iifname "dummy1" goto nat_PRE_public
             iifname "dummy0" goto nat_PRE_work
             goto nat_PRE_public
@@ -227,20 +170,12 @@ NFT_LIST_RULES([ip6], [nat_POSTROUTING_ZONES], 0, [dnl
     table ip6 firewalld {
         chain nat_POSTROUTING_ZONES {
             ip6 daddr dead:beef::/54 goto nat_POST_public
-            goto nat_POSTROUTING_ZONES_IFACES
-        }
-    }
-])
-NFT_LIST_RULES([ip], [nat_POSTROUTING_ZONES_IFACES], 0, [dnl
-    table ip firewalld {
-        chain nat_POSTROUTING_ZONES_IFACES {
             oifname "dummy1" goto nat_POST_public
             oifname "dummy0" goto nat_POST_work
             goto nat_POST_public
         }
     }
 ])
-], [
 
 IPTABLES_LIST_RULES([filter], [INPUT], 0, [dnl
     ACCEPT all -- 0.0.0.0/0 0.0.0.0/0 ctstate RELATED,ESTABLISHED,DNAT
@@ -250,15 +185,12 @@ IPTABLES_LIST_RULES([filter], [INPUT], 0, [dnl
     DROP all -- 0.0.0.0/0 0.0.0.0/0 ctstate INVALID
     REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-host-prohibited
 ])
-IPTABLES_LIST_RULES([filter], [INPUT_ZONES], 0, [dnl
-    IN_work all -- 1.2.3.0/24 0.0.0.0/0 @<:@goto@:>@
-    INPUT_ZONES_IFACES all -- 0.0.0.0/0 0.0.0.0/0 @<:@goto@:>@
-])
-IPTABLES_LIST_RULES([filter], [INPUT_ZONES_IFACES], 0, [dnl
-    IN_public all -- 0.0.0.0/0 0.0.0.0/0 @<:@goto@:>@
-    IN_work all -- 0.0.0.0/0 0.0.0.0/0 @<:@goto@:>@
-    IN_public all -- 0.0.0.0/0 0.0.0.0/0 @<:@goto@:>@
-])
+IPTABLES_LIST_RULES([filter], [INPUT_ZONES], 0,
+  [[IN_work all -- 1.2.3.0/24 0.0.0.0/0 [goto]
+    IN_public all -- 0.0.0.0/0 0.0.0.0/0 [goto]
+    IN_work all -- 0.0.0.0/0 0.0.0.0/0 [goto]
+    IN_public all -- 0.0.0.0/0 0.0.0.0/0 [goto]
+]])
 IPTABLES_LIST_RULES([filter], [FORWARD], 0, [dnl
     ACCEPT all -- 0.0.0.0/0 0.0.0.0/0 ctstate RELATED,ESTABLISHED,DNAT
     ACCEPT all -- 0.0.0.0/0 0.0.0.0/0
@@ -268,77 +200,58 @@ IPTABLES_LIST_RULES([filter], [FORWARD], 0, [dnl
     DROP all -- 0.0.0.0/0 0.0.0.0/0 ctstate INVALID
     REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-host-prohibited
 ])
-IPTABLES_LIST_RULES([filter], [FORWARD_IN_ZONES], 0, [dnl
-    FWDI_work all -- 1.2.3.0/24 0.0.0.0/0 @<:@goto@:>@
-    FORWARD_IN_ZONES_IFACES all -- 0.0.0.0/0 0.0.0.0/0 @<:@goto@:>@
-])
-IPTABLES_LIST_RULES([filter], [FORWARD_IN_ZONES_IFACES], 0, [dnl
-    FWDI_public all -- 0.0.0.0/0 0.0.0.0/0 @<:@goto@:>@
-    FWDI_work all -- 0.0.0.0/0 0.0.0.0/0 @<:@goto@:>@
-    FWDI_public all -- 0.0.0.0/0 0.0.0.0/0 @<:@goto@:>@
-])
-IPTABLES_LIST_RULES([filter], [FORWARD_OUT_ZONES], 0, [dnl
-    FWDO_work all -- 0.0.0.0/0 1.2.3.0/24 @<:@goto@:>@
-    FORWARD_OUT_ZONES_IFACES all -- 0.0.0.0/0 0.0.0.0/0 @<:@goto@:>@
-])
-IPTABLES_LIST_RULES([filter], [FORWARD_OUT_ZONES_IFACES], 0, [dnl
-    FWDO_public all -- 0.0.0.0/0 0.0.0.0/0 @<:@goto@:>@
-    FWDO_work all -- 0.0.0.0/0 0.0.0.0/0 @<:@goto@:>@
-    FWDO_public all -- 0.0.0.0/0 0.0.0.0/0 @<:@goto@:>@
-])
+IPTABLES_LIST_RULES([filter], [FORWARD_IN_ZONES], 0,
+  [[FWDI_work all -- 1.2.3.0/24 0.0.0.0/0 [goto]
+    FWDI_public all -- 0.0.0.0/0 0.0.0.0/0 [goto]
+    FWDI_work all -- 0.0.0.0/0 0.0.0.0/0 [goto]
+    FWDI_public all -- 0.0.0.0/0 0.0.0.0/0 [goto]
+]])
+IPTABLES_LIST_RULES([filter], [FORWARD_OUT_ZONES], 0,
+  [[FWDO_work all -- 0.0.0.0/0 1.2.3.0/24 [goto]
+    FWDO_public all -- 0.0.0.0/0 0.0.0.0/0 [goto]
+    FWDO_work all -- 0.0.0.0/0 0.0.0.0/0 [goto]
+    FWDO_public all -- 0.0.0.0/0 0.0.0.0/0 [goto]
+]])
 IPTABLES_LIST_RULES([raw], [PREROUTING], 0, [dnl
     PREROUTING_direct all -- 0.0.0.0/0 0.0.0.0/0
     PREROUTING_ZONES all -- 0.0.0.0/0 0.0.0.0/0
 ])
-IPTABLES_LIST_RULES([raw], [PREROUTING_ZONES], 0, [dnl
-    PRE_work all -- 1.2.3.0/24 0.0.0.0/0 @<:@goto@:>@
-    PREROUTING_ZONES_IFACES all -- 0.0.0.0/0 0.0.0.0/0 @<:@goto@:>@
-])
-IPTABLES_LIST_RULES([raw], [PREROUTING_ZONES_IFACES], 0, [dnl
-    PRE_public all -- 0.0.0.0/0 0.0.0.0/0 @<:@goto@:>@
-    PRE_work all -- 0.0.0.0/0 0.0.0.0/0 @<:@goto@:>@
-    PRE_public all -- 0.0.0.0/0 0.0.0.0/0 @<:@goto@:>@
-])
+IPTABLES_LIST_RULES([raw], [PREROUTING_ZONES], 0,
+  [[PRE_work all -- 1.2.3.0/24 0.0.0.0/0 [goto]
+    PRE_public all -- 0.0.0.0/0 0.0.0.0/0 [goto]
+    PRE_work all -- 0.0.0.0/0 0.0.0.0/0 [goto]
+    PRE_public all -- 0.0.0.0/0 0.0.0.0/0 [goto]
+]])
 IPTABLES_LIST_RULES([mangle], [PREROUTING], 0, [dnl
     PREROUTING_direct all -- 0.0.0.0/0 0.0.0.0/0
     PREROUTING_ZONES all -- 0.0.0.0/0 0.0.0.0/0
 ])
-IPTABLES_LIST_RULES([mangle], [PREROUTING_ZONES], 0, [dnl
-    PRE_work all -- 1.2.3.0/24 0.0.0.0/0 @<:@goto@:>@
-    PREROUTING_ZONES_IFACES all -- 0.0.0.0/0 0.0.0.0/0 @<:@goto@:>@
-])
-IPTABLES_LIST_RULES([mangle], [PREROUTING_ZONES_IFACES], 0, [dnl
-    PRE_public all -- 0.0.0.0/0 0.0.0.0/0 @<:@goto@:>@
-    PRE_work all -- 0.0.0.0/0 0.0.0.0/0 @<:@goto@:>@
-    PRE_public all -- 0.0.0.0/0 0.0.0.0/0 @<:@goto@:>@
-])
+IPTABLES_LIST_RULES([mangle], [PREROUTING_ZONES], 0,
+  [[PRE_work all -- 1.2.3.0/24 0.0.0.0/0 [goto]
+    PRE_public all -- 0.0.0.0/0 0.0.0.0/0 [goto]
+    PRE_work all -- 0.0.0.0/0 0.0.0.0/0 [goto]
+    PRE_public all -- 0.0.0.0/0 0.0.0.0/0 [goto]
+]])
 IPTABLES_LIST_RULES([nat], [PREROUTING], 0, [dnl
     PREROUTING_direct all -- 0.0.0.0/0 0.0.0.0/0
     PREROUTING_ZONES all -- 0.0.0.0/0 0.0.0.0/0
 ])
-IPTABLES_LIST_RULES([nat], [PREROUTING_ZONES], 0, [dnl
-    PRE_work all -- 1.2.3.0/24 0.0.0.0/0 @<:@goto@:>@
-    PREROUTING_ZONES_IFACES all -- 0.0.0.0/0 0.0.0.0/0 @<:@goto@:>@
-])
-IPTABLES_LIST_RULES([nat], [PREROUTING_ZONES_IFACES], 0, [dnl
-    PRE_public all -- 0.0.0.0/0 0.0.0.0/0 @<:@goto@:>@
-    PRE_work all -- 0.0.0.0/0 0.0.0.0/0 @<:@goto@:>@
-    PRE_public all -- 0.0.0.0/0 0.0.0.0/0 @<:@goto@:>@
-])
+IPTABLES_LIST_RULES([nat], [PREROUTING_ZONES], 0,
+  [[PRE_work all -- 1.2.3.0/24 0.0.0.0/0 [goto]
+    PRE_public all -- 0.0.0.0/0 0.0.0.0/0 [goto]
+    PRE_work all -- 0.0.0.0/0 0.0.0.0/0 [goto]
+    PRE_public all -- 0.0.0.0/0 0.0.0.0/0 [goto]
+]])
 IPTABLES_LIST_RULES([nat], [POSTROUTING], 0, [dnl
     POSTROUTING_direct all -- 0.0.0.0/0 0.0.0.0/0
     POSTROUTING_ZONES all -- 0.0.0.0/0 0.0.0.0/0
 ])
-IPTABLES_LIST_RULES([nat], [POSTROUTING_ZONES], 0, [dnl
-    POST_work all -- 0.0.0.0/0 1.2.3.0/24 @<:@goto@:>@
-    POSTROUTING_ZONES_IFACES all -- 0.0.0.0/0 0.0.0.0/0 @<:@goto@:>@
-])
-IPTABLES_LIST_RULES([nat], [POSTROUTING_ZONES_IFACES], 0, [dnl
-    POST_public all -- 0.0.0.0/0 0.0.0.0/0 @<:@goto@:>@
-    POST_work all -- 0.0.0.0/0 0.0.0.0/0 @<:@goto@:>@
-    POST_public all -- 0.0.0.0/0 0.0.0.0/0 @<:@goto@:>@
-])
-
+IPTABLES_LIST_RULES([nat], [POSTROUTING_ZONES], 0,
+  [[POST_work all -- 0.0.0.0/0 1.2.3.0/24 [goto]
+    POST_public all -- 0.0.0.0/0 0.0.0.0/0 [goto]
+    POST_work all -- 0.0.0.0/0 0.0.0.0/0 [goto]
+    POST_public all -- 0.0.0.0/0 0.0.0.0/0 [goto]
+]])
 
 IP6TABLES_LIST_RULES([filter], [INPUT], 0, [dnl
     ACCEPT all ::/0 ::/0 ctstate RELATED,ESTABLISHED,DNAT
@@ -348,15 +261,12 @@ IP6TABLES_LIST_RULES([filter], [INPUT], 0, [dnl
     DROP all ::/0 ::/0 ctstate INVALID
     REJECT all ::/0 ::/0 reject-with icmp6-adm-prohibited
 ])
-IP6TABLES_LIST_RULES([filter], [INPUT_ZONES], 0, [dnl
-    IN_public all dead:beef::/54 ::/0 @<:@goto@:>@
-    INPUT_ZONES_IFACES all ::/0 ::/0 @<:@goto@:>@
-])
-IP6TABLES_LIST_RULES([filter], [INPUT_ZONES_IFACES], 0, [dnl
-    IN_public all ::/0 ::/0 @<:@goto@:>@
-    IN_work all ::/0 ::/0 @<:@goto@:>@
-    IN_public all ::/0 ::/0 @<:@goto@:>@
-])
+IP6TABLES_LIST_RULES([filter], [INPUT_ZONES], 0,
+  [[IN_public all dead:beef::/54 ::/0 [goto]
+    IN_public all ::/0 ::/0 [goto]
+    IN_work all ::/0 ::/0 [goto]
+    IN_public all ::/0 ::/0 [goto]
+]])
 IP6TABLES_LIST_RULES([filter], [FORWARD], 0, [dnl
     ACCEPT all ::/0 ::/0 ctstate RELATED,ESTABLISHED,DNAT
     ACCEPT all ::/0 ::/0
@@ -367,24 +277,18 @@ IP6TABLES_LIST_RULES([filter], [FORWARD], 0, [dnl
     DROP all ::/0 ::/0 ctstate INVALID
     REJECT all ::/0 ::/0 reject-with icmp6-adm-prohibited
 ])
-IP6TABLES_LIST_RULES([filter], [FORWARD_IN_ZONES], 0, [dnl
-    FWDI_public all dead:beef::/54 ::/0 @<:@goto@:>@
-    FORWARD_IN_ZONES_IFACES all ::/0 ::/0 @<:@goto@:>@
-])
-IP6TABLES_LIST_RULES([filter], [FORWARD_IN_ZONES_IFACES], 0, [dnl
-    FWDI_public all ::/0 ::/0 @<:@goto@:>@
-    FWDI_work all ::/0 ::/0 @<:@goto@:>@
-    FWDI_public all ::/0 ::/0 @<:@goto@:>@
-])
-IP6TABLES_LIST_RULES([filter], [FORWARD_OUT_ZONES], 0, [dnl
-    FWDO_public all ::/0 dead:beef::/54 @<:@goto@:>@
-    FORWARD_OUT_ZONES_IFACES all ::/0 ::/0 @<:@goto@:>@
-])
-IP6TABLES_LIST_RULES([filter], [FORWARD_OUT_ZONES_IFACES], 0, [dnl
-    FWDO_public all ::/0 ::/0 @<:@goto@:>@
-    FWDO_work all ::/0 ::/0 @<:@goto@:>@
-    FWDO_public all ::/0 ::/0 @<:@goto@:>@
-])
+IP6TABLES_LIST_RULES([filter], [FORWARD_IN_ZONES], 0,
+  [[FWDI_public all dead:beef::/54 ::/0 [goto]
+    FWDI_public all ::/0 ::/0 [goto]
+    FWDI_work all ::/0 ::/0 [goto]
+    FWDI_public all ::/0 ::/0 [goto]
+]])
+IP6TABLES_LIST_RULES([filter], [FORWARD_OUT_ZONES], 0,
+  [[FWDO_public all ::/0 dead:beef::/54 [goto]
+    FWDO_public all ::/0 ::/0 [goto]
+    FWDO_work all ::/0 ::/0 [goto]
+    FWDO_public all ::/0 ::/0 [goto]
+]])
 IP6TABLES_LIST_RULES([raw], [PREROUTING], 0, [dnl
     ACCEPT icmpv6 ::/0 ::/0 ipv6-icmptype 134
     ACCEPT icmpv6 ::/0 ::/0 ipv6-icmptype 135
@@ -392,54 +296,41 @@ IP6TABLES_LIST_RULES([raw], [PREROUTING], 0, [dnl
     PREROUTING_direct all ::/0 ::/0
     PREROUTING_ZONES all ::/0 ::/0
 ])
-IP6TABLES_LIST_RULES([raw], [PREROUTING_ZONES], 0, [dnl
-    PRE_public all dead:beef::/54 ::/0 @<:@goto@:>@
-    PREROUTING_ZONES_IFACES all ::/0 ::/0 @<:@goto@:>@
-])
-IP6TABLES_LIST_RULES([raw], [PREROUTING_ZONES_IFACES], 0, [dnl
-    PRE_public all ::/0 ::/0 @<:@goto@:>@
-    PRE_work all ::/0 ::/0 @<:@goto@:>@
-    PRE_public all ::/0 ::/0 @<:@goto@:>@
-])
+IP6TABLES_LIST_RULES([raw], [PREROUTING_ZONES], 0,
+  [[PRE_public all dead:beef::/54 ::/0 [goto]
+    PRE_public all ::/0 ::/0 [goto]
+    PRE_work all ::/0 ::/0 [goto]
+    PRE_public all ::/0 ::/0 [goto]
+]])
 IP6TABLES_LIST_RULES([mangle], [PREROUTING], 0, [dnl
     PREROUTING_direct all ::/0 ::/0
     PREROUTING_ZONES all ::/0 ::/0
 ])
-IP6TABLES_LIST_RULES([mangle], [PREROUTING_ZONES], 0, [dnl
-    PRE_public all dead:beef::/54 ::/0 @<:@goto@:>@
-    PREROUTING_ZONES_IFACES all ::/0 ::/0 @<:@goto@:>@
-])
-IP6TABLES_LIST_RULES([mangle], [PREROUTING_ZONES_IFACES], 0, [dnl
-    PRE_public all ::/0 ::/0 @<:@goto@:>@
-    PRE_work all ::/0 ::/0 @<:@goto@:>@
-    PRE_public all ::/0 ::/0 @<:@goto@:>@
-])
+IP6TABLES_LIST_RULES([mangle], [PREROUTING_ZONES], 0,
+  [[PRE_public all dead:beef::/54 ::/0 [goto]
+    PRE_public all ::/0 ::/0 [goto]
+    PRE_work all ::/0 ::/0 [goto]
+    PRE_public all ::/0 ::/0 [goto]
+]])
 IP6TABLES_LIST_RULES([nat], [PREROUTING], 0, [dnl
     PREROUTING_direct all ::/0 ::/0
     PREROUTING_ZONES all ::/0 ::/0
 ])
-IP6TABLES_LIST_RULES([nat], [PREROUTING_ZONES], 0, [dnl
-    PRE_public all dead:beef::/54 ::/0 @<:@goto@:>@
-    PREROUTING_ZONES_IFACES all ::/0 ::/0 @<:@goto@:>@
-])
-IP6TABLES_LIST_RULES([nat], [PREROUTING_ZONES_IFACES], 0, [dnl
-    PRE_public all ::/0 ::/0 @<:@goto@:>@
-    PRE_work all ::/0 ::/0 @<:@goto@:>@
-    PRE_public all ::/0 ::/0 @<:@goto@:>@
-])
+IP6TABLES_LIST_RULES([nat], [PREROUTING_ZONES], 0,
+  [[PRE_public all dead:beef::/54 ::/0 [goto]
+    PRE_public all ::/0 ::/0 [goto]
+    PRE_work all ::/0 ::/0 [goto]
+    PRE_public all ::/0 ::/0 [goto]
+]])
 IP6TABLES_LIST_RULES([nat], [POSTROUTING], 0, [dnl
     POSTROUTING_direct all ::/0 ::/0
     POSTROUTING_ZONES all ::/0 ::/0
 ])
-IP6TABLES_LIST_RULES([nat], [POSTROUTING_ZONES], 0, [dnl
-    POST_public all ::/0 dead:beef::/54 @<:@goto@:>@
-    POSTROUTING_ZONES_IFACES all ::/0 ::/0 @<:@goto@:>@
-])
-IP6TABLES_LIST_RULES([nat], [POSTROUTING_ZONES_IFACES], 0, [dnl
-    POST_public all ::/0 ::/0 @<:@goto@:>@
-    POST_work all ::/0 ::/0 @<:@goto@:>@
-    POST_public all ::/0 ::/0 @<:@goto@:>@
-])
-])
+IP6TABLES_LIST_RULES([nat], [POSTROUTING_ZONES], 0,
+  [[POST_public all ::/0 dead:beef::/54 [goto]
+    POST_public all ::/0 ::/0 [goto]
+    POST_work all ::/0 ::/0 [goto]
+    POST_public all ::/0 ::/0 [goto]
+]])
 
 FWD_END_TEST
