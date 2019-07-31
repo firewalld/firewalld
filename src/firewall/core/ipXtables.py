@@ -178,6 +178,7 @@ class ip4tables(object):
         self.fill_exists()
         self.available_tables = []
         self.rich_rule_priority_counts = {}
+        self.zone_source_index_cache = []
         self.our_chains = {} # chains created by firewalld
 
     def fill_exists(self):
@@ -289,6 +290,44 @@ class ip4tables(object):
                     chain = args[i+1]
         return (table, chain)
 
+    def _run_replace_zone_source(self, rule, zone_source_index_cache):
+        try:
+            i = rule.index("%%ZONE_SOURCE%%")
+            rule.pop(i)
+            zone = rule.pop(i)
+            if "-m" == rule[4]: # ipset/mac
+                zone_source = (zone, rule[7]) # (zone, address)
+            else:
+                zone_source = (zone, rule[5]) # (zone, address)
+        except ValueError:
+            try:
+                i = rule.index("%%ZONE_INTERFACE%%")
+                rule.pop(i)
+                zone_source = None
+            except ValueError:
+                return
+
+        rule_add = True
+        if rule[0] in ["-D", "--delete"]:
+            rule_add = False
+
+        if zone_source and not rule_add:
+            if zone_source in zone_source_index_cache:
+                zone_source_index_cache.remove(zone_source)
+        elif rule_add:
+            if zone_source:
+                # order source based dispatch by zone name
+                if zone_source not in zone_source_index_cache:
+                    zone_source_index_cache.append(zone_source)
+                    zone_source_index_cache.sort(key=lambda x: x[0])
+
+                index = zone_source_index_cache.index(zone_source)
+            else:
+                index = len(zone_source_index_cache)
+                
+            rule[0] = "-I"
+            rule.insert(2, "%d" % (index + 1))
+
     def _set_rule_replace_rich_rule_priority(self, rule, rich_rule_priority_counts):
         """
         Change something like
@@ -374,6 +413,7 @@ class ip4tables(object):
 
         table_rules = { }
         rich_rule_priority_counts = copy.deepcopy(self.rich_rule_priority_counts)
+        zone_source_index_cache = copy.deepcopy(self.zone_source_index_cache)
         for _rule in rules:
             rule = _rule[:]
 
@@ -398,6 +438,7 @@ class ip4tables(object):
                     rule.pop(i)
 
             self._set_rule_replace_rich_rule_priority(rule, rich_rule_priority_counts)
+            self._run_replace_zone_source(rule, zone_source_index_cache)
 
             table = "filter"
             # get table form rule
@@ -461,6 +502,7 @@ class ip4tables(object):
             raise ValueError("'%s %s' failed: %s" % (self._restore_command,
                                                      " ".join(args), ret))
         self.rich_rule_priority_counts = rich_rule_priority_counts
+        self.zone_source_index_cache = zone_source_index_cache
         return ret
 
     def set_rule(self, rule, log_denied):
@@ -485,9 +527,14 @@ class ip4tables(object):
                 rule.pop(i)
 
         rich_rule_priority_counts = copy.deepcopy(self.rich_rule_priority_counts)
+        zone_source_index_cache = copy.deepcopy(self.zone_source_index_cache)
         self._set_rule_replace_rich_rule_priority(rule, rich_rule_priority_counts)
+        self._run_replace_zone_source(rule, zone_source_index_cache)
+
         output = self.__run(rule)
+
         self.rich_rule_priority_counts = rich_rule_priority_counts
+        self.zone_source_index_cache = zone_source_index_cache
         return output
 
     def get_available_tables(self, table=None):
@@ -539,6 +586,7 @@ class ip4tables(object):
 
     def build_flush_rules(self):
         self.rich_rule_priority_counts = {}
+        self.zone_source_index_cache = []
         rules = []
         for table in BUILT_IN_CHAINS.keys():
             if not self.get_available_tables(table):
@@ -620,10 +668,8 @@ class ip4tables(object):
 
                 if chain == "PREROUTING":
                     default_rules["raw"].append("-N %s_ZONES" % chain)
-                    default_rules["raw"].append("-N %s_ZONES_IFACES" % chain)
                     default_rules["raw"].append("-A %s -j %s_ZONES" % (chain, chain))
-                    default_rules["raw"].append("-A %s_ZONES -g %s_ZONES_IFACES" % (chain, chain))
-                    self.our_chains["raw"].update(set(["%s_ZONES" % chain, "%s_ZONES_IFACES" % chain]))
+                    self.our_chains["raw"].update(set(["%s_ZONES" % chain]))
 
         if self.get_available_tables("mangle"):
             default_rules["mangle"] = [ ]
@@ -635,10 +681,8 @@ class ip4tables(object):
 
                 if chain == "PREROUTING":
                     default_rules["mangle"].append("-N %s_ZONES" % chain)
-                    default_rules["mangle"].append("-N %s_ZONES_IFACES" % chain)
                     default_rules["mangle"].append("-A %s -j %s_ZONES" % (chain, chain))
-                    default_rules["mangle"].append("-A %s_ZONES -g %s_ZONES_IFACES" % (chain, chain))
-                    self.our_chains["mangle"].update(set(["%s_ZONES" % chain, "%s_ZONES_IFACES" % chain]))
+                    self.our_chains["mangle"].update(set(["%s_ZONES" % chain]))
 
         if self.get_available_tables("nat"):
             default_rules["nat"] = [ ]
@@ -650,21 +694,17 @@ class ip4tables(object):
 
                 if chain in [ "PREROUTING", "POSTROUTING" ]:
                     default_rules["nat"].append("-N %s_ZONES" % chain)
-                    default_rules["nat"].append("-N %s_ZONES_IFACES" % chain)
                     default_rules["nat"].append("-A %s -j %s_ZONES" % (chain, chain))
-                    default_rules["nat"].append("-A %s_ZONES -g %s_ZONES_IFACES" % (chain, chain))
-                    self.our_chains["nat"].update(set(["%s_ZONES" % chain, "%s_ZONES_IFACES" % chain]))
+                    self.our_chains["nat"].update(set(["%s_ZONES" % chain]))
 
         default_rules["filter"] = [
             "-N INPUT_direct",
             "-N INPUT_ZONES",
-            "-N INPUT_ZONES_IFACES",
 
             "-A INPUT -m conntrack --ctstate RELATED,ESTABLISHED,DNAT -j ACCEPT",
             "-A INPUT -i lo -j ACCEPT",
             "-A INPUT -j INPUT_direct",
             "-A INPUT -j INPUT_ZONES",
-            "-A INPUT_ZONES -g INPUT_ZONES_IFACES",
         ]
         if log_denied != "off":
             default_rules["filter"].append("-A INPUT -m conntrack --ctstate INVALID %%LOGTYPE%% -j LOG --log-prefix 'STATE_INVALID_DROP: '")
@@ -677,16 +717,12 @@ class ip4tables(object):
             "-N FORWARD_direct",
             "-N FORWARD_IN_ZONES",
             "-N FORWARD_OUT_ZONES",
-            "-N FORWARD_IN_ZONES_IFACES",
-            "-N FORWARD_OUT_ZONES_IFACES",
 
             "-A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED,DNAT -j ACCEPT",
             "-A FORWARD -i lo -j ACCEPT",
             "-A FORWARD -j FORWARD_direct",
             "-A FORWARD -j FORWARD_IN_ZONES",
             "-A FORWARD -j FORWARD_OUT_ZONES",
-            "-A FORWARD_IN_ZONES -g FORWARD_IN_ZONES_IFACES",
-            "-A FORWARD_OUT_ZONES -g FORWARD_OUT_ZONES_IFACES",
         ]
         if log_denied != "off":
             default_rules["filter"].append("-A FORWARD -m conntrack --ctstate INVALID %%LOGTYPE%% -j LOG --log-prefix 'STATE_INVALID_DROP: '")
@@ -702,10 +738,9 @@ class ip4tables(object):
             "-A OUTPUT -j OUTPUT_direct",
         ]
 
-        self.our_chains["filter"] = set(["INPUT_direct", "INPUT_ZONES", "INPUT_ZONES_IFACES"
+        self.our_chains["filter"] = set(["INPUT_direct", "INPUT_ZONES",
                                          "FORWARD_direct", "FORWARD_IN_ZONES",
-                                         "FORWARD_IN_ZONES_IFACES" "FORWARD_OUT_ZONES",
-                                         "FORWARD_OUT_ZONES_IFACES", "OUTPUT_direct"])
+                                         "FORWARD_OUT_ZONES", "OUTPUT_direct"])
 
         final_default_rules = []
         for table in default_rules:
@@ -748,11 +783,13 @@ class ip4tables(object):
         action = "-g"
 
         if enable and not append:
-            rule = [ "-I", "%s_ZONES_IFACES" % chain, "1" ]
+            rule = [ "-I", "%s_ZONES" % chain, "%%ZONE_INTERFACE%%" ]
         elif enable:
-            rule = [ "-A", "%s_ZONES_IFACES" % chain ]
+            rule = [ "-A", "%s_ZONES" % chain ]
         else:
-            rule = [ "-D", "%s_ZONES_IFACES" % chain ]
+            rule = [ "-D", "%s_ZONES" % chain ]
+            if not append:
+                rule += ["%%ZONE_INTERFACE%%"]
         rule += [ "-t", table, opt, interface, action, target ]
         return [rule]
 
@@ -780,7 +817,8 @@ class ip4tables(object):
                 opt = "src"
             flags = ",".join([opt] * self._fw.ipset.get_dimension(name))
             rule = [ add_del,
-                     "%s_ZONES" % chain, "-t", table,
+                     "%s_ZONES" % chain, "%%ZONE_SOURCE%%", zone,
+                     "-t", table,
                      "-m", "set", "--match-set", name,
                      flags, action, target ]
         else:
@@ -789,12 +827,14 @@ class ip4tables(object):
                 if opt == "-d":
                     return ""
                 rule = [ add_del,
-                         "%s_ZONES" % chain, "-t", table,
+                         "%s_ZONES" % chain, "%%ZONE_SOURCE%%", zone,
+                         "-t", table,
                          "-m", "mac", "--mac-source", address.upper(),
                          action, target ]
             else:
                 rule = [ add_del,
-                         "%s_ZONES" % chain, "-t", table,
+                         "%s_ZONES" % chain, "%%ZONE_SOURCE%%", zone,
+                         "-t", table,
                          opt, address, action, target ]
         return [rule]
 
