@@ -20,6 +20,7 @@
 #
 
 import os.path
+import copy
 
 from firewall.core.base import SHORTCUTS, DEFAULT_ZONE_TARGET
 from firewall.core.prog import runProg
@@ -160,10 +161,53 @@ class nftables(object):
         self.available_tables = []
         self.rule_to_handle = {}
         self.rule_ref_count = {}
+        self.zone_source_index_cache = {}
 
     def fill_exists(self):
         self.command_exists = os.path.exists(self._command)
         self.restore_command_exists = False
+
+    def _run_replace_zone_source(self, rule_add, rule, zone_source_index_cache):
+        try:
+            i = rule.index("%%ZONE_SOURCE%%")
+            rule.pop(i)
+            zone = rule.pop(i)
+            zone_source = (zone, rule[7]) # (zone, address)
+        except ValueError:
+            try:
+                i = rule.index("%%ZONE_INTERFACE%%")
+                rule.pop(i)
+                zone_source = None
+            except ValueError:
+                return
+
+        family = rule[2]
+
+        if zone_source and not rule_add:
+            if family in zone_source_index_cache and \
+               zone_source in zone_source_index_cache[family]:
+                zone_source_index_cache[family].remove(zone_source)
+        elif rule_add:
+            if family not in zone_source_index_cache:
+                zone_source_index_cache[family] = []
+
+            if zone_source:
+                # order source based dispatch by zone name
+                if zone_source not in zone_source_index_cache[family]:
+                    zone_source_index_cache[family].append(zone_source)
+                    zone_source_index_cache[family].sort(key=lambda x: x[0])
+
+                index = zone_source_index_cache[family].index(zone_source)
+            else:
+                index = len(zone_source_index_cache[family])
+                
+            if index == 0:
+                rule[0] = "insert"
+            else:
+                index -= 1 # point to the rule before insertion point
+                rule[0] = "add"
+                rule.insert(i, "index")
+                rule.insert(i+1, "%d" % index)
 
     def __run(self, args):
         nft_opts = ["--echo", "--handle"]
@@ -198,11 +242,6 @@ class nftables(object):
             rule_add = False
             rule_key = _args[2:]
             rule_key = " ".join(rule_key)
-            # delete using rule handle
-            _args = ["delete", "rule"] + _args[2:5] + \
-                    ["handle", self.rule_to_handle[rule_key]]
-
-        _args_str = " ".join(_args)
 
         # rule deduplication
         if rule_key in self.rule_ref_count:
@@ -218,15 +257,28 @@ class nftables(object):
                 raise FirewallError(UNKNOWN_ERROR, "rule ref count bug: rule_key '%s', cnt %d"
                                                    % (rule_key, self.rule_ref_count[rule_key]))
             log.debug2("%s: rule ref cnt %d, %s %s", self.__class__,
-                       self.rule_ref_count[rule_key], self._command, _args_str)
+                       self.rule_ref_count[rule_key], self._command, " ".join(_args))
+
+        if rule_key:
+            zone_source_index_cache = copy.deepcopy(self.zone_source_index_cache)
+            self._run_replace_zone_source(rule_add, _args, zone_source_index_cache)
 
         if not rule_key or (not rule_add and self.rule_ref_count[rule_key] == 0) \
                         or (    rule_add and rule_key not in self.rule_ref_count):
+            # delete using rule handle
+            if rule_key and not rule_add:
+                _args = ["delete", "rule"] + _args[2:5] + \
+                        ["handle", self.rule_to_handle[rule_key]]
+            _args_str = " ".join(_args)
             log.debug2("%s: %s %s", self.__class__, self._command, _args_str)
             (status, output) = runProg(self._command, nft_opts + _args)
             if status != 0:
                 raise ValueError("'%s %s' failed: %s" % (self._command,
                                                          _args_str, output))
+
+            if rule_key:
+                self.zone_source_index_cache = zone_source_index_cache
+
             # nft requires deleting rules by handle. So we must cache the rule
             # handle when adding/inserting rules.
             #
@@ -303,6 +355,7 @@ class nftables(object):
     def build_flush_rules(self):
         self.rule_to_handle = {}
         self.rule_ref_count = {}
+        self.zone_source_index_cache = {}
 
         rules = []
         for family in OUR_CHAINS.keys():
@@ -359,10 +412,8 @@ class nftables(object):
                                   IPTABLES_TO_NFT_HOOK["raw"][chain][1]))
 
             default_rules.append("add chain inet %s raw_%s_ZONES" % (TABLE_NAME, chain))
-            default_rules.append("add chain inet %s raw_%s_ZONES_IFACES" % (TABLE_NAME, chain))
             default_rules.append("add rule inet %s raw_%s jump raw_%s_ZONES" % (TABLE_NAME, chain, chain))
-            default_rules.append("add rule inet %s raw_%s_ZONES goto raw_%s_ZONES_IFACES" % (TABLE_NAME, chain, chain))
-            OUR_CHAINS["inet"]["raw"].update(set(["%s_ZONES_IFACES" % chain, "%s_ZONES" % chain]))
+            OUR_CHAINS["inet"]["raw"].update(set(["%s_ZONES" % chain]))
 
         OUR_CHAINS["inet"]["mangle"] = set()
         for chain in IPTABLES_TO_NFT_HOOK["mangle"].keys():
@@ -372,10 +423,8 @@ class nftables(object):
                                   IPTABLES_TO_NFT_HOOK["mangle"][chain][1]))
 
             default_rules.append("add chain inet %s mangle_%s_ZONES" % (TABLE_NAME, chain))
-            default_rules.append("add chain inet %s mangle_%s_ZONES_IFACES" % (TABLE_NAME, chain))
             default_rules.append("add rule inet %s mangle_%s jump mangle_%s_ZONES" % (TABLE_NAME, chain, chain))
-            default_rules.append("add rule inet %s mangle_%s_ZONES goto mangle_%s_ZONES_IFACES" % (TABLE_NAME, chain, chain))
-            OUR_CHAINS["inet"]["mangle"].update(set(["%s_ZONES_IFACES" % chain, "%s_ZONES" % chain]))
+            OUR_CHAINS["inet"]["mangle"].update(set(["%s_ZONES" % chain]))
 
         OUR_CHAINS["ip"]["nat"] = set()
         OUR_CHAINS["ip6"]["nat"] = set()
@@ -387,10 +436,8 @@ class nftables(object):
                                       IPTABLES_TO_NFT_HOOK["nat"][chain][1]))
 
                 default_rules.append("add chain %s %s nat_%s_ZONES" % (family, TABLE_NAME, chain))
-                default_rules.append("add chain %s %s nat_%s_ZONES_IFACES" % (family, TABLE_NAME, chain))
                 default_rules.append("add rule %s %s nat_%s jump nat_%s_ZONES" % (family, TABLE_NAME, chain, chain))
-                default_rules.append("add rule %s %s nat_%s_ZONES goto nat_%s_ZONES_IFACES" % (family, TABLE_NAME, chain, chain))
-                OUR_CHAINS[family]["nat"].update(set(["%s_ZONES_IFACES" % chain, "%s_ZONES" % chain]))
+                OUR_CHAINS[family]["nat"].update(set(["%s_ZONES" % chain]))
 
         OUR_CHAINS["inet"]["filter"] = set()
         for chain in IPTABLES_TO_NFT_HOOK["filter"].keys():
@@ -401,11 +448,9 @@ class nftables(object):
 
         # filter, INPUT
         default_rules.append("add chain inet %s filter_%s_ZONES" % (TABLE_NAME, "INPUT"))
-        default_rules.append("add chain inet %s filter_%s_ZONES_IFACES" % (TABLE_NAME, "INPUT"))
         default_rules.append("add rule inet %s filter_%s ct state established,related accept" % (TABLE_NAME, "INPUT"))
         default_rules.append("add rule inet %s filter_%s iifname lo accept" % (TABLE_NAME, "INPUT"))
         default_rules.append("add rule inet %s filter_%s jump filter_%s_ZONES" % (TABLE_NAME, "INPUT", "INPUT"))
-        default_rules.append("add rule inet %s filter_%s_ZONES goto filter_%s_ZONES_IFACES" % (TABLE_NAME, "INPUT", "INPUT"))
         if log_denied != "off":
             default_rules.append("add rule inet %s filter_%s ct state invalid %%%%LOGTYPE%%%% log prefix '\"STATE_INVALID_DROP: \"'" % (TABLE_NAME, "INPUT"))
         default_rules.append("add rule inet %s filter_%s ct state invalid drop" % (TABLE_NAME, "INPUT"))
@@ -415,15 +460,11 @@ class nftables(object):
 
         # filter, FORWARD
         default_rules.append("add chain inet %s filter_%s_IN_ZONES" % (TABLE_NAME, "FORWARD"))
-        default_rules.append("add chain inet %s filter_%s_IN_ZONES_IFACES" % (TABLE_NAME, "FORWARD"))
         default_rules.append("add chain inet %s filter_%s_OUT_ZONES" % (TABLE_NAME, "FORWARD"))
-        default_rules.append("add chain inet %s filter_%s_OUT_ZONES_IFACES" % (TABLE_NAME, "FORWARD"))
         default_rules.append("add rule inet %s filter_%s ct state established,related accept" % (TABLE_NAME, "FORWARD"))
         default_rules.append("add rule inet %s filter_%s iifname lo accept" % (TABLE_NAME, "FORWARD"))
         default_rules.append("add rule inet %s filter_%s jump filter_%s_IN_ZONES" % (TABLE_NAME, "FORWARD", "FORWARD"))
         default_rules.append("add rule inet %s filter_%s jump filter_%s_OUT_ZONES" % (TABLE_NAME, "FORWARD", "FORWARD"))
-        default_rules.append("add rule inet %s filter_%s_IN_ZONES goto filter_%s_IN_ZONES_IFACES" % (TABLE_NAME, "FORWARD", "FORWARD"))
-        default_rules.append("add rule inet %s filter_%s_OUT_ZONES goto filter_%s_OUT_ZONES_IFACES" % (TABLE_NAME, "FORWARD", "FORWARD"))
         if log_denied != "off":
             default_rules.append("add rule inet %s filter_%s ct state invalid %%%%LOGTYPE%%%% log prefix '\"STATE_INVALID_DROP: \"'" % (TABLE_NAME, "FORWARD"))
         default_rules.append("add rule inet %s filter_%s ct state invalid drop" % (TABLE_NAME, "FORWARD"))
@@ -482,11 +523,14 @@ class nftables(object):
         action = "goto"
 
         if enable and not append:
-            rule = ["insert", "rule", family, "%s" % TABLE_NAME, "%s_%s_ZONES_IFACES" % (table, chain)]
+            rule = ["insert", "rule", family, "%s" % TABLE_NAME, "%s_%s_ZONES" % (table, chain),
+                    "%%ZONE_INTERFACE%%"]
         elif enable:
-            rule = ["add", "rule", family, "%s" % TABLE_NAME, "%s_%s_ZONES_IFACES" % (table, chain)]
+            rule = ["add", "rule", family, "%s" % TABLE_NAME, "%s_%s_ZONES" % (table, chain)]
         else:
-            rule = ["delete", "rule", family, "%s" % TABLE_NAME, "%s_%s_ZONES_IFACES" % (table, chain)]
+            rule = ["delete", "rule", family, "%s" % TABLE_NAME, "%s_%s_ZONES" % (table, chain)]
+            if not append:
+                rule += ["%%ZONE_INTERFACE%%"]
         if interface == "*":
             rule += [action, "%s_%s" % (table, target)]
         else:
@@ -537,6 +581,7 @@ class nftables(object):
 
         rule = [add_del, "rule", family, "%s" % TABLE_NAME,
                 "%s_%s_ZONES" % (table, chain),
+                "%%ZONE_SOURCE%%", zone,
                 rule_family, opt, address, action, "%s_%s" % (table, target)]
         return [rule]
 

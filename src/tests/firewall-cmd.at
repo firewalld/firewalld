@@ -138,9 +138,9 @@ FWD_START_TEST([zone interfaces])
     FWD_CHECK([--add-interface=foobar+++], 0, ignore)
     FWD_CHECK([--add-interface=foobar+], 0, ignore)
     m4_if(nftables, FIREWALL_BACKEND, [
-    NFT_LIST_RULES([inet], [filter_INPUT_ZONES_IFACES], 0, [dnl
+    NFT_LIST_RULES([inet], [filter_INPUT_ZONES], 0, [dnl
         table inet firewalld {
-        chain filter_INPUT_ZONES_IFACES {
+        chain filter_INPUT_ZONES {
             iifname "foobar*" goto filter_IN_public
             iifname "foobar++*" goto filter_IN_public
             goto filter_IN_trusted
