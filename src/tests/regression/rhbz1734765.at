@@ -1,0 +1,151 @@
+FWD_START_TEST([zone sources ordered by name])
+AT_KEYWORDS(zone rhbz1734765 rhbz1421222 gh166)
+dnl
+dnl Users depend on firewalld ordering source-based zone dispatch by zone name.
+dnl
+
+FWD_CHECK([-q --permanent --new-zone=foobar_00])
+FWD_CHECK([-q --permanent --new-zone=foobar_05])
+FWD_CHECK([-q --permanent --new-zone=foobar_02])
+FWD_CHECK([-q --permanent --new-zone=foobar_03])
+FWD_CHECK([-q --permanent --new-zone=foobar_01])
+FWD_CHECK([-q --permanent --new-zone=foobar_04])
+FWD_CHECK([-q --permanent --new-zone=foobar_010])
+
+FWD_CHECK([-q --permanent --zone=foobar_00 --add-source="10.1.1.1" --add-source="1234:5678::1:1:1"])
+FWD_CHECK([-q --permanent --zone=foobar_01 --add-source="10.1.1.0/24" --add-source="1234:5678::1:1:0/112"])
+FWD_CHECK([-q --permanent --zone=foobar_02 --add-source="10.1.0.0/16" --add-source="1234:5678::1:0:0/96"])
+FWD_CHECK([-q --permanent --zone=foobar_03 --add-source="10.2.2.0/24" --add-source="1234:5678::2:2:0/112"])
+FWD_CHECK([-q --permanent --zone=foobar_04 --add-source="10.2.0.0/16" --add-source="1234:5678::2:0:0/96"])
+FWD_CHECK([-q --permanent --zone=foobar_05 --add-source="10.0.0.0/8" --add-source="1234:5678::0:0:0/80"])
+
+FWD_CHECK([-q --permanent --zone=internal --add-interface=foobar0])
+FWD_CHECK([-q --permanent --zone=trusted --add-interface=foobar1])
+
+FWD_RELOAD
+
+FWD_CHECK([-q --zone=foobar_010 --add-source="10.10.10.10" --add-source="1234:5678::10:10:10"])
+FWD_CHECK([-q --zone=public --add-source="20.20.20.20" --add-source="1234:5678::20:20:20"])
+FWD_CHECK([-q --zone=foobar_010 --add-interface=foobar2])
+
+NFT_LIST_RULES([inet], [filter_INPUT_ZONES], 0, [dnl
+    table inet firewalld {
+        chain filter_INPUT_ZONES {
+            ip saddr 10.1.1.1 goto filter_IN_foobar_00
+            ip6 saddr 1234:5678::1:1:1 goto filter_IN_foobar_00
+            ip saddr 10.1.1.0/24 goto filter_IN_foobar_01
+            ip6 saddr 1234:5678::1:1:0/112 goto filter_IN_foobar_01
+            ip saddr 10.10.10.10 goto filter_IN_foobar_010
+            ip6 saddr 1234:5678::10:10:10 goto filter_IN_foobar_010
+            ip saddr 10.1.0.0/16 goto filter_IN_foobar_02
+            ip6 saddr 1234:5678::1:0:0/96 goto filter_IN_foobar_02
+            ip saddr 10.2.2.0/24 goto filter_IN_foobar_03
+            ip6 saddr 1234:5678::2:2:0/112 goto filter_IN_foobar_03
+            ip saddr 10.2.0.0/16 goto filter_IN_foobar_04
+            ip6 saddr 1234:5678::2:0:0/96 goto filter_IN_foobar_04
+            ip saddr 10.0.0.0/8 goto filter_IN_foobar_05
+            ip6 saddr 1234:5678::/80 goto filter_IN_foobar_05
+            ip saddr 20.20.20.20 goto filter_IN_public
+            ip6 saddr 1234:5678::20:20:20 goto filter_IN_public
+            iifname "foobar2" goto filter_IN_foobar_010
+            iifname "foobar1" goto filter_IN_trusted
+            iifname "foobar0" goto filter_IN_internal
+            goto filter_IN_public
+        }
+    }
+])
+NFT_LIST_RULES([ip], [nat_POSTROUTING_ZONES], 0, [dnl
+    table ip firewalld {
+        chain nat_POSTROUTING_ZONES {
+            ip daddr 10.1.1.1 goto nat_POST_foobar_00
+            ip daddr 10.1.1.0/24 goto nat_POST_foobar_01
+            ip daddr 10.10.10.10 goto nat_POST_foobar_010
+            ip daddr 10.1.0.0/16 goto nat_POST_foobar_02
+            ip daddr 10.2.2.0/24 goto nat_POST_foobar_03
+            ip daddr 10.2.0.0/16 goto nat_POST_foobar_04
+            ip daddr 10.0.0.0/8 goto nat_POST_foobar_05
+            ip daddr 20.20.20.20 goto nat_POST_public
+            oifname "foobar2" goto nat_POST_foobar_010
+            oifname "foobar1" goto nat_POST_trusted
+            oifname "foobar0" goto nat_POST_internal
+            goto nat_POST_public
+        }
+    }
+])
+NFT_LIST_RULES([ip6], [nat_POSTROUTING_ZONES], 0, [dnl
+    table ip6 firewalld {
+        chain nat_POSTROUTING_ZONES {
+            ip6 daddr 1234:5678::1:1:1 goto nat_POST_foobar_00
+            ip6 daddr 1234:5678::1:1:0/112 goto nat_POST_foobar_01
+            ip6 daddr 1234:5678::10:10:10 goto nat_POST_foobar_010
+            ip6 daddr 1234:5678::1:0:0/96 goto nat_POST_foobar_02
+            ip6 daddr 1234:5678::2:2:0/112 goto nat_POST_foobar_03
+            ip6 daddr 1234:5678::2:0:0/96 goto nat_POST_foobar_04
+            ip6 daddr 1234:5678::/80 goto nat_POST_foobar_05
+            ip6 daddr 1234:5678::20:20:20 goto nat_POST_public
+            oifname "foobar2" goto nat_POST_foobar_010
+            oifname "foobar1" goto nat_POST_trusted
+            oifname "foobar0" goto nat_POST_internal
+            goto nat_POST_public
+        }
+    }
+])
+
+IPTABLES_LIST_RULES([filter], [INPUT_ZONES], 0,
+  [[IN_foobar_00 all -- 10.1.1.1 0.0.0.0/0 [goto]
+    IN_foobar_01 all -- 10.1.1.0/24 0.0.0.0/0 [goto]
+    IN_foobar_010 all -- 10.10.10.10 0.0.0.0/0 [goto]
+    IN_foobar_02 all -- 10.1.0.0/16 0.0.0.0/0 [goto]
+    IN_foobar_03 all -- 10.2.2.0/24 0.0.0.0/0 [goto]
+    IN_foobar_04 all -- 10.2.0.0/16 0.0.0.0/0 [goto]
+    IN_foobar_05 all -- 10.0.0.0/8 0.0.0.0/0 [goto]
+    IN_public all -- 20.20.20.20 0.0.0.0/0 [goto]
+    IN_foobar_010 all -- 0.0.0.0/0 0.0.0.0/0 [goto]
+    IN_trusted all -- 0.0.0.0/0 0.0.0.0/0 [goto]
+    IN_internal all -- 0.0.0.0/0 0.0.0.0/0 [goto]
+    IN_public all -- 0.0.0.0/0 0.0.0.0/0 [goto]
+]])
+IP6TABLES_LIST_RULES([filter], [INPUT_ZONES], 0,
+  [[IN_foobar_00 all 1234:5678::1:1:1 ::/0 [goto]
+    IN_foobar_01 all 1234:5678::1:1:0/112 ::/0 [goto]
+    IN_foobar_010 all 1234:5678::10:10:10 ::/0 [goto]
+    IN_foobar_02 all 1234:5678::1:0:0/96 ::/0 [goto]
+    IN_foobar_03 all 1234:5678::2:2:0/112 ::/0 [goto]
+    IN_foobar_04 all 1234:5678::2:0:0/96 ::/0 [goto]
+    IN_foobar_05 all 1234:5678::/80 ::/0 [goto]
+    IN_public all 1234:5678::20:20:20 ::/0 [goto]
+    IN_foobar_010 all ::/0 ::/0 [goto]
+    IN_trusted all ::/0 ::/0 [goto]
+    IN_internal all ::/0 ::/0 [goto]
+    IN_public all ::/0 ::/0 [goto]
+]])
+IPTABLES_LIST_RULES([nat], [POSTROUTING_ZONES], 0,
+  [[POST_foobar_00 all -- 0.0.0.0/0 10.1.1.1 [goto]
+    POST_foobar_01 all -- 0.0.0.0/0 10.1.1.0/24 [goto]
+    POST_foobar_010 all -- 0.0.0.0/0 10.10.10.10 [goto]
+    POST_foobar_02 all -- 0.0.0.0/0 10.1.0.0/16 [goto]
+    POST_foobar_03 all -- 0.0.0.0/0 10.2.2.0/24 [goto]
+    POST_foobar_04 all -- 0.0.0.0/0 10.2.0.0/16 [goto]
+    POST_foobar_05 all -- 0.0.0.0/0 10.0.0.0/8 [goto]
+    POST_public all -- 0.0.0.0/0 20.20.20.20 [goto]
+    POST_foobar_010 all -- 0.0.0.0/0 0.0.0.0/0 [goto]
+    POST_trusted all -- 0.0.0.0/0 0.0.0.0/0 [goto]
+    POST_internal all -- 0.0.0.0/0 0.0.0.0/0 [goto]
+    POST_public all -- 0.0.0.0/0 0.0.0.0/0 [goto]
+]])
+IP6TABLES_LIST_RULES([nat], [POSTROUTING_ZONES], 0,
+  [[POST_foobar_00 all ::/0 1234:5678::1:1:1 [goto]
+    POST_foobar_01 all ::/0 1234:5678::1:1:0/112 [goto]
+    POST_foobar_010 all ::/0 1234:5678::10:10:10 [goto]
+    POST_foobar_02 all ::/0 1234:5678::1:0:0/96 [goto]
+    POST_foobar_03 all ::/0 1234:5678::2:2:0/112 [goto]
+    POST_foobar_04 all ::/0 1234:5678::2:0:0/96 [goto]
+    POST_foobar_05 all ::/0 1234:5678::/80 [goto]
+    POST_public all ::/0 1234:5678::20:20:20 [goto]
+    POST_foobar_010 all ::/0 ::/0 [goto]
+    POST_trusted all ::/0 ::/0 [goto]
+    POST_internal all ::/0 ::/0 [goto]
+    POST_public all ::/0 ::/0 [goto]
+]])
+
+FWD_END_TEST
