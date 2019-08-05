@@ -12,20 +12,32 @@ FWD_CHECK([-q --permanent --new-zone=foobar_01])
 FWD_CHECK([-q --permanent --new-zone=foobar_04])
 FWD_CHECK([-q --permanent --new-zone=foobar_010])
 
-FWD_CHECK([-q --permanent --zone=foobar_00 --add-source="10.1.1.1" --add-source="1234:5678::1:1:1"])
-FWD_CHECK([-q --permanent --zone=foobar_01 --add-source="10.1.1.0/24" --add-source="1234:5678::1:1:0/112"])
-FWD_CHECK([-q --permanent --zone=foobar_02 --add-source="10.1.0.0/16" --add-source="1234:5678::1:0:0/96"])
-FWD_CHECK([-q --permanent --zone=foobar_03 --add-source="10.2.2.0/24" --add-source="1234:5678::2:2:0/112"])
-FWD_CHECK([-q --permanent --zone=foobar_04 --add-source="10.2.0.0/16" --add-source="1234:5678::2:0:0/96"])
-FWD_CHECK([-q --permanent --zone=foobar_05 --add-source="10.0.0.0/8" --add-source="1234:5678::0:0:0/80"])
+FWD_CHECK([-q --permanent --zone=foobar_00 --add-source="10.1.1.1"])
+FWD_CHECK([-q --permanent --zone=foobar_01 --add-source="10.1.1.0/24"])
+FWD_CHECK([-q --permanent --zone=foobar_02 --add-source="10.1.0.0/16"])
+FWD_CHECK([-q --permanent --zone=foobar_03 --add-source="10.2.2.0/24"])
+FWD_CHECK([-q --permanent --zone=foobar_04 --add-source="10.2.0.0/16"])
+FWD_CHECK([-q --permanent --zone=foobar_05 --add-source="10.0.0.0/8"])
+IF_IPV6_SUPPORTED([
+FWD_CHECK([-q --permanent --zone=foobar_00 --add-source="1234:5678::1:1:1"])
+FWD_CHECK([-q --permanent --zone=foobar_01 --add-source="1234:5678::1:1:0/112"])
+FWD_CHECK([-q --permanent --zone=foobar_02 --add-source="1234:5678::1:0:0/96"])
+FWD_CHECK([-q --permanent --zone=foobar_03 --add-source="1234:5678::2:2:0/112"])
+FWD_CHECK([-q --permanent --zone=foobar_04 --add-source="1234:5678::2:0:0/96"])
+FWD_CHECK([-q --permanent --zone=foobar_05 --add-source="1234:5678::0:0:0/80"])
+])
 
 FWD_CHECK([-q --permanent --zone=internal --add-interface=foobar0])
 FWD_CHECK([-q --permanent --zone=trusted --add-interface=foobar1])
 
 FWD_RELOAD
 
-FWD_CHECK([-q --zone=foobar_010 --add-source="10.10.10.10" --add-source="1234:5678::10:10:10"])
-FWD_CHECK([-q --zone=public --add-source="20.20.20.20" --add-source="1234:5678::20:20:20"])
+FWD_CHECK([-q --zone=foobar_010 --add-source="10.10.10.10"])
+FWD_CHECK([-q --zone=public --add-source="20.20.20.20"])
+IF_IPV6_SUPPORTED([
+FWD_CHECK([-q --zone=foobar_010 --add-source="1234:5678::10:10:10"])
+FWD_CHECK([-q --zone=public --add-source="1234:5678::20:20:20"])
+])
 FWD_CHECK([-q --zone=foobar_010 --add-interface=foobar2])
 
 m4_if(nftables, FIREWALL_BACKEND, [dnl
