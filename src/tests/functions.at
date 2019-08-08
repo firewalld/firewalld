@@ -82,6 +82,7 @@ m4_define([FWD_START_TEST], [
         m4_if(nftables, FIREWALL_BACKEND, [
             m4_if(no, HOST_SUPPORTS_NFT_FIB, [
                 sed -i 's/^IPv6_rpfilter.*/IPv6_rpfilter=no/' ./firewalld.conf
+                sed -i 's/^IPv4_rpfilter.*/IPv4_rpfilter=no/' ./firewalld.conf
             ])
         ])
 

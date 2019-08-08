@@ -102,11 +102,11 @@ class Firewall(object):
         self.__init_vars()
 
     def __repr__(self):
-        return '%s(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)' % \
+        return '%s(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)' % \
             (self.__class__, self.ip4tables_enabled, self.ip6tables_enabled,
              self.ebtables_enabled, self._state, self._panic,
              self._default_zone, self._module_refcount, self._marks,
-             self.cleanup_on_exit, self.ipv6_rpfilter_enabled,
+             self.cleanup_on_exit, self.ipv6_rpfilter_enabled, self.ipv4_rpfilter_enabled,
              self.ipset_enabled, self._individual_calls, self._log_denied,
              self._automatic_helpers)
 
@@ -119,6 +119,7 @@ class Firewall(object):
         # fallback settings will be overloaded by firewalld.conf
         self.cleanup_on_exit = config.FALLBACK_CLEANUP_ON_EXIT
         self.ipv6_rpfilter_enabled = config.FALLBACK_IPV6_RPFILTER
+        self.ipv4_rpfilter_enabled = config.FALLBACK_IPV4_RPFILTER
         self._individual_calls = config.FALLBACK_INDIVIDUAL_CALLS
         self._log_denied = config.FALLBACK_LOG_DENIED
         self._automatic_helpers = config.FALLBACK_AUTOMATIC_HELPERS
@@ -274,6 +275,18 @@ class Firewall(object):
                 log.debug1("IPv6 rpfilter is enabled")
             else:
                 log.debug1("IPV6 rpfilter is disabled")
+
+            if self._firewalld_conf.get("IPv4_rpfilter"):
+                value = self._firewalld_conf.get("IPv4_rpfilter")
+                if value is not None:
+                    if value.lower() in [ "no", "false" ]:
+                        self.ipv4_rpfilter_enabled = False
+                    if value.lower() in [ "yes", "true" ]:
+                        self.ipv4_rpfilter_enabled = True
+            if self.ipv4_rpfilter_enabled:
+                log.debug1("IPv4 rpfilter is enabled")
+            else:
+                log.debug1("IPV4 rpfilter is disabled")
 
             if self._firewalld_conf.get("IndividualCalls"):
                 value = self._firewalld_conf.get("IndividualCalls")
@@ -818,8 +831,15 @@ class Firewall(object):
             ipv6_backend = self.get_backend_by_ipv("ipv6")
             if "raw" in ipv6_backend.get_available_tables():
                 if self.ipv6_rpfilter_enabled:
-                    rules = ipv6_backend.build_rpfilter_rules(self._log_denied)
+                    rules = ipv6_backend.build_rpfilter_rules("ipv6", self._log_denied)
                     transaction.add_rules(ipv6_backend, rules)
+
+        if self.is_ipv_enabled("ipv4"):
+            ipv4_backend = self.get_backend_by_ipv("ipv4")
+            if "raw" in ipv4_backend.get_available_tables():
+                if self.ipv4_rpfilter_enabled:
+                    rules = ipv4_backend.build_rpfilter_rules("ipv4", self._log_denied)
+                    transaction.add_rules(ipv4_backend, rules)
 
         if self.is_ipv_enabled("ipv6") and self._rfc3964_ipv4:
             # Flush due to iptables-restore (nftables) bug triggered when

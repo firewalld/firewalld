@@ -1309,11 +1309,7 @@ class ip4tables(object):
     def is_ipv_supported(self, ipv):
         return ipv == self.ipv
 
-class ip6tables(ip4tables):
-    ipv = "ipv6"
-    name = "ip6tables"
-
-    def build_rpfilter_rules(self, log_denied=False):
+    def build_rpfilter_rules(self, ipv, log_denied=False):
         rules = []
         rules.append([ "-I", "PREROUTING", "-t", "raw",
                        "-m", "rpfilter", "--invert", "-j", "DROP" ])
@@ -1322,6 +1318,14 @@ class ip6tables(ip4tables):
                            "-m", "rpfilter", "--invert",
                            "-j", "LOG",
                            "--log-prefix", "rpfilter_DROP: " ])
+        return rules
+
+class ip6tables(ip4tables):
+    ipv = "ipv6"
+    name = "ip6tables"
+
+    def build_rpfilter_rules(self, ipv, log_denied=False):
+        rules = super(ip6tables, self).build_rpfilter_rules(ipv, log_denied)
         rules.append([ "-I", "PREROUTING", "-t", "raw",
                        "-p", "ipv6-icmp",
                        "--icmpv6-type=neighbour-solicitation",

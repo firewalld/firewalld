@@ -1261,8 +1261,9 @@ class nftables(object):
 
         return rules
 
-    def build_rpfilter_rules(self, log_denied=False):
-        rule_fragment = ["meta", "nfproto", "ipv6", "fib", "saddr", ".", "iif",
+    def build_rpfilter_rules(self, ipv, log_denied=False):
+        rule_fragment = ["meta", "nfproto", ipv,
+                         "fib", "saddr", ".", "iif",
                          "oif", "missing"]
         if log_denied != "off":
             rule_fragment += ["log", "prefix", "\"rpfilter_DROP: \""]
@@ -1271,10 +1272,12 @@ class nftables(object):
         rules = []
         rules.append(["insert", "rule", "inet", "%s" % TABLE_NAME,
                       "raw_%s" % "PREROUTING"] + rule_fragment)
-        rules.append(["insert", "rule", "inet", "%s" % TABLE_NAME,
-                      "raw_%s" % "PREROUTING",
-                      "icmpv6", "type", "{ nd-router-advert, nd-neighbor-solicit }",
-                      "accept"]) # RHBZ#1058505, RHBZ#1575431 (bug in kernel 4.16-4.17)
+        if ipv == "ipv6":
+            rules.append(["insert", "rule", "inet", "%s" % TABLE_NAME,
+                          "raw_%s" % "PREROUTING",
+                          "meta", "nfproto", "ipv6",
+                          "icmpv6", "type", "{ nd-router-advert, nd-neighbor-solicit }",
+                          "accept"]) # RHBZ#1058505, RHBZ#1575431 (bug in kernel 4.16-4.17)
         return rules
 
     def build_rfc3964_ipv4_rules(self):

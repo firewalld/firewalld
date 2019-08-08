@@ -99,6 +99,7 @@ class FirewallDConfig(slip.dbus.service.Object):
                                               config.dbus.DBUS_INTERFACE_CONFIG,
                                               { "CleanupOnExit": "readwrite",
                                                 "IPv6_rpfilter": "readwrite",
+                                                "IPv4_rpfilter": "readwrite",
                                                 "Lockdown": "readwrite",
                                                 "MinimalMark": "readwrite",
                                                 "IndividualCalls": "readwrite",
@@ -485,7 +486,7 @@ class FirewallDConfig(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def _get_property(self, prop):
         if prop not in [ "DefaultZone", "MinimalMark", "CleanupOnExit",
-                         "Lockdown", "IPv6_rpfilter", "IndividualCalls",
+                         "Lockdown", "IPv6_rpfilter", "IPv4_rpfilter", "IndividualCalls",
                          "LogDenied", "AutomaticHelpers", "FirewallBackend",
                          "FlushAllOnReload", "RFC3964_IPv4" ]:
             raise dbus.exceptions.DBusException(
@@ -515,6 +516,10 @@ class FirewallDConfig(slip.dbus.service.Object):
         elif prop == "IPv6_rpfilter":
             if value is None:
                 value = "yes" if config.FALLBACK_IPV6_RPFILTER else "no"
+            return dbus.String(value)
+        elif prop == "IPv4_rpfilter":
+            if value is None:
+                value = "yes" if config.FALLBACK_IPV4_RPFILTER else "no"
             return dbus.String(value)
         elif prop == "IndividualCalls":
             if value is None:
@@ -552,6 +557,8 @@ class FirewallDConfig(slip.dbus.service.Object):
         elif prop == "Lockdown":
             return dbus.String(self._get_property(prop))
         elif prop == "IPv6_rpfilter":
+            return dbus.String(self._get_property(prop))
+        elif prop == "IPv4_rpfilter":
             return dbus.String(self._get_property(prop))
         elif prop == "IndividualCalls":
             return dbus.String(self._get_property(prop))
@@ -603,7 +610,7 @@ class FirewallDConfig(slip.dbus.service.Object):
         ret = { }
         if interface_name == config.dbus.DBUS_INTERFACE_CONFIG:
             for x in [ "DefaultZone", "MinimalMark", "CleanupOnExit",
-                       "Lockdown", "IPv6_rpfilter", "IndividualCalls",
+                       "Lockdown", "IPv6_rpfilter", "IPv4_rpfilter", "IndividualCalls",
                        "LogDenied", "AutomaticHelpers", "FirewallBackend",
                        "FlushAllOnReload", "RFC3964_IPv4" ]:
                 ret[x] = self._get_property(x)
@@ -630,7 +637,7 @@ class FirewallDConfig(slip.dbus.service.Object):
 
         if interface_name == config.dbus.DBUS_INTERFACE_CONFIG:
             if property_name in [ "MinimalMark", "CleanupOnExit", "Lockdown",
-                                  "IPv6_rpfilter", "IndividualCalls",
+                                  "IPv6_rpfilter", "IPv4_rpfilter", "IndividualCalls",
                                   "LogDenied", "AutomaticHelpers",
                                   "FirewallBackend", "FlushAllOnReload",
                                   "RFC3964_IPv4" ]:
@@ -646,7 +653,7 @@ class FirewallDConfig(slip.dbus.service.Object):
                                         "'%s' for %s" % \
                                         (new_value, property_name))
                 if property_name in [ "CleanupOnExit", "Lockdown",
-                                      "IPv6_rpfilter", "IndividualCalls" ]:
+                                      "IPv6_rpfilter", "IPv4_rpfilter", "IndividualCalls" ]:
                     if new_value.lower() not in [ "yes", "no",
                                                   "true", "false" ]:
                         raise FirewallError(errors.INVALID_VALUE,

@@ -29,7 +29,7 @@ from firewall.core.logger import log
 from firewall.functions import b2u, u2b, PY2
 
 valid_keys = [ "DefaultZone", "MinimalMark", "CleanupOnExit", "Lockdown", 
-               "IPv6_rpfilter", "IndividualCalls", "LogDenied",
+               "IPv6_rpfilter", "IPv4_rpfilter", "IndividualCalls", "LogDenied",
                "AutomaticHelpers", "FirewallBackend", "FlushAllOnReload",
                "RFC3964_IPv4" ]
 
@@ -77,6 +77,7 @@ class firewalld_conf(object):
             self.set("CleanupOnExit", "yes" if config.FALLBACK_CLEANUP_ON_EXIT else "no")
             self.set("Lockdown", "yes" if config.FALLBACK_LOCKDOWN else "no")
             self.set("IPv6_rpfilter","yes" if config.FALLBACK_IPV6_RPFILTER else "no")
+            self.set("IPv4_rpfilter","yes" if config.FALLBACK_IPV4_RPFILTER else "no")
             self.set("IndividualCalls", "yes" if config.FALLBACK_INDIVIDUAL_CALLS else "no")
             self.set("LogDenied", config.FALLBACK_LOG_DENIED)
             self.set("AutomaticHelpers", config.FALLBACK_AUTOMATIC_HELPERS)
@@ -151,6 +152,15 @@ class firewalld_conf(object):
                             "value %s", value if value else '',
                             config.FALLBACK_IPV6_RPFILTER)
             self.set("IPv6_rpfilter","yes" if config.FALLBACK_IPV6_RPFILTER else "no")
+
+        # check ipv4_rpfilter
+        value = self.get("IPv4_rpfilter")
+        if not value or value.lower() not in [ "yes", "true", "no", "false" ]:
+            if value is not None:
+                log.warning("IPv4_rpfilter '%s' is not valid, using default "
+                            "value %s", value if value else '',
+                            config.FALLBACK_IPV4_RPFILTER)
+            self.set("IPv4_rpfilter","yes" if config.FALLBACK_IPV4_RPFILTER else "no")
 
         # check individual calls
         value = self.get("IndividualCalls")
