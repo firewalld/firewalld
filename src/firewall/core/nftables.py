@@ -610,10 +610,15 @@ class nftables(object):
         # nat tables needs to use ip/ip6 family
         if table == "nat" and family == "inet":
             rules = []
-            if check_address("ipv4", address) or check_mac(address):
+            if address.startswith("ipset:"):
+                ipset_family = self._set_get_family(address[len("ipset:"):])
+            else:
+                ipset_family = None
+
+            if check_address("ipv4", address) or check_mac(address) or ipset_family == "ip":
                 rules.extend(self.build_zone_source_address_rules(enable, zone,
                                     address, table, chain, "ip"))
-            if check_address("ipv6", address) or check_mac(address):
+            if check_address("ipv6", address) or check_mac(address) or ipset_family == "ip6":
                 rules.extend(self.build_zone_source_address_rules(enable, zone,
                                     address, table, chain, "ip6"))
             return rules
