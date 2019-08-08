@@ -42,15 +42,17 @@ install:
   - echo "/usr/local/lib" | sudo tee /etc/ld.so.conf.d/local.conf
   - sudo apt-get -qq -y install libmnl-dev libgmp-dev libreadline-dev
     && pushd /tmp
-    && tar xf ${OLDPWD}/.travis/libnftnl-1.1.1.tar.bz2
-    && tar xf ${OLDPWD}/.travis/nftables-0.9.0.tar.bz2
-    && cd libnftnl-1.1.1
+    && wget https://netfilter.org/projects/libnftnl/files/libnftnl-1.1.3.tar.bz2
+    && wget https://netfilter.org/projects/nftables/files/nftables-0.9.1.tar.bz2
+    && tar xf libnftnl-1.1.3.tar.bz2
+    && tar xf nftables-0.9.1.tar.bz2
+    && cd libnftnl-1.1.3
     && ./configure
     && make
     && sudo make install
     && sudo ldconfig
     && cd /tmp
-    && cd nftables-0.9.0
+    && cd nftables-0.9.1
     && ./configure --disable-man-doc
     && make
     && sudo make install
