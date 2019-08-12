@@ -1318,6 +1318,10 @@ class ip4tables(object):
                            "-m", "rpfilter", "--invert",
                            "-j", "LOG",
                            "--log-prefix", "rpfilter_DROP: " ])
+        if ipv == 'ipv4':
+            rules.append([ "-I", "PREROUTING", "-t", "raw",
+                           "-p", "udp", "--sport", "67", "--dport", "68",
+                           "-j", "ACCEPT" ])
         return rules
 
 class ip6tables(ip4tables):
