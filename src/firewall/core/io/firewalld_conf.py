@@ -84,29 +84,29 @@ class firewalld_conf(object):
             self.set("FlushAllOnReload", "yes" if config.FALLBACK_FLUSH_ALL_ON_RELOAD else "no")
             self.set("RFC3964_IPv4", "yes" if config.FALLBACK_RFC3964_IPV4 else "no")
             raise
-
-        for line in f:
-            if not line:
-                break
-            line = line.strip()
-            if len(line) < 1 or line[0] in ['#', ';']:
-                continue
-            # get key/value pair
-            pair = [ x.strip() for x in line.split("=") ]
-            if len(pair) != 2:
-                log.error("Invalid option definition: '%s'", line.strip())
-                continue
-            elif pair[0] not in valid_keys:
-                log.error("Invalid option: '%s'", line.strip())
-                continue
-            elif pair[1] == '':
-                log.error("Missing value: '%s'", line.strip())
-                continue
-            elif self._config.get(pair[0]) is not None:
-                log.error("Duplicate option definition: '%s'", line.strip())
-                continue
-            self._config[pair[0]] = pair[1]
-        f.close()
+        else:
+            for line in f:
+                if not line:
+                    break
+                line = line.strip()
+                if len(line) < 1 or line[0] in ['#', ';']:
+                    continue
+                # get key/value pair
+                pair = [ x.strip() for x in line.split("=") ]
+                if len(pair) != 2:
+                    log.error("Invalid option definition: '%s'", line.strip())
+                    continue
+                elif pair[0] not in valid_keys:
+                    log.error("Invalid option: '%s'", line.strip())
+                    continue
+                elif pair[1] == '':
+                    log.error("Missing value: '%s'", line.strip())
+                    continue
+                elif self._config.get(pair[0]) is not None:
+                    log.error("Duplicate option definition: '%s'", line.strip())
+                    continue
+                self._config[pair[0]] = pair[1]
+            f.close()
 
         # check default zone
         if not self.get("DefaultZone"):
