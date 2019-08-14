@@ -124,6 +124,7 @@ class Firewall(object):
         self._automatic_helpers = config.FALLBACK_AUTOMATIC_HELPERS
         self._firewall_backend = config.FALLBACK_FIREWALL_BACKEND
         self._flush_all_on_reload = config.FALLBACK_FLUSH_ALL_ON_RELOAD
+        self._rfc3964_ipv4 = config.FALLBACK_RFC3964_IPV4
         self.nf_conntrack_helper_setting = 0
         self.nf_conntrack_helpers = { }
         self.nf_nat_helpers = { }
