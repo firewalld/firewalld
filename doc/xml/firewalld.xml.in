@@ -76,6 +76,16 @@
 	</listitem>
       </varlistentry>
 
+    <varlistentry>
+      <term><option>--default-config</option></term>
+      <listitem>
+        <para>
+          Path to firewalld default configuration. This usually defaults to
+          <filename class="directory">/usr/lib/firewalld</filename>.
+        </para>
+      </listitem>
+    </varlistentry>
+
       <varlistentry>
         <term><option>--debug</option><optional>=<replaceable>level</replaceable></optional></term>
         <listitem>
@@ -111,6 +121,16 @@
 	  </para>
 	</listitem>
       </varlistentry>
+
+    <varlistentry>
+      <term><option>--system-config</option></term>
+      <listitem>
+        <para>
+          Path to firewalld system (user) configuration. This usually defaults
+          to <filename class="directory">/etc/firewalld</filename>.
+        </para>
+      </listitem>
+    </varlistentry>
     </variablelist>
   </refsect1>
 
@@ -120,7 +140,7 @@
       firewalld has a D-Bus interface for firewall configuration of services and applications. It also has a command line client for the user. Services or applications already using D-Bus can request changes to the firewall with the D-Bus interface directly.  For more information on the firewalld D-Bus interface, please have a look at <citerefentry><refentrytitle>firewalld.dbus</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
     </para>
     <para>
-      firewalld provides support for zones, predefined services and ICMP types and has a separation of runtime and permanent configuration options. Permanent configuration is loaded from XML files in <filename class="directory">/usr/lib/firewalld</filename> or <filename class="directory">/etc/firewalld</filename> (see <xref linkend="directories"/>).
+      firewalld provides support for zones, predefined services and ICMP types and has a separation of runtime and permanent configuration options. Permanent configuration is loaded from XML files in <filename class="directory">/usr/lib/firewalld</filename> (<option>--default-config</option>) or <filename class="directory">/etc/firewalld</filename> (<option>--system-config</option>) (see <xref linkend="directories"/>).
     </para>
     <para>
       If NetworkManager is not in use and firewalld gets started after the network is already up, the connections and manually created interfaces are not bound to the zone specified in the ifcfg file.
@@ -190,7 +210,7 @@
     </para>
 
     <refsect2>
-      <title>Default/Fallback configuration in <filename class="directory">/usr/lib/firewalld</filename></title>
+      <title>Default/Fallback configuration in <filename class="directory">/usr/lib/firewalld</filename> (<option>--default-config</option>)</title>
 
       <para>
 	This directory contains the default and fallback configuration provided by firewalld for icmptypes, services and zones. The files provided with the firewalld package should not get changed and the changes are gone with an update of the firewalld package. Additional <option>icmptypes</option>, <option>services</option> and <option>zones</option> can be provided with packages or by creating files.
@@ -198,7 +218,7 @@
     </refsect2>
 
     <refsect2>
-      <title>System configuration settings in <filename class="directory">/etc/firewalld</filename></title>
+      <title>System configuration settings in <filename class="directory">/etc/firewalld</filename> (<option>--system-config</option>)</title>
 
       <para>
 	The system or user configuration stored here is either created by the system administrator or by customization with the configuration interface of firewalld or by hand. The files will overload the default configuration files.

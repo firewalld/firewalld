@@ -110,6 +110,27 @@
 	    </para>
 	  </listitem>
 	</varlistentry>
+
+    <varlistentry>
+      <term><option>--default-config</option></term>
+      <listitem>
+        <para>
+          Path to firewalld default configuration. This usually defaults to
+          <filename class="directory">/usr/lib/firewalld</filename>.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><option>--system-config</option></term>
+      <listitem>
+        <para>
+          Path to firewalld system (user) configuration. This usually defaults
+          to <filename class="directory">/etc/firewalld</filename>.
+        </para>
+      </listitem>
+    </varlistentry>
+
       </variablelist>
     </refsect2>
 
@@ -138,8 +159,13 @@
       <term><option>--check-config</option></term>
       <listitem>
         <para>
-          Run checks on the permanent configuration. This includes XML validity
-          and semantics.
+          Run checks on the permanent (default and system) configuration. This
+          includes XML validity and semantics.
+        </para>
+        <para>
+          This is may be used with <option>--system-config</option> to check
+          the validity of handwritten configuration files before copying them
+          to the standard location.
         </para>
       </listitem>
     </varlistentry>
