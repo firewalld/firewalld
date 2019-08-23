@@ -1893,15 +1893,12 @@ class FirewallZone(object):
             zone_transaction.add_chain("nat", "POSTROUTING")
             zone_transaction.add_chain("filter", "FORWARD_OUT")
 
-        for ipv in ["ipv4", "ipv6"]:
-            zone_transaction.add_post(enable_ip_forwarding, ipv)
+        ipv = "ipv4"
+        zone_transaction.add_post(enable_ip_forwarding, ipv)
 
-        for backend in self._fw.enabled_backends():
-            if not backend.zones_supported:
-                continue
-
-            rules = backend.build_zone_masquerade_rules(enable, zone)
-            zone_transaction.add_rules(backend, rules)
+        backend = self._fw.get_backend_by_ipv(ipv)
+        rules = backend.build_zone_masquerade_rules(enable, zone)
+        zone_transaction.add_rules(backend, rules)
 
     def _forward_port(self, enable, zone, zone_transaction, port, protocol,
                        toport=None, toaddr=None, mark_id=None):
