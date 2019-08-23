@@ -438,6 +438,25 @@ FWD_END_TEST([-e '/ERROR: INVALID_PROTOCOL: dummy/d'])
 
 FWD_START_TEST([masquerade])
     FWD_CHECK([--add-masquerade --zone=public], 0, ignore)
+    dnl man page says this should only affect IPv4, so verify that.
+    NFT_LIST_RULES([ip], [nat_POST_public_allow], 0, [dnl
+        table ip firewalld {
+            chain nat_POST_public_allow {
+                oifname != "lo" masquerade
+            }
+        }
+    ])
+    NFT_LIST_RULES([ip6], [nat_POST_public_allow], 0, [dnl
+        table ip6 firewalld {
+            chain nat_POST_public_allow {
+            }
+        }
+    ])
+    IPTABLES_LIST_RULES([nat], [POST_public_allow], 0, [dnl
+        MASQUERADE all -- 0.0.0.0/0 0.0.0.0/0
+    ])
+    IP6TABLES_LIST_RULES([nat], [POST_public_allow], 0, [dnl
+    ])
     FWD_CHECK([--query-masquerade], 0, ignore)
     FWD_CHECK([--remove-masquerade], 0, ignore)
     FWD_CHECK([--query-masquerade], 1, ignore)
@@ -451,9 +470,47 @@ FWD_END_TEST
 FWD_START_TEST([forward ports])
     FWD_CHECK([--add-forward-port=666], 106, ignore, ignore)
     FWD_CHECK([--add-forward-port=port=11:proto=tcp:toport=22], 0, ignore)
+    dnl man page says this should only affect IPv4, so verify that.
+    NFT_LIST_RULES([ip], [nat_PRE_public_allow], 0, [dnl
+        table ip firewalld {
+            chain nat_PRE_public_allow {
+                meta l4proto tcp mark 0x00000064 redirect to :22
+            }
+        }
+    ])
+    NFT_LIST_RULES([ip6], [nat_PRE_public_allow], 0, [dnl
+        table ip6 firewalld {
+            chain nat_PRE_public_allow {
+            }
+        }
+    ])
+    IPTABLES_LIST_RULES([nat], [PRE_public_allow], 0, [dnl
+        DNAT tcp -- 0.0.0.0/0 0.0.0.0/0 mark match 0x64 to::22
+    ])
+    IP6TABLES_LIST_RULES([nat], [PRE_public_allow], 0, [dnl
+    ])
     FWD_CHECK([--remove-forward-port=port=11:proto=tcp:toport=22 --zone=public], 0, ignore)
     FWD_CHECK([--add-forward-port=port=33:proto=tcp:toaddr=4444], 105, ignore, ignore) dnl bad address
     FWD_CHECK([--add-forward-port=port=33:proto=tcp:toaddr=4.4.4.4 --zone=public], 0, ignore)
+    dnl man page says this should only affect IPv4, so verify that.
+    NFT_LIST_RULES([ip], [nat_PRE_public_allow], 0, [dnl
+        table ip firewalld {
+            chain nat_PRE_public_allow {
+                meta l4proto tcp mark 0x00000064 dnat to 4.4.4.4
+            }
+        }
+    ])
+    NFT_LIST_RULES([ip6], [nat_PRE_public_allow], 0, [dnl
+        table ip6 firewalld {
+            chain nat_PRE_public_allow {
+            }
+        }
+    ])
+    IPTABLES_LIST_RULES([nat], [PRE_public_allow], 0, [dnl
+        DNAT tcp -- 0.0.0.0/0 0.0.0.0/0 mark match 0x64 to:4.4.4.4
+    ])
+    IP6TABLES_LIST_RULES([nat], [PRE_public_allow], 0, [dnl
+    ])
     FWD_CHECK([--remove-forward-port=port=33:proto=tcp:toaddr=4.4.4.4], 0, ignore)
     FWD_CHECK([--add-forward-port=port=55:proto=tcp:toport=66:toaddr=7.7.7.7], 0, ignore)
     FWD_CHECK([--query-forward-port port=55:proto=tcp:toport=66:toaddr=7.7.7.7 --zone=public], 0, ignore)
@@ -465,6 +522,25 @@ FWD_START_TEST([forward ports])
     FWD_CHECK([--query-forward-port=port=66:proto=sctp:toport=66:toaddr=7.7.7.7], 1, ignore)
     IF_IPV6_SUPPORTED([
     FWD_CHECK([--add-forward-port=port=66:proto=sctp:toport=66:toaddr=fd00:dead:beef:ff0::], 0, ignore)
+    dnl this should only affect IPv6, so verify that.
+    NFT_LIST_RULES([ip], [nat_PRE_public_allow], 0, [dnl
+        table ip firewalld {
+            chain nat_PRE_public_allow {
+            }
+        }
+    ])
+    NFT_LIST_RULES([ip6], [nat_PRE_public_allow], 0, [dnl
+        table ip6 firewalld {
+            chain nat_PRE_public_allow {
+                meta l4proto sctp mark 0x00000064 dnat to [[fd00:dead:beef:ff0::]:66]
+            }
+        }
+    ])
+    IPTABLES_LIST_RULES([nat], [PRE_public_allow], 0, [dnl
+    ])
+    IP6TABLES_LIST_RULES([nat], [PRE_public_allow], 0, [dnl
+        DNAT sctp ::/0 ::/0 mark match 0x64 [to:[fd00:dead:beef:ff0::]:66]
+    ])
     FWD_CHECK([--query-forward-port port=66:proto=sctp:toport=66:toaddr=fd00:dead:beef:ff0:: --zone=public], 0, ignore)
     FWD_CHECK([--remove-forward-port=port=66:proto=sctp:toport=66:toaddr=fd00:dead:beef:ff0::], 0, ignore)
     FWD_CHECK([--query-forward-port=port=66:proto=sctp:toport=66:toaddr=fd00:dead:beef:ff0::], 1, ignore)
