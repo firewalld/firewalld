@@ -1040,10 +1040,10 @@ class nftables(object):
             rules.extend(self._build_zone_forward_port_nat_rules(enable, zone,
                                 protocol, mark_fragment, toaddr, toport, "ip"))
         else:
-            if not toaddr or check_single_address("ipv6", toaddr):
+            if toaddr and check_single_address("ipv6", toaddr):
                 rules.extend(self._build_zone_forward_port_nat_rules(enable, zone,
                                     protocol, mark_fragment, toaddr, toport, "ip6"))
-            if not toaddr or check_single_address("ipv4", toaddr):
+            else:
                 rules.extend(self._build_zone_forward_port_nat_rules(enable, zone,
                                     protocol, mark_fragment, toaddr, toport, "ip"))
 
