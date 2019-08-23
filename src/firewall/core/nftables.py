@@ -1095,7 +1095,6 @@ class nftables(object):
            or rich_rule.source and check_address("ipv4", rich_rule.source.addr)):
             rules.extend(self._build_zone_masquerade_nat_rules(enable, zone, "ip", rich_rule))
         else:
-            rules.extend(self._build_zone_masquerade_nat_rules(enable, zone, "ip6", rich_rule))
             rules.extend(self._build_zone_masquerade_nat_rules(enable, zone, "ip", rich_rule))
 
         add_del = { True: "add", False: "delete" }[enable]
