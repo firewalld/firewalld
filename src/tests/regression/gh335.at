@@ -65,4 +65,4 @@ NS_CHECK([[sysctl -a |grep "net.ipv4.conf.all.forwarding[ ]*=[ ]*1"]], 1, [ignor
 NS_CHECK([[sysctl -a |grep "net.ipv6.conf.all.forwarding[ ]*=[ ]*1"]], 1, [ignore], [ignore])
 ])
 
-FWD_END_TEST
+FWD_END_TEST([-e '/ERROR: Failed to write to file .*\/proc\/sys\/net\/ipv6\/conf\/all\/forwarding.*/d'])
