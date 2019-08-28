@@ -580,7 +580,7 @@ FWD_START_TEST([forward ports])
     FWD_CHECK([--permanent --query-forward-port port=100:proto=tcp:toport=200], 1, ignore)
     FWD_CHECK([--permanent --query-forward-port=port=88:proto=udp:toport=99], 1, ignore)
     FWD_CHECK([--permanent --list-forward-ports], 0, ignore)
-FWD_END_TEST
+FWD_END_TEST([-e '/ERROR: Failed to write to file .*\/proc\/sys\/net\/ipv6\/conf\/all\/forwarding.*/d'])
 
 FWD_START_TEST([ICMP block])
     FWD_CHECK([--list-icmp-blocks], 0, ignore)
@@ -988,7 +988,7 @@ FWD_START_TEST([rich rules good])
     rich_rule_test([rule forward-port port="99" to-port="10999" to-addr="1::2:3:4:7" protocol="dccp" family="ipv6" source address="1:2:3:4:6::"])
     ])
     rich_rule_test([rule family="ipv4" port port="222" protocol="tcp" mark set="0xff"])
-FWD_END_TEST
+FWD_END_TEST([-e '/ERROR: Failed to write to file .*\/proc\/sys\/net\/ipv6\/conf\/all\/forwarding.*/d'])
 FWD_START_TEST([rich rules audit])
 	CHECK_LOG_AUDIT
 	rich_rule_test([rule service name="ftp" audit limit value="1/m" accept])
