@@ -1422,7 +1422,7 @@ class FirewallDConfig(slip.dbus.service.Object):
                    (ipv, table, chain, ))
         self.accessCheck(sender)
         settings = list(self.getSettings())
-        for rule in settings[1]:
+        for rule in settings[1][:]:
             if (ipv, table, chain) == (rule[0], rule[1], rule[2]):
                 settings[1].remove(rule)
         self.update(tuple(settings))
