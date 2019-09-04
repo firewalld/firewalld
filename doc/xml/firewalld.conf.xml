@@ -112,7 +112,17 @@
 	  <para>
 	    If this option is enabled (it is by default), reverse path filter test on a packet for IPv6 is performed.
 	    If a reply to the packet would be sent via the same interface that the packet arrived on, the packet will match and be accepted, otherwise dropped.
-            For IPv4 the rp_filter is controlled using sysctl.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term><option>IPv4_rpfilter</option></term>
+        <listitem>
+	  <para>
+	    If this option is enabled (it is by default), reverse path filter test on a packet for IPv4 is performed.
+	    If a reply to the packet would be sent via the same interface that the packet arrived on, the packet will match and be accepted, otherwise dropped.
+	    The kernel also has a built-in mechanism for dropping such packets, controlled by the rp_filter sysctl parameter.
 	  </para>
 	</listitem>
       </varlistentry>

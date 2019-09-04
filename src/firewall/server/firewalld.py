@@ -170,6 +170,9 @@ class FirewallD(slip.dbus.service.Object):
         elif prop == "IPv6_rpfilter":
             return dbus.Boolean(self.fw.ipv6_rpfilter_enabled)
 
+        elif prop == "IPv4_rpfilter":
+            return dbus.Boolean(self.fw.ipv4_rpfilter_enabled)
+
         elif prop == "IPv6ICMPTypes":
             return dbus.Array(self.fw.ip6tables_supported_icmp_types, "s")
 
@@ -229,7 +232,7 @@ class FirewallD(slip.dbus.service.Object):
         ret = { }
         if interface_name == config.dbus.DBUS_INTERFACE:
             for x in [ "version", "interface_version", "state",
-                       "IPv4", "IPv6", "IPv6_rpfilter", "BRIDGE",
+                       "IPv4", "IPv6", "IPv6_rpfilter", "IPv4_rpfilter", "BRIDGE",
                        "IPSet", "IPSetTypes", "nf_conntrack_helper_setting",
                        "nf_conntrack_helpers", "nf_nat_helpers",
                        "IPv4ICMPTypes", "IPv6ICMPTypes" ]:
@@ -259,7 +262,7 @@ class FirewallD(slip.dbus.service.Object):
 
         if interface_name == config.dbus.DBUS_INTERFACE:
             if property_name in [ "version", "interface_version", "state",
-                                  "IPv4", "IPv6", "IPv6_rpfilter", "BRIDGE",
+                                  "IPv4", "IPv6", "IPv6_rpfilter", "IPv4_rpfilter", "BRIDGE",
                                   "IPSet", "IPSetTypes",
                                   "nf_conntrack_helper_setting",
                                   "nf_conntrack_helpers", "nf_nat_helpers",
