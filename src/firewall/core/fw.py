@@ -823,12 +823,6 @@ class Firewall(object):
                     transaction.add_rules(ipv6_backend, rules)
 
         if self.is_ipv_enabled("ipv6") and self._rfc3964_ipv4:
-            # Flush due to iptables-restore (nftables) bug triggered when
-            # specifying same index multiple times in same batch
-            # rhbz 1647925
-            transaction.execute(True)
-            transaction.clear()
-
             rules = ipv6_backend.build_rfc3964_ipv4_rules()
             transaction.add_rules(ipv6_backend, rules)
 
