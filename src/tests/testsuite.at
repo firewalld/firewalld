@@ -14,4 +14,5 @@ m4_foreach([FIREWALL_BACKEND], [[nftables], [iptables]], [
     m4_include([firewall-cmd.at])
     m4_include([regression.at])
     m4_include([python.at])
+    m4_include([features.at])
 ])
