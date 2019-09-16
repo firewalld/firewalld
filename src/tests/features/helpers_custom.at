@@ -1,0 +1,40 @@
+FWD_START_TEST([service include])
+AT_KEYWORDS(helpers rhbz1733066)
+
+FWD_CHECK([-q --permanent --new-helper="ftptest" --module="nf_conntrack_ftp"])
+FWD_CHECK([-q --permanent --helper=ftptest --add-port="2121/tcp"])
+
+FWD_CHECK([-q --permanent --new-service="ftptest"])
+FWD_CHECK([-q --permanent --service=ftptest --add-module="nf_conntrack_ftptest"])
+FWD_CHECK([-q --permanent --service=ftptest --add-port="2121/tcp"])
+FWD_RELOAD
+
+FWD_CHECK([-q --add-service=ftptest])
+
+NFT_LIST_RULES([inet], [filter_IN_public_allow], 0, [dnl
+	table inet firewalld {
+		chain filter_IN_public_allow {
+			tcp dport 22 ct state new,untracked accept
+			ip6 daddr fe80::/64 udp dport 546 ct state new,untracked accept
+			tcp dport 2121 ct helper set "helper-ftptest-tcp"
+			tcp dport 2121 ct state new,untracked accept
+		}
+	}
+])
+IPTABLES_LIST_RULES([raw], [PRE_public_allow], 0, [dnl
+	CT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:2121 CT helper ftp
+])
+IPTABLES_LIST_RULES([filter], [IN_public_allow], 0, [dnl
+	ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:22 ctstate NEW,UNTRACKED
+	ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:2121 ctstate NEW,UNTRACKED
+])
+IP6TABLES_LIST_RULES([raw], [PRE_public_allow], 0, [dnl
+	CT tcp ::/0 ::/0 tcp dpt:2121 CT helper ftp
+])
+IP6TABLES_LIST_RULES([filter], [IN_public_allow], 0, [dnl
+	ACCEPT tcp ::/0 ::/0 tcp dpt:22 ctstate NEW,UNTRACKED
+	ACCEPT udp ::/0 fe80::/64 udp dpt:546 ctstate NEW,UNTRACKED
+	ACCEPT tcp ::/0 ::/0 tcp dpt:2121 ctstate NEW,UNTRACKED
+])
+
+FWD_END_TEST
