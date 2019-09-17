@@ -1120,7 +1120,7 @@ class ip4tables(object):
         return rules
 
     def build_zone_helper_ports_rules(self, enable, zone, proto, port,
-                                      destination, helper_name):
+                                      destination, helper_name, module_short_name):
         add_del = { True: "-A", False: "-D" }[enable]
         target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["PREROUTING"],
                                             zone=zone)
@@ -1129,7 +1129,7 @@ class ip4tables(object):
             rule += [ "--dport", "%s" % portStr(port) ]
         if destination:
             rule += [ "-d",  destination ]
-        rule += [ "-j", "CT", "--helper", helper_name ]
+        rule += [ "-j", "CT", "--helper", module_short_name ]
 
         return [rule]
 
