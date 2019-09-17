@@ -1042,7 +1042,7 @@ class nftables(object):
         return rules
 
     def build_zone_helper_ports_rules(self, enable, zone, proto, port,
-                                      destination, helper_name):
+                                      destination, helper_name, module_short_name):
         add_del = { True: "add", False: "delete" }[enable]
         target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["INPUT"],
                                             zone=zone)
@@ -1060,7 +1060,7 @@ class nftables(object):
         if enable:
             helper_object = ["add", "ct", "helper", "inet", TABLE_NAME,
                              "helper-%s-%s" % (helper_name, proto),
-                             "{", "type", "\"%s\"" % (helper_name), "protocol",
+                             "{", "type", "\"%s\"" % (module_short_name), "protocol",
                              proto, ";", "}"]
         else:
             helper_object = []
