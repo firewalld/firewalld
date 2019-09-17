@@ -1609,8 +1609,9 @@ class FirewallZone(object):
                         modules = [ ]
                         for helper in helpers:
                             module = helper.module
+                            _module_short_name = module.replace("-","_").replace("nf_conntrack_", "")
                             if self._fw.nf_conntrack_helper_setting == 0:
-                                if helper.name not in \
+                                if _module_short_name not in \
                                    self._fw.nf_conntrack_helpers[module]:
                                     raise FirewallError(
                                         errors.INVALID_HELPER,
@@ -1627,7 +1628,7 @@ class FirewallZone(object):
                                     for (port,proto) in helper.ports:
                                         rules = backend.build_zone_helper_ports_rules(
                                                         enable, zone, proto, port,
-                                                        destination, helper.name)
+                                                        destination, helper.name, _module_short_name)
                                         zone_transaction.add_rules(backend, rules)
                             else:
                                 if helper.module not in modules:
@@ -1819,7 +1820,8 @@ class FirewallZone(object):
             if self._fw.nf_conntrack_helper_setting == 0:
                 for helper in helpers:
                     module = helper.module
-                    if helper.name not in \
+                    _module_short_name = module.replace("-","_").replace("nf_conntrack_", "")
+                    if _module_short_name not in \
                        self._fw.nf_conntrack_helpers[module]:
                         raise FirewallError(
                             errors.INVALID_HELPER,
@@ -1836,7 +1838,7 @@ class FirewallZone(object):
                         for (port,proto) in helper.ports:
                             rules = backend.build_zone_helper_ports_rules(
                                             enable, zone, proto, port,
-                                            destination, helper.name)
+                                            destination, helper.name, _module_short_name)
                             zone_transaction.add_rules(backend, rules)
 
             for (port,proto) in svc.ports:
