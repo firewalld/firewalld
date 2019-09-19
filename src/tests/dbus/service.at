@@ -1,5 +1,5 @@
 FWD_START_TEST([dbus api - services])
-AT_KEYWORDS(dbus service rhbz1721414 rhbz1737045)
+AT_KEYWORDS(dbus service rhbz1721414 rhbz1737045 gh514)
 
 DBUS_INTROSPECT([config], [[//method[@name="addService"]]], 0, [dnl
     <method name="addService">
@@ -389,7 +389,8 @@ DBUS_CHECK([config], [config.addService2],
        "destination": <{"ipv6": "1234::4321"}>,
        "protocols": <@<:@"icmp", "igmp"@:>@>,
        "source_ports": <@<:@("4321", "tcp"), ("4321", "udp")@:>@>,
-       "includes": <@<:@"https", "samba"@:>@>
+       "includes": <@<:@"https", "samba"@:>@>,
+       "helpers": <@<:@"ftp"@:>@>
      }'dnl
     ], 0, [stdout])
 SERVICE_OBJ=[$(sed -e "s/.*config\/service\/\([^']\+\)['].*/\1/" ./stdout)]
@@ -403,6 +404,7 @@ DBUS_INTROSPECT([config/service/${SERVICE_OBJ}], [[//method[@name="getSettings2"
 DBUS_CHECK([config/service/${SERVICE_OBJ}], [config.service.getSettings2], [], 0, [dnl
    ['description': <'foobar-dict service is for foobar-dict'>
     'destination': <{'ipv6': '1234::4321'}>
+    'helpers': <['ftp']>
     'includes': <['https', 'samba']>
     'modules': <['ftp']>
     'ports': <[('1234', 'udp'), ('22', 'tcp')]>
@@ -426,6 +428,7 @@ DBUS_CHECK([config/service/${SERVICE_OBJ}], [config.service.update2],
 DBUS_CHECK([config/service/${SERVICE_OBJ}], [config.service.getSettings2], [], 0, [dnl
    ['description': <'foobar-dict service is for foobar-dict'>
     'destination': <{'ipv6': '1234::4321'}>
+    'helpers': <['ftp']>
     'includes': <['https', 'samba', 'http']>
     'modules': <['ftp']>
     'ports': <[('1234', 'udp'), ('22', 'tcp')]>
@@ -444,6 +447,7 @@ DBUS_CHECK([config/service/${SERVICE_OBJ}], [config.service.update2],
 DBUS_CHECK([config/service/${SERVICE_OBJ}], [config.service.getSettings2], [], 0, [dnl
    ['description': <'foobar-dict service is for foobar-dict'>
     'destination': <{'ipv6': '1234::4321'}>
+    'helpers': <['ftp']>
     'modules': <['ftp']>
     'ports': <[('1234', 'udp'), ('22', 'tcp')]>
     'protocols': <['icmp', 'igmp']>
@@ -462,6 +466,7 @@ DBUS_INTROSPECT([], [[//method[@name="getServiceSettings2"]]], 0, [dnl
 DBUS_CHECK([], [getServiceSettings2], ["foobar-dict"], 0, [dnl
    ['description': <'foobar-dict service is for foobar-dict'>
     'destination': <{'ipv6': '1234::4321'}>
+    'helpers': <['ftp']>
     'modules': <['ftp']>
     'ports': <[('1234', 'udp'), ('22', 'tcp')]>
     'protocols': <['icmp', 'igmp']>
