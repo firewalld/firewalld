@@ -820,6 +820,20 @@ class FirewallZone(object):
     def list_services(self, zone):
         return self.get_settings(zone)["services"].keys()
 
+    def get_helpers_for_service_helpers(self, helpers):
+        _helpers = [ ]
+        for helper in helpers:
+            try:
+                _helper = self._fw.helper.get_helper(helper)
+            except FirewallError:
+                raise FirewallError(errors.INVALID_HELPER, helper)
+            if _helper.module not in self._fw.nf_conntrack_helpers:
+                raise FirewallError(
+                    errors.INVALID_HELPER,
+                    "'%s' is not available" % _helper.module)
+            _helpers.append(_helper)
+        return _helpers
+
     def get_helpers_for_service_modules(self, modules, enable):
         # If automatic helper assignment is turned off, helpers that
         # do not have ports defined will be replaced by the helpers
@@ -1584,6 +1598,8 @@ class FirewallZone(object):
                         # only load modules for accept action
                         helpers = self.get_helpers_for_service_modules(svc.modules,
                                                                        enable)
+                        helpers += self.get_helpers_for_service_helpers(svc.helpers)
+                        helpers = sorted(set(helpers), key=lambda x: x.name)
 
                         modules = [ ]
                         for helper in helpers:
@@ -1761,6 +1777,8 @@ class FirewallZone(object):
     def _service(self, enable, zone, service, zone_transaction, included_services=None):
         svc = self._fw.service.get_service(service)
         helpers = self.get_helpers_for_service_modules(svc.modules, enable)
+        helpers += self.get_helpers_for_service_helpers(svc.helpers)
+        helpers = sorted(set(helpers), key=lambda x: x.name)
 
         # First apply any services this service may include
         if included_services is None:

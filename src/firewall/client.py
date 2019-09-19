@@ -818,13 +818,13 @@ class FirewallClientConfigZone(object):
 class FirewallClientServiceSettings(object):
     @handle_exceptions
     def __init__(self, settings=None):
-        self.settings = ["", "", "", [], [], {}, [], [], []]
+        self.settings = ["", "", "", [], [], {}, [], [], [], []]
         self.settings_name = ["version", "short", "description", "ports",
                               "modules", "destination", "protocols",
-                              "source_ports", "includes"]
+                              "source_ports", "includes", "helpers"]
         self.settings_dbus_type = ["s", "s", "s", "(ss)",
                                    "s", "ss", "s",
-                                   "(ss)", "s"]
+                                   "(ss)", "s", "s"]
         if settings:
             if type(settings) is list:
                 for i,v in enumerate(settings):
@@ -1020,6 +1020,28 @@ class FirewallClientServiceSettings(object):
     @handle_exceptions
     def queryInclude(self, include):
         return include in self.settings[8]
+
+    @handle_exceptions
+    def getHelpers(self):
+        return self.settings[9]
+    @handle_exceptions
+    def setHelpers(self, helpers):
+        self.settings[9] = helpers
+    @handle_exceptions
+    def addHelper(self, helper):
+        if helper not in self.settings[9]:
+            self.settings[9].append(helper)
+        else:
+            raise FirewallError(errors.ALREADY_ENABLED, helper)
+    @handle_exceptions
+    def removeHelper(self, helper):
+        if helper in self.settings[9]:
+            self.settings[9].remove(helper)
+        else:
+            raise FirewallError(errors.NOT_ENABLED, helper)
+    @handle_exceptions
+    def queryHelper(self, helper):
+        return helper in self.settings[9]
 
 # ipset config settings
 

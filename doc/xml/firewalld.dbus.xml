@@ -269,6 +269,7 @@
                   <varlistentry><term><parameter>protocols (as)</parameter>: array of protocols, see <literal>protocol</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                   <varlistentry><term><parameter>source_ports (a(ss))</parameter>: array of port and protocol pairs. See <literal>source-port</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                   <varlistentry><term><parameter>includes (as)</parameter>: array of service includes, see <literal>include</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>helpers (as)</parameter>: array of service helpers, see <literal>helper</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                 </variablelist>
               </para>
               <para>
@@ -2329,6 +2330,7 @@
                   <varlistentry><term><parameter>protocols (as)</parameter>: array of protocols, see <literal>protocol</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                   <varlistentry><term><parameter>source_ports (a(ss))</parameter>: array of port and protocol pairs. See <literal>source-port</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                   <varlistentry><term><parameter>includes (as)</parameter>: array of service includes, see <literal>include</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>helpers (as)</parameter>: array of service helpers, see <literal>helper</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                 </variablelist>
               </para>
               <para>
@@ -4412,15 +4414,12 @@
         <title>Methods</title>
         <variablelist>
           <varlistentry id="FirewallD1.config.service.Methods.addModule">
+            <annotation name="org.freedesktop.DBus.Deprecated" />
             <term><methodname>addModule</methodname>(s: module) &rarr; Nothing</term>
             <listitem>
               <para>
-		Permanently add <replaceable>module</replaceable> to list of modules (netfilter kernel helpers) used in service.
-		See <literal>module</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+                This method is deprecated. Please use "helpers" in the update2() method.
               </para>
-	      <para>
-		Possible errors: ALREADY_ENABLED
-	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.config.service.Methods.addPort">
@@ -4492,11 +4491,11 @@
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.config.service.Methods.getModules">
+            <annotation name="org.freedesktop.DBus.Deprecated" />
             <term><methodname>getModules</methodname>() &rarr; as</term>
             <listitem>
               <para>
-		Get list of modules (netfilter kernel helpers) used in service.
-		See <literal>module</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+                This method is deprecated. Please use "helpers" in the getSettings2() method.
               </para>
             </listitem>
           </varlistentry>
@@ -4546,6 +4545,7 @@
                   <varlistentry><term><parameter>protocols (as)</parameter>: array of protocols, see <literal>protocol</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                   <varlistentry><term><parameter>source_ports (a(ss))</parameter>: array of port and protocol pairs. See <literal>source-port</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                   <varlistentry><term><parameter>includes (as)</parameter>: array of service includes, see <literal>include</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>helpers (as)</parameter>: array of service helpers, see <literal>helper</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                 </variablelist>
               </para>
             </listitem>
@@ -4599,11 +4599,11 @@
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.config.service.Methods.queryModule">
+            <annotation name="org.freedesktop.DBus.Deprecated" />
             <term><methodname>queryModule</methodname>(s: module) &rarr; b</term>
             <listitem>
               <para>
-		Return whether <replaceable>module</replaceable> is in list of modules (netfilter kernel helpers) used in service.
-		See <literal>module</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+                This method is deprecated. Please use "helpers" in the getSettings2() method.
               </para>
             </listitem>
           </varlistentry>
@@ -4658,15 +4658,12 @@
             </listitem>
           </varlistentry>
 	  <varlistentry id="FirewallD1.config.service.Methods.removeModule">
+            <annotation name="org.freedesktop.DBus.Deprecated" />
             <term><methodname>removeModule</methodname>(s: module) &rarr; Nothing</term>
             <listitem>
               <para>
-		Permanently remove <replaceable>module</replaceable> from list of modules (netfilter kernel helpers) used in service.
-		See <literal>module</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+                This method is deprecated. Please use "helpers" in the update2() method.
               </para>
-	      <para>
-		Possible errors: NOT_ENABLED
-	      </para>
             </listitem>
           </varlistentry>
 	  <varlistentry id="FirewallD1.config.service.Methods.removePort">
@@ -4749,11 +4746,11 @@
           </varlistentry>
 
 	  <varlistentry id="FirewallD1.config.service.Methods.setModules">
+            <annotation name="org.freedesktop.DBus.Deprecated" />
             <term><methodname>setModules</methodname>(as: modules) &rarr; Nothing</term>
             <listitem>
               <para>
-		Permanently set list of modules (netfilter kernel helpers) used in service to <replaceable>modules</replaceable>.
-		See <literal>module</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+                This method is deprecated. Please use "helpers" in the update2() method.
               </para>
             </listitem>
           </varlistentry>
@@ -4829,6 +4826,7 @@
                   <varlistentry><term><parameter>protocols (as)</parameter>: array of protocols, see <literal>protocol</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                   <varlistentry><term><parameter>source_ports (a(ss))</parameter>: array of port and protocol pairs. See <literal>source-port</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                   <varlistentry><term><parameter>includes (as)</parameter>: array of service includes, see <literal>include</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>helpers (as)</parameter>: array of service helpers, see <literal>helper</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                 </variablelist>
               </para>
               <para>

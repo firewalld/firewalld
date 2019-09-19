@@ -48,6 +48,7 @@ class Service(IO_Object):
         ( "protocols", [ "", ], ),
         ( "source_ports", [ ( "", "" ), ], ),
         ( "includes", [ "" ], ),
+        ( "helpers", [ "", ], ),
         )
     ADDITIONAL_ALNUM_CHARS = [ "_", "-" ]
     PARSER_REQUIRED_ELEMENT_ATTRS = {
@@ -63,6 +64,7 @@ class Service(IO_Object):
         "destination": [ "ipv4", "ipv6" ],
         "source-port": [ "port", "protocol" ],
         "include": [ "service" ],
+        "helper": [ "name" ],
         }
 
     def __init__(self):
@@ -76,6 +78,7 @@ class Service(IO_Object):
         self.destination = { }
         self.source_ports = [ ]
         self.includes = [ ]
+        self.helpers = [ ]
 
     def import_config(self, conf):
         self.check_config(conf)
@@ -115,6 +118,7 @@ class Service(IO_Object):
         self.destination.clear()
         del self.source_ports[:]
         del self.includes[:]
+        del self.helpers[:]
 
     def encode_strings(self):
         """ HACK. I haven't been able to make sax parser return
@@ -130,6 +134,7 @@ class Service(IO_Object):
         self.source_ports = [(u2b_if_py2(po),u2b_if_py2(pr)) for (po,pr)
                              in self.source_ports]
         self.includes = [u2b_if_py2(s) for s in self.includes]
+        self.helpers = [u2b_if_py2(s) for s in self.helpers]
 
     def _check_config(self, config, item):
         if item == "ports":
@@ -242,6 +247,12 @@ class service_ContentHandler(IO_Object_ContentHandler):
             else:
                 log.warning("Include '%s' already set, ignoring.",
                             attrs["service"])
+        elif name == "helper":
+            if attrs["name"] not in self.item.helpers:
+                self.item.helpers.append(attrs["name"])
+            else:
+                log.warning("Helper '%s' already set, ignoring.",
+                            attrs["name"])
 
 
 def service_reader(filename, path):
@@ -356,6 +367,12 @@ def service_writer(service, path=None):
     for include in service.includes:
         handler.ignorableWhitespace("  ")
         handler.simpleElement("include", { "service": include })
+        handler.ignorableWhitespace("\n")
+
+    # helpers
+    for helper in service.helpers:
+        handler.ignorableWhitespace("  ")
+        handler.simpleElement("helper", { "name": helper })
         handler.ignorableWhitespace("\n")
 
     # end service element

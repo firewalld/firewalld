@@ -74,6 +74,7 @@
   &lt;module name="<replaceable>nf_conntrack_netbios_ns</replaceable>"/&gt;
   &lt;destination ipv4="<replaceable>224.0.0.251</replaceable>" ipv6="<replaceable>ff02::fb</replaceable>"/&gt;
   &lt;include service="<replaceable>ssdp</replaceable>"/&gt;
+  &lt;helper name="<replaceable>ftp</replaceable>"/&gt;
 &lt;/service&gt;
       </programlisting>
     </para>
@@ -196,19 +197,8 @@
     <refsect2 id="options_module">
       <title>module</title>
       <para>
-	Is an optional empty-element tag and can be used several times to enable more than one netfilter kernel helper for the service. A module entry has exactly one attribute:
+        This element is deprecated. Please use helper described below in <xref linkend="options_helper"/>.
       </para>
-
-      <variablelist>
-	<varlistentry>
-	  <term>name="<replaceable>string</replaceable>"</term>
-          <listitem>
-	    <para>
-              Defines the name of the kernel netfilter helper as a string.
-	    </para>
-	  </listitem>
-	</varlistentry>
-      </variablelist>
     </refsect2>
 
     <refsect2 id="options_destination">
@@ -253,6 +243,24 @@
         </para>
         <para>
           <emphasis role="bold">Warning:</emphasis>Firewalld will only check that the included <emphasis>service</emphasis> is a valid service if it's applied to a zone.
+        </para>
+      </listitem>
+      </varlistentry>
+      </variablelist>
+    </refsect2>
+
+    <refsect2 id="options_helper">
+      <title>helper</title>
+      <para>
+        Is an optional empty-element tag and can be used several times to have more than one helper entry. An helper entry has exactly one attribute:
+      </para>
+
+      <variablelist>
+      <varlistentry>
+      <term>name="<replaceable>string</replaceable>"</term>
+      <listitem>
+        <para>
+          The helper can be any helper supported by firewalld.
         </para>
       </listitem>
       </varlistentry>
