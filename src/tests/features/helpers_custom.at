@@ -1,4 +1,4 @@
-FWD_START_TEST([service include])
+FWD_START_TEST([customer helpers])
 AT_KEYWORDS(helpers rhbz1733066)
 
 FWD_CHECK([-q --permanent --new-helper="ftptest" --module="nf_conntrack_ftp"])
