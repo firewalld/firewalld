@@ -1238,7 +1238,7 @@
   ports: <replaceable>port1</replaceable> ..
   protocols: <replaceable>protocol1</replaceable> ..
   source-ports: <replaceable>source-port1</replaceable> ..
-  modules: <replaceable>module1</replaceable> ..
+  helpers: <replaceable>helper1</replaceable> ..
   destination: <replaceable>ipv1</replaceable>:<replaceable>address1</replaceable> ..
               </programlisting>
 	    </para>
@@ -1411,34 +1411,34 @@
        </varlistentry>
 
        <varlistentry>
-         <term><option>--service</option>=<replaceable>service</replaceable> <option>--add-module</option>=<replaceable>module</replaceable></term>
+         <term><option>--service</option>=<replaceable>service</replaceable> <option>--add-helper</option>=<replaceable>helper</replaceable></term>
          <listitem>
            <para>
-             Add a new module to the permanent service.
+             Add a new helper to the permanent service.
            </para>
          </listitem>
        </varlistentry>
        <varlistentry>
-         <term><option>--service</option>=<replaceable>service</replaceable> <option>--remove-module</option>=<replaceable>module</replaceable></term>
+         <term><option>--service</option>=<replaceable>service</replaceable> <option>--remove-helper</option>=<replaceable>helper</replaceable></term>
          <listitem>
            <para>
-             Remove a module from the permanent service.
+             Remove a helper from the permanent service.
            </para>
          </listitem>
        </varlistentry>
        <varlistentry>
-         <term><option>--service</option>=<replaceable>service</replaceable> <option>--query-module</option>=<replaceable>module</replaceable></term>
+         <term><option>--service</option>=<replaceable>service</replaceable> <option>--query-helper</option>=<replaceable>helper</replaceable></term>
          <listitem>
            <para>
-             Return wether the module has been added to the permanent service.
+             Return wether the helper has been added to the permanent service.
            </para>
          </listitem>
        </varlistentry>
        <varlistentry>
-         <term><option>--service</option>=<replaceable>service</replaceable> <option>--get-modules</option></term>
+         <term><option>--service</option>=<replaceable>service</replaceable> <option>--get-service-helpers</option></term>
          <listitem>
            <para>
-             List modules added to the permanent service.
+             List helpers added to the permanent service.
            </para>
          </listitem>
        </varlistentry>

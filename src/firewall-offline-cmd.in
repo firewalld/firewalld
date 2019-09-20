@@ -247,14 +247,14 @@ Service Options
                        Return whether the source port has been added for service [P only]
   --service=<service> --get-source-ports
                        List source ports of service
-  --service=<service> --add-module=<module>
-                       Add a new module to service
-  --service=<service> --remove-module=<module>
-                       Remove a module from service
-  --service=<service> --query-module=<module>
-                       Return whether the module has been added for service
-  --service=<service> --get-modules
-                       List modules of service
+  --service=<service> --add-helper=<helper>
+                       Add a new helper to service
+  --service=<service> --remove-helper=<helper>
+                       Remove a helper from service
+  --service=<service> --query-helper=<helper>
+                       Return whether the helper has been added for service
+  --service=<service> --get-service-helpers
+                       List helpers of service
   --service=<service> --set-destination=<ipv>:<address>[/<mask>]
                        Set destination for ipv to address in service
   --service=<service> --remove-destination=<ipv>
@@ -712,6 +712,11 @@ parser_service.add_argument("--remove-module", metavar="<module>", action='appen
 parser_service.add_argument("--query-module", metavar="<module>", action='append')
 parser_service.add_argument("--get-modules", action="store_true")
 
+parser_service.add_argument("--add-helper", metavar="<helper>", action='append')
+parser_service.add_argument("--remove-helper", metavar="<helper>", action='append')
+parser_service.add_argument("--query-helper", metavar="<helper>", action='append')
+parser_service.add_argument("--get-service-helpers", action="store_true")
+
 parser_service.add_argument("--add-include", metavar="<service>", action='append')
 parser_service.add_argument("--remove-include", metavar="<service>", action='append')
 parser_service.add_argument("--query-include", metavar="<service>", action='append')
@@ -926,7 +931,9 @@ options_service = a.add_port or a.remove_port or a.query_port or \
                   a.query_destination or a.get_destinations or \
                   options_desc_xml_file or \
                   a.add_include or a.remove_include or a.query_include or \
-                  a.get_includes
+                  a.get_includes or \
+                  a.add_helper or a.remove_helper or a.query_helper or \
+                  a.get_service_helpers
 
 options_helper = a.add_port or a.remove_port or a.query_port or \
                   a.get_ports or a.set_module or a.get_module or \
@@ -1523,6 +1530,24 @@ try:
         elif a.get_includes:
             l = settings.getIncludes()
             cmd.print_and_exit(" ".join(["%s" % include for include in sorted(l)]))
+
+        elif a.add_helper:
+            cmd.add_sequence(a.add_helper, settings.addHelper,
+                             settings.queryHelper, None, "'%s'")
+            fw.config.set_service_config_dict(service, settings.getSettingsDict())
+
+        elif a.remove_helper:
+            cmd.remove_sequence(a.remove_helper, settings.removeHelper,
+                                settings.queryHelper, None, "'%s'")
+            fw.config.set_service_config_dict(service, settings.getSettingsDict())
+
+        elif a.query_helper:
+            cmd.query_sequence(a.query_helper, settings.queryHelper,
+                               None, "'%s'")
+
+        elif a.get_service_helpers:
+            l = settings.getHelpers()
+            cmd.print_and_exit(" ".join(["%s" % helper for helper in sorted(l)]))
 
         elif a.set_description:
             settings.setDescription(a.set_description)
