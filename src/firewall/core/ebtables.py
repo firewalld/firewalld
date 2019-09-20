@@ -229,6 +229,8 @@ class ebtables(object):
     def build_flush_rules(self):
         rules = []
         for table in BUILT_IN_CHAINS.keys():
+            if table not in self.get_available_tables():
+                continue
             # Flush firewall rules: -F
             # Delete firewall chains: -X
             # Set counter to zero: -Z
@@ -240,6 +242,8 @@ class ebtables(object):
         rules = []
         _policy = "DROP" if policy == "PANIC" else policy
         for table in BUILT_IN_CHAINS.keys():
+            if table not in self.get_available_tables():
+                continue
             for chain in BUILT_IN_CHAINS[table]:
                 rules.append(["-t", table, "-P", chain, _policy])
         return rules
