@@ -25,7 +25,7 @@ from firewall.core.base import SHORTCUTS, DEFAULT_ZONE_TARGET, \
 from firewall.core.logger import log
 from firewall.functions import portStr, checkIPnMask, checkIP6nMask, \
     checkProtocol, enable_ip_forwarding, check_single_address, check_mac, \
-    portInPortRange
+    portInPortRange, get_nf_conntrack_short_name
 from firewall.core.rich import Rich_Rule, Rich_Accept, \
     Rich_Mark, Rich_Service, Rich_Port, Rich_Protocol, \
     Rich_Masquerade, Rich_ForwardPort, Rich_SourcePort, Rich_IcmpBlock, \
@@ -1588,7 +1588,7 @@ class FirewallZone(object):
                         modules = [ ]
                         for helper in helpers:
                             module = helper.module
-                            _module_short_name = module.replace("-","_").replace("nf_conntrack_", "")
+                            _module_short_name = get_nf_conntrack_short_name(module)
                             if self._fw.nf_conntrack_helper_setting == 0:
                                 if _module_short_name not in \
                                    self._fw.nf_conntrack_helpers[module]:
@@ -1804,7 +1804,7 @@ class FirewallZone(object):
             if self._fw.nf_conntrack_helper_setting == 0:
                 for helper in helpers:
                     module = helper.module
-                    _module_short_name = module.replace("-","_").replace("nf_conntrack_", "")
+                    _module_short_name = get_nf_conntrack_short_name(module)
                     if _module_short_name not in \
                        self._fw.nf_conntrack_helpers[module]:
                         raise FirewallError(
