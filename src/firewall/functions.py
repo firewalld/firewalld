@@ -345,6 +345,9 @@ def enable_ip_forwarding(ipv):
         return writefile("/proc/sys/net/ipv6/conf/all/forwarding", "1\n")
     return False
 
+def get_nf_conntrack_short_name(module):
+    return module.replace("_","-").replace("nf-conntrack-", "")
+
 def get_nf_conntrack_helpers():
     kver = os.uname()[2]
     path = "/lib/modules/%s/kernel/net/netfilter/" % kver
@@ -361,8 +364,7 @@ def get_nf_conntrack_helpers():
             # the we add it to helpers list and goto next module
             if filename.startswith("nf_conntrack_proto_"):
                 helper = filename.split(".")[0].strip()
-                helper = helper.replace("_", "-")
-                helper = helper.replace("nf-conntrack-", "")
+                helper = get_nf_conntrack_short_name(helper)
                 helpers.setdefault(module, [ ]).append(helper)
                 continue
             # Else we get module alias and if "-helper" in the "alias:" line of modinfo
