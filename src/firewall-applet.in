@@ -1136,6 +1136,7 @@ signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 app = QtWidgets.QApplication(sys.argv)
 app.setQuitOnLastWindowClosed(False)
+app.setApplicationName(_("Firewall Applet"))
 
 applet = TrayApplet()
 applet.show()
