@@ -304,6 +304,16 @@ FWD_START_TEST([user services])
     FWD_CHECK([--permanent --service=foobar --remove-module=ftp], 0, ignore)
     FWD_CHECK([--permanent --service=foobar --query-module=ftp], 1, ignore)
 
+    FWD_CHECK([--permanent --service=foobar --add-helper=sip], 0, ignore)
+    FWD_CHECK([--permanent --service=foobar --remove-helper=sip], 0, ignore)
+    FWD_CHECK([--permanent --service=foobar --add-helper=ftp], 0, ignore)
+    FWD_CHECK([--permanent --service=foobar --query-helper=ftp], 0, ignore)
+    FWD_CHECK([--permanent --service=foobar --get-service-helpers], 0, [dnl
+ftp
+])
+    FWD_CHECK([--permanent --service=foobar --remove-helper=ftp], 0, ignore)
+    FWD_CHECK([--permanent --service=foobar --query-helper=ftp], 1, ignore)
+
     FWD_CHECK([--permanent --service=foobar --set-destination=ipv4], 121, ignore, ignore) dnl no address
     FWD_CHECK([--permanent --service=foobar --set-destination=ipv4:foo], 105, ignore, ignore) dnl bad address
     FWD_CHECK([--permanent --service=foobar --set-destination=ipv4:1.2.3.4], 0, ignore)
