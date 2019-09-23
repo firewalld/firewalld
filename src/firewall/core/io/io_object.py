@@ -103,7 +103,7 @@ class IO_Object(object):
         return
 
     def _check_config_structure(self, conf, structure):
-        if not type(conf) == type(structure):
+        if not isinstance(conf, type(structure)):
             raise FirewallError(errors.INVALID_TYPE,
                                 "'%s' not of type %s, but %s" % \
                                 (conf, type(structure), type(conf)))
@@ -125,11 +125,11 @@ class IO_Object(object):
             # only one key value pair in structure
             (skey, svalue) = list(structure.items())[0]
             for (key, value) in conf.items():
-                if type(key) != type(skey):
+                if not isinstance(key, type(skey)):
                     raise FirewallError(errors.INVALID_TYPE,
                                         "'%s' not of type %s, but %s" % (\
                             key, type(skey), type(key)))
-                if type(value) != type(svalue):
+                if not isinstance(value, type(svalue)):
                     raise FirewallError(errors.INVALID_TYPE,
                                         "'%s' not of type %s, but %s" % (\
                             value, type(svalue), type(value)))
