@@ -19,5 +19,5 @@
   <port protocol="tcp" port="49152-65535"/><!-- Dynamic RPC Ports -->
   <port protocol="tcp" port="3268"/><!-- Global Catalog -->
   <port protocol="tcp" port="3269"/><!-- Global Catalog SSL -->
-  <module name="nf_conntrack_netbios_ns"/>
+  <helper name="netbios-ns"/>
 </service>

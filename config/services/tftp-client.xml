@@ -2,5 +2,5 @@
 <service>
   <short>TFTP Client</short>
   <description>This option allows you to access Trivial File Transfer Protocol (TFTP) servers. You need the tftp package installed for this option to be useful.</description>
-  <module name="nf_conntrack_tftp"/>
+  <helper name="tftp"/>
 </service>
