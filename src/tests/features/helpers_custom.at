@@ -12,6 +12,14 @@ FWD_RELOAD
 
 FWD_CHECK([-q --add-service=ftptest])
 
+dnl The expected rule output is different if automatic helpers is in use. It's
+dnl tricky for autotest to know what to do because the testsuite is generated
+dnl outside of the testsuite netns and the value of nf_conntrack_helper may be
+dnl different inside the netns. As such, skip the rest of the test if automatic
+dnl helpers is 1 inside the netns. Our output assumes it's 0, which is the
+dnl default now-a-days.
+AT_SKIP_IF([NS_CMD([sh -c 'test "$(sysctl -n net.netfilter.nf_conntrack_helper)" -eq "1"'])])
+
 NFT_LIST_RULES([inet], [filter_IN_public_allow], 0, [dnl
 	table inet firewalld {
 		chain filter_IN_public_allow {
