@@ -351,12 +351,27 @@ def get_nf_conntrack_short_name(module):
 
 def get_modinfos(path_templates, prefix):
     kver = os.uname()[2]
+    builtinmods = []
     modules = []
-    for path in (t % kver for t in path_templates):
-        if os.path.isdir(path):
-            for filename in sorted(os.listdir(path)):
+    modulesdir = os.path.join ("/lib/modules/", kver)
+    builtins = os.path.join(modulesdir, "modules.builtin")
+    if os.path.exists(builtins):
+        modlist = open(builtins, "r")
+        for t in path_templates:
+            m = os.path.join (t, prefix)
+            for l in modlist:
+                if re.search(m, l):
+                    builtinmods.append(l.split(".")[0])
+        modlist.close()
+
+    # Get modules
+    for path in (path_templates):
+        p = os.path.join(modulesdir, t)
+        if os.path.isdir(p):
+            for filename in sorted(os.listdir(p)):
                 if filename.startswith(prefix):
                     modules.append(filename.split(".")[0])
+
     if modules:
         # Ignore status as it is not 0 if even one module had problems
         (status, ret) = runProg(COMMANDS["modinfo"], modules)
@@ -371,9 +386,39 @@ def get_modinfos(path_templates, prefix):
         if "filename" in entry:
             yield entry
 
+    if builtinmods:
+        print("Built-in Mods:")
+        for x in builtinmods:
+             print(x)
+        bimodinfo = os.path.join(modulesdir, "modules.builtin.modinfo")
+        ret = ""
+        for mod in builtinmods:
+            ret = ret + "\n" + "filename:\t" + mod
+            modx = os.path.basename(mod)
+            print("Checking module:", modx)
+            bmods = open(bimodinfo, 'r')
+            for line in bmods.read().split('\0'):
+                if re.search(modx, line):
+                    out = line.split('=')
+                    val = out[1]
+                    keys = out[0].split('.')
+                    key = keys[1]
+                    ret = ret + "\n" + key + ":\t" + val
+            bmods.close()
+        print(ret)
+        entry = {}
+        for m in re.finditer(r"^(\w+):[ \t]*(\S.*?)[ \t]*$", ret, re.MULTILINE):
+            key, value = m.groups()
+            if key == "filename" and "filename" in entry:
+                yield entry
+                entry = {}
+            entry.setdefault(key, [ ]).append(value)
+        if "filename" in entry:
+            yield entry
+
 def get_nf_conntrack_helpers():
     helpers = { }
-    for modinfo in get_modinfos(["/lib/modules/%s/kernel/net/netfilter/"], "nf_conntrack_"):
+    for modinfo in get_modinfos(["kernel/net/netfilter/"], "nf_conntrack_"):
         filename = modinfo['filename'][0].split("/")[-1]
         name = filename.split(".")[0]
         # If module name matches "nf_conntrack_proto_*"
@@ -394,9 +439,9 @@ def get_nf_conntrack_helpers():
 
 def get_nf_nat_helpers():
     helpers = { }
-    for modinfo in get_modinfos(["/lib/modules/%s/kernel/net/netfilter/",
-                                 "/lib/modules/%s/kernel/net/ipv4/netfilter/",
-                                 "/lib/modules/%s/kernel/net/ipv6/netfilter/"], "nf_nat_"):
+    for modinfo in get_modinfos(["kernel/net/netfilter/",
+                                 "kernel/net/ipv4/netfilter/",
+                                 "kernel/net/ipv6/netfilter/"], "nf_nat_"):
         filename = modinfo['filename'][0].split("/")[-1]
         name = filename.split(".")[0]
         helper = name
