@@ -387,15 +387,11 @@ def get_modinfos(path_templates, prefix):
             yield entry
 
     if builtinmods:
-        print("Built-in Mods:")
-        for x in builtinmods:
-             print(x)
         bimodinfo = os.path.join(modulesdir, "modules.builtin.modinfo")
         ret = ""
         for mod in builtinmods:
             ret = ret + "\n" + "filename:\t" + mod
             modx = os.path.basename(mod)
-            print("Checking module:", modx)
             bmods = open(bimodinfo, 'r')
             for line in bmods.read().split('\0'):
                 if re.search(modx, line):
@@ -405,7 +401,6 @@ def get_modinfos(path_templates, prefix):
                     key = keys[1]
                     ret = ret + "\n" + key + ":\t" + val
             bmods.close()
-        print(ret)
         entry = {}
         for m in re.finditer(r"^(\w+):[ \t]*(\S.*?)[ \t]*$", ret, re.MULTILINE):
             key, value = m.groups()
