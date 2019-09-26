@@ -52,10 +52,10 @@ m4_define([FWD_START_TEST], [
 
     dnl We test some unicode strings and autotest overrides LC_ALL=C, so set it
     dnl again for every test.
-    LC_ALL="C.UTF-8"
-    export LC_ALL
-    LANGUAGE="C.UTF-8"
-    export LANGUAGE
+    if locale -a |grep "^C.utf8" >/dev/null; then
+        LC_ALL="C.UTF-8"
+        export LC_ALL
+    fi
 
     dnl start every test with the default config
     if test "x${FIREWALLD_DEFAULT_CONFIG}" != x ; then
