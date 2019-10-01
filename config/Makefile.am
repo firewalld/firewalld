@@ -180,6 +180,7 @@ CONFIG_FILES = \
 	services/kpasswd.xml \
 	services/kprop.xml \
 	services/kshell.xml \
+	services/kube-apiserver.xml \
 	services/ldaps.xml \
 	services/ldap.xml \
 	services/libvirt-tls.xml \
