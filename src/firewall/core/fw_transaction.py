@@ -21,24 +21,23 @@
 
 """Transaction classes for firewalld"""
 
-__all__ = [ "FirewallTransaction", "FirewallZoneTransaction" ]
+__all__ = [ "FirewallTransaction" ]
 
 import traceback
 
 from firewall.core.logger import log
 from firewall import errors
 from firewall.errors import FirewallError
-from firewall.fw_types import LastUpdatedOrderedDict
 
-class SimpleFirewallTransaction(object):
-    """Base class for FirewallTransaction and FirewallZoneTransaction"""
-
+class FirewallTransaction(object):
     def __init__(self, fw):
         self.fw = fw
         self.rules = { } # [ ( backend.name, [ rule,.. ] ),.. ]
         self.pre_funcs = [ ] # [ (func, args),.. ]
         self.post_funcs = [ ] # [ (func, args),.. ]
         self.fail_funcs = [ ] # [ (func, args),.. ]
+        self.chains = [ ] # [ (zone, table, chain),.. ]
+        self.modules = [ ] # [ module,.. ]
 
     def clear(self):
         self.rules.clear()
@@ -69,14 +68,37 @@ class SimpleFirewallTransaction(object):
     def add_fail(self, func, *args):
         self.fail_funcs.append((func, args))
 
-    def prepare(self, enable, rules=None, modules=None):
+    def add_chain(self, zone, table, chain):
+        ztc = (zone, table, chain)
+        if ztc not in self.chains:
+            self.fw.zone.gen_chain_rules(zone, True, table, chain, self)
+            self.chains.append(ztc)
+
+    def remove_chain(self, zone, table, chain):
+        ztc = (zone, table, chain)
+        if ztc in self.chains:
+            self.chains.remove(ztc)
+
+    def add_module(self, module):
+        if module not in self.modules:
+            self.modules.append(module)
+
+    def remove_module(self, module):
+        if module in self.modules:
+            self.modules.remove(module)
+
+    def add_modules(self, modules):
+        for module in modules:
+            self.add_module(module)
+
+    def remove_modules(self, modules):
+        for module in modules:
+            self.remove_module(module)
+
+    def prepare(self, enable):
         log.debug4("%s.prepare(%s, %s)" % (type(self), enable, "..."))
 
-        if rules is None:
-            rules = { }
-        if modules is None:
-            modules = [ ]
-
+        rules = { }
         if not enable:
             # reverse rule order for cleanup
             for backend_name in self.rules:
@@ -87,7 +109,7 @@ class SimpleFirewallTransaction(object):
             for backend_name in self.rules:
                 rules.setdefault(backend_name, [ ]).extend(self.rules[backend_name])
 
-        return rules, modules
+        return rules, self.modules
 
     def execute(self, enable):
         log.debug4("%s.execute(%s)" % (type(self), enable))
@@ -171,141 +193,3 @@ class SimpleFirewallTransaction(object):
                 log.debug1(traceback.format_exc())
                 log.error("Calling post func %s(%s) failed: %s" % \
                           (func, args, msg))
-
-# class FirewallTransaction
-
-class FirewallTransaction(SimpleFirewallTransaction):
-    """General FirewallTransaction, contains also zone transactions"""
-
-    def __init__(self, fw):
-        super(FirewallTransaction, self).__init__(fw)
-        self.zone_transactions = LastUpdatedOrderedDict() # { zone: transaction, .. }
-
-    def clear(self):
-        super(FirewallTransaction, self).clear()
-        self.zone_transactions.clear()
-
-    def zone_transaction(self, zone):
-        if zone not in self.zone_transactions:
-            self.zone_transactions[zone] = FirewallZoneTransaction(
-                self.fw, zone, self)
-        return self.zone_transactions[zone]
-
-    def prepare(self, enable, rules=None, modules=None):
-        log.debug4("%s.prepare(%s, %s)" % (type(self), enable, "..."))
-
-        rules, modules = super(FirewallTransaction, self).prepare(
-            enable, rules, modules)
-
-        for zone in self.zone_transactions:
-            try:
-                self.zone_transactions[zone].prepare(enable, rules)
-                for module in self.zone_transactions[zone].modules:
-                    if module not in modules:
-                        modules.append(module)
-            except FirewallError as msg:
-                log.error("Failed to prepare transaction rules for zone '%s'",
-                          str(msg))
-
-        return rules, modules
-
-    def pre(self):
-        log.debug4("%s.pre()" % type(self))
-
-        super(FirewallTransaction, self).pre()
-
-        for zone in self.zone_transactions:
-            self.zone_transactions[zone].pre()
-
-    def post(self):
-        log.debug4("%s.post()" % type(self))
-
-        super(FirewallTransaction, self).post()
-
-        for zone in self.zone_transactions:
-            self.zone_transactions[zone].post()
-
-# class FirewallZoneTransaction
-
-class FirewallZoneTransaction(SimpleFirewallTransaction):
-    """Zone transaction with additional chain and module interface"""
-
-    def __init__(self, fw, zone, fw_transaction=None):
-        super(FirewallZoneTransaction, self).__init__(fw)
-        self.zone = zone
-        self.fw_transaction = fw_transaction
-        self.chains = [ ] # [ (table, chain),.. ]
-        self.modules = [ ] # [ module,.. ]
-
-    def clear(self):
-        # calling clear on a zone_transaction that was spawned from a
-        # FirewallTransaction needs to clear the fw_transaction and all the
-        # other zones otherwise we end up with a partially cleared transaction.
-        if self.fw_transaction:
-            super(FirewallTransaction, self.fw_transaction).clear()
-            for zone in self.fw_transaction.zone_transactions.keys():
-                super(FirewallZoneTransaction, self.fw_transaction.zone_transactions[zone]).clear()
-                del self.fw_transaction.zone_transactions[zone].chains[:]
-                del self.fw_transaction.zone_transactions[zone].modules[:]
-        else:
-            super(FirewallZoneTransaction, self).clear()
-            del self.chains[:]
-            del self.modules[:]
-
-    def prepare(self, enable, rules=None, modules=None):
-        log.debug4("%s.prepare(%s, %s)" % (type(self), enable, "..."))
-
-        rules, modules = super(FirewallZoneTransaction, self).prepare(
-            enable, rules, modules)
-
-        for module in self.modules:
-            if module not in modules:
-                modules.append(module)
-
-        return rules, modules
-
-    def execute(self, enable):
-        # calling execute on a zone_transaction that was spawned from a
-        # FirewallTransaction should execute the FirewallTransaction as it may
-        # have prerequisite rules
-        if self.fw_transaction:
-            self.fw_transaction.execute(enable)
-        else:
-            super(FirewallZoneTransaction, self).execute(enable)
-
-    def add_chain(self, table, chain):
-        table_chain = (table, chain)
-        if table_chain not in self.chains:
-            self.fw.zone.gen_chain_rules(self.zone, True, [table_chain], self)
-            self.chains.append(table_chain)
-
-    def remove_chain(self, table, chain):
-        table_chain = (table, chain)
-        if table_chain in self.chains:
-            self.chains.remove(table_chain)
-
-    def add_chains(self, chains):
-        for table_chain in chains:
-            if table_chain not in self.chains:
-                self.add_chain(table_chain[0], table_chain[1])
-
-    def remove_chains(self, chains):
-        for table_chain in chains:
-            if table_chain in self.chains:
-                self.chains.remove(table_chain)
-
-    def add_module(self, module):
-        if module not in self.modules:
-            self.modules.append(module)
-
-    def remove_module(self, module):
-        if module in self.modules:
-            self.modules.remove(module)
-
-    def add_modules(self, modules):
-        for module in modules:
-            self.add_module(module)
-
-    def remove_modules(self, modules):
-        for module in modules:
-            self.remove_module(module)
