@@ -27,7 +27,7 @@ __all__ = [ "PY2", "getPortID", "getPortRange", "portStr", "getServiceName",
             "check_single_address", "check_mac", "uniqify", "ppid_of_pid",
             "max_zone_name_len", "checkUser", "checkUid", "checkCommand",
             "checkContext", "joinArgs", "splitArgs",
-            "b2u", "u2b", "u2b_if_py2" ]
+            "b2u", "u2b", "u2b_if_py2", "max_policy_name_len"]
 
 import socket
 import os
@@ -504,6 +504,15 @@ def ppid_of_pid(pid):
     except Exception:
         return None
     return pid
+
+def max_policy_name_len():
+    """
+    iptables limits length of chain to (currently) 28 chars.
+    The longest chain we create is pol_<policy>_allow,
+    which leaves 28 - 10 = 18 chars for <policy>.
+    """
+    from firewall.core.ipXtables import POLICY_CHAIN_PREFIX
+    return 28 - (len(POLICY_CHAIN_PREFIX) + len("_allow"))
 
 def max_zone_name_len():
     """

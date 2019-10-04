@@ -42,6 +42,7 @@ from firewall.core.fw_policies import FirewallPolicies
 from firewall.core.fw_ipset import FirewallIPSet
 from firewall.core.fw_transaction import FirewallTransaction
 from firewall.core.fw_helper import FirewallHelper
+from firewall.core.fw_policy import FirewallPolicy
 from firewall.core.fw_nm import nm_get_bus_name, nm_get_interfaces_in_zone
 from firewall.core.logger import log
 from firewall.core.io.firewalld_conf import firewalld_conf
@@ -98,6 +99,7 @@ class Firewall(object):
         self.policies = FirewallPolicies()
         self.ipset = FirewallIPSet(self)
         self.helper = FirewallHelper(self)
+        self.policy = FirewallPolicy(self)
 
         self.__init_vars()
 
@@ -634,6 +636,7 @@ class Firewall(object):
         self.config.cleanup()
         self.direct.cleanup()
         self.policies.cleanup()
+        self.policy.cleanup()
         self._firewalld_conf.cleanup()
         self.__init_vars()
 
@@ -876,6 +879,12 @@ class Firewall(object):
         if self._panic:
             raise FirewallError(errors.PANIC_MODE)
 
+    def check_policy(self, policy):
+        _policy = policy
+        if _policy not in self.policy.get_policies():
+            raise FirewallError(errors.INVALID_POLICY, _policy)
+        return _policy
+
     def check_zone(self, zone):
         _zone = zone
         if not _zone or _zone == "":
@@ -996,8 +1005,11 @@ class Firewall(object):
             # add interfaces to zones again
             for zone in self.zone.get_zones():
                 if zone in _zone_interfaces:
-                    self.zone.set_settings(zone, { "interfaces":
-                                                   _zone_interfaces[zone] })
+
+                    for interface_id in _zone_interfaces[zone]:
+                        self.zone.change_zone_of_interface(zone, interface_id,
+                                                           _zone_interfaces[zone][interface_id]["sender"])
+
                     del _zone_interfaces[zone]
                 else:
                     log.info1("New zone '%s'.", zone)

@@ -46,7 +46,7 @@ from firewall import config
 from firewall import client
 from firewall import functions
 from firewall.core.base import DEFAULT_ZONE_TARGET, REJECT_TYPES, \
-                               ZONE_SOURCE_IPSET_TYPES
+                               SOURCE_IPSET_TYPES
 from firewall.core.ipset import IPSET_MAXNAMELEN
 from firewall.core.helper import HELPER_MAXNAMELEN
 from firewall.core.io.zone import Zone
@@ -4188,7 +4188,7 @@ class FirewallConfig(object):
                         continue
                     raise
                 self.activate_exception_handler()
-                if settings.getType() not in ZONE_SOURCE_IPSET_TYPES:
+                if settings.getType() not in SOURCE_IPSET_TYPES:
                     continue
                 ipsets[x] = settings
         else:

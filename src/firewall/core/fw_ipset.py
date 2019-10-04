@@ -155,8 +155,8 @@ class FirewallIPSet(object):
 
     # TYPE
 
-    def get_type(self, name):
-        return self.get_ipset(name, applied=True).type
+    def get_type(self, name, applied=True):
+        return self.get_ipset(name, applied=applied).type
 
     # DIMENSION
     def get_dimension(self, name):
@@ -173,8 +173,8 @@ class FirewallIPSet(object):
 
     # OPTIONS
 
-    def get_family(self, name):
-        obj = self.get_ipset(name, applied=True)
+    def get_family(self, name, applied=True):
+        obj = self.get_ipset(name, applied=applied)
         if "family" in obj.options:
             if obj.options["family"] == "inet6":
                 return "ipv6"

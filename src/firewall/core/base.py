@@ -22,9 +22,12 @@
 """Base firewall settings"""
 
 DEFAULT_ZONE_TARGET = "{chain}_{zone}"
+DEFAULT_POLICY_TARGET = "CONTINUE"
 
 ZONE_TARGETS = [ "ACCEPT", "%%REJECT%%", "DROP", DEFAULT_ZONE_TARGET,
                  "default" ]
+
+POLICY_TARGETS = [ "ACCEPT", "%%REJECT%%", "DROP", "CONTINUE" ]
 
 SHORTCUTS = {
     "PREROUTING": "PRE",
@@ -49,7 +52,7 @@ REJECT_TYPES = {
 # ipset types that can be used as a source in zones
 # The match-set option will be src or src,src according to the
 # dimension of the ipset.
-ZONE_SOURCE_IPSET_TYPES = [
+SOURCE_IPSET_TYPES = [
     "hash:ip", "hash:ip,port", "hash:ip,mark",
     "hash:net", "hash:net,port", "hash:net,iface",
     "hash:mac"

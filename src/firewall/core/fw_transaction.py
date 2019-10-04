@@ -36,7 +36,7 @@ class FirewallTransaction(object):
         self.pre_funcs = [ ] # [ (func, args),.. ]
         self.post_funcs = [ ] # [ (func, args),.. ]
         self.fail_funcs = [ ] # [ (func, args),.. ]
-        self.chains = [ ] # [ (zone, table, chain),.. ]
+        self.chains = [ ] # [ (table, policy),.. ]
         self.modules = [ ] # [ module,.. ]
 
     def clear(self):
@@ -68,16 +68,16 @@ class FirewallTransaction(object):
     def add_fail(self, func, *args):
         self.fail_funcs.append((func, args))
 
-    def add_chain(self, zone, table, chain):
-        ztc = (zone, table, chain)
-        if ztc not in self.chains:
-            self.fw.zone.gen_chain_rules(zone, True, table, chain, self)
-            self.chains.append(ztc)
+    def add_chain(self, policy, table, chain):
+        tp = (table, policy)
+        if tp not in self.chains:
+            self.fw.policy.gen_chain_rules(policy, True, table, chain, self)
+            self.chains.append(tp)
 
-    def remove_chain(self, zone, table, chain):
-        ztc = (zone, table, chain)
-        if ztc in self.chains:
-            self.chains.remove(ztc)
+    def remove_chain(self, policy, table, chain):
+        tp = (table, policy)
+        if tp in self.chains:
+            self.chains.remove(tp)
 
     def add_module(self, module):
         if module not in self.modules:
