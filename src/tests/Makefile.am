@@ -10,6 +10,8 @@ EXTRA_DIST = \
 	$(wildcard $(srcdir)/python/*.py) \
 	$(srcdir)/package.m4
 
+DISTCLEANFILES = atconfig
+
 $(srcdir)/package.m4: $(top_srcdir)/configure.ac $(top_srcdir)/firewalld.spec $(srcdir)/Makefile
 	:;{ \
 	echo 'm4_define([AT_PACKAGE_NAME],[$(PACKAGE_NAME)])' && \
