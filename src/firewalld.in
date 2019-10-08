@@ -171,7 +171,7 @@ def main():
     # firewalld should only be run as the root user
     if os.getuid() != 0:
         log.fatal("You need to be root to run %s." % sys.argv[0])
-        sys.exit(-1)
+        sys.exit(1)
 
     # Process the command-line arguments
     args = parse_cmdline()

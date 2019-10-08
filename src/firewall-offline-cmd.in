@@ -47,7 +47,7 @@ from firewall.command import FirewallCommand
 def assert_root():
     if os.getuid() != 0:
         sys.stderr.write("You need to be root to run %s.\n" % sys.argv[0])
-        sys.exit(-1)
+        sys.exit(1)
 
 SYSTEM_CONFIG_FIREWALL = config.SYSCONFIGDIR + '/system-config-firewall'
 
