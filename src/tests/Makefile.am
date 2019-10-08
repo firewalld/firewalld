@@ -9,7 +9,8 @@ EXTRA_DIST = \
 	$(TESTSUITE) \
 	$(TESTSUITE_FILES) \
 	$(wildcard $(srcdir)/python/*.py) \
-	$(srcdir)/package.m4
+	$(srcdir)/package.m4 \
+	atlocal.in
 
 DISTCLEANFILES = atconfig
 
@@ -19,23 +20,17 @@ $(srcdir)/package.m4: $(top_srcdir)/configure.ac $(top_srcdir)/firewalld.spec $(
 	echo 'm4_define([AT_PACKAGE_VERSION],[$(PACKAGE_VERSION)])' && \
 	echo 'm4_define([AT_PACKAGE_STRING],[$(PACKAGE_STRING)])' && \
 	echo 'm4_define([AT_PACKAGE_URL],[http://firewalld.org/])' && \
-	echo 'm4_define([AT_PACKAGE_BUGREPORT],[https://github.com/firewalld/firewalld])' && \
-	echo 'm4_define([IPTABLES],[$(IPTABLES)])' && \
-	echo 'm4_define([IPTABLES_RESTORE],[$(IPTABLES_RESTORE)])' && \
-	echo 'm4_define([IP6TABLES],[$(IP6TABLES)])' && \
-	echo 'm4_define([IP6TABLES_RESTORE],[$(IP6TABLES_RESTORE)])' ; \
+	echo 'm4_define([AT_PACKAGE_BUGREPORT],[https://github.com/firewalld/firewalld])' ; \
 	} > "$@"
 
-check-local: atconfig $(TESTSUITE)
+check-local: atconfig atlocal $(TESTSUITE)
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS) \
 		AUTOTEST_PATH="src" \
-		PYTHON="$(PYTHON)" \
 		PYTHONPATH="${abs_top_srcdir}/src:${PYTHONPATH}" \
 		FIREWALLD_DEFAULT_CONFIG="${abs_top_srcdir}/config"
 
-installcheck-local: atconfig $(TESTSUITE)
-	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS) \
-		PYTHON="$(PYTHON)"
+installcheck-local: atconfig atlocal $(TESTSUITE)
+	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean

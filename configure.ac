@@ -190,6 +190,7 @@ AC_CONFIG_FILES([Makefile
 		 src/firewall/config/__init__.py
 		 src/Makefile
 		 src/tests/Makefile
+		 src/tests/atlocal
 		 src/icons/Makefile])
 
 m4_foreach([FILE], [[src/firewall-applet],
