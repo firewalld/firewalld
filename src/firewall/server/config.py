@@ -423,8 +423,6 @@ class FirewallDConfig(slip.dbus.service.Object):
                 self.ipsets.remove(ipset)
                 del ipset
 
-    # access check
-
     @handle_exceptions
     def _addHelper(self, obj):
         # TODO: check for idx overflow
