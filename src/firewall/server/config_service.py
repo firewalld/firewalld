@@ -50,7 +50,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
     persistent = True
     """ Make FirewallD persistent. """
     default_polkit_auth_required = config.dbus.PK_ACTION_CONFIG
-    """ Use PK_ACTION_INFO as a default """
+    """ Use PK_ACTION_CONFIG as a default """
 
     @handle_exceptions
     def __init__(self, parent, conf, service, item_id, *args, **kwargs):
