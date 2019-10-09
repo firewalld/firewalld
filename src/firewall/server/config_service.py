@@ -45,8 +45,6 @@ from firewall.errors import FirewallError
 ############################################################################
 
 class FirewallDConfigService(slip.dbus.service.Object):
-    """FirewallD main class"""
-
     persistent = True
     """ Make FirewallD persistent. """
     default_polkit_auth_required = config.dbus.PK_ACTION_CONFIG
