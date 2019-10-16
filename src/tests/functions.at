@@ -11,10 +11,7 @@ m4_define([FWD_STOP_FIREWALLD], [
 m4_define([FWD_START_FIREWALLD], [
     FIREWALLD_ARGS="--nofork --nopid --log-file ./firewalld.log --system-config ./"
     dnl if testsuite ran with debug flag, add debug output
-    case "${TESTSUITEFLAGS}" in
-        *-d*|*--debug*) FIREWALLD_ARGS="--debug=3 ${FIREWALLD_ARGS}";;
-        *) :;;
-    esac
+    ${at_debug_p} && FIREWALLD_ARGS="--debug=3 ${FIREWALLD_ARGS}"
     if test "x${FIREWALLD_DEFAULT_CONFIG}" != x ; then
         FIREWALLD_ARGS+=" --default-config ${FIREWALLD_DEFAULT_CONFIG}"
     fi
