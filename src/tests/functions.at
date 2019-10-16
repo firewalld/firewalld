@@ -77,7 +77,7 @@ m4_define([FWD_START_TEST], [
         dnl fib matching is pretty new in nftables. Don't use rpfilter on older
         dnl kernels.
         m4_if(nftables, FIREWALL_BACKEND, [
-            m4_if(no, HOST_SUPPORTS_NFT_FIB, [
+            IF_HOST_SUPPORTS_NFT_FIB([], [
                 sed -i 's/^IPv6_rpfilter.*/IPv6_rpfilter=no/' ./firewalld.conf
             ])
         ])
@@ -473,15 +473,17 @@ m4_define([CHECK_MODULE_PROTO_GRE], [
     AT_SKIP_IF([! NS_CMD([modinfo nf_conntrack_proto_gre])])
 ])
 
-m4_define([HOST_SUPPORTS_NFT_FIB], m4_esyscmd([
+m4_define([IF_HOST_SUPPORTS_NFT_FIB], [
     KERNEL_MAJOR=`uname -r | cut -d. -f1`
     KERNEL_MINOR=`uname -r | cut -d. -f2`
     if test ${KERNEL_MAJOR} -eq 4 && test ${KERNEL_MINOR} -ge 10 || test ${KERNEL_MAJOR} -gt 4; then
-        echo -n "yes"
+        :
+        $1
     else
-        echo -n "no"
+        :
+        $2
     fi
-]))
+])
 
 m4_define([NFT_NUMERIC_ARGS], m4_esyscmd([nft -h |grep "numeric-protocol" >/dev/null && echo -n "" || { echo -n "-" && echo -n "nn"; } ]))
 

@@ -68,16 +68,24 @@ NFT_LIST_RULES([inet], [filter_FORWARD_OUT_ZONES], 0, [dnl
         }
     }
 ])
-NFT_LIST_RULES([inet], [raw_PREROUTING], 0, [dnl
-    table inet firewalld {
-        chain raw_PREROUTING {
-            m4_if(yes, HOST_SUPPORTS_NFT_FIB, [dnl
-            icmpv6 type { nd-router-advert, nd-neighbor-solicit } accept
-            meta nfproto ipv6 fib saddr . iif oif missing drop
-            ])dnl
-            jump raw_PREROUTING_ZONES
+IF_HOST_SUPPORTS_NFT_FIB([
+    NFT_LIST_RULES([inet], [raw_PREROUTING], 0, [dnl
+        table inet firewalld {
+            chain raw_PREROUTING {
+                icmpv6 type { nd-router-advert, nd-neighbor-solicit } accept
+                meta nfproto ipv6 fib saddr . iif oif missing drop
+                jump raw_PREROUTING_ZONES
+            }
         }
-    }
+    ])
+], [
+    NFT_LIST_RULES([inet], [raw_PREROUTING], 0, [dnl
+        table inet firewalld {
+            chain raw_PREROUTING {
+                jump raw_PREROUTING_ZONES
+            }
+        }
+    ])
 ])
 NFT_LIST_RULES([inet], [raw_PREROUTING_ZONES], 0, [dnl
     table inet firewalld {

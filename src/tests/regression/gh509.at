@@ -4,7 +4,7 @@ AT_KEYWORDS(gh509)
 dnl We're going to wipe the config below and therefore use the defaults. As
 dnl such, if our test host doesn't support defaults then we must skip this test
 dnl group.
-m4_if(no, HOST_SUPPORTS_NFT_FIB, [AT_SKIP_IF([:])])
+IF_HOST_SUPPORTS_NFT_FIB([], [AT_SKIP_IF([:])])
 
 AT_CHECK([if ! rm ./firewalld.conf; then exit 77; fi])
 FWD_RESTART
