@@ -24,8 +24,7 @@ __all__ = [ "PY2", "getPortID", "getPortRange", "portStr", "getServiceName",
             "checkProtocol", "checkInterface", "checkUINT32",
             "firewalld_is_active", "tempFile", "readfile", "writefile",
             "enable_ip_forwarding", "get_nf_conntrack_helper_setting",
-            "set_nf_conntrack_helper_setting", "get_nf_conntrack_helpers",
-            "get_nf_nat_helpers", "check_port", "check_address",
+            "set_nf_conntrack_helper_setting", "check_port", "check_address",
             "check_single_address", "check_mac", "uniqify", "ppid_of_pid",
             "max_zone_name_len", "checkUser", "checkUid", "checkCommand",
             "checkContext", "joinArgs", "splitArgs",
@@ -36,13 +35,11 @@ import os
 import os.path
 import shlex
 import pipes
-import re
 import string
 import sys
 import tempfile
 from firewall.core.logger import log
-from firewall.core.prog import runProg
-from firewall.config import FIREWALLD_TEMPDIR, FIREWALLD_PIDFILE, COMMANDS
+from firewall.config import FIREWALLD_TEMPDIR, FIREWALLD_PIDFILE
 
 PY2 = sys.version < '3'
 
@@ -348,70 +345,6 @@ def enable_ip_forwarding(ipv):
 
 def get_nf_conntrack_short_name(module):
     return module.replace("_","-").replace("nf-conntrack-", "")
-
-def get_modinfos(path_templates, prefix):
-    kver = os.uname()[2]
-    modules = []
-    for path in (t % kver for t in path_templates):
-        if os.path.isdir(path):
-            for filename in sorted(os.listdir(path)):
-                if filename.startswith(prefix):
-                    modules.append(filename.split(".")[0])
-    if modules:
-        # Ignore status as it is not 0 if even one module had problems
-        (status, ret) = runProg(COMMANDS["modinfo"], modules)
-        entry = {}
-        for m in re.finditer(r"^(\w+):[ \t]*(\S.*?)[ \t]*$", ret, re.MULTILINE):
-            key, value = m.groups()
-            # Assume every entry starts with filename
-            if key == "filename" and "filename" in entry:
-                yield entry
-                entry = {}
-            entry.setdefault(key, [ ]).append(value)
-        if "filename" in entry:
-            yield entry
-
-def get_nf_conntrack_helpers():
-    helpers = { }
-    for modinfo in get_modinfos(["/lib/modules/%s/kernel/net/netfilter/"], "nf_conntrack_"):
-        filename = modinfo['filename'][0].split("/")[-1]
-        name = filename.split(".")[0]
-        # If module name matches "nf_conntrack_proto_*"
-        # the we add it to helpers list and goto next module
-        if filename.startswith("nf_conntrack_proto_"):
-            helper = get_nf_conntrack_short_name(name)
-            helpers.setdefault(name, [ ]).append(helper)
-            continue
-        # Else we get module alias and if "-helper" in the "alias:" line of modinfo
-        # then we add it to helpers list and goto next module
-        if "alias" in modinfo:
-            for helper in modinfo["alias"]:
-                if "-helper-" in helper:
-                    helper = helper.replace("nfct-helper-", "")
-                    helper = helper.replace("_", "-")
-                    helpers.setdefault(name, [ ]).append(helper)
-    return helpers
-
-def get_nf_nat_helpers():
-    helpers = { }
-    for modinfo in get_modinfos(["/lib/modules/%s/kernel/net/netfilter/",
-                                 "/lib/modules/%s/kernel/net/ipv4/netfilter/",
-                                 "/lib/modules/%s/kernel/net/ipv6/netfilter/"], "nf_nat_"):
-        filename = modinfo['filename'][0].split("/")[-1]
-        name = filename.split(".")[0]
-        helper = name
-        helper = helper.replace("_", "-")
-        helper = helper.replace("nf-nat-", "")
-        # If module name matches "nf_nat_proto_*"
-        # the we add it to helpers list and goto next module
-        if filename.startswith("nf_nat_proto_"):
-            helpers.setdefault(name, [ ]).append(helper)
-            continue
-        # Else we get module alias and if "NAT helper" in "description:" line of modinfo
-        # then we add it to helpers list and goto next module
-        if "description" in modinfo and "NAT helper" in modinfo["description"][0]:
-            helpers.setdefault(name, [ ]).append(helper)
-    return helpers
 
 def get_nf_conntrack_helper_setting():
     try:
