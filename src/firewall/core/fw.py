@@ -114,8 +114,6 @@ class Firewall(object):
         self._automatic_helpers = config.FALLBACK_AUTOMATIC_HELPERS
         self._firewall_backend = config.FALLBACK_FIREWALL_BACKEND
         self.nf_conntrack_helper_setting = 0
-        self.nf_conntrack_helpers = { }
-        self.nf_nat_helpers = { }
 
     def individual_calls(self):
         return self._individual_calls
@@ -197,28 +195,6 @@ class Firewall(object):
            not self.ebtables_backend.restore_noflush_option:
             log.debug1("ebtables-restore is not supporting the --noflush "
                        "option, will therefore not be used")
-
-        if os.path.exists(config.COMMANDS["modinfo"]):
-            self.nf_conntrack_helpers = functions.get_nf_conntrack_helpers()
-            if len(self.nf_conntrack_helpers) > 0:
-                log.debug1("Conntrack helpers supported by the kernel:")
-                for key,values in self.nf_conntrack_helpers.items():
-                    log.debug1("  %s: %s", key, ", ".join(values))
-            else:
-                log.debug1("No conntrack helpers supported by the kernel.")
-
-            self.nf_nat_helpers = functions.get_nf_nat_helpers()
-            if len(self.nf_nat_helpers) > 0:
-                log.debug1("NAT helpers supported by the kernel:")
-                for key,values in self.nf_nat_helpers.items():
-                    log.debug1("  %s: %s", key, ", ".join(values))
-            else:
-                log.debug1("No NAT helpers supported by the kernel.")
-
-        else:
-            self.nf_conntrack_helpers = { }
-            self.nf_nat_helpers = { }
-            log.warning("modinfo command is missing, not able to detect conntrack helpers.")
 
     def _start(self, reload=False, complete_reload=False):
         # initialize firewall

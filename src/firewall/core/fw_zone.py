@@ -846,20 +846,16 @@ class FirewallZone(object):
                 helper = self._fw.helper.get_helper(module)
             except FirewallError:
                 raise FirewallError(errors.INVALID_HELPER, module)
-            if helper.module not in self._fw.nf_conntrack_helpers:
-                raise FirewallError(
-                    errors.INVALID_HELPER,
-                    "'%s' is not available" % helper.module)
             if self._fw.nf_conntrack_helper_setting == 0 and \
                len(helper.ports) < 1:
-                for mod in self._fw.nf_conntrack_helpers[helper.module]:
-                    try:
-                        _helper = self._fw.helper.get_helper(mod)
-                    except FirewallError:
-                        if enable:
-                            log.warning("Helper '%s' is not available" % mod)
-                        continue
+                _module_short_name = get_nf_conntrack_short_name(helper.module)
+                try:
+                    _helper = self._fw.helper.get_helper(_module_short_name)
                     _helpers.append(_helper)
+                except FirewallError:
+                    if enable:
+                        log.warning("Helper '%s' is not available" % _module_short_name)
+                    continue
             else:
                 _helpers.append(helper)
         return _helpers
@@ -1611,14 +1607,8 @@ class FirewallZone(object):
                             module = helper.module
                             _module_short_name = get_nf_conntrack_short_name(module)
                             if self._fw.nf_conntrack_helper_setting == 0:
-                                if _module_short_name not in \
-                                   self._fw.nf_conntrack_helpers[module]:
-                                    raise FirewallError(
-                                        errors.INVALID_HELPER,
-                                        "'%s' not available in kernel" % module)
                                 nat_module = module.replace("conntrack", "nat")
-                                if nat_module in self._fw.nf_nat_helpers:
-                                    modules.append(nat_module)
+                                modules.append(nat_module)
                                 if helper.family != "" and not backend.is_ipv_supported(helper.family):
                                     # no support for family ipv, continue
                                     continue
@@ -1634,8 +1624,7 @@ class FirewallZone(object):
                                 if helper.module not in modules:
                                     modules.append(helper.module)
                                     nat_module = helper.module.replace("conntrack", "nat")
-                                    if nat_module in self._fw.nf_nat_helpers:
-                                        modules.append(nat_module)
+                                    modules.append(nat_module)
                         zone_transaction.add_modules(modules)
 
                     # create rules
@@ -1796,8 +1785,7 @@ class FirewallZone(object):
                 for helper in helpers:
                     modules.append(helper.module)
                     nat_module = helper.module.replace("conntrack", "nat")
-                    if nat_module in self._fw.nf_nat_helpers:
-                        modules.append(nat_module)
+                    modules.append(nat_module)
                 zone_transaction.add_modules(modules)
             zone_transaction.add_chain("filter", "INPUT")
 
@@ -1821,14 +1809,8 @@ class FirewallZone(object):
                 for helper in helpers:
                     module = helper.module
                     _module_short_name = get_nf_conntrack_short_name(module)
-                    if _module_short_name not in \
-                       self._fw.nf_conntrack_helpers[module]:
-                        raise FirewallError(
-                            errors.INVALID_HELPER,
-                            "'%s' is not available in kernel" % module)
                     nat_module = helper.module.replace("conntrack", "nat")
-                    if nat_module in self._fw.nf_nat_helpers:
-                        zone_transaction.add_module(nat_module)
+                    zone_transaction.add_module(nat_module)
                     if helper.family != "" and not backend.is_ipv_supported(helper.family):
                         # no support for family ipv, continue
                         continue

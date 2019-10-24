@@ -186,10 +186,10 @@ class FirewallD(slip.dbus.service.Object):
             return dbus.Boolean(self.fw.nf_conntrack_helper_setting == 1)
 
         elif prop == "nf_conntrack_helpers":
-            return dbus.Dictionary(self.fw.nf_conntrack_helpers, "sas")
+            return dbus.Dictionary({}, "sas")
 
         elif prop == "nf_nat_helpers":
-            return dbus.Dictionary(self.fw.nf_nat_helpers, "sas")
+            return dbus.Dictionary({}, "sas")
 
         else:
             raise dbus.exceptions.DBusException(
