@@ -163,11 +163,7 @@
 	    <term><methodname>getAutomaticHelpers</methodname>() &rarr; s</term>
             <listitem>
 	      <para>
-		Return the AutomaticHelpers value.
-		For the secure use of iptables and connection tracking helpers it is recommended to turn AutomaticHelpers off. But this might have side effects on other services using the netfilter helpers as the sysctl setting in <filename>/proc/sys/net/netfilter/nf_conntrack_helper</filename> will be changed.
-		With the system setting, the default value set in the kernel or with sysctl will be used.
-		Possible values are: <literal>yes</literal>, <literal>no</literal> and <literal>system</literal>.
-		The default value is <literal>system</literal>.
+            Deprecated. This always returns "no".
 	      </para>
 	    </listitem>
           </varlistentry>
@@ -2586,7 +2582,7 @@
             <term>AutomaticHelpers - s - (rw)</term>
             <listitem>
               <para>
-		Indicates whether automatic helper assignment in kernel should be used or not. With the system setting this is left to the kernel or system default.
+                Deprecated. Getting this value always returns "no". Setting this value is ignored.
               </para>
             </listitem>
           </varlistentry>

@@ -1009,7 +1009,9 @@ class FirewallD(slip.dbus.service.Object):
     def getAutomaticHelpers(self, sender=None): # pylint: disable=W0613
         # returns the automatic helpers value
         log.debug1("getAutomaticHelpers()")
-        return self.fw.get_automatic_helpers()
+        # NOTE: This feature was removed and is now a noop. We retain the dbus
+        # call to keep API.
+        return "no"
 
     @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
     @dbus_service_method(config.dbus.DBUS_INTERFACE, in_signature='s',
@@ -1020,12 +1022,8 @@ class FirewallD(slip.dbus.service.Object):
         value = dbus_to_python(value, str)
         log.debug1("setAutomaticHelpers('%s')" % value)
         self.accessCheck(sender)
-        self.fw.set_automatic_helpers(value)
-        self.AutomaticHelpersChanged(value)
-        # must reload the firewall as well
-        self.fw.reload()
-        self.config.reload()
-        self.Reloaded()
+        # NOTE: This feature was removed and is now a noop. We retain the dbus
+        # call to keep API.
 
     @dbus.service.signal(config.dbus.DBUS_INTERFACE, signature='s')
     @dbus_handle_exceptions

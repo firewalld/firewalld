@@ -277,7 +277,7 @@ class firewalld_conf(object):
             for (key,value) in self._config.items():
                 if key in done:
                     continue
-                if key in ["MinimalMark"]: # omit deprecated from new config
+                if key in ["MinimalMark", "AutomaticHelpers"]: # omit deprecated from new config
                     continue
                 if not empty:
                     temp_file.write(u"\n")

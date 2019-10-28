@@ -102,13 +102,12 @@ class Firewall(object):
         self.__init_vars()
 
     def __repr__(self):
-        return '%s(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)' % \
+        return '%s(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)' % \
             (self.__class__, self.ip4tables_enabled, self.ip6tables_enabled,
              self.ebtables_enabled, self._state, self._panic,
              self._default_zone, self._module_refcount, self._marks,
              self.cleanup_on_exit, self.ipv6_rpfilter_enabled,
-             self.ipset_enabled, self._individual_calls, self._log_denied,
-             self._automatic_helpers)
+             self.ipset_enabled, self._individual_calls, self._log_denied)
 
     def __init_vars(self):
         self._state = "INIT"
@@ -121,7 +120,6 @@ class Firewall(object):
         self.ipv6_rpfilter_enabled = config.FALLBACK_IPV6_RPFILTER
         self._individual_calls = config.FALLBACK_INDIVIDUAL_CALLS
         self._log_denied = config.FALLBACK_LOG_DENIED
-        self._automatic_helpers = config.FALLBACK_AUTOMATIC_HELPERS
         self._firewall_backend = config.FALLBACK_FIREWALL_BACKEND
         self._flush_all_on_reload = config.FALLBACK_FLUSH_ALL_ON_RELOAD
         self._rfc3964_ipv4 = config.FALLBACK_RFC3964_IPV4
@@ -264,18 +262,6 @@ class Firewall(object):
                 else:
                     self._log_denied = value.lower()
                     log.debug1("LogDenied is set to '%s'", self._log_denied)
-
-            if self._firewalld_conf.get("AutomaticHelpers"):
-                value = self._firewalld_conf.get("AutomaticHelpers")
-                if value is not None:
-                    if value.lower() in [ "no", "false" ]:
-                        self._automatic_helpers = "no"
-                    elif value.lower() in [ "yes", "true" ]:
-                        self._automatic_helpers = "yes"
-                    else:
-                        self._automatic_helpers = value.lower()
-                    log.debug1("AutomaticHelpers is set to '%s'",
-                               self._automatic_helpers)
 
             if self._firewalld_conf.get("FirewallBackend"):
                 self._firewall_backend = self._firewalld_conf.get("FirewallBackend")
@@ -1060,24 +1046,6 @@ class Firewall(object):
         if value != self.get_log_denied():
             self._log_denied = value
             self._firewalld_conf.set("LogDenied", value)
-            self._firewalld_conf.write()
-        else:
-            raise FirewallError(errors.ALREADY_SET, value)
-
-    # AUTOMATIC HELPERS
-
-    def get_automatic_helpers(self):
-        return self._automatic_helpers
-
-    def set_automatic_helpers(self, value):
-        if value not in config.AUTOMATIC_HELPERS_VALUES:
-            raise FirewallError(errors.INVALID_VALUE,
-                                "'%s', choose from '%s'" % \
-                                (value, "','".join(config.AUTOMATIC_HELPERS_VALUES)))
-
-        if value != self.get_automatic_helpers():
-            self._automatic_helpers = value
-            self._firewalld_conf.set("AutomaticHelpers", value)
             self._firewalld_conf.write()
         else:
             raise FirewallError(errors.ALREADY_SET, value)

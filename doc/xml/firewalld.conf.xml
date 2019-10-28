@@ -139,7 +139,7 @@
 	<term><option>AutomaticHelpers</option></term>
         <listitem>
 	  <para>
-	    For the secure use of iptables and connection tracking helpers it is recommended to turn AutomaticHelpers off. But this might have side effects on other services using the netfilter helpers as the sysctl setting in /proc/sys/net/netfilter/nf_conntrack_helper will be changed. With the system setting, the default value set in the kernel or with sysctl will be used. Possible values are: <replaceable>yes</replaceable>, <replaceable>no</replaceable> and <replaceable>system</replaceable>. The default setting is <replaceable>system</replaceable>.
+        Deprecated. This option is ignored and no longer used.
 	  </para>
 	</listitem>
       </varlistentry>

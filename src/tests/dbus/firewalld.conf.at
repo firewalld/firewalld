@@ -3,7 +3,7 @@ AT_KEYWORDS(dbus)
 
 dnl Verify defaults over dbus. Should be inline with default firewalld.conf.
 DBUS_GETALL([config], [config], 0, [dnl
-string "AutomaticHelpers" : variant string "system"
+string "AutomaticHelpers" : variant string "no"
 string "CleanupOnExit" : variant string "no"
 string "DefaultZone" : variant string "public"
 string "FirewallBackend" : variant string "nftables"

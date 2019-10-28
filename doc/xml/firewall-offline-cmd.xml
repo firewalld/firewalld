@@ -348,34 +348,6 @@
       </variablelist>
     </refsect2>
 
-    <refsect2 id="automatic_helpers_options">
-      <title>Automatic Helpers Options</title>
-      <variablelist>
-	<varlistentry>
-	  <term><option>--get-automatic-helpers</option></term>
-	  <listitem>
-	    <para>
-	      Print the automatic helpers setting.
-	    </para>
-	  </listitem>
-	</varlistentry>
-
-	<varlistentry>
-	  <term><option>--set-automatic-helpers</option>=<replaceable>value</replaceable></term>
-	  <listitem>
-	    <para>
-	      For the secure use of iptables and connection tracking helpers it is recommended to turn AutomaticHelpers off. But this might have side effects on other services using the netfilter helpers as the sysctl setting in <filename>/proc/sys/net/netfilter/nf_conntrack_helper</filename> will be changed.
-	      With the system setting, the default value set in the kernel or with sysctl will be used.
-	      Possible values are: <literal>yes</literal>, <literal>no</literal> and <literal>system</literal>. The default value is <literal>system</literal>.
-	    </para>
-	    <para>
-	      This is a runtime and permanent change and will also reload the firewall to be able to make the helpers usable.
-	    </para>
-	  </listitem>
-	</varlistentry>
-      </variablelist>
-    </refsect2>
-
     <refsect2 id="zone_options">
       <title>Zone Options</title>
       <variablelist>
