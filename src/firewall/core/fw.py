@@ -125,7 +125,6 @@ class Firewall(object):
         self._firewall_backend = config.FALLBACK_FIREWALL_BACKEND
         self._flush_all_on_reload = config.FALLBACK_FLUSH_ALL_ON_RELOAD
         self._rfc3964_ipv4 = config.FALLBACK_RFC3964_IPV4
-        self.nf_conntrack_helper_setting = 0
 
     def individual_calls(self):
         return self._individual_calls
@@ -394,18 +393,6 @@ class Firewall(object):
 
         if self._offline:
             return
-
-        # automatic helpers
-        #
-        # NOTE: must force loading of nf_conntrack to make sure the values are
-        # available in /proc
-        (status, msg) = self.handle_modules(["nf_conntrack"], True)
-        if status != 0:
-            log.warning("Failed to load nf_conntrack module: %s" % msg)
-        if self._automatic_helpers != "system":
-            functions.set_nf_conntrack_helper_setting(self._automatic_helpers == "yes")
-        self.nf_conntrack_helper_setting = \
-            functions.get_nf_conntrack_helper_setting()
 
         # check if needed tables are there
         self._check_tables()

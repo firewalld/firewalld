@@ -183,7 +183,7 @@ class FirewallD(slip.dbus.service.Object):
             return dbus.Array(self.fw.ipset_supported_types, "s")
 
         elif prop == "nf_conntrack_helper_setting":
-            return dbus.Boolean(self.fw.nf_conntrack_helper_setting == 1)
+            return dbus.Boolean(False)
 
         elif prop == "nf_conntrack_helpers":
             return dbus.Dictionary({}, "sas")

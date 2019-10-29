@@ -827,8 +827,7 @@ class FirewallZone(object):
                 helper = self._fw.helper.get_helper(module)
             except FirewallError:
                 raise FirewallError(errors.INVALID_HELPER, module)
-            if self._fw.nf_conntrack_helper_setting == 0 and \
-               len(helper.ports) < 1:
+            if len(helper.ports) < 1:
                 _module_short_name = get_nf_conntrack_short_name(helper.module)
                 try:
                     _helper = self._fw.helper.get_helper(_module_short_name)
@@ -1562,8 +1561,7 @@ class FirewallZone(object):
                 for destination in destinations:
                     if enable:
                         transaction.add_chain(zone, "filter", "INPUT")
-                        if self._fw.nf_conntrack_helper_setting == 0:
-                            transaction.add_chain(zone, "raw", "PREROUTING")
+                        transaction.add_chain(zone, "raw", "PREROUTING")
 
                     if type(rule.action) == Rich_Accept:
                         # only load modules for accept action
@@ -1576,25 +1574,19 @@ class FirewallZone(object):
                         for helper in helpers:
                             module = helper.module
                             _module_short_name = get_nf_conntrack_short_name(module)
-                            if self._fw.nf_conntrack_helper_setting == 0:
-                                nat_module = module.replace("conntrack", "nat")
-                                modules.append(nat_module)
-                                if helper.family != "" and not backend.is_ipv_supported(helper.family):
-                                    # no support for family ipv, continue
-                                    continue
-                                if len(helper.ports) < 1:
-                                    modules.append(module)
-                                else:
-                                    for (port,proto) in helper.ports:
-                                        rules = backend.build_zone_helper_ports_rules(
-                                                        enable, zone, proto, port,
-                                                        destination, helper.name, _module_short_name)
-                                        transaction.add_rules(backend, rules)
+                            nat_module = module.replace("conntrack", "nat")
+                            modules.append(nat_module)
+                            if helper.family != "" and not backend.is_ipv_supported(helper.family):
+                                # no support for family ipv, continue
+                                continue
+                            if len(helper.ports) < 1:
+                                modules.append(module)
                             else:
-                                if helper.module not in modules:
-                                    modules.append(helper.module)
-                                    nat_module = helper.module.replace("conntrack", "nat")
-                                    modules.append(nat_module)
+                                for (port,proto) in helper.ports:
+                                    rules = backend.build_zone_helper_ports_rules(
+                                                    enable, zone, proto, port,
+                                                    destination, helper.name, _module_short_name)
+                                    transaction.add_rules(backend, rules)
                         transaction.add_modules(modules)
 
                     # create rules
@@ -1755,15 +1747,7 @@ class FirewallZone(object):
             self._service(enable, zone, include, transaction, included_services=included_services)
 
         if enable:
-            if self._fw.nf_conntrack_helper_setting == 0:
-                transaction.add_chain(zone, "raw", "PREROUTING")
-            else:
-                modules = [ ]
-                for helper in helpers:
-                    modules.append(helper.module)
-                    nat_module = helper.module.replace("conntrack", "nat")
-                    modules.append(nat_module)
-                transaction.add_modules(modules)
+            transaction.add_chain(zone, "raw", "PREROUTING")
             transaction.add_chain(zone, "filter", "INPUT")
 
         # build a list of (backend, destination). The destination may be ipv4,
@@ -1782,23 +1766,22 @@ class FirewallZone(object):
                     backends_ipv.append((backend, None))
 
         for (backend,destination) in backends_ipv:
-            if self._fw.nf_conntrack_helper_setting == 0:
-                for helper in helpers:
-                    module = helper.module
-                    _module_short_name = get_nf_conntrack_short_name(module)
-                    nat_module = helper.module.replace("conntrack", "nat")
-                    transaction.add_module(nat_module)
-                    if helper.family != "" and not backend.is_ipv_supported(helper.family):
-                        # no support for family ipv, continue
-                        continue
-                    if len(helper.ports) < 1:
-                        transaction.add_module(module)
-                    else:
-                        for (port,proto) in helper.ports:
-                            rules = backend.build_zone_helper_ports_rules(
-                                            enable, zone, proto, port,
-                                            destination, helper.name, _module_short_name)
-                            transaction.add_rules(backend, rules)
+            for helper in helpers:
+                module = helper.module
+                _module_short_name = get_nf_conntrack_short_name(module)
+                nat_module = helper.module.replace("conntrack", "nat")
+                transaction.add_module(nat_module)
+                if helper.family != "" and not backend.is_ipv_supported(helper.family):
+                    # no support for family ipv, continue
+                    continue
+                if len(helper.ports) < 1:
+                    transaction.add_module(module)
+                else:
+                    for (port,proto) in helper.ports:
+                        rules = backend.build_zone_helper_ports_rules(
+                                        enable, zone, proto, port,
+                                        destination, helper.name, _module_short_name)
+                        transaction.add_rules(backend, rules)
 
             for (port,proto) in svc.ports:
                 rules = backend.build_zone_ports_rules(enable, zone, proto,
