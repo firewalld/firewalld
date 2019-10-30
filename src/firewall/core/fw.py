@@ -423,10 +423,9 @@ class Firewall(object):
         #
         # NOTE: must force loading of nf_conntrack to make sure the values are
         # available in /proc
-        module_return = self.handle_modules(["nf_conntrack"], True)
-        if module_return:
-            log.error("Failed to load nf_conntrack module: %s" % module_return[1])
-            sys.exit(1)
+        (status, msg) = self.handle_modules(["nf_conntrack"], True)
+        if status != 0:
+            log.warning("Failed to load nf_conntrack module: %s" % msg)
         if self._automatic_helpers != "system":
             functions.set_nf_conntrack_helper_setting(self._automatic_helpers == "yes")
         self.nf_conntrack_helper_setting = \
@@ -688,6 +687,8 @@ class Firewall(object):
     # handle modules
 
     def handle_modules(self, _modules, enable):
+        num_failed = 0
+        error_msgs = ""
         for i,module in enumerate(_modules):
             if enable:
                 (status, msg) = self.modules_backend.load_module(module)
@@ -697,9 +698,9 @@ class Firewall(object):
                 else:
                     (status, msg) = self.modules_backend.unload_module(module)
             if status != 0:
-                if enable:
-                    return (_modules[:i], msg) # cleanup modules and error msg
-                # else: ignore cleanup
+                num_failed += 1
+                error_msgs += msg
+                continue
 
             if enable:
                 self._module_refcount.setdefault(module, 0)
@@ -709,7 +710,7 @@ class Firewall(object):
                     self._module_refcount[module] -= 1
                     if self._module_refcount[module] == 0:
                         del self._module_refcount[module]
-        return None
+        return (num_failed, error_msgs)
 
     def _select_firewall_backend(self, backend):
         if backend != "nftables":

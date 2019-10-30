@@ -113,11 +113,14 @@ class SimpleFirewallTransaction(object):
         if not error:
             module_return = self.fw.handle_modules(modules, enable)
             if module_return:
-                (cleanup_modules, msg) = module_return
-                if cleanup_modules is not None:
-                    error = True
-                    errorMsg = msg
-                    self.fw.handle_modules(cleanup_modules, not enable)
+                # Debug log about issues loading modules, but don't error. The
+                # modules may be builtin or CONFIG_MODULES=n, in which case
+                # modprobe will fail. Or we may be running inside a container
+                # that doesn't have sufficient privileges. Unfortunately there
+                # is no way for us to know.
+                (status, msg) = module_return
+                if status:
+                    log.debug1(msg)
 
         # error case: revert rules
         if error:
