@@ -486,12 +486,14 @@
             <listitem><para>Kernel nf_conntrack_helper setting.</para></listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.Properties.nf_conntrack_helpers">
+            <annotation name="org.freedesktop.DBus.Deprecated" />
             <term><parameter>nf_conntrack_helpers</parameter> - a{sas} - (ro)</term>
-            <listitem><para>The list of conntrack helpers supported by the kernel.</para></listitem>
+            <listitem><para>Deprecated. Always returns an empty dictionary.</para></listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.Properties.nf_nat_helpers">
+            <annotation name="org.freedesktop.DBus.Deprecated" />
             <term><parameter>nf_nat_helpers</parameter> - a{sas} - (ro)</term>
-            <listitem><para>The list of nat helpers supported by the kernel.</para></listitem>
+            <listitem><para>Deprecated. Always returns an empty dictionary.</para></listitem>
           </varlistentry>
 	  <varlistentry id="FirewallD1.Properties.interface_version">
             <term><parameter>interface_version</parameter> - s - (ro)</term>
