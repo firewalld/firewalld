@@ -146,6 +146,7 @@ m4_define([FWD_END_TEST], [
         IF_IPV6_SUPPORTED([], [
             sed -i "/WARNING: ip6tables not usable, disabling IPv6 firewall/d" ./firewalld.log
         ])
+        sed -i "/modprobe: ERROR:/d" ./firewalld.log
         if test x"$1" != x"ignore"; then
             if test -n "$1"; then
                 sed -i $1 ./firewalld.log
