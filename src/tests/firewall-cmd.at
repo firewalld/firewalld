@@ -209,7 +209,7 @@ sources: $1
 
     check_zone_source([1.2.3.4])
     check_zone_source([192.168.1.0/24])
-    IF_IPV6_SUPPORTED([
+    IF_HOST_SUPPORTS_IPV6_RULES([
     check_zone_source([3ffe:501:ffff::/64])
     check_zone_source([dead:beef::babe])
     ])
@@ -308,7 +308,7 @@ FWD_START_TEST([user services])
     FWD_CHECK([--permanent --service=foobar --set-destination=ipv4:foo], 105, ignore, ignore) dnl bad address
     FWD_CHECK([--permanent --service=foobar --set-destination=ipv4:1.2.3.4], 0, ignore)
     FWD_CHECK([--permanent --service=foobar --remove-destination=ipv4], 0, ignore)
-    IF_IPV6_SUPPORTED([
+    IF_HOST_SUPPORTS_IPV6_RULES([
     FWD_CHECK([--permanent --service=foobar --set-destination=ipv6:fd00:dead:beef:ff0::/64], 0, ignore)
     FWD_CHECK([--permanent --service=foobar --query-destination=ipv6:fd00:dead:beef:ff0::/64], 0, ignore)
     FWD_CHECK([--permanent --service=foobar --remove-destination=ipv6], 0, ignore)
@@ -544,7 +544,7 @@ FWD_START_TEST([forward ports])
     FWD_CHECK([--query-forward-port port=66:proto=sctp:toport=66:toaddr=7.7.7.7 --zone=public], 0, ignore)
     FWD_CHECK([--remove-forward-port=port=66:proto=sctp:toport=66:toaddr=7.7.7.7], 0, ignore)
     FWD_CHECK([--query-forward-port=port=66:proto=sctp:toport=66:toaddr=7.7.7.7], 1, ignore)
-    IF_IPV6_SUPPORTED([
+    IF_HOST_SUPPORTS_IPV6_RULES([
     FWD_CHECK([--add-forward-port=port=66:proto=sctp:toport=66:toaddr=fd00:dead:beef:ff0::], 0, ignore)
     dnl this should only affect IPv6, so verify that.
     NFT_LIST_RULES([ip], [nat_PRE_public_allow], 0, [dnl
@@ -591,7 +591,7 @@ FWD_START_TEST([forward ports])
     FWD_CHECK([--permanent --query-forward-port port=66:proto=sctp:toport=66:toaddr=7.7.7.7 --zone=public], 0, ignore)
     FWD_CHECK([--permanent --remove-forward-port=port=66:proto=sctp:toport=66:toaddr=7.7.7.7], 0, ignore)
     FWD_CHECK([--permanent --query-forward-port=port=66:proto=sctp:toport=66:toaddr=7.7.7.7], 1, ignore)
-    IF_IPV6_SUPPORTED([
+    IF_HOST_SUPPORTS_IPV6_RULES([
     FWD_CHECK([--permanent --add-forward-port=port=66:proto=sctp:toport=66:toaddr=fd00:dead:beef:ff0::], 0, ignore)
     FWD_CHECK([--permanent --query-forward-port port=66:proto=sctp:toport=66:toaddr=fd00:dead:beef:ff0:: --zone=public], 0, ignore)
     FWD_CHECK([--permanent --remove-forward-port=port=66:proto=sctp:toport=66:toaddr=fd00:dead:beef:ff0::], 0, ignore)
@@ -718,7 +718,7 @@ FWD_START_TEST([ipset])
     FWD_CHECK([--permanent --delete-ipset=foobar], 0, ignore)
     FWD_RELOAD
 
-    IF_IPV6_SUPPORTED([
+    IF_HOST_SUPPORTS_IPV6_RULES([
     FWD_CHECK([--permanent --new-ipset=foobar --type=hash:mac], 0, ignore)
     FWD_CHECK([--permanent --ipset=foobar --add-entry=12:34:56:78:90:ab], 0, ignore)
     FWD_RELOAD
@@ -1012,7 +1012,7 @@ FWD_START_TEST([rich rules good])
     rich_rule_test([rule protocol value="sctp" log])
     rich_rule_test([rule family="ipv4" source address="192.168.0.0/24" service name="tftp" log prefix="tftp: " level="info" limit value="1/m" accept])
     rich_rule_test([rule family="ipv4" source not address="192.168.0.0/24" service name="dns" log prefix="dns: " level="info" limit value="2/m" drop])
-    IF_IPV6_SUPPORTED([
+    IF_HOST_SUPPORTS_IPV6_RULES([
     rich_rule_test([rule family="ipv6" source address="1:2:3:4:6::" service name="radius" log prefix="dns -- " level="info" limit value="3/m" reject type="icmp6-addr-unreachable" limit value="20/m"])
     rich_rule_test([rule family="ipv6" source address="1:2:3:4:6::" port port="4011" protocol="tcp" log prefix="port 4011: " level="info" limit value="4/m" drop])
     rich_rule_test([rule family="ipv6" source address="1:2:3:4:6::" forward-port port="4011" protocol="tcp" to-port="4012" to-addr="1::2:3:4:7"])
@@ -1027,7 +1027,7 @@ FWD_START_TEST([rich rules good])
     rich_rule_test([rule family="ipv4" destination address="192.168.1.0/24" masquerade])
     rich_rule_test([rule forward-port port="2222" to-port="22" to-addr="192.168.100.2" protocol="tcp" family="ipv4" source address="192.168.2.100"])
     rich_rule_test([rule forward-port port="66" to-port="666" to-addr="192.168.100.2" protocol="sctp" family="ipv4" source address="192.168.2.100"])
-    IF_IPV6_SUPPORTED([
+    IF_HOST_SUPPORTS_IPV6_RULES([
     rich_rule_test([rule forward-port port="99" to-port="999" to-addr="1::2:3:4:7" protocol="dccp" family="ipv6" source address="1:2:3:4:6::"])
     rich_rule_test([rule forward-port port="99" to-port="10999" to-addr="1::2:3:4:7" protocol="dccp" family="ipv6" source address="1:2:3:4:6::"])
     ])
@@ -1215,7 +1215,7 @@ FWD_START_TEST([rich rules priority])
     FWD_CHECK([--add-rich-rule='rule family="ipv4" priority=0 forward-port port="2222" protocol="tcp" to-port="22" to-addr="10.1.1.1"'], 0, ignore)
     FWD_CHECK([--add-rich-rule='rule family="ipv4" priority=-10 forward-port port="8888" protocol="tcp" to-port="80"'], 0, ignore)
     FWD_CHECK([--add-rich-rule='rule family="ipv4" priority=-10 forward-port port="8080" protocol="tcp" to-port="80" to-addr="10.1.1.1"'], 0, ignore)
-    IF_IPV6_SUPPORTED([
+    IF_HOST_SUPPORTS_IPV6_RULES([
     FWD_CHECK([--add-rich-rule='rule family="ipv6" priority=0 forward-port port="9090" protocol="tcp" to-port="90"'], 0, ignore)
     FWD_CHECK([--add-rich-rule='rule family="ipv6" priority=-123 forward-port port="999" protocol="tcp" to-port="99"'], 0, ignore)
     FWD_CHECK([--add-rich-rule='rule family="ipv6" priority=-123 forward-port port="9999" protocol="tcp" to-port="9999" to-addr="1234::4321"'], 0, ignore)
@@ -1677,7 +1677,7 @@ FWD_START_TEST([rich rules bad])
     rich_rule_test([rule service name="radius" port port="4011" reject], 122) dnl service && port
     rich_rule_test([rule service bad_attribute="dns"], 122) dnl bad attribute
     rich_rule_test([rule protocol value="igmp" log level="eror"], 125) dnl bad log level
-    IF_IPV6_SUPPORTED([
+    IF_HOST_SUPPORTS_IPV6_RULES([
     rich_rule_test([family="ipv6" accept], 122) dnl no rule
     rich_rule_test([rule source address="1:2:3:4:6::" icmp-block name="redirect" log level="info" limit value="1/2m"], 207) dnl missing family
     rich_rule_test([rule family="ipv6" source address="1:2:3:4:6::" icmp-block name="redirect" log level="info" limit value="1/2m"], 123) dnl bad limit
@@ -1800,7 +1800,7 @@ WARNING: INVALID_ENTRY: invalid mac address '12:34:56:78:90' in '12:34:56:78:90'
 ])
     FWD_CHECK([--check-config], 111, ignore, ignore)
 
-    IF_IPV6_SUPPORTED([
+    IF_HOST_SUPPORTS_IPV6_RULES([
     AT_DATA([./helpers/foobar.xml], [dnl
 <?xml version="1.0" encoding="utf-8"?>
 <helper family="ipv6" module="nf_conntrack_ftp">
@@ -2051,7 +2051,7 @@ WARNING: Invalid rule: Invalid log level
 ])
     FWD_CHECK([--check-config], 28, ignore, ignore)
 
-    IF_IPV6_SUPPORTED([
+    IF_HOST_SUPPORTS_IPV6_RULES([
     AT_DATA([./zones/foobar.xml], [dnl
 <?xml version="1.0" encoding="utf-8"?>
 <zone>
