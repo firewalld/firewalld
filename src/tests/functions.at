@@ -312,7 +312,7 @@ m4_define([NFT_LIST_RULES_NORMALIZE], [dnl
 
 m4_define([NFT_LIST_RULES_ALWAYS], [
     m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
-        NS_CHECK([PIPESTATUS0([nft NFT_NUMERIC_ARGS list chain $1 firewalld $2], [NFT_LIST_RULES_NORMALIZE])],
+        NS_CHECK([PIPESTATUS0([nft $NFT_NUMERIC_ARGS list chain $1 firewalld $2], [NFT_LIST_RULES_NORMALIZE])],
                  [$3], [m4_strip([$4])], [m4_strip([$5])], [$6], [$7])
     ])
 ])
@@ -342,7 +342,7 @@ m4_define([NFT_LIST_SET_NORMALIZE], [dnl
 
 m4_define([NFT_LIST_SET_ALWAYS], [
     m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
-        NS_CHECK([PIPESTATUS0([nft NFT_NUMERIC_ARGS list set inet firewalld $1], [NFT_LIST_SET_NORMALIZE])],
+        NS_CHECK([PIPESTATUS0([nft $NFT_NUMERIC_ARGS list set inet firewalld $1], [NFT_LIST_SET_NORMALIZE])],
                  [$2], [m4_strip([$3])], [m4_strip([$4])], [$5], [$6])
     ])
 ])
@@ -481,8 +481,6 @@ m4_define([IF_HOST_SUPPORTS_NFT_FIB], [
         $2
     fi
 ])
-
-m4_define([NFT_NUMERIC_ARGS], m4_esyscmd([nft -h |grep "numeric-protocol" >/dev/null && echo -n "" || { echo -n "-" && echo -n "nn"; } ]))
 
 m4_define([HOST_SUPPORTS_IP6TABLES], m4_esyscmd(
     if $IP6TABLES -L >/dev/null 2>&1; then
