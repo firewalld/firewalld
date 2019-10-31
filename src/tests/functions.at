@@ -143,7 +143,7 @@ m4_define([FWD_START_TEST], [
 
 m4_define([FWD_END_TEST], [
     m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
-        IF_IPV6_SUPPORTED([], [
+        IF_HOST_SUPPORTS_IP6TABLES([], [
             sed -i "/WARNING: ip6tables not usable, disabling IPv6 firewall/d" ./firewalld.log
         ])
         sed -i "/modprobe: ERROR:/d" ./firewalld.log
@@ -445,7 +445,7 @@ m4_define([IF_HOST_SUPPORTS_IPV6], [
     fi
 ])
 
-m4_define([IF_IPV6_SUPPORTED], [
+m4_define([IF_HOST_SUPPORTS_IPV6_RULES], [
     m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [$1], [
     m4_if(nftables, FIREWALL_BACKEND, [$1], [
     IF_HOST_SUPPORTS_IP6TABLES([$1], [$2])

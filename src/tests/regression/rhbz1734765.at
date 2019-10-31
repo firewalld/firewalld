@@ -26,7 +26,7 @@ FWD_CHECK([-q --permanent --zone=foobar_04 --add-source="10.2.0.0/16"])
 FWD_CHECK([-q --permanent --zone=foobar_00 --add-source="10.1.1.1"])
 FWD_CHECK([-q --permanent --zone=foobar_03 --add-source="10.2.2.0/24"])
 FWD_CHECK([-q --permanent --zone=foobar_05 --add-source="10.0.0.0/8"])
-IF_IPV6_SUPPORTED([
+IF_HOST_SUPPORTS_IPV6_RULES([
 FWD_CHECK([-q --permanent --zone=foobar_01 --add-source="1234:5678::1:1:0/112"])
 FWD_CHECK([-q --permanent --zone=foobar_02 --add-source="1234:5678::1:0:0/96"])
 FWD_CHECK([-q --permanent --zone=foobar_04 --add-source="1234:5678::2:0:0/96"])
@@ -61,7 +61,7 @@ NFT_LIST_SET([ipsetv6], 0, [dnl
 
 FWD_CHECK([-q --zone=foobar_010 --add-source="10.10.10.10"])
 FWD_CHECK([-q --zone=public --add-source="20.20.20.20"])
-IF_IPV6_SUPPORTED([
+IF_HOST_SUPPORTS_IPV6_RULES([
 FWD_CHECK([-q --zone=foobar_010 --add-source="1234:5678::10:10:10"])
 FWD_CHECK([-q --zone=public --add-source="1234:5678::20:20:20"])
 FWD_CHECK([-q --zone=foobar_012 --add-source ipset:ipsetv6])

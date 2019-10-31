@@ -2,7 +2,7 @@ FWD_START_TEST([zone dispatch layout])
 AT_KEYWORDS(zone gh258 gh441 rhbz1713823)
 
 FWD_CHECK([--zone=work --add-source="1.2.3.0/24"], 0, ignore)
-IF_IPV6_SUPPORTED([
+IF_HOST_SUPPORTS_IPV6_RULES([
 FWD_CHECK([--zone=public --add-source="dead:beef::/54"], 0, ignore)
 ])
 FWD_CHECK([--zone=work --add-interface=dummy0], 0, ignore)

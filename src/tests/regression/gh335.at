@@ -9,7 +9,7 @@ NS_CHECK([[sysctl -a |grep "net.ipv4.conf.all.forwarding[ ]*=[ ]*1"]], 0, [ignor
 NS_CHECK([[sysctl -a |grep "net.ipv6.conf.all.forwarding[ ]*=[ ]*1"]], 1, [ignore], [ignore])
 FWD_RELOAD
 
-IF_IPV6_SUPPORTED([
+IF_HOST_SUPPORTS_IPV6_RULES([
 NS_CHECK([sysctl -w net.ipv4.conf.all.forwarding=0], 0, [ignore], [ignore])
 IF_HOST_SUPPORTS_IPV6([
 NS_CHECK([sysctl -w net.ipv6.conf.all.forwarding=0], 0, [ignore], [ignore])
@@ -31,7 +31,7 @@ NS_CHECK([[sysctl -a |grep "net.ipv4.conf.all.forwarding[ ]*=[ ]*1"]], 0, [ignor
 NS_CHECK([[sysctl -a |grep "net.ipv6.conf.all.forwarding[ ]*=[ ]*1"]], 1, [ignore], [ignore])
 FWD_RELOAD
 
-IF_IPV6_SUPPORTED([
+IF_HOST_SUPPORTS_IPV6_RULES([
 NS_CHECK([sysctl -w net.ipv4.conf.all.forwarding=0], 0, [ignore], [ignore])
 IF_HOST_SUPPORTS_IPV6([
 NS_CHECK([sysctl -w net.ipv6.conf.all.forwarding=0], 0, [ignore], [ignore])
@@ -58,7 +58,7 @@ FWD_CHECK([-q --add-rich-rule='rule family=ipv4 forward-port port="12345" protoc
 NS_CHECK([[sysctl -a |grep "net.ipv4.conf.all.forwarding[ ]*=[ ]*1"]], 1, [ignore], [ignore])
 NS_CHECK([[sysctl -a |grep "net.ipv6.conf.all.forwarding[ ]*=[ ]*1"]], 1, [ignore], [ignore])
 
-IF_IPV6_SUPPORTED([
+IF_HOST_SUPPORTS_IPV6_RULES([
 FWD_CHECK([-q --add-rich-rule='rule family=ipv6 forward-port port="12345" protocol="tcp" to-port="54321"'])
 NS_CHECK([[sysctl -a |grep "net.ipv4.conf.all.forwarding[ ]*=[ ]*1"]], 1, [ignore], [ignore])
 NS_CHECK([[sysctl -a |grep "net.ipv6.conf.all.forwarding[ ]*=[ ]*1"]], 1, [ignore], [ignore])
