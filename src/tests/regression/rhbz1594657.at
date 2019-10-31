@@ -8,7 +8,7 @@ FWD_CHECK([--direct --passthrough ipv4 -t filter -C dummy_chain -j ACCEPT], 13, 
 FWD_CHECK([--direct --passthrough ipv4 -t filter -L dummy_chain], 13, [ignore], [ignore])
 FWD_CHECK([--direct --passthrough ipv4 -t filter -L INPUT], 0, [ignore])
 
-m4_if(yes, HOST_SUPPORTS_IP6TABLES, [dnl
+IF_HOST_SUPPORTS_IP6TABLES([
 FWD_CHECK([--direct --passthrough ipv6 -t filter -C dummy_chain -j ACCEPT], 13, [ignore], [ignore])
 FWD_CHECK([--direct --passthrough ipv6 -t filter -L dummy_chain], 13, [ignore], [ignore])
 FWD_CHECK([--direct --passthrough ipv6 -t filter -L INPUT], 0, [ignore])

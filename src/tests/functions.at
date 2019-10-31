@@ -288,7 +288,7 @@ m4_define([IP6TABLES_LIST_RULES_NORMALIZE], [dnl
 
 m4_define([IP6TABLES_LIST_RULES_ALWAYS], [
     m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
-        m4_if(yes, HOST_SUPPORTS_IP6TABLES, [
+        IF_HOST_SUPPORTS_IP6TABLES([
             NS_CHECK([PIPESTATUS0([$IP6TABLES -w -n -t $1 -L $2], [IP6TABLES_LIST_RULES_NORMALIZE])],
                      [$3], [m4_strip([$4])], [m4_strip([$5])], [$6], [$7])
         ])
@@ -485,13 +485,15 @@ m4_define([IF_HOST_SUPPORTS_NFT_FIB], [
     fi
 ])
 
-m4_define([HOST_SUPPORTS_IP6TABLES], m4_esyscmd(
+m4_define([IF_HOST_SUPPORTS_IP6TABLES], [
     if $IP6TABLES -L >/dev/null 2>&1; then
-        echo -n "yes"
+        :
+        $1
     else
-        echo -n "no"
+        :
+        $2
     fi
-))
+])
 
 m4_define([HOST_SUPPORTS_IPV6], m4_esyscmd(
     if sysctl -a |grep -F "net.ipv6" >/dev/null 2>&1; then
@@ -504,6 +506,6 @@ m4_define([HOST_SUPPORTS_IPV6], m4_esyscmd(
 m4_define([IF_IPV6_SUPPORTED], [
     m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [$1], [
     m4_if(nftables, FIREWALL_BACKEND, [$1], [
-    m4_if(yes, HOST_SUPPORTS_IP6TABLES, [$1], [$2])
+    IF_HOST_SUPPORTS_IP6TABLES([$1], [$2])
     ])])
 ])
