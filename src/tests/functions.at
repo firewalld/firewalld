@@ -435,13 +435,15 @@ m4_define([IF_HOST_SUPPORTS_IP6TABLES], [
     fi
 ])
 
-m4_define([HOST_SUPPORTS_IPV6], m4_esyscmd(
+m4_define([IF_HOST_SUPPORTS_IPV6], [
     if sysctl -a |grep -F "net.ipv6" >/dev/null 2>&1; then
-        echo -n "yes"
+        :
+        $1
     else
-        echo -n "no"
+        :
+        $2
     fi
-))
+])
 
 m4_define([IF_IPV6_SUPPORTED], [
     m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [$1], [
