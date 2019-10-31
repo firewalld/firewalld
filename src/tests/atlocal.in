@@ -4,3 +4,5 @@ export IPTABLES=@IPTABLES@
 export IPTABLES_RESTORE=@IPTABLES_RESTORE@
 export IP6TABLES=@IP6TABLES@
 export IP6TABLES_RESTORE=@IP6TABLES_RESTORE@
+
+export NFT_NUMERIC_ARGS="$(nft -h |grep numeric-protocol >/dev/null && echo -n '' || { echo -n '-' && echo -n 'nn'; })"
