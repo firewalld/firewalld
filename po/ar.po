@@ -1,9 +1,8 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
-# SuSE Linux Products GmbH, Nuernberg, 2018
 # Abdalrahim Fakhouri <abdilra7eem@yahoo.com>, 2010
 # Abdalrahim Fakhouri <abdilra7eem@yahoo.com>, 2010
 # Abdalrahim Fakhouri <abdilra7eem@yahoo.com>, 2010
@@ -12,19 +11,21 @@
 # Alfakhori <mhmd.alfakhori@gmail.com>, 2010
 # Ossama M. Khayat <okhayat@yahoo.com>, 2004
 # Sherif Abdelgawad <sherif@redhat.com>, 2004
+# SuSE Linux Products GmbH, Nuernberg, 2018
+# Eric Garver <e@erig.me>, 2018. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-06 17:55+0100\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2015-02-26 02:43+0000\n"
-"Last-Translator: Novell Language <language@novell.com>\n"
+"POT-Creation-Date: 2019-11-05 08:47-0500\n"
+"PO-Revision-Date: 2018-11-16 08:20+0000\n"
+"Last-Translator: Copied by Zanata <copied-by-zanata@zanata.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/projects/p/firewalld/"
 "language/ar/)\n"
 "Language: ar\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
 "X-Generator: Zanata 4.6.2\n"
@@ -46,24 +47,24 @@ msgstr "إعدادات الجدار النّاري"
 msgid "firewall;network;security;iptables;netfilter;"
 msgstr "firewall;network;security;iptables;netfilter;"
 
-#: ../src/firewall-applet.in:92 ../src/firewall-config.in:7967
+#: ../src/firewall-applet.in:92 ../src/firewall-config.in:7988
 #, c-format
 msgid "Select zone for interface '%s'"
 msgstr "حدد منطقة للواجهة '%s'"
 
 #: ../src/firewall-applet.in:132 ../src/firewall-applet.in:139
-#: ../src/firewall-applet.in:145 ../src/firewall-config.in:2439
-#: ../src/firewall-config.in:8012 ../src/firewall-config.in:8020
-#: ../src/firewall-config.in:8053 ../src/firewall-config.glade.h:8
+#: ../src/firewall-applet.in:145 ../src/firewall-config.in:2448
+#: ../src/firewall-config.in:8033 ../src/firewall-config.in:8041
+#: ../src/firewall-config.in:8074 ../src/firewall-config.glade.h:8
 msgid "Default Zone"
 msgstr "المنطقة الافتراضية"
 
-#: ../src/firewall-applet.in:166 ../src/firewall-config.in:8046
+#: ../src/firewall-applet.in:166 ../src/firewall-config.in:8067
 #, c-format
 msgid "Select zone for connection '%s'"
 msgstr "حدد منطقة للاتصال '%s'"
 
-#: ../src/firewall-applet.in:176 ../src/firewall-config.in:3910
+#: ../src/firewall-applet.in:176 ../src/firewall-config.in:3927
 msgid "Failed to set zone {zone} for connection {connection_name}"
 msgstr "فشل تعيين المنطقة {zone} للاتصال {connection_name}"
 
@@ -142,32 +143,32 @@ msgid "About"
 msgstr "حول"
 
 #: ../src/firewall-applet.in:508 ../src/firewall-config.in:618
-#: ../src/firewall-config.in:2380 ../src/firewall-config.in:2661
-#: ../src/firewall-config.in:2687
+#: ../src/firewall-config.in:2389 ../src/firewall-config.in:2670
+#: ../src/firewall-config.in:2696
 msgid "Connections"
 msgstr "الاتصالات"
 
 #: ../src/firewall-applet.in:512 ../src/firewall-config.in:620
-#: ../src/firewall-config.in:2468 ../src/firewall-config.in:2664
-#: ../src/firewall-config.in:2689 ../src/firewall-config.glade.h:130
+#: ../src/firewall-config.in:2477 ../src/firewall-config.in:2673
+#: ../src/firewall-config.in:2698 ../src/firewall-config.glade.h:130
 msgid "Interfaces"
 msgstr "الواجهات"
 
 #: ../src/firewall-applet.in:516 ../src/firewall-config.in:622
-#: ../src/firewall-config.in:2499 ../src/firewall-config.in:2667
-#: ../src/firewall-config.in:2691 ../src/firewall-config.glade.h:135
+#: ../src/firewall-config.in:2508 ../src/firewall-config.in:2676
+#: ../src/firewall-config.in:2700 ../src/firewall-config.glade.h:135
 msgid "Sources"
 msgstr "المصادر"
 
-#: ../src/firewall-applet.in:592 ../src/firewall-config.in:2279
+#: ../src/firewall-applet.in:592 ../src/firewall-config.in:2288
 msgid "Authorization failed."
 msgstr "فشل التصديق."
 
-#: ../src/firewall-applet.in:594 ../src/firewall-config.in:2282
+#: ../src/firewall-applet.in:594 ../src/firewall-config.in:2291
 msgid "Invalid name"
 msgstr "اسم غير صالح"
 
-#: ../src/firewall-applet.in:598 ../src/firewall-config.in:2286
+#: ../src/firewall-applet.in:598 ../src/firewall-config.in:2295
 msgid "Name already exists"
 msgstr "الاسم موجود بالفعل"
 
@@ -179,11 +180,11 @@ msgstr "{entry} (المنطقة: {zone})"
 msgid "{entry} (Default Zone: {default_zone})"
 msgstr "{entry} (المنطقة الافتراضية: {default_zone})"
 
-#: ../src/firewall-applet.in:778 ../src/firewall-config.in:1568
+#: ../src/firewall-applet.in:778 ../src/firewall-config.in:1574
 msgid "Failed to get connections from NetworkManager"
 msgstr "فشل الحصول على الاتصالات من NetworkManager"
 
-#: ../src/firewall-applet.in:790 ../src/firewall-config.in:1380
+#: ../src/firewall-applet.in:790 ../src/firewall-config.in:1386
 msgid "No NetworkManager imports available"
 msgstr "لا تتوفر عمليات استيراد NetworkManager"
 
@@ -354,7 +355,7 @@ msgstr "الجدول"
 msgid "Chain"
 msgstr "السلسلة"
 
-#: ../src/firewall-config.in:322
+#: ../src/firewall-config.in:322 ../src/firewall-config.in:824
 msgid "Priority"
 msgstr "الأولوية"
 
@@ -362,7 +363,7 @@ msgstr "الأولوية"
 msgid "Args"
 msgstr "الوسيطات"
 
-#: ../src/firewall-config.in:401 ../src/firewall-config.in:2329
+#: ../src/firewall-config.in:401 ../src/firewall-config.in:2338
 msgid "Runtime"
 msgstr "وقت التشغيل"
 
@@ -376,14 +377,14 @@ msgstr "خِدمة"
 
 #: ../src/firewall-config.in:488 ../src/firewall-config.in:535
 #: ../src/firewall-config.in:560 ../src/firewall-config.in:802
-#: ../src/firewall-config.in:990 ../src/firewall-config.in:1024
+#: ../src/firewall-config.in:996 ../src/firewall-config.in:1030
 msgid "Port"
 msgstr "مَنفذ"
 
 #: ../src/firewall-config.in:490 ../src/firewall-config.in:510
 #: ../src/firewall-config.in:537 ../src/firewall-config.in:562
-#: ../src/firewall-config.in:804 ../src/firewall-config.in:992
-#: ../src/firewall-config.in:1007 ../src/firewall-config.in:1026
+#: ../src/firewall-config.in:804 ../src/firewall-config.in:998
+#: ../src/firewall-config.in:1013 ../src/firewall-config.in:1032
 #: ../src/firewall-config.glade.h:250
 msgid "Protocol"
 msgstr "ميفاق"
@@ -408,282 +409,283 @@ msgstr "الإدخال"
 msgid "Icmp Type"
 msgstr "نوع Icmp"
 
-#: ../src/firewall-config.in:821
+#: ../src/firewall-config.in:822
 msgid "Family"
 msgstr "العائلة"
 
-#: ../src/firewall-config.in:823
+#: ../src/firewall-config.in:826
 msgid "Action"
 msgstr "الإجراء"
 
-#: ../src/firewall-config.in:825
+#: ../src/firewall-config.in:828
 msgid "Element"
 msgstr "العنصر"
 
-#: ../src/firewall-config.in:827
+#: ../src/firewall-config.in:830
 msgid "Src"
 msgstr "المصدر"
 
-#: ../src/firewall-config.in:829
+#: ../src/firewall-config.in:832
 msgid "Dest"
 msgstr "الوجهة"
 
-#: ../src/firewall-config.in:831
+#: ../src/firewall-config.in:834
 msgid "log"
 msgstr "السجل"
 
-#: ../src/firewall-config.in:833
+#: ../src/firewall-config.in:836
 msgid "Audit"
 msgstr "التدقيق"
 
-#: ../src/firewall-config.in:934 ../src/firewall-config.glade.h:221
+#: ../src/firewall-config.in:940 ../src/firewall-config.glade.h:221
 msgid "Interface"
 msgstr "الواجهة"
 
-#: ../src/firewall-config.in:936
+#: ../src/firewall-config.in:942
 msgid "Comment"
 msgstr "التعليق"
 
-#: ../src/firewall-config.in:955 ../src/firewall-config.glade.h:27
+#: ../src/firewall-config.in:961 ../src/firewall-config.glade.h:27
 msgid "Source"
 msgstr "المصدر"
 
-#: ../src/firewall-config.in:1609 ../src/firewall-config.in:2802
-#: ../src/firewall-config.in:2850
+#: ../src/firewall-config.in:1615 ../src/firewall-config.in:2811
+#: ../src/firewall-config.in:2859
 msgid "Warning"
 msgstr "إنذار"
 
-#: ../src/firewall-config.in:1618 ../src/firewall-config.in:1624
+#: ../src/firewall-config.in:1624 ../src/firewall-config.in:1630
 msgid "Error"
 msgstr "خطأ"
 
-#: ../src/firewall-config.in:2035 ../src/firewall-config.in:3199
-#: ../src/firewall-config.in:3692 ../src/firewall-config.glade.h:262
+#: ../src/firewall-config.in:2044 ../src/firewall-config.in:3211
+#: ../src/firewall-config.in:3709 ../src/firewall-config.glade.h:262
 msgid "accept"
 msgstr "قبول"
 
-#: ../src/firewall-config.in:2037 ../src/firewall-config.in:3201
-#: ../src/firewall-config.in:3694 ../src/firewall-config.in:3842
+#: ../src/firewall-config.in:2046 ../src/firewall-config.in:3213
+#: ../src/firewall-config.in:3711 ../src/firewall-config.in:3859
 #: ../src/firewall-config.glade.h:263
 msgid "reject"
 msgstr "رفض"
 
-#: ../src/firewall-config.in:2041 ../src/firewall-config.in:3216
-#: ../src/firewall-config.in:3699 ../src/firewall-config.glade.h:264
+#: ../src/firewall-config.in:2050 ../src/firewall-config.in:3228
+#: ../src/firewall-config.in:3716 ../src/firewall-config.glade.h:264
 msgid "drop"
 msgstr "إسقاط"
 
-#: ../src/firewall-config.in:2043 ../src/firewall-config.in:3218
-#: ../src/firewall-config.in:3701 ../src/firewall-config.in:3843
+#: ../src/firewall-config.in:2052 ../src/firewall-config.in:3230
+#: ../src/firewall-config.in:3718 ../src/firewall-config.in:3860
 #: ../src/firewall-config.glade.h:265
 msgid "mark"
 msgstr "علامة"
 
-#: ../src/firewall-config.in:2046 ../src/firewall-config.in:2090
-#: ../src/firewall-config.in:2095
+#: ../src/firewall-config.in:2055 ../src/firewall-config.in:2099
+#: ../src/firewall-config.in:2104
 msgid "limit"
 msgstr "الحد"
 
-#: ../src/firewall-config.in:2062 ../src/firewall-config.in:3153
-#: ../src/firewall-config.in:3333 ../src/firewall-config.in:3639
+#: ../src/firewall-config.in:2071 ../src/firewall-config.in:3165
+#: ../src/firewall-config.in:3345 ../src/firewall-config.in:3656
 #: ../src/firewall-config.glade.h:284
 msgid "service"
 msgstr "الخدمة"
 
-#: ../src/firewall-config.in:2064 ../src/firewall-config.in:3159
-#: ../src/firewall-config.in:3335 ../src/firewall-config.in:3642
+#: ../src/firewall-config.in:2073 ../src/firewall-config.in:3171
+#: ../src/firewall-config.in:3347 ../src/firewall-config.in:3659
 #: ../src/firewall-config.glade.h:285
 msgid "port"
 msgstr "المنفذ"
 
-#: ../src/firewall-config.in:2067 ../src/firewall-config.in:3164
-#: ../src/firewall-config.in:3344 ../src/firewall-config.in:3652
+#: ../src/firewall-config.in:2076 ../src/firewall-config.in:3176
+#: ../src/firewall-config.in:3356 ../src/firewall-config.in:3669
 #: ../src/firewall-config.glade.h:286
 msgid "protocol"
 msgstr "البروتوكول"
 
-#: ../src/firewall-config.in:2069 ../src/firewall-config.in:3169
-#: ../src/firewall-config.in:3669 ../src/firewall-config.in:3855
+#: ../src/firewall-config.in:2078 ../src/firewall-config.in:3181
+#: ../src/firewall-config.in:3686 ../src/firewall-config.in:3872
 #: ../src/firewall-config.glade.h:291
 msgid "masquerade"
 msgstr "التنكر"
 
-#: ../src/firewall-config.in:2071 ../src/firewall-config.in:3172
-#: ../src/firewall-config.in:3346 ../src/firewall-config.in:3655
-#: ../src/firewall-config.in:3870 ../src/firewall-config.glade.h:287
+#: ../src/firewall-config.in:2080 ../src/firewall-config.in:3184
+#: ../src/firewall-config.in:3358 ../src/firewall-config.in:3672
+#: ../src/firewall-config.in:3887 ../src/firewall-config.glade.h:287
 msgid "icmp-block"
 msgstr "كتلة icmp"
 
-#: ../src/firewall-config.in:2073 ../src/firewall-config.in:3177
-#: ../src/firewall-config.in:3348 ../src/firewall-config.in:3658
+#: ../src/firewall-config.in:2082 ../src/firewall-config.in:3189
+#: ../src/firewall-config.in:3360 ../src/firewall-config.in:3675
 #: ../src/firewall-config.glade.h:288
 msgid "icmp-type"
 msgstr "نوع icmp"
 
-#: ../src/firewall-config.in:2075 ../src/firewall-config.in:3182
-#: ../src/firewall-config.in:3350 ../src/firewall-config.in:3661
-#: ../src/firewall-config.in:3863 ../src/firewall-config.glade.h:289
+#: ../src/firewall-config.in:2084 ../src/firewall-config.in:3194
+#: ../src/firewall-config.in:3362 ../src/firewall-config.in:3678
+#: ../src/firewall-config.in:3880 ../src/firewall-config.glade.h:289
 msgid "forward-port"
 msgstr "منفذ إعادة توجيه"
 
-#: ../src/firewall-config.in:2079 ../src/firewall-config.in:3191
-#: ../src/firewall-config.in:3352 ../src/firewall-config.in:3671
+#: ../src/firewall-config.in:2088 ../src/firewall-config.in:3203
+#: ../src/firewall-config.in:3364 ../src/firewall-config.in:3688
 #: ../src/firewall-config.glade.h:290
 msgid "source-port"
 msgstr "المصدر-المنفذ"
 
-#: ../src/firewall-config.in:2088
+#: ../src/firewall-config.in:2097
 msgid "level"
 msgstr "المستوى"
 
-#: ../src/firewall-config.in:2092 ../src/firewall-config.in:2097
+#: ../src/firewall-config.in:2101 ../src/firewall-config.in:2106
 msgid "yes"
 msgstr "نعم"
 
-#: ../src/firewall-config.in:2443 ../src/firewall-config.in:2483
-#: ../src/firewall-config.in:2513 ../src/firewall-config.glade.h:89
+#: ../src/firewall-config.in:2452 ../src/firewall-config.in:2492
+#: ../src/firewall-config.in:2522 ../src/firewall-config.glade.h:89
 msgid "Zone"
 msgstr "المنطقة"
 
-#: ../src/firewall-config.in:2456
+#: ../src/firewall-config.in:2465
 #, c-format
 msgid "Default Zone: %s"
 msgstr "المنطقة الافتراضية: %s"
 
-#: ../src/firewall-config.in:2463 ../src/firewall-config.in:2494
-#: ../src/firewall-config.in:2524
+#: ../src/firewall-config.in:2472 ../src/firewall-config.in:2503
+#: ../src/firewall-config.in:2533
 #, c-format
 msgid "Zone: %s"
 msgstr "المنطقة: %s"
 
-#: ../src/firewall-config.in:2799
+#: ../src/firewall-config.in:2808
 #, c-format
 msgid "Zone '%s': Service '%s' is not available."
 msgstr "المنطقة '%s': الخدمة '%s' غير متوفرة."
 
-#: ../src/firewall-config.in:2803 ../src/firewall-config.in:2851
+#: ../src/firewall-config.in:2812 ../src/firewall-config.in:2860
 #: ../src/firewall-config.glade.h:163
 msgid "Remove"
 msgstr "إزالة"
 
-#: ../src/firewall-config.in:2803 ../src/firewall-config.in:2851
+#: ../src/firewall-config.in:2812 ../src/firewall-config.in:2860
 msgid "Ignore"
 msgstr "تجاهل"
 
-#: ../src/firewall-config.in:2847
+#: ../src/firewall-config.in:2856
 #, c-format
 msgid "Zone '%s': ICMP type '%s' is not available."
 msgstr "المنطقة '%s': نوع ICMP '%s' غير متوفر."
 
-#: ../src/firewall-config.in:3002
+#: ../src/firewall-config.in:3011
 msgid "Built-in zone, rename not supported."
 msgstr "منطقة مضمنة، إعادة التسمية غير مدعومة."
 
-#: ../src/firewall-config.in:3116 ../src/firewall-config.in:3614
+#: ../src/firewall-config.in:3126 ../src/firewall-config.in:3626
 #: ../src/firewall-config.glade.h:270
 msgid "second"
 msgstr "ثانية"
 
-#: ../src/firewall-config.in:3117 ../src/firewall-config.in:3615
+#: ../src/firewall-config.in:3127 ../src/firewall-config.in:3627
 #: ../src/firewall-config.glade.h:271
 msgid "minute"
 msgstr "دقيقة"
 
-#: ../src/firewall-config.in:3118 ../src/firewall-config.in:3616
+#: ../src/firewall-config.in:3128 ../src/firewall-config.in:3628
 #: ../src/firewall-config.glade.h:272
 msgid "hour"
 msgstr "ساعة"
 
-#: ../src/firewall-config.in:3119 ../src/firewall-config.in:3617
+#: ../src/firewall-config.in:3129 ../src/firewall-config.in:3629
 #: ../src/firewall-config.glade.h:273
 msgid "day"
 msgstr "يوم"
 
-#: ../src/firewall-config.in:3120 ../src/firewall-config.in:3618
+#: ../src/firewall-config.in:3130 ../src/firewall-config.in:3630
 #: ../src/firewall-config.glade.h:276
 msgid "emergency"
 msgstr "طوارئ"
 
-#: ../src/firewall-config.in:3121 ../src/firewall-config.in:3619
+#: ../src/firewall-config.in:3131 ../src/firewall-config.in:3631
 #: ../src/firewall-config.glade.h:277
 msgid "alert"
 msgstr "تنبيه"
 
-#: ../src/firewall-config.in:3122 ../src/firewall-config.in:3620
+#: ../src/firewall-config.in:3132 ../src/firewall-config.in:3632
 #: ../src/firewall-config.glade.h:278
 msgid "critical"
 msgstr "حرج"
 
-#: ../src/firewall-config.in:3123 ../src/firewall-config.in:3621
+#: ../src/firewall-config.in:3133 ../src/firewall-config.in:3633
 #: ../src/firewall-config.glade.h:279
 msgid "error"
 msgstr "خطأ"
 
-#: ../src/firewall-config.in:3124 ../src/firewall-config.in:3622
+#: ../src/firewall-config.in:3134 ../src/firewall-config.in:3634
 #: ../src/firewall-config.glade.h:280
 msgid "warning"
 msgstr "تحذير"
 
-#: ../src/firewall-config.in:3125 ../src/firewall-config.in:3623
+#: ../src/firewall-config.in:3135 ../src/firewall-config.in:3635
 #: ../src/firewall-config.glade.h:281
 msgid "notice"
 msgstr "إخطار"
 
-#: ../src/firewall-config.in:3126 ../src/firewall-config.in:3624
+#: ../src/firewall-config.in:3136 ../src/firewall-config.in:3636
 #: ../src/firewall-config.glade.h:282
 msgid "info"
 msgstr "معلومات"
 
-#: ../src/firewall-config.in:3127 ../src/firewall-config.in:3625
+#: ../src/firewall-config.in:3137 ../src/firewall-config.in:3637
 #: ../src/firewall-config.glade.h:283
 msgid "debug"
 msgstr "إزالة الأخطاء"
 
-#: ../src/firewall-config.in:3325 ../src/firewall-config.in:3550
-#: ../src/firewall-config.in:3574 ../src/firewall-config.in:3629
-#: ../src/firewall-config.in:3759 ../src/firewall-config.in:3806
+#: ../src/firewall-config.in:3337 ../src/firewall-config.in:3562
+#: ../src/firewall-config.in:3586 ../src/firewall-config.in:3641
+#: ../src/firewall-config.in:3776 ../src/firewall-config.in:3823
 msgid "ipv4"
 msgstr "ipv4"
 
-#: ../src/firewall-config.in:3327 ../src/firewall-config.in:3552
-#: ../src/firewall-config.in:3576 ../src/firewall-config.in:3631
-#: ../src/firewall-config.in:3761 ../src/firewall-config.in:3808
+#: ../src/firewall-config.in:3339 ../src/firewall-config.in:3564
+#: ../src/firewall-config.in:3588 ../src/firewall-config.in:3643
+#: ../src/firewall-config.in:3778 ../src/firewall-config.in:3825
 msgid "ipv6"
 msgstr "ipv6"
 
-#: ../src/firewall-config.in:5014
+#: ../src/firewall-config.in:5031
 msgid ""
-"Forwarding to another system is only useful if the interface is masqueraded.\n"
+"Forwarding to another system is only useful if the interface is "
+"masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 "تعد إعادة التوجيه إلى نظام آخر مفيدة فقط إذا كانت الواجهة متنكرة.\n"
 "هل تريد أن تتنكر هذه المنطقة؟"
 
-#: ../src/firewall-config.in:5376
+#: ../src/firewall-config.in:5393
 msgid "Built-in service, rename not supported."
 msgstr "خدمة مضمنة، إعادة التسمية غير مدعومة."
 
-#: ../src/firewall-config.in:5585
+#: ../src/firewall-config.in:5602
 msgid "Please enter an ipv4 address with the form address[/mask]."
 msgstr "الرجاء إدخال عنوان ipv4 بعنوان نموذج[/mask]."
 
-#: ../src/firewall-config.in:5586
+#: ../src/firewall-config.in:5603
 msgid "The mask can be a network mask or a number."
 msgstr "قد يكون القناع، قناع شبكة أو رقمًا."
 
-#: ../src/firewall-config.in:5588
+#: ../src/firewall-config.in:5605
 msgid "Please enter an ipv6 address with the form address[/mask]."
 msgstr "الرجاء إدخال عنوان ipv6 بعنوان نموذج[/mask]."
 
-#: ../src/firewall-config.in:5589
+#: ../src/firewall-config.in:5606
 msgid "The mask is a number."
 msgstr "القناع رقمًا."
 
-#: ../src/firewall-config.in:5591
+#: ../src/firewall-config.in:5608
 msgid "Please enter an ipv4 or ipv6 address with the form address[/mask]."
 msgstr "الرجاء إدخال عنوان ipv4 أو ipv6 بعنوان نموذج[/mask]."
 
-#: ../src/firewall-config.in:5592
+#: ../src/firewall-config.in:5609
 msgid ""
 "The mask can be a network mask or a number for ipv4.\n"
 "The mask is a number for ipv6."
@@ -691,51 +693,51 @@ msgstr ""
 "قد يكون القناع، قناع شبكة أو رقمًا لـ ipv4.\n"
 "القناع رقم لـ ipv6."
 
-#: ../src/firewall-config.in:5776
+#: ../src/firewall-config.in:5793
 msgid "Built-in ipset, rename not supported."
 msgstr "ipset مضمن، إعادة التسمية غير مدعومة."
 
-#: ../src/firewall-config.in:5868 ../src/firewall-config.in:5950
+#: ../src/firewall-config.in:5885 ../src/firewall-config.in:5967
 msgid "Please select a file"
 msgstr "الرجاء تحديد ملف"
 
-#: ../src/firewall-config.in:5875 ../src/firewall-config.in:5957
+#: ../src/firewall-config.in:5892 ../src/firewall-config.in:5974
 msgid "Text Files"
 msgstr "الملفات النصية"
 
-#: ../src/firewall-config.in:5880 ../src/firewall-config.in:5962
+#: ../src/firewall-config.in:5897 ../src/firewall-config.in:5979
 msgid "All Files"
 msgstr "كل الملفات"
 
-#: ../src/firewall-config.in:6383 ../src/firewall-config.in:6412
+#: ../src/firewall-config.in:6400 ../src/firewall-config.in:6429
 #: ../src/firewall-config.glade.h:40
 msgid "All"
 msgstr "الكل"
 
-#: ../src/firewall-config.in:6383 ../src/firewall-config.in:6412
+#: ../src/firewall-config.in:6400 ../src/firewall-config.in:6429
 #: ../src/firewall-config.glade.h:41
 msgid "IPv4"
 msgstr "IPv4"
 
-#: ../src/firewall-config.in:6384 ../src/firewall-config.in:6412
+#: ../src/firewall-config.in:6401 ../src/firewall-config.in:6429
 #: ../src/firewall-config.glade.h:42
 msgid "IPv6"
 msgstr "IPv6"
 
-#: ../src/firewall-config.in:6389
+#: ../src/firewall-config.in:6406
 msgid "Built-in helper, rename not supported."
 msgstr "مساعد مضمن، إعادة التسمية غير مدعومة."
 
-#: ../src/firewall-config.in:6867
+#: ../src/firewall-config.in:6884
 msgid "Built-in icmp, rename not supported."
 msgstr "icmp مضمن، إعادة التسمية غير مدعومة."
 
-#: ../src/firewall-config.in:7935
+#: ../src/firewall-config.in:7956
 #, c-format
 msgid "Failed to read file '%s': %s"
 msgstr "فشل قراءة الملف '%s': %s"
 
-#: ../src/firewall-config.in:8068
+#: ../src/firewall-config.in:8089
 #, c-format
 msgid "Select zone for source %s"
 msgstr "حدد المنطقة للمصدر %s"
@@ -1180,9 +1182,9 @@ msgid ""
 "network to the internet. Your local network will not be visible and the "
 "hosts appear as a single address on the internet. Masquerading is IPv4 only."
 msgstr ""
-"يسمح لك التقنيع أن تعدّ مضيفاً أو موجّهاً ليوصل شبكتك المحلّية بالشبكة "
-"العالميّة. ستظهر جميع الأجهزة على هذه الشبكة كعنوان واحد على الإنترنت. "
-"التقنيع لـIPv4 فقط."
+"يسمح لك التقنيع أن تعدّ مضيفاً أو موجّهاً ليوصل شبكتك المحلّية بالشبكة العالميّة. "
+"ستظهر جميع الأجهزة على هذه الشبكة كعنوان واحد على الإنترنت. التقنيع لـIPv4 "
+"فقط."
 
 #: ../src/firewall-config.glade.h:109
 msgid "Masquerade zone"
@@ -1235,8 +1237,8 @@ msgid ""
 "Mark the ICMP types in the list, which should be rejected. All other ICMP "
 "types are allowed to pass the firewall. The default is no limitation."
 msgstr ""
-"علّم أنواع ICMP التي سترفض في القائمة. كلّ أنواع ICMP الأخرى سيسمح لها "
-"بالمرور عبر الجدار الناريّ. المبدئيّ هو عدم وجود قيود."
+"علّم أنواع ICMP التي سترفض في القائمة. كلّ أنواع ICMP الأخرى سيسمح لها بالمرور "
+"عبر الجدار الناريّ. المبدئيّ هو عدم وجود قيود."
 
 #: ../src/firewall-config.glade.h:118
 msgid ""
@@ -1903,8 +1905,8 @@ msgstr "معكوس"
 
 #: ../src/firewall-config.glade.h:266
 msgid ""
-"To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
-"(not both)."
+"To enable this Action has to be 'reject' and Family either 'ipv4' or "
+"'ipv6' (not both)."
 msgstr ""
 "لتمكين هذا، يجب أن يكون الإجراء 'رفض' والعائلة إما 'ipv4' أو 'ipv6' (ليس "
 "كلاهما)"
@@ -1984,6 +1986,3 @@ msgstr "الهدف الافتراضي"
 #: ../src/firewall-config.glade.h:306
 msgid "Target:"
 msgstr "الهدف:"
-
-#~ msgid "Failed to set zone {zone} for connection {connection}"
-#~ msgstr "فشل تعيين المنطقة {zone} للاتصال {connection}"
