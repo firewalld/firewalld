@@ -25,12 +25,10 @@ BuildRequires: docbook-style-xsl
 BuildRequires: libxslt
 BuildRequires: python2-devel
 BuildRequires: iptables, ebtables, ipset
-BuildRequires: nftables >= 0.9.3
 %if 0%{?with_python3}
 BuildRequires:  python3-devel
 %endif #0%{?with_python3}
 Requires: iptables, ebtables, ipset
-Requires: nftables >= 0.9.3
 Requires(post): systemd
 Requires(preun): systemd
 Requires(postun): systemd
@@ -53,6 +51,7 @@ Requires: dbus-python
 Requires: python-slip-dbus
 Requires: python-decorator
 Requires: pygobject3-base
+Requires: python-nftables
 
 %description -n python-firewall
 Python2 bindings for firewalld.
@@ -63,6 +62,7 @@ Summary: Python3 bindings for firewalld
 Requires: python3-dbus
 Requires: python3-slip-dbus
 Requires: python3-decorator
+Requires: python3-nftables
 %if (0%{?fedora} >= 23 || 0%{?rhel} >= 8)
 Requires: python3-gobject-base
 %else
