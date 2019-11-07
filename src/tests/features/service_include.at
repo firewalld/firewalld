@@ -76,6 +76,7 @@ my-service-with-include
   modules:
   destination:
   includes: mdns recursive-service ssdp
+  helpers:
 ])])
 FWD_CHECK([--info-service=my-service-with-include | TRIM_WHITESPACE], 0, [m4_strip([dnl
 my-service-with-include
@@ -85,6 +86,7 @@ my-service-with-include
   modules:
   destination:
   includes: mdns recursive-service ssdp
+  helpers:
 ])])
 
 dnl firewall-offline-cmd
@@ -106,6 +108,7 @@ my-service-with-include
   modules:
   destination:
   includes: mdns recursive-service ssdp
+  helpers:
 ])])
 
 dnl negative test for including service that doesn't exist

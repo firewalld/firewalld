@@ -1,5 +1,5 @@
 FWD_START_TEST([customer helpers])
-AT_KEYWORDS(helpers rhbz1733066 gh514)
+AT_KEYWORDS(helpers rhbz1733066 gh514 rhbz1769520)
 
 FWD_CHECK([-q --permanent --new-helper="ftptest" --module="nf_conntrack_ftp"])
 FWD_CHECK([-q --permanent --helper=ftptest --add-port="2121/tcp"])
@@ -8,7 +8,27 @@ FWD_CHECK([-q --permanent --new-service="ftptest"])
 FWD_CHECK([-q --permanent --service=ftptest --add-module="ftptest"])
 FWD_CHECK([-q --permanent --service=ftptest --query-module="ftptest"])
 FWD_CHECK([-q --permanent --service=ftptest --add-port="2121/tcp"])
+FWD_CHECK([--permanent --info-service=ftptest | TRIM_WHITESPACE], 0, [m4_strip([dnl
+ftptest
+  ports: 2121/tcp
+  protocols:
+  source-ports:
+  modules: ftptest
+  destination:
+  includes:
+  helpers:
+])])
 FWD_RELOAD
+FWD_CHECK([--info-service=ftptest | TRIM_WHITESPACE], 0, [m4_strip([dnl
+ftptest
+  ports: 2121/tcp
+  protocols:
+  source-ports:
+  modules: ftptest
+  destination:
+  includes:
+  helpers:
+])])
 
 FWD_CHECK([-q --add-service=ftptest])
 
@@ -42,7 +62,27 @@ dnl Same thing as above, but with the new "helper" in service.
 FWD_CHECK([-q --permanent --service=ftptest --remove-module="ftptest"])
 FWD_CHECK([-q --permanent --service=ftptest --query-module="ftptest"], 1)
 FWD_CHECK([-q --permanent --service=ftptest --add-helper="ftptest"])
+FWD_CHECK([--permanent --info-service=ftptest | TRIM_WHITESPACE], 0, [m4_strip([dnl
+ftptest
+  ports: 2121/tcp
+  protocols:
+  source-ports:
+  modules:
+  destination:
+  includes:
+  helpers: ftptest
+])])
 FWD_RELOAD
+FWD_CHECK([--info-service=ftptest | TRIM_WHITESPACE], 0, [m4_strip([dnl
+ftptest
+  ports: 2121/tcp
+  protocols:
+  source-ports:
+  modules:
+  destination:
+  includes:
+  helpers: ftptest
+])])
 
 FWD_CHECK([-q --add-service=ftptest])
 
