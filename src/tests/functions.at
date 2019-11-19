@@ -34,6 +34,48 @@ m4_define([FWD_START_FIREWALLD], [
     AT_FAIL_IF([test $up -ne 1])
 ])
 
+m4_define([START_NETWORKMANAGER], [
+    AT_SKIP_IF([! NS_CMD([which NetworkManager >/dev/null 2>&1])])
+    AT_SKIP_IF([! NS_CMD([which nmcli >/dev/null 2>&1])])
+
+    AT_DATA([./NetworkManager.conf], [dnl
+[[main]]
+plugins=
+
+[[logging]]
+#level=DEBUG
+#domains=ALL
+])
+
+    NM_ARGS="--no-daemon --config ./NetworkManager.conf"
+    NS_CMD([NetworkManager $NM_ARGS &])
+    if test $? -ne 0; then
+        AT_FAIL_IF([:])
+    fi
+    echo "$!" > networkmanager.pid
+
+    dnl Give it some time for the dbus interface to come up
+    up=0
+    for I in 1 2 3 4 5 6 7 8 9 0; do
+        if NS_CMD([nmcli general status >/dev/null 2>&1]); then
+            up=1
+            break
+        fi
+        sleep 1
+    done
+    AT_FAIL_IF([test $up -ne 1])
+])
+
+m4_define([STOP_NETWORKMANAGER], [
+    pid=$(< networkmanager.pid)
+    kill $pid
+    for I in 1 2 3 4 5 6 7 8 9 0; do
+        ps --pid $pid >/dev/null || { pid=0; break; }
+        sleep 1
+    done
+    test $pid -eq 0 || { kill -9 $pid; sleep 3; }
+])
+
 m4_define([FWD_RELOAD], [
     FWD_CHECK([-q --reload], [$1], [$2], [$3])
     FWD_CHECK([-q --state], [$4], [$5], [$6])
@@ -86,11 +128,16 @@ m4_define([FWD_START_TEST], [
         function kill_firewalld() {
             FWD_STOP_FIREWALLD
         }
+        function kill_networkmanager() {
+            if test -f networkmanager.pid; then
+                STOP_NETWORKMANAGER
+            fi
+        }
 
         dnl run cleanup commands on test exit
         echo "" > cleanup
         echo "" > cleanup_late
-        trap ". ./cleanup; kill_firewalld; . ./cleanup_late" EXIT
+        trap ". ./cleanup; kill_firewalld; kill_networkmanager; . ./cleanup_late" EXIT
 
         dnl create a namespace and dbus-daemon
         m4_define([CURRENT_DBUS_ADDRESS], [unix:abstract=firewalld-testsuite-dbus-system-socket-${at_group_normalized}])
@@ -129,6 +176,42 @@ m4_define([FWD_START_TEST], [
                 <allow send_destination="org.fedoraproject.FirewallD1"
                        send_interface="org.freedesktop.DBus.Properties"/>
                 <allow send_destination="org.fedoraproject.FirewallD1.config"/>
+            </policy>
+
+            <!-- from org.freedesktop.NetworkManager.conf -->
+            <policy user="root">
+                    <allow own="org.freedesktop.NetworkManager"/>
+                    <allow send_destination="org.freedesktop.NetworkManager"/>
+
+                    <allow send_destination="org.freedesktop.NetworkManager"
+                           send_interface="org.freedesktop.NetworkManager.PPP"/>
+
+                    <allow send_interface="org.freedesktop.NetworkManager.SecretAgent"/>
+                    <!-- These are there because some broken policies do
+                         <deny send_interface="..." /> (see dbus-daemon(8) for details).
+                         This seems to override that for the known VPN plugins.
+                      -->
+                    <allow send_destination="org.freedesktop.NetworkManager.openconnect"/>
+                    <allow send_destination="org.freedesktop.NetworkManager.openswan"/>
+                    <allow send_destination="org.freedesktop.NetworkManager.openvpn"/>
+                    <allow send_destination="org.freedesktop.NetworkManager.pptp"/>
+                    <allow send_destination="org.freedesktop.NetworkManager.vpnc"/>
+                    <allow send_destination="org.freedesktop.NetworkManager.ssh"/>
+                    <allow send_destination="org.freedesktop.NetworkManager.iodine"/>
+                    <allow send_destination="org.freedesktop.NetworkManager.l2tp"/>
+                    <allow send_destination="org.freedesktop.NetworkManager.libreswan"/>
+                    <allow send_destination="org.freedesktop.NetworkManager.fortisslvpn"/>
+                    <allow send_destination="org.freedesktop.NetworkManager.strongswan"/>
+                    <allow send_interface="org.freedesktop.NetworkManager.VPN.Plugin"/>
+
+                    <allow send_destination="org.fedoraproject.FirewallD1"/>
+
+                    <!-- Allow the custom name for the dnsmasq instance spawned by NM
+                         from the dns dnsmasq plugin to own it's dbus name, and for
+                         messages to be sent to it.
+                     -->
+                    <allow own="org.freedesktop.NetworkManager.dnsmasq"/>
+                    <allow send_destination="org.freedesktop.NetworkManager.dnsmasq"/>
             </policy>
             </busconfig>
 ])
