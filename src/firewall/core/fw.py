@@ -988,7 +988,7 @@ class Firewall(object):
         if nm_bus_name:
             for zone in self.zone.get_zones() + [""]:
                 for interface in nm_get_interfaces_in_zone(zone):
-                    self.zone.add_interface(zone, interface, sender=nm_bus_name)
+                    self.zone.change_zone_of_interface(zone, interface, sender=nm_bus_name)
 
         self._panic = _panic
         if not self._panic:
