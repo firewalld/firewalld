@@ -589,3 +589,9 @@ m4_define([IF_HOST_SUPPORTS_IPV6_RULES], [
     IF_HOST_SUPPORTS_IP6TABLES([$1], [$2])
     ])])
 ])
+
+m4_define([NMCLI_CHECK], [
+    AT_SKIP_IF([! NS_CMD([nmcli connection show >/dev/null 2>&1])])
+    NS_CHECK([PIPESTATUS0([nmcli $1], [TRIM_WHITESPACE])],
+             [$2], [m4_strip([$3])], [m4_strip([$4])], [$5], [$6])
+])
