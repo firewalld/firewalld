@@ -83,16 +83,13 @@ def setup_logging(args):
             log.addInfoLogging("*", log.stdout)
             log.addDebugLogging("*", log.stdout)
 
-    log_file = FileLog(config.FIREWALLD_LOGFILE, "a")
-    try:
-        log_file.open()
-    except IOError as e:
-        log.error("Failed to open log file '%s': %s", config.FIREWALLD_LOGFILE,
-                  str(e))
-    else:
-        log.addInfoLogging("*", log_file, [ log.FATAL, log.ERROR, log.WARNING ])
-        log.addDebugLogging("*", log_file)
-        if args.debug:
+        log_file = FileLog(config.FIREWALLD_LOGFILE, "a")
+        try:
+            log_file.open()
+        except IOError as e:
+            log.error("Failed to open log file '%s': %s", config.FIREWALLD_LOGFILE,
+                      str(e))
+        else:
             log.addInfoLogging("*", log_file)
             log.addDebugLogging("*", log_file)
 
