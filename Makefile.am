@@ -78,6 +78,9 @@ dist-check:
 		exit 1; \
 	fi
 
+check-container:
+	$(MAKE) -C src/tests $@
+
 update-docs:
 	$(MAKE) -C doc/xml
 
