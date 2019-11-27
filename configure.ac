@@ -36,6 +36,7 @@ AC_PATH_PROG([RMMOD], [rmmod], [/sbin/rmmod])
 AC_PATH_PROG([SYSCTL], [sysctl], [/sbin/sysctl])
 
 AC_CONFIG_TESTDIR([src/tests])
+AC_PATH_PROGS([PODMAN], [podman docker], [/bin/false])
 
 GLIB_GSETTINGS
 

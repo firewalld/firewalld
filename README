@@ -102,6 +102,13 @@ Or just the keywords
     |awk '/^[[:space:]]*[[:digit:]]+/{getline; print $0}' \
     |tr ' ' '\n' |sort |uniq
 
+There is also a check-container target that will run the testsuite inside
+various podman/docker containers. This is useful for coverage of multiple
+distributions. As a bonus, it allows us to run tests that may be destructive to
+the host (container) such as NetworkManager integration tests.
+
+  make check-container TESTSUITEFLAGS="-j4"
+
 RPM package
 -----------
 
