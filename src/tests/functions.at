@@ -436,13 +436,8 @@ m4_define([CHECK_NAT_COEXISTENCE], [
     m4_if(nftables, FIREWALL_BACKEND, [
         KERNEL_MAJOR=`uname -r | cut -d. -f1`
         KERNEL_MINOR=`uname -r | cut -d. -f2`
-        if test ${KERNEL_MAJOR} -eq 4 && test ${KERNEL_MINOR} -ge 16 || test ${KERNEL_MAJOR} -gt 4; then
-            dnl Only check >=4.16 kernels. Previous versions did not explicitly
-            dnl deny it, but had undefined behavior.
-            AT_SKIP_IF([! modprobe iptable_nat])
-            AT_SKIP_IF([! NS_CMD([nft add table ip foobar])])
-            AT_SKIP_IF([! NS_CMD([nft add chain ip foobar foobar_chain { type nat hook postrouting priority 100 \; }])])
-            NS_CHECK([nft delete table ip foobar])
+        if test ${KERNEL_MAJOR} -eq 4 && test ${KERNEL_MINOR} -ge 18 || test ${KERNEL_MAJOR} -gt 4; then
+            :
         else
             AT_SKIP_IF([true])
         fi
