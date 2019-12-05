@@ -866,8 +866,6 @@ FWD_END_TEST
 FWD_START_TEST([direct passthrough])
     AT_KEYWORDS(direct passthrough)
 
-    AT_CHECK([if ! modprobe dummy; then exit 77; fi])
-
     FWD_CHECK([--direct --passthrough ipv4 --table mangle --append POSTROUTING --out-interface dummy0 --protocol udp --destination-port 68 --jump CHECKSUM --checksum-fill], 0, ignore)
     FWD_CHECK([--direct --passthrough ipv4 --table mangle --delete POSTROUTING --out-interface dummy0 --protocol udp --destination-port 68 --jump CHECKSUM --checksum-fill], 0, ignore)
 
