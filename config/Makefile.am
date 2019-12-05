@@ -178,6 +178,8 @@ CONFIG_FILES = \
 	services/kibana.xml \
 	services/klogin.xml \
 	services/kpasswd.xml \
+	services/kodi-EventServer.xml \
+	services/kodi-JSON-RPC-TCP.xml \
 	services/kprop.xml \
 	services/kshell.xml \
 	services/kube-apiserver.xml \
