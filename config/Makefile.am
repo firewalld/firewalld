@@ -221,6 +221,7 @@ CONFIG_FILES = \
 	services/privoxy.xml \
 	services/prometheus.xml \
 	services/proxy-dhcp.xml \
+	services/ps2link.xml \
 	services/ptp.xml \
 	services/pulseaudio.xml \
 	services/puppetmaster.xml \
