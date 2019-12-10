@@ -42,6 +42,23 @@ $(TESTSUITE): $(TESTSUITE_FILES) $(srcdir)/package.m4
 	$(AUTOTEST) -I '$(srcdir)' -o $@.tmp $@.at
 	mv $@.tmp $@
 
-check-container:
+check-container-debian-sid:
+	(cd $(abs_top_srcdir) && tar -c . ) | \
+	$(PODMAN) run -i --rm --privileged debian:sid bash -c \
+	"mkdir -p /tmp/firewalld && cd /tmp/firewalld && tar -x && \
+	apt-get update && \
+	apt-get install -y autoconf automake pkg-config intltool libglib2.0-dev \
+	                   xsltproc docbook-xsl docbook-xml iptables ipset ebtables \
+	                   nftables libxml2-utils libdbus-1-dev libgirepository1.0-dev \
+	                   python3-dbus python3-gi python3-slip-dbus python3-nftables \
+	                   procps && \
+	apt-get install -y libnftables-dev && \
+	./autogen.sh && \
+	./configure PYTHON=/usr/bin/python3 && \
+	make && \
+	make -C src/tests check-local TESTSUITEFLAGS=\"$(TESTSUITEFLAGS)\" "
+
+check-container: check-container-debian-sid
 
 .PHONY: check-container
+.PHONY: check-container-debian-sid
