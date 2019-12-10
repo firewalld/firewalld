@@ -48,7 +48,7 @@ $(TESTSUITE) $(TESTSUITE_INTEGRATION): $(TESTSUITE_FILES) $(srcdir)/package.m4
 	$(AUTOTEST) -I '$(srcdir)' -o $@.tmp $@.at
 	mv $@.tmp $@
 
-CONTAINER_TARGETS = check-container-debian-sid check-container-fedora-rawhide
+CONTAINER_TARGETS = check-container-debian-sid check-container-fedora-rawhide check-container-centos8-stream
 
 check-container-debian-sid-image: check-container-%-image:
 	(cd $(abs_top_srcdir) && { \
@@ -76,11 +76,28 @@ check-container-fedora-rawhide-image: check-container-%-image:
 	echo "COPY . /tmp/firewalld"; \
 	} | $(PODMAN) build -t firewalld-testsuite-$* -f - . )
 
+check-container-centos8-stream-image: check-container-%-image:
+	(cd $(abs_top_srcdir) && { \
+	echo "FROM centos:8" && \
+	echo "RUN dnf -y makecache" && \
+	echo "RUN dnf -y install centos-release-stream" && \
+	echo "RUN dnf -y install autoconf automake conntrack-tools desktop-file-utils \
+	                 docbook-style-xsl file gettext glib2-devel intltool ipset \
+	                 iptables iptables-ebtables nftables libtool libxml2 \
+	                 libxslt make nftables python3-nftables python3-slip-dbus \
+	                 python3-gobject-base diffutils procps-ng iproute which dbus-daemon \
+	                 NetworkManager" && \
+	echo "COPY . /tmp/firewalld"; \
+	} | $(PODMAN) build -t firewalld-testsuite-$* -f - . )
+
+check-container-debian-sid: PYTHON=/usr/bin/python3
+check-container-fedora-rawhide: PYTHON=/usr/bin/python3
+check-container-centos8-stream: PYTHON=/usr/libexec/platform-python
 $(CONTAINER_TARGETS): check-container-%: check-container-%-image
 	$(PODMAN) run -i --rm --privileged firewalld-testsuite-$* bash -c " \
 	cd /tmp/firewalld && \
 	./autogen.sh && \
-	./configure PYTHON=/usr/bin/python3 && \
+	./configure PYTHON=\"${PYTHON}\" && \
 	make && \
 	{ make -C src/tests check-local TESTSUITEFLAGS=\"$(TESTSUITEFLAGS)\" || \
 	  make -C src/tests check-local TESTSUITEFLAGS=\"--recheck --errexit --verbose\" ; } && \
