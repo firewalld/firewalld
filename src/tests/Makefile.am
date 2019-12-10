@@ -58,7 +58,25 @@ check-container-debian-sid:
 	make && \
 	make -C src/tests check-local TESTSUITEFLAGS=\"$(TESTSUITEFLAGS)\" "
 
+check-container-fedora-rawhide:
+	(cd $(abs_top_srcdir) && tar -c . ) | \
+	$(PODMAN) run -i --rm --privileged fedora:rawhide bash -c \
+	"mkdir -p /tmp/firewalld && cd /tmp/firewalld && tar -x && \
+	dnf -y makecache && \
+	dnf -y install autoconf automake conntrack-tools desktop-file-utils \
+	               docbook-style-xsl file gettext glib2-devel intltool ipset \
+	               iptables iptables-nft libtool libxml2 libxslt make nftables \
+	               python3-nftables python3-slip-dbus python3-gobject-base \
+	               diffutils procps-ng iproute which dbus-daemon && \
+	alternatives --set ebtables /usr/sbin/ebtables-nft && \
+	./autogen.sh && \
+	./configure PYTHON=/usr/bin/python3 && \
+	make && \
+	make -C src/tests check-local TESTSUITEFLAGS=\"$(TESTSUITEFLAGS)\" "
+
 check-container: check-container-debian-sid
+check-container: check-container-fedora-rawhide
 
 .PHONY: check-container
 .PHONY: check-container-debian-sid
+.PHONY: check-container-fedora-rawhide
