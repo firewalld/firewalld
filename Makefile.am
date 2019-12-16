@@ -78,8 +78,10 @@ dist-check:
 		exit 1; \
 	fi
 
-check-container:
+check-container check-integration installcheck-integration:
 	$(MAKE) -C src/tests $@
+
+.PHONY: check-container check-integration installcheck-integration
 
 update-docs:
 	$(MAKE) -C doc/xml
