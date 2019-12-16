@@ -1,12 +1,16 @@
 TESTSUITE = $(srcdir)/testsuite
+TESTSUITE_INTEGRATION = $(srcdir)/integration/testsuite
+
 TESTSUITE_FILES = \
 	$(wildcard $(srcdir)/*.at) \
 	$(wildcard $(srcdir)/dbus/*.at) \
 	$(wildcard $(srcdir)/features/*.at) \
+	$(wildcard $(srcdir)/integration/*.at) \
 	$(wildcard $(srcdir)/regression/*.at)
 
 EXTRA_DIST = \
 	$(TESTSUITE) \
+	$(TESTSUITE_INTEGRATION) \
 	$(TESTSUITE_FILES) \
 	$(wildcard $(srcdir)/python/*.py) \
 	$(srcdir)/package.m4 \
@@ -38,7 +42,7 @@ clean-local:
 
 AUTOM4TE = $(SHELL) $(top_srcdir)/missing --run autom4te
 AUTOTEST = $(AUTOM4TE) --language=autotest
-$(TESTSUITE): $(TESTSUITE_FILES) $(srcdir)/package.m4
+$(TESTSUITE) $(TESTSUITE_INTEGRATION): $(TESTSUITE_FILES) $(srcdir)/package.m4
 	$(AUTOTEST) -I '$(srcdir)' -o $@.tmp $@.at
 	mv $@.tmp $@
 
@@ -80,3 +84,14 @@ check-container: check-container-fedora-rawhide
 .PHONY: check-container
 .PHONY: check-container-debian-sid
 .PHONY: check-container-fedora-rawhide
+
+check-integration: atconfig atlocal $(TESTSUITE_INTEGRATION)
+	$(SHELL) '$(TESTSUITE_INTEGRATION)' $(TESTSUITEFLAGS) \
+		AUTOTEST_PATH="src" \
+		PYTHONPATH="${abs_top_srcdir}/src:${PYTHONPATH}" \
+		FIREWALLD_DEFAULT_CONFIG="${abs_top_srcdir}/config"
+
+installcheck-integration: atconfig atlocal $(TESTSUITE_INTEGRATION)
+	$(SHELL) '$(TESTSUITE_INTEGRATION)' $(TESTSUITEFLAGS)
+
+.PHONY: check-integration installcheck-integration
