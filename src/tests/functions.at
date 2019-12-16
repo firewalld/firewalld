@@ -89,12 +89,13 @@ m4_define([FWD_START_TEST], [
 
         dnl run cleanup commands on test exit
         echo "" > cleanup
-        trap ". ./cleanup; kill_firewalld" EXIT
+        echo "" > cleanup_late
+        trap ". ./cleanup; kill_firewalld; . ./cleanup_late" EXIT
 
         dnl create a namespace and dbus-daemon
         m4_define([CURRENT_DBUS_ADDRESS], [unix:abstract=firewalld-testsuite-dbus-system-socket-]RANDOM_NUMBER)
         m4_define([CURRENT_TEST_NS], [fwd-test-]RANDOM_NUMBER)
-        echo "ip netns delete CURRENT_TEST_NS" >> ./cleanup
+        echo "ip netns delete CURRENT_TEST_NS" >> ./cleanup_late
         AT_CHECK([ip netns add CURRENT_TEST_NS])
         AT_DATA([./dbus.conf], [
             <!DOCTYPE busconfig PUBLIC "-//freedesktop//DTD D-Bus Bus Configuration 1.0//EN"
@@ -135,7 +136,7 @@ m4_define([FWD_START_TEST], [
         if test $? -ne 0; then
             AT_FAIL_IF([:])
         fi
-        echo "kill $DBUS_PID" >> ./cleanup
+        echo "kill $DBUS_PID" >> ./cleanup_late
 
         FWD_START_FIREWALLD
     ])
