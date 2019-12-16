@@ -1,0 +1,27 @@
+FWD_START_TEST([NM overrides interface on reload])
+AT_KEYWORDS(zone reload rhbz1773809)
+
+START_NETWORKMANAGER
+
+NMCLI_CHECK([connection add type dummy con-name dummy0 ifname dummy0 ip4 10.0.0.2 gw4 10.0.0.1], 0, [ignore])
+echo NS_CMD([nmcli connection delete dummy0]) >> ./cleanup
+NMCLI_CHECK([connection show dummy0], 0, [ignore])
+NMCLI_CHECK([connection up dummy0], 0, [ignore])
+
+dnl Use firewall-offline-cmd otherwise the request will be forwarded to
+dnl NetworkManager.
+FWD_OFFLINE_CHECK([-q --zone internal --add-interface dummy0])
+FWD_RELOAD
+
+dnl firewall-cmd should forward the request to NetworkManager.
+FWD_CHECK([-q --permanent --zone trusted --change-interface dummy0])
+NMCLI_CHECK([-f connection.zone connection show dummy0], 0, [dnl
+connection.zone:                        trusted
+])
+
+FWD_RELOAD
+FWD_CHECK([--get-zone-of-interface dummy0], 0, [dnl
+trusted
+])
+
+FWD_END_TEST
