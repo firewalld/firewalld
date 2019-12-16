@@ -1,0 +1,11 @@
+AT_INIT
+AT_COLOR_TESTS
+
+dnl Override m4_include to avoid warning about inclusion
+dnl
+m4_define([m4_include], [m4_builtin([include], [$1])])
+
+m4_include([functions.at])
+
+m4_foreach([FIREWALL_BACKEND], [[nftables], [iptables]], [
+])
