@@ -55,12 +55,13 @@ check-container-debian-sid:
 	                   xsltproc docbook-xsl docbook-xml iptables ipset ebtables \
 	                   nftables libxml2-utils libdbus-1-dev libgirepository1.0-dev \
 	                   python3-dbus python3-gi python3-slip-dbus python3-nftables \
-	                   procps && \
+	                   procps network-manager gir1.2-nm-1.0 && \
 	apt-get install -y libnftables-dev && \
 	./autogen.sh && \
 	./configure PYTHON=/usr/bin/python3 && \
 	make && \
-	make -C src/tests check-local TESTSUITEFLAGS=\"$(TESTSUITEFLAGS)\" "
+	make -C src/tests check-local TESTSUITEFLAGS=\"$(TESTSUITEFLAGS)\" && \
+	make -C src/tests check-integration TESTSUITEFLAGS=\"$(TESTSUITEFLAGS) -j1\" "
 
 check-container-fedora-rawhide:
 	(cd $(abs_top_srcdir) && tar -c . ) | \
@@ -71,12 +72,14 @@ check-container-fedora-rawhide:
 	               docbook-style-xsl file gettext glib2-devel intltool ipset \
 	               iptables iptables-nft libtool libxml2 libxslt make nftables \
 	               python3-nftables python3-slip-dbus python3-gobject-base \
-	               diffutils procps-ng iproute which dbus-daemon && \
+	               diffutils procps-ng iproute which dbus-daemon \
+	               NetworkManager && \
 	alternatives --set ebtables /usr/sbin/ebtables-nft && \
 	./autogen.sh && \
 	./configure PYTHON=/usr/bin/python3 && \
 	make && \
-	make -C src/tests check-local TESTSUITEFLAGS=\"$(TESTSUITEFLAGS)\" "
+	make -C src/tests check-local TESTSUITEFLAGS=\"$(TESTSUITEFLAGS)\" && \
+	make -C src/tests check-integration TESTSUITEFLAGS=\"$(TESTSUITEFLAGS) -j1\" "
 
 check-container: check-container-debian-sid
 check-container: check-container-fedora-rawhide
