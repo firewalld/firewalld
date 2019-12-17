@@ -101,10 +101,15 @@ Or just the keywords
     |awk '/^[[:space:]]*[[:digit:]]+/{getline; print $0}' \
     |tr ' ' '\n' |sort |uniq
 
+There are integration tests. Currently this includes NetworkManager. These may
+be _destructive_ to the host. Run them in a disposable VM or container.
+
+    make check-integration
+
 There is also a check-container target that will run the testsuite inside
 various podman/docker containers. This is useful for coverage of multiple
-distributions. As a bonus, it allows us to run tests that may be destructive to
-the host (container) such as NetworkManager integration tests.
+distributions. It also runs tests that may be destructive to the host such as
+integration tests.
 
   make check-container TESTSUITEFLAGS="-j4"
 
