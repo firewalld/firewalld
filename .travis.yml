@@ -2,26 +2,46 @@ dist: bionic
 
 language: python
 python:
-  - "2.7"
   - "3.7"
+
+# Use keywords to split the tests into smaller groups and therefore decrease
+# the time CI takes to run.
+env:
+# flake8, etc
+  - MAKE_ARGS="-C src check-local"
+  - MAKE_ARGS="-C config check-local"
+# offline tests
+  - MAKE_ARGS="-C src/tests check-local" TESTSUITEFLAGS="-k offline -j$(nproc)"
+    NEED_NFTABLES=1 RETEST=1
+# nftables backend
+  - MAKE_ARGS="-C src/tests check-local" TESTSUITEFLAGS="-k nftables -j$(nproc)"
+    NEED_NFTABLES=1 RETEST=1
+# iptables backend
+  - MAKE_ARGS="-C src/tests check-local" TESTSUITEFLAGS="-k iptables -j$(nproc)"
+    NEED_NFTABLES=1 RETEST=1
+  - MAKE_ARGS="-C src/tests check-local" TESTSUITEFLAGS="-k iptables -j$(nproc)"
+    IP6TABLES="/bin/false" IP6TABLES_RESTORE="/bin/false"
+    NEED_NFTABLES=1 RETEST=1
 
 addons:
   apt:
     packages:
     - autoconf
     - automake
-    - pkg-config
-    - intltool
-    - libglib2.0-dev
-    - xsltproc
-    - docbook-xsl
     - docbook-xml
-    - iptables
-    - ipset
+    - docbook-xsl
     - ebtables
-    - libxml2-utils
+    - intltool
+    - ipset
+    - iptables
     - libdbus-1-dev
     - libgirepository1.0-dev
+    - libglib2.0-dev
+    - libjansson-dev
+    - libxml2-utils
+    - network-manager
+    - pkg-config
+    - xsltproc
 
 install:
   - pip install flake8 decorator dbus-python PyGObject
@@ -31,10 +51,32 @@ install:
     && make
     && pip install .
     && popd
+  - test x"$NEED_NFTABLES" = x
+    || { sudo apt-get -qq -y install libmnl-dev libgmp-dev libreadline-dev
+    && pushd /tmp
+    && wget https://netfilter.org/projects/libnftnl/files/libnftnl-1.1.6.tar.bz2
+    && wget https://netfilter.org/projects/nftables/files/nftables-0.9.4.tar.bz2
+    && tar xf libnftnl-1.1.6.tar.bz2
+    && tar xf nftables-0.9.4.tar.bz2
+    && cd libnftnl-1.1.6
+    && ./configure --prefix=/usr
+    && make
+    && sudo make install
+    && sudo ldconfig
+    && cd /tmp
+    && cd nftables-0.9.4
+    && ./configure --prefix=/usr --disable-man-doc --with-json --enable-python
+    && make
+    && sudo make install
+    && cd py
+    && pip install .
+    && popd
+    && sudo ldconfig
+    ; }
 
 script:
   - ./autogen.sh
-    && ./configure --sysconfdir=/etc
-    && make -j32
-  - make -C src check-local
-  - make -C config check-local
+    && ./configure
+    && make -j$(nproc)
+  - sudo env PATH="$PATH" make ${MAKE_ARGS} ||
+    { test x"$RETEST" != x && sudo env PATH="$PATH" make ${MAKE_ARGS} TESTSUITEFLAGS="--recheck --errexit -v -d"; }
