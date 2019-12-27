@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>Kubernetes Control-plane Node</short>
+  <description>The Kubernetes Control-plane Node runs all the services of the Kubernetes Control Plane.  This includes kube-apiserver, etcd, kube-schedule, kube-controller-manager, cloud-controller-manager, and others</description>
+  <include service="etcd-client" />
+  <include service="etcd-server" />
+  <include service="kube-apiserver" />
+  <include service="kube-controller-manager" />
+  <include service="kube-scheduler" />
+  <include service="kube-api" />
+</service>
