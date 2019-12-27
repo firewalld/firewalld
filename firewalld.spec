@@ -51,7 +51,9 @@ Requires: dbus-python
 Requires: python-slip-dbus
 Requires: python-decorator
 Requires: pygobject3-base
+%if 0%{?rhel} >= 8
 Requires: python-nftables
+%endif
 
 %description -n python-firewall
 Python2 bindings for firewalld.
@@ -62,8 +64,8 @@ Summary: Python3 bindings for firewalld
 Requires: python3-dbus
 Requires: python3-slip-dbus
 Requires: python3-decorator
-Requires: python3-nftables
 %if (0%{?fedora} >= 23 || 0%{?rhel} >= 8)
+Requires: python3-nftables
 Requires: python3-gobject-base
 %else
 Requires: python3-gobject
@@ -119,7 +121,11 @@ firewalld.
 
 %prep
 %autosetup
+%if 0%{?rhel} < 8
+./autogen.sh --without-nft
+%else
 ./autogen.sh
+%endif
 
 %if 0%{?with_python3}
 rm -rf %{py3dir}
@@ -127,7 +133,12 @@ cp -a . %{py3dir}
 %endif #0%{?with_python3}
 
 %build
+%if 0%{?rhel} < 8
+%configure --enable-sysconfig --enable-rpmmacros --without-nft
+%else
 %configure --enable-sysconfig --enable-rpmmacros
+%endif
+
 %if 0%{?use_python3}
 make -C src %{?_smp_mflags}
 %else
