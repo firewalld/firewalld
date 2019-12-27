@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>Kubernetes Kubelet API</short>
+  <description>The kubelet API is used to communicate between kube-scheduler and the node.</description>
+  <port protocol="tcp" port="10250"/>
+</service>

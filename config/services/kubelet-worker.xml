@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>Kubernetes Kubelet</short>
+  <description>The kubelet is the primary “node agent” that runs on each Kubernetes node.</description>
+  <include service="kube-api" />
+  <port protocol="tcp" port="30000-32767"/>
+</service>
