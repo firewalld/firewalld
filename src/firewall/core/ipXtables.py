@@ -1044,6 +1044,10 @@ class ip4tables(object):
         target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["INPUT"],
                                             zone=zone)
 
+        if rich_rule and rich_rule.chain:
+            target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[rich_rule.chain],
+                                                zone=zone)
+
         rule_fragment = [ "-p", proto ]
         if port:
             rule_fragment += [ "--dport", "%s" % portStr(port) ]
@@ -1071,6 +1075,10 @@ class ip4tables(object):
         table = "filter"
         target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["INPUT"], zone=zone)
 
+        if rich_rule and rich_rule.chain:
+            target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[rich_rule.chain],
+                                                zone=zone)
+
         rule_fragment = [ "-p", protocol ]
         if destination:
             rule_fragment += [ "-d", destination ]
@@ -1096,6 +1104,10 @@ class ip4tables(object):
         add_del = { True: "-A", False: "-D" }[enable]
         table = "filter"
         target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["INPUT"], zone=zone)
+
+        if rich_rule and rich_rule.chain:
+            target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[rich_rule.chain],
+                                                zone=zone)
 
         rule_fragment = [ "-p", proto ]
         if port:
@@ -1293,6 +1305,10 @@ class ip4tables(object):
         table = "filter"
         target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["INPUT"],
                                             zone=zone)
+
+        if rich_rule and rich_rule.chain:
+            target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[rich_rule.chain],
+                                                zone=zone)
 
         rule_fragment = []
         rule_fragment += self._rich_rule_destination_fragment(rich_rule.destination)

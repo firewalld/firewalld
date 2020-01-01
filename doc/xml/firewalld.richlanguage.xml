@@ -99,7 +99,7 @@ rule
       <title>Rule</title>
       <para>
 	  <programlisting>
-rule [family="ipv4|ipv6"] [priority="priority"]
+rule [family="ipv4|ipv6"] [priority="priority"] [chain="INPUT|FORWARD_IN|FOWARD_OUT"]
 	  </programlisting>
       </para>
       <para>
@@ -107,6 +107,9 @@ rule [family="ipv4|ipv6"] [priority="priority"]
       </para>
       <para>
       If the rule priority is provided, it can be in the range of -32768 to 32767 where lower values have higher precendence. Rich rules are sorted by priority. Ordering for rules with the same priority value is undefined. A negative priority value will be executed before other firewalld primitives. A positive priority value will be executed after other firewalld primitives. A priority value of 0 will place the rule in a chain based on the action as per the "Information about logging and actions" below.
+      </para>
+      <para>
+      If the rule chain is provided, it can be either "INPUT", "FORWARD_IN", or "FORWARD_OUT", which adds the rule into the specified chain. If the rule chain is not provided, the rule will be added to the INPUT chain. The rule chain can be safely omitted if the previous behavior where rules were only added to the INPUT chain is desired.
       </para>
     </refsect2>
 

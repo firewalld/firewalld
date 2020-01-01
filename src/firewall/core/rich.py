@@ -269,11 +269,16 @@ class Rich_Rule(object):
     priority_min = -32768
     priority_max =  32767
 
-    def __init__(self, family=None, rule_str=None, priority=0):
+    def __init__(self, family=None, rule_str=None, priority=0, chain=None):
         if family is not None:
             self.family = str(family)
         else:
             self.family = None
+
+        if chain is not None:
+            self.chain = str(chain)
+        else:
+            self.chain = None
 
         self.priority = priority
         self.source = None
@@ -315,6 +320,7 @@ class Rich_Rule(object):
         self.log = None
         self.audit = None
         self.action = None
+        self.chain = None
 
         tokens = self._lexer(rule_str)
         if tokens and tokens[0].get('element')  == 'EOL':
@@ -334,7 +340,7 @@ class Rich_Rule(object):
                                      'invert', 'value',
                                      'port', 'protocol', 'to-port', 'to-addr',
                                      'name', 'prefix', 'level', 'type',
-                                     'set']:
+                                     'set', 'chain']:
                     raise FirewallError(errors.INVALID_RULE, "bad attribute '%s'" % attr_name)
             else:             # element
                 if element in ['rule', 'source', 'destination', 'protocol',
@@ -367,6 +373,8 @@ class Rich_Rule(object):
                         raise FirewallError(errors.INVALID_RULE, "'family' outside of rule. Use 'rule family=...'.")
                     elif attr_name == 'priority':
                         raise FirewallError(errors.INVALID_RULE, "'priority' outside of rule. Use 'rule priority=...'.")
+                    elif attr_name == 'chain':
+                        raise FirewallError(errors.INVALID_RULE, "'chain' outside of rule. Use 'rule chain=...'.")
                     else:
                         raise FirewallError(errors.INVALID_RULE, "'%s' outside of any element. Use 'rule <element> %s= ...'." % (attr_name, attr_name))
                 elif 'rule' not in element:
@@ -380,6 +388,10 @@ class Rich_Rule(object):
                     self.family = attr_value
                 elif attr_name == 'priority':
                     self.priority = int(attr_value)
+                elif attr_name == 'chain':
+                    if attr_value not in ['INPUT', 'FORWARD_IN', 'FORWARD_OUT']:
+                        raise FirewallError(errors.INVALID_RULE, "'chain' attribute cannot have '%s' value. Use 'INPUT', 'FORWARD_IN', or 'FORWARD_OUT' instead." % attr_value)
+                    self.chain = attr_value
                 elif attr_name:
                     if attr_name == 'protocol':
                         err_msg = "wrong 'protocol' usage. Use either 'rule protocol value=...' or  'rule [forward-]port protocol=...'."
@@ -541,6 +553,9 @@ class Rich_Rule(object):
             raise FirewallError(errors.INVALID_PRIORITY, "'priority' attribute must be between %d and %d." \
                                                          % (self.priority_min, self.priority_max))
 
+        if self.chain is not None and self.chain not in [ 'INPUT', 'FORWARD_IN', 'FORWARD_OUT' ]:
+            raise FirewallError(errors.INVALID_CHAIN, self.chain)
+
         if self.element is None and \
            (self.log is None or (self.log is not None and self.priority == 0)):
             if self.action is None:
@@ -697,6 +712,8 @@ class Rich_Rule(object):
             ret += ' priority="%d"' % self.priority
         if self.family:
             ret += ' family="%s"' % self.family
+        if self.chain:
+            ret += ' chain="%s"' % self.chain
         if self.source:
             ret += " %s" % self.source
         if self.destination:

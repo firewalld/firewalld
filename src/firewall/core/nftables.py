@@ -1109,6 +1109,10 @@ class nftables(object):
         table = "filter"
         target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["INPUT"], zone=zone)
 
+        if rich_rule and rich_rule.chain:
+            target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[rich_rule.chain],
+                                                zone=zone)
+
         expr_fragments = []
         if rich_rule:
             expr_fragments.append(self._rich_rule_family_fragment(rich_rule.family))
@@ -1145,6 +1149,10 @@ class nftables(object):
         table = "filter"
         target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["INPUT"], zone=zone)
 
+        if rich_rule and rich_rule.chain:
+            target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[rich_rule.chain],
+                                                zone=zone)
+
         expr_fragments = []
         if rich_rule:
             expr_fragments.append(self._rich_rule_family_fragment(rich_rule.family))
@@ -1180,6 +1188,10 @@ class nftables(object):
         add_del = { True: "add", False: "delete" }[enable]
         table = "filter"
         target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["INPUT"], zone=zone)
+
+        if rich_rule and rich_rule.chain:
+            target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[rich_rule.chain],
+                                                zone=zone)
 
         expr_fragments = []
         if rich_rule:
@@ -1528,6 +1540,10 @@ class nftables(object):
         table = "filter"
         target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["INPUT"],
                                             zone=zone)
+
+        if rich_rule and rich_rule.chain:
+            target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[rich_rule.chain],
+                                                zone=zone)
 
         expr_fragments = []
         expr_fragments.append(self._rich_rule_family_fragment(rich_rule.family))
