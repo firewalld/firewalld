@@ -1040,6 +1040,9 @@ FWD_START_TEST([rich rules good])
     rich_rule_test([rule forward-port port="99" to-port="10999" to-addr="1::2:3:4:7" protocol="dccp" family="ipv6" source address="1:2:3:4:6::"])
     ])
     rich_rule_test([rule family="ipv4" port port="222" protocol="tcp" mark set="0xff"])
+    rich_rule_test([rule family="ipv4" chain="INPUT" port port="222" protocol="tcp" mark set="0xff"])
+    rich_rule_test([rule family="ipv4" chain="FORWARD_IN" port port="222" protocol="tcp" mark set="0xff"])
+    rich_rule_test([rule family="ipv4" chain="FORWARD_OUT" port port="222" protocol="tcp" mark set="0xff"])
 FWD_END_TEST([-e '/ERROR: Failed to write to file .*\/proc\/sys\/net\/ipv6\/conf\/all\/forwarding.*/d'])
 FWD_START_TEST([rich rules audit])
     AT_KEYWORDS(rich)
@@ -1694,6 +1697,7 @@ FWD_START_TEST([rich rules bad])
     rich_rule_test([rule family="ipv4" masquerade drop], 122) dnl masquerade & action
     rich_rule_test([rule family="ipv4" icmp-block name="redirect" accept], 122) dnl icmp-block & action
     rich_rule_test([rule forward-port port="2222" to-port="22" protocol="tcp" family="ipv4" accept], 122) dnl forward-port & action
+    rich_rule_test([rule chain="BAD" accept], 122) dnl bad chain
     m4_undefine([rich_rule_test])
 FWD_END_TEST([-e '/ERROR: INVALID_RULE:/d' dnl
               -e '/ERROR: INVALID_LOG_LEVEL: eror/d' dnl

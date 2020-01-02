@@ -85,3 +85,11 @@ zone = FirewallClientZoneSettings()
 zone.setRichRules(rule)
 nz = fw_config.addZone("zone9", zone.settings)
 nz.remove()
+
+rule = ['rule chain=INPUT accept',
+        'rule chain=FORWARD_IN accept',
+        'rule chain=FORWARD_OUT accept']
+zone = FirewallClientZoneSettings()
+zone.setRichRules(rule)
+nz = fw_config.addZone("zone10", zone.settings)
+nz.remove()

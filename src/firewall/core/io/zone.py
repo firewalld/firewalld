@@ -88,7 +88,7 @@ class Zone(IO_Object):
         "zone": [ "name", "immutable", "target", "version" ],
         "masquerade": [ "enabled" ],
         "forward-port": [ "to-port", "to-addr" ],
-        "rule": [ "family", "priority" ],
+        "rule": [ "family", "priority", "chain" ],
         "source": [ "address", "mac", "invert", "family", "ipset" ],
         "destination": [ "invert" ],
         "log": [ "prefix", "level" ],
@@ -628,6 +628,7 @@ class zone_ContentHandler(IO_Object_ContentHandler):
         elif name == "rule":
             family = None
             priority = 0
+            chain = None
             if "family" in attrs:
                 family = attrs["family"]
                 if family not in [ "ipv4", "ipv6" ]:
@@ -637,7 +638,14 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                     return
             if "priority" in attrs:
                 priority = int(attrs["priority"])
-            self._rule = rich.Rich_Rule(family=family, priority=priority)
+            if "chain" in attrs:
+                chain = attrs["chain"]
+                if chain not in [ "INPUT", "FORWARD_IN", "FORWARD_OUT" ]:
+                    log.warning('Invalid rule: Rule chain "%s" invalid',
+                                attrs["chain"])
+                    self._rule_error = True
+                    return
+            self._rule = rich.Rich_Rule(family=family, priority=priority, chain=chain)
 
         elif name == "limit":
             if not self._limit_ok:
@@ -839,6 +847,8 @@ def zone_writer(zone, path=None):
             attrs["family"] = rule.family
         if rule.priority != 0:
             attrs["priority"] = str(rule.priority)
+        if rule.chain:
+            attrs["chain"] = rule.chain
         handler.ignorableWhitespace("  ")
         handler.startElement("rule", attrs)
         handler.ignorableWhitespace("\n")
