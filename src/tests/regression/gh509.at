@@ -1,3 +1,4 @@
+m4_if(nftables, FIREWALL_BACKEND, [
 FWD_START_TEST([missing firewalld.conf file])
 AT_KEYWORDS(gh509)
 
@@ -12,3 +13,4 @@ FWD_RESTART
 FWD_END_TEST([-e '/ERROR: Failed to load/d' dnl
               -e '/WARNING:.*No such file or directory:.*/d' dnl
               -e '/WARNING: Using fallback firewalld configuration settings/d'])
+])
