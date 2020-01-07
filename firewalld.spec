@@ -7,7 +7,7 @@
 
 Summary: A firewall daemon with D-Bus interface providing a dynamic firewall
 Name: firewalld
-Version: 0.6.5
+Version: 0.6.6
 Release: 1%{?dist}
 URL:     http://firewalld.org
 License: GPLv2+
@@ -311,6 +311,9 @@ fi
 %{_mandir}/man1/firewall-config*.1*
 
 %changelog
+* Tue Jan 07 2020 Eric Garver <eric@garver.life> - 0.6.6-1
+- bump package to v0.6.6
+
 * Tue Oct 01 2019 Eric Garver <eric@garver.life> - 0.6.5-1
 - bump package to v0.6.5
 
