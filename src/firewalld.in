@@ -27,7 +27,6 @@
 import os
 import sys
 import dbus
-import traceback
 import argparse
 
 from firewall import config
@@ -71,7 +70,8 @@ def setup_logging(args):
     # Set up logging capabilities
     log.setDateFormat("%Y-%m-%d %H:%M:%S")
     log.setFormat("%(date)s %(label)s%(message)s")
-    log.setInfoLogging("*", log.syslog, [ log.FATAL, log.ERROR, log.WARNING ],
+    log.setInfoLogging("*", log.syslog, [ log.FATAL, log.ERROR, log.WARNING,
+                                          log.TRACEBACK ],
                        fmt="%(label)s%(message)s")
     log.setDebugLogLevel(log.NO_INFO)
     log.setDebugLogLevel(log.NO_DEBUG)
@@ -90,7 +90,8 @@ def setup_logging(args):
         log.error("Failed to open log file '%s': %s", config.FIREWALLD_LOGFILE,
                   str(e))
     else:
-        log.addInfoLogging("*", log_file, [ log.FATAL, log.ERROR, log.WARNING ])
+        log.addInfoLogging("*", log_file, [ log.FATAL, log.ERROR, log.WARNING,
+                                            log.TRACEBACK ])
         log.addDebugLogging("*", log_file)
         if args.debug:
             log.addInfoLogging("*", log_file)
@@ -148,21 +149,21 @@ def startup(args):
 
     except OSError as e:
         log.fatal("Fork #1 failed: %d (%s)" % (e.errno, e.strerror))
-        log.error(traceback.format_exc())
+        log.exception()
         if not args.nopid and os.path.exists(config.FIREWALLD_PIDFILE):
             os.remove(config.FIREWALLD_PIDFILE)
         sys.exit(1)
 
     except dbus.exceptions.DBusException as e:
         log.fatal(str(e))
-        log.error(traceback.format_exc())
+        log.exception()
         if not args.nopid and os.path.exists(config.FIREWALLD_PIDFILE):
             os.remove(config.FIREWALLD_PIDFILE)
         sys.exit(1)
 
     except IOError as e:
         log.fatal(str(e))
-        log.error(traceback.format_exc())
+        log.exception()
         if not args.nopid and os.path.exists(config.FIREWALLD_PIDFILE):
             os.remove(config.FIREWALLD_PIDFILE)
         sys.exit(1)

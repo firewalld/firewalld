@@ -55,7 +55,6 @@ def handle_exceptions(func, *args, **kwargs):
         log.debug1(traceback.format_exc())
         log.error(error)
     except Exception:  # pylint: disable=W0703
-        log.debug1(traceback.format_exc())
         log.exception()
 
 @decorator
@@ -79,7 +78,6 @@ def dbus_handle_exceptions(func, *args, **kwargs):
         # only log DBusExceptions once
         raise ex
     except Exception as ex:
-        log.debug1(traceback.format_exc())
         log.exception()
         raise FirewallDBusException(str(ex))
 
