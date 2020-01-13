@@ -20,17 +20,19 @@
 # Josef Hruška <hrusjos@gmail.com>, 2016. #zanata
 # Zdenek <chmelarz@gmail.com>, 2016. #zanata
 # Zdenek <chmelarz@gmail.com>, 2017. #zanata
+# Eric Garver <e@erig.me>, 2018. #zanata
 # Robert Chudý <robertch@virtus.cz>, 2018. #zanata
+# Pavel Borecki <pavel.borecki@gmail.com>, 2019. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-06 17:55+0100\n"
+"POT-Creation-Date: 2018-11-16 15:52-0500\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2018-04-05 08:32+0000\n"
-"Last-Translator: Novell Language <language@novell.com>\n"
+"PO-Revision-Date: 2019-06-14 06:09+0000\n"
+"Last-Translator: Pavel Borecki <pavel.borecki@gmail.com>\n"
 "Language-Team: Czech (http://www.transifex.com/projects/p/firewalld/language/"
 "cs/)\n"
 "Language: cs\n"
@@ -1873,7 +1875,7 @@ msgstr "Port a protokol"
 
 #: ../src/firewall-config.glade.h:246
 msgid "Please enter a port and protocol."
-msgstr "Prosím vložte port a protokol."
+msgstr "Zadejte port a protokol."
 
 #: ../src/firewall-config.glade.h:247
 msgid "Direct Rule"
@@ -1889,7 +1891,7 @@ msgstr "Priorita:"
 
 #: ../src/firewall-config.glade.h:251
 msgid "Please enter a protocol."
-msgstr "Vložte prosím protokol."
+msgstr "Zadejte protokol."
 
 #: ../src/firewall-config.glade.h:252
 msgid "Other Protocol:"
@@ -1897,16 +1899,16 @@ msgstr "Další protokol:"
 
 #: ../src/firewall-config.glade.h:253
 msgid "Rich Rule"
-msgstr "Bohaté pravidlo"
+msgstr "Košaté pravidlo"
 
 #: ../src/firewall-config.glade.h:254
 msgid "Please enter a rich rule."
-msgstr "Zadejte prosím bohaté pravidlo"
+msgstr "Zadejte košaté pravidlo"
 
 #: ../src/firewall-config.glade.h:255
 msgid "For host or network white or blacklisting deactivate the element."
 msgstr ""
-"Seznam povolených nebo zakázaných vyjímek deaktivuje element pro počítač "
+"Seznam povolených nebo zakázaných výjimek deaktivuje element pro počítač "
 "nebo síť."
 
 #: ../src/firewall-config.glade.h:256
@@ -1919,7 +1921,7 @@ msgstr "Cíl:"
 
 #: ../src/firewall-config.glade.h:258
 msgid "Log:"
-msgstr "Záznam:"
+msgstr "Záznam událostí:"
 
 #: ../src/firewall-config.glade.h:259
 msgid "Audit:"
@@ -1955,7 +1957,7 @@ msgstr "/"
 
 #: ../src/firewall-config.glade.h:274
 msgid "Prefix:"
-msgstr "Prefix:"
+msgstr "Předpona:"
 
 #: ../src/firewall-config.glade.h:275
 msgid "Level:"
@@ -1963,7 +1965,7 @@ msgstr "Úroveň:"
 
 #: ../src/firewall-config.glade.h:292
 msgid "Element:"
-msgstr "Element:"
+msgstr "Prvek:"
 
 #: ../src/firewall-config.glade.h:293
 msgid "Action:"
@@ -1971,15 +1973,15 @@ msgstr "Akce:"
 
 #: ../src/firewall-config.glade.h:294
 msgid "Base Service Settings"
-msgstr "Hlavní nastavení služeb"
+msgstr "Nastavení hlavní služby"
 
 #: ../src/firewall-config.glade.h:295
 msgid "Please configure base service settings:"
-msgstr "Prosím nastavte hlavní nastavení služeb:"
+msgstr "Nastavte základní službu:"
 
 #: ../src/firewall-config.glade.h:296
 msgid "Please select a service."
-msgstr "Vyberte prosím servis."
+msgstr "Vyberte službu."
 
 #: ../src/firewall-config.glade.h:297
 msgid "Please enter a source."
@@ -1987,15 +1989,15 @@ msgstr "Zadejte zdroj."
 
 #: ../src/firewall-config.glade.h:298
 msgid "User ID"
-msgstr "ID uživatele"
+msgstr "Identif. uživatele"
 
 #: ../src/firewall-config.glade.h:299
 msgid "Please enter the user id."
-msgstr "Zadejte prosím ID uživatele."
+msgstr "Zadejte identif. uživatele."
 
 #: ../src/firewall-config.glade.h:301
 msgid "Please enter the user name."
-msgstr "Zadejte prosím jméno uživatele."
+msgstr "Zadejte uživatelské jméno."
 
 #: ../src/firewall-config.glade.h:302
 msgid "label"
@@ -2007,15 +2009,12 @@ msgstr "Nastavení hlavní zóny"
 
 #: ../src/firewall-config.glade.h:304
 msgid "Please configure base zone settings:"
-msgstr "Prosím vložte nastavení hlavní zóny:"
+msgstr "Zadejte nastavení hlavní zóny:"
 
 #: ../src/firewall-config.glade.h:305
 msgid "Default Target"
-msgstr "Základní cíl:"
+msgstr "Výchozí cíl:"
 
 #: ../src/firewall-config.glade.h:306
 msgid "Target:"
 msgstr "Cíl:"
-
-#~ msgid "Failed to set zone {zone} for connection {connection}"
-#~ msgstr "Nepodařilo se nastavit zónu {zone} pro připojení {connection}"

@@ -13,16 +13,17 @@
 # Michelle Kim <mkim@redhat.com>, 2002
 # Eun-Ju Kim <eukim@redhat.com>, 2016. #zanata
 # Terry Chuang <tchuang@redhat.com>, 2016. #zanata
+# Eric Garver <e@erig.me>, 2018. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-06 17:55+0100\n"
+"POT-Creation-Date: 2018-11-16 15:52-0500\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2016-08-22 05:00+0000\n"
-"Last-Translator: Novell Language <language@novell.com>\n"
+"PO-Revision-Date: 2018-11-16 08:25+0000\n"
+"Last-Translator: Copied by Zanata <copied-by-zanata@zanata.org>\n"
 "Language-Team: Korean (http://www.transifex.com/projects/p/firewalld/"
 "language/ko/)\n"
 "Language: ko\n"
@@ -297,9 +298,7 @@ msgstr "firewalld에 연결 시도 중입니다. 대기 중..."
 msgid ""
 "Failed to connect to firewalld. Please make sure that the service has been "
 "started correctly and try again."
-msgstr ""
-"방화벽에 연결할 수 없습니다. 서비스를 제대로 시작했는지 확인하고 다시 시도해 "
-"주십시오."
+msgstr "방화벽에 연결할 수 없습니다. 서비스를 제대로 시작했는지 확인하고 다시 시도해 주십시오."
 
 #: ../src/firewall-config.in:95
 msgid "Changes applied."
@@ -1475,9 +1474,8 @@ msgid ""
 "are using ports that are unrelated to the signaling connection and are "
 "therefore blocked by the firewall without the helper."
 msgstr ""
-"연결 추적 헬퍼가 신호 발송과 데이터 전송에 서로 다른 흐름을 사용하는 프로토콜"
-"이 작동하도록 돕습니다. 데이터 전송은 신호 발송 연결과 무관한 포트를 사용하므"
-"로 헬퍼 없이는 방화벽에 의해 차단됩니다."
+"연결 추적 헬퍼가 신호 발송과 데이터 전송에 서로 다른 흐름을 사용하는 프로토콜이 작동하도록 돕습니다. 데이터 전송은 신호 발송 연결과 "
+"무관한 포트를 사용하므로 헬퍼 없이는 방화벽에 의해 차단됩니다."
 
 #: ../src/firewall-config.glade.h:174
 msgid "Define ports or port ranges, which are monitored by the helper."
@@ -1948,6 +1946,3 @@ msgstr "기본 대상 "
 #: ../src/firewall-config.glade.h:306
 msgid "Target:"
 msgstr "대상: "
-
-#~ msgid "Failed to set zone {zone} for connection {connection}"
-#~ msgstr "연결 {connection}의 영역 {zone} 설정에 실패했습니다"

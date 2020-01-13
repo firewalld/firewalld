@@ -3,7 +3,6 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# SuSE Linux Products GmbH, Nuernberg, 2018
 # Abdalrahim Fakhouri <abdilra7eem@yahoo.com>, 2010
 # Abdalrahim Fakhouri <abdilra7eem@yahoo.com>, 2010
 # Abdalrahim Fakhouri <abdilra7eem@yahoo.com>, 2010
@@ -12,16 +11,18 @@
 # Alfakhori <mhmd.alfakhori@gmail.com>, 2010
 # Ossama M. Khayat <okhayat@yahoo.com>, 2004
 # Sherif Abdelgawad <sherif@redhat.com>, 2004
+# SuSE Linux Products GmbH, Nuernberg, 2018
+# Eric Garver <e@erig.me>, 2018. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-06 17:55+0100\n"
+"POT-Creation-Date: 2018-11-16 15:52-0500\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2015-02-26 02:43+0000\n"
-"Last-Translator: Novell Language <language@novell.com>\n"
+"PO-Revision-Date: 2018-11-16 08:20+0000\n"
+"Last-Translator: Copied by Zanata <copied-by-zanata@zanata.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/projects/p/firewalld/"
 "language/ar/)\n"
 "Language: ar\n"
@@ -210,7 +211,8 @@ msgstr ""
 
 #: ../src/firewall-applet.in:889
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface "
+"'{interface}'"
 msgstr "المنطقة '{zone}' نشطة للاتصال '{connection}' في الواجهة '{interface}'"
 
 #: ../src/firewall-applet.in:901
@@ -687,8 +689,7 @@ msgstr "الرجاء إدخال عنوان ipv4 أو ipv6 بعنوان نموذ�
 msgid ""
 "The mask can be a network mask or a number for ipv4.\n"
 "The mask is a number for ipv6."
-msgstr ""
-"قد يكون القناع، قناع شبكة أو رقمًا لـ ipv4.\n"
+msgstr "قد يكون القناع، قناع شبكة أو رقمًا لـ ipv4.\n"
 "القناع رقم لـ ipv6."
 
 #: ../src/firewall-config.in:5776
@@ -1364,6 +1365,7 @@ msgid ""
 "all hosts or networks."
 msgstr ""
 "إضافة منافذ مصادر أو نطاقات منافذ يجب الوصول إليها من كل المضيفين أو الشبكات."
+""
 
 #: ../src/firewall-config.glade.h:147
 msgid "Source Port"
@@ -1400,6 +1402,7 @@ msgid ""
 "runtime configuration of services is fixed."
 msgstr ""
 "لا يمكن تغيير الخدمات إلا في عرض التكوين الدائم. تكوين وقت تشغيل الخدمة ثابت."
+""
 
 #: ../src/firewall-config.glade.h:154
 msgid ""
@@ -1519,10 +1522,10 @@ msgid ""
 "commands, parameters and targets. Direct configuration should be used only "
 "as a last resort when it is not possible to use other firewalld features."
 msgstr ""
-"يوفر التكوين المباشر وصولاً أكثر مباشرة إلى الجدار الناري. تتطلب هذه الخيارات "
-"من المستخدم معرفة مفاهيم iptables الأساسية وهي الجداول والسلاسل والأوامر "
-"والمعلمات والأهداف. يجب استخدام التكوين المباشر كملاذ أخير فقط عندما لا يمكن "
-"استخدام ميزات firewalld الأخرى."
+"يوفر التكوين المباشر وصولاً أكثر مباشرة إلى الجدار الناري. تتطلب هذه "
+"الخيارات من المستخدم معرفة مفاهيم iptables الأساسية وهي الجداول والسلاسل "
+"والأوامر والمعلمات والأهداف. يجب استخدام التكوين المباشر كملاذ أخير فقط "
+"عندما لا يمكن استخدام ميزات firewalld الأخرى."
 
 #: ../src/firewall-config.glade.h:176
 msgid ""
@@ -1600,7 +1603,8 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:189
 msgid "Please be careful with passthrough rules to not damage the firewall."
-msgstr "الرجاء الحذر في التعامل مع قاعد المرور حتى لا يتم تدمير الجدار الناري."
+msgstr ""
+"الرجاء الحذر في التعامل مع قاعد المرور حتى لا يتم تدمير الجدار الناري."
 
 #: ../src/firewall-config.glade.h:190
 msgid "Add Passthrough"
@@ -1984,6 +1988,3 @@ msgstr "الهدف الافتراضي"
 #: ../src/firewall-config.glade.h:306
 msgid "Target:"
 msgstr "الهدف:"
-
-#~ msgid "Failed to set zone {zone} for connection {connection}"
-#~ msgstr "فشل تعيين المنطقة {zone} للاتصال {connection}"

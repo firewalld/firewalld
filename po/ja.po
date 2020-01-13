@@ -16,17 +16,18 @@
 # Noriko Mizumoto <noriko.mizumoto@gmail.com>, 2016. #zanata
 # Takuro Nagamoto <tnagamot@redhat.com>, 2016. #zanata
 # Casey Jones <nahareport@live.com>, 2018. #zanata
+# Eric Garver <e@erig.me>, 2018. #zanata
 # Hajime Taira <htaira@fedoraproject.org>, 2018. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-06 17:55+0100\n"
+"POT-Creation-Date: 2018-11-16 15:52-0500\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2018-02-26 12:14+0000\n"
-"Last-Translator: Novell Language <language@novell.com>\n"
+"PO-Revision-Date: 2018-11-16 08:25+0000\n"
+"Last-Translator: Copied by Zanata <copied-by-zanata@zanata.org>\n"
 "Language-Team: Japanese (http://www.transifex.com/projects/p/firewalld/"
 "language/ja/)\n"
 "Language: ja\n"
@@ -303,9 +304,7 @@ msgstr "firewalld への接続を試行しています。お待ちください..
 msgid ""
 "Failed to connect to firewalld. Please make sure that the service has been "
 "started correctly and try again."
-msgstr ""
-"firewalldへの接続に失敗しました。サービスが正常に開始していることを確認して、"
-"再度接続を試行してください。"
+msgstr "firewalldへの接続に失敗しました。サービスが正常に開始していることを確認して、再度接続を試行してください。"
 
 #: ../src/firewall-config.in:95
 msgid "Changes applied."
@@ -1949,6 +1948,3 @@ msgstr "標準ターゲット"
 #: ../src/firewall-config.glade.h:306
 msgid "Target:"
 msgstr "ターゲット:"
-
-#~ msgid "Failed to set zone {zone} for connection {connection}"
-#~ msgstr "接続  {connection} のゾーン  {zone} の設定に失敗しました"
