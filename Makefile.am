@@ -89,14 +89,6 @@ update-docs:
 clean-docs:
 	$(MAKE) -C doc/xml clean
 
-pull-translations:
-	zanata-cli -B pull
-
-push-translations:
-	zanata-cli -B push
-
-update-translations: pull-translations update-po push-translations 
-
 archive: dist-check $(desktop_DATA) tag dist
 
 local: distclean
