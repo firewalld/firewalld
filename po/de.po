@@ -1,7 +1,6 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
 # Translators:
 # Andreas Müller <redhat@andreas-mueller.com>, 2003
 # Bernd Bartmann <Bernd.Bartmann@sohanet.de>, 2004
@@ -36,21 +35,22 @@
 # Roman Spirgi <bigant@fedoraproject.org>, 2017. #zanata
 # Eric Garver <e@erig.me>, 2018. #zanata
 # Fabian Affolter <fab@fedoraproject.org>, 2018. #zanata
+# Phil Sutter <psutter@redhat.com>, 2020.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-01-13 14:38-0500\n"
-"PO-Revision-Date: 2018-11-16 08:22+0000\n"
-"Last-Translator: Copied by Zanata <copied-by-zanata@zanata.org>\n"
-"Language-Team: German (http://www.transifex.com/projects/p/firewalld/"
-"language/de/)\n"
+"PO-Revision-Date: 2020-01-14 14:02+0000\n"
+"Last-Translator: Phil Sutter <psutter@redhat.com>\n"
+"Language-Team: German <https://translate.stg.fedoraproject.org/projects/"
+"firewalld/master/de/>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Zanata 4.6.2\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.10.1\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:416
 msgid "Firewall Applet"
@@ -84,7 +84,7 @@ msgstr "Standardzone"
 #: ../src/firewall-applet.in:166 ../src/firewall-config.in:8067
 #, c-format
 msgid "Select zone for connection '%s'"
-msgstr " Zone für Verbindung »%s« auswählen"
+msgstr "Zone für Verbindung »%s« auswählen"
 
 #: ../src/firewall-applet.in:176 ../src/firewall-config.in:3927
 msgid "Failed to set zone {zone} for connection {connection_name}"
@@ -295,7 +295,7 @@ msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
-"'{zone}'-Zone {activated_deactivated} für '{connection}'-Verbindung  auf  "
+"'{zone}'-Zone {activated_deactivated} für '{connection}'-Verbindung auf "
 "'{interface}'-Schnittstelle"
 
 #: ../src/firewall-applet.in:1057
@@ -305,7 +305,7 @@ msgstr "'{zone}'-Zone {activated_deactivated} für '{interface}'-Schnittstelle"
 #: ../src/firewall-applet.in:1080
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
-msgstr "»%s«-Zone aktiviert für »%s«-Schnittstelle "
+msgstr "»%s«-Zone aktiviert für »%s«-Schnittstelle"
 
 #: ../src/firewall-applet.in:1097
 msgid "Zone '{zone}' {activated_deactivated} for source '{source}'"
@@ -1527,7 +1527,7 @@ msgid ""
 "IPSets can only be created or deleted in the permanent configuration view."
 msgstr ""
 "IPSets können nur in der dauerhaften Konfigurationsansicht erstellt oder "
-"gelöscht werden. "
+"gelöscht werden."
 
 #: ../src/firewall-config.glade.h:166
 msgid ""
@@ -1717,7 +1717,7 @@ msgid ""
 msgstr ""
 "Der Kontext ist der (SELinux-) Sicherheitskontext einer laufenden Anwendung "
 "oder eines Dienstes. Um den Kontext einer laufenden Anwendung einzusehen, "
-"verwenden Sie  <tt>ps -e --context</tt>."
+"verwenden Sie <tt>ps -e --context</tt>."
 
 #: ../src/firewall-config.glade.h:196
 msgid "Add Context"
@@ -1743,7 +1743,7 @@ msgid ""
 msgstr ""
 "Falls ein Befehlseintrag der Positivliste mit einem Sternsymbol »*« endet, "
 "werden alle Kommandozeilen, die mit dem Befehl beginnen ausgewertet. Falls "
-"das  »*«-Symbol nicht vorhanden ist, muss der absolute Befehl inklusive "
+"das »*«-Symbol nicht vorhanden ist, muss der absolute Befehl inklusive "
 "Argumenten übereinstimmen."
 
 #: ../src/firewall-config.glade.h:201
@@ -1899,7 +1899,8 @@ msgstr "Bitte geben Sie eine Markierung mit optionaler Maske ein"
 #: ../src/firewall-config.glade.h:239
 msgid "The mark and the mask fields are both 32 bits wide unsigned numbers."
 msgstr ""
-"Beide Felder für Markierung und Maske sind unsignierte Zahlen von 32bits "
+"Die Felder für Markierung und Maske sind beides 32bit-breite, vorzeichenlose "
+"Zahlen."
 
 #: ../src/firewall-config.glade.h:240
 msgid "Mark:"
