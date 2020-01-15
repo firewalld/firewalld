@@ -1,0 +1,8 @@
+FWD_START_TEST([rich rule source w/ mark action])
+AT_KEYWORDS(gh567 rich ipset)
+
+FWD_CHECK([-q --permanent --new-ipset=Teste --type=hash:net])
+FWD_CHECK([-q --permanent --add-rich-rule "rule family=ipv4 source ipset=Teste mark set=2"])
+FWD_RELOAD
+
+FWD_END_TEST
