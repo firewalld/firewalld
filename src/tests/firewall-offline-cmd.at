@@ -9,7 +9,7 @@ dnl !!! DO NOT ADD TESTS HERE !!!
 
 m4_define([TESTING_FIREWALL_OFFLINE_CMD])
 m4_include([firewall-cmd.at])
-m4_include([features.at])
+m4_include([features/features.at])
 
 dnl Now begin the tests explicitly for firewall-offline-cmd
 dnl
