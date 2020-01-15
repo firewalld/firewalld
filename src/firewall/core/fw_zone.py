@@ -1737,6 +1737,8 @@ class FirewallZone(object):
             elif rule.element is None:
                 if enable:
                     zone_transaction.add_chain("filter", "INPUT")
+                if enable and type(rule.action) == Rich_Mark:
+                    zone_transaction.add_chain("mangle", "PREROUTING")
 
                 rules = backend.build_zone_rich_source_destination_rules(
                             enable, zone, rule)
