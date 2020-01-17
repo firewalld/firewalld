@@ -23,13 +23,14 @@
 # Robert Chudý <robertch@virtus.cz>, 2018. #zanata
 # Pavel Borecki <pavel.borecki@gmail.com>, 2019. #zanata
 # Eric Garver <egarver@redhat.com>, 2020.
+# Tomáš Doležal <todoleza@redhat.com>, 2020.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-01-13 14:38-0500\n"
-"PO-Revision-Date: 2020-01-14 23:00+0000\n"
-"Last-Translator: Eric Garver <egarver@redhat.com>\n"
+"PO-Revision-Date: 2020-01-16 16:15+0000\n"
+"Last-Translator: Tomáš Doležal <todoleza@redhat.com>\n"
 "Language-Team: Czech <https://translate.stg.fedoraproject.org/projects/"
 "firewalld/master/cs/>\n"
 "Language: cs\n"
@@ -246,7 +247,7 @@ msgstr "Komunikace s FirewallD ztracena."
 
 #: ../src/firewall-applet.in:989
 msgid "FirewallD has been reloaded."
-msgstr "FirewallD byl aktualizován"
+msgstr "FirewallD byl aktualizován."
 
 #: ../src/firewall-applet.in:996
 #, c-format
@@ -405,7 +406,7 @@ msgstr "Cílový port"
 
 #: ../src/firewall-config.in:566
 msgid "To Address"
-msgstr "Cílová adresa:"
+msgstr "Cílová adresa"
 
 #: ../src/firewall-config.in:616
 msgid "Bindings"
@@ -808,7 +809,7 @@ msgstr "raw"
 
 #: ../src/firewall-config.glade.h:17
 msgid "security"
-msgstr "bezpečnost"
+msgstr "security"
 
 #: ../src/firewall-config.glade.h:18
 msgid "Table:"
@@ -1786,11 +1787,11 @@ msgstr "Zadejte název rozhraní:"
 
 #: ../src/firewall-config.glade.h:223
 msgid "Base IPSet Settings"
-msgstr "Nastavení základního IPSecu"
+msgstr "Nastavení základního IPSetu"
 
 #: ../src/firewall-config.glade.h:224
 msgid "Please configure base ipset settings:"
-msgstr "Nakonfigurujte prosím základní nastavení IPSecu"
+msgstr "Nakonfigurujte prosím základní nastavení ipsetu:"
 
 #: ../src/firewall-config.glade.h:225
 msgid "Type:"
@@ -1834,7 +1835,7 @@ msgstr "Záznam zamítnutí"
 
 #: ../src/firewall-config.glade.h:236
 msgid "Please select the log denied value:"
-msgstr "Vyberte prosím hodnotu záznamu zamítnutí"
+msgstr "Vyberte prosím hodnotu záznamu zamítnutí:"
 
 #: ../src/firewall-config.glade.h:237
 msgid "Mark"
@@ -1882,7 +1883,7 @@ msgstr "Přímé pravidlo"
 
 #: ../src/firewall-config.glade.h:248
 msgid "Please select ipv and table, chain priority and enter the args."
-msgstr "Vyberte prosím IPv a tabulku, prioritu řetězu a zadejte argumenty"
+msgstr "Vyberte prosím ipv a tabulku, prioritu řetězu a zadejte argumenty."
 
 #: ../src/firewall-config.glade.h:249
 msgid "Priority:"
@@ -1902,7 +1903,7 @@ msgstr "Košaté pravidlo"
 
 #: ../src/firewall-config.glade.h:254
 msgid "Please enter a rich rule."
-msgstr "Zadejte košaté pravidlo"
+msgstr "Zadejte bohaté pravidlo."
 
 #: ../src/firewall-config.glade.h:255
 msgid "For host or network white or blacklisting deactivate the element."
@@ -2012,7 +2013,7 @@ msgstr "Zadejte nastavení hlavní zóny:"
 
 #: ../src/firewall-config.glade.h:305
 msgid "Default Target"
-msgstr "Výchozí cíl:"
+msgstr "Výchozí cíl"
 
 #: ../src/firewall-config.glade.h:306
 msgid "Target:"
