@@ -126,6 +126,7 @@ class Firewall(object):
         self._flush_all_on_reload = config.FALLBACK_FLUSH_ALL_ON_RELOAD
         self._rfc3964_ipv4 = config.FALLBACK_RFC3964_IPV4
         self.nf_conntrack_helper_setting = 0
+        self._allow_zone_drifting = config.FALLBACK_ALLOW_ZONE_DRIFTING
 
     def individual_calls(self):
         return self._individual_calls
@@ -300,6 +301,19 @@ class Firewall(object):
                     self._rfc3964_ipv4 = True
                 log.debug1("RFC3964_IPv4 is set to '%s'",
                            self._rfc3964_ipv4)
+
+            if self._firewalld_conf.get("AllowZoneDrifting"):
+                value = self._firewalld_conf.get("AllowZoneDrifting")
+                if value.lower() in [ "no", "false" ]:
+                    self._allow_zone_drifting = False
+                else:
+                    self._allow_zone_drifting = True
+                    log.warning("AllowZoneDrifting is enabled. This is considered "
+                                "an insecure configuration option. It will be "
+                                "removed in a future release. Please consider "
+                                "disabling it now.")
+                log.debug1("AllowZoneDrifting is set to '%s'",
+                           self._allow_zone_drifting)
 
         self.config.set_firewalld_conf(copy.deepcopy(self._firewalld_conf))
 

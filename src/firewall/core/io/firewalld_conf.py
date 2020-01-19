@@ -28,10 +28,10 @@ from firewall import config
 from firewall.core.logger import log
 from firewall.functions import b2u, u2b, PY2
 
-valid_keys = [ "DefaultZone", "MinimalMark", "CleanupOnExit", "Lockdown", 
+valid_keys = [ "DefaultZone", "MinimalMark", "CleanupOnExit", "Lockdown",
                "IPv6_rpfilter", "IndividualCalls", "LogDenied",
                "AutomaticHelpers", "FirewallBackend", "FlushAllOnReload",
-               "RFC3964_IPv4" ]
+               "RFC3964_IPv4", "AllowZoneDrifting" ]
 
 class firewalld_conf(object):
     def __init__(self, filename):
@@ -83,6 +83,7 @@ class firewalld_conf(object):
             self.set("FirewallBackend", config.FALLBACK_FIREWALL_BACKEND)
             self.set("FlushAllOnReload", "yes" if config.FALLBACK_FLUSH_ALL_ON_RELOAD else "no")
             self.set("RFC3964_IPv4", "yes" if config.FALLBACK_RFC3964_IPV4 else "no")
+            self.set("AllowZoneDrifting", "yes" if config.FALLBACK_ALLOW_ZONE_DRIFTING else "no")
             raise
 
         for line in f:
@@ -201,6 +202,14 @@ class firewalld_conf(object):
                             "value %s", value if value else '',
                             config.FALLBACK_RFC3964_IPV4)
             self.set("RFC3964_IPv4", str(config.FALLBACK_RFC3964_IPV4))
+
+        value = self.get("AllowZoneDrifting")
+        if not value or value.lower() not in [ "yes", "true", "no", "false" ]:
+            if value is not None:
+                log.warning("AllowZoneDrifting '%s' is not valid, using default "
+                            "value %s", value if value else '',
+                            config.FALLBACK_ALLOW_ZONE_DRIFTING)
+            self.set("AllowZoneDrifting", str(config.FALLBACK_ALLOW_ZONE_DRIFTING))
 
     # save to self.filename if there are key/value changes
     def write(self):
