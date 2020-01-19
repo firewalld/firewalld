@@ -208,8 +208,11 @@ class nftables(object):
 
                 index = zone_source_index_cache[family].index(zone_source)
             else:
-                index = len(zone_source_index_cache[family])
-                
+                if self._fw._allow_zone_drifting:
+                    index = 0
+                else:
+                    index = len(zone_source_index_cache[family])
+
             _verb_snippet = rule[verb]
             del rule[verb]
             if index == 0:
@@ -506,13 +509,14 @@ class nftables(object):
                                                     "prio": IPTABLES_TO_NFT_HOOK["raw"][chain][1]}}})
 
         for chain in ["PREROUTING"]:
-            default_rules.append({"add": {"chain": {"family": "inet",
-                                                    "table": TABLE_NAME,
-                                                    "name": "raw_%s_ZONES" % chain}}})
-            default_rules.append({"add": {"rule":  {"family": "inet",
-                                                    "table": TABLE_NAME,
-                                                    "chain": "raw_%s" % chain,
-                                                    "expr": [{"jump": {"target": "raw_%s_ZONES" % chain}}]}}})
+            for dispatch_suffix in ["ZONES_SOURCE", "ZONES"] if self._fw._allow_zone_drifting else ["ZONES"]:
+                default_rules.append({"add": {"chain": {"family": "inet",
+                                                        "table": TABLE_NAME,
+                                                        "name": "raw_%s_%s" % (chain, dispatch_suffix)}}})
+                default_rules.append({"add": {"rule":  {"family": "inet",
+                                                        "table": TABLE_NAME,
+                                                        "chain": "raw_%s" % chain,
+                                                        "expr": [{"jump": {"target": "raw_%s_%s" % (chain, dispatch_suffix)}}]}}})
 
         for chain in IPTABLES_TO_NFT_HOOK["mangle"].keys():
             default_rules.append({"add": {"chain": {"family": "inet",
@@ -521,13 +525,14 @@ class nftables(object):
                                                     "type": "filter",
                                                     "hook": "%s" % IPTABLES_TO_NFT_HOOK["mangle"][chain][0],
                                                     "prio": IPTABLES_TO_NFT_HOOK["mangle"][chain][1]}}})
-            default_rules.append({"add": {"chain": {"family": "inet",
-                                                    "table": TABLE_NAME,
-                                                    "name": "mangle_%s_ZONES" % chain}}})
-            default_rules.append({"add": {"rule":  {"family": "inet",
-                                                    "table": TABLE_NAME,
-                                                    "chain": "mangle_%s" % chain,
-                                                    "expr": [{"jump": {"target": "mangle_%s_ZONES" % chain}}]}}})
+            for dispatch_suffix in ["ZONES_SOURCE", "ZONES"] if self._fw._allow_zone_drifting else ["ZONES"]:
+                default_rules.append({"add": {"chain": {"family": "inet",
+                                                        "table": TABLE_NAME,
+                                                        "name": "mangle_%s_%s" % (chain, dispatch_suffix)}}})
+                default_rules.append({"add": {"rule":  {"family": "inet",
+                                                        "table": TABLE_NAME,
+                                                        "chain": "mangle_%s" % chain,
+                                                        "expr": [{"jump": {"target": "mangle_%s_%s" % (chain, dispatch_suffix)}}]}}})
 
         for family in ["ip", "ip6"]:
             for chain in IPTABLES_TO_NFT_HOOK["nat"].keys():
@@ -537,13 +542,15 @@ class nftables(object):
                                                         "type": "nat",
                                                         "hook": "%s" % IPTABLES_TO_NFT_HOOK["nat"][chain][0],
                                                         "prio": IPTABLES_TO_NFT_HOOK["nat"][chain][1]}}})
-                default_rules.append({"add": {"chain": {"family": family,
-                                                        "table": TABLE_NAME,
-                                                        "name": "nat_%s_ZONES" % chain}}})
-                default_rules.append({"add": {"rule":  {"family": family,
-                                                        "table": TABLE_NAME,
-                                                        "chain": "nat_%s" % chain,
-                                                        "expr": [{"jump": {"target": "nat_%s_ZONES" % chain}}]}}})
+
+                for dispatch_suffix in ["ZONES_SOURCE", "ZONES"] if self._fw._allow_zone_drifting else ["ZONES"]:
+                    default_rules.append({"add": {"chain": {"family": family,
+                                                            "table": TABLE_NAME,
+                                                            "name": "nat_%s_%s" % (chain, dispatch_suffix)}}})
+                    default_rules.append({"add": {"rule":  {"family": family,
+                                                            "table": TABLE_NAME,
+                                                            "chain": "nat_%s" % chain,
+                                                            "expr": [{"jump": {"target": "nat_%s_%s" % (chain, dispatch_suffix)}}]}}})
 
         for chain in IPTABLES_TO_NFT_HOOK["filter"].keys():
             default_rules.append({"add": {"chain": {"family": "inet",
@@ -554,9 +561,6 @@ class nftables(object):
                                                     "prio": IPTABLES_TO_NFT_HOOK["filter"][chain][1]}}})
 
         # filter, INPUT
-        default_rules.append({"add": {"chain": {"family": "inet",
-                                                "table": TABLE_NAME,
-                                                "name": "filter_%s_ZONES" % "INPUT"}}})
         default_rules.append({"add": {"rule":  {"family": "inet",
                                                 "table": TABLE_NAME,
                                                 "chain": "filter_%s" % "INPUT",
@@ -578,10 +582,14 @@ class nftables(object):
                                                                     "op": "==",
                                                                     "right": "lo"}},
                                                          {"accept": None}]}}})
-        default_rules.append({"add": {"rule":  {"family": "inet",
-                                                "table": TABLE_NAME,
-                                                "chain": "filter_%s" % "INPUT",
-                                                "expr": [{"jump": {"target": "filter_%s_ZONES" % "INPUT"}}]}}})
+        for dispatch_suffix in ["ZONES_SOURCE", "ZONES"] if self._fw._allow_zone_drifting else ["ZONES"]:
+            default_rules.append({"add": {"chain": {"family": "inet",
+                                                    "table": TABLE_NAME,
+                                                    "name": "filter_%s_%s" % ("INPUT", dispatch_suffix)}}})
+            default_rules.append({"add": {"rule":  {"family": "inet",
+                                                    "table": TABLE_NAME,
+                                                    "chain": "filter_%s" % "INPUT",
+                                                    "expr": [{"jump": {"target": "filter_%s_%s" % ("INPUT", dispatch_suffix)}}]}}})
         if log_denied != "off":
             default_rules.append({"add": {"rule":  {"family": "inet",
                                                     "table": TABLE_NAME,
@@ -610,10 +618,6 @@ class nftables(object):
                                                 "expr": [{"reject": {"type": "icmpx", "expr": "admin-prohibited"}}]}}})
 
         # filter, FORWARD
-        for direction in ["IN", "OUT"]:
-            default_rules.append({"add": {"chain": {"family": "inet",
-                                                    "table": TABLE_NAME,
-                                                    "name": "filter_%s_%s_ZONES" % ("FORWARD", direction)}}})
         default_rules.append({"add": {"rule":  {"family": "inet",
                                                 "table": TABLE_NAME,
                                                 "chain": "filter_%s" % "FORWARD",
@@ -636,10 +640,14 @@ class nftables(object):
                                                                     "right": "lo"}},
                                                          {"accept": None}]}}})
         for direction in ["IN", "OUT"]:
-            default_rules.append({"add": {"rule":  {"family": "inet",
-                                                    "table": TABLE_NAME,
-                                                    "chain": "filter_%s" % "FORWARD",
-                                                    "expr": [{"jump": {"target": "filter_%s_%s_ZONES" % ("FORWARD", direction)}}]}}})
+            for dispatch_suffix in ["ZONES_SOURCE", "ZONES"] if self._fw._allow_zone_drifting else ["ZONES"]:
+                default_rules.append({"add": {"chain": {"family": "inet",
+                                                        "table": TABLE_NAME,
+                                                        "name": "filter_%s_%s_%s" % ("FORWARD", direction, dispatch_suffix)}}})
+                default_rules.append({"add": {"rule":  {"family": "inet",
+                                                        "table": TABLE_NAME,
+                                                        "chain": "filter_%s" % "FORWARD",
+                                                        "expr": [{"jump": {"target": "filter_%s_%s_%s" % ("FORWARD", direction, dispatch_suffix)}}]}}})
         if log_denied != "off":
             default_rules.append({"add": {"rule":  {"family": "inet",
                                                     "table": TABLE_NAME,
@@ -778,12 +786,17 @@ class nftables(object):
             "OUTPUT": "daddr",
         }[chain]
 
+        if self._fw._allow_zone_drifting:
+            zone_dispatch_chain = "%s_%s_ZONES_SOURCE" % (table, chain)
+        else:
+            zone_dispatch_chain = "%s_%s_ZONES" % (table, chain)
+
         target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[chain], zone=zone)
         action = "goto"
 
         rule = {"family": family,
                 "table": TABLE_NAME,
-                "chain": "%s_%s_ZONES" % (table, chain),
+                "chain": zone_dispatch_chain,
                 "expr": [self._rule_addr_fragment(opt, address),
                          {action: {"target": "%s_%s" % (table, target)}}]}
         rule.update(self._zone_source_fragment(zone, address))
