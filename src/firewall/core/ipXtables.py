@@ -321,8 +321,11 @@ class ip4tables(object):
 
                 index = zone_source_index_cache.index(zone_source)
             else:
-                index = len(zone_source_index_cache)
-                
+                if self._fw._allow_zone_drifting:
+                    index = 0
+                else:
+                    index = len(zone_source_index_cache)
+
             rule[0] = "-I"
             rule.insert(2, "%d" % (index + 1))
 
@@ -577,9 +580,10 @@ class ip4tables(object):
                 self.our_chains["raw"].add("%s_direct" % chain)
 
                 if chain == "PREROUTING":
-                    default_rules["raw"].append("-N %s_ZONES" % chain)
-                    default_rules["raw"].append("-A %s -j %s_ZONES" % (chain, chain))
-                    self.our_chains["raw"].update(set(["%s_ZONES" % chain]))
+                    for dispatch_suffix in ["ZONES_SOURCE", "ZONES"] if self._fw._allow_zone_drifting else ["ZONES"]:
+                        default_rules["raw"].append("-N %s_%s" % (chain, dispatch_suffix))
+                        default_rules["raw"].append("-A %s -j %s_%s" % (chain, chain, dispatch_suffix))
+                        self.our_chains["raw"].update(set(["%s_%s" % (chain, dispatch_suffix)]))
 
         if self.get_available_tables("mangle"):
             default_rules["mangle"] = [ ]
@@ -590,9 +594,10 @@ class ip4tables(object):
                 self.our_chains["mangle"].add("%s_direct" % chain)
 
                 if chain == "PREROUTING":
-                    default_rules["mangle"].append("-N %s_ZONES" % chain)
-                    default_rules["mangle"].append("-A %s -j %s_ZONES" % (chain, chain))
-                    self.our_chains["mangle"].update(set(["%s_ZONES" % chain]))
+                    for dispatch_suffix in ["ZONES_SOURCE", "ZONES"] if self._fw._allow_zone_drifting else ["ZONES"]:
+                        default_rules["mangle"].append("-N %s_%s" % (chain, dispatch_suffix))
+                        default_rules["mangle"].append("-A %s -j %s_%s" % (chain, chain, dispatch_suffix))
+                        self.our_chains["mangle"].update(set(["%s_%s" % (chain, dispatch_suffix)]))
 
         if self.get_available_tables("nat"):
             default_rules["nat"] = [ ]
@@ -603,19 +608,22 @@ class ip4tables(object):
                 self.our_chains["nat"].add("%s_direct" % chain)
 
                 if chain in [ "PREROUTING", "POSTROUTING" ]:
-                    default_rules["nat"].append("-N %s_ZONES" % chain)
-                    default_rules["nat"].append("-A %s -j %s_ZONES" % (chain, chain))
-                    self.our_chains["nat"].update(set(["%s_ZONES" % chain]))
+                    for dispatch_suffix in ["ZONES_SOURCE", "ZONES"] if self._fw._allow_zone_drifting else ["ZONES"]:
+                        default_rules["nat"].append("-N %s_%s" % (chain, dispatch_suffix))
+                        default_rules["nat"].append("-A %s -j %s_%s" % (chain, chain, dispatch_suffix))
+                        self.our_chains["nat"].update(set(["%s_%s" % (chain, dispatch_suffix)]))
 
-        default_rules["filter"] = [
-            "-N INPUT_direct",
-            "-N INPUT_ZONES",
-
-            "-A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT",
-            "-A INPUT -i lo -j ACCEPT",
-            "-A INPUT -j INPUT_direct",
-            "-A INPUT -j INPUT_ZONES",
-        ]
+        default_rules["filter"] = []
+        self.our_chains["filter"] = set()
+        default_rules["filter"].append("-A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT")
+        default_rules["filter"].append("-A INPUT -i lo -j ACCEPT")
+        default_rules["filter"].append("-N INPUT_direct")
+        default_rules["filter"].append("-A INPUT -j INPUT_direct")
+        self.our_chains["filter"].update(set("INPUT_direct"))
+        for dispatch_suffix in ["ZONES_SOURCE", "ZONES"] if self._fw._allow_zone_drifting else ["ZONES"]:
+            default_rules["filter"].append("-N INPUT_%s" % (dispatch_suffix))
+            default_rules["filter"].append("-A INPUT -j INPUT_%s" % (dispatch_suffix))
+            self.our_chains["filter"].update(set("INPUT_%s" % (dispatch_suffix)))
         if log_denied != "off":
             default_rules["filter"].append("-A INPUT -m conntrack --ctstate INVALID %%LOGTYPE%% -j LOG --log-prefix 'STATE_INVALID_DROP: '")
         default_rules["filter"].append("-A INPUT -m conntrack --ctstate INVALID -j DROP")
@@ -623,17 +631,16 @@ class ip4tables(object):
             default_rules["filter"].append("-A INPUT %%LOGTYPE%% -j LOG --log-prefix 'FINAL_REJECT: '")
         default_rules["filter"].append("-A INPUT -j %%REJECT%%")
 
-        default_rules["filter"] += [
-            "-N FORWARD_direct",
-            "-N FORWARD_IN_ZONES",
-            "-N FORWARD_OUT_ZONES",
-
-            "-A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT",
-            "-A FORWARD -i lo -j ACCEPT",
-            "-A FORWARD -j FORWARD_direct",
-            "-A FORWARD -j FORWARD_IN_ZONES",
-            "-A FORWARD -j FORWARD_OUT_ZONES",
-        ]
+        default_rules["filter"].append("-A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT")
+        default_rules["filter"].append("-A FORWARD -i lo -j ACCEPT")
+        default_rules["filter"].append("-N FORWARD_direct")
+        default_rules["filter"].append("-A FORWARD -j FORWARD_direct")
+        self.our_chains["filter"].update(set("FORWARD_direct"))
+        for direction in ["IN", "OUT"]:
+            for dispatch_suffix in ["ZONES_SOURCE", "ZONES"] if self._fw._allow_zone_drifting else ["ZONES"]:
+                default_rules["filter"].append("-N FORWARD_%s_%s" % (direction, dispatch_suffix))
+                default_rules["filter"].append("-A FORWARD -j FORWARD_%s_%s" % (direction, dispatch_suffix))
+                self.our_chains["filter"].update(set("FORWARD_%s_%s" % (direction, dispatch_suffix)))
         if log_denied != "off":
             default_rules["filter"].append("-A FORWARD -m conntrack --ctstate INVALID %%LOGTYPE%% -j LOG --log-prefix 'STATE_INVALID_DROP: '")
         default_rules["filter"].append("-A FORWARD -m conntrack --ctstate INVALID -j DROP")
@@ -647,10 +654,7 @@ class ip4tables(object):
             "-A OUTPUT -o lo -j ACCEPT",
             "-A OUTPUT -j OUTPUT_direct",
         ]
-
-        self.our_chains["filter"] = set(["INPUT_direct", "INPUT_ZONES",
-                                         "FORWARD_direct", "FORWARD_IN_ZONES",
-                                         "FORWARD_OUT_ZONES", "OUTPUT_direct"])
+        self.our_chains["filter"].update(set("OUTPUT_direct"))
 
         final_default_rules = []
         for table in default_rules:
@@ -717,6 +721,11 @@ class ip4tables(object):
             "OUTPUT": "-d",
         }[chain]
 
+        if self._fw._allow_zone_drifting:
+            zone_dispatch_chain = "%s_ZONES_SOURCE" % (chain)
+        else:
+            zone_dispatch_chain = "%s_ZONES" % (chain)
+
         target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[chain], zone=zone)
         action = "-g"
 
@@ -727,8 +736,8 @@ class ip4tables(object):
             else:
                 opt = "src"
             flags = ",".join([opt] * self._fw.ipset.get_dimension(name))
-            rule = [ add_del,
-                     "%s_ZONES" % chain, "%%ZONE_SOURCE%%", zone,
+            rule = [ add_del, zone_dispatch_chain,
+                     "%%ZONE_SOURCE%%", zone,
                      "-t", table,
                      "-m", "set", "--match-set", name,
                      flags, action, target ]
@@ -737,14 +746,14 @@ class ip4tables(object):
                 # outgoing can not be set
                 if opt == "-d":
                     return ""
-                rule = [ add_del,
-                         "%s_ZONES" % chain, "%%ZONE_SOURCE%%", zone,
+                rule = [ add_del, zone_dispatch_chain,
+                         "%%ZONE_SOURCE%%", zone,
                          "-t", table,
                          "-m", "mac", "--mac-source", address.upper(),
                          action, target ]
             else:
-                rule = [ add_del,
-                         "%s_ZONES" % chain, "%%ZONE_SOURCE%%", zone,
+                rule = [ add_del, zone_dispatch_chain,
+                         "%%ZONE_SOURCE%%", zone,
                          "-t", table,
                          opt, address, action, target ]
         return [rule]
