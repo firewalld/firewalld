@@ -2558,6 +2558,22 @@
       <refsect3 id="FirewallD1.config.Properties">
         <title>Properties</title>
         <variablelist>
+          <varlistentry id="FirewallD1.config.Properties.AllowZoneDrifting">
+            <term><parameter>AllowZoneDrifting</parameter> - s - (rw)</term>
+            <listitem><para>
+                Older versions of firewalld had undocumented behavior known
+                as "zone drifting". This allowed packets to ingress multiple
+                zones - this is a violation of zone based firewalls. However,
+                some users rely on this behavior to have a "catch-all" zone,
+                e.g. the default zone. You can enable this if you desire such
+                behavior. It's disabled by default for security reasons.
+                Note: If "yes" packets will only drift from source based zones
+                to interface based zones (including the default zone). Packets
+                never drift from interface based zones to other interfaces
+                based zones (including the default zone).
+                Valid values; "yes", "no". Defaults to "no".
+            </para></listitem>
+          </varlistentry>
           <varlistentry id="FirewallD1.config.Properties.AutomaticHelpers">
             <term>AutomaticHelpers - s - (rw)</term>
             <listitem>

@@ -114,6 +114,7 @@ class Firewall(object):
         self._automatic_helpers = config.FALLBACK_AUTOMATIC_HELPERS
         self._firewall_backend = config.FALLBACK_FIREWALL_BACKEND
         self.nf_conntrack_helper_setting = 0
+        self._allow_zone_drifting = config.FALLBACK_ALLOW_ZONE_DRIFTING
 
     def individual_calls(self):
         return self._individual_calls
@@ -273,6 +274,19 @@ class Firewall(object):
                 self._firewall_backend = self._firewalld_conf.get("FirewallBackend")
                 log.debug1("FirewallBackend is set to '%s'",
                            self._firewall_backend)
+
+            if self._firewalld_conf.get("AllowZoneDrifting"):
+                value = self._firewalld_conf.get("AllowZoneDrifting")
+                if value.lower() in [ "no", "false" ]:
+                    self._allow_zone_drifting = False
+                else:
+                    self._allow_zone_drifting = True
+                    log.warning("AllowZoneDrifting is enabled. This is considered "
+                                "an insecure configuration option. It will be "
+                                "removed in a future release. Please consider "
+                                "disabling it now.")
+                log.debug1("AllowZoneDrifting is set to '%s'",
+                           self._allow_zone_drifting)
 
         self.config.set_firewalld_conf(copy.deepcopy(self._firewalld_conf))
 

@@ -3,6 +3,7 @@ FWD_START_TEST([firewalld.conf])
 dnl Verify defaults over dbus. Should be inline with default firewalld.conf.
 IF_HOST_SUPPORTS_NFT_FIB([
 DBUS_GETALL([config], [config], 0, [dnl
+string "AllowZoneDrifting" : variant string "no"
 string "AutomaticHelpers" : variant string "system"
 string "CleanupOnExit" : variant string "no"
 string "DefaultZone" : variant string "public"
@@ -14,6 +15,7 @@ string "LogDenied" : variant string "off"
 string "MinimalMark" : variant int32 100
 ])], [
 DBUS_GETALL([config], [config], 0, [dnl
+string "AllowZoneDrifting" : variant string "no"
 string "AutomaticHelpers" : variant string "system"
 string "CleanupOnExit" : variant string "no"
 string "DefaultZone" : variant string "public"
@@ -42,6 +44,7 @@ _helper([IPv6_rpfilter], [string:"yes"], [variant string "yes"])
 _helper([IndividualCalls], [string:"yes"], [variant string "yes"])
 _helper([FirewallBackend], [string:"iptables"], [variant string "iptables"])
 _helper([CleanupOnExit], [string:"yes"], [variant string "yes"])
+_helper([AllowZoneDrifting], [string:"yes"], [variant string "yes"])
 dnl Note: DefaultZone is RO
 m4_undefine([_helper])
 
