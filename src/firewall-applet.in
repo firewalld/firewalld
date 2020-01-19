@@ -24,7 +24,7 @@ import sys
 from PyQt5 import QtGui, QtCore, QtWidgets
 
 import gi
-gi.require_version('Notify', '0.7')
+gi.require_version('Notify', '0.7.3')
 from gi.repository import Notify
 
 import os
@@ -798,6 +798,7 @@ class TrayApplet(QtWidgets.QSystemTrayIcon):
         #self.showMessage(fromUTF8(escape(self.name)), msg, self.urgencies[urgency], timeout*1000)
         n = Notify.Notification.new(escape(self.name), msg, self.icon_name)
         n.set_urgency(Notify.Urgency.NORMAL)
+        n.set_app_name(escape(self.name))
         try:
             n.show()
         except:
