@@ -199,8 +199,11 @@ class nftables(object):
 
                 index = zone_source_index_cache[family].index(zone_source)
             else:
-                index = len(zone_source_index_cache[family])
-                
+                if self._fw._allow_zone_drifting:
+                    index = 0
+                else:
+                    index = len(zone_source_index_cache[family])
+
             if index == 0:
                 rule[0] = "insert"
             else:
@@ -411,9 +414,10 @@ class nftables(object):
                                   IPTABLES_TO_NFT_HOOK["raw"][chain][0],
                                   IPTABLES_TO_NFT_HOOK["raw"][chain][1]))
 
-            default_rules.append("add chain inet %s raw_%s_ZONES" % (TABLE_NAME, chain))
-            default_rules.append("add rule inet %s raw_%s jump raw_%s_ZONES" % (TABLE_NAME, chain, chain))
-            OUR_CHAINS["inet"]["raw"].update(set(["%s_ZONES" % chain]))
+            for dispatch_suffix in ["ZONES_SOURCE", "ZONES"] if self._fw._allow_zone_drifting else ["ZONES"]:
+                default_rules.append("add chain inet %s raw_%s_%s" % (TABLE_NAME, chain, dispatch_suffix))
+                default_rules.append("add rule inet %s raw_%s jump raw_%s_%s" % (TABLE_NAME, chain, chain, dispatch_suffix))
+                OUR_CHAINS["inet"]["raw"].update(set(["%s_%s" % (chain, dispatch_suffix)]))
 
         OUR_CHAINS["inet"]["mangle"] = set()
         for chain in IPTABLES_TO_NFT_HOOK["mangle"].keys():
@@ -422,9 +426,10 @@ class nftables(object):
                                   IPTABLES_TO_NFT_HOOK["mangle"][chain][0],
                                   IPTABLES_TO_NFT_HOOK["mangle"][chain][1]))
 
-            default_rules.append("add chain inet %s mangle_%s_ZONES" % (TABLE_NAME, chain))
-            default_rules.append("add rule inet %s mangle_%s jump mangle_%s_ZONES" % (TABLE_NAME, chain, chain))
-            OUR_CHAINS["inet"]["mangle"].update(set(["%s_ZONES" % chain]))
+            for dispatch_suffix in ["ZONES_SOURCE", "ZONES"] if self._fw._allow_zone_drifting else ["ZONES"]:
+                default_rules.append("add chain inet %s mangle_%s_%s" % (TABLE_NAME, chain, dispatch_suffix))
+                default_rules.append("add rule inet %s mangle_%s jump mangle_%s_%s" % (TABLE_NAME, chain, chain, dispatch_suffix))
+                OUR_CHAINS["inet"]["mangle"].update(set(["%s_%s" % (chain, dispatch_suffix)]))
 
         OUR_CHAINS["ip"]["nat"] = set()
         OUR_CHAINS["ip6"]["nat"] = set()
@@ -435,9 +440,10 @@ class nftables(object):
                                       IPTABLES_TO_NFT_HOOK["nat"][chain][0],
                                       IPTABLES_TO_NFT_HOOK["nat"][chain][1]))
 
-                default_rules.append("add chain %s %s nat_%s_ZONES" % (family, TABLE_NAME, chain))
-                default_rules.append("add rule %s %s nat_%s jump nat_%s_ZONES" % (family, TABLE_NAME, chain, chain))
-                OUR_CHAINS[family]["nat"].update(set(["%s_ZONES" % chain]))
+                for dispatch_suffix in ["ZONES_SOURCE", "ZONES"] if self._fw._allow_zone_drifting else ["ZONES"]:
+                    default_rules.append("add chain %s %s nat_%s_%s" % (family, TABLE_NAME, chain, dispatch_suffix))
+                    default_rules.append("add rule %s %s nat_%s jump nat_%s_%s" % (family, TABLE_NAME, chain, chain, dispatch_suffix))
+                    OUR_CHAINS[family]["nat"].update(set(["%s_%s" % (chain, dispatch_suffix)]))
 
         OUR_CHAINS["inet"]["filter"] = set()
         for chain in IPTABLES_TO_NFT_HOOK["filter"].keys():
@@ -447,10 +453,11 @@ class nftables(object):
                                   IPTABLES_TO_NFT_HOOK["filter"][chain][1]))
 
         # filter, INPUT
-        default_rules.append("add chain inet %s filter_%s_ZONES" % (TABLE_NAME, "INPUT"))
         default_rules.append("add rule inet %s filter_%s ct state established,related accept" % (TABLE_NAME, "INPUT"))
         default_rules.append("add rule inet %s filter_%s iifname lo accept" % (TABLE_NAME, "INPUT"))
-        default_rules.append("add rule inet %s filter_%s jump filter_%s_ZONES" % (TABLE_NAME, "INPUT", "INPUT"))
+        for dispatch_suffix in ["ZONES_SOURCE", "ZONES"] if self._fw._allow_zone_drifting else ["ZONES"]:
+            default_rules.append("add chain inet %s filter_%s_%s" % (TABLE_NAME, "INPUT", dispatch_suffix))
+            default_rules.append("add rule inet %s filter_%s jump filter_%s_%s" % (TABLE_NAME, "INPUT", "INPUT", dispatch_suffix))
         if log_denied != "off":
             default_rules.append("add rule inet %s filter_%s ct state invalid %%%%LOGTYPE%%%% log prefix '\"STATE_INVALID_DROP: \"'" % (TABLE_NAME, "INPUT"))
         default_rules.append("add rule inet %s filter_%s ct state invalid drop" % (TABLE_NAME, "INPUT"))
@@ -460,11 +467,12 @@ class nftables(object):
 
         # filter, FORWARD
         default_rules.append("add chain inet %s filter_%s_IN_ZONES" % (TABLE_NAME, "FORWARD"))
-        default_rules.append("add chain inet %s filter_%s_OUT_ZONES" % (TABLE_NAME, "FORWARD"))
         default_rules.append("add rule inet %s filter_%s ct state established,related accept" % (TABLE_NAME, "FORWARD"))
         default_rules.append("add rule inet %s filter_%s iifname lo accept" % (TABLE_NAME, "FORWARD"))
-        default_rules.append("add rule inet %s filter_%s jump filter_%s_IN_ZONES" % (TABLE_NAME, "FORWARD", "FORWARD"))
-        default_rules.append("add rule inet %s filter_%s jump filter_%s_OUT_ZONES" % (TABLE_NAME, "FORWARD", "FORWARD"))
+        for direction in ["IN", "OUT"]:
+            for dispatch_suffix in ["ZONES_SOURCE", "ZONES"] if self._fw._allow_zone_drifting else ["ZONES"]:
+                default_rules.append("add chain inet %s filter_%s_%s_%s" % (TABLE_NAME, "FORWARD", direction, dispatch_suffix))
+                default_rules.append("add rule inet %s filter_%s jump filter_%s_%s_%s" % (TABLE_NAME, "FORWARD", "FORWARD", direction, dispatch_suffix))
         if log_denied != "off":
             default_rules.append("add rule inet %s filter_%s ct state invalid %%%%LOGTYPE%%%% log prefix '\"STATE_INVALID_DROP: \"'" % (TABLE_NAME, "FORWARD"))
         default_rules.append("add rule inet %s filter_%s ct state invalid drop" % (TABLE_NAME, "FORWARD"))
@@ -566,6 +574,11 @@ class nftables(object):
             "OUTPUT": "daddr",
         }[chain]
 
+        if self._fw._allow_zone_drifting:
+            zone_dispatch_chain = "%s_%s_ZONES_SOURCE" % (table, chain)
+        else:
+            zone_dispatch_chain = "%s_%s_ZONES" % (table, chain)
+
         target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[chain], zone=zone)
         action = "goto"
 
@@ -585,7 +598,7 @@ class nftables(object):
                 rule_family = "ip6"
 
         rule = [add_del, "rule", family, "%s" % TABLE_NAME,
-                "%s_%s_ZONES" % (table, chain),
+                zone_dispatch_chain,
                 "%%ZONE_SOURCE%%", zone,
                 rule_family, opt, address, action, "%s_%s" % (table, target)]
         return [rule]
