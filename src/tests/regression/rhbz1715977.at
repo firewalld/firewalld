@@ -1,4 +1,4 @@
-FWD_START_TEST([rich rule source/destination with service destination])
+FWD_START_TEST([rich rule src/dst with service destination])
 AT_KEYWORDS(rich service rhbz1715977 rhbz1729097 rhbz1791783)
 
 FWD_CHECK([-q --permanent --zone=internal --add-interface=foobar0])
