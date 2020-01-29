@@ -18,4 +18,4 @@ FWD_CHECK([-q --ipset=foobar --query-entry=1.2.3.4], 32, ignore, ignore)
 FWD_CHECK([-q --ipset=foobar --remove-entries-from-file=foobar_entries.txt])
 FWD_END_TEST([-e '/Error: IPSET_WITH_TIMEOUT/d' dnl
               -e '/ERROR: IPSET_WITH_TIMEOUT/d' dnl
-			  -e '/WARNING: NOT_ENABLED/d'])
+              -e '/WARNING: NOT_ENABLED/d'])
