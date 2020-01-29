@@ -8,48 +8,48 @@ FWD_CHECK([-q --set-automatic-helpers=no])
 
 FWD_CHECK([-q --add-service=ftp])
 NS_CHECK([nft list ruleset | TRIM_WHITESPACE |grep -A3 "ct helper helper-ftp-tcp"], 0, [m4_strip([dnl
-	ct helper helper-ftp-tcp {
-	type "ftp" protocol tcp
-	l3proto inet
-	}
+    ct helper helper-ftp-tcp {
+    type "ftp" protocol tcp
+    l3proto inet
+    }
 ])])
 NFT_LIST_RULES([inet], [filter_IN_public_allow], 0, [dnl
-	table inet firewalld {
-	chain filter_IN_public_allow {
-	tcp dport 22 ct state new,untracked accept
-	ip6 daddr fe80::/64 udp dport 546 ct state new,untracked accept
-	tcp dport 21 ct helper set "helper-ftp-tcp"
-	tcp dport 21 ct state new,untracked accept
-	}
-	}
+    table inet firewalld {
+    chain filter_IN_public_allow {
+    tcp dport 22 ct state new,untracked accept
+    ip6 daddr fe80::/64 udp dport 546 ct state new,untracked accept
+    tcp dport 21 ct helper set "helper-ftp-tcp"
+    tcp dport 21 ct state new,untracked accept
+    }
+    }
 ])
 
 FWD_CHECK([-q --add-service=sip])
 NS_CHECK([nft list ruleset | TRIM_WHITESPACE |grep -A3 "ct helper helper-sip-tcp"], 0, [m4_strip([dnl
-	ct helper helper-sip-tcp {
-	type "sip" protocol tcp
-	l3proto inet
-	}
+    ct helper helper-sip-tcp {
+    type "sip" protocol tcp
+    l3proto inet
+    }
 ])])
 NS_CHECK([nft list ruleset | TRIM_WHITESPACE |grep -A3 "ct helper helper-sip-udp"], 0, [m4_strip([dnl
-	ct helper helper-sip-udp {
-	type "sip" protocol udp
-	l3proto inet
-	}
+    ct helper helper-sip-udp {
+    type "sip" protocol udp
+    l3proto inet
+    }
 ])])
 NFT_LIST_RULES([inet], [filter_IN_public_allow], 0, [dnl
-	table inet firewalld {
-	chain filter_IN_public_allow {
-	tcp dport 22 ct state new,untracked accept
-	ip6 daddr fe80::/64 udp dport 546 ct state new,untracked accept
-	tcp dport 21 ct helper set "helper-ftp-tcp"
-	tcp dport 21 ct state new,untracked accept
-	tcp dport 5060 ct helper set "helper-sip-tcp"
-	udp dport 5060 ct helper set "helper-sip-udp"
-	tcp dport 5060 ct state new,untracked accept
-	udp dport 5060 ct state new,untracked accept
-	}
-	}
+    table inet firewalld {
+    chain filter_IN_public_allow {
+    tcp dport 22 ct state new,untracked accept
+    ip6 daddr fe80::/64 udp dport 546 ct state new,untracked accept
+    tcp dport 21 ct helper set "helper-ftp-tcp"
+    tcp dport 21 ct state new,untracked accept
+    tcp dport 5060 ct helper set "helper-sip-tcp"
+    udp dport 5060 ct helper set "helper-sip-udp"
+    tcp dport 5060 ct state new,untracked accept
+    udp dport 5060 ct state new,untracked accept
+    }
+    }
 ])
 
 FWD_END_TEST
