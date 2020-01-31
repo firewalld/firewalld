@@ -1,7 +1,6 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
 # Translators:
 # Adam Pribyl <pribyl@lowlevel.cz>, 2007-2010
 # zdenek <chmelarz@gmail.com>, 2013
@@ -23,21 +22,23 @@
 # Eric Garver <e@erig.me>, 2018. #zanata
 # Robert Chudý <robertch@virtus.cz>, 2018. #zanata
 # Pavel Borecki <pavel.borecki@gmail.com>, 2019. #zanata
+# Eric Garver <egarver@redhat.com>, 2020.
+# Tomáš Doležal <todoleza@redhat.com>, 2020.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-07 09:22-0500\n"
-"PO-Revision-Date: 2019-06-14 06:09+0000\n"
-"Last-Translator: Pavel Borecki <pavel.borecki@gmail.com>\n"
-"Language-Team: Czech (http://www.transifex.com/projects/p/firewalld/language/"
-"cs/)\n"
+"POT-Creation-Date: 2020-01-13 14:38-0500\n"
+"PO-Revision-Date: 2020-01-16 16:15+0000\n"
+"Last-Translator: Tomáš Doležal <todoleza@redhat.com>\n"
+"Language-Team: Czech <https://translate.stg.fedoraproject.org/projects/"
+"firewalld/master/cs/>\n"
 "Language: cs\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Zanata 4.6.2\n"
+"X-Generator: Weblate 3.10.1\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:416
 msgid "Firewall Applet"
@@ -96,7 +97,7 @@ msgid ""
 "that are changing zones of connections, it might be of limited use."
 msgstr ""
 "Tato vlastnost je užitečná pro osoby využívající převážně implicitní zóny. "
-"Pro uživatele, kteří mění zóny připojení, může být toto použití omezující. "
+"Pro uživatele, kteří mění zóny připojení, může být toto použití omezující."
 
 #: ../src/firewall-applet.in:235
 msgid "Shields Up Zone:"
@@ -246,7 +247,7 @@ msgstr "Komunikace s FirewallD ztracena."
 
 #: ../src/firewall-applet.in:989
 msgid "FirewallD has been reloaded."
-msgstr "FirewallD byl aktualizován"
+msgstr "FirewallD byl aktualizován."
 
 #: ../src/firewall-applet.in:996
 #, c-format
@@ -405,7 +406,7 @@ msgstr "Cílový port"
 
 #: ../src/firewall-config.in:566
 msgid "To Address"
-msgstr "Cílová adresa:"
+msgstr "Cílová adresa"
 
 #: ../src/firewall-config.in:616
 msgid "Bindings"
@@ -808,7 +809,7 @@ msgstr "raw"
 
 #: ../src/firewall-config.glade.h:17
 msgid "security"
-msgstr "bezpečnost"
+msgstr "security"
 
 #: ../src/firewall-config.glade.h:18
 msgid "Table:"
@@ -967,7 +968,7 @@ msgid ""
 msgstr ""
 "Aktualizuje pravidla firewallu. Současná trvalá konfigurace se stane novou "
 "běžící konfigurací. Tj. všechny změny provedeny v běžící konfiguraci budou "
-"po této aktualizaci ztraceny, pokud již v  trvalé konfiguraci předtím nebyly."
+"po této aktualizaci ztraceny, pokud již v trvalé konfiguraci předtím nebyly."
 
 #: ../src/firewall-config.glade.h:60
 msgid "Change which zone a network connection belongs to."
@@ -1098,7 +1099,7 @@ msgid ""
 "filters and rich rules. The zone can be bound to interfaces and source "
 "addresses."
 msgstr ""
-" Firewalld zóna definuje úroveň důvěryhodnosti pro připojení k sítim, "
+"Firewalld zóna definuje úroveň důvěryhodnosti pro připojení k sítim, "
 "rozhraním a zdrojovým adresám vázaných na zóny. Zóna kombinuje servisy, "
 "porty, protokoly, maškarádování, přesměrování portů a paketů, filtrování "
 "icmp a bohatá pravidla. Zóna může být vázána na rozhraní a zdrojové adresy."
@@ -1256,7 +1257,7 @@ msgid ""
 "types are allowed to pass the firewall. The default is no limitation."
 msgstr ""
 "Označte v seznamu typy ICMP zpráv, které mají být odmítnuty. Všechny ostatní "
-"ICMP typy budou  procházet firewallem. Implicitně jsou zprávy vpouštěny bez "
+"ICMP typy budou procházet firewallem. Implicitně jsou zprávy vpouštěny bez "
 "omezení."
 
 #: ../src/firewall-config.glade.h:118
@@ -1533,7 +1534,7 @@ msgstr ""
 "Pomocník sledování spojení napomáhá ve fungování protokolů, které používají "
 "různé toky pro signalizaci a přenosy dat. Přenosy dat využívají porty, které "
 "nesouvisí se signalizací spojení, a proto jsou bez pomocníka firewallem "
-"blokovány. "
+"blokovány."
 
 #: ../src/firewall-config.glade.h:174
 msgid "Define ports or port ranges, which are monitored by the helper."
@@ -1786,11 +1787,11 @@ msgstr "Zadejte název rozhraní:"
 
 #: ../src/firewall-config.glade.h:223
 msgid "Base IPSet Settings"
-msgstr "Nastavení základního IPSecu"
+msgstr "Nastavení základního IPSetu"
 
 #: ../src/firewall-config.glade.h:224
 msgid "Please configure base ipset settings:"
-msgstr "Nakonfigurujte prosím základní nastavení IPSecu"
+msgstr "Nakonfigurujte prosím základní nastavení ipsetu:"
 
 #: ../src/firewall-config.glade.h:225
 msgid "Type:"
@@ -1834,7 +1835,7 @@ msgstr "Záznam zamítnutí"
 
 #: ../src/firewall-config.glade.h:236
 msgid "Please select the log denied value:"
-msgstr "Vyberte prosím hodnotu záznamu zamítnutí"
+msgstr "Vyberte prosím hodnotu záznamu zamítnutí:"
 
 #: ../src/firewall-config.glade.h:237
 msgid "Mark"
@@ -1882,7 +1883,7 @@ msgstr "Přímé pravidlo"
 
 #: ../src/firewall-config.glade.h:248
 msgid "Please select ipv and table, chain priority and enter the args."
-msgstr "Vyberte prosím IPv a tabulku, prioritu řetězu a zadejte argumenty"
+msgstr "Vyberte prosím ipv a tabulku, prioritu řetězu a zadejte argumenty."
 
 #: ../src/firewall-config.glade.h:249
 msgid "Priority:"
@@ -1902,7 +1903,7 @@ msgstr "Košaté pravidlo"
 
 #: ../src/firewall-config.glade.h:254
 msgid "Please enter a rich rule."
-msgstr "Zadejte košaté pravidlo"
+msgstr "Zadejte bohaté pravidlo."
 
 #: ../src/firewall-config.glade.h:255
 msgid "For host or network white or blacklisting deactivate the element."
@@ -2012,7 +2013,7 @@ msgstr "Zadejte nastavení hlavní zóny:"
 
 #: ../src/firewall-config.glade.h:305
 msgid "Default Target"
-msgstr "Výchozí cíl:"
+msgstr "Výchozí cíl"
 
 #: ../src/firewall-config.glade.h:306
 msgid "Target:"

@@ -1,31 +1,30 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
 # Translators:
 # Maxim Dubovoy <max@mylinux.com.ua>, 2003
-# Yuri Chornoivan <yurchor@ukr.net>, 2010-2014
-# Yuri Chornoivan <yurchor@ukr.net>, 2012
-# Yuri Chornoivan <yurchor@ukr.net>, 2015. #zanata
-# Yuri Chornoivan <yurchor@ukr.net>, 2016. #zanata
-# Yuri Chornoivan <yurchor@ukr.net>, 2017. #zanata
-# Yuri Chornoivan <yurchor@ukr.net>, 2018. #zanata
+# Yuri Chornoivan <yurchor@ukr.net>, 2010-2014, 2020.
+# Yuri Chornoivan <yurchor@ukr.net>, 2012, 2020.
+# Yuri Chornoivan <yurchor@ukr.net>, 2015. #zanata, 2020.
+# Yuri Chornoivan <yurchor@ukr.net>, 2016. #zanata, 2020.
+# Yuri Chornoivan <yurchor@ukr.net>, 2017. #zanata, 2020.
+# Yuri Chornoivan <yurchor@ukr.net>, 2018. #zanata, 2020.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-07 09:22-0500\n"
-"PO-Revision-Date: 2018-07-29 04:00+0000\n"
+"POT-Creation-Date: 2020-01-13 14:38-0500\n"
+"PO-Revision-Date: 2020-01-17 18:15+0000\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
-"Language-Team: Ukrainian (http://www.transifex.com/projects/p/firewalld/"
-"language/uk/)\n"
+"Language-Team: Ukrainian <https://translate.stg.fedoraproject.org/projects/"
+"firewalld/master/uk/>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Zanata 4.6.2\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 3.10.1\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:416
 msgid "Firewall Applet"
@@ -397,7 +396,7 @@ msgstr "На порт"
 
 #: ../src/firewall-config.in:566
 msgid "To Address"
-msgstr "На адресу:"
+msgstr "На адресу"
 
 #: ../src/firewall-config.in:616
 msgid "Bindings"
@@ -670,7 +669,7 @@ msgstr "Вбудована служба, підтримки перейменув
 
 #: ../src/firewall-config.in:5602
 msgid "Please enter an ipv4 address with the form address[/mask]."
-msgstr "Будь ласка, введіть адресу IPv4 у форматі «адреса[/маска]»"
+msgstr "Будь ласка, введіть адресу IPv4 у форматі «адреса[/маска]»."
 
 #: ../src/firewall-config.in:5603
 msgid "The mask can be a network mask or a number."
@@ -678,7 +677,7 @@ msgstr "Маску можна вказати у форматі маски мер
 
 #: ../src/firewall-config.in:5605
 msgid "Please enter an ipv6 address with the form address[/mask]."
-msgstr "Будь ласка, введіть адресу IPv6 у форматі «адреса[/маска]»"
+msgstr "Будь ласка, введіть адресу IPv6 у форматі «адреса[/маска]»."
 
 #: ../src/firewall-config.in:5606
 msgid "The mask is a number."
@@ -686,7 +685,7 @@ msgstr "Маску слід вказати у форматі числа."
 
 #: ../src/firewall-config.in:5608
 msgid "Please enter an ipv4 or ipv6 address with the form address[/mask]."
-msgstr "Будь ласка, введіть адресу IPv4 або IPv6 у форматі «адреса[/маска]»"
+msgstr "Будь ласка, введіть адресу IPv4 або IPv6 у форматі «адреса[/маска]»."
 
 #: ../src/firewall-config.in:5609
 msgid ""
@@ -1325,7 +1324,7 @@ msgid ""
 "masquerading will not work for MAC source bindings."
 msgstr ""
 "Додати записи для прив’язування адрес джерела або областей до зони. Можна "
-"також виконати прив’язування до MAC-адреси джерела, але із обмеженнями.  Для "
+"також виконати прив’язування до MAC-адреси джерела, але із обмеженнями. Для "
 "прив’язок MAC-джерел не працюватимуть переспрямування портів та маскарад."
 
 #: ../src/firewall-config.glade.h:132
@@ -1437,7 +1436,7 @@ msgid ""
 msgstr ""
 "IPSet може бути використано для створення «білих» або «чорних» списків, у "
 "ньому можуть зберігатися, наприклад, IP-адреси, номери портів або MAC-"
-"адреси.  "
+"адреси. "
 
 #: ../src/firewall-config.glade.h:155
 msgid "IPSet"
@@ -1751,7 +1750,7 @@ msgstr "Імена користувачів"
 
 #: ../src/firewall-config.glade.h:210
 msgid "User ids."
-msgstr "Ід. користувачів"
+msgstr "Ід. користувачів."
 
 #: ../src/firewall-config.glade.h:211
 msgid "Add User Id"
@@ -1892,7 +1891,7 @@ msgstr "Інший модуль:"
 
 #: ../src/firewall-config.glade.h:245
 msgid "Port and Protocol"
-msgstr "Порт та протокол:"
+msgstr "Порт та протокол"
 
 #: ../src/firewall-config.glade.h:246
 msgid "Please enter a port and protocol."
