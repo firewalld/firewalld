@@ -1,7 +1,6 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
 # Translators:
 # Alick Zhao <alick9188@gmail.com>, 2013
 # Christopher Meng <cickumqt@gmail.com>, 2012-2013
@@ -20,21 +19,22 @@
 # Eric Garver <e@erig.me>, 2018. #zanata
 # Qiyu Yan <yanqiyu01@gmail.com>, 2018. #zanata
 # Pany <pany@fedoraproject.org>, 2019. #zanata
+# Pany <geekpany@gmail.com>, 2020.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-07 14:17-0500\n"
-"PO-Revision-Date: 2019-03-10 05:14+0000\n"
-"Last-Translator: Pany <pany@fedoraproject.org>\n"
-"Language-Team: Chinese (China) (http://www.transifex.com/projects/p/"
-"firewalld/language/zh_CN/)\n"
+"POT-Creation-Date: 2020-01-13 14:38-0500\n"
+"PO-Revision-Date: 2020-01-14 14:02+0000\n"
+"Last-Translator: Pany <geekpany@gmail.com>\n"
+"Language-Team: Chinese (Simplified) <https://translate.stg.fedoraproject.org/"
+"projects/firewalld/master/zh_CN/>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Zanata 4.6.2\n"
+"X-Generator: Weblate 3.10.1\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:416
 msgid "Firewall Applet"
@@ -51,12 +51,12 @@ msgstr "防火墙配置"
 #. Translators: These are searchable keywords for the firewall configuration tool
 #: ../config/firewall-config.desktop.in.h:4
 msgid "firewall;network;security;iptables;netfilter;"
-msgstr "firewall;network;security;iptables;netfilter;"
+msgstr "防火墙;网络;安全;iptables;netfilter;"
 
 #: ../src/firewall-applet.in:92 ../src/firewall-config.in:7988
 #, c-format
 msgid "Select zone for interface '%s'"
-msgstr "为接口 '%s' 选择区域"
+msgstr "为网卡 '%s' 选择区域"
 
 #: ../src/firewall-applet.in:132 ../src/firewall-applet.in:139
 #: ../src/firewall-applet.in:145 ../src/firewall-config.in:2448
@@ -72,7 +72,7 @@ msgstr "为连接 '%s' 选择区域"
 
 #: ../src/firewall-applet.in:176 ../src/firewall-config.in:3927
 msgid "Failed to set zone {zone} for connection {connection_name}"
-msgstr "设置 {connection_name} 的区 {zone} 失败"
+msgstr "设置 {connection_name} 的区域 {zone} 失败"
 
 #: ../src/firewall-applet.in:190
 #, c-format
@@ -85,7 +85,7 @@ msgstr "配置保护开启/关闭区域"
 
 #: ../src/firewall-applet.in:220
 msgid "Here you can select the zones used for Shields Up and Shields Down."
-msgstr "在这里您可以选择开启保护和关闭保护的区域。"
+msgstr "在这里您可以选择用于开启保护和关闭保护的区域。"
 
 #: ../src/firewall-applet.in:226
 msgid ""
@@ -134,15 +134,15 @@ msgstr "编辑防火墙设置..."
 
 #: ../src/firewall-applet.in:487 ../src/firewall-config.glade.h:61
 msgid "Change Zones of Connections..."
-msgstr "更改连接区域…"
+msgstr "更改连接区域……"
 
 #: ../src/firewall-applet.in:491
 msgid "Configure Shields UP/Down Zones..."
-msgstr "配置保护开启/关闭区域…"
+msgstr "配置保护开启/关闭区域……"
 
 #: ../src/firewall-applet.in:495
 msgid "Block all network traffic"
-msgstr "阻止所有网络传输"
+msgstr "拦截所有网络传输"
 
 #: ../src/firewall-applet.in:500
 msgid "About"
@@ -158,7 +158,7 @@ msgstr "连接"
 #: ../src/firewall-config.in:2477 ../src/firewall-config.in:2673
 #: ../src/firewall-config.in:2698 ../src/firewall-config.glade.h:130
 msgid "Interfaces"
-msgstr "接口"
+msgstr "网卡"
 
 #: ../src/firewall-applet.in:516 ../src/firewall-config.in:622
 #: ../src/firewall-config.in:2508 ../src/firewall-config.in:2676
@@ -184,7 +184,7 @@ msgstr "{entry} (区域：{zone})"
 
 #: ../src/firewall-applet.in:697
 msgid "{entry} (Default Zone: {default_zone})"
-msgstr "{entry} (默认区：{default_zone})"
+msgstr "{entry} (默认区域：{default_zone})"
 
 #: ../src/firewall-applet.in:778 ../src/firewall-config.in:1574
 msgid "Failed to get connections from NetworkManager"
@@ -196,11 +196,11 @@ msgstr "没有可用的 NetworkManager 导入"
 
 #: ../src/firewall-applet.in:868
 msgid "No connection to firewall daemon"
-msgstr "没有到防火墙守护进程的连接"
+msgstr "没有与防火墙守护进程的连接"
 
 #: ../src/firewall-applet.in:876 ../src/firewall-applet.in:1014
 msgid "All network traffic is blocked."
-msgstr "阻挡所有网络传输。"
+msgstr "拦截所有网络传输。"
 
 #: ../src/firewall-applet.in:880
 #, c-format
@@ -212,16 +212,16 @@ msgid ""
 "Default Zone '{default_zone}' active for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
-"接口 '{interface}' 上连接 '{connection}'  的活动默认区 '{default_zone}'"
+"网卡 '{interface}' 上的连接 '{connection}' 的活动默认区 '{default_zone}'"
 
 #: ../src/firewall-applet.in:889
 msgid ""
 "Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
-msgstr "在接口 '{interface}' 启用连接 '{connection}' 的区域 '{zone}'"
+msgstr "在网卡 '{interface}' 启用连接 '{connection}' 的区域 '{zone}'"
 
 #: ../src/firewall-applet.in:901
 msgid "Zone '{zone}' active for interface '{interface}'"
-msgstr "在接口 '{interface}' 启用区域 '{zone}'"
+msgstr "在网卡 '{interface}' 启用区域 '{zone}'"
 
 #: ../src/firewall-applet.in:909
 msgid "Zone '{zone}' active for source {source}"
@@ -233,24 +233,24 @@ msgstr "没有启用区域。"
 
 #: ../src/firewall-applet.in:972
 msgid "Connection to FirewallD established."
-msgstr "建立至 FirewallD 的连接。"
+msgstr "已建立与 FirewallD 的连接。"
 
 #: ../src/firewall-applet.in:984
 msgid "Connection to FirewallD lost."
-msgstr "丢失至 FirewallD 的连接。"
+msgstr "已失去与 FirewallD 的连接。"
 
 #: ../src/firewall-applet.in:989
 msgid "FirewallD has been reloaded."
-msgstr "FirewallD 已经重载。"
+msgstr "FirewallD 已重新加载。"
 
 #: ../src/firewall-applet.in:996
 #, c-format
 msgid "Default zone changed to '%s'."
-msgstr "默认区域变更至 '%s'。"
+msgstr "默认区域已改为 '%s'。"
 
 #: ../src/firewall-applet.in:1015
 msgid "Network traffic is not blocked anymore."
-msgstr "不再阻挡网络传输。"
+msgstr "不再拦截网络传输。"
 
 #: ../src/firewall-applet.in:1041 ../src/firewall-applet.in:1095
 msgid "activated"
@@ -265,7 +265,7 @@ msgid ""
 "Default zone '{default_zone}' {activated_deactivated} for connection "
 "'{connection}' on interface '{interface}'"
 msgstr ""
-"接口 '{interface}' 上连接 '{connection}'  的默认区 "
+"网卡 '{interface}' 上连接 '{connection}' 的默认区 "
 "'{default_zone}' {activated_deactivated}"
 
 #: ../src/firewall-applet.in:1052
@@ -273,17 +273,17 @@ msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
-"在接口 '{interface}' {activated_deactivated} 连接 '{connection}' 的区域 "
-"'{zone}' "
+"在网卡 '{interface}' {activated_deactivated} 连接 '{connection}' 的区域 "
+"'{zone}'"
 
 #: ../src/firewall-applet.in:1057
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
-msgstr "在接口 '{interface}' {activated_deactivated} 区域 '{zone}' "
+msgstr "在网卡 '{interface}' {activated_deactivated} 区域 '{zone}'"
 
 #: ../src/firewall-applet.in:1080
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
-msgstr "在接口 '%s' 启用区域 '%s'"
+msgstr "在网卡 '%s' 启用区域 '%s'"
 
 #: ../src/firewall-applet.in:1097
 msgid "Zone '{zone}' {activated_deactivated} for source '{source}'"
@@ -292,7 +292,7 @@ msgstr "在来源 '{source}' {activated_deactivated} 区域 '{zone}'"
 #: ../src/firewall-applet.in:1121
 #, c-format
 msgid "Zone '%s' activated for source '%s'"
-msgstr "在来源  '%s' 已启用区域 '%s'"
+msgstr "在来源 '%s' 已启用区域 '%s'"
 
 #: ../src/firewall-config.in:89
 msgid "Connection to firewalld established."
@@ -315,7 +315,7 @@ msgstr "变更已生效。"
 #: ../src/firewall-config.in:96
 #, c-format
 msgid "Used by network connection '%s'"
-msgstr "被网络连接  '%s' 使用"
+msgstr "被网络连接 '%s' 使用"
 
 #: ../src/firewall-config.in:97
 #, c-format
@@ -442,7 +442,7 @@ msgstr "审计"
 
 #: ../src/firewall-config.in:940 ../src/firewall-config.glade.h:221
 msgid "Interface"
-msgstr "接口"
+msgstr "网卡"
 
 #: ../src/firewall-config.in:942
 msgid "Comment"
@@ -516,7 +516,7 @@ msgstr "伪装"
 #: ../src/firewall-config.in:3358 ../src/firewall-config.in:3672
 #: ../src/firewall-config.in:3887 ../src/firewall-config.glade.h:287
 msgid "icmp-block"
-msgstr "ICMP 阻拦"
+msgstr "ICMP 拦截"
 
 #: ../src/firewall-config.in:2082 ../src/firewall-config.in:3189
 #: ../src/firewall-config.in:3360 ../src/firewall-config.in:3675
@@ -661,7 +661,7 @@ msgid ""
 "masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
-"转发至其他系统琴在端口伪装时才有用。\n"
+"转发至其他系统仅在网卡伪装时才有用。\n"
 "您想要伪装该区域吗？"
 
 #: ../src/firewall-config.in:5393
@@ -796,11 +796,11 @@ msgstr "nat"
 
 #: ../src/firewall-config.glade.h:16
 msgid "raw"
-msgstr "raw"
+msgstr "原始"
 
 #: ../src/firewall-config.glade.h:17
 msgid "security"
-msgstr "security"
+msgstr "安全性"
 
 #: ../src/firewall-config.glade.h:18
 msgid "Table:"
@@ -891,7 +891,7 @@ msgstr "产品线："
 
 #: ../src/firewall-config.glade.h:43
 msgid "Module:"
-msgstr "模块: "
+msgstr "模块："
 
 #: ../src/firewall-config.glade.h:44
 msgid "Helper"
@@ -968,7 +968,7 @@ msgstr "改变默认区域"
 
 #: ../src/firewall-config.glade.h:63
 msgid "Change default zone for connections or interfaces."
-msgstr "更改连接或接口的默认区域。"
+msgstr "更改连接或网卡的默认区域。"
 
 #: ../src/firewall-config.glade.h:64
 msgid "Change Log Denied"
@@ -1055,12 +1055,12 @@ msgstr "修改绑定的区"
 #: ../src/firewall-config.glade.h:84
 msgid ""
 "Hide active runtime bindings of connections, interfaces and sources to zones"
-msgstr "对区隐藏连接、接口和源服务器的 runtime 绑定"
+msgstr "对区域隐藏连接、网卡和源服务器的激活的运行时绑定"
 
 #: ../src/firewall-config.glade.h:85
 msgid ""
 "Show active runtime bindings of connections, interfaces and sources to zones"
-msgstr "对区显示连接、接口和源服务器的 runtime 绑定"
+msgstr "对区域显示连接、网卡和源服务器的激活的运行时绑定"
 
 #: ../src/firewall-config.glade.h:86
 msgid "Configuration:"
@@ -1083,8 +1083,8 @@ msgid ""
 "filters and rich rules. The zone can be bound to interfaces and source "
 "addresses."
 msgstr ""
-"FirewallD 区域定义了绑定的网络连接、接口以及源地址的可信程度。区域是服务、端"
-"口、协议、IP伪装、端口/报文转发、ICMP过滤以及富规则的组合。区域可以绑定到接口"
+"FirewallD 区域定义了绑定的网络连接、网卡以及源地址的可信程度。区域是服务、端"
+"口、协议、IP伪装、端口/报文转发、ICMP过滤以及富规则的组合。区域可以绑定到网卡"
 "以及源地址。"
 
 #: ../src/firewall-config.glade.h:90
@@ -1109,8 +1109,8 @@ msgid ""
 "are accessible from all hosts and networks that can reach the machine from "
 "connections, interfaces and sources bound to this zone."
 msgstr ""
-"可以在这里定义区域中哪些服务是可信的。可连接至绑定到这个区域的连接、接口和源"
-"的所有主机和网络及丶可以访问可信服务。"
+"可以在这里定义区域中哪些服务是可信的。可连接至绑定到这个区域的连接、网卡和源"
+"的所有主机和网络及可以访问可信服务。"
 
 #: ../src/firewall-config.glade.h:95
 msgid "Services"
@@ -1202,8 +1202,7 @@ msgid ""
 "IPv4 only."
 msgstr ""
 "添加条目来转发端口，可以是从本地系统的一个端口到另一个端口，也可以是从本地系"
-"统到另一个系统。转发到另一个系统只在接口是伪装的时候有用。端口转发只适用于 "
-"IPv4。"
+"统到另一个系统。转发到另一个系统只在网卡伪装时有用。端口转发只适用于 IPv4。"
 
 #: ../src/firewall-config.glade.h:113
 msgid "Add Forward Port"
@@ -1275,20 +1274,20 @@ msgid ""
 "Add entries to bind interfaces to the zone. If the interface will be used by "
 "a connection, the zone will be set to the zone specified in the connection."
 msgstr ""
-"增加入口以将接口加入区域。若接口已经被连接占用，区域将被设定为连接所指定的区"
+"增加入口以将网卡加入区域。若网卡已经被连接占用，区域将被设定为连接所指定的区"
 "域。"
 
 #: ../src/firewall-config.glade.h:127
 msgid "Add Interface"
-msgstr "添加接口"
+msgstr "添加网卡"
 
 #: ../src/firewall-config.glade.h:128
 msgid "Edit Interface"
-msgstr "编辑接口"
+msgstr "编辑网卡"
 
 #: ../src/firewall-config.glade.h:129
 msgid "Remove Interface"
-msgstr "移除接口"
+msgstr "移除网卡"
 
 #: ../src/firewall-config.glade.h:131
 msgid ""
@@ -1397,7 +1396,7 @@ msgid ""
 "An IPSet can be used to create white or black lists and is able to store for "
 "example IP addresses, port numbers or MAC addresses. "
 msgstr ""
-"可使用 IPSet 创建白名单或黑名单，以便保存 IP 地址、端口号或者 MAC 地址。"
+"可使用 IPSet 创建白名单或黑名单，以便保存 IP 地址、端口号或者 MAC 地址。 "
 
 #: ../src/firewall-config.glade.h:155
 msgid "IPSet"
@@ -1454,7 +1453,7 @@ msgstr "只能在永久配置视图中创建或删除 IPSet。"
 msgid ""
 "A firewalld icmptype provides the information for an Internet Control "
 "Message Protocol (ICMP) type for firewalld."
-msgstr "FirewallD ICMP 类型为 firewallD 提供因特网控制报文协议 (ICMP) 的信息"
+msgstr "FirewallD ICMP 类型为 firewallD 提供因特网控制报文协议 (ICMP) 的信息。"
 
 #: ../src/firewall-config.glade.h:167
 msgid "Add ICMP Type"
@@ -1492,7 +1491,7 @@ msgid ""
 msgstr ""
 "正在指派连接跟踪帮助程序，以确保使用不同信号发送和数据传输流程的协议正常工"
 "作。数据传输使用的是与信号发送连接不相关的端口，因此若没有该帮助程序将会被防"
-"火墙阻挡。"
+"火墙拦截。"
 
 #: ../src/firewall-config.glade.h:174
 msgid "Define ports or port ranges, which are monitored by the helper."
@@ -1520,7 +1519,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:177
 msgid "Additional chains for use with rules."
-msgstr "与规则共同生效的附加链"
+msgstr "与规则共同生效的附加链。"
 
 #: ../src/firewall-config.glade.h:178
 msgid "Add Chain"
@@ -1724,7 +1723,7 @@ msgstr "自动帮助程序："
 
 #: ../src/firewall-config.glade.h:219
 msgid "Lockdown:"
-msgstr "Lockdown:"
+msgstr "锁定："
 
 #: ../src/firewall-config.glade.h:220
 msgid "Default Zone:"
@@ -1732,7 +1731,7 @@ msgstr "默认区域:"
 
 #: ../src/firewall-config.glade.h:222
 msgid "Please enter an interface name:"
-msgstr "请输入接口名称："
+msgstr "请输入网卡名称："
 
 #: ../src/firewall-config.glade.h:223
 msgid "Base IPSet Settings"
@@ -1780,7 +1779,7 @@ msgstr "请输入 ipset 条目："
 
 #: ../src/firewall-config.glade.h:235
 msgid "Log Denied"
-msgstr "Log Denied"
+msgstr "已拒绝的日志"
 
 #: ../src/firewall-config.glade.h:236
 msgid "Please select the log denied value:"
@@ -1816,7 +1815,7 @@ msgstr "- 选择 -"
 
 #: ../src/firewall-config.glade.h:244
 msgid "Other Module:"
-msgstr "其他模块 : "
+msgstr "其他模块："
 
 #: ../src/firewall-config.glade.h:245
 msgid "Port and Protocol"
@@ -1886,7 +1885,8 @@ msgstr "反转"
 msgid ""
 "To enable this Action has to be 'reject' and Family either 'ipv4' or "
 "'ipv6' (not both)."
-msgstr "若启用该项，操作需为'reject'并且家族选择'ipv4'或'ipv6'(但不能同时选择)"
+msgstr ""
+"若启用该项，操作需为'reject'并且家族选择'ipv4'或'ipv6'(但不能同时选择)。"
 
 #: ../src/firewall-config.glade.h:267
 msgid "with Type:"
@@ -1950,7 +1950,7 @@ msgstr "标签"
 
 #: ../src/firewall-config.glade.h:303
 msgid "Base Zone Settings"
-msgstr "基本区域设定:"
+msgstr "基本区域设定"
 
 #: ../src/firewall-config.glade.h:304
 msgid "Please configure base zone settings:"
