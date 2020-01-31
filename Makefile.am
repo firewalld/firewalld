@@ -105,6 +105,19 @@ update-po:
 	ls $(top_srcdir)/po/*.po | sed 's/.*\/po\///;s/.po//' > $(top_srcdir)/po/LINGUAS
 	$(MAKE) -C po update-po ${PACKAGE_NAME}.pot
 
+# This merges translations from the upstream master branch.
+# It's only meant to be used from the stable branches. Translations
+# contributions are only done against master.
+merge-po: update-po
+	git fetch -q https://github.com/firewalld/firewalld master; \
+	for po in $(top_srcdir)/po/*.po; do \
+		mv $${po} $${po}.old; \
+		git checkout -q FETCH_HEAD $${po}; \
+		msgcat --use-first -o $${po}.merged $${po} $${po}.old; \
+		mv $${po}.merged $${po}; \
+		git add $${po}; \
+	done
+
 clean-po:
 	@for cat in `cat ${top_srcdir}/po/LINGUAS`; do \
 		msgattrib --translated --no-fuzzy --no-obsolete --force-po --no-location --clear-previous --strict $(top_srcdir)/po/$$cat.po -o $(top_srcdir)/po/$$cat.out; \
