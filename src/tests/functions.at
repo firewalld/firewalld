@@ -231,6 +231,8 @@ m4_define([FWD_END_TEST], [
             sed -i "/WARNING: ip6tables not usable, disabling IPv6 firewall/d" ./firewalld.log
         ])
         sed -i "/modprobe: ERROR:/d" ./firewalld.log
+        sed -i "/WARNING: Failed to load nf_conntrack module/d" ./firewalld.log
+        sed -i "/WARNING: Failed to get and parse nf_conntrack_helper setting/d" ./firewalld.log
         if test x"$1" != x"ignore"; then
             if test -n "$1"; then
                 sed -i $1 ./firewalld.log
