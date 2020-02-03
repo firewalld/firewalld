@@ -46,47 +46,48 @@ $(TESTSUITE) $(TESTSUITE_INTEGRATION): $(TESTSUITE_FILES) $(srcdir)/package.m4
 	$(AUTOTEST) -I '$(srcdir)' -o $@.tmp $@.at
 	mv $@.tmp $@
 
-check-container-debian-sid:
-	(cd $(abs_top_srcdir) && tar -c . ) | \
-	$(PODMAN) run -i --rm --privileged debian:sid bash -c \
-	"mkdir -p /tmp/firewalld && cd /tmp/firewalld && tar -x && \
-	apt-get update && \
-	apt-get install -y autoconf automake pkg-config intltool libglib2.0-dev \
-	                   xsltproc docbook-xsl docbook-xml iptables ipset ebtables \
-	                   nftables libxml2-utils libdbus-1-dev libgirepository1.0-dev \
-	                   python3-dbus python3-gi python3-slip-dbus python3-nftables \
-	                   procps network-manager gir1.2-nm-1.0 && \
-	apt-get install -y libnftables-dev && \
+CONTAINER_TARGETS = check-container-debian-sid check-container-fedora-rawhide
+
+check-container-debian-sid-image: check-container-%-image:
+	(cd $(abs_top_srcdir) && { \
+	echo "FROM debian:sid" && \
+	echo "RUN apt-get update" && \
+	echo "RUN apt-get install -y autoconf automake pkg-config intltool libglib2.0-dev \
+	                             xsltproc docbook-xsl docbook-xml iptables ipset ebtables \
+	                             nftables libxml2-utils libdbus-1-dev libgirepository1.0-dev \
+	                             python3-dbus python3-gi python3-slip-dbus python3-nftables \
+	                             procps network-manager gir1.2-nm-1.0" && \
+	echo "COPY . /tmp/firewalld"; \
+	} | $(PODMAN) build -t firewalld-testsuite-$* -f - . )
+
+check-container-fedora-rawhide-image: check-container-%-image:
+	(cd $(abs_top_srcdir) && { \
+	echo "FROM fedora:rawhide" && \
+	echo "RUN dnf -y makecache" && \
+	echo "RUN dnf -y install autoconf automake conntrack-tools desktop-file-utils \
+	                 docbook-style-xsl file gettext glib2-devel intltool ipset \
+	                 iptables iptables-nft libtool libxml2 libxslt make nftables \
+	                 python3-nftables python3-slip-dbus python3-gobject-base \
+	                 diffutils procps-ng iproute which dbus-daemon \
+	                 NetworkManager" && \
+	echo "RUN alternatives --set ebtables /usr/sbin/ebtables-nft" && \
+	echo "COPY . /tmp/firewalld"; \
+	} | $(PODMAN) build -t firewalld-testsuite-$* -f - . )
+
+$(CONTAINER_TARGETS): check-container-%: check-container-%-image
+	$(PODMAN) run -i --rm --privileged firewalld-testsuite-$* bash -c " \
+	cd /tmp/firewalld && \
 	./autogen.sh && \
 	./configure PYTHON=/usr/bin/python3 && \
 	make && \
 	make -C src/tests check-local TESTSUITEFLAGS=\"$(TESTSUITEFLAGS)\" && \
 	make -C src/tests check-integration TESTSUITEFLAGS=\"$(TESTSUITEFLAGS) -j1\" "
+	$(PODMAN) rmi firewalld-testsuite-$*
 
-check-container-fedora-rawhide:
-	(cd $(abs_top_srcdir) && tar -c . ) | \
-	$(PODMAN) run -i --rm --privileged fedora:rawhide bash -c \
-	"mkdir -p /tmp/firewalld && cd /tmp/firewalld && tar -x && \
-	dnf -y makecache && \
-	dnf -y install autoconf automake conntrack-tools desktop-file-utils \
-	               docbook-style-xsl file gettext glib2-devel intltool ipset \
-	               iptables iptables-nft libtool libxml2 libxslt make nftables \
-	               python3-nftables python3-slip-dbus python3-gobject-base \
-	               diffutils procps-ng iproute which dbus-daemon \
-	               NetworkManager && \
-	alternatives --set ebtables /usr/sbin/ebtables-nft && \
-	./autogen.sh && \
-	./configure PYTHON=/usr/bin/python3 && \
-	make && \
-	make -C src/tests check-local TESTSUITEFLAGS=\"$(TESTSUITEFLAGS)\" && \
-	make -C src/tests check-integration TESTSUITEFLAGS=\"$(TESTSUITEFLAGS) -j1\" "
-
-check-container: check-container-debian-sid
-check-container: check-container-fedora-rawhide
+check-container: $(CONTAINER_TARGETS)
 
 .PHONY: check-container
-.PHONY: check-container-debian-sid
-.PHONY: check-container-fedora-rawhide
+.PHONY: $(CONTAINER_TARGETS) $(foreach container,$(CONTAINER_TARGETS),$(container)-image)
 
 check-integration: atconfig atlocal $(TESTSUITE_INTEGRATION)
 	$(SHELL) '$(TESTSUITE_INTEGRATION)' $(TESTSUITEFLAGS) \
