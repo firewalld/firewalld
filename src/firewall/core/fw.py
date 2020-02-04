@@ -308,10 +308,11 @@ class Firewall(object):
                     self._allow_zone_drifting = False
                 else:
                     self._allow_zone_drifting = True
-                    log.warning("AllowZoneDrifting is enabled. This is considered "
-                                "an insecure configuration option. It will be "
-                                "removed in a future release. Please consider "
-                                "disabling it now.")
+                    if not self._offline:
+                        log.warning("AllowZoneDrifting is enabled. This is considered "
+                                    "an insecure configuration option. It will be "
+                                    "removed in a future release. Please consider "
+                                    "disabling it now.")
                 log.debug1("AllowZoneDrifting is set to '%s'",
                            self._allow_zone_drifting)
 
