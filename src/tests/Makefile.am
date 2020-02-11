@@ -3,9 +3,11 @@ TESTSUITE_INTEGRATION = $(srcdir)/integration/testsuite
 
 TESTSUITE_FILES = \
 	$(wildcard $(srcdir)/*.at) \
+	$(wildcard $(srcdir)/cli/*.at) \
 	$(wildcard $(srcdir)/dbus/*.at) \
 	$(wildcard $(srcdir)/features/*.at) \
 	$(wildcard $(srcdir)/integration/*.at) \
+	$(wildcard $(srcdir)/python/*.at) \
 	$(wildcard $(srcdir)/regression/*.at)
 
 EXTRA_DIST = \
