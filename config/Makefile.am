@@ -35,6 +35,7 @@ BUILT_SOURCES = \
 	$(polkit1_action_DATA) \
 	$(gsettings_SCHEMAS) \
 	firewalld-sysctls.conf \
+	firewalld.logrotate \
 	firewalld.service
 
 @INTLTOOL_DESKTOP_RULE@
@@ -44,7 +45,7 @@ BUILT_SOURCES = \
 
 all: $(desktop_DATA) $(appdata_DATA) $(applet_desktop_DATA) $(polkit1_action_DATA) $(gsettings_SCHEMAS)
 
-CLEANFILES = *~ *\# .\#* firewalld.service firewalld-sysctls.conf
+CLEANFILES = *~ *\# .\#* firewalld.service firewalld-sysctls.conf firewalld.logrotate
 
 DISTCLEANFILES = \
 	$(desktop_DATA) \
@@ -286,6 +287,7 @@ EXTRA_DIST = \
 	$(CONFIG_FILES) \
 	lockdown-whitelist.xml.in \
 	firewalld.init \
+	firewalld.logrotate.in \
 	firewalld-sysctls.conf.in \
 	firewalld.service.in \
 	firewalld.sysconfig \
@@ -296,6 +298,9 @@ UNINSTALL_TARGETS = uninstall-config
 
 INSTALL_TARGETS += install-modprobe.d
 UNINSTALL_TARGETS += uninstall-modprobe.d
+
+INSTALL_TARGETS += install-logrotate.d
+UNINSTALL_TARGETS += uninstall-logrotate.d
 
 if USE_SYSTEMD
 INSTALL_TARGETS += install-service
@@ -327,6 +332,9 @@ firewalld.service: firewalld.service.in
 	$(edit) $< >$@
 
 firewalld-sysctls.conf: firewalld-sysctls.conf.in
+	$(edit) $< >$@
+
+firewalld.logrotate: firewalld.logrotate.in
 	$(edit) $< >$@
 
 install-sysconfig:
@@ -368,6 +376,14 @@ install-modprobe.d:
 uninstall-modprobe.d:
 	rm -f $(DESTDIR)$(sysconfdir)/modprobe.d/firewalld-sysctls.conf
 	rmdir $(DESTDIR)$(sysconfdir)/modprobe.d || :
+
+install-logrotate.d:
+	$(MKDIR_P) $(DESTDIR)$(sysconfdir)/logrotate.d
+	$(INSTALL_DATA) firewalld.logrotate $(DESTDIR)$(sysconfdir)/logrotate.d/firewalld
+
+uninstall-logrotate.d:
+	rm -f $(DESTDIR)$(sysconfdir)/logrotate.d/firewalld
+	rmdir $(DESTDIR)$(sysconfdir)/logrotate.d || :
 
 install-config:
 	$(MKDIR_P) $(DESTDIR)$(sconfdir)

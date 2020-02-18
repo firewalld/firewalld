@@ -243,6 +243,7 @@ fi
 %{_mandir}/man1/firewalld*.1*
 %{_mandir}/man5/firewall*.5*
 %{_sysconfdir}/modprobe.d/firewalld-sysctls.conf
+%{_sysconfdir}/logrotate.d/firewalld
 
 %files -n python-firewall
 %attr(0755,root,root) %dir %{python2_sitelib}/firewall
