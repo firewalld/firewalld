@@ -1839,6 +1839,9 @@ For interfaces that are not under control of NetworkManager, firewalld tries to 
 	Direct options should be used only as a last resort when it's not possible to use for example <option>--add-service</option>=<replaceable>service</replaceable> or <option>--add-rich-rule</option>='<replaceable>rule</replaceable>'.
       </para>
       <para>
+        <emphasis role="bold">Warning</emphasis>: Direct rules behavior is different depending on the value of <literal>FirewallBackend</literal>. See <literal>CAVEATS</literal> in <citerefentry><refentrytitle>firewalld.direct</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+      </para>
+      <para>
 	The first argument of each option has to be <literal>ipv4</literal> or <literal>ipv6</literal> or <literal>eb</literal>. With <literal>ipv4</literal> it will be for IPv4 (<citerefentry><refentrytitle>iptables</refentrytitle><manvolnum>8</manvolnum></citerefentry>), with <literal>ipv6</literal> for IPv6 (<citerefentry><refentrytitle>ip6tables</refentrytitle><manvolnum>8</manvolnum></citerefentry>) and with <literal>eb</literal> for ethernet bridges (<citerefentry><refentrytitle>ebtables</refentrytitle><manvolnum>8</manvolnum></citerefentry>).
       </para>
       <variablelist>
