@@ -206,6 +206,69 @@
 
   </refsect1>
 
+  <refsect1 id="caveats">
+    <title>Caveats</title>
+
+    <para>
+        Depending on the value of <literal>FirewallBackend</literal> (see <citerefentry><refentrytitle>firewalld.conf</refentrytitle><manvolnum>5</manvolnum></citerefentry>) direct rules behave differently in some scenarios.
+    </para>
+    <refsect2 id="Packet accept/drop precedence">
+        <title>Packet accept/drop precedence</title>
+        <para>
+            Due to implementation details of netfilter inside the kernel, if <literal>FirewallBackend=nftables</literal> is used direct rules that <literal>ACCEPT</literal> packets don't actually cause the packets to be immediately accepted by the system. Those packets are still be subject to firewalld's nftables ruleset. This basically means there are two independent firewalls and packets must be accepted by both (iptables and nftables). As an aside, this scenario also occurs inside of nftables (again due to netfilter) if there are multiple chains attached to the same hook - it's not as simple as iptables vs nftables.
+        </para>
+        <para>
+            There are a handful of options to workaround the <literal>ACCEPT</literal> issue:
+        </para>
+        <orderedlist>
+            <listitem><para>Rich Rules</para>
+            <para>
+                If a rich rule can be used, then they should always be preferred over direct rules. Rich Rules will be converted to the enabled <literal>FirewallBackend</literal>. See <citerefentry><refentrytitle>firewalld.richlanguage</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+            </para>
+            </listitem>
+            <listitem><para>Blanket Accept</para>
+            <para>
+                Users can add an explicit accept to the nftables ruleset. This can be done by adding the interface or source to the <literal>trusted</literal> zone.
+            </para>
+            <para>
+                This strategy is often employed by things that perform their own filtering such as: libvirt, podman, docker.
+            </para>
+            <para>
+                <emphasis role="bold">Warning</emphasis>: This means firewalld will do no filtering on these packets. It must all be done via direct rules or out-of-band iptables rules.
+            </para>
+            </listitem>
+            <listitem><para>Selective Accept</para>
+            <para>
+                Alternatively, enable only the relevant service, port, address, or otherwise in the appropriate zone.
+            </para>
+            </listitem>
+            <listitem><para>Revert to the iptables backend</para>
+            <para>
+                A last resort is to revert to the iptables backend by setting <literal>FirewallBackend=iptables</literal>. Users should be aware that firewalld development focuses on the nftables backend.
+            </para>
+            </listitem>
+        </orderedlist>
+
+        <para>
+            For direct rules that <literal>DROP</literal> packets the packets are immediately dropped regardless of the value of <literal>FirewallBackend</literal>. As such, there is no special consideration needed.
+        </para>
+
+        <para>
+            Firewalld guarantees the above ACCEPT/DROP behavior by registering nftables hooks with a lower precedence than iptables hooks.
+        </para>
+    </refsect2>
+
+    <refsect2 id="Direct interface precedence">
+        <title>Direct interface precedence</title>
+        <para>
+            With <literal>FirewallBackend=iptables</literal> firewalld's top-level internal rules apply before direct rules are executed. This includes rules to accept existing connections. In the past this has surprised users. As an example, if a user adds a direct rule to drop traffic on destination port 22 existing SSH sessions would continue to function, but new connections would be denied.
+        </para>
+        <para>
+            With <literal>FirewallBackend=nftables</literal> direct rules were deliberately given a higher precedence than all other firewalld rules. This includes rules to accept existing connections.
+        </para>
+    </refsect2>
+  </refsect1>
+
   <refsect1 id="example">
     <title>Example</title>
 
