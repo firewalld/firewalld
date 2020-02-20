@@ -691,7 +691,7 @@ FWD_START_TEST([user ICMP types])
 FWD_END_TEST([-e '/NAME_CONFLICT: new_icmptype():/d'])
 
 FWD_START_TEST([ipset])
-    AT_KEYWORDS(ipset)
+    AT_KEYWORDS(ipset rhbz1685256)
 
     CHECK_IPSET
     CHECK_IPSET_HASH_MAC
@@ -720,7 +720,18 @@ FWD_START_TEST([ipset])
     dnl multi dimensional sets
     FWD_CHECK([--permanent --new-ipset=foobar --type=hash:ip,port], 0, ignore)
     FWD_CHECK([--permanent --ipset=foobar --add-entry=10.10.10.10,1234], 0, ignore)
+    FWD_CHECK([--permanent --ipset=foobar --add-entry=10.10.10.10,2000-2100], 0, ignore)
     FWD_RELOAD
+    NFT_LIST_SET([foobar], 0, [dnl
+        table inet firewalld {
+            set foobar {
+                type ipv4_addr . inet_proto . inet_service
+                flags interval
+                elements = { 10.10.10.10 . tcp . 1234,
+                             10.10.10.10 . tcp . 2000-2100 }
+            }
+        }
+    ])
     FWD_CHECK([--ipset=foobar --add-entry=1.2.3.4,8080], 0, ignore)
     FWD_CHECK([--permanent --delete-ipset=foobar], 0, ignore)
     FWD_RELOAD
@@ -789,6 +800,73 @@ FWD_START_TEST([ipset])
         Members:
         10.10.10.10,0x00000100
         20.20.20.20,0x00000200
+    ])
+    FWD_CHECK([--permanent --delete-ipset=foobar], 0, ignore)
+    FWD_RELOAD
+
+    dnl multi dimensional set with intervals
+    FWD_CHECK([--permanent --new-ipset=foobar --type=hash:net,port], 0, ignore)
+    FWD_CHECK([--permanent --ipset=foobar --add-entry=10.10.10.0/24,sctp:1234], 0, ignore)
+    FWD_RELOAD
+    FWD_CHECK([--ipset=foobar --add-entry=1.2.3.4,tcp:8080], 0, ignore)
+    FWD_CHECK([--permanent --delete-ipset=foobar], 0, ignore)
+    FWD_RELOAD
+
+    dnl multi dimensional set with intervals (3 dimensions)
+    FWD_CHECK([--permanent --new-ipset=foobar --type=hash:ip,port,net], 0, ignore)
+    FWD_CHECK([--permanent --ipset=foobar --add-entry=10.10.10.10,sctp:1234,10.10.10.0/24], 0, ignore)
+    FWD_RELOAD
+    FWD_CHECK([--ipset=foobar --add-entry=1.2.3.4,tcp:8080,1.6.0.0/16], 0, ignore)
+    NFT_LIST_SET([foobar], 0, [dnl
+        table inet firewalld {
+            set foobar {
+                type ipv4_addr . inet_proto . inet_service . ipv4_addr
+                flags interval
+                elements = { 10.10.10.10 . sctp . 1234 . 10.10.10.0/24,
+                             1.2.3.4 . tcp . 8080 . 1.6.0.0/16 }
+            }
+        }
+    ])
+    IPSET_LIST_SET([foobar], 0, [dnl
+        Name: foobar
+        Type: hash:ip,port,net
+        Members:
+        1.2.3.4,tcp:8080,1.6.0.0/16
+        10.10.10.10,sctp:1234,10.10.10.0/24
+    ])
+    FWD_CHECK([--permanent --delete-ipset=foobar], 0, ignore)
+    FWD_RELOAD
+
+    dnl hash:net,iface
+    FWD_CHECK([--permanent --new-ipset=foobar --type=hash:net,iface], 0, ignore)
+    FWD_CHECK([--permanent --ipset=foobar --add-entry=10.10.10.0/24,foobar0], 0, ignore)
+    FWD_RELOAD
+    FWD_CHECK([--ipset=foobar --add-entry=20.20.20.0/24,raboof0], 0, ignore)
+    FWD_CHECK([--zone internal --add-source=ipset:foobar], 0, ignore)
+    NFT_LIST_SET([foobar], 0, [dnl
+        table inet firewalld {
+            set foobar {
+                type ipv4_addr . ifname
+                flags interval
+                elements = { 10.10.10.0/24 . "foobar0",
+                             20.20.20.0/24 . "raboof0" }
+            }
+        }
+    ])
+    NFT_LIST_RULES([inet], [filter_INPUT_ZONES], 0, [dnl
+        table inet firewalld {
+            chain filter_INPUT_ZONES {
+                ip saddr . oifname @foobar goto filter_IN_internal
+                goto filter_IN_public
+            }
+        }
+    ])
+    IPSET_LIST_SET([foobar], 0, [dnl
+        Name: foobar
+        Type: hash:net,iface
+        Members:
+        10.10.10.0/24,foobar0
+        20.20.20.0/24,raboof0
     ])
     FWD_CHECK([--permanent --delete-ipset=foobar], 0, ignore)
     FWD_RELOAD
