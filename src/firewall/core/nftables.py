@@ -1589,15 +1589,18 @@ class nftables(object):
         set_dict = {"table": TABLE_NAME,
                     "name": name,
                     "type": self._set_type_list(ipv, type)}
+
+        # Some types need the interval flag
+        for t in type.split(":")[1].split(","):
+            if t in ["net", "port"]:
+                set_dict["flags"] = ["interval"]
+                break
+
         if options:
             if "timeout" in options:
                 set_dict["timeout"] = options["timeout"]
             if "maxelem" in options:
                 set_dict["size"] = options["maxelem"]
-        # flag "interval" currently does not work with concatenations.
-        # See rhbz 1576426.
-        if "," not in type: # e.g. hash:net,port
-            set_dict["flags"] = ["interval"]
 
         rules = []
         for family in ["inet", "ip", "ip6"]:
@@ -1660,10 +1663,18 @@ class nftables(object):
                 except ValueError:
                     # no protocol means default tcp
                     fragment.append("tcp")
-                    fragment.append(entry_tokens[i])
+                    port_str = entry_tokens[i]
                 else:
                     fragment.append(entry_tokens[i][:index])
-                    fragment.append(entry_tokens[i][index+1:])
+                    port_str = entry_tokens[i][index+1:]
+
+                try:
+                    index = entry_tokens[i].index("-")
+                except ValueError:
+                    fragment.append(port_str)
+                else:
+                    fragment.append({"range": [port_str[:index], port_str[index+1:]]})
+
             elif type_format[i] in ["ip", "net"]:
                 try:
                     index = entry_tokens[i].index("/")
