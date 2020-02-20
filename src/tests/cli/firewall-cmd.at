@@ -725,6 +725,7 @@ FWD_START_TEST([ipset])
         table inet firewalld {
             set foobar {
                 type ipv4_addr . inet_proto . inet_service
+                flags interval
                 elements = { 10.10.10.10 . sctp . 1234,
                              20.20.20.20 . tcp . 8080 }
             }

@@ -1402,16 +1402,19 @@ class nftables(object):
 
         cmd = [name, "{"]
         cmd += self._set_type_fragment(ipv, type)
+
+        # Some types need the interval flag
+        for t in type.split(":")[1].split(","):
+            if t in ["net", "port"]:
+                cmd += ["flags", "interval", ";"]
+                break
+
         if options:
             if "timeout" in options:
                 cmd += ["timeout", options["timeout"]+ "s", ";"]
             if "maxelem" in options:
                 cmd += ["size", options["maxelem"], ";"]
-        # flag "interval" currently does not work with timeouts or
-        # concatenations. See rhbz 1576426, 1576430.
-        if (not options or "timeout" not in options) \
-           and "," not in type: # e.g. hash:net,port
-            cmd += ["flags", "interval", ";"]
+
         cmd += ["}"]
 
         for family in ["inet", "ip", "ip6"]:
