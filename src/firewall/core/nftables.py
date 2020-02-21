@@ -659,9 +659,11 @@ class nftables(object):
         action = "goto"
 
         if address.startswith("ipset:"):
-            ipset = address[len("ipset:"):]
-            rule_family = self._set_get_family(ipset)
-            address = "@" + ipset
+            rule = [add_del, "rule", family, "%s" % TABLE_NAME,
+                    zone_dispatch_chain,
+                    "%%ZONE_SOURCE%%", zone]
+            rule += self._set_match_fragment(address[len("ipset:"):], True if "daddr" == opt else False)
+            rule += [action, "%s_%s" % (table, target)]
         else:
             if check_mac(address):
                 # outgoing can not be set
@@ -674,10 +676,10 @@ class nftables(object):
                 rule_family = "ip6"
                 address = self._ip6_normalize(address)
 
-        rule = [add_del, "rule", family, "%s" % TABLE_NAME,
-                zone_dispatch_chain,
-                "%%ZONE_SOURCE%%", zone,
-                rule_family, opt, address, action, "%s_%s" % (table, target)]
+            rule = [add_del, "rule", family, "%s" % TABLE_NAME,
+                    zone_dispatch_chain,
+                    "%%ZONE_SOURCE%%", zone,
+                    rule_family, opt, address, action, "%s_%s" % (table, target)]
         return [rule]
 
     def build_zone_chain_rules(self, zone, table, chain, family="inet"):
@@ -966,11 +968,7 @@ class nftables(object):
             else:
                 rule_fragment += ["ether", "saddr", rich_source.mac]
         elif hasattr(rich_source, "ipset") and rich_source.ipset:
-            family = self._set_get_family(rich_source.ipset)
-            if rich_source.invert:
-                rule_fragment += [family, "saddr", "!=", "@" + rich_source.ipset]
-            else:
-                rule_fragment += [family, "saddr", "@" + rich_source.ipset]
+            rule_fragment += self._set_match_fragment(rich_source.ipset, False, rich_source.invert)
 
         return rule_fragment
 
@@ -1422,6 +1420,28 @@ class nftables(object):
     def set_destroy(self, name):
         for family in ["inet", "ip", "ip6"]:
             self.__run(["delete", "set", family, TABLE_NAME, name])
+
+    def _set_match_fragment(self, name, match_dest, invert=False):
+        type_format = self._fw.ipset.get_ipset(name).type.split(":")[1].split(",")
+
+        fragments = []
+        for i in range(len(type_format)):
+            if i >= 1:
+                fragments.append(" . ")
+            if type_format[i] == "port":
+                fragments.extend(["meta", "l4proto", ".", "th", "dport" if match_dest else "sport"])
+            elif type_format[i] in ["ip", "net", "mac"]:
+                fragments.extend([self._set_get_family(name), "daddr" if match_dest else "saddr"])
+            elif type_format[i] == "iface":
+                fragments.extend(["iifname" if match_dest else "oifname"])
+            elif type_format[i] == "mark":
+                fragments.extend(["meta", "mark"])
+            else:
+                raise FirewallError("Unsupported ipset type for match fragment: %s" % (type_format[i]))
+
+        fragments.extend(["!=" if invert else "==", "@" + name])
+
+        return fragments
 
     def _set_entry_fragment(self, name, entry):
         # convert something like
