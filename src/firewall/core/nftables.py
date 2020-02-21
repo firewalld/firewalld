@@ -1058,9 +1058,7 @@ class nftables(object):
 
     def _rule_addr_fragment(self, addr_field, address, invert=False):
         if address.startswith("ipset:"):
-            ipset = address[len("ipset:"):]
-            family = self._set_get_family(ipset)
-            address = "@" + ipset
+            return self._set_match_fragment(address[len("ipset:"):], True if "daddr" == addr_field else False, invert)
         else:
             if check_mac(address):
                 if addr_field == "daddr":
@@ -1080,10 +1078,10 @@ class nftables(object):
                 addr_len = address.split("/")
                 address = {"prefix": {"addr": normalizeIP6(addr_len[0]), "len": int(addr_len[1])}}
 
-        return {"match": {"left": {"payload": {"protocol": family,
-                                               "field": addr_field}},
-                          "op": "!=" if invert else "==",
-                          "right": address}}
+            return {"match": {"left": {"payload": {"protocol": family,
+                                                   "field": addr_field}},
+                              "op": "!=" if invert else "==",
+                              "right": address}}
 
     def _rich_rule_family_fragment(self, rich_family):
         if not rich_family:
@@ -1630,6 +1628,29 @@ class nftables(object):
                                        "table": TABLE_NAME,
                                        "name": name}}}
             self.set_rule(rule, self._fw.get_log_denied())
+
+    def _set_match_fragment(self, name, match_dest, invert=False):
+        type_format = self._fw.ipset.get_ipset(name).type.split(":")[1].split(",")
+
+        fragments = []
+        for i in range(len(type_format)):
+            if type_format[i] == "port":
+                fragments.append({"meta": {"key": "l4proto"}})
+                fragments.append({"payload": {"protocol": "th",
+                                              "field": "dport" if match_dest else "sport"}})
+            elif type_format[i] in ["ip", "net", "mac"]:
+                fragments.append({"payload": {"protocol": self._set_get_family(name),
+                                              "field": "daddr" if match_dest else "saddr"}})
+            elif type_format[i] == "iface":
+                fragments.append({"meta": {"key": "iifname" if match_dest else "oifname"}})
+            elif type_format[i] == "mark":
+                fragments.append({"meta": {"key": "mark"}})
+            else:
+                raise FirewallError("Unsupported ipset type for match fragment: %s" % (type_format[i]))
+
+        return {"match": {"left": {"concat": fragments} if len(type_format) > 1 else fragments[0],
+                          "op": "!=" if invert else "==",
+                          "right": "@" + name}}
 
     def _set_entry_fragment(self, name, entry):
         # convert something like
