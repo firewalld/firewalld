@@ -177,6 +177,14 @@ def checkIP(ip):
         return False
     return True
 
+def normalizeIP6(ip):
+    """ Normalize the IPv6 address
+
+    This is mostly about converting URL-like IPv6 address to normal ones.
+    e.g. [1234::4321] --> 1234:4321
+    """
+    return ip.strip("[]")
+
 def checkIP6(ip):
     """ Check IPv6 address.
     
@@ -185,7 +193,7 @@ def checkIP6(ip):
     """
 
     try:
-        socket.inet_pton(socket.AF_INET6, ip)
+        socket.inet_pton(socket.AF_INET6, normalizeIP6(ip))
     except socket.error:
         return False
     return True
