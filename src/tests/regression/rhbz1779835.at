@@ -1,0 +1,11 @@
+FWD_START_TEST([ipv6 address with brackets])
+AT_KEYWORDS(rhbz1779835 ipset)
+
+dnl ipset
+FWD_CHECK([-q --permanent --new-ipset=foobar --type=hash:ip --family=inet6])
+FWD_CHECK([[-q --permanent --ipset foobar --add-entry='[1234::4321]']])
+FWD_CHECK([-q --permanent --new-ipset=foobar2 --type=hash:net --family=inet6])
+FWD_CHECK([[-q --permanent --ipset foobar2 --add-entry='[1234::]/64']])
+FWD_RELOAD
+
+FWD_END_TEST
