@@ -25,7 +25,7 @@ import copy
 from firewall.core.base import SHORTCUTS, DEFAULT_ZONE_TARGET
 from firewall.core.prog import runProg
 from firewall.core.logger import log
-from firewall.functions import splitArgs, check_mac, portStr, \
+from firewall.functions import splitArgs, check_mac, portStr, normalizeIP6, \
                                check_single_address, check_address
 from firewall import config
 from firewall.errors import FirewallError, UNKNOWN_ERROR, INVALID_RULE, \
@@ -350,6 +350,13 @@ class nftables(object):
             rule[i:i+1] = replacement
             return True
 
+    def _ip6_normalize(self, address):
+        if check_single_address("ipv6", address):
+            return normalizeIP6(address)
+        else:
+            addr_split = address.split("/")
+            return normalizeIP6(addr_split[0]) + "/" + addr_split[1]
+
     def reverse_rule(self, args):
         ret_args = args[:]
         ret_args[0] = "delete"
@@ -665,6 +672,7 @@ class nftables(object):
                 rule_family = "ip"
             else:
                 rule_family = "ip6"
+                address = self._ip6_normalize(address)
 
         rule = [add_del, "rule", family, "%s" % TABLE_NAME,
                 zone_dispatch_chain,
@@ -919,9 +927,15 @@ class nftables(object):
             rule_fragment += ["ip6"]
 
         if rich_dest.invert:
-            rule_fragment += ["daddr", "!=", rich_dest.addr]
+            if check_address("ipv6", rich_dest.addr):
+                rule_fragment += ["daddr", "!=", self._ip6_normalize(rich_dest.addr)]
+            else:
+                rule_fragment += ["daddr", "!=", rich_dest.addr]
         else:
-            rule_fragment += ["daddr", rich_dest.addr]
+            if check_address("ipv6", rich_dest.addr):
+                rule_fragment += ["daddr", self._ip6_normalize(rich_dest.addr)]
+            else:
+                rule_fragment += ["daddr", rich_dest.addr]
 
         return rule_fragment
 
@@ -937,9 +951,15 @@ class nftables(object):
                 rule_fragment += ["ip6"]
 
             if rich_source.invert:
-                rule_fragment += ["saddr", "!=", rich_source.addr]
+                if check_address("ipv6", rich_source.addr):
+                    rule_fragment += ["saddr", "!=", self._ip6_normalize(rich_source.addr)]
+                else:
+                    rule_fragment += ["saddr", "!=", rich_source.addr]
             else:
-                rule_fragment += ["saddr", rich_source.addr]
+                if check_address("ipv6", rich_source.addr):
+                    rule_fragment += ["saddr", self._ip6_normalize(rich_source.addr)]
+                else:
+                    rule_fragment += ["saddr", rich_source.addr]
         elif hasattr(rich_source, "mac") and rich_source.mac:
             if rich_source.invert:
                 rule_fragment += ["ether", "saddr", "!=", rich_source.mac]
@@ -967,6 +987,8 @@ class nftables(object):
                 rule_fragment += ["ip"]
             else:
                 rule_fragment += ["ip6"]
+            if check_address("ipv6", destination):
+                destination = self._ip6_normalize(destination)
             rule_fragment += ["daddr", destination]
         if rich_rule:
             rule_fragment += self._rich_rule_destination_fragment(rich_rule.destination)
@@ -1000,6 +1022,8 @@ class nftables(object):
                 rule_fragment += ["ip"]
             else:
                 rule_fragment += ["ip6"]
+            if check_address("ipv6", destination):
+                destination = self._ip6_normalize(destination)
             rule_fragment += ["daddr", destination]
         if rich_rule:
             rule_fragment += self._rich_rule_family_fragment(rich_rule.family)
@@ -1035,6 +1059,8 @@ class nftables(object):
                 rule_fragment += ["ip"]
             else:
                 rule_fragment += ["ip6"]
+            if check_address("ipv6", destination):
+                destination = self._ip6_normalize(destination)
             rule_fragment += ["daddr", destination]
         if rich_rule:
             rule_fragment += self._rich_rule_destination_fragment(rich_rule.destination)
@@ -1067,6 +1093,8 @@ class nftables(object):
                 rule += ["ip"]
             else:
                 rule += ["ip6"]
+            if check_address("ipv6", destination):
+                destination = self._ip6_normalize(destination)
             rule += ["daddr", destination]
         rule += [proto, "dport", "%s" % portStr(port, "-")]
         rule += ["ct", "helper", "set", "\"helper-%s-%s\"" % (helper_name, proto)]
@@ -1139,7 +1167,10 @@ class nftables(object):
 
         dnat_fragment = []
         if toaddr:
-            dnat_fragment += ["dnat", "to", toaddr]
+            if check_single_address("ipv6", toaddr):
+                dnat_fragment += ["dnat", "to", self._ip6_normalize(toaddr)]
+            else:
+                dnat_fragment += ["dnat", "to", toaddr]
         else:
             dnat_fragment += ["redirect", "to"]
 
@@ -1397,7 +1428,8 @@ class nftables(object):
         #    1.2.3.4,sctp:8080 (type hash:ip,port)
         # to
         #    1.2.3.4 . sctp . 8080
-        type_format = self._fw.ipset.get_type(name).split(":")[1].split(",")
+        obj = self._fw.ipset.get_ipset(name)
+        type_format = obj.type.split(":")[1].split(",")
         entry_tokens = entry.split(",")
         if len(type_format) != len(entry_tokens):
             raise FirewallError(INVALID_ENTRY,
@@ -1413,7 +1445,10 @@ class nftables(object):
                 else:
                     fragment += [entry_tokens[i][:index], ".", entry_tokens[i][index+1:]]
             else:
-                fragment.append(entry_tokens[i])
+                addr = entry_tokens[i]
+                if "family" in obj.options and obj.options["family"] == "inet6":
+                    addr = self._ip6_normalize(addr)
+                fragment.append(addr)
             fragment.append(".")
         return fragment[:-1] # snip last concat operator
 
