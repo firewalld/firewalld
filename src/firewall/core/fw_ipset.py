@@ -109,7 +109,7 @@ class FirewallIPSet(object):
                         except Exception as msg:
                             raise FirewallError(errors.COMMAND_FAILED, msg)
 
-                if self._fw.individual_calls():
+                if self._fw._individual_calls:
                     try:
                         backend.set_create(obj.name, obj.type, obj.options)
                     except Exception as msg:
@@ -233,7 +233,7 @@ class FirewallIPSet(object):
 
         try:
             for backend in self.backends():
-                if self._fw.individual_calls():
+                if self._fw._individual_calls:
                     for entry in obj.entries:
                         backend.set_add(obj.name, entry)
                 else:
