@@ -26,7 +26,7 @@ from firewall.core.base import SHORTCUTS, DEFAULT_ZONE_TARGET
 from firewall.core.prog import runProg
 from firewall.core.logger import log
 from firewall.functions import tempFile, readfile, splitArgs, check_mac, portStr, \
-                               check_single_address
+                               check_single_address, check_address, normalizeIP6
 from firewall import config
 from firewall.errors import FirewallError, INVALID_PASSTHROUGH, INVALID_RULE, UNKNOWN_ERROR
 from firewall.core.rich import Rich_Accept, Rich_Reject, Rich_Drop, Rich_Mark, \
@@ -840,6 +840,11 @@ class ip4tables(object):
                          "-m", "mac", "--mac-source", address.upper(),
                          action, target ]
             else:
+                if check_single_address("ipv6", address):
+                    address = normalizeIP6(address)
+                elif check_address("ipv6", address):
+                    addr_split = address.split("/")
+                    address = normalizeIP6(addr_split[0]) + "/" + addr_split[1]
                 rule = [ add_del, zone_dispatch_chain,
                          "%%ZONE_SOURCE%%", zone,
                          "-t", table,
@@ -1020,7 +1025,13 @@ class ip4tables(object):
         rule_fragment = []
         if rich_dest.invert:
             rule_fragment.append("!")
-        rule_fragment += [ "-d", rich_dest.addr ]
+        if check_single_address("ipv6", rich_dest.addr):
+            rule_fragment += [ "-d", normalizeIP6(rich_dest.addr) ]
+        elif check_address("ipv6", rich_dest.addr):
+            addr_split = rich_dest.addr.split("/")
+            rule_fragment += [ "-d", normalizeIP6(addr_split[0]) + "/" + addr_split[1] ]
+        else:
+            rule_fragment += [ "-d", rich_dest.addr ]
 
         return rule_fragment
 
@@ -1032,7 +1043,13 @@ class ip4tables(object):
         if rich_source.addr:
             if rich_source.invert:
                 rule_fragment.append("!")
-            rule_fragment += [ "-s", rich_source.addr ]
+            if check_single_address("ipv6", rich_source.addr):
+                rule_fragment += [ "-s", normalizeIP6(rich_source.addr) ]
+            elif check_address("ipv6", rich_source.addr):
+                addr_split = rich_source.addr.split("/")
+                rule_fragment += [ "-s", normalizeIP6(addr_split[0]) + "/" + addr_split[1] ]
+            else:
+                rule_fragment += [ "-s", rich_source.addr ]
         elif hasattr(rich_source, "mac") and rich_source.mac:
             rule_fragment += [ "-m", "mac" ]
             if rich_source.invert:
@@ -1184,7 +1201,7 @@ class ip4tables(object):
         to = ""
         if toaddr:
             if check_single_address("ipv6", toaddr):
-                to += "[%s]" % toaddr
+                to += "[%s]" % normalizeIP6(toaddr)
             else:
                 to += toaddr
         if toport and toport != "":
