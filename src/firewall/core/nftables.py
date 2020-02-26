@@ -25,7 +25,7 @@ import json
 
 from firewall.core.base import SHORTCUTS, DEFAULT_ZONE_TARGET
 from firewall.core.logger import log
-from firewall.functions import check_mac, getPortRange, \
+from firewall.functions import check_mac, getPortRange, normalizeIP6, \
                                check_single_address, check_address
 from firewall.errors import FirewallError, UNKNOWN_ERROR, INVALID_RULE, \
                             INVALID_ICMPTYPE, INVALID_TYPE, INVALID_ENTRY, \
@@ -969,6 +969,11 @@ class nftables(object):
         return {"%%ZONE_INTERFACE%%": None}
 
     def _zone_source_fragment(self, zone, address):
+        if check_single_address("ipv6", address):
+            address = normalizeIP6(address)
+        elif check_address("ipv6", address):
+            addr_split = address.split("/")
+            address = normalizeIP6(addr_split[0]) + "/" + addr_split[1]
         return {"%%ZONE_SOURCE%%": {"zone": zone, "address": address}}
 
     def _rich_rule_priority_fragment(self, rich_rule):
@@ -1069,10 +1074,11 @@ class nftables(object):
                 address = {"prefix": {"addr": addr_len[0], "len": int(addr_len[1])}}
             elif check_single_address("ipv6", address):
                 family = "ip6"
+                address = normalizeIP6(address)
             else:
                 family = "ip6"
                 addr_len = address.split("/")
-                address = {"prefix": {"addr": addr_len[0], "len": int(addr_len[1])}}
+                address = {"prefix": {"addr": normalizeIP6(addr_len[0]), "len": int(addr_len[1])}}
 
         return {"match": {"left": {"payload": {"protocol": family,
                                                "field": addr_field}},
@@ -1336,6 +1342,8 @@ class nftables(object):
                                          "right": self._port_fragment(port)}})
 
         if toaddr:
+            if check_single_address("ipv6", toaddr):
+                toaddr = normalizeIP6(toaddr)
             if toport and toport != "":
                 expr_fragments.append({"dnat": {"addr": toaddr, "port": self._port_fragment(toport)}})
             else:
@@ -1628,7 +1636,8 @@ class nftables(object):
         #    1.2.3.4,sctp:8080 (type hash:ip,port)
         # to
         #    ["1.2.3.4", "sctp", "8080"]
-        type_format = self._fw.ipset.get_ipset(name).type.split(":")[1].split(",")
+        obj = self._fw.ipset.get_ipset(name)
+        type_format = obj.type.split(":")[1].split(",")
         entry_tokens = entry.split(",")
         if len(type_format) != len(entry_tokens):
             raise FirewallError(INVALID_ENTRY,
@@ -1649,9 +1658,15 @@ class nftables(object):
                 try:
                     index = entry_tokens[i].index("/")
                 except ValueError:
-                    fragment.append(entry_tokens[i])
+                    addr = entry_tokens[i]
+                    if "family" in obj.options and obj.options["family"] == "inet6":
+                        addr = normalizeIP6(addr)
+                    fragment.append(addr)
                 else:
-                    fragment.append({"prefix": {"addr": entry_tokens[i][:index],
+                    addr = entry_tokens[i][:index]
+                    if "family" in obj.options and obj.options["family"] == "inet6":
+                        addr = normalizeIP6(addr)
+                    fragment.append({"prefix": {"addr": addr,
                                                 "len": int(entry_tokens[i][index+1:])}})
             else:
                 fragment.append(entry_tokens[i])
