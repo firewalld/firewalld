@@ -1,5 +1,5 @@
 FWD_START_TEST([ipv6 address with brackets])
-AT_KEYWORDS(rhbz1779835 ipset)
+AT_KEYWORDS(rhbz1779835 ipset zone forward_port rich)
 
 dnl ipset
 FWD_CHECK([-q --permanent --new-ipset=foobar --type=hash:ip --family=inet6])
@@ -7,5 +7,20 @@ FWD_CHECK([[-q --permanent --ipset foobar --add-entry='[1234::4321]']])
 FWD_CHECK([-q --permanent --new-ipset=foobar2 --type=hash:net --family=inet6])
 FWD_CHECK([[-q --permanent --ipset foobar2 --add-entry='[1234::]/64']])
 FWD_RELOAD
+
+dnl zone source
+FWD_CHECK([[-q --zone internal --add-source='[::1234]']])
+FWD_CHECK([[-q --zone internal --add-source='[1234::]/64']])
+
+dnl forward ports
+FWD_CHECK([[-q --zone internal --add-forward-port=port=1234:proto=tcp:toport=4321:toaddr=[::1234]]])
+FWD_CHECK([[-q --zone internal --add-rich-rule='rule family=ipv6 source address=[::4321] forward-port port="1234" protocol=tcp to-port="4321" to-addr="[::1234]"']])
+FWD_CHECK([[-q --zone internal --add-rich-rule='rule family=ipv6 source address=[1234::]/64 forward-port port="1234" protocol=tcp to-port="4321" to-addr="[::1234]"']])
+
+dnl rich rule source/destination
+FWD_CHECK([[-q --zone internal --add-rich-rule='rule family=ipv6 source address=[::4321] accept']])
+FWD_CHECK([[-q --zone internal --add-rich-rule='rule family=ipv6 source address=[1234::]/64 accept']])
+FWD_CHECK([[-q --zone internal --add-rich-rule='rule family=ipv6 destination address=[::4321] accept']])
+FWD_CHECK([[-q --zone internal --add-rich-rule='rule family=ipv6 destination address=[1234::]/64 accept']])
 
 FWD_END_TEST
