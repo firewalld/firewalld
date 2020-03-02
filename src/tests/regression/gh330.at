@@ -1,0 +1,144 @@
+FWD_START_TEST([ipset cleanup on reload/stop])
+AT_KEYWORDS(ipset reload gh330 rhbz1682913 rhbz1790948 rhbz1809225)
+
+AT_CHECK([sed -i 's/^FlushAllOnReload.*/FlushAllOnReload=yes/' ./firewalld.conf])
+FWD_CHECK([-q --permanent --new-ipset foobar --type hash:ip])
+FWD_CHECK([-q --permanent --ipset foobar --add-entry 1.2.3.4])
+FWD_RELOAD
+FWD_CHECK([-q --permanent --delete-ipset foobar])
+dnl make sure ipset still in system
+IPSET_LIST_SET([foobar], 0, [dnl
+    Name: foobar
+    Type: hash:ip
+    Members:
+    1.2.3.4
+])
+NFT_LIST_SET([foobar], 0, [dnl
+    table inet firewalld {
+        set foobar {
+            type ipv4_addr
+            flags interval
+            elements = { 1.2.3.4 }
+        }
+    }
+])
+FWD_RELOAD
+dnl make sure reload removed ipset from system
+IPSET_LIST_SET([foobar], 1, [ignore], [ignore])
+NFT_LIST_SET([foobar], 1, [ignore], [ignore])
+
+AT_CHECK([sed -i 's/^FlushAllOnReload.*/FlushAllOnReload=no/' ./firewalld.conf])
+FWD_CHECK([-q --permanent --new-ipset foobar --type hash:ip])
+FWD_CHECK([-q --permanent --ipset foobar --add-entry 1.2.3.4])
+FWD_RELOAD
+FWD_CHECK([-q --ipset foobar --add-entry 10.10.10.10])
+dnl make sure ipset still in system
+IPSET_LIST_SET([foobar], 0, [dnl
+    Name: foobar
+    Type: hash:ip
+    Members:
+    1.2.3.4
+    10.10.10.10
+])
+NFT_LIST_SET([foobar], 0, [dnl
+    table inet firewalld {
+        set foobar {
+            type ipv4_addr
+            flags interval
+            elements = { 1.2.3.4, 10.10.10.10 }
+        }
+    }
+])
+FWD_RELOAD
+dnl make sure ipset still in system with runtime entries
+IPSET_LIST_SET([foobar], 0, [dnl
+    Name: foobar
+    Type: hash:ip
+    Members:
+    1.2.3.4
+    10.10.10.10
+])
+NFT_LIST_SET([foobar], 0, [dnl
+    table inet firewalld {
+        set foobar {
+            type ipv4_addr
+            flags interval
+            elements = { 1.2.3.4, 10.10.10.10 }
+        }
+    }
+])
+FWD_CHECK([-q --permanent --delete-ipset foobar])
+FWD_CHECK([-q --ipset foobar --add-entry 4.3.2.1])
+FWD_RELOAD
+dnl Make sure ipset still in system with runtime entries.
+IPSET_LIST_SET([foobar], 0, [dnl
+    Name: foobar
+    Type: hash:ip
+    Members:
+    1.2.3.4
+    10.10.10.10
+    4.3.2.1
+])
+NFT_LIST_SET([foobar], 0, [dnl
+    table inet firewalld {
+        set foobar {
+            type ipv4_addr
+            flags interval
+            elements = { 1.2.3.4, 4.3.2.1,
+                         10.10.10.10 }
+        }
+    }
+])
+dnl Verify re-adding the set is not problematic. And the runtime entries
+dnl should be implicitly added.
+FWD_CHECK([-q --permanent --new-ipset foobar --type hash:ip])
+FWD_CHECK([-q --permanent --ipset foobar --add-entry 1.2.3.4])
+FWD_CHECK([-q --permanent --ipset foobar --add-entry 6.6.6.6])
+FWD_RELOAD
+IPSET_LIST_SET([foobar], 0, [dnl
+    Name: foobar
+    Type: hash:ip
+    Members:
+    1.2.3.4
+    10.10.10.10
+    4.3.2.1
+    6.6.6.6
+])
+NFT_LIST_SET([foobar], 0, [dnl
+    table inet firewalld {
+        set foobar {
+            type ipv4_addr
+            flags interval
+            elements = { 1.2.3.4, 4.3.2.1,
+                         6.6.6.6, 10.10.10.10 }
+        }
+    }
+])
+FWD_CHECK([-q --permanent --delete-ipset foobar])
+
+dnl do all again, but with CleanUpOnExit=no and stop
+AT_CHECK([sed -i 's/^CleanUpOnExit.*/CleanUpOnExit=no/' ./firewalld.conf])
+FWD_CHECK([-q --permanent --new-ipset foobar --type hash:ip])
+FWD_CHECK([-q --permanent --ipset foobar --add-entry 1.2.3.4])
+FWD_RESTART
+FWD_CHECK([-q --permanent --delete-ipset foobar])
+FWD_STOP_FIREWALLD
+dnl make sure ipset still in system
+IPSET_LIST_SET([foobar], 0, [dnl
+    Name: foobar
+    Type: hash:ip
+    Members:
+    1.2.3.4
+])
+NFT_LIST_SET([foobar], 0, [dnl
+    table inet firewalld {
+        set foobar {
+            type ipv4_addr
+            flags interval
+            elements = { 1.2.3.4 }
+        }
+    }
+])
+FWD_START_FIREWALLD
+
+FWD_END_TEST
