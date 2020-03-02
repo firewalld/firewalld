@@ -670,6 +670,7 @@ class Firewall(object):
     def stop(self):
         if self.cleanup_on_exit and not self._offline:
             self.flush()
+            self.ipset.flush()
             self.set_policy("ACCEPT")
             self.modules_backend.unload_firewall_modules()
 
@@ -981,6 +982,10 @@ class Firewall(object):
             _direct_config = self.direct.get_runtime_config()
             _old_dz = self.get_default_zone()
 
+        _ipset_objs = []
+        for _name in self.ipset.get_ipsets():
+            _ipset_objs.append(self.ipset.get_ipset(_name))
+
         if not _panic:
             self.set_policy("DROP")
 
@@ -994,6 +999,16 @@ class Firewall(object):
             # save the exception for later, but continue restoring interfaces,
             # etc. We'll re-raise it at the end.
             start_exception = e
+
+        # destroy ipsets no longer in the permanent configuration
+        if flush_all:
+            for obj in _ipset_objs:
+                if not self.ipset.query_ipset(obj.name):
+                    for backend in self.ipset.backends():
+                        # nftables sets are part of the normal firewall ruleset.
+                        if backend.name == "nftables":
+                            continue
+                        backend.set_destroy(obj.name)
 
         if not flush_all:
             # handle interfaces in the default zone and move them to the new
@@ -1028,6 +1043,19 @@ class Firewall(object):
                     log.info1("Lost zone '%s', zone interfaces dropped.", zone)
                     del _zone_interfaces[zone]
             del _zone_interfaces
+
+            # restore runtime-only ipsets
+            for obj in _ipset_objs:
+                if self.ipset.query_ipset(obj.name):
+                    for entry in obj.entries:
+                        try:
+                            self.ipset.add_entry(obj.name, entry)
+                        except FirewallError as msg:
+                            if msg.code != errors.ALREADY_ENABLED:
+                                raise msg
+                else:
+                    self.ipset.add_ipset(obj)
+                    self.ipset.apply_ipset(obj.name)
 
             # restore direct config
             self.direct.set_config(_direct_config)
