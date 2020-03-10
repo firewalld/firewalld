@@ -1159,6 +1159,16 @@ class ip4tables(object):
 
         return [rule]
 
+    def build_zone_forward_rules(self, enable, zone, interfaces):
+        add_del = { True: "-A", False: "-D" }[enable]
+        target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["FORWARD_IN"],
+                                            zone=zone)
+        rules = []
+        for interface in interfaces:
+            rules.append(["-t", "filter", add_del, "%s_allow" % target,
+                          "-o", interface, "-j", "ACCEPT"])
+        return rules
+
     def build_zone_masquerade_rules(self, enable, zone, rich_rule=None):
         add_del = { True: "-A", False: "-D" }[enable]
         target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["POSTROUTING"],

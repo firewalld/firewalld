@@ -1258,6 +1258,29 @@ class nftables(object):
 
         return rules
 
+    def build_zone_forward_rules(self, enable, zone, interfaces):
+        if not interfaces:
+            return []
+        add_del = { True: "add", False: "delete" }[enable]
+        target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["FORWARD_IN"],
+                                            zone=zone)
+        rules = []
+        for interface in interfaces:
+            interface = interface.replace("+", "*")
+            if interface == "*":
+                expr = [{"accept": None}]
+            else:
+                expr = [{"match": {"left": {"meta": {"key": "oifname"}},
+                                   "op": "==",
+                                   "right": interface}},
+                        {"accept": None}]
+            rule = {"family": "inet",
+                    "table": TABLE_NAME,
+                    "chain": "filter_%s_allow" % target,
+                    "expr": expr}
+            rules.append({add_del: {"rule": rule}})
+        return rules
+
     def _build_zone_masquerade_nat_rules(self, enable, zone, family, rich_rule=None):
         add_del = { True: "add", False: "delete" }[enable]
         target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["POSTROUTING"],

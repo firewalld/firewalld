@@ -722,6 +722,55 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         log.debug1("%s.queryIcmpBlockInversion()", self._log_prefix)
         return self.getSettings()[15]
 
+    # forward
+
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         out_signature='b')
+    @dbus_handle_exceptions
+    def getForward(self, sender=None): # pylint: disable=W0613
+        log.debug1("%s.getForward()", self._log_prefix)
+        return self.getSettings()[16]
+
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         in_signature='b')
+    @dbus_handle_exceptions
+    def setForward(self, forward, sender=None):
+        forward = dbus_to_python(forward, bool)
+        log.debug1("%s.setForward('%s')", self._log_prefix, forward)
+        self.parent.accessCheck(sender)
+        settings = list(self.getSettings())
+        settings[16] = forward
+        self.update(settings)
+
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE)
+    @dbus_handle_exceptions
+    def addForward(self, sender=None):
+        log.debug1("%s.addForward()", self._log_prefix)
+        self.parent.accessCheck(sender)
+        settings = list(self.getSettings())
+        if settings[16]:
+            raise FirewallError(errors.ALREADY_ENABLED, "forward")
+        settings[16] = True
+        self.update(settings)
+
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE)
+    @dbus_handle_exceptions
+    def removeForward(self, sender=None):
+        log.debug1("%s.removeForward()", self._log_prefix)
+        self.parent.accessCheck(sender)
+        settings = list(self.getSettings())
+        if not settings[16]:
+            raise FirewallError(errors.NOT_ENABLED, "forward")
+        settings[16] = False
+        self.update(settings)
+
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         out_signature='b')
+    @dbus_handle_exceptions
+    def queryForward(self, sender=None): # pylint: disable=W0613
+        log.debug1("%s.queryForward()", self._log_prefix)
+        return self.getSettings()[16]
+
     # masquerade
 
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,

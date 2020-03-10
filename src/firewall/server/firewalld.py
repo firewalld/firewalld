@@ -1780,6 +1780,71 @@ class FirewallD(slip.dbus.service.Object):
 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+    # FORWARD
+
+    @dbus_handle_exceptions
+    def disableTimedForward(self, zone):
+        del self._timeouts[zone]["forward"]
+        self.fw.zone.remove_forward(zone)
+        self.ForwardRemoved(zone)
+
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='si',
+                         out_signature='s')
+    @dbus_handle_exceptions
+    def addForward(self, zone, timeout, sender=None):
+        # adds forward if not added already
+        zone = dbus_to_python(zone, str)
+        timeout = dbus_to_python(timeout, int)
+        log.debug1("zone.addForward('%s')" % (zone))
+        self.accessCheck(sender)
+        _zone = self.fw.zone.add_forward(zone, timeout, sender)
+
+        if timeout > 0:
+            tag = GLib.timeout_add_seconds(timeout, self.disableTimedForward,
+                                           _zone)
+            self.addTimeout(_zone, "forward", tag)
+
+        self.ForwardAdded(_zone, timeout)
+        return _zone
+
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='s',
+                         out_signature='s')
+    @dbus_handle_exceptions
+    def removeForward(self, zone, sender=None):
+        # removes forward
+        zone = dbus_to_python(zone, str)
+        log.debug1("zone.removeForward('%s')" % (zone))
+        self.accessCheck(sender)
+        _zone = self.fw.zone.remove_forward(zone)
+
+        self.removeTimeout(_zone, "forward")
+        self.ForwardRemoved(_zone)
+        return _zone
+
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='s',
+                         out_signature='b')
+    @dbus_handle_exceptions
+    def queryForward(self, zone, sender=None): # pylint: disable=W0613
+        # returns true if a forward is added
+        zone = dbus_to_python(zone, str)
+        log.debug1("zone.queryForward('%s')" % (zone))
+        return self.fw.zone.query_forward(zone)
+
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_ZONE, signature='si')
+    @dbus_handle_exceptions
+    def ForwardAdded(self, zone, timeout=0):
+        log.debug1("zone.ForwardAdded('%s', %d)" % (zone, timeout))
+
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_ZONE, signature='s')
+    @dbus_handle_exceptions
+    def ForwardRemoved(self, zone):
+        log.debug1("zone.ForwardRemoved('%s')" % (zone))
+
+    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
     # MASQUERADE
 
     @dbus_handle_exceptions

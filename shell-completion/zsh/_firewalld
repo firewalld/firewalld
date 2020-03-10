@@ -182,6 +182,9 @@ _arguments -C -s $args $direct \
   '*--add-forward-port=[add the IPv4 forward port for a zone]: :->port-forwards' \
   '*--remove-forward-port=[remove the IPv4 forward port from a zone]: :->port-forwards' \
   '*--query-forward-port=[return whether the IPv4 forward port has been added for a zone]: :->port-forwards' \
+  '--add-forward[enable IP forwarding between interfaces in a zone]' \
+  '--remove-forward[disable IP forwarding between interfaces in a zone]' \
+  '--query-forward[return whether IP forwarding has been enabled for a zone]' \
   '--add-masquerade[enable IPv4 masquerade for a zone]' \
   '--remove-masquerade[disable IPv4 masquerade for a zone]' \
   '--query-masquerade[return whether IPv4 masquerading has been enabled for a zone]' \

@@ -90,7 +90,7 @@ class FirewallZone(object):
         obj.settings = { x : LastUpdatedOrderedDict()
                          for x in [ "interfaces", "sources",
                                     "services", "ports",
-                                    "masquerade", "forward_ports",
+                                    "forward", "masquerade", "forward_ports",
                                     "source_ports",
                                     "icmp_blocks", "rules",
                                     "protocols", "icmp_block_inversion" ] }
@@ -142,6 +142,9 @@ class FirewallZone(object):
                                            use_transaction=transaction)
             for args in obj.source_ports:
                 error = self._first_except(error, self.add_source_port, obj.name, *args,
+                                           use_transaction=transaction)
+            if obj.forward:
+                error = self._first_except(error, self.add_forward, obj.name,
                                            use_transaction=transaction)
             if obj.masquerade:
                 error = self._first_except(error, self.add_masquerade, obj.name,
@@ -262,6 +265,8 @@ class FirewallZone(object):
                         self.add_protocol(zone, *args)
                     elif key == "source_ports":
                         self.add_source_port(zone, *args)
+                    elif key == "forward":
+                        self.add_forward(zone)
                     elif key == "masquerade":
                         self.add_masquerade(zone)
                     elif key == "rules":
@@ -314,6 +319,8 @@ class FirewallZone(object):
                     elif key == "source_ports":
                         self._source_port(enable, _zone, args[0], args[1],
                                            transaction)
+                    elif key == "forward":
+                        self._forward(enable, _zone, transaction)
                     elif key == "masquerade":
                         self._masquerade(enable, _zone, transaction)
                     elif key == "rules":
@@ -366,6 +373,7 @@ class FirewallZone(object):
         conf[13] = self.list_protocols(zone)
         conf[14] = self.list_source_ports(zone)
         conf[15] = self.query_icmp_block_inversion(zone)
+        conf[16] = self.query_forward(zone)
         return tuple(conf)
 
     # INTERFACES
@@ -1082,6 +1090,75 @@ class FirewallZone(object):
     def list_source_ports(self, zone):
         return list(self.get_settings(zone)["source_ports"].keys())
 
+    # FORWARD
+
+    def __forward_id(self):
+        return True
+
+    def add_forward(self, zone, timeout=0, sender=None,
+                    use_transaction=None):
+        _zone = self._fw.check_zone(zone)
+        self._fw.check_timeout(timeout)
+        self._fw.check_panic()
+        _obj = self._zones[_zone]
+
+        forward_id = self.__forward_id()
+        if forward_id in _obj.settings["forward"]:
+            raise FirewallError(errors.ALREADY_ENABLED,
+                                "forward already enabled in '%s'" % _zone)
+
+        if use_transaction is None:
+            transaction = self.new_transaction()
+        else:
+            transaction = use_transaction
+
+        if _obj.applied:
+            self._forward(True, _zone, transaction)
+
+        self.__register_forward(_obj, forward_id, timeout, sender)
+        transaction.add_fail(self.__unregister_forward, _obj, forward_id)
+
+        if use_transaction is None:
+            transaction.execute(True)
+
+        return _zone
+
+    def __register_forward(self, _obj, forward_id, timeout, sender):
+        _obj.settings["forward"][forward_id] = \
+            self.__gen_settings(timeout, sender)
+
+    def remove_forward(self, zone, use_transaction=None):
+        _zone = self._fw.check_zone(zone)
+        self._fw.check_panic()
+        _obj = self._zones[_zone]
+
+        forward_id = self.__forward_id()
+        if forward_id not in _obj.settings["forward"]:
+            raise FirewallError(errors.NOT_ENABLED,
+                                "forward not enabled in '%s'" % _zone)
+
+        if use_transaction is None:
+            transaction = self.new_transaction()
+        else:
+            transaction = use_transaction
+
+        if _obj.applied:
+            self._forward(False, _zone, transaction)
+
+        transaction.add_post(self.__unregister_forward, _obj, forward_id)
+
+        if use_transaction is None:
+            transaction.execute(True)
+
+        return _zone
+
+    def __unregister_forward(self, _obj, forward_id):
+        if forward_id in _obj.settings["forward"]:
+            del _obj.settings["forward"][forward_id]
+
+    def query_forward(self, zone):
+        return self.__forward_id() in self.get_settings(zone)["forward"]
+
     # MASQUERADE
 
     def __masquerade_id(self):
@@ -1479,6 +1556,11 @@ class FirewallZone(object):
                     rules = backend.build_zone_source_interface_rules(enable,
                                         zone, interface, table, chain, append)
                     transaction.add_rules(backend, rules)
+            if self.query_forward(zone):
+                # Also add/remove the interface from the zone forward rules
+                rules = backend.build_zone_forward_rules(
+                    enable, zone, [interface])
+                transaction.add_rules(backend, rules)
 
     # IPSETS
 
@@ -1832,6 +1914,20 @@ class FirewallZone(object):
                 continue
 
             rules = backend.build_zone_source_ports_rules(enable, zone, protocol, port)
+            transaction.add_rules(backend, rules)
+
+    def _forward(self, enable, zone, transaction):
+        if enable:
+            transaction.add_chain(zone, "filter", "FORWARD_IN")
+            transaction.add_post(enable_ip_forwarding, "ipv4")
+            transaction.add_post(enable_ip_forwarding, "ipv6")
+
+        for backend in self._fw.enabled_backends():
+            if not backend.zones_supported:
+                continue
+
+            interfaces = self._zones[zone].settings["interfaces"].keys()
+            rules = backend.build_zone_forward_rules(enable, zone, interfaces)
             transaction.add_rules(backend, rules)
 
     def _masquerade(self, enable, zone, transaction):

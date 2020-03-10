@@ -293,6 +293,12 @@ Options to Adapt and Query Zones
   --query-forward-port=port=<portid>[-<portid>]:proto=<protocol>[:toport=<portid>[-<portid>]][:toaddr=<address>[/<mask>]]
                        Return whether the IPv4 forward port has been added for
                        a zone [P] [Z]
+  --add-forward        Enable forwarding of IP packets between interfaces in
+                       a zone [P] [Z] [T]
+  --remove-forward     Disable forwarding of IP packets between interfaces in
+                       a zone [P] [Z]
+  --query-forward      Return whether forwarding of IP packets between
+                       interfaces has been enabled for a zone [P] [Z]
   --add-masquerade     Enable IPv4 masquerade for a zone [P] [Z] [T]
   --remove-masquerade  Disable IPv4 masquerade for a zone [P] [Z]
   --query-masquerade   Return whether IPv4 masquerading has been enabled for a
@@ -617,6 +623,9 @@ parser_group_zone.add_argument("--query-protocol", metavar="<protocol>", action=
 parser_group_zone.add_argument("--add-source-port", metavar="<port>", action='append')
 parser_group_zone.add_argument("--remove-source-port", metavar="<port>", action='append')
 parser_group_zone.add_argument("--query-source-port", metavar="<port>", action='append')
+parser_group_zone.add_argument("--add-forward", action="store_true")
+parser_group_zone.add_argument("--remove-forward", action="store_true")
+parser_group_zone.add_argument("--query-forward", action="store_true")
 parser_group_zone.add_argument("--add-masquerade", action="store_true")
 parser_group_zone.add_argument("--remove-masquerade", action="store_true")
 parser_group_zone.add_argument("--query-masquerade", action="store_true")
@@ -825,6 +834,7 @@ options_zone_interfaces_sources = \
 
 options_zone_adapt_query = \
     a.add_rich_rule or a.remove_rich_rule or a.query_rich_rule or \
+    a.add_forward or a.remove_forward or a.query_forward or \
     a.add_masquerade or a.remove_masquerade or a.query_masquerade or \
     a.list_services or a.list_ports or a.list_protocols or \
     a.list_source_ports or \
@@ -1012,7 +1022,8 @@ else:
 
 if a.timeout and not (a.add_service or a.add_port or a.add_protocol or \
                       a.add_icmp_block or a.add_forward_port or \
-                      a.add_source_port or a.add_masquerade or a.add_rich_rule):
+                      a.add_source_port or a.add_forward or \
+                      a.add_masquerade or a.add_rich_rule):
     cmd.fail(parser.format_usage() + "Wrong --timeout usage")
 
 if a.permanent:
@@ -1999,6 +2010,14 @@ if a.permanent:
             cmd.query_sequence(a.query_source_port, fw_zone.querySourcePort,
                                cmd.parse_port, "%s/%s")
 
+        # forward
+        elif a.add_forward:
+            fw_zone.addForward()
+        elif a.remove_forward:
+            fw_zone.removeForward()
+        elif a.query_forward:
+            cmd.print_query_result(fw_zone.queryForward())
+
         # masquerade
         elif a.add_masquerade:
             fw_zone.addMasquerade()
@@ -2552,6 +2571,14 @@ elif a.remove_source_port:
 elif a.query_source_port:
     cmd.x_query_sequence(zone, a.query_source_port, fw.querySourcePort,
                          cmd.parse_port, "'%s/%s'")
+
+# forward
+elif a.add_forward:
+    fw.addForward(zone, a.timeout)
+elif a.remove_forward:
+    fw.removeForward(zone)
+elif a.query_forward:
+    cmd.print_query_result(fw.queryForward(zone))
 
 # masquerade
 elif a.add_masquerade:
