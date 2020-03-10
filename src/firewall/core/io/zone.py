@@ -57,6 +57,7 @@ class Zone(IO_Object):
         ( "protocols", [ "", ], ),                     # as
         ( "source_ports", [ ( "", "" ), ], ),          # a(ss)
         ( "icmp_block_inversion", False ),             # b
+        ( "forward", False ),                          # b
         )
     ADDITIONAL_ALNUM_CHARS = [ "_", "-", "/" ]
     PARSER_REQUIRED_ELEMENT_ATTRS = {
@@ -67,6 +68,7 @@ class Zone(IO_Object):
         "port": [ "port", "protocol" ],
         "icmp-block": [ "name" ],
         "icmp-type": [ "name" ],
+        "forward": None,
         "forward-port": [ "port", "protocol" ],
         "interface": [ "name" ],
         "rule": None,
@@ -112,6 +114,7 @@ class Zone(IO_Object):
         self.ports = [ ]
         self.protocols = [ ]
         self.icmp_blocks = [ ]
+        self.forward = False
         self.masquerade = False
         self.forward_ports = [ ]
         self.source_ports = [ ]
@@ -133,6 +136,7 @@ class Zone(IO_Object):
         del self.ports[:]
         del self.protocols[:]
         del self.icmp_blocks[:]
+        self.forward = False
         self.masquerade = False
         del self.forward_ports[:]
         del self.source_ports[:]
@@ -286,6 +290,8 @@ class Zone(IO_Object):
         for icmp in zone.icmp_blocks:
             if icmp not in self.icmp_blocks:
                 self.icmp_blocks.append(icmp)
+        if zone.forward:
+            self.forward = True
         if zone.masquerade:
             self.masquerade = True
         for forward in zone.forward_ports:
@@ -411,6 +417,12 @@ class zone_ContentHandler(IO_Object_ContentHandler):
             else:
                 log.warning("Invalid rule: icmp-block '%s' outside of rule",
                             attrs["name"])
+
+        elif name == "forward":
+            if self.item.forward:
+                log.warning("Forward already set, ignoring.")
+            else:
+                self.item.forward = True
 
         elif name == "masquerade":
             if "enabled" in attrs and \
@@ -810,6 +822,12 @@ def zone_writer(zone, path=None):
     for icmp in uniqify(zone.icmp_blocks):
         handler.ignorableWhitespace("  ")
         handler.simpleElement("icmp-block", { "name": icmp })
+        handler.ignorableWhitespace("\n")
+
+    # forward
+    if zone.forward:
+        handler.ignorableWhitespace("  ")
+        handler.simpleElement("forward", { })
         handler.ignorableWhitespace("\n")
 
     # masquerade

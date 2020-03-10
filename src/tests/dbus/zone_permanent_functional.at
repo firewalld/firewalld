@@ -370,6 +370,7 @@ DBUS_CHECK([config], [config.addZone2],
        "ports": <@<:@("1234", "tcp"), ("1234", "udp")@:>@>, dnl
        "icmp_blocks": <@<:@"echo-request"@:>@>, dnl
        "masquerade": <true>, dnl
+       "forward": <false>, dnl
        "forward_ports": <@<:@("1234", "tcp", "4321", ""), ("1234", "udp", "4321", "10.10.10.10")@:>@>, dnl
        "interfaces": <@<:@"dummy2", "dummy3"@:>@>, dnl
        "sources": <@<:@"10.10.10.0/24"@:>@>, dnl
@@ -384,6 +385,7 @@ export DBUS_FOOBAR2_ZONE_OBJ
 
 DBUS_CHECK([config/zone/${DBUS_FOOBAR2_ZONE_OBJ}], [config.zone.getSettings2], [], 0, [dnl
        'description': <'foobar zone'>
+       'forward': <false>
        'forward_ports': <@<:@('1234', 'tcp', '4321', ''), ('1234', 'udp', '4321', '10.10.10.10')@:>@>
        'icmp_block_inversion': <false>
        'icmp_blocks': <@<:@'echo-request'@:>@>
@@ -422,6 +424,7 @@ DBUS_CHECK([config/zone/${DBUS_FOOBAR2_ZONE_OBJ}], [config.zone.update2], [dnl
     ], 0, [ignore])
 DBUS_CHECK([config/zone/${DBUS_FOOBAR2_ZONE_OBJ}], [config.zone.getSettings2], [], 0, [dnl
        'description': <'foobar zone update2'>
+       'forward': <false>
        'forward_ports': <@<:@('1234', 'udp', '4321', '10.10.10.10')@:>@>
        'icmp_block_inversion': <true>
        'icmp_blocks': <@<:@'echo-request', 'echo-reply'@:>@>
@@ -460,6 +463,7 @@ DBUS_CHECK([config/zone/${DBUS_FOOBAR2_ZONE_OBJ}], [config.zone.update2], [dnl
 dnl verify the updates
 DBUS_CHECK([config/zone/${DBUS_FOOBAR2_ZONE_OBJ}], [config.zone.getSettings2], [], 0, [dnl
        'description': <'foobar zone update2'>
+       'forward': <false>
        'icmp_block_inversion': <false>
        'interfaces': <@<:@'dummy3'@:>@>
        'masquerade': <false>

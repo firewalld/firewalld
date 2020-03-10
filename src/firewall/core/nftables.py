@@ -1254,9 +1254,35 @@ class nftables(object):
 
         return rules
 
+    def build_zone_forward_rules(self, enable, zone, policy, table, interface=None, source=None):
+        add_del = { True: "add", False: "delete" }[enable]
+        _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX)
+
+        rules = []
+
+        if interface:
+            if interface[len(interface)-1] == "+":
+                interface = interface[:len(interface)-1] + "*"
+
+            expr = [{"match": {"left": {"meta": {"key": "oifname"}},
+                               "op": "==",
+                               "right": interface}},
+                    {"accept": None}]
+        else: # source
+            expr = [self._rule_addr_fragment("daddr", source), {"accept": None}]
+
+        rule = {"family": "inet",
+                "table": TABLE_NAME,
+                "chain": "filter_%s_allow" % (_policy),
+                "expr": expr}
+        rules.append({add_del: {"rule": rule}})
+
+        return rules
+
     def _build_policy_masquerade_nat_rules(self, enable, policy, family, rich_rule=None):
         table = "nat"
         _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX)
+
         add_del = { True: "add", False: "delete" }[enable]
 
         expr_fragments = []

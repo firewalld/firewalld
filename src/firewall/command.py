@@ -385,6 +385,7 @@ class FirewallCommand(object):
         services = settings.getServices()
         ports = settings.getPorts()
         protocols = settings.getProtocols()
+        forward = settings.getForward()
         masquerade = settings.getMasquerade()
         forward_ports = settings.getForwardPorts()
         source_ports = settings.getSourcePorts()
@@ -427,6 +428,7 @@ class FirewallCommand(object):
         self.print_msg("  ports: " + " ".join(["%s/%s" % (port[0], port[1])
                                                for port in ports]))
         self.print_msg("  protocols: " + " ".join(sorted(protocols)))
+        self.print_msg("  forward: %s" % ("yes" if forward else "no"))
         self.print_msg("  masquerade: %s" % ("yes" if masquerade else "no"))
         self.print_msg("  forward-ports: " +
                        "\n\t".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % \

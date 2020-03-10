@@ -53,6 +53,7 @@ OPTIONS_ZONE_ACTION_ACTION="--add-service= --remove-service= --query-service= \
 OPTIONS_ZONE_ADAPT_QUERY="--add-rich-rule= --remove-rich-rule= --query-rich-rule= \
                     --add-icmp-block-inversion --remove-icmp-block-inversion \
                     --query-icmp-block-inversion \
+                    --add-forward --remove-forward --query-forward \
                     --add-masquerade --remove-masquerade --query-masquerade \
                     --list-services --list-ports --list-protocols \
                     --list-source-ports --list-icmp-blocks \
@@ -183,6 +184,7 @@ _firewall_cmd()
     --list-forward-ports|--add-forward-port=*|--remove-forward-port=*|--query-forward-port=*|\
     --list-interfaces|--add-interface=*|--remove-interface=*|--query-interface=*|\
     --list-sources|--add-source=*|--remove-source=*|--query-source=*|\
+    --add-forward|--remove-forward|--query-forward|\
     --add-masquerade|--remove-masquerade|--query-masquerade|--list-all|\
     --get-description|--get-short|--set-description=*|--set-short=*)
         opts=""

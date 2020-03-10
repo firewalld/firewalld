@@ -1155,9 +1155,23 @@ class ip4tables(object):
 
         return [rule]
 
+    def build_zone_forward_rules(self, enable, zone, policy, table, interface=None, source=None):
+        add_del = { True: "-A", False: "-D" }[enable]
+        _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX)
+
+        rules = []
+        if interface:
+            rules.append(["-t", "filter", add_del, "%s_allow" % _policy,
+                          "-o", interface, "-j", "ACCEPT"])
+        else: # source
+            rules.append(["-t", "filter", add_del, "%s_allow" % _policy,
+                          "-d", source, "-j", "ACCEPT"])
+        return rules
+
     def build_policy_masquerade_rules(self, enable, policy, rich_rule=None):
         table = "nat"
         _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX)
+
         add_del = { True: "-A", False: "-D" }[enable]
 
         rule_fragment = []
