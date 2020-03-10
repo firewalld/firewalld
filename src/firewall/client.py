@@ -86,17 +86,19 @@ class FirewallClientZoneSettings(object):
     @handle_exceptions
     def __init__(self, settings = None):
         self.settings = ["", "", "", False, DEFAULT_ZONE_TARGET, [], [],
-                         [], False, [], [], [], [], [], [], False]
+                         [], False, [], [], [], [], [], [], False, False]
         self.settings_name = ["version", "short", "description", "UNUSED",
                               "target", "services", "ports",
                               "icmp_blocks", "masquerade", "forward_ports",
                               "interfaces", "sources", "rules_str",
-                              "protocols", "source_ports", "icmp_block_inversion"]
+                              "protocols", "source_ports", "icmp_block_inversion",
+                              "forward"]
         self.settings_dbus_type = ["s", "s", "s", "b",
                                    "s", "s", "(ss)",
                                    "s", "b", "(ssss)",
                                    "s", "s", "s",
-                                   "s", "(ss)", "b"]
+                                   "s", "(ss)", "b",
+                                   "b"]
         if settings:
             if isinstance(settings, list):
                 for i,v in enumerate(settings):
@@ -298,6 +300,31 @@ class FirewallClientZoneSettings(object):
     @handle_exceptions
     def queryIcmpBlockInversion(self):
         return self.settings[15]
+
+    @handle_exceptions
+    def getForward(self):
+        return self.settings[16]
+    @handle_exceptions
+    def setForward(self, forward):
+        self.settings[16] = forward
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def addForward(self):
+        if not self.settings[16]:
+            self.settings[16] = True
+        else:
+            FirewallError(errors.ALREADY_ENABLED, "forward")
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def removeForward(self):
+        if self.settings[16]:
+            self.settings[16] = False
+        else:
+            FirewallError(errors.NOT_ENABLED, "forward")
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def queryForward(self):
+        return self.settings[16]
 
     @handle_exceptions
     def getMasquerade(self):
@@ -698,6 +725,33 @@ class FirewallClientConfigZone(object):
     @handle_exceptions
     def queryIcmpBlockInversion(self):
         return self.fw_zone.queryIcmpBlockInversion()
+
+    # forward
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getForward(self):
+        return self.fw_zone.getSettings2()["forward"]
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def setForward(self, forward):
+        self.fw_zone.update2({"forward": forward})
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def addForward(self):
+        self.fw_zone.update2({"forward": True})
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def removeForward(self):
+        self.fw_zone.update2({"forward": False})
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def queryForward(self):
+        return self.fw_zone.getSettings2()["forward"]
 
     # masquerade
 
@@ -3234,6 +3288,23 @@ class FirewallClient(object):
     @handle_exceptions
     def removeProtocol(self, zone, protocol):
         return dbus_to_python(self.fw_zone.removeProtocol(zone, protocol))
+
+    # forward
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def addForward(self, zone):
+        self.fw_zone.setZoneSettings2(zone, {"forward": True})
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def queryForward(self, zone):
+        return dbus_to_python(self.fw_zone.getZoneSettings2(zone))["forward"]
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def removeForward(self, zone):
+        self.fw_zone.setZoneSettings2(zone, {"forward": False})
 
     # masquerade
 

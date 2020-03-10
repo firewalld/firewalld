@@ -504,6 +504,75 @@ FWD_START_TEST([masquerade])
     FWD_CHECK([--permanent --query-masquerade], 1, ignore)
 FWD_END_TEST
 
+FWD_START_TEST([forward])
+    AT_KEYWORDS(forward gh586 gh613)
+
+    FWD_CHECK([--zone=home --add-interface=dummy --add-interface=dummy2], 0, ignore)
+    FWD_CHECK([--zone=home --add-forward], 0, ignore)
+    NFT_LIST_RULES([inet], [filter_FWDI_home_allow], 0, [dnl
+        table inet firewalld {
+        chain filter_FWDI_home_allow {
+        oifname "dummy" accept
+        oifname "dummy2" accept
+        }
+        }
+    ])
+    dnl These two ipXtables rules correspond to:
+    dnl   -A FWDI_home_allow -o dummy -j ACCEPT
+    dnl   -A FWDI_home_allow -o dummy2 -j ACCEPT
+    dnl although we can't assert the interface names because they don't
+    dnl appear in these rule listings, unfortunately...
+    IPTABLES_LIST_RULES([filter], [FWDI_home_allow], 0, [dnl
+        ACCEPT all -- 0.0.0.0/0 0.0.0.0/0
+        ACCEPT all -- 0.0.0.0/0 0.0.0.0/0
+    ])
+    IP6TABLES_LIST_RULES([filter], [FWDI_home_allow], 0, [dnl
+        ACCEPT all ::/0 ::/0
+        ACCEPT all ::/0 ::/0
+    ])
+    dnl Forward rules should be updated when the interfaces change
+    FWD_CHECK([--zone=home --remove-interface=dummy2], 0, ignore)
+    NFT_LIST_RULES([inet], [filter_FWDI_home_allow], 0, [dnl
+        table inet firewalld {
+        chain filter_FWDI_home_allow {
+        oifname "dummy" accept
+        }
+        }
+    ])
+    IPTABLES_LIST_RULES([filter], [FWDI_home_allow], 0, [dnl
+        ACCEPT all -- 0.0.0.0/0 0.0.0.0/0
+    ])
+    IP6TABLES_LIST_RULES([filter], [FWDI_home_allow], 0, [dnl
+        ACCEPT all ::/0 ::/0
+    ])
+    FWD_CHECK([--zone=home --add-interface=dummy3], 0, ignore)
+    NFT_LIST_RULES([inet], [filter_FWDI_home_allow], 0, [dnl
+        table inet firewalld {
+        chain filter_FWDI_home_allow {
+        oifname "dummy" accept
+        oifname "dummy3" accept
+        }
+        }
+    ])
+    IPTABLES_LIST_RULES([filter], [FWDI_home_allow], 0, [dnl
+        ACCEPT all -- 0.0.0.0/0 0.0.0.0/0
+        ACCEPT all -- 0.0.0.0/0 0.0.0.0/0
+    ])
+    IP6TABLES_LIST_RULES([filter], [FWDI_home_allow], 0, [dnl
+        ACCEPT all ::/0 ::/0
+        ACCEPT all ::/0 ::/0
+    ])
+    FWD_CHECK([--zone=home --query-forward], 0, ignore)
+    FWD_CHECK([--zone=home --remove-forward], 0, ignore)
+    FWD_CHECK([--zone=home --query-forward], 1, ignore)
+    FWD_CHECK([--zone=home --remove-interface=dummy --remove-interface=dummy3], 0, ignore)
+
+    FWD_CHECK([--permanent --zone=home --add-forward], 0, ignore)
+    FWD_CHECK([--permanent --zone=home --query-forward], 0, ignore)
+    FWD_CHECK([--permanent --zone=home --remove-forward], 0, ignore)
+    FWD_CHECK([--permanent --zone=home --query-forward], 1, ignore)
+FWD_END_TEST
+
 FWD_START_TEST([forward ports])
     AT_KEYWORDS(port forward_port)
 
@@ -1787,6 +1856,7 @@ FWD_START_TEST([rich rules priority])
         services: dhcpv6-client ssh
         ports:
         protocols:
+        forward: no
         masquerade: no
         forward-ports:
         source-ports:

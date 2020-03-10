@@ -119,7 +119,8 @@ class FirewallZone(object):
     def add_zone(self, obj):
         obj.settings = { x : LastUpdatedOrderedDict()
                          for x in ["interfaces", "sources",
-                                   "icmp_block_inversion"] }
+                                   "icmp_block_inversion",
+                                   "forward"] }
         self._zones[obj.name] = obj
         self._zone_policies[obj.name] = []
 
@@ -147,6 +148,8 @@ class FirewallZone(object):
             self.add_interface(zone, arg, allow_apply=False)
         for arg in obj.sources:
             self.add_source(zone, arg, allow_apply=False)
+        if obj.forward:
+            self.add_forward(zone)
         if obj.icmp_block_inversion:
             self.add_icmp_block_inversion(zone)
 
@@ -255,6 +258,8 @@ class FirewallZone(object):
                     self._source(enable, zone, args[0], args[1], transaction)
                 elif key == "icmp_block_inversion":
                     continue
+                elif key == "forward":
+                    self._forward(enable, zone, args, transaction)
                 else:
                     log.warning("Zone '%s': Unknown setting '%s:%s', "
                                 "unable to apply", zone, key, args)
@@ -336,6 +341,7 @@ class FirewallZone(object):
                             "protocols": self.list_protocols(zone),
                             "source_ports": self.list_source_ports(zone),
                             "icmp_block_inversion": self.query_icmp_block_inversion(zone),
+                            "forward": self.query_forward(zone),
                             }.items():
             # omit empty entries
             if value or isinstance(value, bool):
@@ -362,6 +368,7 @@ class FirewallZone(object):
             "protocols": (self.add_protocol, self.remove_protocol),
             "source_ports": (self.add_source_port, self.remove_source_port),
             "icmp_block_inversion": (self.add_icmp_block_inversion, self.remove_icmp_block_inversion),
+            "forward": (self.add_forward, self.remove_forward),
         }
 
         old_settings = self.get_config_with_settings_dict(zone)
@@ -691,6 +698,18 @@ class FirewallZone(object):
                                     zone, policy, interface, table, chain, append)
                     transaction.add_rules(backend, rules)
 
+            # intra zone forward
+            policy = self.policy_name_from_zones(zone, "ANY")
+            if enable:
+                transaction.add_chain(policy, "filter", "FORWARD_IN")
+            # Skip adding wildcard/catch-all interface (for default
+            # zone). Otherwise it would allow forwarding from interface
+            # in default zone -> interface not in default zone (but in
+            # a different zone).
+            if self.get_settings(zone)["forward"] and interface not in ["+", "*"]:
+                rules = backend.build_zone_forward_rules(enable, zone, policy, "filter", interface=interface)
+                transaction.add_rules(backend, rules)
+
     # IPSETS
 
     def _ipset_family(self, name):
@@ -730,6 +749,14 @@ class FirewallZone(object):
                     rules = backend.build_zone_source_address_rules(enable, zone,
                                             policy, source, table, chain)
                     transaction.add_rules(backend, rules)
+
+            # intra zone forward
+            policy = self.policy_name_from_zones(zone, "ANY")
+            if enable:
+                transaction.add_chain(policy, "filter", "FORWARD_IN")
+            if self.get_settings(zone)["forward"]:
+                rules = backend.build_zone_forward_rules(enable, zone, policy, "filter", source=source)
+                transaction.add_rules(backend, rules)
 
     def add_service(self, zone, service, timeout=0, sender=None):
         zone = self._fw.check_zone(zone)
@@ -971,3 +998,89 @@ class FirewallZone(object):
         p_name_fwd = self.policy_name_from_zones(zone, "ANY")
         return self._fw.policy.query_icmp_block_inversion(p_name_host) and \
                self._fw.policy.query_icmp_block_inversion(p_name_fwd)
+
+    def _forward(self, enable, zone, transaction):
+        p_name = self.policy_name_from_zones(zone, "ANY")
+        if enable:
+            transaction.add_chain(p_name, "filter", "FORWARD_IN")
+
+            for interface in self._zones[zone].settings["interfaces"]:
+                for backend in self._fw.enabled_backends():
+                    if not backend.policies_supported:
+                        continue
+                    rules = backend.build_zone_forward_rules(enable, zone, p_name, "filter", interface=interface)
+                    transaction.add_rules(backend, rules)
+
+            for ipv,source in self._zones[zone].settings["sources"]:
+                for backend in [self._fw.get_backend_by_ipv(ipv)] if ipv else self._fw.enabled_backends():
+                    if not backend.policies_supported:
+                        continue
+                    rules = backend.build_zone_forward_rules(enable, zone, p_name, "filter", source=source)
+                    transaction.add_rules(backend, rules)
+
+    def __forward_id(self):
+        return True
+
+    def add_forward(self, zone, timeout=0, sender=None,
+                    use_transaction=None):
+        _zone = self._fw.check_zone(zone)
+        self._fw.check_timeout(timeout)
+        self._fw.check_panic()
+        _obj = self._zones[_zone]
+
+        forward_id = self.__forward_id()
+        if forward_id in _obj.settings["forward"]:
+            raise FirewallError(errors.ALREADY_ENABLED,
+                                "forward already enabled in '%s'" % _zone)
+
+        if use_transaction is None:
+            transaction = self.new_transaction()
+        else:
+            transaction = use_transaction
+
+        if _obj.applied:
+            self._forward(True, _zone, transaction)
+
+        self.__register_forward(_obj, forward_id, timeout, sender)
+        transaction.add_fail(self.__unregister_forward, _obj, forward_id)
+
+        if use_transaction is None:
+            transaction.execute(True)
+
+        return _zone
+
+    def __register_forward(self, _obj, forward_id, timeout, sender):
+        _obj.settings["forward"][forward_id] = \
+            self.__gen_settings(timeout, sender)
+
+    def remove_forward(self, zone, use_transaction=None):
+        _zone = self._fw.check_zone(zone)
+        self._fw.check_panic()
+        _obj = self._zones[_zone]
+
+        forward_id = self.__forward_id()
+        if forward_id not in _obj.settings["forward"]:
+            raise FirewallError(errors.NOT_ENABLED,
+                                "forward not enabled in '%s'" % _zone)
+
+        if use_transaction is None:
+            transaction = self.new_transaction()
+        else:
+            transaction = use_transaction
+
+        if _obj.applied:
+            self._forward(False, _zone, transaction)
+
+        transaction.add_post(self.__unregister_forward, _obj, forward_id)
+
+        if use_transaction is None:
+            transaction.execute(True)
+
+        return _zone
+
+    def __unregister_forward(self, _obj, forward_id):
+        if forward_id in _obj.settings["forward"]:
+            del _obj.settings["forward"][forward_id]
+
+    def query_forward(self, zone):
+        return self.__forward_id() in self.get_settings(zone)["forward"]
