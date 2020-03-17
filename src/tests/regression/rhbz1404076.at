@@ -1,26 +1,77 @@
 FWD_START_TEST([query single port added with range])
 AT_KEYWORDS(port rhbz1404076)
 
+m4_define([test_rhbz1404076], [
+dnl add some udp/sctp ports that overlap with the below ranges
+FWD_CHECK([-q $2 --add-$1=8070-8080/udp])
+FWD_CHECK([-q $2 --add-$1=9050-10050/sctp])
+FWD_CHECK([-q $2 --add-$1=9000/dccp])
+
 dnl add a set of ports by range, then query a specific port inside that range.
-FWD_CHECK([-q --add-port=8080-8090/tcp])
-FWD_CHECK([-q --query-port=8085/tcp])
-FWD_CHECK([-q --query-port=8085-8087/tcp])
-FWD_CHECK([-q --query-port=8080-8090/tcp])
-FWD_CHECK([-q --query-port=8080-8089/tcp])
-FWD_CHECK([-q --query-port=8081-8090/tcp])
-FWD_CHECK([-q --query-port=webcache/tcp]) dnl named port
-FWD_CHECK([-q --query-port=8091/tcp], 1) dnl negative test
-FWD_CHECK([-q --query-port=8085/udp], 1) dnl negative test
+FWD_CHECK([-q $2 --add-$1=8080-8090/tcp])
+FWD_CHECK([-q $2 --query-$1=8085/tcp])
+FWD_CHECK([-q $2 --query-$1=8085-8087/tcp])
+FWD_CHECK([-q $2 --query-$1=8080-8090/tcp])
+FWD_CHECK([-q $2 --query-$1=8080-8089/tcp])
+FWD_CHECK([-q $2 --query-$1=8081-8090/tcp])
+FWD_CHECK([-q $2 --query-$1=webcache/tcp]) dnl named port
+FWD_CHECK([-q $2 --query-$1=8091/tcp], 1) dnl negative test
+FWD_CHECK([-q $2 --query-$1=8085/udp], 1) dnl negative test
+FWD_CHECK([$2 --list-$1s], 0, [dnl
+9000/dccp 9050-10050/sctp 8080-8090/tcp 8070-8080/udp
+])
 
-dnl same thing, but for permanent configuration.
-FWD_CHECK([-q --permanent --add-port=8080-8090/tcp])
-FWD_CHECK([-q --permanent --query-port=8085/tcp])
-FWD_CHECK([-q --permanent --query-port=8085-8087/tcp])
-FWD_CHECK([-q --permanent --query-port=8080-8090/tcp])
-FWD_CHECK([-q --permanent --query-port=8080-8089/tcp])
-FWD_CHECK([-q --permanent --query-port=8081-8090/tcp])
-FWD_CHECK([-q --permanent --query-port=webcache/tcp]) dnl named port
-FWD_CHECK([-q --permanent --query-port=8091/tcp], 1) dnl negative test
-FWD_CHECK([-q --permanent --query-port=8085/udp], 1) dnl negative test
+dnl verify coalescing of ranges and overlapping
+FWD_CHECK([-q $2 --add-$1=10000-10010/tcp])
+FWD_CHECK([-q $2 --add-$1=9000/tcp]) dnl add one, no grow existing
+FWD_CHECK([-q $2 --add-$1=9010-9020/tcp]) dnl add range before, no grow existing
+FWD_CHECK([-q $2 --add-$1=10050-10060/tcp]) dnl add range after, no grow existing
+FWD_CHECK([-q $2 --add-$1=9999/tcp]) dnl grow start by one
+FWD_CHECK([-q $2 --add-$1=10011/tcp]) dnl grow end by one
+FWD_CHECK([-q $2 --add-$1=9095-10000/tcp]) dnl grow beginning
+FWD_CHECK([-q $2 --add-$1=9090-9094/tcp]) dnl grow beginning adjacent
+FWD_CHECK([-q $2 --query-$1=9099-10001/tcp])
+FWD_CHECK([-q $2 --add-$1=10005-10020/tcp]) dnl grow end
+FWD_CHECK([-q $2 --add-$1=10021-10022/tcp]) dnl grow end adjacent
+FWD_CHECK([-q $2 --query-$1=10010-10015/tcp])
+FWD_CHECK([-q $2 --add-$1=9080-10040/tcp]) dnl grow both
+FWD_CHECK([-q $2 --add-$1=9079-10041/tcp]) dnl grow both adjacent
+FWD_CHECK([-q $2 --query-$1=9093-10025/tcp])
+FWD_CHECK([-q $2 --add-$1=10010-10015/tcp]) dnl will throw log
+FWD_GREP_LOG([WARNING: ALREADY_ENABLED: '10010-10015:tcp' already in 'public'])
+FWD_CHECK([-q $2 --query-$1=9090-10030/tcp])
+FWD_CHECK([$2 --list-$1s], 0, [dnl
+9000/dccp 9050-10050/sctp 8080-8090/tcp 9000/tcp 9010-9020/tcp 9079-10041/tcp 10050-10060/tcp 8070-8080/udp
+])
 
-FWD_END_TEST
+dnl verify removing a sub range
+FWD_CHECK([-q $2 --remove-$1=9000/tcp]) dnl remove one, but no break
+FWD_CHECK([-q $2 --remove-$1=9010-9020/tcp]) dnl remove range, but no break
+FWD_CHECK([-q $2 --remove-$1=10050-10060/tcp]) dnl remove range, but no break
+FWD_CHECK([-q $2 --remove-$1=9079/tcp]) dnl shrink start by one
+FWD_CHECK([-q $2 --remove-$1=10041/tcp]) dnl shrink end by one
+FWD_CHECK([-q $2 --remove-$1=9080-9085/tcp]) dnl shrink start by range
+FWD_CHECK([-q $2 --remove-$1=10035-10040/tcp]) dnl shrink end by range
+FWD_CHECK([-q $2 --remove-$1=10005-10009/tcp]) dnl shrink range in the middle
+FWD_CHECK([-q $2 --remove-$1=10100-10110/tcp]) dnl remove non-existent
+FWD_GREP_LOG([WARNING: NOT_ENABLED: '10100-10110:tcp' not in 'public'])
+FWD_CHECK([-q $2 --query-$1=10001-10004/tcp])
+FWD_CHECK([-q $2 --query-$1=10016-10019/tcp])
+FWD_CHECK([-q $2 --query-$1=10005/tcp], 1) dnl negative test
+FWD_CHECK([-q $2 --query-$1=10003-10030/tcp], 1) dnl negative test
+FWD_CHECK([-q $2 --query-$1=10004-10005/tcp], 1) dnl negative test
+FWD_CHECK([-q $2 --query-$1=10009-10010/tcp], 1) dnl negative test
+FWD_CHECK([$2 --list-$1s], 0, [dnl
+9000/dccp 9050-10050/sctp 8080-8090/tcp 9086-10004/tcp 10010-10034/tcp 8070-8080/udp
+])
+]) dnl m4_define
+
+dnl run the test for both ports and source-ports
+test_rhbz1404076([port])
+test_rhbz1404076([port], [--permanent])
+test_rhbz1404076([source-port])
+test_rhbz1404076([source-port], [--permanent])
+m4_undefine([test_rhbz1404076])
+
+FWD_END_TEST([-e '/WARNING: ALREADY_ENABLED:/d'dnl
+              -e '/WARNING: NOT_ENABLED:/d'])
