@@ -138,14 +138,20 @@ def portStr(port, delimiter=":"):
         return "%s%s%s" % (_range[0], delimiter, _range[1])
 
 def portInPortRange(port, range):
-    _port = getPortID(port)
+    _port = getPortRange(port)
     _range = getPortRange(range)
 
-    if len(_range) == 1:
-        return _port == getPortID(_range[0])
-    if len(_range) == 2 and \
-       _port >= getPortID(_range[0]) and _port <= getPortID(_range[1]):
-        return True
+    if len(_port) == 1:
+        if len(_range) == 1:
+            return getPortID(_port[0]) == getPortID(_range[0])
+        if len(_range) == 2 and \
+           getPortID(_port[0]) >= getPortID(_range[0]) and getPortID(_port[0]) <= getPortID(_range[1]):
+            return True
+    elif len(_port) == 2:
+        if len(_range) == 2 and \
+           getPortID(_port[0]) >= getPortID(_range[0]) and getPortID(_port[0]) <= getPortID(_range[1]) and \
+           getPortID(_port[1]) >= getPortID(_range[0]) and getPortID(_port[1]) <= getPortID(_range[1]):
+            return True
 
     return False
 
