@@ -72,6 +72,10 @@ def getPortRange(ports):
     @return Array containing start and end port id for a valid range or -1 if port can not be found and -2 if port is too big for integer input or -1 for invalid ranges or None if the range is ambiguous.
     """
 
+    # (port, port)  or [port, port] case
+    if isinstance(ports, tuple) or isinstance(ports, list):
+        return ports
+
     # "<port-id>" case
     if isinstance(ports, int) or ports.isdigit():
         id1 = getPortID(ports)
@@ -154,6 +158,87 @@ def portInPortRange(port, range):
             return True
 
     return False
+
+def coalescePortRange(new_range, ranges):
+    """ Coalesce a port range with existing list of port ranges
+
+        @param new_range tuple/list/string
+        @param ranges list of tuple/list/string
+        @return tuple of (list of ranges added after coalescing, list of removed original ranges)
+    """
+
+    coalesced_range = getPortRange(new_range)
+    # normalize singleton ranges, e.g. (x,) --> (x,x)
+    if len(coalesced_range) == 1:
+        coalesced_range = (coalesced_range[0], coalesced_range[0])
+    _ranges = map(getPortRange, ranges)
+    _ranges = sorted(map(lambda x: (x[0],x[0]) if len(x) == 1 else x, _ranges), key=lambda x: x[0])
+
+    removed_ranges = []
+    for range in _ranges:
+        if coalesced_range[0] <= range[0] and coalesced_range[1] >= range[1]:
+            # new range covers this
+            removed_ranges.append(range)
+        elif coalesced_range[0] <= range[0] and coalesced_range[1] <  range[1] and \
+                                                coalesced_range[1] >= range[0]:
+            # expand beginning of range
+            removed_ranges.append(range)
+            coalesced_range = (coalesced_range[0], range[1])
+        elif coalesced_range[0] >  range[0] and coalesced_range[1] >= range[1] and \
+                                                coalesced_range[0] <= range[1]:
+            # expand end of range
+            removed_ranges.append(range)
+            coalesced_range = (range[0], coalesced_range[1])
+
+    # normalize singleton ranges, e.g. (x,x) --> (x,)
+    removed_ranges = list(map(lambda x: (x[0],) if x[0] == x[1] else x, removed_ranges))
+    if coalesced_range[0] == coalesced_range[1]:
+        coalesced_range = (coalesced_range[0],)
+
+    return ([coalesced_range], removed_ranges)
+
+def breakPortRange(remove_range, ranges):
+    """ break a port range from existing list of port ranges
+
+        @param remove_range tuple/list/string
+        @param ranges list of tuple/list/string
+        @return tuple of (list of ranges added after breaking up, list of removed original ranges)
+    """
+
+    remove_range = getPortRange(remove_range)
+    # normalize singleton ranges, e.g. (x,) --> (x,x)
+    if len(remove_range) == 1:
+        remove_range = (remove_range[0], remove_range[0])
+    _ranges = map(getPortRange, ranges)
+    _ranges = sorted(map(lambda x: (x[0],x[0]) if len(x) == 1 else x, _ranges), key=lambda x: x[0])
+
+    removed_ranges = []
+    added_ranges = []
+    for range in _ranges:
+        if remove_range[0] <= range[0] and remove_range[1] >= range[1]:
+            # remove entire range
+            removed_ranges.append(range)
+        elif remove_range[0] <= range[0] and remove_range[1] <  range[1] and \
+                                             remove_range[1] >= range[0]:
+            # remove from beginning of range
+            removed_ranges.append(range)
+            added_ranges.append((remove_range[1] + 1, range[1]))
+        elif remove_range[0] >  range[0] and remove_range[1] >= range[1] and \
+                                             remove_range[0] <= range[1]:
+            # remove from end of range
+            removed_ranges.append(range)
+            added_ranges.append((range[0], remove_range[0] - 1))
+        elif remove_range[0] > range[0] and remove_range[1] < range[1]:
+            # remove inside range
+            removed_ranges.append(range)
+            added_ranges.append((range[0], remove_range[0] - 1))
+            added_ranges.append((remove_range[1] + 1, range[1]))
+
+    # normalize singleton ranges, e.g. (x,x) --> (x,)
+    removed_ranges = list(map(lambda x: (x[0],) if x[0] == x[1] else x, removed_ranges))
+    added_ranges = list(map(lambda x: (x[0],) if x[0] == x[1] else x, added_ranges))
+
+    return (added_ranges, removed_ranges)
 
 def getServiceName(port, proto):
     """ Check and Get service name from port and proto string combination using socket.getservbyport

@@ -41,7 +41,8 @@ from firewall.server.decorators import handle_exceptions, \
     dbus_handle_exceptions, dbus_service_method
 from firewall import errors
 from firewall.errors import FirewallError
-from firewall.functions import portInPortRange
+from firewall.functions import portStr, portInPortRange, coalescePortRange, \
+                               breakPortRange
 
 ############################################################################
 #
@@ -455,10 +456,16 @@ class FirewallDConfigZone(slip.dbus.service.Object):
                    protocol)
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
-        if (port,protocol) in settings[6]:
-            raise FirewallError(errors.ALREADY_ENABLED,
-                                "%s:%s" % (port, protocol))
-        settings[6].append((port,protocol))
+        existing_port_ids = list(filter(lambda x: x[1] == protocol, settings[6]))
+        for port_id in existing_port_ids:
+            if portInPortRange(port, port_id[0]):
+                raise FirewallError(errors.ALREADY_ENABLED,
+                                    "%s:%s" % (port, protocol))
+        added_ranges, removed_ranges = coalescePortRange(port, [_port for (_port, _protocol) in existing_port_ids])
+        for range in removed_ranges:
+            settings[6].remove((portStr(range, "-"), protocol))
+        for range in added_ranges:
+            settings[6].append((portStr(range, "-"), protocol))
         self.update(settings)
 
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
@@ -471,9 +478,17 @@ class FirewallDConfigZone(slip.dbus.service.Object):
                    protocol)
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
-        if (port,protocol) not in settings[6]:
+        existing_port_ids = list(filter(lambda x: x[1] == protocol, settings[6]))
+        for port_id in existing_port_ids:
+            if portInPortRange(port, port_id[0]):
+                break
+        else:
             raise FirewallError(errors.NOT_ENABLED, "%s:%s" % (port, protocol))
-        settings[6].remove((port,protocol))
+        added_ranges, removed_ranges = breakPortRange(port, [_port for (_port, _protocol) in existing_port_ids])
+        for range in removed_ranges:
+            settings[6].remove((portStr(range, "-"), protocol))
+        for range in added_ranges:
+            settings[6].append((portStr(range, "-"), protocol))
         self.update(settings)
 
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
@@ -583,10 +598,16 @@ class FirewallDConfigZone(slip.dbus.service.Object):
                    protocol)
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
-        if (port,protocol) in settings[14]:
-            raise FirewallError(errors.ALREADY_ENABLED,
-                                "%s:%s" % (port, protocol))
-        settings[14].append((port,protocol))
+        existing_port_ids = list(filter(lambda x: x[1] == protocol, settings[14]))
+        for port_id in existing_port_ids:
+            if portInPortRange(port, port_id[0]):
+                raise FirewallError(errors.ALREADY_ENABLED,
+                                    "%s:%s" % (port, protocol))
+        added_ranges, removed_ranges = coalescePortRange(port, [_port for (_port, _protocol) in existing_port_ids])
+        for range in removed_ranges:
+            settings[14].remove((portStr(range, "-"), protocol))
+        for range in added_ranges:
+            settings[14].append((portStr(range, "-"), protocol))
         self.update(settings)
 
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
@@ -599,9 +620,17 @@ class FirewallDConfigZone(slip.dbus.service.Object):
                    protocol)
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
-        if (port,protocol) not in settings[14]:
+        existing_port_ids = list(filter(lambda x: x[1] == protocol, settings[14]))
+        for port_id in existing_port_ids:
+            if portInPortRange(port, port_id[0]):
+                break
+        else:
             raise FirewallError(errors.NOT_ENABLED, "%s:%s" % (port, protocol))
-        settings[14].remove((port,protocol))
+        added_ranges, removed_ranges = breakPortRange(port, [_port for (_port, _protocol) in existing_port_ids])
+        for range in removed_ranges:
+            settings[14].remove((portStr(range, "-"), protocol))
+        for range in added_ranges:
+            settings[14].append((portStr(range, "-"), protocol))
         self.update(settings)
 
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,

@@ -25,7 +25,7 @@ from firewall.core.base import SHORTCUTS, DEFAULT_ZONE_TARGET, \
 from firewall.core.logger import log
 from firewall.functions import portStr, checkIPnMask, checkIP6nMask, \
     checkProtocol, enable_ip_forwarding, check_single_address, check_mac, \
-    portInPortRange, get_nf_conntrack_short_name
+    portInPortRange, get_nf_conntrack_short_name, coalescePortRange, breakPortRange
 from firewall.core.rich import Rich_Rule, Rich_Accept, \
     Rich_Mark, Rich_Service, Rich_Port, Rich_Protocol, \
     Rich_Masquerade, Rich_ForwardPort, Rich_SourcePort, Rich_IcmpBlock, \
@@ -857,11 +857,13 @@ class FirewallZone(object):
         self._fw.check_panic()
         _obj = self._zones[_zone]
 
-        port_id = self.__port_id(port, protocol)
-        if port_id in _obj.settings["ports"]:
-            raise FirewallError(errors.ALREADY_ENABLED,
-                                "'%s:%s' already in '%s'" % (port, protocol,
-                                                             _zone))
+        existing_port_ids = list(filter(lambda x: x[1] == protocol, _obj.settings["ports"]))
+        for port_id in existing_port_ids:
+            if portInPortRange(port, port_id[0]):
+                raise FirewallError(errors.ALREADY_ENABLED,
+                                    "'%s:%s' already in '%s'" % (port, protocol, _zone))
+
+        added_ranges, removed_ranges = coalescePortRange(port, [_port for (_port, _protocol) in existing_port_ids])
 
         if use_transaction is None:
             transaction = self.new_transaction()
@@ -869,10 +871,18 @@ class FirewallZone(object):
             transaction = use_transaction
 
         if _obj.applied:
-            self._port(True, _zone, port, protocol, transaction)
+            for range in added_ranges:
+                self._port(True, _zone, portStr(range, "-"), protocol, transaction)
+            for range in removed_ranges:
+                self._port(False, _zone, portStr(range, "-"), protocol, transaction)
 
-        self.__register_port(_obj, port_id, timeout, sender)
-        transaction.add_fail(self.__unregister_port, _obj, port_id)
+        for range in added_ranges:
+            port_id = self.__port_id(range, protocol)
+            self.__register_port(_obj, port_id, timeout, sender)
+            transaction.add_fail(self.__unregister_port, _obj, port_id)
+        for range in removed_ranges:
+            port_id = self.__port_id(range, protocol)
+            transaction.add_post(self.__unregister_port, _obj, port_id)
 
         if use_transaction is None:
             transaction.execute(True)
@@ -889,10 +899,15 @@ class FirewallZone(object):
         self._fw.check_panic()
         _obj = self._zones[_zone]
 
-        port_id = self.__port_id(port, protocol)
-        if port_id not in _obj.settings["ports"]:
+        existing_port_ids = list(filter(lambda x: x[1] == protocol, _obj.settings["ports"]))
+        for port_id in existing_port_ids:
+            if portInPortRange(port, port_id[0]):
+                break
+        else:
             raise FirewallError(errors.NOT_ENABLED,
                                 "'%s:%s' not in '%s'" % (port, protocol, _zone))
+
+        added_ranges, removed_ranges = breakPortRange(port, [_port for (_port, _protocol) in existing_port_ids])
 
         if use_transaction is None:
             transaction = self.new_transaction()
@@ -900,9 +915,18 @@ class FirewallZone(object):
             transaction = use_transaction
 
         if _obj.applied:
-            self._port(False, _zone, port, protocol, transaction)
+            for range in added_ranges:
+                self._port(True, _zone, portStr(range, "-"), protocol, transaction)
+            for range in removed_ranges:
+                self._port(False, _zone, portStr(range, "-"), protocol, transaction)
 
-        transaction.add_post(self.__unregister_port, _obj, port_id)
+        for range in added_ranges:
+            port_id = self.__port_id(range, protocol)
+            self.__register_port(_obj, port_id, 0, None)
+            transaction.add_fail(self.__unregister_port, _obj, port_id)
+        for range in removed_ranges:
+            port_id = self.__port_id(range, protocol)
+            transaction.add_post(self.__unregister_port, _obj, port_id)
 
         if use_transaction is None:
             transaction.execute(True)
@@ -1015,11 +1039,13 @@ class FirewallZone(object):
         self._fw.check_panic()
         _obj = self._zones[_zone]
 
-        port_id = self.__source_port_id(port, protocol)
-        if port_id in _obj.settings["source_ports"]:
-            raise FirewallError(errors.ALREADY_ENABLED,
-                                "'%s:%s' already in '%s'" % (port, protocol,
-                                                             _zone))
+        existing_port_ids = list(filter(lambda x: x[1] == protocol, _obj.settings["source_ports"]))
+        for port_id in existing_port_ids:
+            if portInPortRange(port, port_id[0]):
+                raise FirewallError(errors.ALREADY_ENABLED,
+                                    "'%s:%s' already in '%s'" % (port, protocol, _zone))
+
+        added_ranges, removed_ranges = coalescePortRange(port, [_port for (_port, _protocol) in existing_port_ids])
 
         if use_transaction is None:
             transaction = self.new_transaction()
@@ -1027,10 +1053,18 @@ class FirewallZone(object):
             transaction = use_transaction
 
         if _obj.applied:
-            self._source_port(True, _zone, port, protocol, transaction)
+            for range in added_ranges:
+                self._source_port(True, _zone, portStr(range, "-"), protocol, transaction)
+            for range in removed_ranges:
+                self._source_port(False, _zone, portStr(range, "-"), protocol, transaction)
 
-        self.__register_source_port(_obj, port_id, timeout, sender)
-        transaction.add_fail(self.__unregister_source_port, _obj, port_id)
+        for range in added_ranges:
+            port_id = self.__source_port_id(range, protocol)
+            self.__register_source_port(_obj, port_id, timeout, sender)
+            transaction.add_fail(self.__unregister_source_port, _obj, port_id)
+        for range in removed_ranges:
+            port_id = self.__source_port_id(range, protocol)
+            transaction.add_post(self.__unregister_source_port, _obj, port_id)
 
         if use_transaction is None:
             transaction.execute(True)
@@ -1047,10 +1081,15 @@ class FirewallZone(object):
         self._fw.check_panic()
         _obj = self._zones[_zone]
 
-        port_id = self.__source_port_id(port, protocol)
-        if port_id not in _obj.settings["source_ports"]:
+        existing_port_ids = list(filter(lambda x: x[1] == protocol, _obj.settings["source_ports"]))
+        for port_id in existing_port_ids:
+            if portInPortRange(port, port_id[0]):
+                break
+        else:
             raise FirewallError(errors.NOT_ENABLED,
                                 "'%s:%s' not in '%s'" % (port, protocol, _zone))
+
+        added_ranges, removed_ranges = breakPortRange(port, [_port for (_port, _protocol) in existing_port_ids])
 
         if use_transaction is None:
             transaction = self.new_transaction()
@@ -1058,9 +1097,18 @@ class FirewallZone(object):
             transaction = use_transaction
 
         if _obj.applied:
-            self._source_port(False, _zone, port, protocol, transaction)
+            for range in added_ranges:
+                self._source_port(True, _zone, portStr(range, "-"), protocol, transaction)
+            for range in removed_ranges:
+                self._source_port(False, _zone, portStr(range, "-"), protocol, transaction)
 
-        transaction.add_post(self.__unregister_source_port, _obj, port_id)
+        for range in added_ranges:
+            port_id = self.__source_port_id(range, protocol)
+            self.__register_source_port(_obj, port_id, 0, None)
+            transaction.add_fail(self.__unregister_source_port, _obj, port_id)
+        for range in removed_ranges:
+            port_id = self.__source_port_id(range, protocol)
+            transaction.add_post(self.__unregister_source_port, _obj, port_id)
 
         if use_transaction is None:
             transaction.execute(True)
