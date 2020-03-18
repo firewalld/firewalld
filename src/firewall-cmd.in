@@ -33,7 +33,7 @@ from firewall.client import FirewallClient, FirewallClientIPSetSettings, \
     FirewallClientIcmpTypeSettings, FirewallClientHelperSettings
 from firewall.errors import FirewallError
 from firewall import errors
-from firewall.functions import joinArgs, splitArgs
+from firewall.functions import joinArgs, splitArgs, getPortRange
 from firewall.core.fw_nm import nm_is_imported, \
     nm_get_connection_of_interface, nm_get_zone_of_connection, \
     nm_set_zone_of_connection, nm_get_interfaces_in_zone
@@ -1959,7 +1959,7 @@ if a.permanent:
         # port
         elif a.list_ports:
             l = fw_zone.getPorts()
-            cmd.print_and_exit(" ".join(["%s/%s" % (port[0], port[1]) for port in l]))
+            cmd.print_and_exit(" ".join(["%s/%s" % (port[0], port[1]) for port in sorted(l, key=lambda x: (x[1], getPortRange(x[0])[0]))]))
         elif a.add_port:
             cmd.add_sequence(a.add_port, fw_zone.addPort,
                              fw_zone.queryPort, cmd.parse_port, "%s/%s")
@@ -1987,7 +1987,7 @@ if a.permanent:
         # source port
         elif a.list_source_ports:
             l = fw_zone.getSourcePorts()
-            cmd.print_and_exit(" ".join(["%s/%s" % (port[0], port[1]) for port in l]))
+            cmd.print_and_exit(" ".join(["%s/%s" % (port[0], port[1]) for port in sorted(l, key=lambda x: (x[1], getPortRange(x[0])[0]))]))
         elif a.add_source_port:
             cmd.add_sequence(a.add_source_port, fw_zone.addSourcePort,
                              fw_zone.querySourcePort, cmd.parse_port, "%s/%s")
@@ -2514,7 +2514,7 @@ elif a.query_service:
 # port
 elif a.list_ports:
     l = fw.getPorts(zone)
-    cmd.print_and_exit(" ".join(["%s/%s" % (port[0], port[1]) for port in l]))
+    cmd.print_and_exit(" ".join(["%s/%s" % (port[0], port[1]) for port in sorted(l, key=lambda x: (x[1], getPortRange(x[0])[0]))]))
 elif a.add_port:
     cmd.zone_add_timeout_sequence(zone, a.add_port, fw.addPort, fw.queryPort,
                                   cmd.parse_port, "'%s/%s'", a.timeout)
@@ -2541,7 +2541,7 @@ elif a.query_protocol:
 # source port
 elif a.list_source_ports:
     l = fw.getSourcePorts(zone)
-    cmd.print_and_exit(" ".join(["%s/%s" % (port[0], port[1]) for port in l]))
+    cmd.print_and_exit(" ".join(["%s/%s" % (port[0], port[1]) for port in sorted(l, key=lambda x: (x[1], getPortRange(x[0])[0]))]))
 elif a.add_source_port:
     cmd.zone_add_timeout_sequence(zone, a.add_source_port, fw.addSourcePort,
                                   fw.querySourcePort, cmd.parse_port,

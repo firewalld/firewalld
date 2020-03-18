@@ -34,7 +34,7 @@ from firewall.client import FirewallClientIPSetSettings, \
 from firewall.errors import FirewallError
 from firewall import config
 from firewall.core.fw import Firewall
-from firewall.functions import joinArgs, splitArgs
+from firewall.functions import joinArgs, splitArgs, getPortRange
 from firewall.core.io.functions import check_config
 from firewall.core.io.zone import zone_reader
 from firewall.core.io.service import service_reader
@@ -2175,7 +2175,7 @@ try:
         # port
         elif a.list_ports:
             l = fw_settings.getPorts()
-            cmd.print_and_exit(" ".join(["%s/%s" % (port[0], port[1]) for port in l]))
+            cmd.print_and_exit(" ".join(["%s/%s" % (port[0], port[1]) for port in sorted(l, key=lambda x: (x[1], getPortRange(x[0])[0]))]))
         elif a.add_port:
             cmd.add_sequence(a.add_port, fw_settings.addPort,
                              fw_settings.queryPort, cmd.parse_port, "%s/%s")
@@ -2203,7 +2203,7 @@ try:
         # source port
         elif a.list_source_ports:
             l = fw_settings.getSourcePorts()
-            cmd.print_and_exit(" ".join(["%s/%s" % (port[0], port[1]) for port in l]))
+            cmd.print_and_exit(" ".join(["%s/%s" % (port[0], port[1]) for port in sorted(l, key=lambda x: (x[1], getPortRange(x[0])[0]))]))
         elif a.add_source_port:
             cmd.add_sequence(a.add_source_port, fw_settings.addSourcePort,
                              fw_settings.querySourcePort, cmd.parse_port,
