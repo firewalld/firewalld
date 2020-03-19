@@ -616,7 +616,11 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         protocol = dbus_to_python(protocol, str)
         log.debug1("%s.querySourcePort('%s', '%s')", self._log_prefix, port,
                    protocol)
-        return (port,protocol) in self.getSettings()[14]
+        for (_port, _protocol) in self.getSettings()[14]:
+            if portInPortRange(port, _port) and protocol == _protocol:
+                return True
+
+        return False
 
     # icmp block
 
