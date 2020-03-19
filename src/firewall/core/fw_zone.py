@@ -914,13 +914,9 @@ class FirewallZone(object):
             del _obj.settings["ports"][port_id]
 
     def query_port(self, zone, port, protocol):
-        if self.__port_id(port, protocol) in self.get_settings(zone)["ports"]:
-            return True
-        else:
-            # It might be a single port query that is inside a range
-            for (_port, _protocol) in self.get_settings(zone)["ports"]:
-                if portInPortRange(port, _port) and protocol == _protocol:
-                    return True
+        for (_port, _protocol) in self.get_settings(zone)["ports"]:
+            if portInPortRange(port, _port) and protocol == _protocol:
+                return True
 
         return False
 

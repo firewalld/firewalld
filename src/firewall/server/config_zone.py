@@ -484,13 +484,9 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         protocol = dbus_to_python(protocol, str)
         log.debug1("%s.queryPort('%s', '%s')", self._log_prefix, port,
                    protocol)
-        if (port,protocol) in self.getSettings()[6]:
-            return True
-        else:
-            # It might be a single port query that is inside a range
-            for (_port, _protocol) in self.getSettings()[6]:
-                if portInPortRange(port, _port) and protocol == _protocol:
-                    return True
+        for (_port, _protocol) in self.getSettings()[6]:
+            if portInPortRange(port, _port) and protocol == _protocol:
+                return True
 
         return False
 
