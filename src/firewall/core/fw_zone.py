@@ -1076,8 +1076,11 @@ class FirewallZone(object):
             del _obj.settings["source_ports"][port_id]
 
     def query_source_port(self, zone, port, protocol):
-        return self.__source_port_id(port, protocol) in \
-            self.get_settings(zone)["source_ports"]
+        for (_port, _protocol) in self.get_settings(zone)["source_ports"]:
+            if portInPortRange(port, _port) and protocol == _protocol:
+                return True
+
+        return False
 
     def list_source_ports(self, zone):
         return list(self.get_settings(zone)["source_ports"].keys())
