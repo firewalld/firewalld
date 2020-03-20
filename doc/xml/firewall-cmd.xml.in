@@ -396,6 +396,9 @@
             <para>
               Add a new permanent and empty zone.
             </para>
+            <para>
+              Zone names must be alphanumeric and may additionally include characters: '_' and '-'.
+            </para>
           </listitem>
 	</varlistentry>
 
@@ -1061,6 +1064,9 @@ For interfaces that are not under control of NetworkManager, firewalld tries to 
             <para>
               Add a new permanent and empty ipset with specifying the type and optional the family and options like <literal>timeout</literal>, <literal>hashsize</literal> and <literal>maxelem</literal>. For more information please have a look at <citerefentry><refentrytitle>ipset</refentrytitle><manvolnum>8</manvolnum></citerefentry> man page.
             </para>
+            <para>
+              ipset names must be alphanumeric and may additionally include characters: '_' and '-'.
+            </para>
           </listitem>
 	</varlistentry>
 	<varlistentry>
@@ -1252,6 +1258,9 @@ For interfaces that are not under control of NetworkManager, firewalld tries to 
          <listitem>
            <para>
              Add a new permanent and empty service.
+           </para>
+           <para>
+             Service names must be alphanumeric and may additionally include characters: '_' and '-'.
            </para>
          </listitem>
        </varlistentry>
@@ -1550,6 +1559,9 @@ For interfaces that are not under control of NetworkManager, firewalld tries to 
            <para>
              Add a new permanent helper with module and optionally family defined.
            </para>
+           <para>
+             Helper names must be alphanumeric and may additionally include characters: '-'.
+           </para>
          </listitem>
        </varlistentry>
        <varlistentry>
@@ -1724,6 +1736,9 @@ For interfaces that are not under control of NetworkManager, firewalld tries to 
          <listitem>
            <para>
              Add a new permanent and empty icmptype.
+           </para>
+           <para>
+             ICMP type names must be alphanumeric and may additionally include characters: '_' and '-'.
            </para>
          </listitem>
        </varlistentry>
