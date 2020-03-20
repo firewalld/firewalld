@@ -471,6 +471,9 @@
             <para>
               Add a new permanent zone.
             </para>
+            <para>
+              Zone names must be alphanumeric and may additionally include characters: '_' and '-'.
+            </para>
           </listitem>
 	</varlistentry>
 
@@ -1054,6 +1057,9 @@
             <para>
               Add a new permanent ipset with specifying the type and optional options.
             </para>
+            <para>
+              ipset names must be alphanumeric and may additionally include characters: '_' and '-'.
+            </para>
           </listitem>
 	</varlistentry>
 	<varlistentry>
@@ -1222,6 +1228,9 @@
          <listitem>
            <para>
              Add a new permanent service.
+           </para>
+           <para>
+             Service names must be alphanumeric and may additionally include characters: '_' and '-'.
            </para>
          </listitem>
        </varlistentry>
@@ -1514,6 +1523,9 @@
            <para>
              Add a new permanent helper with module and optionally family defined.
            </para>
+           <para>
+             Helper names must be alphanumeric and may additionally include characters: '-'.
+           </para>
          </listitem>
        </varlistentry>
        <varlistentry>
@@ -1680,6 +1692,9 @@
          <listitem>
            <para>
              Add a new permanent icmptype.
+           </para>
+           <para>
+             ICMP type names must be alphanumeric and may additionally include characters: '_' and '-'.
            </para>
          </listitem>
        </varlistentry>
