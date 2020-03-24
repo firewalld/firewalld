@@ -66,7 +66,12 @@ FWD_START_TEST([user zone])
     FWD_CHECK([--permanent --zone=foobar --set-target=ACCEPT], 0, ignore)
     FWD_CHECK([--permanent --zone=foobar --get-target | grep ACCEPT], 0, ignore)
     FWD_CHECK([--permanent --zone=foobar --add-service=ssh], 0, ignore)
-FWD_END_TEST([-e '/ERROR: INVALID_TARGET: BAD/d'])
+
+    dnl verify zone name limits (currently 17)
+    FWD_CHECK([-q --permanent --new-zone=123456789abcefghi])
+    FWD_CHECK([-q --permanent --new-zone=123456789abcefghij], 116, [ignore], [ignore])
+FWD_END_TEST([-e '/ERROR: INVALID_TARGET: BAD/d'dnl
+              -e '/ERROR: INVALID_NAME: Zone of/d'])
 
 FWD_START_TEST([zone interfaces])
     AT_KEYWORDS(zone)
