@@ -82,7 +82,8 @@ $(CONTAINER_TARGETS): check-container-%: check-container-%-image
 	./autogen.sh && \
 	./configure PYTHON=/usr/bin/python3 && \
 	make && \
-	make -C src/tests check-local TESTSUITEFLAGS=\"$(TESTSUITEFLAGS)\" && \
+	{ make -C src/tests check-local TESTSUITEFLAGS=\"$(TESTSUITEFLAGS)\" || \
+	  make -C src/tests check-local TESTSUITEFLAGS=\"--recheck --errexit --verbose\" ; } && \
 	make -C src/tests check-integration TESTSUITEFLAGS=\"$(TESTSUITEFLAGS) -j1\" "
 	$(PODMAN) rmi firewalld-testsuite-$*
 
