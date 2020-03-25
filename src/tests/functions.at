@@ -501,6 +501,11 @@ m4_define([CHECK_IPSET], [
         AT_SKIP_IF([! NS_CMD([nft add set inet firewalld_check_ipset foobar_size { type ipv4_addr \; size 100000 \; } >/dev/null 2>&1])])
         AT_SKIP_IF([! NS_CMD([nft add set inet firewalld_check_ipset foobar_timeout_size { type ipv4_addr \; timeout 600s \; size 100000 \; } >/dev/null 2>&1])])
 
+        dnl If nft set doesn't allow interval + concat, then skip the test
+        AT_SKIP_IF([! NS_CMD([nft add set inet firewalld_check_ipset foobar_interval_concat { type ipv4_addr . inet_service \; flags interval \; } >/dev/null 2>&1])])
+        dnl use JSON to verify a JSON parser bug is also fixed
+        AT_SKIP_IF([! NS_CMD([[nft -j '{"nftables": [{"add": {"element": {"family": "inet", "table": "firewalld_check_ipset", "name": "foobar_interval_concat", "elem": [{"concat": [{"prefix": {"addr": "10.10.10.0", "len": 24}}, {"range": ["1234", "2000"]}]}]}}}]}' >/dev/null 2>&1]])])
+
         NS_CHECK([nft delete table inet firewalld_check_ipset])
     ])
 ])
