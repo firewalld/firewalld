@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Dušan Kazik <prescott66@gmail.com>, 2012-2013
 # Marcel Telka <marcel@telka.sk>, 2004
@@ -10,21 +10,22 @@
 # feonsu <feonsu@gmail.com>, 2016. #zanata
 # feonsu <feonsu@gmail.com>, 2017. #zanata
 # feonsu <feonsu@gmail.com>, 2018. #zanata
+# Matej Marusak <mmarusak@redhat.com>, 2020.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-30 09:54-0400\n"
-"PO-Revision-Date: 2018-08-13 06:16+0000\n"
-"Last-Translator: feonsu <feonsu@gmail.com>\n"
-"Language-Team: Slovak (http://www.transifex.com/projects/p/firewalld/"
-"language/sk/)\n"
+"POT-Creation-Date: 2020-01-13 14:38-0500\n"
+"PO-Revision-Date: 2020-01-19 08:15+0000\n"
+"Last-Translator: Matej Marusak <mmarusak@redhat.com>\n"
+"Language-Team: Slovak <https://translate.stg.fedoraproject.org/projects/"
+"firewalld/master/sk/>\n"
 "Language: sk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Zanata 4.6.2\n"
+"X-Generator: Weblate 3.10.3\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:416
 msgid "Firewall Applet"
@@ -87,7 +88,7 @@ msgstr ""
 
 #: ../src/firewall-applet.in:235
 msgid "Shields Up Zone:"
-msgstr "Zóna pre zapnutý štít"
+msgstr "Zóna pre zapnutý štít:"
 
 #: ../src/firewall-applet.in:244 ../src/firewall-applet.in:257
 msgid "Reset To Default"
@@ -95,7 +96,7 @@ msgstr "Obnoviť predvolené"
 
 #: ../src/firewall-applet.in:248
 msgid "Shields Down Zone:"
-msgstr "Zóna pre vypnutý štít"
+msgstr "Zóna pre vypnutý štít:"
 
 #: ../src/firewall-applet.in:340
 #, c-format
@@ -305,7 +306,7 @@ msgstr ""
 
 #: ../src/firewall-config.in:95
 msgid "Changes applied."
-msgstr "Zmeny boli aplikované"
+msgstr "Zmeny boli aplikované."
 
 #: ../src/firewall-config.in:96
 #, c-format
@@ -558,7 +559,7 @@ msgstr "Zóna: %s"
 #: ../src/firewall-config.in:2808
 #, c-format
 msgid "Zone '%s': Service '%s' is not available."
-msgstr "Zóna „%s“: Služba „%s“ nie je dostupná"
+msgstr "Zóna „%s“: Služba „%s“ nie je dostupná."
 
 #: ../src/firewall-config.in:2812 ../src/firewall-config.in:2860
 #: ../src/firewall-config.glade.h:163
@@ -1424,7 +1425,7 @@ msgid ""
 "example IP addresses, port numbers or MAC addresses. "
 msgstr ""
 "IPSet je možné použiť na vytvorenie whitelistu alebo blacklistu. Dokáže "
-"uložiť napríklad IP adresy, čísla portov a MAC adresy."
+"uložiť napríklad IP adresy, čísla portov a MAC adresy. "
 
 #: ../src/firewall-config.glade.h:155
 msgid "IPSet"
@@ -1526,7 +1527,7 @@ msgstr ""
 "Pomocník sledovania pripojení pomáha funkčnosti protokolov, ktoré používajú "
 "rôzne toky pre signalizáciu a prenos údajov. Prenosy údajov používajú porty, "
 "ktoré nesúvisia so signalizačnými spojeniami a bez pomocníka ich firewall "
-"preto zablokuje. "
+"preto zablokuje."
 
 #: ../src/firewall-config.glade.h:174
 msgid "Define ports or port ranges, which are monitored by the helper."
@@ -1725,7 +1726,7 @@ msgstr "Používateľské mená"
 
 #: ../src/firewall-config.glade.h:210
 msgid "User ids."
-msgstr "ID používateľov"
+msgstr "ID používateľov."
 
 #: ../src/firewall-config.glade.h:211
 msgid "Add User Id"
@@ -1827,7 +1828,7 @@ msgstr "Záznam zamietnurí"
 
 #: ../src/firewall-config.glade.h:236
 msgid "Please select the log denied value:"
-msgstr "Prosím vyberte hodnotu pre záznam zamietnutí."
+msgstr "Prosím vyberte hodnotu pre záznam zamietnutí:"
 
 #: ../src/firewall-config.glade.h:237
 msgid "Mark"
@@ -1913,7 +1914,7 @@ msgstr "Cieľ:"
 
 #: ../src/firewall-config.glade.h:258
 msgid "Log:"
-msgstr "Záznam: "
+msgstr "Záznam:"
 
 #: ../src/firewall-config.glade.h:259
 msgid "Audit:"
