@@ -1,31 +1,31 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Juhani Numminen <juhaninumminen0@gmail.com>, 2012-2013
 # Lauri Nurmi <lanurmi@iki.fi>, 2004
 # Lauri Nurmi <lanurmi@iki.fi>, 2004
 # Mikko Ikola <ikola@iki.fi>, 2004
 # Juhani Numminen <juhaninumminen0@gmail.com>, 2016. #zanata
-# Jiri Grönroos <jiri.gronroos@iki.fi>, 2017. #zanata
+# Jiri Grönroos <jiri.gronroos@iki.fi>, 2017. #zanata, 2020.
 # Toni Rantala <trantalafilo@gmail.com>, 2017. #zanata
-# Jiri Grönroos <jiri.gronroos@iki.fi>, 2018. #zanata
+# Jiri Grönroos <jiri.gronroos@iki.fi>, 2018. #zanata, 2020.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-30 09:54-0400\n"
-"PO-Revision-Date: 2018-08-19 12:28+0000\n"
+"POT-Creation-Date: 2020-01-13 14:38-0500\n"
+"PO-Revision-Date: 2020-03-19 09:38+0000\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
-"Language-Team: Finnish (http://www.transifex.com/projects/p/firewalld/"
-"language/fi/)\n"
+"Language-Team: Finnish <https://translate.fedoraproject.org/projects/"
+"firewalld/master/fi/>\n"
 "Language: fi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Zanata 4.6.2\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.11.3\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:416
 msgid "Firewall Applet"
@@ -183,15 +183,15 @@ msgstr "Yhteyksien haku NetworkManagerilta epäonnistui"
 
 #: ../src/firewall-applet.in:790 ../src/firewall-config.in:1386
 msgid "No NetworkManager imports available"
-msgstr ""
+msgstr "NetworkManager-tuonteja ei ole saatavilla"
 
 #: ../src/firewall-applet.in:868
 msgid "No connection to firewall daemon"
-msgstr "Ei yhteyttä palomuuritaustaprosessiin"
+msgstr "Ei yhteyttä palomuurin taustaprosessiin"
 
 #: ../src/firewall-applet.in:876 ../src/firewall-applet.in:1014
 msgid "All network traffic is blocked."
-msgstr "Kaikki verkkoliikenne estetty."
+msgstr "Kaikki verkkoliikenne on estetty."
 
 #: ../src/firewall-applet.in:880
 #, c-format
@@ -258,16 +258,20 @@ msgid ""
 "Default zone '{default_zone}' {activated_deactivated} for connection "
 "'{connection}' on interface '{interface}'"
 msgstr ""
+"Oletusalue '{default_zone}' {activated_deactivated} yhteydellä '{connection}"
+"' liitännällä '{interface}'"
 
 #: ../src/firewall-applet.in:1052
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
+"Alue '{zone}' {activated_deactivated} yhteydellä '{connection}' liitännällä "
+"'{interface}'"
 
 #: ../src/firewall-applet.in:1057
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
-msgstr ""
+msgstr "Alue '{zone}' {activated_deactivated} liitännällä '{interface}'"
 
 #: ../src/firewall-applet.in:1080
 #, c-format
@@ -276,7 +280,7 @@ msgstr "Alue '%s' aktivoitu liitännälle '%s'"
 
 #: ../src/firewall-applet.in:1097
 msgid "Zone '{zone}' {activated_deactivated} for source '{source}'"
-msgstr ""
+msgstr "Alue '{zone}' {activated_deactivated} lähteelle '{source}'"
 
 #: ../src/firewall-applet.in:1121
 #, c-format
@@ -339,7 +343,7 @@ msgstr "Käyttäjänimi"
 
 #: ../src/firewall-config.in:244
 msgid "User id"
-msgstr ""
+msgstr "Käyttäjätunniste"
 
 #: ../src/firewall-config.in:284 ../src/firewall-config.in:318
 msgid "Table"
@@ -359,7 +363,7 @@ msgstr ""
 
 #: ../src/firewall-config.in:401 ../src/firewall-config.in:2338
 msgid "Runtime"
-msgstr "Ajon aikainen"
+msgstr "Ajonaikainen"
 
 #: ../src/firewall-config.in:402
 msgid "Permanent"
@@ -397,7 +401,7 @@ msgstr "Sidokset"
 
 #: ../src/firewall-config.in:651 ../src/firewall-config.glade.h:233
 msgid "Entry"
-msgstr ""
+msgstr "Tietue"
 
 #: ../src/firewall-config.in:777
 msgid "Icmp Type"
@@ -405,7 +409,7 @@ msgstr "Icmp-tyyppi"
 
 #: ../src/firewall-config.in:822
 msgid "Family"
-msgstr ""
+msgstr "Perhe"
 
 #: ../src/firewall-config.in:826
 msgid "Action"
@@ -413,7 +417,7 @@ msgstr "Toiminto"
 
 #: ../src/firewall-config.in:828
 msgid "Element"
-msgstr ""
+msgstr "Elementti"
 
 #: ../src/firewall-config.in:830
 msgid "Src"
@@ -437,7 +441,7 @@ msgstr "Liitäntä"
 
 #: ../src/firewall-config.in:942
 msgid "Comment"
-msgstr ""
+msgstr "Kommentti"
 
 #: ../src/firewall-config.in:961 ../src/firewall-config.glade.h:27
 msgid "Source"
@@ -880,7 +884,7 @@ msgstr "Kuvaus:"
 
 #: ../src/firewall-config.glade.h:39
 msgid "Family:"
-msgstr ""
+msgstr "Perhe:"
 
 #: ../src/firewall-config.glade.h:43
 msgid "Module:"
@@ -916,7 +920,7 @@ msgstr "Lisää merkintä"
 
 #: ../src/firewall-config.glade.h:51
 msgid "Add Entries From File"
-msgstr ""
+msgstr "Lisää tietueet tiedostosta"
 
 #: ../src/firewall-config.glade.h:52
 msgid "Remove Selected Entry"
@@ -924,11 +928,11 @@ msgstr "Poista valittu merkintä"
 
 #: ../src/firewall-config.glade.h:53
 msgid "Remove All Entries"
-msgstr "Poista kaikki merkinnät"
+msgstr "Poista kaikki tietueet"
 
 #: ../src/firewall-config.glade.h:54
 msgid "Remove Entries From File"
-msgstr "Poista merkinnät tiedostosta"
+msgstr "Poista tietueet tiedostosta"
 
 #: ../src/firewall-config.glade.h:56
 msgid "_File"
@@ -967,19 +971,19 @@ msgstr "Vaihda oletusalue yhteyksille ja verkkoliitännöille."
 
 #: ../src/firewall-config.glade.h:64
 msgid "Change Log Denied"
-msgstr ""
+msgstr "Vaihda lokin kieltotasoa"
 
 #: ../src/firewall-config.glade.h:65
 msgid "Change LogDenied value."
-msgstr ""
+msgstr "Muuta LogDenied-arvoa."
 
 #: ../src/firewall-config.glade.h:66
 msgid "Configure Automatic Helper Assigment"
-msgstr ""
+msgstr "Määritä automaattisten apurien työnjako"
 
 #: ../src/firewall-config.glade.h:67
 msgid "Configure Automatic Helper Assignment setting."
-msgstr ""
+msgstr "Muokkaa Automatic Helper Assignment -asetusta."
 
 #: ../src/firewall-config.glade.h:68
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
@@ -1044,11 +1048,11 @@ msgstr "_Ohje"
 
 #: ../src/firewall-config.glade.h:82
 msgid "Change Zone"
-msgstr ""
+msgstr "Vaihda alue"
 
 #: ../src/firewall-config.glade.h:83
 msgid "Change zone of binding"
-msgstr ""
+msgstr "Vaihda sidoksen alue"
 
 #: ../src/firewall-config.glade.h:84
 msgid ""
@@ -1201,7 +1205,7 @@ msgid ""
 "system is only useful if the interface is masqueraded. Port forwarding is "
 "IPv4 only."
 msgstr ""
-"Lisää merkintöjä porttien edelleenohjaamiseksi joko portista toiseen "
+"Lisää tietueita porttien edelleenohjaamiseksi joko portista toiseen "
 "paikallisessa järjestelmässä tai paikallisesta järjestelmästä toiseen "
 "järjestelmään. Edelleenohjaaminen toiseen järjestelmään on hyödyllistä vain "
 "jos liitännässä on käytössä osoitteenmuunnos. Porttien edelleenohjaaminen on "
@@ -1257,19 +1261,19 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:122
 msgid "Add Rich Rule"
-msgstr ""
+msgstr "Lisää monipuolinen sääntö"
 
 #: ../src/firewall-config.glade.h:123
 msgid "Edit Rich Rule"
-msgstr ""
+msgstr "Muokkaa monipuolista sääntöä"
 
 #: ../src/firewall-config.glade.h:124
 msgid "Remove Rich Rule"
-msgstr ""
+msgstr "Poista monipuolinen sääntö"
 
 #: ../src/firewall-config.glade.h:125
 msgid "Rich Rules"
-msgstr ""
+msgstr "Monipuoliset säännöt"
 
 #: ../src/firewall-config.glade.h:126
 msgid ""
@@ -1374,8 +1378,8 @@ msgid ""
 "the destination address and type. If both entries are empty, there is no "
 "limitation."
 msgstr ""
-"Jos määrität kohde osoitteen, palvelun päsy rajoitetaan kohde osoitteseen ja "
-"tyyppiin. Jos molemmat jätetään tyhjäksi, rajoitteita ei ole."
+"Jos määrität kohdeosoitteet, palvelutietue rajoitetaan kohdeosoitteseen ja "
+"tyyppiin. Jos molemmat tietueet jätetään tyhjäksi, rajoitteita ei ole."
 
 #: ../src/firewall-config.glade.h:151
 msgid "IPv4:"
@@ -1390,12 +1394,17 @@ msgid ""
 "Services can only be changed in the permanent configuration view. The "
 "runtime configuration of services is fixed."
 msgstr ""
+"Palveluita voi muuttaa vain pysyvän kokoonpanon asetusnäkymässä. Palvelujen "
+"ajonaikaista kokoonpanoa ei voi muuttaa."
 
 #: ../src/firewall-config.glade.h:154
 msgid ""
 "An IPSet can be used to create white or black lists and is able to store for "
 "example IP addresses, port numbers or MAC addresses. "
 msgstr ""
+"IPSettiä voidaan käyttää sallittujen listojen (white) ja estolistojen (black)"
+" luomiseen. Se voi sisältää esimerkiksi IP-osoitteita, porttinumeroita tai "
+"MAC-osoitteita. "
 
 #: ../src/firewall-config.glade.h:155
 msgid "IPSet"
@@ -1437,7 +1446,7 @@ msgstr "Lisää"
 
 #: ../src/firewall-config.glade.h:164
 msgid "Entries"
-msgstr ""
+msgstr "Tietueet"
 
 #: ../src/firewall-config.glade.h:165
 msgid ""
@@ -1758,7 +1767,7 @@ msgstr "Loki kielletty"
 
 #: ../src/firewall-config.glade.h:236
 msgid "Please select the log denied value:"
-msgstr ""
+msgstr "Valitse log denied -arvo:"
 
 #: ../src/firewall-config.glade.h:237
 msgid "Mark"
@@ -1822,11 +1831,11 @@ msgstr "Muu protokolla:"
 
 #: ../src/firewall-config.glade.h:253
 msgid "Rich Rule"
-msgstr ""
+msgstr "Monipuolinen sääntö"
 
 #: ../src/firewall-config.glade.h:254
 msgid "Please enter a rich rule."
-msgstr ""
+msgstr "Kirjoita monipuolinen sääntö."
 
 #: ../src/firewall-config.glade.h:255
 msgid "For host or network white or blacklisting deactivate the element."
