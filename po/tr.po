@@ -12,21 +12,21 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-30 09:54-0400\n"
-"PO-Revision-Date: 2020-01-14 20:29+0000\n"
+"POT-Creation-Date: 2020-01-13 14:38-0500\n"
+"PO-Revision-Date: 2020-03-25 15:38+0000\n"
 "Last-Translator: Oğuz Ersen <oguzersen@protonmail.com>\n"
-"Language-Team: Turkish <https://translate.stg.fedoraproject.org/projects/"
+"Language-Team: Turkish <https://translate.fedoraproject.org/projects/"
 "firewalld/master/tr/>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n>1);\n"
-"X-Generator: Weblate 3.10.1\n"
+"X-Generator: Weblate 3.11.3\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:416
 msgid "Firewall Applet"
-msgstr "Güvenlik Duvarı uygulamacığı"
+msgstr "Güvenlik Duvarı Uygulaması"
 
 #: ../config/firewall-config.desktop.in.h:1
 msgid "Firewall"
@@ -39,7 +39,7 @@ msgstr "Güvenlik Duvarı Yapılandırması"
 #. Translators: These are searchable keywords for the firewall configuration tool
 #: ../config/firewall-config.desktop.in.h:4
 msgid "firewall;network;security;iptables;netfilter;"
-msgstr "güvenlik duvarı;ağ;güvenlik;iptables;netfilter;"
+msgstr "güvenlik-duvarı;ağ;güvenlik;iptables;netfilter;"
 
 #: ../src/firewall-applet.in:92 ../src/firewall-config.in:7988
 #, c-format
@@ -92,7 +92,7 @@ msgstr "Kalkanlar Aktif Bölge:"
 
 #: ../src/firewall-applet.in:244 ../src/firewall-applet.in:257
 msgid "Reset To Default"
-msgstr "Öntanımlılara sıfırla"
+msgstr "Varsayılanlara Sıfırla"
 
 #: ../src/firewall-applet.in:248
 msgid "Shields Down Zone:"
@@ -204,22 +204,22 @@ msgid ""
 "interface '{interface}'"
 msgstr ""
 "Varsayılan Bölge '{default_zone}', '{interface}' arayüzünde '{connection}' "
-"bağlantısı için etkin"
+"bağlantısı için aktif"
 
 #: ../src/firewall-applet.in:889
 msgid ""
 "Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
 msgstr ""
 "'{zone}' bölgesi, '{interface}' arayüzünde '{connection}' bağlantısı için "
-"etkin"
+"aktif"
 
 #: ../src/firewall-applet.in:901
 msgid "Zone '{zone}' active for interface '{interface}'"
-msgstr "'{zone}' bölgesi '{interface}' arayüzü için etkin"
+msgstr "'{zone}' bölgesi '{interface}' arayüzü için aktif"
 
 #: ../src/firewall-applet.in:909
 msgid "Zone '{zone}' active for source {source}"
-msgstr "'{zone}' bölgesi, {source} kaynağı için etkin"
+msgstr "'{zone}' bölgesi, {source} kaynağı için aktif"
 
 #: ../src/firewall-applet.in:913
 msgid "No Active Zones."
@@ -248,17 +248,19 @@ msgstr "Artık Ağ trafği bloke edilmiyor."
 
 #: ../src/firewall-applet.in:1041 ../src/firewall-applet.in:1095
 msgid "activated"
-msgstr "etkinleştirildi"
+msgstr "aktifleştirildi"
 
 #: ../src/firewall-applet.in:1042 ../src/firewall-applet.in:1096
 msgid "deactivated"
-msgstr "devre dışı bırakıldı"
+msgstr "devreden çıkarıldı"
 
 #: ../src/firewall-applet.in:1047
 msgid ""
 "Default zone '{default_zone}' {activated_deactivated} for connection "
 "'{connection}' on interface '{interface}'"
 msgstr ""
+"Varsayılan bölge '{default_zone}', '{interface}' arayüzünde '{connection}' "
+"bağlantısı için {activated_deactivated}"
 
 #: ../src/firewall-applet.in:1052
 msgid ""
@@ -275,16 +277,16 @@ msgstr "'{zone}' bölgesi, '{interface}' arayüzü için {activated_deactivated}
 #: ../src/firewall-applet.in:1080
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
-msgstr "'%s' bölgesi, '%s' arayüzü için etkinleştirildi"
+msgstr "'%s' bölgesi, '%s' arayüzü için aktifleştirildi"
 
 #: ../src/firewall-applet.in:1097
 msgid "Zone '{zone}' {activated_deactivated} for source '{source}'"
-msgstr ""
+msgstr "'{zone}' bölgesi, '{source}' kaynağı için {activated_deactivated}"
 
 #: ../src/firewall-applet.in:1121
 #, c-format
 msgid "Zone '%s' activated for source '%s'"
-msgstr ""
+msgstr "'%s' bölgesi, '%s' kaynağı için aktifleştirildi"
 
 #: ../src/firewall-config.in:89
 msgid "Connection to firewalld established."
@@ -292,17 +294,19 @@ msgstr "Firewalld ile bağlantı kuruldu."
 
 #: ../src/firewall-config.in:91
 msgid "Trying to connect to firewalld, waiting..."
-msgstr ""
+msgstr "firewalld'ye bağlanmaya çalışılıyor, bekleyin..."
 
 #: ../src/firewall-config.in:93
 msgid ""
 "Failed to connect to firewalld. Please make sure that the service has been "
 "started correctly and try again."
 msgstr ""
+"firewalld'ye bağlanılamadı. Lütfen servisin doğru şekilde başlatıldığından "
+"emin olun ve tekrar deneyin."
 
 #: ../src/firewall-config.in:95
 msgid "Changes applied."
-msgstr ""
+msgstr "Değişiklikler uygulandı."
 
 #: ../src/firewall-config.in:96
 #, c-format
@@ -312,7 +316,7 @@ msgstr "'%s' bağlantısı tarafından kullanılıyor"
 #: ../src/firewall-config.in:97
 #, c-format
 msgid "Default zone used by network connection '%s'"
-msgstr ""
+msgstr "'%s' ağ bağlantısı tarafından kullanılan varsayılan bölge"
 
 #: ../src/firewall-config.in:99
 msgid "enabled"
@@ -340,7 +344,7 @@ msgstr "Kullanıcı adı"
 
 #: ../src/firewall-config.in:244
 msgid "User id"
-msgstr ""
+msgstr "Kullanıcı kimliği"
 
 #: ../src/firewall-config.in:284 ../src/firewall-config.in:318
 msgid "Table"
@@ -348,7 +352,7 @@ msgstr "Tablo"
 
 #: ../src/firewall-config.in:286 ../src/firewall-config.in:320
 msgid "Chain"
-msgstr ""
+msgstr "Zincir"
 
 #: ../src/firewall-config.in:322 ../src/firewall-config.in:824
 msgid "Priority"
@@ -356,15 +360,15 @@ msgstr "Öncelik"
 
 #: ../src/firewall-config.in:324 ../src/firewall-config.in:361
 msgid "Args"
-msgstr ""
+msgstr "Argümanlar"
 
 #: ../src/firewall-config.in:401 ../src/firewall-config.in:2338
 msgid "Runtime"
-msgstr ""
+msgstr "Çalışma zamanı"
 
 #: ../src/firewall-config.in:402
 msgid "Permanent"
-msgstr ""
+msgstr "Kalıcı"
 
 #: ../src/firewall-config.in:481 ../src/firewall-config.glade.h:138
 msgid "Service"
@@ -394,11 +398,11 @@ msgstr "Hedef Adres"
 
 #: ../src/firewall-config.in:616
 msgid "Bindings"
-msgstr ""
+msgstr "Bağlamalar"
 
 #: ../src/firewall-config.in:651 ../src/firewall-config.glade.h:233
 msgid "Entry"
-msgstr ""
+msgstr "Giriş"
 
 #: ../src/firewall-config.in:777
 msgid "Icmp Type"
@@ -406,7 +410,7 @@ msgstr "Icmp tipi"
 
 #: ../src/firewall-config.in:822
 msgid "Family"
-msgstr ""
+msgstr "Aile"
 
 #: ../src/firewall-config.in:826
 msgid "Action"
@@ -414,15 +418,15 @@ msgstr "Eylem"
 
 #: ../src/firewall-config.in:828
 msgid "Element"
-msgstr ""
+msgstr "Eleman"
 
 #: ../src/firewall-config.in:830
 msgid "Src"
-msgstr ""
+msgstr "Kaynak"
 
 #: ../src/firewall-config.in:832
 msgid "Dest"
-msgstr ""
+msgstr "Hedef"
 
 #: ../src/firewall-config.in:834
 msgid "log"
@@ -467,18 +471,18 @@ msgstr "reddet"
 #: ../src/firewall-config.in:2050 ../src/firewall-config.in:3228
 #: ../src/firewall-config.in:3716 ../src/firewall-config.glade.h:264
 msgid "drop"
-msgstr ""
+msgstr "yok say"
 
 #: ../src/firewall-config.in:2052 ../src/firewall-config.in:3230
 #: ../src/firewall-config.in:3718 ../src/firewall-config.in:3860
 #: ../src/firewall-config.glade.h:265
 msgid "mark"
-msgstr ""
+msgstr "işaretle"
 
 #: ../src/firewall-config.in:2055 ../src/firewall-config.in:2099
 #: ../src/firewall-config.in:2104
 msgid "limit"
-msgstr ""
+msgstr "sınırla"
 
 #: ../src/firewall-config.in:2071 ../src/firewall-config.in:3165
 #: ../src/firewall-config.in:3345 ../src/firewall-config.in:3656
@@ -490,7 +494,7 @@ msgstr "servis"
 #: ../src/firewall-config.in:3347 ../src/firewall-config.in:3659
 #: ../src/firewall-config.glade.h:285
 msgid "port"
-msgstr ""
+msgstr "port"
 
 #: ../src/firewall-config.in:2076 ../src/firewall-config.in:3176
 #: ../src/firewall-config.in:3356 ../src/firewall-config.in:3669
@@ -502,31 +506,31 @@ msgstr "protokol"
 #: ../src/firewall-config.in:3686 ../src/firewall-config.in:3872
 #: ../src/firewall-config.glade.h:291
 msgid "masquerade"
-msgstr ""
+msgstr "maskeleme"
 
 #: ../src/firewall-config.in:2080 ../src/firewall-config.in:3184
 #: ../src/firewall-config.in:3358 ../src/firewall-config.in:3672
 #: ../src/firewall-config.in:3887 ../src/firewall-config.glade.h:287
 msgid "icmp-block"
-msgstr ""
+msgstr "icmp-engelleme"
 
 #: ../src/firewall-config.in:2082 ../src/firewall-config.in:3189
 #: ../src/firewall-config.in:3360 ../src/firewall-config.in:3675
 #: ../src/firewall-config.glade.h:288
 msgid "icmp-type"
-msgstr ""
+msgstr "icmp-türü"
 
 #: ../src/firewall-config.in:2084 ../src/firewall-config.in:3194
 #: ../src/firewall-config.in:3362 ../src/firewall-config.in:3678
 #: ../src/firewall-config.in:3880 ../src/firewall-config.glade.h:289
 msgid "forward-port"
-msgstr ""
+msgstr "port-yönlendirme"
 
 #: ../src/firewall-config.in:2088 ../src/firewall-config.in:3203
 #: ../src/firewall-config.in:3364 ../src/firewall-config.in:3688
 #: ../src/firewall-config.glade.h:290
 msgid "source-port"
-msgstr ""
+msgstr "kaynak-port"
 
 #: ../src/firewall-config.in:2097
 msgid "level"
@@ -544,18 +548,18 @@ msgstr "Bölge"
 #: ../src/firewall-config.in:2465
 #, c-format
 msgid "Default Zone: %s"
-msgstr ""
+msgstr "Varsayılan Bölge: %s"
 
 #: ../src/firewall-config.in:2472 ../src/firewall-config.in:2503
 #: ../src/firewall-config.in:2533
 #, c-format
 msgid "Zone: %s"
-msgstr ""
+msgstr "Bölge: %s"
 
 #: ../src/firewall-config.in:2808
 #, c-format
 msgid "Zone '%s': Service '%s' is not available."
-msgstr ""
+msgstr "Bölge '%s': '%s' hizmeti kullanılamıyor."
 
 #: ../src/firewall-config.in:2812 ../src/firewall-config.in:2860
 #: ../src/firewall-config.glade.h:163
@@ -569,7 +573,7 @@ msgstr "Yoksay"
 #: ../src/firewall-config.in:2856
 #, c-format
 msgid "Zone '%s': ICMP type '%s' is not available."
-msgstr ""
+msgstr "Bölge '%s': '%s' ICMP türü kullanılamıyor."
 
 #: ../src/firewall-config.in:3011
 msgid "Built-in zone, rename not supported."
@@ -653,6 +657,8 @@ msgid ""
 "masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
+"Başka bir sisteme yönlendirme, sadece arayüz maskelenmiş ise faydalıdır.\n"
+"Bu bölgeyi maskelemek ister misiniz?"
 
 #: ../src/firewall-config.in:5393
 msgid "Built-in service, rename not supported."
@@ -660,33 +666,35 @@ msgstr "Dahili servis, Yeniden isimlendirme desteklenmiyor."
 
 #: ../src/firewall-config.in:5602
 msgid "Please enter an ipv4 address with the form address[/mask]."
-msgstr ""
+msgstr "Lütfen adres[/maske] biçiminde bir ipv4 adresi girin."
 
 #: ../src/firewall-config.in:5603
 msgid "The mask can be a network mask or a number."
-msgstr ""
+msgstr "Maske, bir ağ maskesi veya bir sayı olabilir."
 
 #: ../src/firewall-config.in:5605
 msgid "Please enter an ipv6 address with the form address[/mask]."
-msgstr ""
+msgstr "Lütfen adres[/maske] biçiminde bir ipv6 adresi girin."
 
 #: ../src/firewall-config.in:5606
 msgid "The mask is a number."
-msgstr ""
+msgstr "Maske bir sayıdır."
 
 #: ../src/firewall-config.in:5608
 msgid "Please enter an ipv4 or ipv6 address with the form address[/mask]."
-msgstr ""
+msgstr "Lütfen adres[/maske] biçiminde bir ipv4 veya ipv6 adresi girin."
 
 #: ../src/firewall-config.in:5609
 msgid ""
 "The mask can be a network mask or a number for ipv4.\n"
 "The mask is a number for ipv6."
 msgstr ""
+"Maske, ipv4 için bir ağ maskesi veya bir sayı olabilir.\n"
+"Maske, ipv6 için bir sayıdır."
 
 #: ../src/firewall-config.in:5793
 msgid "Built-in ipset, rename not supported."
-msgstr ""
+msgstr "Yerleşik ipset, yeniden adlandırma desteklenmiyor."
 
 #: ../src/firewall-config.in:5885 ../src/firewall-config.in:5967
 msgid "Please select a file"
@@ -717,7 +725,7 @@ msgstr "IPv6"
 
 #: ../src/firewall-config.in:6406
 msgid "Built-in helper, rename not supported."
-msgstr ""
+msgstr "Yerleşik yardımcı, yeniden adlandırma desteklenmiyor."
 
 #: ../src/firewall-config.in:6884
 msgid "Built-in icmp, rename not supported."
@@ -726,12 +734,12 @@ msgstr "Dahili icmp, Yeniden isimlendirme desteklenmiyor."
 #: ../src/firewall-config.in:7956
 #, c-format
 msgid "Failed to read file '%s': %s"
-msgstr ""
+msgstr "'%s' dosyası okunamadı: %s"
 
 #: ../src/firewall-config.in:8089
 #, c-format
 msgid "Select zone for source %s"
-msgstr ""
+msgstr "%s kaynağı için bölge seç"
 
 #. implies all other actions
 #: ../src/firewall-config.glade.h:1
@@ -744,47 +752,47 @@ msgstr "Otomatik Yardımcılar"
 
 #: ../src/firewall-config.glade.h:3
 msgid "Please select the automatic helpers value:"
-msgstr ""
+msgstr "Lütfen otomatik yardımcıların değerini seçin:"
 
 #: ../src/firewall-config.glade.h:5
 msgid "Please enter the command line."
-msgstr ""
+msgstr "Lütfen komut satırını girin."
 
 #: ../src/firewall-config.glade.h:7
 msgid "Please enter the context."
-msgstr ""
+msgstr "Lütfen içeriği girin."
 
 #: ../src/firewall-config.glade.h:9
 msgid "Please select default zone from the list below."
-msgstr ""
+msgstr "Lütfen aşağıdaki listeden varsayılan bölgeyi seçin."
 
 #: ../src/firewall-config.glade.h:10
 msgid "Direct Chain"
-msgstr ""
+msgstr "Doğrudan Zincir"
 
 #: ../src/firewall-config.glade.h:11
 msgid "Please select ipv and table and enter the chain name."
-msgstr ""
+msgstr "Lütfen ipv ve tabloyu seçin ve zincir adını girin."
 
 #: ../src/firewall-config.glade.h:12
 msgid "ipv:"
-msgstr ""
+msgstr "ipv:"
 
 #: ../src/firewall-config.glade.h:13
 msgid "eb"
-msgstr ""
+msgstr "eb"
 
 #: ../src/firewall-config.glade.h:14
 msgid "Chain:"
-msgstr ""
+msgstr "Zincir:"
 
 #: ../src/firewall-config.glade.h:15
 msgid "nat"
-msgstr ""
+msgstr "nat"
 
 #: ../src/firewall-config.glade.h:16
 msgid "raw"
-msgstr ""
+msgstr "ham"
 
 #: ../src/firewall-config.glade.h:17
 msgid "security"
@@ -796,15 +804,15 @@ msgstr "Tablo:"
 
 #: ../src/firewall-config.glade.h:19
 msgid "Direct Passthrough Rule"
-msgstr ""
+msgstr "Doğrudan Geçiş Kuralı"
 
 #: ../src/firewall-config.glade.h:20
 msgid "Please select ipv and enter the args."
-msgstr ""
+msgstr "Lütfen ipv'yi seçin ve argümanları girin."
 
 #: ../src/firewall-config.glade.h:21
 msgid "Args:"
-msgstr ""
+msgstr "Argümanlar:"
 
 #: ../src/firewall-config.glade.h:22
 msgid "Port Forwarding"
@@ -851,11 +859,11 @@ msgstr "Reencaminhar para outro porto"
 
 #: ../src/firewall-config.glade.h:32
 msgid "Base Helper Settings"
-msgstr ""
+msgstr "Temel Yardımcı Ayarları"
 
 #: ../src/firewall-config.glade.h:33
 msgid "Please configure base helper settings:"
-msgstr ""
+msgstr "Lütfen temel yardımcı ayarlarını yapılandırın:"
 
 #: ../src/firewall-config.glade.h:34
 msgid "Bold entries are mandatory, all others are optional."
@@ -879,7 +887,7 @@ msgstr "Açıklama:"
 
 #: ../src/firewall-config.glade.h:39
 msgid "Family:"
-msgstr ""
+msgstr "Aile:"
 
 #: ../src/firewall-config.glade.h:43
 msgid "Module:"
@@ -891,7 +899,7 @@ msgstr "Yardımcılar"
 
 #: ../src/firewall-config.glade.h:45
 msgid "Please select a helper:"
-msgstr ""
+msgstr "Lütfen bir yardımcı seçin:"
 
 #: ../src/firewall-config.glade.h:46
 msgid "Base ICMP Type Settings"
@@ -907,7 +915,7 @@ msgstr "ICMP Tipi"
 
 #: ../src/firewall-config.glade.h:49
 msgid "Please select an ICMP type"
-msgstr ""
+msgstr "Lütfen bir ICMP türü seçin"
 
 #: ../src/firewall-config.glade.h:50
 msgid "Add Entry"
@@ -915,19 +923,19 @@ msgstr "Adicionar Entrada"
 
 #: ../src/firewall-config.glade.h:51
 msgid "Add Entries From File"
-msgstr ""
+msgstr "Dosyadan Girdi Ekle"
 
 #: ../src/firewall-config.glade.h:52
 msgid "Remove Selected Entry"
-msgstr ""
+msgstr "Seçilen Girdiyi Kaldır"
 
 #: ../src/firewall-config.glade.h:53
 msgid "Remove All Entries"
-msgstr ""
+msgstr "Tüm Girdileri Kaldır"
 
 #: ../src/firewall-config.glade.h:54
 msgid "Remove Entries From File"
-msgstr ""
+msgstr "Girdileri Dosyadan Kaldır"
 
 #: ../src/firewall-config.glade.h:56
 msgid "_File"
@@ -947,10 +955,15 @@ msgid ""
 "runtime configuration. i.e. all runtime only changes done until reload are "
 "lost with reload if they have not been also in permanent configuration."
 msgstr ""
+"Güvenlik duvarı kurallarını yeniden yükler. Mevcut kalıcı yapılandırma yeni "
+"çalışma zamanı yapılandırması haline gelecektir. Diğer bir deyişle, yeniden "
+"yükleme zamanına kadar yapılan, sadece çalışma zamanına ait tüm "
+"değişiklikler, aynı zamanda kalıcı yapılandırmada da bulunmadıkları takdirde "
+"kaybolacaktır."
 
 #: ../src/firewall-config.glade.h:60
 msgid "Change which zone a network connection belongs to."
-msgstr ""
+msgstr "Bir ağ bağlantısının ait olduğu bölgeyi değiştirin."
 
 #: ../src/firewall-config.glade.h:62
 msgid "Change Default Zone"
@@ -958,27 +971,27 @@ msgstr "Varsayılan Bölgeyi Değiştir"
 
 #: ../src/firewall-config.glade.h:63
 msgid "Change default zone for connections or interfaces."
-msgstr ""
+msgstr "Bağlantılar veya arayüzler için varsayılan bölgeyi değiştirin."
 
 #: ../src/firewall-config.glade.h:64
 msgid "Change Log Denied"
-msgstr ""
+msgstr "Reddedilen Log Kaydını Değiştir"
 
 #: ../src/firewall-config.glade.h:65
 msgid "Change LogDenied value."
-msgstr ""
+msgstr "LogDenied değerini değiştirin."
 
 #: ../src/firewall-config.glade.h:66
 msgid "Configure Automatic Helper Assigment"
-msgstr ""
+msgstr "Otomatik Yardımcı Atamasını Yapılandır"
 
 #: ../src/firewall-config.glade.h:67
 msgid "Configure Automatic Helper Assignment setting."
-msgstr ""
+msgstr "Otomatik Yardımcı Atama ayarını yapılandırın."
 
 #: ../src/firewall-config.glade.h:68
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
-msgstr ""
+msgstr "Panik modu, gelen ve giden tüm paketlerin yok sayıldığı anlamına gelir."
 
 #: ../src/firewall-config.glade.h:69
 msgid "Panic Mode"
@@ -989,18 +1002,20 @@ msgid ""
 "Lockdown locks firewall configuration so that only applications on lockdown "
 "whitelist are able to change it."
 msgstr ""
+"Kilitleme, sadece kilitleme beyaz listesindeki uygulamaların "
+"değiştirebilmesi için güvenlik duvarı yapılandırmasını kilitler."
 
 #: ../src/firewall-config.glade.h:71
 msgid "Lockdown"
-msgstr ""
+msgstr "Kilitleme"
 
 #: ../src/firewall-config.glade.h:72
 msgid "Make runtime configuration permanent"
-msgstr ""
+msgstr "Çalışma zamanı yapılandırmasını kalıcı duruma getir"
 
 #: ../src/firewall-config.glade.h:73
 msgid "Runtime To Permanent"
-msgstr ""
+msgstr "Çalışma Zamanından Kalıcı Duruma"
 
 #: ../src/firewall-config.glade.h:74
 msgid "_View"
@@ -1008,11 +1023,11 @@ msgstr "_Görünüm"
 
 #: ../src/firewall-config.glade.h:75
 msgid "IPSets"
-msgstr ""
+msgstr "IPSet'ler"
 
 #: ../src/firewall-config.glade.h:76
 msgid "ICMP Types"
-msgstr ""
+msgstr "ICMP Türleri"
 
 #: ../src/firewall-config.glade.h:77
 msgid "Helpers"
@@ -1024,11 +1039,11 @@ msgstr "Doğrudan Yapılandırma"
 
 #: ../src/firewall-config.glade.h:79
 msgid "Lockdown Whitelist"
-msgstr ""
+msgstr "Kilitleme Beyaz Listesi"
 
 #: ../src/firewall-config.glade.h:80
 msgid "Active Bindings"
-msgstr ""
+msgstr "Aktif Bağlamalar"
 
 #: ../src/firewall-config.glade.h:81
 msgid "_Help"
@@ -1036,21 +1051,25 @@ msgstr "_Yardım"
 
 #: ../src/firewall-config.glade.h:82
 msgid "Change Zone"
-msgstr ""
+msgstr "Bölge Değiştir"
 
 #: ../src/firewall-config.glade.h:83
 msgid "Change zone of binding"
-msgstr ""
+msgstr "Bağlamanın bölgesini değiştir"
 
 #: ../src/firewall-config.glade.h:84
 msgid ""
 "Hide active runtime bindings of connections, interfaces and sources to zones"
 msgstr ""
+"Bağlantıların, arayüzlerin ve kaynakların bölgelere aktif çalışma zamanı "
+"bağlamalarını gizle"
 
 #: ../src/firewall-config.glade.h:85
 msgid ""
 "Show active runtime bindings of connections, interfaces and sources to zones"
 msgstr ""
+"Bağlantıların, arayüzlerin ve kaynakların bölgelere aktif çalışma zamanı "
+"bağlamalarını göster"
 
 #: ../src/firewall-config.glade.h:86
 msgid "Configuration:"
@@ -1073,6 +1092,11 @@ msgid ""
 "filters and rich rules. The zone can be bound to interfaces and source "
 "addresses."
 msgstr ""
+"Bir firewalld bölgesi, bölgeye bağlı ağ bağlantıları, arayüzler ve kaynak "
+"adresleri için güven seviyesini tanımlar. Bölge; servisleri, portları, "
+"protokolleri, maskelemeyi, port/paket yönlendirmeyi, icmp filtrelerini ve "
+"zengin kuralları bir araya getirir. Bölge, arayüzlere ve kaynak adreslere "
+"bağlanabilir."
 
 #: ../src/firewall-config.glade.h:90
 msgid "Add Zone"
@@ -1096,6 +1120,10 @@ msgid ""
 "are accessible from all hosts and networks that can reach the machine from "
 "connections, interfaces and sources bound to this zone."
 msgstr ""
+"Burada, bölgede hangi servislere güvenileceğini tanımlayabilirsiniz. "
+"Güvenilir hizmetlere, bu bölgeye bağlanmış bağlantılar, arayüzler ve "
+"kaynaklardan makineye erişebilen tüm ana bilgisayarlardan ve ağlardan "
+"erişilebilir."
 
 #: ../src/firewall-config.glade.h:95
 msgid "Services"
@@ -1106,6 +1134,8 @@ msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks that can connect to the machine."
 msgstr ""
+"Makineye bağlanabilen tüm ana bilgisayarlar veya ağlar için erişilebilir "
+"olması gereken ilave portlar veya port aralıkları ekleyin."
 
 #: ../src/firewall-config.glade.h:97
 msgid "Add Port"
@@ -1126,6 +1156,8 @@ msgstr "Portlar"
 #: ../src/firewall-config.glade.h:101
 msgid "Add protocols, which need to be accessible for all hosts or networks."
 msgstr ""
+"Tüm ana bilgisayarlar veya ağlar için erişilebilir olması gereken "
+"protokoller ekleyin."
 
 #: ../src/firewall-config.glade.h:102
 msgid "Add Protocol"
@@ -1148,10 +1180,12 @@ msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks that can connect to the machine."
 msgstr ""
+"Makineye bağlanabilen tüm ana bilgisayarlar veya ağlar için erişilebilir "
+"olması gereken ilave kaynak portları veya port aralıkları ekleyin."
 
 #: ../src/firewall-config.glade.h:107
 msgid "Source Ports"
-msgstr ""
+msgstr "Kaynak Portları"
 
 #: ../src/firewall-config.glade.h:108
 msgid ""
@@ -1159,9 +1193,10 @@ msgid ""
 "network to the internet. Your local network will not be visible and the "
 "hosts appear as a single address on the internet. Masquerading is IPv4 only."
 msgstr ""
-"Masquerading permite configurar uma máquina ou router que liga a sua rede "
-"local à Internet. A sua rede local não será visível e as máquinas aparecem "
-"na Internet com um único endereço. Masquerading é válido apenas em IPv4."
+"Maskeleme, yerel ağınızı internete bağlayan bir ana bilgisayar veya "
+"yönlendirici kurmanıza olanak sağlar. Yerel ağınız görünür olmayacaktır ve "
+"ana bilgisayarlar internette tek bir adres olarak görünecektir. Maskeleme "
+"yalnızca IPv4 içindir mevcuttur."
 
 #: ../src/firewall-config.glade.h:109
 msgid "Masquerade zone"
@@ -1172,7 +1207,7 @@ msgid ""
 "If you enable masquerading, IP forwarding will be enabled for your IPv4 "
 "networks."
 msgstr ""
-"Eğer masquerading etkileleştirirseniz, IP yönlendirmesi IPv4 ağınız için "
+"Maskelemeyi etkinleştirirseniz, IP yönlendirmesi IPv4 ağınız için "
 "etkinleştirilecektir."
 
 #: ../src/firewall-config.glade.h:111
@@ -1186,22 +1221,22 @@ msgid ""
 "system is only useful if the interface is masqueraded. Port forwarding is "
 "IPv4 only."
 msgstr ""
-"Adicione entradas ao reencaminhamento de portos de um porto para outro no "
-"sistema local ou do sistema local para outro sistema. O reencaminhamento "
-"para outro sistema só é útil se o interface estiver configurado como "
-"masqueraded. O reencaminhamento de portos só é suportado em IPv4."
+"Portları yerel sistemdeki bir porttan diğerine veya yerel sistemden başka "
+"bir sisteme yönlendirmek için girdiler ekleyin. Başka bir sisteme "
+"yönlendirme yalnızca arayüz maskelenmişse yararlıdır. Port yönlendirme "
+"yalnızca IPv4 için mevcuttur."
 
 #: ../src/firewall-config.glade.h:113
 msgid "Add Forward Port"
-msgstr ""
+msgstr "Yönlendirme Portu Ekle"
 
 #: ../src/firewall-config.glade.h:114
 msgid "Edit Forward Port"
-msgstr ""
+msgstr "Yönlendirme Portu Düzenle"
 
 #: ../src/firewall-config.glade.h:115
 msgid "Remove Forward Port"
-msgstr ""
+msgstr "Yönlendirme Portu Kaldır"
 
 #: ../src/firewall-config.glade.h:116
 msgid ""
@@ -1228,10 +1263,12 @@ msgid ""
 "If Invert Filter is enabled, marked ICMP entries are accepted and the others "
 "are rejected. In a zone with the target DROP, they are dropped."
 msgstr ""
+"Filtreyi Ters Çevirme etkinse, işaretli ICMP girdileri kabul edilir ve "
+"diğerleri reddedilir. Hedefin DROP olduğu bir bölgede yok sayılırlar."
 
 #: ../src/firewall-config.glade.h:119
 msgid "Invert Filter"
-msgstr ""
+msgstr "Filtreyi Ters Çevir"
 
 #: ../src/firewall-config.glade.h:120
 msgid "ICMP Filter"
@@ -1239,7 +1276,7 @@ msgstr "ICMP Filter"
 
 #: ../src/firewall-config.glade.h:121
 msgid "Here you can set rich language rules for the zone."
-msgstr ""
+msgstr "Burada bölge için zengin dil kuralları ayarlayabilirsiniz."
 
 #: ../src/firewall-config.glade.h:122
 msgid "Add Rich Rule"
@@ -1262,6 +1299,9 @@ msgid ""
 "Add entries to bind interfaces to the zone. If the interface will be used by "
 "a connection, the zone will be set to the zone specified in the connection."
 msgstr ""
+"Arayüzleri bölgeye bağlamak için girdiler ekleyin. Arayüz bir bağlantı "
+"tarafından kullanılacaksa, bölge bağlantıda belirtilen bölgeye "
+"ayarlanacaktır."
 
 #: ../src/firewall-config.glade.h:127
 msgid "Add Interface"
@@ -1281,6 +1321,9 @@ msgid ""
 "to a MAC source address, but with limitations. Port forwarding and "
 "masquerading will not work for MAC source bindings."
 msgstr ""
+"Kaynak adresleri veya alanları bölgeye bağlamak için girdiler ekleyin. Bir "
+"MAC kaynak adresine de bağlayabilirsiniz, ancak sınırlamalar vardır. Port "
+"yönlendirme ve maskeleme, MAC kaynak bağlamaları için çalışmaz."
 
 #: ../src/firewall-config.glade.h:132
 msgid "Add Source"
@@ -1296,13 +1339,15 @@ msgstr "Kaynak Kaldır"
 
 #: ../src/firewall-config.glade.h:136
 msgid "Zones"
-msgstr ""
+msgstr "Bölgeler"
 
 #: ../src/firewall-config.glade.h:137
 msgid ""
 "A firewalld service is a combination of ports, protocols, modules and "
 "destination addresses."
 msgstr ""
+"Bir firewalld servisi portlar, protokoller, modüller ve hedef adreslerin bir "
+"kombinasyonudur."
 
 #: ../src/firewall-config.glade.h:139
 msgid "Add Service"
@@ -1325,6 +1370,8 @@ msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks."
 msgstr ""
+"Tüm ana bilgisayarlar veya ağlar için erişilebilir olması gereken ilave "
+"portlar veya port aralıkları ekleyin."
 
 #: ../src/firewall-config.glade.h:144
 msgid "Edit Entry"
@@ -1339,14 +1386,16 @@ msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks."
 msgstr ""
+"Tüm ana bilgisayarlar veya ağlar için erişilebilir olması gereken ilave "
+"kaynak portları veya port aralıkları ekleyin."
 
 #: ../src/firewall-config.glade.h:147
 msgid "Source Port"
-msgstr ""
+msgstr "Kaynak Portu"
 
 #: ../src/firewall-config.glade.h:148
 msgid "Netfilter helper modules are needed for some services."
-msgstr ""
+msgstr "Bazı servisler için netfilter yardımcı modülleri gereklidir."
 
 #: ../src/firewall-config.glade.h:149
 msgid "Modules"
@@ -1375,32 +1424,37 @@ msgid ""
 "Services can only be changed in the permanent configuration view. The "
 "runtime configuration of services is fixed."
 msgstr ""
+"Servisler sadece kalıcı yapılandırma görünümünde değiştirilebilir. "
+"Servislerin çalışma zamanı yapılandırması sabittir."
 
 #: ../src/firewall-config.glade.h:154
 msgid ""
 "An IPSet can be used to create white or black lists and is able to store for "
 "example IP addresses, port numbers or MAC addresses. "
 msgstr ""
+"Bir IPSet, beyaz veya kara listeler oluşturmak için kullanılabilir ve "
+"örneğin IP adreslerini, port numaralarını veya MAC adreslerini "
+"depolayabilir. "
 
 #: ../src/firewall-config.glade.h:155
 msgid "IPSet"
-msgstr ""
+msgstr "IPSet"
 
 #: ../src/firewall-config.glade.h:156
 msgid "Add IPSet"
-msgstr ""
+msgstr "IPSet Ekle"
 
 #: ../src/firewall-config.glade.h:157
 msgid "Edit IPSet"
-msgstr ""
+msgstr "IPSet Düzenle"
 
 #: ../src/firewall-config.glade.h:158
 msgid "Remove IPSet"
-msgstr ""
+msgstr "IPSet Kaldır"
 
 #: ../src/firewall-config.glade.h:159
 msgid "Load IPSet Defaults"
-msgstr ""
+msgstr "IPSet Varsayılanlarını Yükle"
 
 #: ../src/firewall-config.glade.h:160
 msgid ""
@@ -1409,12 +1463,18 @@ msgid ""
 "added by firewalld. Entries, that have been directly added with the ipset "
 "command wil not be listed here."
 msgstr ""
+"IPSet girdileri. Sadece zaman aşımı seçeneğini kullanmayan ipset'lerin "
+"girdilerini, ayrıca sadece firewalld tarafından eklenen girdileri "
+"görebilirsiniz. Doğrudan ipset komutuyla eklenen girdiler burada "
+"listelenmeyecektir."
 
 #: ../src/firewall-config.glade.h:161
 msgid ""
 "This IPSet uses the timeout option, therefore no entries are visible here. "
 "The entries should be taken care directly with the ipset command."
 msgstr ""
+"Bu IPSet zaman aşımı seçeneğini kullanmaktadır, bu nedenle burada hiçbir "
+"girdi görünmez. Girdilere ipset komutu ile doğrudan bakılmalıdır."
 
 #: ../src/firewall-config.glade.h:162
 msgid "Add"
@@ -1428,12 +1488,16 @@ msgstr "Girdiler"
 msgid ""
 "IPSets can only be created or deleted in the permanent configuration view."
 msgstr ""
+"IPSet'ler sadece kalıcı yapılandırma görünümünde oluşturulabilir veya "
+"silinebilir."
 
 #: ../src/firewall-config.glade.h:166
 msgid ""
 "A firewalld icmptype provides the information for an Internet Control "
 "Message Protocol (ICMP) type for firewalld."
 msgstr ""
+"Bir firewalld icmptype, firewalld için bir Internet Kontrol Mesajı Protokolü "
+"(Internet Control Message Protocol - ICMP) türü için bilgi sağlar."
 
 #: ../src/firewall-config.glade.h:167
 msgid "Add ICMP Type"
@@ -1454,12 +1518,16 @@ msgstr "Varsayılan ICMP Tipini yükle"
 #: ../src/firewall-config.glade.h:171
 msgid "Specify whether this ICMP Type is available for IPv4 and/or IPv6."
 msgstr ""
+"Bu ICMP Türünün IPv4 ve/veya IPv6 için kullanılabilir olup olmadığını "
+"belirtin."
 
 #: ../src/firewall-config.glade.h:172
 msgid ""
 "ICMP Types can only be changed in the permanent configuration view. The "
 "runtime configuration of ICMP Types is fixed."
 msgstr ""
+"ICMP Türleri sadece kalıcı yapılandırma görünümünde değiştirilebilir. ICMP "
+"Türlerinin çalışma zamanı yapılandırması sabittir."
 
 #: ../src/firewall-config.glade.h:173
 msgid ""
@@ -1468,10 +1536,14 @@ msgid ""
 "are using ports that are unrelated to the signaling connection and are "
 "therefore blocked by the firewall without the helper."
 msgstr ""
+"Bir bağlantı izleme yardımcısı, işaretleşme ve veri aktarımları için farklı "
+"akışlar kullanan protokollerin çalışmasına yardımcı olmaktadır. Veri "
+"aktarımları, işaretleşme bağlantısıyla ilgisi olmayan portlar kullanmakta ve "
+"bu nedenle yardımcı olmadan güvenlik duvarı tarafından engellenmektedir."
 
 #: ../src/firewall-config.glade.h:174
 msgid "Define ports or port ranges, which are monitored by the helper."
-msgstr ""
+msgstr "Yardımcı tarafından izlenen portları veya port aralıklarını tanımlayın."
 
 #: ../src/firewall-config.glade.h:175
 msgid ""
@@ -1480,6 +1552,11 @@ msgid ""
 "commands, parameters and targets. Direct configuration should be used only "
 "as a last resort when it is not possible to use other firewalld features."
 msgstr ""
+"Doğrudan yapılandırma, güvenlik duvarına daha doğrudan bir erişim sağlar. Bu "
+"seçenekler kullanıcının temel iptables kavramlarını, yani tabloları, "
+"zincirleri, komutları, parametreleri ve hedefleri bilmesini gerektirir. "
+"Doğrudan yapılandırma, diğer firewalld özelliklerini kullanmanın mümkün "
+"olmadığı durumlarda sadece son çare olarak kullanılmalıdır."
 
 #: ../src/firewall-config.glade.h:176
 msgid ""
@@ -1487,31 +1564,35 @@ msgid ""
 "will be for iptables, with ipv6 for ip6tables and with eb for ethernet "
 "bridges (ebtables)."
 msgstr ""
+"Her seçeneğin ipv argümanı ipv4 veya ipv6 veya eb olmalıdır. ipv4 ile "
+"iptables için, ipv6 ile ip6tables için ve eb ile ethernet köprüleri "
+"(ebtables) için olacaktır."
 
 #: ../src/firewall-config.glade.h:177
 msgid "Additional chains for use with rules."
-msgstr ""
+msgstr "Kurallarla kullanım için ilave zincirler."
 
 #: ../src/firewall-config.glade.h:178
 msgid "Add Chain"
-msgstr ""
+msgstr "Zincir Ekle"
 
 #: ../src/firewall-config.glade.h:179
 msgid "Edit Chain"
-msgstr ""
+msgstr "Zincir Düzenle"
 
 #: ../src/firewall-config.glade.h:180
 msgid "Remove Chain"
-msgstr ""
+msgstr "Zincir Kaldır"
 
 #: ../src/firewall-config.glade.h:181
 msgid "Chains"
-msgstr ""
+msgstr "Zincirler"
 
 #: ../src/firewall-config.glade.h:182
 msgid ""
 "Add a rule with the arguments args to a chain in a table with a priority."
 msgstr ""
+"Öncelikli bir tablodaki bir zincire args argümanları ile bir kural ekleyin."
 
 #: ../src/firewall-config.glade.h:183
 msgid ""
@@ -1522,6 +1603,12 @@ msgid ""
 "after another one, use a low priority for the first and a higher for the "
 "following."
 msgstr ""
+"Öncelik, kuralları sıralamak için kullanılır. Öncelik 0, zincirin üstüne "
+"kural eklemek anlamına gelir, daha yüksek bir önceliğe sahip kural daha "
+"aşağıya eklenir. Aynı önceliğe sahip kurallar aynı seviyededir ve bu "
+"kuralların sırası sabit değildir ve değişebilir. Bir kuralın bir diğeri "
+"ardına ekleneceğinden emin olmak istiyorsanız, birincisi için düşük öncelik "
+"ve diğeri için daha yüksek öncelik kullanın."
 
 #: ../src/firewall-config.glade.h:184
 msgid "Add Rule"
@@ -1545,26 +1632,30 @@ msgid ""
 "not placed in special chains. All iptables, ip6tables and ebtables options "
 "can be used."
 msgstr ""
+"Geçiş kuralları doğrudan güvenlik duvarına iletilir ve özel zincirlere "
+"yerleştirilmez. Tüm iptables, ip6tables ve ebtables seçenekleri "
+"kullanılabilir."
 
 #: ../src/firewall-config.glade.h:189
 msgid "Please be careful with passthrough rules to not damage the firewall."
 msgstr ""
+"Güvenlik duvarına zarar vermemek için lütfen geçiş kurallarına dikkat edin."
 
 #: ../src/firewall-config.glade.h:190
 msgid "Add Passthrough"
-msgstr ""
+msgstr "Geçiş Ekle"
 
 #: ../src/firewall-config.glade.h:191
 msgid "Edit Passthrough"
-msgstr ""
+msgstr "Geçiş Düzenle"
 
 #: ../src/firewall-config.glade.h:192
 msgid "Remove Passthrough"
-msgstr ""
+msgstr "Geçiş Kaldır"
 
 #: ../src/firewall-config.glade.h:193
 msgid "Passthrough"
-msgstr ""
+msgstr "Geçiş"
 
 #: ../src/firewall-config.glade.h:194
 msgid ""
@@ -1572,6 +1663,10 @@ msgid ""
 "firewalld. It limits changes to the firewall. The lockdown whitelist can "
 "contain commands, contexts, users and user ids."
 msgstr ""
+"Kilitleme özelliği, firewalld için kullanıcı ve uygulama politikalarının "
+"hafif bir biçimidir. Güvenlik duvarındaki değişiklikleri sınırlar. Kilitleme "
+"beyaz listesi komutlar, bağlamlar, kullanıcılar ve kullanıcı kimlikleri "
+"içerebilir."
 
 #: ../src/firewall-config.glade.h:195
 msgid ""
@@ -1579,6 +1674,9 @@ msgid ""
 "service. To get the context of a running application use <tt>ps -e --"
 "context</tt>."
 msgstr ""
+"Bağlam, çalışan bir uygulamanın veya servisin güvenlik (SELinux) bağlamıdır. "
+"Çalışan bir uygulamanın bağlamını almak için <tt>ps -e --context</tt> "
+"komutunu kullanın."
 
 #: ../src/firewall-config.glade.h:196
 msgid "Add Context"
@@ -1602,6 +1700,9 @@ msgid ""
 "command lines starting with the command will match. If the '*' is not there "
 "the absolute command inclusive arguments must match."
 msgstr ""
+"Beyaz listedeki bir komut girdisi yıldız işareti '*' ile bitiyorsa, o "
+"komutla başlayan tüm komut satırları eşleşecektir. '*' yok ise, argümanlar "
+"dahil komut tamamen eşleşmelidir."
 
 #: ../src/firewall-config.glade.h:201
 msgid "Add Command Line"
@@ -1668,7 +1769,7 @@ msgctxt ""
 "Meaning: Log of denied packets. But this is too long. LogDenied is also the "
 "parameter used in firewalld.conf."
 msgid "Log Denied:"
-msgstr "Günlük Reddedildi:"
+msgstr "Reddedilen Log Kaydı:"
 
 #: ../src/firewall-config.glade.h:217
 msgid "Panic Mode:"
@@ -1683,7 +1784,7 @@ msgstr "Otomatik Yardımcılar:"
 
 #: ../src/firewall-config.glade.h:219
 msgid "Lockdown:"
-msgstr ""
+msgstr "Kilitleme:"
 
 #: ../src/firewall-config.glade.h:220
 msgid "Default Zone:"
@@ -1691,15 +1792,15 @@ msgstr "Varsayılan Bölge:"
 
 #: ../src/firewall-config.glade.h:222
 msgid "Please enter an interface name:"
-msgstr ""
+msgstr "Lütfen bir arayüz adı girin:"
 
 #: ../src/firewall-config.glade.h:223
 msgid "Base IPSet Settings"
-msgstr ""
+msgstr "Temel IPSet Ayarları"
 
 #: ../src/firewall-config.glade.h:224
 msgid "Please configure base ipset settings:"
-msgstr ""
+msgstr "Lütfen temel ipset ayarlarını yapılandırın:"
 
 #: ../src/firewall-config.glade.h:225
 msgid "Type:"
@@ -1711,63 +1812,65 @@ msgstr "Zaman aşımı:"
 
 #: ../src/firewall-config.glade.h:227
 msgid "Hashsize:"
-msgstr ""
+msgstr "Hash boyutu:"
 
 #: ../src/firewall-config.glade.h:228
 msgid "Maxelem:"
-msgstr ""
+msgstr "Maks. eleman:"
 
 #: ../src/firewall-config.glade.h:229
 msgid "Timeout value in seconds"
-msgstr ""
+msgstr "Saniye cinsinden zaman aşımı değeri"
 
 #: ../src/firewall-config.glade.h:230
 msgid "Initial hash size, default 1024"
-msgstr ""
+msgstr "Başlangıç hash boyutu, varsayılan 1024"
 
 #: ../src/firewall-config.glade.h:231
 msgid "Max number of elements, default 65536"
-msgstr ""
+msgstr "Maksimum eleman sayısı, varsayılan 65536"
 
 #: ../src/firewall-config.glade.h:232
 msgid "Please select an ipset:"
-msgstr ""
+msgstr "Lütfen bir ipset seçin:"
 
 #: ../src/firewall-config.glade.h:234
 msgid "Please enter an ipset entry:"
-msgstr ""
+msgstr "Lütfen bir ipset girdisi girin:"
 
 #: ../src/firewall-config.glade.h:235
 msgid "Log Denied"
-msgstr "Günlük Reddedildi"
+msgstr "Reddedilen Log Kaydı"
 
 #: ../src/firewall-config.glade.h:236
 msgid "Please select the log denied value:"
-msgstr ""
+msgstr "Lütfen reddedilen log kaydı değerini seçin:"
 
 #: ../src/firewall-config.glade.h:237
 msgid "Mark"
-msgstr ""
+msgstr "İşaret"
 
 #: ../src/firewall-config.glade.h:238
 msgid "Please enter a mark with an optional mask."
-msgstr ""
+msgstr "Lütfen isteğe bağlı bir maske ile bir işaret girin."
 
 #: ../src/firewall-config.glade.h:239
 msgid "The mark and the mask fields are both 32 bits wide unsigned numbers."
 msgstr ""
+"İşaret ve maske alanlarının her ikisi de 32 bit genişliğinde işaretsiz "
+"sayılardır."
 
 #: ../src/firewall-config.glade.h:240
 msgid "Mark:"
-msgstr ""
+msgstr "İşaret:"
 
 #: ../src/firewall-config.glade.h:241
 msgid "Mask:"
-msgstr ""
+msgstr "Maske:"
 
 #: ../src/firewall-config.glade.h:242
 msgid "Please select a netfilter conntrack helper:"
-msgstr ""
+msgstr "Lütfen bir netfilter conntrack yardımcısı seçin:"
 
 #: ../src/firewall-config.glade.h:243
 msgid "- Select -"
@@ -1787,11 +1890,11 @@ msgstr "Lütfen bir port ve protokol girin."
 
 #: ../src/firewall-config.glade.h:247
 msgid "Direct Rule"
-msgstr ""
+msgstr "Doğrudan Kural"
 
 #: ../src/firewall-config.glade.h:248
 msgid "Please select ipv and table, chain priority and enter the args."
-msgstr ""
+msgstr "Lütfen ipv ve tablo, zincir önceliği seçin ve argümanları girin."
 
 #: ../src/firewall-config.glade.h:249
 msgid "Priority:"
@@ -1799,7 +1902,7 @@ msgstr "Öncelik:"
 
 #: ../src/firewall-config.glade.h:251
 msgid "Please enter a protocol."
-msgstr ""
+msgstr "Lütfen bir protokol girin."
 
 #: ../src/firewall-config.glade.h:252
 msgid "Other Protocol:"
@@ -1811,11 +1914,13 @@ msgstr "Geliştirilmiş Kural"
 
 #: ../src/firewall-config.glade.h:254
 msgid "Please enter a rich rule."
-msgstr ""
+msgstr "Lütfen bir zengin kural girin."
 
 #: ../src/firewall-config.glade.h:255
 msgid "For host or network white or blacklisting deactivate the element."
 msgstr ""
+"Ana bilgisayar veya ağ için, beyaz veya kara listeye almak elemanı devreden "
+"çıkarır."
 
 #: ../src/firewall-config.glade.h:256
 msgid "Source:"
@@ -1839,21 +1944,23 @@ msgstr "ipv4 ve ipv6"
 
 #: ../src/firewall-config.glade.h:261
 msgid "inverted"
-msgstr ""
+msgstr "ters"
 
 #: ../src/firewall-config.glade.h:266
 msgid ""
 "To enable this Action has to be 'reject' and Family either 'ipv4' or "
 "'ipv6' (not both)."
 msgstr ""
+"Bunu etkinleştirmek için, Eylem 'reject' ve Aile 'ipv4' veya 'ipv6' "
+"olmalıdır (her ikisi birden değil)."
 
 #: ../src/firewall-config.glade.h:267
 msgid "with Type:"
-msgstr ""
+msgstr "Tür:"
 
 #: ../src/firewall-config.glade.h:268
 msgid "With limit:"
-msgstr ""
+msgstr "Limit:"
 
 #: ../src/firewall-config.glade.h:269
 msgid "/"
@@ -1861,7 +1968,7 @@ msgstr "/"
 
 #: ../src/firewall-config.glade.h:274
 msgid "Prefix:"
-msgstr ""
+msgstr "Ön ek:"
 
 #: ../src/firewall-config.glade.h:275
 msgid "Level:"
@@ -1869,7 +1976,7 @@ msgstr "Seviye:"
 
 #: ../src/firewall-config.glade.h:292
 msgid "Element:"
-msgstr ""
+msgstr "Eleman:"
 
 #: ../src/firewall-config.glade.h:293
 msgid "Action:"
@@ -1885,19 +1992,19 @@ msgstr "Lütfen temel servis ayarlarını yapılandırın:"
 
 #: ../src/firewall-config.glade.h:296
 msgid "Please select a service."
-msgstr ""
+msgstr "Lütfen bir servis seçin."
 
 #: ../src/firewall-config.glade.h:297
 msgid "Please enter a source."
-msgstr ""
+msgstr "Lütfen bir kaynak girin."
 
 #: ../src/firewall-config.glade.h:298
 msgid "User ID"
-msgstr ""
+msgstr "Kullanıcı kimliği"
 
 #: ../src/firewall-config.glade.h:299
 msgid "Please enter the user id."
-msgstr ""
+msgstr "Lütfen kullanıcı kimliğini girin."
 
 #: ../src/firewall-config.glade.h:301
 msgid "Please enter the user name."
