@@ -1,4 +1,9 @@
-SUBDIRS = config doc po shell-completion src
+SUBDIRS = config po shell-completion src
+
+if ENABLE_DOCS
+SUBDIRS += doc
+endif
+
 DIST_TARGETS = dist-gzip
 
 EXTRA_DIST = \
@@ -43,7 +48,9 @@ tag:
 	git push
 	git push --tags
 
+if ENABLE_DOCS
 dist: clean-docs update-docs
+endif
 
 dist-check:
 	@rm -f _dist_check_failed
@@ -83,8 +90,10 @@ check-container check-integration installcheck-integration:
 
 .PHONY: check-container check-integration installcheck-integration
 
+if ENABLE_DOCS
 update-docs:
 	$(MAKE) -C doc/xml
+endif
 
 clean-docs:
 	$(MAKE) -C doc/xml clean

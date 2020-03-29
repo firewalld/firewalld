@@ -42,7 +42,14 @@ GLIB_GSETTINGS
 
 #############################################################
 
-JH_CHECK_XML_CATALOG([http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl], [DocBook XSL Stylesheets])
+AC_ARG_ENABLE([docs],
+    [AS_HELP_STRING([--enable-docs], [Enable building documentation])],
+    [ENABLE_DOCS="${enableval}"], [ENABLE_DOCS='yes'])
+AM_CONDITIONAL(ENABLE_DOCS, [test x$ENABLE_DOCS = xyes])
+if test "x$ENABLE_DOCS" = "xyes"; then
+    JH_CHECK_XML_CATALOG([http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl], [DocBook XSL Stylesheets])
+fi
+AC_SUBST(ENABLE_DOCS)
 
 #############################################################
 
@@ -165,17 +172,10 @@ AC_DEFINE_UNQUOTED([GETTEXT_PACKAGE], ["$GETTEXT_PACKAGE"],)
 IT_PROG_INTLTOOL([0.35.0], [no-xml])
 AM_PO_SUBDIRS
 
-AC_CONFIG_COMMANDS([xsl-cleanup],,[rm -f doc/xml/transform-*.xsl])
-
 AC_CONFIG_FILES([Makefile
 		 doxygen.conf
 		 config/lockdown-whitelist.xml
 		 config/Makefile
-		 doc/Makefile
-		 doc/man/Makefile
-		 doc/man/man1/Makefile
-		 doc/man/man5/Makefile
-		 doc/xml/Makefile
 		 po/Makefile.in
 		 shell-completion/Makefile
 		 src/firewall/config/__init__.py
@@ -183,6 +183,15 @@ AC_CONFIG_FILES([Makefile
 		 src/tests/Makefile
 		 src/tests/atlocal
 		 src/icons/Makefile])
+
+if test "x$ENABLE_DOCS" = "xyes"; then
+AC_CONFIG_COMMANDS([xsl-cleanup],,[rm -f doc/xml/transform-*.xsl])
+AC_CONFIG_FILES([doc/Makefile
+		 doc/man/Makefile
+		 doc/man/man1/Makefile
+		 doc/man/man5/Makefile
+		 doc/xml/Makefile])
+fi
 
 m4_foreach([FILE], [[src/firewall-applet],
                    [src/firewall-cmd],
