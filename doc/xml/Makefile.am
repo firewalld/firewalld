@@ -1,5 +1,6 @@
 XSLTPROC = xsltproc
 
+if ENABLE_DOCS
 EXTRA_DIST = $(HTMLS:../html/%.html=%.xml) \
 	authors.xml notes.xml seealso.xml errorcodes.xml \
 	transform-man.xsl.in transform-html.xsl.in \
@@ -27,6 +28,7 @@ man5_MANS = \
 	../man/man5/firewalld.service.5 \
 	../man/man5/firewalld.zone.5 \
 	../man/man5/firewalld.zones.5
+endif
 
 CLEAN_FILES = *~ errorcodes.xml
 DISTCLEANFILES = $(man_MANS) $(HTMLS) transform-*.xsl \
