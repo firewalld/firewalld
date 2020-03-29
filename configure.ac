@@ -42,7 +42,12 @@ GLIB_GSETTINGS
 
 #############################################################
 
-JH_CHECK_XML_CATALOG([http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl], [DocBook XSL Stylesheets])
+AC_ARG_ENABLE([docs],
+    [AS_HELP_STRING([--disable-docs], [Disable building documentation])])
+AM_CONDITIONAL([ENABLE_DOCS], [test x$enable_docs != xno])
+AM_COND_IF([ENABLE_DOCS], [
+    JH_CHECK_XML_CATALOG([http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl], [DocBook XSL Stylesheets])
+])
 
 #############################################################
 
