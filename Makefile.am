@@ -107,6 +107,7 @@ test-srpm: dist
 update-po:
 	ls $(top_srcdir)/po/*.po | sed 's/.*\/po\///;s/.po//' > $(top_srcdir)/po/LINGUAS
 	$(MAKE) -C po update-po ${PACKAGE_NAME}.pot
+	cp po/${PACKAGE_NAME}.pot po/${PACKAGE_NAME}.weblate.pot
 
 # This merges translations from the upstream master branch.
 # It's only meant to be used from the stable branches. Translations
