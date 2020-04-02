@@ -1680,7 +1680,7 @@ class nftables(object):
                     port_str = entry_tokens[i][index+1:]
 
                 try:
-                    index = entry_tokens[i].index("-")
+                    index = port_str.index("-")
                 except ValueError:
                     fragment.append(port_str)
                 else:
