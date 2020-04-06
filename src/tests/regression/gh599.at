@@ -8,9 +8,9 @@ dnl Verify we continue to write to the log file after it's truncated. That is,
 dnl simulate logrotate's copytruncate.
 NS_CHECK([truncate -s 0 ./firewalld.log])
 
-dnl generate some logs, anything will do since we have debug enabled.
-FWD_CHECK([--list-all], 0, [ignore], [ignore])
+dnl generate some logs
+FWD_CHECK([-q --add-service=this_does_not_exist], 101, [ignore], [ignore])
 
 NS_CHECK([sh -c 'let "$(cat ./firewalld.log | wc -c) > 0"'])
 
-FWD_END_TEST
+FWD_END_TEST([-e '/ERROR: INVALID_SERVICE: this_does_not_exist/d'])
