@@ -3,6 +3,7 @@ AT_KEYWORDS(gh599)
 
 AT_SKIP_IF([! NS_CMD([which truncate >/dev/null 2>&1])])
 AT_SKIP_IF([! NS_CMD([which wc >/dev/null 2>&1])])
+AT_SKIP_IF([! NS_CMD([which expr >/dev/null 2>&1])])
 
 dnl Verify we continue to write to the log file after it's truncated. That is,
 dnl simulate logrotate's copytruncate.
@@ -11,6 +12,6 @@ NS_CHECK([truncate -s 0 ./firewalld.log])
 dnl generate some logs
 FWD_CHECK([-q --add-service=this_does_not_exist], 101, [ignore], [ignore])
 
-NS_CHECK([sh -c 'let "$(cat ./firewalld.log | wc -c) > 0"'])
+NS_CHECK([expr $(cat ./firewalld.log | wc -c) ">" 0], 0, [ignore], [ignore])
 
 FWD_END_TEST([-e '/ERROR: INVALID_SERVICE: this_does_not_exist/d'])
