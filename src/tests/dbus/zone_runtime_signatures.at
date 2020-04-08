@@ -1,0 +1,415 @@
+FWD_START_TEST([dbus api - zone runtime signatures])
+AT_KEYWORDS(dbus zone gh586)
+
+dnl ####################
+dnl Global APIs
+dnl ####################
+
+DBUS_INTROSPECT([], [[//method[@name="getZoneSettings"]]], 0, [dnl
+    <method name="getZoneSettings">
+        <arg direction="in" name="zone" type="s"></arg>
+        <arg direction="out" type="(sssbsasa(ss)asba(ssss)asasasasa(ss)b)"></arg>
+    </method>
+])
+
+dnl Default Zone
+DBUS_INTROSPECT([], [[//method[@name="getDefaultZone"]]], 0, [dnl
+    <method name="getDefaultZone">
+        <arg direction="out" type="s"></arg>
+    </method>
+])
+DBUS_INTROSPECT([], [[//method[@name="setDefaultZone"]]], 0, [dnl
+    <method name="setDefaultZone">
+        <arg direction="in" name="zone" type="s"></arg>
+    </method>
+])
+
+dnl Fetching Zones
+DBUS_INTROSPECT([], [[//method[@name="getZones"]]], 0, [dnl
+    <method name="getZones">
+        <arg direction="out" type="as"></arg>
+    </method>
+])
+DBUS_INTROSPECT([], [[//method[@name="getActiveZones"]]], 0, [dnl
+    <method name="getActiveZones">
+        <arg direction="out" type="a{sa{sas}}"></arg>
+    </method>
+])
+
+dnl Interface/Source
+DBUS_INTROSPECT([], [[//method[@name="getZoneOfInterface"]]], 0, [dnl
+    <method name="getZoneOfInterface">
+        <arg direction="in" name="interface" type="s"></arg>
+        <arg direction="out" type="s"></arg>
+    </method>
+])
+DBUS_INTROSPECT([], [[//method[@name="getZoneOfSource"]]], 0, [dnl
+    <method name="getZoneOfSource">
+        <arg direction="in" name="source" type="s"></arg>
+        <arg direction="out" type="s"></arg>
+    </method>
+])
+
+dnl ####################
+dnl Zone APIs
+dnl ####################
+
+DBUS_INTROSPECT([], [[//method[@name="isImmutable"]]], 0, [dnl
+    <method name="isImmutable">
+        <arg direction="in" name="zone" type="s"></arg>
+        <arg direction="out" type="b"></arg>
+    </method>
+])
+
+dnl Interfaces
+DBUS_INTROSPECT([], [[//method[@name="addInterface"]]], 0, [dnl
+    <method name="addInterface">
+        <arg direction="in" name="zone" type="s"></arg>
+        <arg direction="in" name="interface" type="s"></arg>
+        <arg direction="out" type="s"></arg>
+    </method>
+])
+DBUS_INTROSPECT([], [[//method[@name="changeZone"]]], 0, [dnl
+    <method name="changeZone">
+        <arg direction="in" name="zone" type="s"></arg>
+        <arg direction="in" name="interface" type="s"></arg>
+        <arg direction="out" type="s"></arg>
+    </method>
+])
+DBUS_INTROSPECT([], [[//method[@name="changeZoneOfInterface"]]], 0, [dnl
+    <method name="changeZoneOfInterface">
+        <arg direction="in" name="zone" type="s"></arg>
+        <arg direction="in" name="interface" type="s"></arg>
+        <arg direction="out" type="s"></arg>
+    </method>
+])
+DBUS_INTROSPECT([], [[//method[@name="removeInterface"]]], 0, [dnl
+    <method name="removeInterface">
+        <arg direction="in" name="zone" type="s"></arg>
+        <arg direction="in" name="interface" type="s"></arg>
+        <arg direction="out" type="s"></arg>
+    </method>
+])
+DBUS_INTROSPECT([], [[//method[@name="queryInterface"]]], 0, [dnl
+    <method name="queryInterface">
+        <arg direction="in" name="zone" type="s"></arg>
+        <arg direction="in" name="interface" type="s"></arg>
+        <arg direction="out" type="b"></arg>
+    </method>
+])
+DBUS_INTROSPECT([], [[//method[@name="getInterfaces"]]], 0, [dnl
+    <method name="getInterfaces">
+        <arg direction="in" name="zone" type="s"></arg>
+        <arg direction="out" type="as"></arg>
+    </method>
+])
+
+dnl Sources
+DBUS_INTROSPECT([], [[//method[@name="addSource"]]], 0, [dnl
+    <method name="addSource">
+        <arg direction="in" name="zone" type="s"></arg>
+        <arg direction="in" name="source" type="s"></arg>
+        <arg direction="out" type="s"></arg>
+    </method>
+])
+DBUS_INTROSPECT([], [[//method[@name="changeZoneOfSource"]]], 0, [dnl
+    <method name="changeZoneOfSource">
+        <arg direction="in" name="zone" type="s"></arg>
+        <arg direction="in" name="source" type="s"></arg>
+        <arg direction="out" type="s"></arg>
+    </method>
+])
+DBUS_INTROSPECT([], [[//method[@name="removeSource"]]], 0, [dnl
+    <method name="removeSource">
+        <arg direction="in" name="zone" type="s"></arg>
+        <arg direction="in" name="source" type="s"></arg>
+        <arg direction="out" type="s"></arg>
+    </method>
+])
+DBUS_INTROSPECT([], [[//method[@name="querySource"]]], 0, [dnl
+    <method name="querySource">
+        <arg direction="in" name="zone" type="s"></arg>
+        <arg direction="in" name="source" type="s"></arg>
+        <arg direction="out" type="b"></arg>
+    </method>
+])
+DBUS_INTROSPECT([], [[//method[@name="getSources"]]], 0, [dnl
+    <method name="getSources">
+        <arg direction="in" name="zone" type="s"></arg>
+        <arg direction="out" type="as"></arg>
+    </method>
+])
+
+dnl Services
+DBUS_INTROSPECT([], [[//method[@name="addService"]]], 0, [dnl
+    <method name="addService">
+        <arg direction="in" name="zone" type="s"></arg>
+        <arg direction="in" name="service" type="s"></arg>
+        <arg direction="in" name="timeout" type="i"></arg>
+        <arg direction="out" type="s"></arg>
+    </method>
+])
+DBUS_INTROSPECT([], [[//method[@name="removeService"]]], 0, [dnl
+    <method name="removeService">
+        <arg direction="in" name="zone" type="s"></arg>
+        <arg direction="in" name="service" type="s"></arg>
+        <arg direction="out" type="s"></arg>
+    </method>
+])
+DBUS_INTROSPECT([], [[//method[@name="queryService"]]], 0, [dnl
+    <method name="queryService">
+        <arg direction="in" name="zone" type="s"></arg>
+        <arg direction="in" name="service" type="s"></arg>
+        <arg direction="out" type="b"></arg>
+    </method>
+])
+DBUS_INTROSPECT([], [[//method[@name="getServices"]]], 0, [dnl
+    <method name="getServices">
+        <arg direction="in" name="zone" type="s"></arg>
+        <arg direction="out" type="as"></arg>
+    </method>
+])
+
+dnl Protocols
+DBUS_INTROSPECT([], [[//method[@name="addProtocol"]]], 0, [dnl
+    <method name="addProtocol">
+        <arg direction="in" name="zone" type="s"></arg>
+        <arg direction="in" name="protocol" type="s"></arg>
+        <arg direction="in" name="timeout" type="i"></arg>
+        <arg direction="out" type="s"></arg>
+    </method>
+])
+DBUS_INTROSPECT([], [[//method[@name="removeProtocol"]]], 0, [dnl
+    <method name="removeProtocol">
+        <arg direction="in" name="zone" type="s"></arg>
+        <arg direction="in" name="protocol" type="s"></arg>
+        <arg direction="out" type="s"></arg>
+    </method>
+])
+DBUS_INTROSPECT([], [[//method[@name="queryProtocol"]]], 0, [dnl
+    <method name="queryProtocol">
+        <arg direction="in" name="zone" type="s"></arg>
+        <arg direction="in" name="protocol" type="s"></arg>
+        <arg direction="out" type="b"></arg>
+    </method>
+])
+DBUS_INTROSPECT([], [[//method[@name="getProtocols"]]], 0, [dnl
+    <method name="getProtocols">
+        <arg direction="in" name="zone" type="s"></arg>
+        <arg direction="out" type="as"></arg>
+    </method>
+])
+
+dnl Ports
+DBUS_INTROSPECT([], [[//method[@name="addPort"]]], 0, [dnl
+    <method name="addPort">
+        <arg direction="in" name="zone" type="s"></arg>
+        <arg direction="in" name="port" type="s"></arg>
+        <arg direction="in" name="protocol" type="s"></arg>
+        <arg direction="in" name="timeout" type="i"></arg>
+        <arg direction="out" type="s"></arg>
+    </method>
+])
+DBUS_INTROSPECT([], [[//method[@name="removePort"]]], 0, [dnl
+    <method name="removePort">
+        <arg direction="in" name="zone" type="s"></arg>
+        <arg direction="in" name="port" type="s"></arg>
+        <arg direction="in" name="protocol" type="s"></arg>
+        <arg direction="out" type="s"></arg>
+    </method>
+])
+DBUS_INTROSPECT([], [[//method[@name="queryPort"]]], 0, [dnl
+    <method name="queryPort">
+        <arg direction="in" name="zone" type="s"></arg>
+        <arg direction="in" name="port" type="s"></arg>
+        <arg direction="in" name="protocol" type="s"></arg>
+        <arg direction="out" type="b"></arg>
+    </method>
+])
+DBUS_INTROSPECT([], [[//method[@name="getPorts"]]], 0, [dnl
+    <method name="getPorts">
+        <arg direction="in" name="zone" type="s"></arg>
+        dnl NOTE: The signature is "aas", but getPorts() actually returns
+        dnl "a(ss)". Apparently python-dbus coerces to "aas".
+        <arg direction="out" type="aas"></arg>
+    </method>
+])
+
+dnl Source Ports
+DBUS_INTROSPECT([], [[//method[@name="addSourcePort"]]], 0, [dnl
+    <method name="addSourcePort">
+        <arg direction="in" name="zone" type="s"></arg>
+        <arg direction="in" name="port" type="s"></arg>
+        <arg direction="in" name="protocol" type="s"></arg>
+        <arg direction="in" name="timeout" type="i"></arg>
+        <arg direction="out" type="s"></arg>
+    </method>
+])
+DBUS_INTROSPECT([], [[//method[@name="removeSourcePort"]]], 0, [dnl
+    <method name="removeSourcePort">
+        <arg direction="in" name="zone" type="s"></arg>
+        <arg direction="in" name="port" type="s"></arg>
+        <arg direction="in" name="protocol" type="s"></arg>
+        <arg direction="out" type="s"></arg>
+    </method>
+])
+DBUS_INTROSPECT([], [[//method[@name="querySourcePort"]]], 0, [dnl
+    <method name="querySourcePort">
+        <arg direction="in" name="zone" type="s"></arg>
+        <arg direction="in" name="port" type="s"></arg>
+        <arg direction="in" name="protocol" type="s"></arg>
+        <arg direction="out" type="b"></arg>
+    </method>
+])
+DBUS_INTROSPECT([], [[//method[@name="getSourcePorts"]]], 0, [dnl
+    <method name="getSourcePorts">
+        <arg direction="in" name="zone" type="s"></arg>
+        dnl NOTE: The signature is "aas", but getPorts() actually returns
+        dnl "a(ss)". Apparently python-dbus coerces to "aas".
+        <arg direction="out" type="aas"></arg>
+    </method>
+])
+
+dnl Forward Ports
+DBUS_INTROSPECT([], [[//method[@name="addForwardPort"]]], 0, [dnl
+    <method name="addForwardPort">
+        <arg direction="in" name="zone" type="s"></arg>
+        <arg direction="in" name="port" type="s"></arg>
+        <arg direction="in" name="protocol" type="s"></arg>
+        <arg direction="in" name="toport" type="s"></arg>
+        <arg direction="in" name="toaddr" type="s"></arg>
+        <arg direction="in" name="timeout" type="i"></arg>
+        <arg direction="out" type="s"></arg>
+    </method>
+])
+DBUS_INTROSPECT([], [[//method[@name="removeForwardPort"]]], 0, [dnl
+    <method name="removeForwardPort">
+        <arg direction="in" name="zone" type="s"></arg>
+        <arg direction="in" name="port" type="s"></arg>
+        <arg direction="in" name="protocol" type="s"></arg>
+        <arg direction="in" name="toport" type="s"></arg>
+        <arg direction="in" name="toaddr" type="s"></arg>
+        <arg direction="out" type="s"></arg>
+    </method>
+])
+DBUS_INTROSPECT([], [[//method[@name="queryForwardPort"]]], 0, [dnl
+    <method name="queryForwardPort">
+        <arg direction="in" name="zone" type="s"></arg>
+        <arg direction="in" name="port" type="s"></arg>
+        <arg direction="in" name="protocol" type="s"></arg>
+        <arg direction="in" name="toport" type="s"></arg>
+        <arg direction="in" name="toaddr" type="s"></arg>
+        <arg direction="out" type="b"></arg>
+    </method>
+])
+DBUS_INTROSPECT([], [[//method[@name="getForwardPorts"]]], 0, [dnl
+    <method name="getForwardPorts">
+        <arg direction="in" name="zone" type="s"></arg>
+        dnl NOTE: The signature is "aas", but getPorts() actually returns
+        dnl "a(ssss)". Apparently python-dbus coerces to "aas".
+        <arg direction="out" type="aas"></arg>
+    </method>
+])
+
+dnl Masquerade
+DBUS_INTROSPECT([], [[//method[@name="addMasquerade"]]], 0, [dnl
+    <method name="addMasquerade">
+        <arg direction="in" name="zone" type="s"></arg>
+        <arg direction="in" name="timeout" type="i"></arg>
+        <arg direction="out" type="s"></arg>
+    </method>
+])
+DBUS_INTROSPECT([], [[//method[@name="removeMasquerade"]]], 0, [dnl
+    <method name="removeMasquerade">
+        <arg direction="in" name="zone" type="s"></arg>
+        <arg direction="out" type="s"></arg>
+    </method>
+])
+DBUS_INTROSPECT([], [[//method[@name="queryMasquerade"]]], 0, [dnl
+    <method name="queryMasquerade">
+        <arg direction="in" name="zone" type="s"></arg>
+        <arg direction="out" type="b"></arg>
+    </method>
+])
+
+dnl ICMP Block
+DBUS_INTROSPECT([], [[//method[@name="addIcmpBlock"]]], 0, [dnl
+    <method name="addIcmpBlock">
+        <arg direction="in" name="zone" type="s"></arg>
+        <arg direction="in" name="icmp" type="s"></arg>
+        <arg direction="in" name="timeout" type="i"></arg>
+        <arg direction="out" type="s"></arg>
+    </method>
+])
+DBUS_INTROSPECT([], [[//method[@name="removeIcmpBlock"]]], 0, [dnl
+    <method name="removeIcmpBlock">
+        <arg direction="in" name="zone" type="s"></arg>
+        <arg direction="in" name="icmp" type="s"></arg>
+        <arg direction="out" type="s"></arg>
+    </method>
+])
+DBUS_INTROSPECT([], [[//method[@name="queryIcmpBlock"]]], 0, [dnl
+    <method name="queryIcmpBlock">
+        <arg direction="in" name="zone" type="s"></arg>
+        <arg direction="in" name="icmp" type="s"></arg>
+        <arg direction="out" type="b"></arg>
+    </method>
+])
+DBUS_INTROSPECT([], [[//method[@name="getIcmpBlocks"]]], 0, [dnl
+    <method name="getIcmpBlocks">
+        <arg direction="in" name="zone" type="s"></arg>
+        <arg direction="out" type="as"></arg>
+    </method>
+])
+
+dnl ICMP Block Inversion
+DBUS_INTROSPECT([], [[//method[@name="addIcmpBlockInversion"]]], 0, [dnl
+    <method name="addIcmpBlockInversion">
+        <arg direction="in" name="zone" type="s"></arg>
+        <arg direction="out" type="s"></arg>
+    </method>
+])
+DBUS_INTROSPECT([], [[//method[@name="removeIcmpBlockInversion"]]], 0, [dnl
+    <method name="removeIcmpBlockInversion">
+        <arg direction="in" name="zone" type="s"></arg>
+        <arg direction="out" type="s"></arg>
+    </method>
+])
+DBUS_INTROSPECT([], [[//method[@name="queryIcmpBlockInversion"]]], 0, [dnl
+    <method name="queryIcmpBlockInversion">
+        <arg direction="in" name="zone" type="s"></arg>
+        <arg direction="out" type="b"></arg>
+    </method>
+])
+
+dnl Rich Rules
+DBUS_INTROSPECT([], [[//method[@name="addRichRule"]]], 0, [dnl
+    <method name="addRichRule">
+        <arg direction="in" name="zone" type="s"></arg>
+        <arg direction="in" name="rule" type="s"></arg>
+        <arg direction="in" name="timeout" type="i"></arg>
+        <arg direction="out" type="s"></arg>
+    </method>
+])
+DBUS_INTROSPECT([], [[//method[@name="removeRichRule"]]], 0, [dnl
+    <method name="removeRichRule">
+        <arg direction="in" name="zone" type="s"></arg>
+        <arg direction="in" name="rule" type="s"></arg>
+        <arg direction="out" type="s"></arg>
+    </method>
+])
+DBUS_INTROSPECT([], [[//method[@name="queryRichRule"]]], 0, [dnl
+    <method name="queryRichRule">
+        <arg direction="in" name="zone" type="s"></arg>
+        <arg direction="in" name="rule" type="s"></arg>
+        <arg direction="out" type="b"></arg>
+    </method>
+])
+DBUS_INTROSPECT([], [[//method[@name="getRichRules"]]], 0, [dnl
+    <method name="getRichRules">
+        <arg direction="in" name="zone" type="s"></arg>
+        <arg direction="out" type="as"></arg>
+    </method>
+])
+
+FWD_END_TEST
