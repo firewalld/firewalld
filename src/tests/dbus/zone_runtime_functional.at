@@ -1,0 +1,297 @@
+FWD_START_TEST([dbus api - zone permanent functional])
+AT_KEYWORDS(dbus zone gh586)
+
+dnl ####################
+dnl Global APIs
+dnl ####################
+
+DBUS_CHECK([], [getZoneSettings], ["public"], 0, [dnl
+     (('', dnl version
+       'Public', dnl short
+       'For use in public areas. You do not trust the other computers on networks to not harm your computer. Only selected incoming connections are accepted.', dnl description
+       false, dnl bogus/unused
+       'default', dnl target
+       @<:@'ssh', 'dhcpv6-client'@:>@, dnl services
+       @a(ss) @<:@@:>@, dnl ports
+       @as @<:@@:>@, dnl ICMP Blocks
+       false, dnl masquerade
+       @a(ssss) @<:@@:>@, dnl forward ports
+       @as @<:@@:>@, dnl interfaces
+       @as @<:@@:>@, dnl sources
+       @as @<:@@:>@, dnl rules_str
+       @as @<:@@:>@, dnl protocols
+       @a(ss) @<:@@:>@, dnl source ports
+       false),)
+])
+
+dnl Default Zone
+DBUS_CHECK([], [getDefaultZone], [], 0, [dnl
+    ('public',)
+])
+DBUS_CHECK([], [setDefaultZone], ['drop'], 0, [dnl
+    ()
+])
+DBUS_CHECK([], [getDefaultZone], [], 0, [dnl
+    ('drop',)
+])
+
+dnl Fetching Zones
+DBUS_CHECK([], [zone.getZones], [], 0, [dnl
+    [(['block', 'dmz', 'drop', 'external', 'home', 'internal', 'public', 'trusted', 'work'],)]
+])
+FWD_CHECK([-q --zone public --add-interface dummy0])
+FWD_CHECK([-q --zone public --add-source 10.1.1.1])
+DBUS_CHECK([], [zone.getActiveZones], [], 0, [dnl
+    ['public': {'interfaces': ['dummy0'], 'sources': ['10.1.1.1']}]
+])
+FWD_CHECK([-q --zone public --remove-interface dummy0])
+FWD_CHECK([-q --zone public --remove-source 10.1.1.1])
+
+dnl Interfaces/Sources
+FWD_CHECK([-q --zone public --add-interface dummy1])
+DBUS_CHECK([], [zone.getZoneOfInterface], ["dummy1"], 0, [dnl
+    ('public',)
+])
+FWD_CHECK([-q --zone public --remove-interface dummy1])
+FWD_CHECK([-q --zone drop --add-source 10.10.10.0/24])
+DBUS_CHECK([], [zone.getZoneOfSource], ["10.10.10.0/24"], 0, [dnl
+    ('drop',)
+])
+FWD_CHECK([-q --zone drop --remove-source 10.10.10.0/24])
+
+dnl ####################
+dnl Zone Individual APIs
+dnl ####################
+
+dnl isImmutable
+DBUS_CHECK([], [zone.isImmutable], ["public"], 0, [dnl
+    (false,)
+])
+
+dnl Interfaces
+DBUS_CHECK([], [zone.addInterface], ["public" "dummy0"], 0, [dnl
+    ('public',)
+])
+DBUS_CHECK([], [zone.changeZone], ["drop" "dummy0"], 0, [dnl
+    ('drop',)
+])
+DBUS_CHECK([], [zone.queryInterface], ["public" "dummy0"], 0, [dnl
+    (false,)
+])
+DBUS_CHECK([], [zone.queryInterface], ["drop" "dummy0"], 0, [dnl
+    (true,)
+])
+DBUS_CHECK([], [zone.changeZoneOfInterface], ["public" "dummy0"], 0, [dnl
+    ('public',)
+])
+DBUS_CHECK([], [zone.queryInterface], ["public" "dummy0"], 0, [dnl
+    (true,)
+])
+DBUS_CHECK([], [zone.queryInterface], ["drop" "dummy0"], 0, [dnl
+    (false,)
+])
+DBUS_CHECK([], [zone.addInterface], ["public" "dummy1"], 0, [dnl
+    ('public',)
+])
+DBUS_CHECK([], [zone.getInterfaces], ["public"], 0, [dnl
+    [(['dummy0', 'dummy1'],)]
+])
+DBUS_CHECK([], [zone.removeInterface], ["public" "dummy0"], 0, [dnl
+    ('public',)
+])
+DBUS_CHECK([], [zone.getInterfaces], ["public"], 0, [dnl
+    [(['dummy1'],)]
+])
+
+dnl Sources
+DBUS_CHECK([], [zone.addSource], ["public" "10.10.10.0/24"], 0, [dnl
+    ('public',)
+])
+DBUS_CHECK([], [zone.changeZoneOfSource], ["drop" "10.10.10.0/24"], 0, [dnl
+    ('drop',)
+])
+DBUS_CHECK([], [zone.querySource], ["public" "10.10.10.0/24"], 0, [dnl
+    (false,)
+])
+DBUS_CHECK([], [zone.querySource], ["drop" "10.10.10.0/24"], 0, [dnl
+    (true,)
+])
+DBUS_CHECK([], [zone.changeZoneOfSource], ["public" "10.10.10.0/24"], 0, [dnl
+    ('public',)
+])
+DBUS_CHECK([], [zone.addSource], ["public" "10.20.0.0/16"], 0, [dnl
+    ('public',)
+])
+DBUS_CHECK([], [zone.getSources], ["public"], 0, [dnl
+    [(['10.10.10.0/24', '10.20.0.0/16'],)]
+])
+DBUS_CHECK([], [zone.removeSource], ["public" "10.10.10.0/24"], 0, [dnl
+    ('public',)
+])
+DBUS_CHECK([], [zone.getSources], ["public"], 0, [dnl
+    [(['10.20.0.0/16'],)]
+])
+
+dnl Services
+DBUS_CHECK([], [zone.addService], ["public" "samba" 0], 0, [dnl
+    ('public',)
+])
+DBUS_CHECK([], [zone.queryService], ["public" "samba"], 0, [dnl
+    (true,)
+])
+DBUS_CHECK([], [zone.getServices], ["public"], 0, [dnl
+    [(['ssh', 'dhcpv6-client', 'samba'],)]
+])
+DBUS_CHECK([], [zone.removeService], ["public" "samba"], 0, [dnl
+    ('public',)
+])
+DBUS_CHECK([], [zone.queryService], ["public" "samba"], 0, [dnl
+    (false,)
+])
+
+dnl Protocols
+DBUS_CHECK([], [zone.addProtocol], ["public" "icmp" 0], 0, [dnl
+    ('public',)
+])
+DBUS_CHECK([], [zone.queryProtocol], ["public" "icmp"], 0, [dnl
+    (true,)
+])
+DBUS_CHECK([], [zone.getProtocols], ["public"], 0, [dnl
+    [(['icmp'],)]
+])
+DBUS_CHECK([], [zone.removeProtocol], ["public" "icmp"], 0, [dnl
+    ('public',)
+])
+DBUS_CHECK([], [zone.queryProtocol], ["public" "icmp"], 0, [dnl
+    (false,)
+])
+
+dnl Ports
+DBUS_CHECK([], [zone.addPort], ["public" "1234" "tcp" 0], 0, [dnl
+    ('public',)
+])
+DBUS_CHECK([], [zone.queryPort], ["public" "1234" "tcp"], 0, [dnl
+    (true,)
+])
+DBUS_CHECK([], [zone.addPort], ["public" "4321" "udp" 0], 0, [dnl
+    ('public',)
+])
+DBUS_CHECK([], [zone.getPorts], ["public"], 0, [dnl
+    [([['1234', 'tcp'], ['4321', 'udp']],)]
+])
+DBUS_CHECK([], [zone.removePort], ["public" "1234" "tcp"], 0, [dnl
+    ('public',)
+])
+DBUS_CHECK([], [zone.queryPort], ["public" "1234" "tcp"], 0, [dnl
+    (false,)
+])
+
+dnl Source Ports
+DBUS_CHECK([], [zone.addSourcePort], ["public" "1234" "tcp" 0], 0, [dnl
+    ('public',)
+])
+DBUS_CHECK([], [zone.querySourcePort], ["public" "1234" "tcp"], 0, [dnl
+    (true,)
+])
+DBUS_CHECK([], [zone.addSourcePort], ["public" "4321" "udp" 0], 0, [dnl
+    ('public',)
+])
+DBUS_CHECK([], [zone.getSourcePorts], ["public"], 0, [dnl
+    [([['1234', 'tcp'], ['4321', 'udp']],)]
+])
+DBUS_CHECK([], [zone.removeSourcePort], ["public" "1234" "tcp"], 0, [dnl
+    ('public',)
+])
+DBUS_CHECK([], [zone.querySourcePort], ["public" "1234" "tcp"], 0, [dnl
+    (false,)
+])
+
+dnl Forward Ports
+DBUS_CHECK([], [zone.addForwardPort], ["public" "1234" "tcp" "1111" "" 0], 0, [dnl
+    ('public',)
+])
+DBUS_CHECK([], [zone.queryForwardPort], ["public" "1234" "tcp" "1111" ""], 0, [dnl
+    (true,)
+])
+DBUS_CHECK([], [zone.addForwardPort], ["public" "4321" "udp" "4444" "10.10.10.10" 0], 0, [dnl
+    ('public',)
+])
+DBUS_CHECK([], [zone.getForwardPorts], ["public"], 0, [dnl
+    [([['1234', 'tcp', '1111', ''], ['4321', 'udp', '4444', '10.10.10.10']],)]
+])
+DBUS_CHECK([], [zone.removeForwardPort], ["public" "1234" "tcp" "1111" ""], 0, [dnl
+    ('public',)
+])
+DBUS_CHECK([], [zone.queryForwardPort], ["public" "1234" "tcp" "1111" ""], 0, [dnl
+    (false,)
+])
+
+dnl Masquerade
+DBUS_CHECK([], [zone.addMasquerade], ["public" 0], 0, [dnl
+    ('public',)
+])
+DBUS_CHECK([], [zone.queryMasquerade], ["public"], 0, [dnl
+    (true,)
+])
+DBUS_CHECK([], [zone.removeMasquerade], ["public"], 0, [dnl
+    ('public',)
+])
+DBUS_CHECK([], [zone.queryMasquerade], ["public"], 0, [dnl
+    (false,)
+])
+
+dnl ICMP Block
+DBUS_CHECK([], [zone.addIcmpBlock], ["public" "echo-reply" 0], 0, [dnl
+    ('public',)
+])
+DBUS_CHECK([], [zone.queryIcmpBlock], ["public" "echo-reply"], 0, [dnl
+    (true,)
+])
+DBUS_CHECK([], [zone.addIcmpBlock], ["public" "echo-request" 0], 0, [dnl
+    ('public',)
+])
+DBUS_CHECK([], [zone.getIcmpBlocks], ["public"], 0, [dnl
+    [(['echo-reply', 'echo-request'],)]
+])
+DBUS_CHECK([], [zone.removeIcmpBlock], ["public" "echo-reply"], 0, [dnl
+    ('public',)
+])
+DBUS_CHECK([], [zone.queryIcmpBlock], ["public" "echo-reply"], 0, [dnl
+    (false,)
+])
+
+dnl ICMP Block Inversion
+DBUS_CHECK([], [zone.addIcmpBlockInversion], ["public"], 0, [dnl
+    ('public',)
+])
+DBUS_CHECK([], [zone.queryIcmpBlockInversion], ["public"], 0, [dnl
+    (true,)
+])
+DBUS_CHECK([], [zone.removeIcmpBlockInversion], ["public"], 0, [dnl
+    ('public',)
+])
+DBUS_CHECK([], [zone.queryIcmpBlockInversion], ["public"], 0, [dnl
+    (false,)
+])
+
+dnl Rich Rules
+DBUS_CHECK([], [zone.addRichRule], ["public" "rule family=ipv4 source address=10.10.10.10 accept" 0], 0, [dnl
+    ('public',)
+])
+DBUS_CHECK([], [zone.queryRichRule], ["public" "rule family=ipv4 source address=10.10.10.10 accept"], 0, [dnl
+    (true,)
+])
+DBUS_CHECK([], [zone.addRichRule], ["public" "rule family=ipv4 source address=20.20.20.20 accept" 0], 0, [dnl
+    ('public',)
+])
+DBUS_CHECK([], [zone.getRichRules], ["public"], 0, [dnl
+    [(['rule family="ipv4" source address="10.10.10.10" accept', 'rule family="ipv4" source address="20.20.20.20" accept'],)]
+])
+DBUS_CHECK([], [zone.removeRichRule], ["public" "rule family=ipv4 source address=10.10.10.10 accept"], 0, [dnl
+    ('public',)
+])
+DBUS_CHECK([], [zone.queryRichRule], ["public" "rule family=ipv4 source address=10.10.10.10 accept"], 0, [dnl
+    (false,)
+])
+
+FWD_END_TEST
