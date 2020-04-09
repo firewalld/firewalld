@@ -1,0 +1,359 @@
+FWD_START_TEST([dbus api - zone permanent functional])
+AT_KEYWORDS(dbus zone gh586)
+
+dnl ####################
+dnl Global APIs
+dnl ####################
+
+DBUS_CHECK([config], [config.addZone],
+    ["foobar" dnl name
+     '("1.0", dnl version
+       "foobar", dnl short
+       "foobar zone", dnl description
+       false, dnl bogus/unused
+       "ACCEPT", dnl target
+       @<:@"ssh", "mdns"@:>@, dnl services
+       @<:@("1234", "tcp"), ("1234", "udp")@:>@, dnl ports
+       @<:@"echo-request"@:>@, dnl ICMP Blocks
+       true, dnl masquerade
+       @<:@("1234", "tcp", "4321", ""), ("1234", "udp", "4321", "10.10.10.10")@:>@, dnl forward ports
+       @<:@"dummy0", "dummy1"@:>@, dnl interfaces
+       @<:@"10.10.10.0/24"@:>@, dnl sources
+       @<:@"rule family=ipv4 source address=10.20.20.20 drop"@:>@, dnl rules_str
+       @<:@"icmp"@:>@, dnl protocols
+       @<:@("1234", "tcp"), ("1234", "udp")@:>@, dnl source ports
+       false dnl ICMP block inversion
+      )'dnl
+    ], 0, [stdout])
+DBUS_FOOBAR_ZONE_OBJ=[$(sed -e "s/.*config\/zone\/\([^']\+\)['].*/\1/" ./stdout)]
+export DBUS_FOOBAR_ZONE_OBJ
+
+dnl Get Zones
+dnl
+DBUS_CHECK([config], [config.getZoneNames], [], 0, [dnl
+    [(['block', 'dmz', 'drop', 'external', 'foobar', 'home', 'internal', 'public', 'trusted', 'work'],)]
+])
+DBUS_CHECK([config], [config.listZones], [], 0, [stdout])
+NS_CHECK([sed -e ["s/['][,]/'\n/g"] ./stdout |dnl
+          sed -e ["s/.*config\/zone\/\([^']\+\)['].*/\1/"] |dnl
+          while read LINE; do { echo "${LINE}" | grep ["^[0-9]\+$"] ; } || exit 1; done], 0, [ignore])
+DBUS_CHECK([config], [config.getZoneByName], ["public"], 0, [stdout])
+NS_CHECK([sed -e ["s/.*config\/zone\/\([^']\+\)['].*/\1/"] ./stdout | grep ["^[0-9]\+$"]], 0, [ignore])
+
+dnl Interfaces
+FWD_CHECK([-q --permanent --zone public --add-interface dummy2])
+DBUS_CHECK([config], [config.getZoneOfInterface], ["dummy2"], 0, [dnl
+    ('public',)
+])
+FWD_CHECK([-q --permanent --zone public --remove-interface dummy2])
+
+dnl Sources
+FWD_CHECK([-q --permanent --zone public --add-source 10.20.20.0/24])
+DBUS_CHECK([config], [config.getZoneOfSource], ["10.20.20.0/24"], 0, [dnl
+    ('public',)
+])
+FWD_CHECK([-q --permanent --zone public --remove-source 10.20.20.0/24])
+
+dnl ####################
+dnl Zone object APIs
+dnl ####################
+
+DBUS_CHECK([config/zone/${DBUS_FOOBAR_ZONE_OBJ}], [config.zone.getSettings], [], 0, [dnl
+     (('1.0', dnl version
+       'foobar', dnl short
+       'foobar zone', dnl description
+       false, dnl bogus/unused
+       'ACCEPT', dnl target
+       @<:@'ssh', 'mdns'@:>@, dnl services
+       @<:@('1234', 'tcp'), ('1234', 'udp')@:>@, dnl ports
+       @<:@'echo-request'@:>@, dnl ICMP Blocks
+       true, dnl masquerade
+       @<:@('1234', 'tcp', '4321', ''), ('1234', 'udp', '4321', '10.10.10.10')@:>@, dnl forward ports
+       @<:@'dummy0', 'dummy1'@:>@, dnl interfaces
+       @<:@'10.10.10.0/24'@:>@, dnl sources
+       @<:@'rule family="ipv4" source address="10.20.20.20" drop'@:>@, dnl rules_str
+       @<:@'icmp'@:>@, dnl protocols
+       @<:@('1234', 'tcp'), ('1234', 'udp')@:>@, dnl source ports
+       false),)
+])
+
+dnl Verify update works
+dnl
+DBUS_CHECK([config/zone/${DBUS_FOOBAR_ZONE_OBJ}], [config.zone.update], [dnl
+     '("1.1", dnl version
+       "foobar v2", dnl short
+       "foobar zone updated", dnl description
+       false, dnl bogus/unused
+       "ACCEPT", dnl target
+       @<:@"ssh", "mdns", "samba"@:>@, dnl services
+       @<:@("1234", "tcp"), ("4444", "udp")@:>@, dnl ports
+       @<:@"echo-request", "echo-reply"@:>@, dnl ICMP Blocks
+       false, dnl masquerade
+       @<:@("1234", "tcp", "4321", "")@:>@, dnl forward ports
+       @<:@"dummy0", "dummy1", "dummy2"@:>@, dnl interfaces
+       @<:@"10.10.10.0/24", "10.20.0.0/16"@:>@, dnl sources
+       @<:@"rule family=ipv4 source address=10.20.20.20 reject"@:>@, dnl rules_str
+       @<:@"icmp", "ipv6-icmp"@:>@, dnl protocols
+       @<:@("1234", "tcp"), ("6666", "udp")@:>@, dnl source ports
+       true dnl ICMP block inversion
+      )'dnl
+    ], 0, [ignore])
+DBUS_CHECK([config/zone/${DBUS_FOOBAR_ZONE_OBJ}], [config.zone.getSettings], [], 0, [dnl
+     (('1.1', dnl version
+       'foobar v2', dnl short
+       'foobar zone updated', dnl description
+       false, dnl bogus/unused
+       'ACCEPT', dnl target
+       @<:@'ssh', 'mdns', 'samba'@:>@, dnl services
+       @<:@('1234', 'tcp'), ('4444', 'udp')@:>@, dnl ports
+       @<:@'echo-request', 'echo-reply'@:>@, dnl ICMP Blocks
+       false, dnl masquerade
+       @<:@('1234', 'tcp', '4321', '')@:>@, dnl forward ports
+       @<:@'dummy0', 'dummy1', 'dummy2'@:>@, dnl interfaces
+       @<:@'10.10.10.0/24', '10.20.0.0/16'@:>@, dnl sources
+       @<:@'rule family="ipv4" source address="10.20.20.20" reject'@:>@, dnl rules_str
+       @<:@'icmp', 'ipv6-icmp'@:>@, dnl protocols
+       @<:@('1234', 'tcp'), ('6666', 'udp')@:>@, dnl source ports
+       true),)
+])
+
+dnl Rename
+DBUS_CHECK([config/zone/${DBUS_FOOBAR_ZONE_OBJ}], [config.zone.rename], ["foobar-renamed"], 0, [ignore])
+DBUS_CHECK([config], [config.getZoneByName], ["foobar-renamed"], 0, [ignore])
+
+dnl Remove
+DBUS_CHECK([config/zone/${DBUS_FOOBAR_ZONE_OBJ}], [config.zone.remove], [], 0, [ignore])
+DBUS_CHECK([config], [config.getZoneByName], ["foobar-renamed"], 1, [ignore], [ignore])
+
+dnl Get a reference to the public zone. We'll use for the rest of the tests.
+DBUS_CHECK([config], [config.getZoneByName], ["public"], 0, [stdout])
+DBUS_PUBLIC_ZONE_OBJ=[$(sed -e "s/.*config\/zone\/\([^']\+\)['].*/\1/" ./stdout)]
+export DBUS_PUBLIC_ZONE_OBJ
+
+dnl loadDefaults
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.loadDefaults], [], 0, [ignore])
+
+dnl Version
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.getVersion], [], 0, [dnl
+    ('',)
+])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.setVersion], ["1.1"], 0, [ignore])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.getVersion], [], 0, [dnl
+    ('1.1',)
+])
+
+dnl Short
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.getShort], [], 0, [dnl
+    ('Public',)
+])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.setShort], ["Public updated"], 0, [ignore])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.getShort], [], 0, [dnl
+    ('Public updated',)
+])
+
+dnl Description
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.getDescription], [], 0, [dnl
+    ('For use in public areas. You do not trust the other computers on networks to not harm your computer. Only selected incoming connections are accepted.',)
+])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.setDescription], ["A shorter description."], 0, [ignore])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.getDescription], [], 0, [dnl
+    ('A shorter description.',)
+])
+
+dnl Target
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.getTarget], [], 0, [dnl
+    ('default',)
+])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.setTarget], ["ACCEPT"], 0, [ignore])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.getTarget], [], 0, [dnl
+    ('ACCEPT',)
+])
+
+dnl Interfaces
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.addInterface], ["dummy0"], 0, [ignore])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.queryInterface], ["dummy0"], 0, [dnl
+    (true,)
+])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.queryInterface], ["dummy1"], 0, [dnl
+    (false,)
+])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.setInterfaces], [['["dummy0", "dummy1"]']], 0, [ignore])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.getInterfaces], [], 0, [dnl
+    [(['dummy0', 'dummy1'],)]
+])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.removeInterface], ["dummy0"], 0, [ignore])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.getInterfaces], [], 0, [dnl
+    [(['dummy1'],)]
+])
+
+dnl Sources
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.addSource], ["10.10.10.0/24"], 0, [ignore])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.querySource], ["10.10.10.0/24"], 0, [dnl
+    (true,)
+])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.querySource], ["10.20.20.0/24"], 0, [dnl
+    (false,)
+])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.setSources], [['["10.10.10.0/24", "10.20.20.0/24"]']], 0, [ignore])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.getSources], [], 0, [dnl
+    [(['10.10.10.0/24', '10.20.20.0/24'],)]
+])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.removeSource], ["10.10.10.0/24"], 0, [ignore])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.getSources], [], 0, [dnl
+    [(['10.20.20.0/24'],)]
+])
+
+dnl Services
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.addService], ["samba"], 0, [ignore])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.queryService], ["samba"], 0, [dnl
+    (true,)
+])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.queryService], ["https"], 0, [dnl
+    (false,)
+])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.setServices], [['["samba", "https"]']], 0, [ignore])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.getServices], [], 0, [dnl
+    [(['samba', 'https'],)]
+])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.removeService], ["samba"], 0, [ignore])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.getServices], [], 0, [dnl
+    [(['https'],)]
+])
+
+dnl Ports
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.addPort], ["1234" "tcp"], 0, [ignore])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.queryPort], ["1234" "tcp"], 0, [dnl
+    (true,)
+])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.queryPort], ["4321" "udp"], 0, [dnl
+    (false,)
+])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.setPorts], [['[("1234", "tcp"), ("4321", "udp")]']], 0, [ignore])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.getPorts], [], 0, [dnl
+    [([('1234', 'tcp'), ('4321', 'udp')],)]
+])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.removePort], ["1234" "tcp"], 0, [ignore])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.getPorts], [], 0, [dnl
+    [([('4321', 'udp')],)]
+])
+
+dnl Source Ports
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.addSourcePort], ["1234" "tcp"], 0, [ignore])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.querySourcePort], ["1234" "tcp"], 0, [dnl
+    (true,)
+])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.querySourcePort], ["4321" "udp"], 0, [dnl
+    (false,)
+])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.setSourcePorts], [['[("1234", "tcp"), ("4321", "udp")]']], 0, [ignore])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.getSourcePorts], [], 0, [dnl
+    [([('1234', 'tcp'), ('4321', 'udp')],)]
+])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.removeSourcePort], ["1234" "tcp"], 0, [ignore])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.getSourcePorts], [], 0, [dnl
+    [([('4321', 'udp')],)]
+])
+
+dnl Forward Ports
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.addForwardPort], ["1234" "tcp" "1111" ""], 0, [ignore])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.queryForwardPort], ["1234" "tcp" "1111" ""], 0, [dnl
+    (true,)
+])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.queryForwardPort], ["4321" "udp" "4444" "10.10.10.10"], 0, [dnl
+    (false,)
+])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.setForwardPorts], [['[("1234", "tcp", "1111", ""), ("4321", "udp", "4444", "10.10.10.10")]']], 0, [ignore])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.getForwardPorts], [], 0, [dnl
+    [([('1234', 'tcp', '1111', ''), ('4321', 'udp', '4444', '10.10.10.10')],)]
+])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.removeForwardPort], ["1234" "tcp" "1111" ""], 0, [ignore])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.getForwardPorts], [], 0, [dnl
+    [([('4321', 'udp', '4444', '10.10.10.10')],)]
+])
+
+dnl Protocols
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.addProtocol], ["icmp"], 0, [ignore])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.queryProtocol], ["icmp"], 0, [dnl
+    (true,)
+])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.queryProtocol], ["igmp"], 0, [dnl
+    (false,)
+])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.setProtocols], [['["icmp", "igmp"]']], 0, [ignore])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.getProtocols], [], 0, [dnl
+    [(['icmp', 'igmp'],)]
+])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.removeProtocol], ["icmp"], 0, [ignore])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.getProtocols], [], 0, [dnl
+    [(['igmp'],)]
+])
+
+dnl Masquerade
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.queryMasquerade], [], 0, [dnl
+    (false,)
+])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.addMasquerade], [], 0, [ignore])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.queryMasquerade], [], 0, [dnl
+    (true,)
+])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.setMasquerade], [true], 0, [ignore])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.getMasquerade], [], 0, [dnl
+    [(true,)]
+])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.removeMasquerade], [], 0, [ignore])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.getMasquerade], [], 0, [dnl
+    [(false,)]
+])
+
+dnl ICMP Block
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.addIcmpBlock], ["echo-reply"], 0, [ignore])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.queryIcmpBlock], ["echo-reply"], 0, [dnl
+    (true,)
+])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.queryIcmpBlock], ["echo-request"], 0, [dnl
+    (false,)
+])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.setIcmpBlocks], [['["echo-reply", "echo-request"]']], 0, [ignore])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.getIcmpBlocks], [], 0, [dnl
+    [(['echo-reply', 'echo-request'],)]
+])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.removeIcmpBlock], ["echo-reply"], 0, [ignore])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.getIcmpBlocks], [], 0, [dnl
+    [(['echo-request'],)]
+])
+
+dnl ICMP Block Inversion
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.queryIcmpBlockInversion], [], 0, [dnl
+    (false,)
+])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.addIcmpBlockInversion], [], 0, [ignore])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.queryIcmpBlockInversion], [], 0, [dnl
+    (true,)
+])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.setIcmpBlockInversion], [true], 0, [ignore])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.getIcmpBlockInversion], [], 0, [dnl
+    [(true,)]
+])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.removeIcmpBlockInversion], [], 0, [ignore])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.getIcmpBlockInversion], [], 0, [dnl
+    [(false,)]
+])
+
+dnl Rich Rules
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.addRichRule], ["rule family=ipv4 source address=10.10.10.0/24 accept"], 0, [ignore])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.queryRichRule], ["rule family=ipv4 source address=10.10.10.0/24 accept"], 0, [dnl
+    (true,)
+])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.queryRichRule], ["rule family=ipv4 source address=10.20.20.0/24 drop"], 0, [dnl
+    (false,)
+])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.setRichRules], [['["rule family=ipv4 source address=10.10.10.0/24 accept", "rule family=ipv4 source address=10.20.20.0/24 drop"]']], 0, [ignore])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.getRichRules], [], 0, [dnl
+    [(['rule family="ipv4" source address="10.10.10.0/24" accept', 'rule family="ipv4" source address="10.20.20.0/24" drop'],)]
+])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.removeRichRule], ["rule family=ipv4 source address=10.10.10.0/24 accept"], 0, [ignore])
+DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.getRichRules], [], 0, [dnl
+    [(['rule family="ipv4" source address="10.20.20.0/24" drop'],)]
+])
+
+FWD_END_TEST([-e '/ERROR: INVALID_ZONE: foobar-renamed/d'])
