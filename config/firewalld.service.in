@@ -4,7 +4,7 @@ Before=network-pre.target
 Wants=network-pre.target
 After=dbus.service
 After=polkit.service
-Conflicts=iptables.service ip6tables.service ebtables.service ipset.service
+Conflicts=iptables.service ip6tables.service ebtables.service ipset.service nftables.service
 Documentation=man:firewalld(1)
 
 [Service]
