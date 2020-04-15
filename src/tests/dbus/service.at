@@ -482,4 +482,4 @@ DBUS_CHECK([config/service/${SERVICE_OBJ}], [config.service.update2],
      }'dnl
     ], 1, [ignore], [ignore])
 
-FWD_END_TEST([-e '/ERROR: INVALID_OPTION: service option/d'])
+FWD_END_TEST([-e '/ERROR: INVALID_OPTION: option/d'])

@@ -25,8 +25,6 @@ import xml.sax as sax
 import os
 import io
 import shutil
-import copy
-from collections import OrderedDict
 
 from firewall import config
 from firewall.functions import u2b_if_py2
@@ -79,34 +77,6 @@ class Service(IO_Object):
         self.source_ports = [ ]
         self.includes = [ ]
         self.helpers = [ ]
-
-    def import_config(self, conf):
-        self.check_config(conf)
-
-        for key in conf:
-            if not hasattr(self, key):
-                raise FirewallError(errors.UNKNOWN_ERROR, "Internal error. '{}' is not a valid attribute".format(key))
-            if isinstance(conf[key], list):
-                # maintain list order while removing duplicates
-                setattr(self, key, list(OrderedDict.fromkeys(copy.deepcopy(conf[key]))))
-            else:
-                setattr(self, key, copy.deepcopy(conf[key]))
-
-    def export_config(self):
-        conf = {}
-        type_formats = dict([(x[0], x[1]) for x in self.IMPORT_EXPORT_STRUCTURE])
-        for key in type_formats:
-            if getattr(self, key):
-                conf[key] = copy.deepcopy(getattr(self, key))
-        return conf
-
-    def check_config(self, conf):
-        type_formats = dict([(x[0], x[1]) for x in self.IMPORT_EXPORT_STRUCTURE])
-        for key in conf:
-            if key not in [x for (x,y) in self.IMPORT_EXPORT_STRUCTURE]:
-                raise FirewallError(errors.INVALID_OPTION, "service option '{}' is not valid".format(key))
-            self._check_config_structure(conf[key], type_formats[key])
-            self._check_config(conf[key], key)
 
     def cleanup(self):
         self.version = ""

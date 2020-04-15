@@ -545,7 +545,7 @@ class FirewallConfig(object):
         return self._builtin_services[obj.name]
 
     def get_service_config(self, obj):
-        conf_dict = obj.export_config()
+        conf_dict = obj.export_config_dict()
         conf_list = []
         for i in range(8): # tuple based dbus API has 8 elements
             if obj.IMPORT_EXPORT_STRUCTURE[i][0] not in conf_dict:
@@ -557,7 +557,7 @@ class FirewallConfig(object):
         return tuple(conf_list)
 
     def get_service_config_dict(self, obj):
-        return obj.export_config()
+        return obj.export_config_dict()
 
     def set_service_config(self, obj, conf):
         conf_dict = {}
@@ -567,7 +567,7 @@ class FirewallConfig(object):
         if obj.builtin:
             x = copy.copy(obj)
             x.cleanup()
-            x.import_config(conf_dict)
+            x.import_config_dict(conf_dict)
             x.path = config.ETC_FIREWALLD_SERVICES
             x.builtin = False
             if obj.path != x.path:
@@ -577,14 +577,14 @@ class FirewallConfig(object):
             return x
         else:
             obj.cleanup()
-            obj.import_config(conf_dict)
+            obj.import_config_dict(conf_dict)
             service_writer(obj)
             return obj
 
     def set_service_config_dict(self, obj, conf):
         if obj.builtin:
             x = copy.copy(obj)
-            x.import_config(conf)
+            x.import_config_dict(conf)
             x.path = config.ETC_FIREWALLD_SERVICES
             x.builtin = False
             if obj.path != x.path:
@@ -593,7 +593,7 @@ class FirewallConfig(object):
             service_writer(x)
             return x
         else:
-            obj.import_config(conf)
+            obj.import_config_dict(conf)
             service_writer(obj)
             return obj
 
@@ -608,7 +608,7 @@ class FirewallConfig(object):
 
         x = Service()
         x.check_name(name)
-        x.import_config(conf_dict)
+        x.import_config_dict(conf_dict)
         x.name = name
         x.filename = "%s.xml" % name
         x.path = config.ETC_FIREWALLD_SERVICES
@@ -627,7 +627,7 @@ class FirewallConfig(object):
 
         x = Service()
         x.check_name(name)
-        x.import_config(conf)
+        x.import_config_dict(conf)
         x.name = name
         x.filename = "%s.xml" % name
         x.path = config.ETC_FIREWALLD_SERVICES
@@ -741,7 +741,7 @@ class FirewallConfig(object):
         return new_service
 
     def _copy_service(self, obj, name):
-        return self.new_service_dict(name, obj.export_config())
+        return self.new_service_dict(name, obj.export_config_dict())
 
     # zones
 
