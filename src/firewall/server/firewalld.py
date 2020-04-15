@@ -922,7 +922,7 @@ class FirewallD(slip.dbus.service.Object):
         service = dbus_to_python(service, str)
         log.debug1("getServiceSettings(%s)", service)
         obj = self.fw.service.get_service(service)
-        conf_dict = obj.export_config()
+        conf_dict = obj.export_config_dict()
         conf_list = []
         for i in range(8): # tuple based dbus API has 8 elements
             if obj.IMPORT_EXPORT_STRUCTURE[i][0] not in conf_dict:
@@ -941,7 +941,7 @@ class FirewallD(slip.dbus.service.Object):
         service = dbus_to_python(service, str)
         log.debug1("getServiceSettings2(%s)", service)
         obj = self.fw.service.get_service(service)
-        return obj.export_config()
+        return obj.export_config_dict()
 
     @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_INFO)
     @dbus_service_method(config.dbus.DBUS_INTERFACE, in_signature='',

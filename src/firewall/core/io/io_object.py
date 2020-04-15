@@ -29,6 +29,7 @@ import xml.sax as sax
 import xml.sax.saxutils as saxutils
 import copy
 import sys
+from collections import OrderedDict
 
 from firewall import functions
 from firewall.functions import b2u
@@ -59,6 +60,14 @@ class IO_Object(object):
             ret.append(copy.deepcopy(getattr(self, x[0])))
         return tuple(ret)
 
+    def export_config_dict(self):
+        conf = {}
+        type_formats = dict([(x[0], x[1]) for x in self.IMPORT_EXPORT_STRUCTURE])
+        for key in type_formats:
+            if getattr(self, key):
+                conf[key] = copy.deepcopy(getattr(self, key))
+        return conf
+
     def import_config(self, conf):
         self.check_config(conf)
         for i,(element,dummy) in enumerate(self.IMPORT_EXPORT_STRUCTURE):
@@ -74,6 +83,18 @@ class IO_Object(object):
                 setattr(self, element, copy.deepcopy(_conf))
             else:
                 setattr(self, element, copy.deepcopy(conf[i]))
+
+    def import_config_dict(self, conf):
+        self.check_config_dict(conf)
+
+        for key in conf:
+            if not hasattr(self, key):
+                raise FirewallError(errors.UNKNOWN_ERROR, "Internal error. '{}' is not a valid attribute".format(key))
+            if isinstance(conf[key], list):
+                # maintain list order while removing duplicates
+                setattr(self, key, list(OrderedDict.fromkeys(copy.deepcopy(conf[key]))))
+            else:
+                setattr(self, key, copy.deepcopy(conf[key]))
 
     def check_name(self, name):
         if not isinstance(name, str):
@@ -97,6 +118,14 @@ class IO_Object(object):
         for i,(element,value) in enumerate(self.IMPORT_EXPORT_STRUCTURE):
             self._check_config_structure(conf[i], value)
             self._check_config(conf[i], element)
+
+    def check_config_dict(self, conf):
+        type_formats = dict([(x[0], x[1]) for x in self.IMPORT_EXPORT_STRUCTURE])
+        for key in conf:
+            if key not in [x for (x,y) in self.IMPORT_EXPORT_STRUCTURE]:
+                raise FirewallError(errors.INVALID_OPTION, "option '{}' is not valid".format(key))
+            self._check_config_structure(conf[key], type_formats[key])
+            self._check_config(conf[key], key)
 
     def _check_config(self, dummy1, dummy2):
         # to be overloaded by sub classes

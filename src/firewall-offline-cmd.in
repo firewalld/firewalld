@@ -1271,7 +1271,7 @@ try:
         if a.name:
             obj.name = a.name
 
-        fw.config.new_service(obj.name, obj.export_config())
+        fw.config.new_service_dict(obj.name, obj.export_config_dict())
 
     elif a.delete_service:
         obj = fw.config.get_service(a.delete_service)
