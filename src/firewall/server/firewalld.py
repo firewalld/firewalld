@@ -47,7 +47,6 @@ from firewall.dbus_utils import dbus_to_python, \
     dbus_introspection_prepare_properties, \
     dbus_introspection_add_properties
 from firewall.core.io.functions import check_config
-from firewall.core.io.zone import Zone
 from firewall.core.io.ipset import IPSet
 from firewall.core.io.icmptype import IcmpType
 from firewall.core.io.helper import Helper
@@ -894,13 +893,37 @@ class FirewallD(slip.dbus.service.Object):
 
     @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG_INFO)
     @dbus_service_method(config.dbus.DBUS_INTERFACE, in_signature='s',
-                         out_signature=Zone.DBUS_SIGNATURE)
+                         out_signature="(sssbsasa(ss)asba(ssss)asasasasa(ss)b)")
     @dbus_handle_exceptions
     def getZoneSettings(self, zone, sender=None): # pylint: disable=W0613
         # returns zone settings for zone
         zone = dbus_to_python(zone, str)
         log.debug1("getZoneSettings(%s)", zone)
         return self.fw.zone.get_config_with_settings(zone)
+
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='s',
+                         out_signature="a{sv}")
+    @dbus_handle_exceptions
+    def getZoneSettings2(self, zone, sender=None):
+        zone = dbus_to_python(zone, str)
+        log.debug1("getZoneSettings2(%s)", zone)
+        return self.fw.zone.get_config_with_settings_dict(zone)
+
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='sa{sv}')
+    @dbus_handle_exceptions
+    def setZoneSettings2(self, zone, settings, sender=None):
+        zone = dbus_to_python(zone, str)
+        log.debug1("setZoneSettings2(%s)", zone)
+        self.accessCheck(sender)
+        self.fw.zone.set_config_with_settings_dict(zone, settings, sender)
+        self.ZoneUpdated(zone, settings)
+
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_ZONE, signature='sa{sv}')
+    @dbus_handle_exceptions
+    def ZoneUpdated(self, zone, settings):
+        log.debug1("zone.ZoneUpdated('%s', '%s')" % (zone, settings))
 
     @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_INFO)
     @dbus_service_method(config.dbus.DBUS_INTERFACE, in_signature='',

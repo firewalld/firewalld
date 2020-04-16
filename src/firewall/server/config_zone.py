@@ -178,7 +178,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
     # S E T T I N G S
 
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
-                         out_signature=Zone.DBUS_SIGNATURE)
+                         out_signature="(sssbsasa(ss)asba(ssss)asasasasa(ss)b)")
     @dbus_handle_exceptions
     def getSettings(self, sender=None): # pylint: disable=W0613
         """get settings for zone
@@ -192,16 +192,34 @@ class FirewallDConfigZone(slip.dbus.service.Object):
             settings = tuple(_settings)
         return settings
 
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         out_signature="a{sv}")
+    @dbus_handle_exceptions
+    def getSettings2(self, sender=None):
+        """get settings for zone
+        """
+        log.debug1("%s.getSettings2()", self._log_prefix)
+        settings = self.config.get_zone_config_dict(self.obj)
+        if settings["target"] == DEFAULT_ZONE_TARGET:
+            settings["target"] = "default"
+        return settings
+
     def _checkDuplicateInterfacesSources(self, settings):
         """Assignment of interfaces/sources to zones is different from other
            zone settings in the sense that particular interface/zone can be
            part of only one zone. So make sure added interfaces/sources have
            not already been bound to another zone."""
-        old_settings = self.config.get_zone_config(self.obj)
-        idx_i = Zone.index_of("interfaces")
-        idx_s = Zone.index_of("sources")
-        added_ifaces = set(settings[idx_i]) - set(old_settings[idx_i])
-        added_sources = set(settings[idx_s]) - set(old_settings[idx_s])
+        old_settings = self.config.get_zone_config_dict(self.obj)
+        old_ifaces = set(old_settings["interfaces"]) if "interfaces" in old_settings else set()
+        old_sources = set(old_settings["sources"]) if "sources" in old_settings else set()
+        if isinstance(settings, tuple):
+            added_ifaces = set(settings[Zone.index_of("interfaces")]) - old_ifaces
+            added_sources = set(settings[Zone.index_of("sources")]) - old_sources
+        else: # dict
+            new_ifaces = set(settings["interfaces"]) if "interfaces" in settings else set()
+            new_sources = set(settings["sources"]) if "sources" in settings else set()
+            added_ifaces = new_ifaces - old_ifaces
+            added_sources = new_sources - old_sources
 
         for iface in added_ifaces:
             if self.parent.getZoneOfInterface(iface):
@@ -211,7 +229,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
                 raise FirewallError(errors.ZONE_CONFLICT, source) # or move to new zone ?
 
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
-                         in_signature=Zone.DBUS_SIGNATURE)
+                         in_signature="(sssbsasa(ss)asba(ssss)asasasasa(ss)b)")
     @dbus_handle_exceptions
     def update(self, settings, sender=None):
         """update settings for zone
@@ -226,6 +244,21 @@ class FirewallDConfigZone(slip.dbus.service.Object):
             settings = tuple(_settings)
         self._checkDuplicateInterfacesSources(settings)
         self.obj = self.config.set_zone_config(self.obj, settings)
+        self.Updated(self.obj.name)
+
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         in_signature="a{sv}")
+    @dbus_handle_exceptions
+    def update2(self, settings, sender=None):
+        """update settings for zone
+        """
+        settings = dbus_to_python(settings)
+        log.debug1("%s.update2('...')", self._log_prefix)
+        self.parent.accessCheck(sender)
+        if "target" in settings and settings["target"] == "default":
+            settings["target"] = DEFAULT_ZONE_TARGET
+        self._checkDuplicateInterfacesSources(settings)
+        self.obj = self.config.set_zone_config_dict(self.obj, settings)
         self.Updated(self.obj.name)
 
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE)

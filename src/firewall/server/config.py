@@ -40,7 +40,6 @@ from firewall.server.config_service import FirewallDConfigService
 from firewall.server.config_zone import FirewallDConfigZone
 from firewall.server.config_ipset import FirewallDConfigIPSet
 from firewall.server.config_helper import FirewallDConfigHelper
-from firewall.core.io.zone import Zone
 from firewall.core.io.icmptype import IcmpType
 from firewall.core.io.ipset import IPSet
 from firewall.core.io.helper import Helper
@@ -1187,7 +1186,7 @@ class FirewallDConfig(slip.dbus.service.Object):
         return ret[0] if ret else ""
 
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG,
-                         in_signature='s'+Zone.DBUS_SIGNATURE,
+                         in_signature="s(sssbsasa(ss)asba(ssss)asasasasa(ss)b)",
                          out_signature='o')
     @dbus_handle_exceptions
     def addZone(self, zone, settings, sender=None):
@@ -1203,6 +1202,23 @@ class FirewallDConfig(slip.dbus.service.Object):
             _settings[4] = DEFAULT_ZONE_TARGET
             settings = tuple(_settings)
         obj = self.config.new_zone(zone, settings)
+        config_zone = self._addZone(obj)
+        return config_zone
+
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG,
+                         in_signature="sa{sv}",
+                         out_signature='o')
+    @dbus_handle_exceptions
+    def addZone2(self, zone, settings, sender=None):
+        """add zone with given name and settings
+        """
+        zone = dbus_to_python(zone, str)
+        settings = dbus_to_python(settings)
+        log.debug1("config.addZone('%s')", zone)
+        self.accessCheck(sender)
+        if "target" in settings and settings["target"] == "default":
+            settings["target"] = DEFAULT_ZONE_TARGET
+        obj = self.config.new_zone_dict(zone, settings)
         config_zone = self._addZone(obj)
         return config_zone
 

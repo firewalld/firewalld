@@ -781,13 +781,49 @@ class FirewallConfig(object):
         return self._builtin_zones[obj.name]
 
     def get_zone_config(self, obj):
-        return obj.export_config()
+        conf_dict = obj.export_config_dict()
+        conf_list = []
+        for i in range(16): # tuple based dbus API has 16 elements
+            if obj.IMPORT_EXPORT_STRUCTURE[i][0] not in conf_dict:
+                # old API needs the empty elements as well. Grab it from the
+                # object otherwise we don't know the type.
+                conf_list.append(copy.deepcopy(getattr(obj, obj.IMPORT_EXPORT_STRUCTURE[i][0])))
+            else:
+                conf_list.append(conf_dict[obj.IMPORT_EXPORT_STRUCTURE[i][0]])
+        return tuple(conf_list)
+
+    def get_zone_config_dict(self, obj):
+        return obj.export_config_dict()
 
     def set_zone_config(self, obj, conf):
+        conf_dict = {}
+        for i,value in enumerate(conf):
+            conf_dict[obj.IMPORT_EXPORT_STRUCTURE[i][0]] = value
+
+        if obj.builtin:
+            x = copy.copy(obj)
+            x.cleanup()
+            x.fw_config = self
+            x.import_config_dict(conf_dict)
+            x.path = config.ETC_FIREWALLD_ZONES
+            x.builtin = False
+            if obj.path != x.path:
+                x.default = False
+            self.add_zone(x)
+            zone_writer(x)
+            return x
+        else:
+            obj.cleanup()
+            obj.fw_config = self
+            obj.import_config_dict(conf_dict)
+            zone_writer(obj)
+            return obj
+
+    def set_zone_config_dict(self, obj, conf):
         if obj.builtin:
             x = copy.copy(obj)
             x.fw_config = self
-            x.import_config(conf)
+            x.import_config_dict(conf)
             x.path = config.ETC_FIREWALLD_ZONES
             x.builtin = False
             if obj.path != x.path:
@@ -797,7 +833,7 @@ class FirewallConfig(object):
             return x
         else:
             obj.fw_config = self
-            obj.import_config(conf)
+            obj.import_config_dict(conf)
             zone_writer(obj)
             return obj
 
@@ -805,10 +841,33 @@ class FirewallConfig(object):
         if name in self._zones or name in self._builtin_zones:
             raise FirewallError(errors.NAME_CONFLICT, "new_zone(): '%s'" % name)
 
+        conf_dict = {}
+        for i,value in enumerate(conf):
+            conf_dict[Zone.IMPORT_EXPORT_STRUCTURE[i][0]] = value
+
         x = Zone()
         x.check_name(name)
         x.fw_config = self
-        x.import_config(conf)
+        x.import_config_dict(conf_dict)
+        x.name = name
+        x.filename = "%s.xml" % name
+        x.path = config.ETC_FIREWALLD_ZONES
+        # It is not possible to add a new one with a name of a buitin
+        x.builtin = False
+        x.default = True
+
+        zone_writer(x)
+        self.add_zone(x)
+        return x
+
+    def new_zone_dict(self, name, conf):
+        if name in self._zones or name in self._builtin_zones:
+            raise FirewallError(errors.NAME_CONFLICT, "new_zone(): '%s'" % name)
+
+        x = Zone()
+        x.check_name(name)
+        x.fw_config = self
+        x.import_config_dict(conf)
         x.name = name
         x.filename = "%s.xml" % name
         x.path = config.ETC_FIREWALLD_ZONES
@@ -930,7 +989,7 @@ class FirewallConfig(object):
         return new_zone
 
     def _copy_zone(self, obj, name):
-        return self.new_zone(name, obj.export_config())
+        return self.new_zone_dict(name, obj.export_config_dict())
 
     # helper
 
