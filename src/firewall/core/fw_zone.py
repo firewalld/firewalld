@@ -306,21 +306,110 @@ class FirewallZone(object):
         """
         :return: exported config updated with runtime settings
         """
-        conf = list(self.get_zone(zone).export_config())
-        if conf[4] == DEFAULT_ZONE_TARGET:
-            conf[4] = "default"
-        conf[5] = self.list_services(zone)
-        conf[6] = self.list_ports(zone)
-        conf[7] = self.list_icmp_blocks(zone)
-        conf[8] = self.query_masquerade(zone)
-        conf[9] = self.list_forward_ports(zone)
-        conf[10] = self.list_interfaces(zone)
-        conf[11] = self.list_sources(zone)
-        conf[12] = self.list_rules(zone)
-        conf[13] = self.list_protocols(zone)
-        conf[14] = self.list_source_ports(zone)
-        conf[15] = self.query_icmp_block_inversion(zone)
-        return tuple(conf)
+        obj = self.get_zone(zone)
+        conf_dict = self.get_config_with_settings_dict(zone)
+        conf_list = []
+        for i in range(16): # tuple based API has 16 elements
+            if obj.IMPORT_EXPORT_STRUCTURE[i][0] not in conf_dict:
+                # old API needs the empty elements as well. Grab it from the
+                # class otherwise we don't know the type.
+                conf_list.append(copy.deepcopy(getattr(obj, obj.IMPORT_EXPORT_STRUCTURE[i][0])))
+            else:
+                conf_list.append(conf_dict[obj.IMPORT_EXPORT_STRUCTURE[i][0]])
+        return tuple(conf_list)
+
+    def get_config_with_settings_dict(self, zone):
+        """
+        :return: exported config updated with runtime settings
+        """
+        conf = self.get_zone(zone).export_config_dict()
+        if conf["target"] == DEFAULT_ZONE_TARGET:
+            conf["target"] = "default"
+        for key,value in {  "services": self.list_services(zone),
+                            "ports": self.list_ports(zone),
+                            "icmp_blocks": self.list_icmp_blocks(zone),
+                            "masquerade": self.query_masquerade(zone),
+                            "forward_ports": self.list_forward_ports(zone),
+                            "interfaces": self.list_interfaces(zone),
+                            "sources": self.list_sources(zone),
+                            "rules_str": self.list_rules(zone),
+                            "protocols": self.list_protocols(zone),
+                            "source_ports": self.list_source_ports(zone),
+                            "icmp_block_inversion": self.query_icmp_block_inversion(zone),
+                            }.items():
+            # omit empty entries
+            if value or isinstance(value, bool):
+                conf[key] = value
+        return conf
+
+    def set_config_with_settings_dict(self, zone, settings, sender):
+        # stupid wrappers to convert rich rule string to rich rule object
+        from firewall.core.rich import Rich_Rule
+        def add_rule_wrapper(zone, rule_str, timeout=0, sender=None):
+            self.add_rule(zone, Rich_Rule(rule_str=rule_str), timeout=0, sender=sender)
+        def remove_rule_wrapper(zone, rule_str):
+            self.remove_rule(zone, Rich_Rule(rule_str=rule_str))
+
+        setting_to_fn = {
+            "services": (self.add_service, self.remove_service),
+            "ports": (self.add_port, self.remove_port),
+            "icmp_blocks": (self.add_icmp_block, self.remove_icmp_block),
+            "masquerade": (self.add_masquerade, self.remove_masquerade),
+            "forward_ports": (self.add_forward_port, self.remove_forward_port),
+            "interfaces": (self.add_interface, self.remove_interface),
+            "sources": (self.add_source, self.remove_source),
+            "rules_str": (add_rule_wrapper, remove_rule_wrapper),
+            "protocols": (self.add_protocol, self.remove_protocol),
+            "source_ports": (self.add_source_port, self.remove_source_port),
+            "icmp_block_inversion": (self.add_icmp_block_inversion, self.remove_icmp_block_inversion),
+        }
+
+        old_settings = self.get_config_with_settings_dict(zone)
+        add_settings = {}
+        remove_settings = {}
+        for key in (set(old_settings.keys()) | set(settings.keys())):
+            if key in settings:
+                if isinstance(settings[key], list):
+                    old = set(old_settings[key] if key in old_settings else [])
+                    add_settings[key] = list(set(settings[key]) - old)
+                    remove_settings[key] = list((old ^ set(settings[key])) & old)
+                # check for bool or int because dbus.Boolean is a subclass of
+                # int (because bool can't be subclassed).
+                elif isinstance(settings[key], bool) or isinstance(settings[key], int):
+                    if not old_settings[key] and settings[key]:
+                        add_settings[key] = True
+                    elif old_settings[key] and not settings[key]:
+                        remove_settings[key] = False
+                else:
+                    raise FirewallError(errors.INVALID_SETTING, "Unhandled setting type {} key {}".format(type(settings[key]), key))
+
+        for key in remove_settings:
+            if isinstance(remove_settings[key], list):
+                for args in remove_settings[key]:
+                    if isinstance(args, tuple):
+                        setting_to_fn[key][1](zone, *args)
+                    else:
+                        setting_to_fn[key][1](zone, args)
+            else: # bool
+                setting_to_fn[key][1](zone)
+
+        for key in add_settings:
+            if isinstance(add_settings[key], list):
+                for args in add_settings[key]:
+                    if key in ["interfaces", "sources"]:
+                        # no timeout arg
+                        setting_to_fn[key][0](zone, args, sender=sender)
+                    else:
+                        if isinstance(args, tuple):
+                            setting_to_fn[key][0](zone, *args, timeout=0, sender=sender)
+                        else:
+                            setting_to_fn[key][0](zone, args, timeout=0, sender=sender)
+            else: # bool
+                if key in ["icmp_block_inversion"]:
+                    # no timeout arg
+                    setting_to_fn[key][0](zone, sender=sender)
+                else:
+                    setting_to_fn[key][0](zone, timeout=0, sender=sender)
 
     # INTERFACES
 

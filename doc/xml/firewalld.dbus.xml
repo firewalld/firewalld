@@ -274,35 +274,12 @@
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.Methods.getZoneSettings">
+            <annotation name="org.freedesktop.DBus.Deprecated" />
             <term><methodname>getZoneSettings</methodname>(s: <parameter>zone</parameter>) &rarr; (sssbsasa(ss)asba(ssss)asasasasa(ss)b)</term>
             <listitem>
               <para>
-                Return runtime settings of given <replaceable>zone</replaceable>.
-                For getting permanent settings see <link linkend="FirewallD1.config.zone.Methods.getSettings">org.fedoraproject.FirewallD1.config.zone.Methods.getSettings</link>.
-                Settings are in format: <parameter>version</parameter>, <parameter>name</parameter>, <parameter>description</parameter>, <parameter>UNUSED</parameter>, <parameter>target</parameter>, array of <parameter>services</parameter>, array of <parameter>ports</parameter> (port, protocol), array of <parameter>icmp-blocks</parameter>, <parameter>masquerade</parameter>, array of <parameter>forward-ports</parameter> (port, protocol, to-port, to-addr), array of <parameter>interfaces</parameter>, array of <parameter>sources</parameter>, array of <parameter>rich rules</parameter>, array of <parameter>protocols</parameter> and array of <parameter>source-ports</parameter> (port, protocol).
+                This function is deprecated, use <link linkend="FirewallD1.zone.Methods.getZoneSettings2">org.fedoraproject.FirewallD1.zone.Methods.getZoneSettings2</link> instead.
               </para>
-              <para>
-                <variablelist>
-                  <varlistentry><term><parameter>version (s)</parameter>: see <literal>version</literal> attribute of <literal>zone</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
-                  <varlistentry><term><parameter>name (s)</parameter>: see <literal>short</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
-                  <varlistentry><term><parameter>description (s)</parameter>: see <literal>description</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
-                  <varlistentry><term><parameter>UNUSED (b)</parameter>: this boolean value is no longer used for anything.</term></varlistentry>
-                  <varlistentry><term><parameter>target (s)</parameter>: see <literal>target</literal> attribute of <literal>zone</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
-                  <varlistentry><term><parameter>services (as)</parameter>: array of service names, see <literal>service</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
-                  <varlistentry><term><parameter>ports (a(ss))</parameter>: array of port and protocol pairs. See <literal>port</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
-                  <varlistentry><term><parameter>icmp-blocks (as)</parameter>: array of icmp-blocks. See <literal>icmp-block</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
-                  <varlistentry><term><parameter>masquerade (b)</parameter>: see <literal>masquerade</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
-                  <varlistentry><term><parameter>forward-ports (a(ssss))</parameter>: array of (port, protocol, to-port, to-addr). See <literal>forward-port</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
-                  <varlistentry><term><parameter>interfaces (as)</parameter>: array of interfaces. See <literal>interface</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
-                  <varlistentry><term><parameter>source addresses (as)</parameter>: array of source addresses. See <literal>source</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
-                  <varlistentry><term><parameter>rich rules (as)</parameter>: array of rich-language rules. See <literal>rule</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
-		  <varlistentry><term><parameter>protocols (as)</parameter>: array of protocols, see <literal>protocol</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
-		  <varlistentry><term><parameter>source-ports (a(ss))</parameter>: array of port and protocol pairs. See <literal>source-port</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
-                </variablelist>
-              </para>
-	      <para>
-		Possible errors: INVALID_ZONE
-	      </para>
             </listitem>
           </varlistentry>
 
@@ -1298,6 +1275,66 @@
       <refsect3 id="FirewallD1.zone.Methods">
         <title>Methods</title>
         <variablelist>
+          <varlistentry id="FirewallD1.zone.Methods.getZoneSettings2">
+            <term><methodname>getZoneSettings2</methodname>(s: <parameter>zone</parameter>) &rarr; a{sv}</term>
+            <listitem>
+              <para>
+                Return runtime settings of given <replaceable>zone</replaceable>.
+                For getting permanent settings see <link linkend="FirewallD1.config.zone.Methods.getSettings2">org.fedoraproject.FirewallD1.config.zone.Methods.getSettings2</link>.
+                Settings are a dictionary indexed by keywords. For the type of each value see below. If the value is empty it may be omitted.
+              </para>
+              <para>
+                <variablelist>
+                  <varlistentry><term><parameter>version (s)</parameter>: see <literal>version</literal> attribute of <literal>zone</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>name (s)</parameter>: see <literal>short</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>description (s)</parameter>: see <literal>description</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>target (s)</parameter>: see <literal>target</literal> attribute of <literal>zone</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>services (as)</parameter>: array of service names, see <literal>service</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>ports (a(ss))</parameter>: array of port and protocol pairs. See <literal>port</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>icmp_blocks (as)</parameter>: array of icmp-blocks. See <literal>icmp-block</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>masquerade (b)</parameter>: see <literal>masquerade</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>forward_ports (a(ssss))</parameter>: array of (port, protocol, to-port, to-addr). See <literal>forward-port</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>interfaces (as)</parameter>: array of interfaces. See <literal>interface</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>sources (as)</parameter>: array of source addresses. See <literal>source</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>rules_str (as)</parameter>: array of rich-language rules. See <literal>rule</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>protocols (as)</parameter>: array of protocols, see <literal>protocol</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>source_ports (a(ss))</parameter>: array of port and protocol pairs. See <literal>source-port</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>icmp_block_inversion (b)</parameter>: see <literal>icmp-block-inversion</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                </variablelist>
+              </para>
+              <para>
+                Possible errors: INVALID_ZONE
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.zone.Methods.setZoneSettings2">
+            <term><methodname>setZoneSettings2</methodname>(s: <parameter>zone</parameter>, a{sv}: <parameter>settings</parameter>, i: <parameter>timeout</parameter>)</term>
+            <listitem>
+              <para>
+                Set runtime settings of given <replaceable>zone</replaceable>.
+                For setting permanent settings see <link linkend="FirewallD1.config.zone.Methods.update2">org.fedoraproject.FirewallD1.config.zone.Methods.update2</link>.
+                Settings are a dictionary indexed by keywords. For the type of each value see below. To zero a value pass an empty string or list.
+              </para>
+              <para>
+                <variablelist>
+                  <varlistentry><term><parameter>services (as)</parameter>: array of service names, see <literal>service</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>ports (a(ss))</parameter>: array of port and protocol pairs. See <literal>port</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>icmp_blocks (as)</parameter>: array of icmp-blocks. See <literal>icmp-block</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>masquerade (b)</parameter>: see <literal>masquerade</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>forward_ports (a(ssss))</parameter>: array of (port, protocol, to-port, to-addr). See <literal>forward-port</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>interfaces (as)</parameter>: array of interfaces. See <literal>interface</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>sources (as)</parameter>: array of source addresses. See <literal>source</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>rules_str (as)</parameter>: array of rich-language rules. See <literal>rule</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>protocols (as)</parameter>: array of protocols, see <literal>protocol</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>source_ports (a(ss))</parameter>: array of port and protocol pairs. See <literal>source-port</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>icmp_block_inversion (b)</parameter>: see <literal>icmp-block-inversion</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                </variablelist>
+              </para>
+              <para>
+                Possible errors: INVALID_ZONE
+              </para>
+            </listitem>
+          </varlistentry>
           <varlistentry id="FirewallD1.zone.Methods.addForwardPort">
             <term><methodname>addForwardPort</methodname>(s: zone, s: port, s: protocol, s: toport, s: toaddr, i: timeout) &rarr; s</term>
             <listitem>
@@ -2246,6 +2283,14 @@
               </para>
             </listitem>
           </varlistentry>
+          <varlistentry id="FirewallD1.zone.Signals.ZoneUpdated2">
+            <term>ZoneUpdated2(s: zone, a{sv}: settings)</term>
+            <listitem>
+              <para>
+                Emitted when a zone's settings are updated via <link linkend="FirewallD1.zone.Methods.setZoneSettings2">org.fedoraproject.FirewallD1.zone.Methods.setZoneSettings2</link>
+              </para>
+            </listitem>
+          </varlistentry>
         </variablelist>
       </refsect3>
     </refsect2>
@@ -2338,34 +2383,43 @@
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.config.Methods.addZone">
+            <annotation name="org.freedesktop.DBus.Deprecated" />
             <term><methodname>addZone</methodname>(s: zone, (sssbsasa(ss)asba(ssss)asasasasa(ss)b): settings) &rarr; o</term>
             <listitem>
               <para>
-		Add <replaceable>zone</replaceable> with given <replaceable>settings</replaceable> into permanent configuration.
-                Settings are in format: <parameter>version</parameter>, <parameter>name</parameter>, <parameter>description</parameter>, <parameter>UNUSED</parameter>, <parameter>target</parameter>, array of <parameter>services</parameter>, array of <parameter>ports</parameter> (port, protocol), array of <parameter>icmp-blocks</parameter>, <parameter>masquerade</parameter>, array of <parameter>forward-ports</parameter> (port, protocol, to-port, to-addr), array of <parameter>interfaces</parameter>, array of <parameter>sources</parameter>, array of <parameter>rich rules</parameter>, array of <parameter>protocols</parameter> and array of <parameter>source-ports</parameter> (port, protocol).
+                This function is deprecated, use <link linkend="FirewallD1.config.Methods.addZone2">org.fedoraproject.FirewallD1.config.Methods.addZone2</link> instead.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.Methods.addZone2">
+            <term><methodname>addZone2</methodname>(s: zone, a{sv}: settings) &rarr; o</term>
+            <listitem>
+              <para>
+                Add <replaceable>zone</replaceable> with given <replaceable>settings</replaceable> into permanent configuration.
+                Settings are a dictionary indexed by keywords. For the type of each value see below. To zero a value pass an empty string or list.
               </para>
               <para>
                 <variablelist>
                   <varlistentry><term><parameter>version (s)</parameter>: see <literal>version</literal> attribute of <literal>zone</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                   <varlistentry><term><parameter>name (s)</parameter>: see <literal>short</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                   <varlistentry><term><parameter>description (s)</parameter>: see <literal>description</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
-                  <varlistentry><term><parameter>UNUSED (b)</parameter>: this boolean value is no longer used for anything.</term></varlistentry>
                   <varlistentry><term><parameter>target (s)</parameter>: see <literal>target</literal> attribute of <literal>zone</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                   <varlistentry><term><parameter>services (as)</parameter>: array of service names, see <literal>service</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                   <varlistentry><term><parameter>ports (a(ss))</parameter>: array of port and protocol pairs. See <literal>port</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
-                  <varlistentry><term><parameter>icmp-blocks (as)</parameter>: array of icmp-blocks. See <literal>icmp-block</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>icmp_blocks (as)</parameter>: array of icmp-blocks. See <literal>icmp-block</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                   <varlistentry><term><parameter>masquerade (b)</parameter>: see <literal>masquerade</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
-                  <varlistentry><term><parameter>forward-ports (a(ssss))</parameter>: array of (port, protocol, to-port, to-addr). See <literal>forward-port</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>forward_ports (a(ssss))</parameter>: array of (port, protocol, to-port, to-addr). See <literal>forward-port</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                   <varlistentry><term><parameter>interfaces (as)</parameter>: array of interfaces. See <literal>interface</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
-                  <varlistentry><term><parameter>source addresses (as)</parameter>: array of source addresses. See <literal>source</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
-                  <varlistentry><term><parameter>rich rules (as)</parameter>: array of rich-language rules. See <literal>rule</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
-		  <varlistentry><term><parameter>protocols (as)</parameter>: array of protocols. See <literal>protocol</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
-		  <varlistentry><term><parameter>source-ports (a(ss))</parameter>: array of port and protocol pairs. See <literal>source-port</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>sources (as)</parameter>: array of source addresses. See <literal>source</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>rules_str (as)</parameter>: array of rich-language rules. See <literal>rule</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>protocols (as)</parameter>: array of protocols, see <literal>protocol</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>source_ports (a(ss))</parameter>: array of port and protocol pairs. See <literal>source-port</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>icmp_block_inversion (b)</parameter>: see <literal>icmp-block-inversion</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                 </variablelist>
               </para>
-	      <para>
-		Possible errors: NAME_CONFLICT, INVALID_NAME, INVALID_TYPE
-	      </para>
+              <para>
+                Possible errors: NAME_CONFLICT, INVALID_NAME, INVALID_TYPE
+              </para>
             </listitem>
           </varlistentry>
 	  <varlistentry id="FirewallD1.config.Methods.getHelperByName">
@@ -3810,30 +3864,39 @@
             </listitem>
           </varlistentry>
 	  <varlistentry id="FirewallD1.config.zone.Methods.getSettings">
+            <annotation name="org.freedesktop.DBus.Deprecated" />
             <term><methodname>getSettings</methodname>() &rarr; (sssbsasa(ss)asba(ssss)asasasasa(ss)b)</term>
             <listitem>
               <para>
+                This function is deprecated, use <link linkend="FirewallD1.config.zone.Methods.getSettings2">org.fedoraproject.FirewallD1.config.zone.Methods.getSettings2</link> instead.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.getSettings2">
+            <term><methodname>getSettings2</methodname>() &rarr; a{sv}</term>
+            <listitem>
+              <para>
                 Return permanent settings of given <replaceable>zone</replaceable>.
-                For getting runtime settings see <link linkend="FirewallD1.Methods.getZoneSettings">org.fedoraproject.FirewallD1.Methods.getZoneSettings</link>.
-                Settings are in format: <parameter>version</parameter>, <parameter>name</parameter>, <parameter>description</parameter>, <parameter>UNUSED</parameter>, <parameter>target</parameter>, array of <parameter>services</parameter>, array of <parameter>ports</parameter> (port, protocol), array of <parameter>icmp-blocks</parameter>, <parameter>masquerade</parameter>, array of <parameter>forward-ports</parameter> (port, protocol, to-port, to-addr), array of <parameter>interfaces</parameter>, array of <parameter>sources</parameter>, array of <parameter>rich rules</parameter>, array of <parameter>protocols</parameter> and array of <parameter>source-ports</parameter> (port, protocol).
+                For getting runtime settings see <link linkend="FirewallD1.Methods.getZoneSettings2">org.fedoraproject.FirewallD1.Methods.getZoneSettings2</link>.
+                Settings are a dictionary indexed by keywords. For the type of each value see below. If the value is empty it may be omitted.
               </para>
               <para>
                 <variablelist>
                   <varlistentry><term><parameter>version (s)</parameter>: see <literal>version</literal> attribute of <literal>zone</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                   <varlistentry><term><parameter>name (s)</parameter>: see <literal>short</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                   <varlistentry><term><parameter>description (s)</parameter>: see <literal>description</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
-                  <varlistentry><term><parameter>UNUSED (b)</parameter>: this boolean value is no longer used for anything.</term></varlistentry>
                   <varlistentry><term><parameter>target (s)</parameter>: see <literal>target</literal> attribute of <literal>zone</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                   <varlistentry><term><parameter>services (as)</parameter>: array of service names, see <literal>service</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                   <varlistentry><term><parameter>ports (a(ss))</parameter>: array of port and protocol pairs. See <literal>port</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
-                  <varlistentry><term><parameter>icmp-blocks (as)</parameter>: array of icmp-blocks. See <literal>icmp-block</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>icmp_blocks (as)</parameter>: array of icmp-blocks. See <literal>icmp-block</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                   <varlistentry><term><parameter>masquerade (b)</parameter>: see <literal>masquerade</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
-                  <varlistentry><term><parameter>forward-ports (a(ssss))</parameter>: array of (port, protocol, to-port, to-addr). See <literal>forward-port</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>forward_ports (a(ssss))</parameter>: array of (port, protocol, to-port, to-addr). See <literal>forward-port</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                   <varlistentry><term><parameter>interfaces (as)</parameter>: array of interfaces. See <literal>interface</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
-                  <varlistentry><term><parameter>source addresses (as)</parameter>: array of source addresses. See <literal>source</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
-                  <varlistentry><term><parameter>rich rules (as)</parameter>: array of rich-language rules. See <literal>rule</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
-		  <varlistentry><term><parameter>protocols (as)</parameter>: array of protocols. See <literal>protocol</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
-		  <varlistentry><term><parameter>source-ports (a(ss))</parameter>: array of port and protocol pairs. See <literal>source-port</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>sources (as)</parameter>: array of source addresses. See <literal>source</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>rules_str (as)</parameter>: array of rich-language rules. See <literal>rule</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>protocols (as)</parameter>: array of protocols, see <literal>protocol</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>source_ports (a(ss))</parameter>: array of port and protocol pairs. See <literal>source-port</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>icmp_block_inversion (b)</parameter>: see <literal>icmp-block-inversion</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                 </variablelist>
               </para>
             </listitem>
@@ -4309,37 +4372,46 @@
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.config.zone.Methods.update">
+            <annotation name="org.freedesktop.DBus.Deprecated" />
             <term><methodname>update</methodname>((sssbsasa(ss)asba(ssss)asasasasa(ss)b): settings) &rarr; Nothing</term>
             <listitem>
               <para>
-		Update settings of zone to <replaceable>settings</replaceable>.
-		Settings are in format: <parameter>version</parameter>, <parameter>name</parameter>, <parameter>description</parameter>, <parameter>UNUSED</parameter>, <parameter>target</parameter>, array of <parameter>services</parameter>, array of <parameter>ports</parameter> (port, protocol), array of <parameter>icmp-blocks</parameter>, <parameter>masquerade</parameter>, array of <parameter>forward-ports</parameter> (port, protocol, to-port, to-addr), array of <parameter>interfaces</parameter>, array of <parameter>sources</parameter>, array of <parameter>rich rules</parameter>, array of <parameter>protocols</parameter> and array of <parameter>source-ports</parameter> (port, protocol).
+                This function is deprecated, use <link linkend="FirewallD1.config.zone.Methods.update2">org.fedoraproject.FirewallD1.config.zone.Methods.update2</link> instead.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.update2">
+            <term><methodname>update2</methodname>(a{sv}: settings) &rarr; Nothing</term>
+            <listitem>
+              <para>
+                Update settings of zone to <replaceable>settings</replaceable>.
+                Settings are a dictionary indexed by keywords. For the type of each value see below. To zero a value pass an empty string or list.
               </para>
               <para>
                 <variablelist>
                   <varlistentry><term><parameter>version (s)</parameter>: see <literal>version</literal> attribute of <literal>zone</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                   <varlistentry><term><parameter>name (s)</parameter>: see <literal>short</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                   <varlistentry><term><parameter>description (s)</parameter>: see <literal>description</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
-                  <varlistentry><term><parameter>UNUSED (b)</parameter>: this boolean value is no longer used for anything.</term></varlistentry>
                   <varlistentry><term><parameter>target (s)</parameter>: see <literal>target</literal> attribute of <literal>zone</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                   <varlistentry><term><parameter>services (as)</parameter>: array of service names, see <literal>service</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                   <varlistentry><term><parameter>ports (a(ss))</parameter>: array of port and protocol pairs. See <literal>port</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
-                  <varlistentry><term><parameter>icmp-blocks (as)</parameter>: array of icmp-blocks. See <literal>icmp-block</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>icmp_blocks (as)</parameter>: array of icmp-blocks. See <literal>icmp-block</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                   <varlistentry><term><parameter>masquerade (b)</parameter>: see <literal>masquerade</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
-                  <varlistentry><term><parameter>forward-ports (a(ssss))</parameter>: array of (port, protocol, to-port, to-addr). See <literal>forward-port</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>forward_ports (a(ssss))</parameter>: array of (port, protocol, to-port, to-addr). See <literal>forward-port</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                   <varlistentry><term><parameter>interfaces (as)</parameter>: array of interfaces. See <literal>interface</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
-                  <varlistentry><term><parameter>source addresses (as)</parameter>: array of source addresses. See <literal>source</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
-                  <varlistentry><term><parameter>rich rules (as)</parameter>: array of rich-language rules. See <literal>rule</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
-		  <varlistentry><term><parameter>protocols (as)</parameter>: array of protocols. See <literal>protocol</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
-		  <varlistentry><term><parameter>source-ports (a(ss))</parameter>: array of port and protocol pairs. See <literal>source-port</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>sources (as)</parameter>: array of source addresses. See <literal>source</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>rules_str (as)</parameter>: array of rich-language rules. See <literal>rule</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>protocols (as)</parameter>: array of protocols, see <literal>protocol</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>source_ports (a(ss))</parameter>: array of port and protocol pairs. See <literal>source-port</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>icmp_block_inversion (b)</parameter>: see <literal>icmp-block-inversion</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                 </variablelist>
               </para>
-	      <para>
-		Possible errors: INVALID_TYPE
-	      </para>
+          <para>
+            Possible errors: INVALID_TYPE
+          </para>
             </listitem>
           </varlistentry>
-	</variablelist>
+        </variablelist>
       </refsect3>
 
       <refsect3 id="FirewallD1.config.zone.Signals">

@@ -58,7 +58,6 @@ class Zone(IO_Object):
         ( "source_ports", [ ( "", "" ), ], ),          # a(ss)
         ( "icmp_block_inversion", False ),             # b
         )
-    DBUS_SIGNATURE = '(sssbsasa(ss)asba(ssss)asasasasa(ss)b)'
     ADDITIONAL_ALNUM_CHARS = [ "_", "-", "/" ]
     PARSER_REQUIRED_ELEMENT_ATTRS = {
         "short": None,
@@ -176,6 +175,11 @@ class Zone(IO_Object):
             self.rules = [rich.Rich_Rule(rule_str=s) for s in value]
         else:
             super(Zone, self).__setattr__(name, value)
+
+    def export_config_dict(self):
+        conf = super(Zone, self).export_config_dict()
+        del conf["UNUSED"]
+        return conf
 
     def _check_config(self, config, item):
         if item == "services" and self.fw_config:
