@@ -1,5 +1,5 @@
 FWD_START_TEST([dbus api - zone permanent signatures])
-AT_KEYWORDS(dbus zone gh586)
+AT_KEYWORDS(dbus zone gh586 gh613)
 
 dnl ####################
 dnl Global APIs
@@ -458,6 +458,30 @@ DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="queryRi
     <method name="queryRichRule">
         <arg direction="in" name="rule" type="s"></arg>
         <arg direction="out" type="b"></arg>
+    </method>
+])
+
+dnl ###################
+dnl new dict based APIs
+dnl ###################
+
+DBUS_INTROSPECT([config], [[//method[@name="addZone2"]]], 0, [dnl
+    <method name="addZone2">
+        <arg direction="in" name="zone" type="s"></arg>
+        <arg direction="in" name="settings" type="a{sv}"></arg>
+        <arg direction="out" type="o"></arg>
+    </method>
+])
+
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="getSettings2"]]], 0, [dnl
+    <method name="getSettings2">
+        <arg direction="out" type="a{sv}"></arg>
+    </method>
+])
+
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="update2"]]], 0, [dnl
+    <method name="update2">
+        <arg direction="in" name="settings" type="a{sv}"></arg>
     </method>
 ])
 
