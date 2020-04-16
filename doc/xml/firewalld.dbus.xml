@@ -274,7 +274,7 @@
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.Methods.getZoneSettings">
-            <term><methodname>getZoneSettings</methodname>(s: <parameter>zone</parameter>) &rarr; (sssbsasa(ss)asba(ssss)asasasasa(ss))</term>
+            <term><methodname>getZoneSettings</methodname>(s: <parameter>zone</parameter>) &rarr; (sssbsasa(ss)asba(ssss)asasasasa(ss)b)</term>
             <listitem>
               <para>
                 Return runtime settings of given <replaceable>zone</replaceable>.
@@ -2338,7 +2338,7 @@
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.config.Methods.addZone">
-            <term><methodname>addZone</methodname>(s: zone, (sssbsasa(ss)asba(ssss)asasasasa(ss)): settings) &rarr; o</term>
+            <term><methodname>addZone</methodname>(s: zone, (sssbsasa(ss)asba(ssss)asasasasa(ss)b): settings) &rarr; o</term>
             <listitem>
               <para>
 		Add <replaceable>zone</replaceable> with given <replaceable>settings</replaceable> into permanent configuration.
@@ -3810,7 +3810,7 @@
             </listitem>
           </varlistentry>
 	  <varlistentry id="FirewallD1.config.zone.Methods.getSettings">
-            <term><methodname>getSettings</methodname>() &rarr; (sssbsasa(ss)asba(ssss)asasasasa(ss))</term>
+            <term><methodname>getSettings</methodname>() &rarr; (sssbsasa(ss)asba(ssss)asasasasa(ss)b)</term>
             <listitem>
               <para>
                 Return permanent settings of given <replaceable>zone</replaceable>.
@@ -4309,7 +4309,7 @@
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.config.zone.Methods.update">
-            <term><methodname>update</methodname>((sssbsasa(ss)asba(ssss)asasasasa(ss)): settings) &rarr; Nothing</term>
+            <term><methodname>update</methodname>((sssbsasa(ss)asba(ssss)asasasasa(ss)b): settings) &rarr; Nothing</term>
             <listitem>
               <para>
 		Update settings of zone to <replaceable>settings</replaceable>.
