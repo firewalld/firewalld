@@ -85,15 +85,50 @@ def handle_exceptions(func, *args, **kwargs):
 class FirewallClientZoneSettings(object):
     @handle_exceptions
     def __init__(self, settings = None):
+        self.settings = ["", "", "", False, DEFAULT_ZONE_TARGET, [], [],
+                         [], False, [], [], [], [], [], [], False]
+        self.settings_name = ["version", "short", "description", "UNUSED",
+                              "target", "services", "ports",
+                              "icmp_blocks", "masquerade", "forward_ports",
+                              "interfaces", "sources", "rules_str",
+                              "protocols", "source_ports", "icmp_block_inversion"]
+        self.settings_dbus_type = ["s", "s", "s", "b",
+                                   "s", "s", "(ss)",
+                                   "s", "b", "(ssss)",
+                                   "s", "s", "s",
+                                   "s", "(ss)", "b"]
         if settings:
-            self.settings = settings
-        else:
-            self.settings = ["", "", "", False, DEFAULT_ZONE_TARGET, [], [],
-                             [], False, [], [], [], [], [], [], False]
+            if isinstance(settings, list):
+                for i,v in enumerate(settings):
+                    self.settings[i] = settings[i]
+            if isinstance(settings, dict):
+                self.setSettingsDict(settings)
 
     @handle_exceptions
     def __repr__(self):
         return '%s(%r)' % (self.__class__, self.settings)
+
+    @handle_exceptions
+    def getSettingsDict(self):
+        settings = {}
+        for key,value in zip(self.settings_name, self.settings):
+            settings[key] = value
+        return settings
+    @handle_exceptions
+    def setSettingsDict(self, settings):
+        for key in settings:
+            self.settings[self.settings_name.index(key)] = settings[key]
+    @handle_exceptions
+    def getSettingsDbusDict(self):
+        settings = {}
+        for key,value,sig in zip(self.settings_name, self.settings, self.settings_dbus_type):
+            if type(value) is list:
+                settings[key] = dbus.Array(value, signature=sig)
+            elif type(value) is dict:
+                settings[key] = dbus.Dictionary(value, signature=sig)
+            else:
+                settings[key] = value
+        return settings
 
     @handle_exceptions
     def getVersion(self):
@@ -432,13 +467,12 @@ class FirewallClientConfigZone(object):
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def getSettings(self):
-        return FirewallClientZoneSettings(list(dbus_to_python(\
-                    self.fw_zone.getSettings())))
+        return FirewallClientZoneSettings(dbus_to_python(self.fw_zone.getSettings2()))
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def update(self, settings):
-        self.fw_zone.update(tuple(settings.settings))
+        self.fw_zone.update2(settings.getSettingsDbusDict())
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
@@ -2452,9 +2486,13 @@ class FirewallClientConfig(object):
     @handle_exceptions
     def addZone(self, name, settings):
         if isinstance(settings, FirewallClientZoneSettings):
-            path = self.fw_config.addZone(name, tuple(settings.settings))
+            path = self.fw_config.addZone2(name, settings.getSettingsDbusDict())
+        elif isinstance(settings, dict):
+            path = self.fw_config.addZone2(name, settings)
         else:
-            path = self.fw_config.addZone(name, tuple(settings))
+            # tuple based dbus API has 16 elements. Slice what we're given down
+            # to the expected size.
+            path = self.fw_config.addZone(name, tuple(settings[:16]))
         return FirewallClientConfigZone(self.bus, path)
 
     # service
@@ -2651,6 +2689,7 @@ class FirewallClient(object):
             "source-added": "SourceAdded",
             "source-removed": "SourceRemoved",
             "zone-of-source-changed": "ZoneOfSourceChanged",
+            "zone-updated": "ZoneUpdated",
             # ipset callbacks
             "ipset-entry-added": "EntryAdded",
             "ipset-entry-removed": "EntryRemoved",
@@ -2909,8 +2948,7 @@ class FirewallClient(object):
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def getZoneSettings(self, zone):
-        return FirewallClientZoneSettings(list(dbus_to_python(\
-                    self.fw.getZoneSettings(zone))))
+        return FirewallClientZoneSettings(dbus_to_python(self.fw_zone.getZoneSettings2(zone)))
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
@@ -3018,6 +3056,11 @@ class FirewallClient(object):
         self.fw.setDefaultZone(zone)
 
     # zone
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def setZoneSettings(self, zone, settings):
+        self.fw_zone.setZoneSettings2(zone, settings.getSettingsDbusDict())
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
