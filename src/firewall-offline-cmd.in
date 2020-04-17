@@ -1082,8 +1082,7 @@ try:
         trusted_zone = "trusted"
         default_zone = fw.get_default_zone()
         fw_zone = fw.config.get_zone(default_zone)
-        fw_settings = FirewallClientZoneSettings(
-            list(fw.config.get_zone_config(fw_zone)))
+        fw_settings = FirewallClientZoneSettings(fw.config.get_zone_config_dict(fw_zone))
 
         if a.enabled:
             # Enable firewall (default)
@@ -1125,8 +1124,7 @@ try:
         if a.trust:
             if default_zone != trusted_zone:
                 fw_trusted = fw.config.get_zone("trusted")
-                fw_trusted_settings = FirewallClientZoneSettings(
-                    list(fw.config.get_zone_config(fw_trusted)))
+                fw_trusted_settings = FirewallClientZoneSettings(fw.config.get_zone_config_dict(fw_trusted))
                 # Bind an interface to the trusted zone
                 for i in a.trust:
                     cmd.print_msg("Interface '%s' will be bound to zone '%s'." % \
@@ -1135,7 +1133,7 @@ try:
                         fw_trusted_settings.addInterface(i)
                     else:
                         cmd.print_msg("ALREADY_ENABLED: %s" % i)
-                fw.config.set_zone_config(fw_trusted, fw_trusted_settings.settings)
+                fw.config.set_zone_config_dict(fw_trusted, fw_trusted_settings.getSettingsDict())
             else:
                 for i in a.trust:
                     cmd.print_msg("Interface '%s' will be bound to zone '%s'." % \
@@ -1167,7 +1165,7 @@ try:
                 else:
                     cmd.print_msg("ALREADY_ENABLED: %s" % ib)
 
-        fw.config.set_zone_config(fw_zone, fw_settings.settings)
+        fw.config.set_zone_config_dict(fw_zone, fw_settings.getSettingsDict())
 
     elif a.version:
         cmd.print_and_exit(config.VERSION)
@@ -1207,7 +1205,7 @@ try:
         cmd.print_and_exit(" ".join(zones))
 
     elif a.new_zone:
-        fw.config.new_zone(a.new_zone, FirewallClientZoneSettings().settings)
+        fw.config.new_zone_dict(a.new_zone, FirewallClientZoneSettings().getSettingsDict())
 
     elif a.new_zone_from_file:
         filename = os.path.basename(a.new_zone_from_file)
@@ -1237,8 +1235,7 @@ try:
 
     elif a.info_zone:
         zone = fw.config.get_zone(a.info_zone)
-        settings = FirewallClientZoneSettings(
-            list(fw.config.get_zone_config(zone)))
+        settings = FirewallClientZoneSettings(fw.config.get_zone_config_dict(zone))
         cmd.print_zone_info(a.info_zone, settings, True)
         sys.exit(0)
 
@@ -1281,11 +1278,10 @@ try:
         zones = fw.config.get_zones()
         for zone in zones:
             _zone = fw.config.get_zone(zone)
-            _settings = FirewallClientZoneSettings(
-                list(fw.config.get_zone_config(_zone)))
+            _settings = FirewallClientZoneSettings(fw.config.get_zone_config_dict(_zone))
             if _settings.queryService(a.delete_service):
                 _settings.removeService(a.delete_service)
-                fw.config.set_zone_config(_zone, _settings.settings)
+                fw.config.set_zone_config_dict(_zone, _settings.getSettingsDict())
 
     elif a.load_service_defaults:
         obj = fw.config.get_service(a.load_service_defaults)
@@ -1337,11 +1333,10 @@ try:
         zones = fw.config.get_zones()
         for zone in zones:
             _zone = fw.config.get_zone(zone)
-            _settings = FirewallClientZoneSettings(
-                list(fw.config.get_zone_config(_zone)))
+            _settings = FirewallClientZoneSettings(fw.config.get_zone_config_dict(_zone))
             if _settings.queryIcmpBlock(a.delete_icmptype):
                 _settings.removeIcmpBlock(a.delete_icmptype)
-                fw.config.set_zone_config(_zone, _settings.settings)
+                fw.config.set_zone_config_dict(_zone, _settings.getSettingsDict())
 
     elif a.load_icmptype_defaults:
         obj = fw.config.get_icmptype(a.load_icmptype_defaults)
@@ -2046,8 +2041,7 @@ try:
         if zone == "":
             zone = fw.get_default_zone()
         fw_zone = fw.config.get_zone(zone)
-        fw_settings = FirewallClientZoneSettings(
-            list(fw.config.get_zone_config(fw_zone))) # convert to list, for setMasquerade
+        fw_settings = FirewallClientZoneSettings(fw.config.get_zone_config_dict(fw_zone))
 
         # interface
         if a.list_interfaces:
@@ -2080,11 +2074,10 @@ try:
                     old_zone_obj = fw.config.get_zone(old_zone)
                     if interface in old_zone_obj.interfaces:
                         if old_zone_obj.name != zone:
-                            old_zone_settings = FirewallClientZoneSettings(
-                                fw.config.get_zone_config(old_zone_obj))
+                            old_zone_settings = FirewallClientZoneSettings(fw.config.get_zone_config_dict(old_zone_obj))
 
                             old_zone_settings.removeInterface(interface) # remove from old
-                            fw.config.set_zone_config(old_zone_obj, old_zone_settings.settings)
+                            fw.config.set_zone_config_dict(old_zone_obj, old_zone_settings.getSettingsDict())
                 fw_settings.addInterface(interface)              # add to new
         elif a.add_interface:
             cmd.add_sequence(a.add_interface, fw_settings.addInterface,
@@ -2127,11 +2120,10 @@ try:
                     old_zone_obj = fw.config.get_zone(old_zone)
                     if source in old_zone_obj.sources:
                         if old_zone_obj.name != zone:
-                            old_zone_settings = FirewallClientZoneSettings(
-                                fw.config.get_zone_config(old_zone_obj))
+                            old_zone_settings = FirewallClientZoneSettings(fw.config.get_zone_config_dict(old_zone_obj))
 
                             old_zone_settings.removeSource(source) # remove from old
-                            fw.config.set_zone_config(old_zone_obj, old_zone_settings.settings)
+                            fw.config.set_zone_config_dict(old_zone_obj, old_zone_settings.getSettingsDict())
                 fw_settings.addSource(source)              # add to new
         elif a.add_source:
             cmd.add_sequence(a.add_source, fw_settings.addSource,
@@ -2286,7 +2278,7 @@ try:
             zones = fw.config.get_zones()
             for zone in zones:
                 fw_zone = fw.config.get_zone(zone)
-                fw_settings = FirewallClientZoneSettings(list(fw.config.get_zone_config(fw_zone)))
+                fw_settings = FirewallClientZoneSettings(fw.config.get_zone_config_dict(fw_zone))
                 cmd.print_zone_info(zone, fw_settings)
                 cmd.print_msg("")
             sys.exit(0)
@@ -2303,7 +2295,7 @@ try:
         elif a.get_short:
             cmd.print_and_exit(fw_settings.getShort())
 
-        fw.config.set_zone_config(fw_zone, fw_settings.settings)
+        fw.config.set_zone_config_dict(fw_zone, fw_settings.getSettingsDict())
 
         cmd.print_and_exit("success")
 
