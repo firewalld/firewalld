@@ -1,5 +1,5 @@
 FWD_START_TEST([dbus api - zone runtime functional])
-AT_KEYWORDS(dbus zone gh586)
+AT_KEYWORDS(dbus zone gh586 gh613)
 
 dnl ####################
 dnl Global APIs
@@ -295,6 +295,112 @@ DBUS_CHECK([], [zone.removeRichRule], ["public" "rule family=ipv4 source address
 ])
 DBUS_CHECK([], [zone.queryRichRule], ["public" "rule family=ipv4 source address=10.10.10.10 accept"], 0, [dnl
     (false,)
+])
+
+dnl ###################
+dnl new dict based APIs
+dnl ###################
+
+DBUS_CHECK([], [zone.getZoneSettings2], ["public"], 0, [dnl
+       'description': <'For use in public areas. You do not trust the other computers on networks to not harm your computer. Only selected incoming connections are accepted.'>
+       'forward_ports': <@<:@('4321', 'udp', '4444', '10.10.10.10')@:>@>
+       'icmp_block_inversion': <false>
+       'icmp_blocks': <@<:@'echo-request'@:>@>
+       'interfaces': <@<:@'dummy1'@:>@>
+       'masquerade': <false>
+       'ports': <@<:@('4321', 'udp')@:>@>
+       'rules_str': <@<:@'rule family="ipv4" source address="20.20.20.20" accept'@:>@>
+       'services': <@<:@'ssh', 'dhcpv6-client'@:>@>
+       'short': <'Public'>
+       'source_ports': <@<:@('4321', 'udp')@:>@>
+       'sources': <@<:@'10.20.0.0/16'@:>@>
+       'target': <'default'>
+])
+
+dnl Update all fields
+dnl
+DBUS_CHECK([], [zone.setZoneSettings2], [dnl
+    "public" dnl
+     '{"services": <@<:@"mdns"@:>@>, dnl
+       "ports": <@<:@("1234", "udp")@:>@>, dnl
+       "icmp_blocks": <@<:@"echo-request", "echo-reply"@:>@>, dnl
+       "masquerade": <false>, dnl
+       "forward_ports": <@<:@("1234", "udp", "4321", "10.10.10.10")@:>@>, dnl
+       "interfaces": <@<:@"dummy3"@:>@>, dnl
+       "sources": <@<:@"10.10.10.0/24"@:>@>, dnl
+       "rules_str": <@<:@"rule family=ipv4 source address=10.20.20.20 accept"@:>@>, dnl
+       "protocols": <@<:@"ipv6-icmp"@:>@>, dnl
+       "source_ports": <@<:@("1234", "udp")@:>@>, dnl
+       "icmp_block_inversion": <true> dnl
+      }'dnl
+    ], 0, [ignore])
+DBUS_CHECK([], [zone.getZoneSettings2], ["public"], 0, [dnl
+       'description': <'For use in public areas. You do not trust the other computers on networks to not harm your computer. Only selected incoming connections are accepted.'>
+       'forward_ports': <@<:@('1234', 'udp', '4321', '10.10.10.10')@:>@>
+       'icmp_block_inversion': <true>
+       'icmp_blocks': <@<:@'echo-reply', 'echo-request'@:>@>
+       'interfaces': <@<:@'dummy3'@:>@>
+       'masquerade': <false>
+       'ports': <@<:@('1234', 'udp')@:>@>
+       'protocols': <@<:@'ipv6-icmp'@:>@>
+       'rules_str': <@<:@'rule family="ipv4" source address="10.20.20.20" accept'@:>@>
+       'services': <@<:@'mdns'@:>@>
+       'short': <'Public'>
+       'source_ports': <@<:@('1234', 'udp')@:>@>
+       'sources': <@<:@'10.10.10.0/24'@:>@>
+       'target': <'default'>
+])
+dnl Do it again to make sure we don't get ALREADY_ENABLED
+DBUS_CHECK([], [zone.setZoneSettings2], [dnl
+    "public" dnl
+     '{"services": <@<:@"mdns"@:>@>, dnl
+       "ports": <@<:@("1234", "udp")@:>@>, dnl
+       "icmp_blocks": <@<:@"echo-request", "echo-reply"@:>@>, dnl
+       "masquerade": <false>, dnl
+       "forward_ports": <@<:@("1234", "udp", "4321", "10.10.10.10")@:>@>, dnl
+       "interfaces": <@<:@"dummy3"@:>@>, dnl
+       "sources": <@<:@"10.10.10.0/24"@:>@>, dnl
+       "rules_str": <@<:@"rule family=ipv4 source address=10.20.20.20 accept"@:>@>, dnl
+       "protocols": <@<:@"ipv6-icmp"@:>@>, dnl
+       "source_ports": <@<:@("1234", "udp")@:>@>, dnl
+       "icmp_block_inversion": <true> dnl
+      }'dnl
+    ], 0, [ignore])
+
+dnl Update some fields
+DBUS_CHECK([], [zone.setZoneSettings2], [dnl
+    "public" dnl
+     '{"services": <@<:@"mdns", "ssh"@:>@>, dnl
+       "icmp_blocks": <@<:@"echo-reply"@:>@> dnl
+      }'dnl
+    ], 0, [ignore])
+dnl clear a field
+DBUS_CHECK([], [zone.setZoneSettings2], [dnl
+    "public" dnl
+     '{"rules_str": <@as @<:@@:>@>, dnl
+       "icmp_block_inversion": <false> dnl
+      }'dnl
+    ], 0, [ignore])
+dnl clear another field
+DBUS_CHECK([], [zone.setZoneSettings2], [dnl
+    "public" dnl
+     '{"forward_ports": <@a(ssss) @<:@@:>@> dnl
+      }'dnl
+    ], 0, [ignore])
+dnl verify the updates
+DBUS_CHECK([], [zone.getZoneSettings2], ["public"], 0, [dnl
+       'description': <'For use in public areas. You do not trust the other computers on networks to not harm your computer. Only selected incoming connections are accepted.'>
+       'icmp_block_inversion': <false>
+       'icmp_blocks': <@<:@'echo-reply'@:>@>
+       'interfaces': <@<:@'dummy3'@:>@>
+       'masquerade': <false>
+       'ports': <@<:@('1234', 'udp')@:>@>
+       'protocols': <@<:@'ipv6-icmp'@:>@>
+       'services': <@<:@'mdns', 'ssh'@:>@>
+       'short': <'Public'>
+       'source_ports': <@<:@('1234', 'udp')@:>@>
+       'sources': <@<:@'10.10.10.0/24'@:>@>
+       'target': <'default'>
 ])
 
 FWD_END_TEST
