@@ -1,5 +1,5 @@
 FWD_START_TEST([dbus api - zone permanent functional])
-AT_KEYWORDS(dbus zone gh586)
+AT_KEYWORDS(dbus zone gh586 gh613)
 
 dnl ####################
 dnl Global APIs
@@ -354,6 +354,124 @@ DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.getRichRules], []
 DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.removeRichRule], ["rule family=ipv4 source address=10.10.10.0/24 accept"], 0, [ignore])
 DBUS_CHECK([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [config.zone.getRichRules], [], 0, [dnl
     [(['rule family="ipv4" source address="10.20.20.0/24" drop'],)]
+])
+
+dnl ###################
+dnl new dict based APIs
+dnl ###################
+
+DBUS_CHECK([config], [config.addZone2],
+    ["foobar2" dnl name
+     '{"version": <"1.0">, dnl
+       "short": <"foobar">, dnl
+       "description": <"foobar zone">, dnl
+       "target": <"ACCEPT">, dnl
+       "services": <@<:@"ssh", "mdns"@:>@>, dnl
+       "ports": <@<:@("1234", "tcp"), ("1234", "udp")@:>@>, dnl
+       "icmp_blocks": <@<:@"echo-request"@:>@>, dnl
+       "masquerade": <true>, dnl
+       "forward_ports": <@<:@("1234", "tcp", "4321", ""), ("1234", "udp", "4321", "10.10.10.10")@:>@>, dnl
+       "interfaces": <@<:@"dummy2", "dummy3"@:>@>, dnl
+       "sources": <@<:@"10.10.10.0/24"@:>@>, dnl
+       "rules_str": <@<:@"rule family=ipv4 source address=10.20.20.20 drop"@:>@>, dnl
+       "protocols": <@<:@"icmp"@:>@>, dnl
+       "source_ports": <@<:@("1234", "tcp"), ("1234", "udp")@:>@>, dnl
+       "icmp_block_inversion": <false> dnl
+      }'dnl
+    ], 0, [stdout])
+DBUS_FOOBAR2_ZONE_OBJ=[$(sed -e "s/.*config\/zone\/\([^']\+\)['].*/\1/" ./stdout)]
+export DBUS_FOOBAR2_ZONE_OBJ
+
+DBUS_CHECK([config/zone/${DBUS_FOOBAR2_ZONE_OBJ}], [config.zone.getSettings2], [], 0, [dnl
+       'description': <'foobar zone'>
+       'forward_ports': <@<:@('1234', 'tcp', '4321', ''), ('1234', 'udp', '4321', '10.10.10.10')@:>@>
+       'icmp_block_inversion': <false>
+       'icmp_blocks': <@<:@'echo-request'@:>@>
+       'interfaces': <@<:@'dummy2', 'dummy3'@:>@>
+       'masquerade': <true>
+       'ports': <@<:@('1234', 'tcp'), ('1234', 'udp')@:>@>
+       'protocols': <@<:@'icmp'@:>@>
+       'rules_str': <@<:@'rule family="ipv4" source address="10.20.20.20" drop'@:>@>
+       'services': <@<:@'ssh', 'mdns'@:>@>
+       'short': <'foobar'>
+       'source_ports': <@<:@('1234', 'tcp'), ('1234', 'udp')@:>@>
+       'sources': <@<:@'10.10.10.0/24'@:>@>
+       'target': <'ACCEPT'>
+       'version': <'1.0'>
+])
+
+dnl Update all fields
+dnl
+DBUS_CHECK([config/zone/${DBUS_FOOBAR2_ZONE_OBJ}], [config.zone.update2], [dnl
+     '{"version": <"1.1">, dnl
+       "short": <"foobar update2">, dnl
+       "description": <"foobar zone update2">, dnl
+       "target": <"DROP">, dnl
+       "services": <@<:@"mdns"@:>@>, dnl
+       "ports": <@<:@("1234", "udp")@:>@>, dnl
+       "icmp_blocks": <@<:@"echo-request", "echo-reply"@:>@>, dnl
+       "masquerade": <false>, dnl
+       "forward_ports": <@<:@("1234", "udp", "4321", "10.10.10.10")@:>@>, dnl
+       "interfaces": <@<:@"dummy3"@:>@>, dnl
+       "sources": <@<:@"10.10.10.0/24", "10.30.30.0/24"@:>@>, dnl
+       "rules_str": <@<:@"rule family=ipv4 source address=10.20.20.20 accept"@:>@>, dnl
+       "protocols": <@<:@"ipv6-icmp"@:>@>, dnl
+       "source_ports": <@<:@("1234", "udp")@:>@>, dnl
+       "icmp_block_inversion": <true> dnl
+      }'dnl
+    ], 0, [ignore])
+DBUS_CHECK([config/zone/${DBUS_FOOBAR2_ZONE_OBJ}], [config.zone.getSettings2], [], 0, [dnl
+       'description': <'foobar zone update2'>
+       'forward_ports': <@<:@('1234', 'udp', '4321', '10.10.10.10')@:>@>
+       'icmp_block_inversion': <true>
+       'icmp_blocks': <@<:@'echo-request', 'echo-reply'@:>@>
+       'interfaces': <@<:@'dummy3'@:>@>
+       'masquerade': <false>
+       'ports': <@<:@('1234', 'udp')@:>@>
+       'protocols': <@<:@'ipv6-icmp'@:>@>
+       'rules_str': <@<:@'rule family="ipv4" source address="10.20.20.20" accept'@:>@>
+       'services': <@<:@'mdns'@:>@>
+       'short': <'foobar update2'>
+       'source_ports': <@<:@('1234', 'udp')@:>@>
+       'sources': <@<:@'10.10.10.0/24', '10.30.30.0/24'@:>@>
+       'target': <'DROP'>
+       'version': <'1.1'>
+])
+
+dnl Update single field
+DBUS_CHECK([config/zone/${DBUS_FOOBAR2_ZONE_OBJ}], [config.zone.update2], [dnl
+     '{"version": <"1.2">, dnl
+       "target": <"ACCEPT"> dnl
+      }'dnl
+    ], 0, [ignore])
+dnl clear a field
+DBUS_CHECK([config/zone/${DBUS_FOOBAR2_ZONE_OBJ}], [config.zone.update2], [dnl
+     '{"version": <"1.3">, dnl
+       "icmp_blocks": <@as @<:@@:>@>, dnl
+       "icmp_block_inversion": <false> dnl
+      }'dnl
+    ], 0, [ignore])
+dnl clear another field
+DBUS_CHECK([config/zone/${DBUS_FOOBAR2_ZONE_OBJ}], [config.zone.update2], [dnl
+     '{"version": <"1.4">, dnl
+       "forward_ports": <@a(ssss) @<:@@:>@> dnl
+      }'dnl
+    ], 0, [ignore])
+dnl verify the updates
+DBUS_CHECK([config/zone/${DBUS_FOOBAR2_ZONE_OBJ}], [config.zone.getSettings2], [], 0, [dnl
+       'description': <'foobar zone update2'>
+       'icmp_block_inversion': <false>
+       'interfaces': <@<:@'dummy3'@:>@>
+       'masquerade': <false>
+       'ports': <@<:@('1234', 'udp')@:>@>
+       'protocols': <@<:@'ipv6-icmp'@:>@>
+       'rules_str': <@<:@'rule family="ipv4" source address="10.20.20.20" accept'@:>@>
+       'services': <@<:@'mdns'@:>@>
+       'short': <'foobar update2'>
+       'source_ports': <@<:@('1234', 'udp')@:>@>
+       'sources': <@<:@'10.10.10.0/24', '10.30.30.0/24'@:>@>
+       'target': <'ACCEPT'>
+       'version': <'1.4'>
 ])
 
 FWD_END_TEST([-e '/ERROR: INVALID_ZONE: foobar-renamed/d'])
