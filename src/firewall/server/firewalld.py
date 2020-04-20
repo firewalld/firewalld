@@ -439,7 +439,7 @@ class FirewallD(slip.dbus.service.Object):
         config_names = self.config.getZoneNames()
         nm_bus_name = nm_get_bus_name()
         for name in self.fw.zone.get_zones():
-            conf = self.getZoneSettings(name)
+            conf = self.getZoneSettings2(name)
             settings = FirewallClientZoneSettings(conf)
             if nm_bus_name is not None:
                 changed = False
@@ -460,21 +460,18 @@ class FirewallD(slip.dbus.service.Object):
 
                 if changed:
                     del conf
-                    conf = settings.settings
+                    conf = settings.getSettingsDict()
             # For the remaining try to update the ifcfg files
             for interface in settings.getInterfaces():
                 ifcfg_set_zone_of_interface(name, interface)
             try:
                 if name in config_names:
                     conf_obj = self.config.getZoneByName(name)
-                    if conf_obj.getSettings() != conf:
-                        log.debug1("Copying zone '%s' settings" % name)
-                        conf_obj.update(conf)
-                    else:
-                        log.debug1("Zone '%s' is identical, ignoring." % name)
-                else:                    
+                    log.debug1("Copying zone '%s' settings" % name)
+                    conf_obj.update2(conf)
+                else:
                     log.debug1("Creating zone '%s'" % name)
-                    self.config.addZone(name, conf)
+                    self.config.addZone2(name, conf)
             except Exception as e:
                 log.warning(
                     "Runtime To Permanent failed on zone '%s': %s" % \
