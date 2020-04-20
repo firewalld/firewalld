@@ -281,11 +281,14 @@ DBUS_CHECK([], [zone.addRichRule], ["public" "rule family=ipv4 source address=10
 DBUS_CHECK([], [zone.queryRichRule], ["public" "rule family=ipv4 source address=10.10.10.10 accept"], 0, [dnl
     (true,)
 ])
+DBUS_CHECK([], [zone.getRichRules], ["public"], 0, [dnl
+    [(['rule family="ipv4" source address="10.10.10.10" accept'],)]
+])
 DBUS_CHECK([], [zone.addRichRule], ["public" "rule family=ipv4 source address=20.20.20.20 accept" 0], 0, [dnl
     ('public',)
 ])
-DBUS_CHECK([], [zone.getRichRules], ["public"], 0, [dnl
-    [(['rule family="ipv4" source address="10.10.10.10" accept', 'rule family="ipv4" source address="20.20.20.20" accept'],)]
+DBUS_CHECK([], [zone.queryRichRule], ["public" "rule family=ipv4 source address=20.20.20.20 accept"], 0, [dnl
+    (true,)
 ])
 DBUS_CHECK([], [zone.removeRichRule], ["public" "rule family=ipv4 source address=10.10.10.10 accept"], 0, [dnl
     ('public',)
