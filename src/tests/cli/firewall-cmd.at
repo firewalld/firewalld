@@ -571,6 +571,54 @@ FWD_START_TEST([forward])
     FWD_CHECK([--permanent --zone=home --query-forward], 0, ignore)
     FWD_CHECK([--permanent --zone=home --remove-forward], 0, ignore)
     FWD_CHECK([--permanent --zone=home --query-forward], 1, ignore)
+
+    dnl zone source
+    FWD_CHECK([--zone=internal --add-source=10.10.10.0/24 --add-source=1234::/64], 0, ignore)
+    FWD_CHECK([--zone=internal --add-forward], 0, ignore)
+    NFT_LIST_RULES([inet], [filter_FWDI_internal_allow], 0, [dnl
+        table inet firewalld {
+            chain filter_FWDI_internal_allow {
+                ip daddr 10.10.10.0/24 accept
+                ip6 daddr 1234::/64 accept
+            }
+        }
+    ])
+    IPTABLES_LIST_RULES([filter], [FWDI_internal_allow], 0, [dnl
+        ACCEPT all -- 0.0.0.0/0 10.10.10.0/24
+    ])
+    IP6TABLES_LIST_RULES([filter], [FWDI_internal_allow], 0, [dnl
+        ACCEPT all ::/0 1234::/64
+    ])
+    FWD_CHECK([--zone=internal --remove-source=1234::/64], 0, ignore)
+    NFT_LIST_RULES([inet], [filter_FWDI_internal_allow], 0, [dnl
+        table inet firewalld {
+            chain filter_FWDI_internal_allow {
+                ip daddr 10.10.10.0/24 accept
+            }
+        }
+    ])
+    IPTABLES_LIST_RULES([filter], [FWDI_internal_allow], 0, [dnl
+        ACCEPT all -- 0.0.0.0/0 10.10.10.0/24
+    ])
+    IP6TABLES_LIST_RULES([filter], [FWDI_internal_allow], 0, [dnl
+    ])
+    FWD_CHECK([--zone=internal --add-source=10.20.20.0/24 --add-source=4321::/64], 0, ignore)
+    NFT_LIST_RULES([inet], [filter_FWDI_internal_allow], 0, [dnl
+        table inet firewalld {
+            chain filter_FWDI_internal_allow {
+                ip daddr 10.10.10.0/24 accept
+                ip daddr 10.20.20.0/24 accept
+                ip6 daddr 4321::/64 accept
+            }
+        }
+    ])
+    IPTABLES_LIST_RULES([filter], [FWDI_internal_allow], 0, [dnl
+        ACCEPT all -- 0.0.0.0/0 10.10.10.0/24
+        ACCEPT all -- 0.0.0.0/0 10.20.20.0/24
+    ])
+    IP6TABLES_LIST_RULES([filter], [FWDI_internal_allow], 0, [dnl
+        ACCEPT all ::/0 4321::/64
+    ])
 FWD_END_TEST
 
 FWD_START_TEST([forward ports])
