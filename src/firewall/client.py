@@ -2488,7 +2488,9 @@ class FirewallClientConfig(object):
         elif type(settings) is dict:
             path = self.fw_config.addService2(name, settings)
         else:
-            path = self.fw_config.addService(name, tuple(settings))
+            # tuple based dbus API has 8 elements. Slice what we're given down
+            # to the expected size.
+            path = self.fw_config.addService(name, tuple(settings[:8]))
         return FirewallClientConfigService(self.bus, path)
 
     # icmptype
