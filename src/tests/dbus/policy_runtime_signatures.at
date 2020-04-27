@@ -1,0 +1,31 @@
+FWD_START_TEST([dbus api - policy runtime signatures])
+AT_KEYWORDS(dbus policy)
+
+dnl Settings
+dnl
+DBUS_INTROSPECT([], [[//method[@name="getPolicySettings"]]], 0, [dnl
+    <method name="getPolicySettings">
+        <arg direction="in" name="policy" type="s"></arg>
+        <arg direction="out" type="a{sv}"></arg>
+    </method>
+])
+DBUS_INTROSPECT([], [[//method[@name="setPolicySettings"]]], 0, [dnl
+    <method name="setPolicySettings">
+        <arg direction="in" name="policy" type="s"></arg>
+        <arg direction="in" name="settings" type="a{sv}"></arg>
+    </method>
+])
+
+dnl Fetching Policies
+DBUS_INTROSPECT([], [[//method[@name="getPolicies"]]], 0, [dnl
+    <method name="getPolicies">
+        <arg direction="out" type="as"></arg>
+    </method>
+])
+DBUS_INTROSPECT([], [[//method[@name="getActivePolicies"]]], 0, [dnl
+    <method name="getActivePolicies">
+        <arg direction="out" type="a{sa{sas}}"></arg>
+    </method>
+])
+
+FWD_END_TEST
