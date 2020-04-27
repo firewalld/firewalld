@@ -1,0 +1,68 @@
+FWD_START_TEST([dbus api - policy permanent signatures])
+AT_KEYWORDS(dbus policy)
+
+dnl ####################
+dnl Global APIs
+dnl ####################
+
+DBUS_INTROSPECT([config], [[//method[@name="listPolicies"]]], 0, [dnl
+    <method name="listPolicies">
+        <arg direction="out" type="ao"></arg>
+    </method>
+])
+DBUS_INTROSPECT([config], [[//method[@name="getPolicyNames"]]], 0, [dnl
+    <method name="getPolicyNames">
+        <arg direction="out" type="as"></arg>
+    </method>
+])
+DBUS_INTROSPECT([config], [[//method[@name="getPolicyByName"]]], 0, [dnl
+    <method name="getPolicyByName">
+        <arg direction="in" name="policy" type="s"></arg>
+        <arg direction="out" type="o"></arg>
+    </method>
+])
+DBUS_INTROSPECT([config], [[//method[@name="addPolicy"]]], 0, [dnl
+    <method name="addPolicy">
+        <arg direction="in" name="policy" type="s"></arg>
+        <arg direction="in" name="settings" type="a{sv}"></arg>
+        <arg direction="out" type="o"></arg>
+    </method>
+])
+
+dnl ####################
+dnl Policy object APIs
+dnl ####################
+
+DBUS_CHECK([config], [config.getPolicyByName], ["allow-host-ipv6"], 0, [stdout])
+DBUS_POLICY_OBJ=[$(sed -e "s/.*config\/policy\/\([^']\+\)['].*/\1/" ./stdout)]
+export DBUS_POLICY_OBJ
+
+DBUS_INTROSPECT([config/policy/${DBUS_POLICY_OBJ}], [[//method[@name="getSettings"]]], 0, [dnl
+    <method name="getSettings">
+        <arg direction="out" type="a{sv}"></arg>
+    </method>
+])
+
+DBUS_INTROSPECT([config/policy/${DBUS_POLICY_OBJ}], [[//method[@name="update"]]], 0, [dnl
+    <method name="update">
+        <arg direction="in" name="settings" type="a{sv}"></arg>
+    </method>
+])
+
+DBUS_INTROSPECT([config/policy/${DBUS_POLICY_OBJ}], [[//method[@name="remove"]]], 0, [dnl
+    <method name="remove">
+    </method>
+])
+
+DBUS_INTROSPECT([config/policy/${DBUS_POLICY_OBJ}], [[//method[@name="rename"]]], 0, [dnl
+    <method name="rename">
+        <arg direction="in" name="name" type="s"></arg>
+    </method>
+])
+
+DBUS_INTROSPECT([config/policy/${DBUS_POLICY_OBJ}], [[//method[@name="loadDefaults"]]], 0, [dnl
+    <method name="loadDefaults">
+    </method>
+])
+
+FWD_END_TEST
