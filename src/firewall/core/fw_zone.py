@@ -744,6 +744,7 @@ class FirewallZone(object):
         return ret
 
     def list_rules(self, zone):
+        zone = self._fw.check_zone(zone)
         ret = set()
         for p_name in [self.policy_name_from_zones(zone, "ANY"),
                        self.policy_name_from_zones(zone, "HOST"),
