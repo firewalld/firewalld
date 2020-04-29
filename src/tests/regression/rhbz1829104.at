@@ -1,0 +1,55 @@
+m4_if(iptables, FIREWALL_BACKEND, [
+FWD_START_TEST([direct rule in zone chain])
+AT_KEYWORDS(direct rhbz1829104)
+
+FWD_CHECK([-q --direct --add-rule ipv4 raw PRE_public 0 -s 10.10.10.0/24 ! -d 10.0.0.0/8 -j ACCEPT])
+FWD_CHECK([-q --direct --add-rule ipv4 raw PRE_public_pre 0 -s 10.10.10.0/24 ! -d 10.0.0.0/8 -j ACCEPT])
+FWD_CHECK([-q --direct --add-rule ipv4 raw PRE_public_log 0 -s 10.10.10.0/24 ! -d 10.0.0.0/8 -j ACCEPT])
+FWD_CHECK([-q --direct --add-rule ipv4 raw PRE_public_deny 0 -s 10.10.10.0/24 ! -d 10.0.0.0/8 -j ACCEPT])
+FWD_CHECK([-q --direct --add-rule ipv4 raw PRE_public_allow 0 -s 10.10.10.0/24 ! -d 10.0.0.0/8 -j ACCEPT])
+FWD_CHECK([-q --direct --add-rule ipv4 raw PRE_public_post 0 -s 10.10.10.0/24 ! -d 10.0.0.0/8 -j ACCEPT])
+
+FWD_CHECK([-q --direct --add-rule ipv4 mangle PRE_public 0 -s 10.10.10.0/24 ! -d 10.0.0.0/8 -j ACCEPT])
+FWD_CHECK([-q --direct --add-rule ipv4 mangle PRE_public_pre 0 -s 10.10.10.0/24 ! -d 10.0.0.0/8 -j ACCEPT])
+FWD_CHECK([-q --direct --add-rule ipv4 mangle PRE_public_log 0 -s 10.10.10.0/24 ! -d 10.0.0.0/8 -j ACCEPT])
+FWD_CHECK([-q --direct --add-rule ipv4 mangle PRE_public_deny 0 -s 10.10.10.0/24 ! -d 10.0.0.0/8 -j ACCEPT])
+FWD_CHECK([-q --direct --add-rule ipv4 mangle PRE_public_allow 0 -s 10.10.10.0/24 ! -d 10.0.0.0/8 -j ACCEPT])
+FWD_CHECK([-q --direct --add-rule ipv4 mangle PRE_public_post 0 -s 10.10.10.0/24 ! -d 10.0.0.0/8 -j ACCEPT])
+
+FWD_CHECK([-q --direct --add-rule ipv4 nat PRE_public 0 -s 10.10.10.0/24 ! -d 10.0.0.0/8 -j ACCEPT])
+FWD_CHECK([-q --direct --add-rule ipv4 nat PRE_public_pre 0 -s 10.10.10.0/24 ! -d 10.0.0.0/8 -j ACCEPT])
+FWD_CHECK([-q --direct --add-rule ipv4 nat PRE_public_log 0 -s 10.10.10.0/24 ! -d 10.0.0.0/8 -j ACCEPT])
+FWD_CHECK([-q --direct --add-rule ipv4 nat PRE_public_deny 0 -s 10.10.10.0/24 ! -d 10.0.0.0/8 -j ACCEPT])
+FWD_CHECK([-q --direct --add-rule ipv4 nat PRE_public_allow 0 -s 10.10.10.0/24 ! -d 10.0.0.0/8 -j ACCEPT])
+FWD_CHECK([-q --direct --add-rule ipv4 nat PRE_public_post 0 -s 10.10.10.0/24 ! -d 10.0.0.0/8 -j ACCEPT])
+
+FWD_CHECK([-q --direct --add-rule ipv4 filter IN_public 0 -s 10.10.10.0/24 ! -d 10.0.0.0/8 -j ACCEPT])
+FWD_CHECK([-q --direct --add-rule ipv4 filter IN_public_pre 0 -s 10.10.10.0/24 ! -d 10.0.0.0/8 -j ACCEPT])
+FWD_CHECK([-q --direct --add-rule ipv4 filter IN_public_log 0 -s 10.10.10.0/24 ! -d 10.0.0.0/8 -j ACCEPT])
+FWD_CHECK([-q --direct --add-rule ipv4 filter IN_public_deny 0 -s 10.10.10.0/24 ! -d 10.0.0.0/8 -j ACCEPT])
+FWD_CHECK([-q --direct --add-rule ipv4 filter IN_public_allow 0 -s 10.10.10.0/24 ! -d 10.0.0.0/8 -j ACCEPT])
+FWD_CHECK([-q --direct --add-rule ipv4 filter IN_public_post 0 -s 10.10.10.0/24 ! -d 10.0.0.0/8 -j ACCEPT])
+
+FWD_CHECK([-q --direct --add-rule ipv4 filter FWDI_public 0 -s 10.10.10.0/24 ! -d 10.0.0.0/8 -j ACCEPT])
+FWD_CHECK([-q --direct --add-rule ipv4 filter FWDI_public_pre 0 -s 10.10.10.0/24 ! -d 10.0.0.0/8 -j ACCEPT])
+FWD_CHECK([-q --direct --add-rule ipv4 filter FWDI_public_log 0 -s 10.10.10.0/24 ! -d 10.0.0.0/8 -j ACCEPT])
+FWD_CHECK([-q --direct --add-rule ipv4 filter FWDI_public_deny 0 -s 10.10.10.0/24 ! -d 10.0.0.0/8 -j ACCEPT])
+FWD_CHECK([-q --direct --add-rule ipv4 filter FWDI_public_allow 0 -s 10.10.10.0/24 ! -d 10.0.0.0/8 -j ACCEPT])
+FWD_CHECK([-q --direct --add-rule ipv4 filter FWDI_public_post 0 -s 10.10.10.0/24 ! -d 10.0.0.0/8 -j ACCEPT])
+
+FWD_CHECK([-q --direct --add-rule ipv4 filter FWDO_public 0 -s 10.10.10.0/24 ! -d 10.0.0.0/8 -j ACCEPT])
+FWD_CHECK([-q --direct --add-rule ipv4 filter FWDO_public_pre 0 -s 10.10.10.0/24 ! -d 10.0.0.0/8 -j ACCEPT])
+FWD_CHECK([-q --direct --add-rule ipv4 filter FWDO_public_log 0 -s 10.10.10.0/24 ! -d 10.0.0.0/8 -j ACCEPT])
+FWD_CHECK([-q --direct --add-rule ipv4 filter FWDO_public_deny 0 -s 10.10.10.0/24 ! -d 10.0.0.0/8 -j ACCEPT])
+FWD_CHECK([-q --direct --add-rule ipv4 filter FWDO_public_allow 0 -s 10.10.10.0/24 ! -d 10.0.0.0/8 -j ACCEPT])
+FWD_CHECK([-q --direct --add-rule ipv4 filter FWDO_public_post 0 -s 10.10.10.0/24 ! -d 10.0.0.0/8 -j ACCEPT])
+
+FWD_CHECK([-q --direct --add-rule ipv4 nat POST_public 0 -s 10.10.10.0/24 ! -d 10.0.0.0/8 -j ACCEPT])
+FWD_CHECK([-q --direct --add-rule ipv4 nat POST_public_pre 0 -s 10.10.10.0/24 ! -d 10.0.0.0/8 -j ACCEPT])
+FWD_CHECK([-q --direct --add-rule ipv4 nat POST_public_log 0 -s 10.10.10.0/24 ! -d 10.0.0.0/8 -j ACCEPT])
+FWD_CHECK([-q --direct --add-rule ipv4 nat POST_public_deny 0 -s 10.10.10.0/24 ! -d 10.0.0.0/8 -j ACCEPT])
+FWD_CHECK([-q --direct --add-rule ipv4 nat POST_public_allow 0 -s 10.10.10.0/24 ! -d 10.0.0.0/8 -j ACCEPT])
+FWD_CHECK([-q --direct --add-rule ipv4 nat POST_public_post 0 -s 10.10.10.0/24 ! -d 10.0.0.0/8 -j ACCEPT])
+
+FWD_END_TEST
+])
