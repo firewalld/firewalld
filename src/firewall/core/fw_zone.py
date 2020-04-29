@@ -188,7 +188,7 @@ class FirewallZone(object):
             if splits[1] not in self.get_zones():
                 return None
             if len(splits) == 2 or \
-               (len(splits) == 3 and splits[2] in [ "log", "deny", "allow" ]):
+               (len(splits) == 3 and splits[2] in [ "pre", "log", "deny", "allow", "post" ]):
                 return (splits[1], _chain)
         return None
 
@@ -200,14 +200,12 @@ class FirewallZone(object):
             x = self.zone_from_chain(chain)
             if x is not None:
                 (_zone, _chain) = x
-
                 if use_transaction is None:
                     transaction = self.new_transaction()
                 else:
                     transaction = use_transaction
 
-                self.gen_chain_rules(_zone, True, [(table, _chain)],
-                                     transaction)
+                self.gen_chain_rules(_zone, True, table, _chain, transaction)
 
                 if use_transaction is None:
                     transaction.execute(True)
