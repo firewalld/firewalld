@@ -194,7 +194,7 @@ class FirewallZone(object):
             if splits[1] not in self.get_zones():
                 return None
             if len(splits) == 2 or \
-               (len(splits) == 3 and splits[2] in [ "log", "deny", "allow" ]):
+               (len(splits) == 3 and splits[2] in [ "pre", "log", "deny", "allow", "post" ]):
                 return (splits[1], _chain)
         return None
 
