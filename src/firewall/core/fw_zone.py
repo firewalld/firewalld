@@ -187,26 +187,46 @@ class FirewallZone(object):
             if splits[1] not in self.get_zones():
                 return None
             if len(splits) == 2 or \
-               (len(splits) == 3 and splits[2] in [ "log", "deny", "allow" ]):
+               (len(splits) == 3 and splits[2] in [ "pre", "log", "deny", "allow", "post" ]):
                 return (splits[1], _chain)
         return None
+
+    def policy_from_chain(self, chain):
+        x = self.zone_from_chain(chain)
+        if x is None:
+            return None
+
+        (zone, _chain) = x
+        # derived from _get_table_chains_for_zone_dispatch()
+        if _chain in ["PREROUTING", "FORWARD_IN"]:
+            fromZone = zone
+            toZone = "ANY"
+        elif _chain in ["INPUT"]:
+            fromZone = zone
+            toZone = "HOST"
+        elif _chain in ["POSTROUTING", "FORWARD_OUT"]:
+            fromZone = "ANY"
+            toZone = zone
+        else:
+            raise FirewallError(errors.INVALID_CHAIN, "chain '%s' can't be mapped to a policy" % (chain))
+
+        return (self.policy_name_from_zones(fromZone, toZone), _chain)
 
     def create_zone_base_by_chain(self, ipv, table, chain,
                                   use_transaction=None):
 
         # Create zone base chains if the chain is reserved for a zone
         if ipv in [ "ipv4", "ipv6" ]:
-            x = self.zone_from_chain(chain)
+            x = self.policy_from_chain(chain)
             if x is not None:
-                (_zone, _chain) = x
-
+                (policy, _chain) = self.policy_from_chain(chain)
                 if use_transaction is None:
                     transaction = self.new_transaction()
                 else:
                     transaction = use_transaction
 
-                self.gen_chain_rules(_zone, True, [(table, _chain)],
-                                     transaction)
+                self._fw.policy.gen_chain_rules(policy, True, table, _chain,
+                                                transaction)
 
                 if use_transaction is None:
                     transaction.execute(True)
