@@ -67,7 +67,7 @@ def set_system_config_paths(path):
     global ETC_FIREWALLD, FIREWALLD_CONF, ETC_FIREWALLD_ZONES, \
            ETC_FIREWALLD_SERVICES, ETC_FIREWALLD_ICMPTYPES, \
            ETC_FIREWALLD_IPSETS, ETC_FIREWALLD_HELPERS, \
-           FIREWALLD_DIRECT, LOCKDOWN_WHITELIST
+           FIREWALLD_DIRECT, LOCKDOWN_WHITELIST, ETC_FIREWALLD_POLICIES
     ETC_FIREWALLD = path
     FIREWALLD_CONF = path + '/firewalld.conf'
     ETC_FIREWALLD_ZONES = path + '/zones'
@@ -75,19 +75,22 @@ def set_system_config_paths(path):
     ETC_FIREWALLD_ICMPTYPES = path + '/icmptypes'
     ETC_FIREWALLD_IPSETS = path + '/ipsets'
     ETC_FIREWALLD_HELPERS = path + '/helpers'
+    ETC_FIREWALLD_POLICIES = path + '/policies'
     FIREWALLD_DIRECT = path + '/direct.xml'
     LOCKDOWN_WHITELIST = path + '/lockdown-whitelist.xml'
 set_system_config_paths('/etc/firewalld')
 
 def set_default_config_paths(path):
     global USR_LIB_FIREWALLD, FIREWALLD_ZONES, FIREWALLD_SERVICES, \
-           FIREWALLD_ICMPTYPES, FIREWALLD_IPSETS, FIREWALLD_HELPERS
+           FIREWALLD_ICMPTYPES, FIREWALLD_IPSETS, FIREWALLD_HELPERS, \
+           FIREWALLD_POLICIES
     USR_LIB_FIREWALLD = path
     FIREWALLD_ZONES = path + '/zones'
     FIREWALLD_SERVICES = path + '/services'
     FIREWALLD_ICMPTYPES = path + '/icmptypes'
     FIREWALLD_IPSETS = path + '/ipsets'
     FIREWALLD_HELPERS = path + '/helpers'
+    FIREWALLD_POLICIES = path + '/policies'
 set_default_config_paths('/usr/lib/firewalld')
 
 FIREWALLD_LOGFILE = '/var/log/firewalld'

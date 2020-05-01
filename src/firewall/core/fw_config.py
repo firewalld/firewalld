@@ -32,6 +32,7 @@ from firewall.core.io.service import Service, service_reader, service_writer
 from firewall.core.io.zone import Zone, zone_reader, zone_writer
 from firewall.core.io.ipset import IPSet, ipset_reader, ipset_writer
 from firewall.core.io.helper import Helper, helper_reader, helper_writer
+from firewall.core.io.policy import Policy, policy_reader, policy_writer
 from firewall import errors
 from firewall.errors import FirewallError
 
@@ -41,12 +42,13 @@ class FirewallConfig(object):
         self.__init_vars()
 
     def __repr__(self):
-        return '%s(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)' % \
+        return '%s(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)' % \
             (self.__class__,
              self._ipsets, self._icmptypes, self._services, self._zones,
-             self._helpers,
+             self._helpers, self.policy_objects,
              self._builtin_ipsets, self._builtin_icmptypes,
              self._builtin_services, self._builtin_zones, self._builtin_helpers,
+             self._builtin_policy_objects,
              self._firewalld_conf, self._policies, self._direct)
 
     def __init_vars(self):
@@ -55,11 +57,13 @@ class FirewallConfig(object):
         self._services = { }
         self._zones = { }
         self._helpers = { }
+        self._policy_objects = { }
         self._builtin_ipsets = { }
         self._builtin_icmptypes = { }
         self._builtin_services = { }
         self._builtin_zones = { }
         self._builtin_helpers = { }
+        self._builtin_policy_objects = { }
         self._firewalld_conf = None
         self._policies = None
         self._direct = None
@@ -842,8 +846,8 @@ class FirewallConfig(object):
             conf_dict[Zone.IMPORT_EXPORT_STRUCTURE[i][0]] = value
 
         x = Zone()
-        x.check_name(name)
         x.fw_config = self
+        x.check_name(name)
         x.import_config_dict(conf_dict)
         x.name = name
         x.filename = "%s.xml" % name
@@ -861,8 +865,8 @@ class FirewallConfig(object):
             raise FirewallError(errors.NAME_CONFLICT, "new_zone(): '%s'" % name)
 
         x = Zone()
-        x.check_name(name)
         x.fw_config = self
+        x.check_name(name)
         x.import_config_dict(conf)
         x.name = name
         x.filename = "%s.xml" % name
@@ -986,6 +990,189 @@ class FirewallConfig(object):
 
     def _copy_zone(self, obj, name):
         return self.new_zone_dict(name, obj.export_config_dict())
+
+    # policy objects
+
+    def get_policy_objects(self):
+        return sorted(set(list(self._policy_objects.keys()) + \
+                          list(self._builtin_policy_objects.keys())))
+
+    def add_policy_object(self, obj):
+        if obj.builtin:
+            self._builtin_policy_objects[obj.name] = obj
+        else:
+            self._policy_objects[obj.name] = obj
+
+    def get_policy_object(self, name):
+        if name in self._policy_objects:
+            return self._policy_objects[name]
+        elif name in self._builtin_policy_objects:
+            return self._builtin_policy_objects[name]
+        raise FirewallError(errors.INVALID_POLICY, "get_policy_object(): %s" % name)
+
+    def load_policy_object_defaults(self, obj):
+        if obj.name not in self._policy_objects:
+            raise FirewallError(errors.NO_DEFAULTS, obj.name)
+        elif self._policy_objects[obj.name] != obj:
+            raise FirewallError(errors.NO_DEFAULTS,
+                                "self._policy_objects[%s] != obj" % obj.name)
+        elif obj.name not in self._builtin_policy_objects:
+            raise FirewallError(errors.NO_DEFAULTS,
+                                "'%s' not a built-in policy" % obj.name)
+        self._remove_policy_object(obj)
+        return self._builtin_policy_objects[obj.name]
+
+    def get_policy_object_config_dict(self, obj):
+        return obj.export_config_dict()
+
+    def set_policy_object_config_dict(self, obj, conf):
+        if obj.builtin:
+            x = copy.copy(obj)
+            x.fw_config = self
+            x.import_config_dict(conf)
+            x.path = config.ETC_FIREWALLD_POLICIES
+            x.builtin = False
+            if obj.path != x.path:
+                x.default = False
+            self.add_policy_object(x)
+            policy_writer(x)
+            return x
+        else:
+            obj.fw_config = self
+            obj.import_config_dict(conf)
+            policy_writer(obj)
+            return obj
+
+    def new_policy_object_dict(self, name, conf):
+        if name in self._policy_objects or name in self._builtin_policy_objects:
+            raise FirewallError(errors.NAME_CONFLICT, "new_policy_object(): '%s'" % name)
+
+        x = Policy()
+        x.fw_config = self
+        x.check_name(name)
+        x.import_config_dict(conf)
+        x.name = name
+        x.filename = "%s.xml" % name
+        x.path = config.ETC_FIREWALLD_POLICIES
+        # It is not possible to add a new one with a name of a buitin
+        x.builtin = False
+        x.default = True
+
+        policy_writer(x)
+        self.add_policy_object(x)
+        return x
+
+    def update_policy_object_from_path(self, name):
+        filename = os.path.basename(name)
+        path = os.path.dirname(name)
+
+        if not os.path.exists(name):
+            # removed file
+
+            if path.startswith(config.ETC_FIREWALLD_POLICIES):
+                # removed custom policy_object
+                for x in self._policy_objects.keys():
+                    obj = self._policy_objects[x]
+                    if obj.filename == filename:
+                        del self._policy_objects[x]
+                        if obj.name in self._builtin_policy_objects:
+                            return ("update", self._builtin_policy_objects[obj.name])
+                        return ("remove", obj)
+            else:
+                # removed builtin policy_object
+                for x in self._builtin_policy_objects.keys():
+                    obj = self._builtin_policy_objects[x]
+                    if obj.filename == filename:
+                        del self._builtin_policy_objects[x]
+                        if obj.name not in self._policy_objects:
+                            # update dbus policy_object
+                            return ("remove", obj)
+                        else:
+                            # builtin hidden, no update needed
+                            return (None, None)
+
+            # policy_object not known to firewalld, yet (timeout, ..)
+            return (None, None)
+
+        # new or updated file
+
+        log.debug1("Loading policy file '%s'", name)
+        try:
+            obj = policy_reader(filename, path)
+        except Exception as msg:
+            log.error("Failed to load policy file '%s': %s", filename, msg)
+            return (None, None)
+
+        obj.fw_config = self
+
+        if path.startswith(config.ETC_FIREWALLD_POLICIES) and \
+           len(path) > len(config.ETC_FIREWALLD_POLICIES):
+            # custom combined policy_object part
+            obj.name = "%s/%s" % (os.path.basename(path),
+                                  os.path.basename(filename)[0:-4])
+
+        # new policy_object
+        if obj.name not in self._builtin_policy_objects and obj.name not in self._policy_objects:
+            self.add_policy_object(obj)
+            return ("new", obj)
+
+        # updated policy_object
+        if path.startswith(config.ETC_FIREWALLD_POLICIES):
+            # custom policy_object update
+            if obj.name in self._policy_objects:
+                obj.default = self._policy_objects[obj.name].default
+                self._policy_objects[obj.name] = obj
+            return ("update", obj)
+        else:
+            if obj.name in self._builtin_policy_objects:
+                # builtin policy_object update
+                del self._builtin_policy_objects[obj.name]
+                self._builtin_policy_objects[obj.name] = obj
+
+                if obj.name not in self._policy_objects:
+                    # update dbus policy_object
+                    return ("update", obj)
+                else:
+                    # builtin hidden, no update needed
+                    return (None, None)
+
+        # policy_object not known to firewalld, yet (timeout, ..)
+        return (None, None)
+
+    def _remove_policy_object(self, obj):
+        if obj.name not in self._policy_objects:
+            raise FirewallError(errors.INVALID_POLICY, obj.name)
+        if not obj.path.startswith(config.ETC_FIREWALLD_POLICIES):
+            raise FirewallError(errors.INVALID_DIRECTORY,
+                                "'%s' doesn't start with '%s'" % \
+                                (obj.path, config.ETC_FIREWALLD_POLICIES))
+
+        name = "%s/%s.xml" % (obj.path, obj.name)
+        try:
+            shutil.move(name, "%s.old" % name)
+        except Exception as msg:
+            log.error("Backup of file '%s' failed: %s", name, msg)
+            os.remove(name)
+
+        del self._policy_objects[obj.name]
+
+    def check_builtin_policy_object(self, obj):
+        if obj.builtin or not obj.default:
+            raise FirewallError(errors.BUILTIN_POLICY,
+                                "'%s' is built-in policy" % obj.name)
+
+    def remove_policy_object(self, obj):
+        self.check_builtin_policy_object(obj)
+        self._remove_policy_object(obj)
+
+    def rename_policy_object(self, obj, name):
+        self.check_builtin_policy_object(obj)
+        new_policy_object = self._copy_policy_object(obj, name)
+        self._remove_policy_object(obj)
+        return new_policy_object
+
+    def _copy_policy_object(self, obj, name):
+        return self.new_policy_object_dict(name, obj.export_config_dict())
 
     # helper
 
