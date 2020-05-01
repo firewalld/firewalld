@@ -53,6 +53,7 @@ from firewall.core.io.zone import zone_reader, Zone
 from firewall.core.io.ipset import ipset_reader
 from firewall.core.ipset import IPSET_TYPES
 from firewall.core.io.helper import helper_reader
+from firewall.core.io.policy import policy_reader
 from firewall import errors
 from firewall.errors import FirewallError
 
@@ -352,6 +353,10 @@ class Firewall(object):
             log.fatal("No zones found.")
             sys.exit(1)
 
+        # load policy files
+        self._loader(config.FIREWALLD_POLICIES, "policy")
+        self._loader(config.ETC_FIREWALLD_POLICIES, "policy")
+
         # check minimum required zones
         error = False
         for z in [ "block", "drop", "trusted" ]:
@@ -605,6 +610,19 @@ class Firewall(object):
                     self.helper.add_helper(obj)
                     # add a deep copy to the configuration interface
                     self.config.add_helper(copy.deepcopy(obj))
+                elif reader_type == "policy":
+                    obj = policy_reader(filename, path)
+                    if obj.name in self.policy.get_policies():
+                        orig_obj = self.policy.get_policy(obj.name)
+                        log.debug1("  Overloads %s '%s' ('%s/%s')", reader_type,
+                                   orig_obj.name, orig_obj.path,
+                                   orig_obj.filename)
+                        self.policy.remove_policy(orig_obj.name)
+                    elif obj.path.startswith(config.ETC_FIREWALLD):
+                        obj.default = True
+                    self.policy.add_policy(obj)
+                    # add a deep copy to the configuration interface
+                    self.config.add_policy_object(copy.deepcopy(obj))
                 else:
                     log.fatal("Unknown reader type %s", reader_type)
             except FirewallError as msg:

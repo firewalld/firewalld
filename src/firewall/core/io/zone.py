@@ -264,6 +264,9 @@ class Zone(IO_Object):
                                     name, len(checked_name),
                                     max_zone_name_len(),
                                     self.combined))
+            if self.fw_config:
+                if checked_name in self.fw_config.get_policy_objects():
+                    raise FirewallError(errors.NAME_CONFLICT, "Zones can't have the same name as a policy.")
 
     def combine(self, zone):
         self.combined = True

@@ -29,6 +29,7 @@ from firewall.core.io.service import service_reader
 from firewall.core.io.ipset import ipset_reader
 from firewall.core.io.icmptype import icmptype_reader
 from firewall.core.io.helper import helper_reader
+from firewall.core.io.policy import policy_reader
 from firewall.core.io.direct import Direct
 from firewall.core.io.lockdown_whitelist import LockdownWhitelist
 from firewall.core.io.firewalld_conf import firewalld_conf
@@ -40,6 +41,7 @@ def check_config(fw=None):
         "icmptype" : (icmptype_reader, [config.FIREWALLD_ICMPTYPES, config.ETC_FIREWALLD_ICMPTYPES]),
         "service" : (service_reader, [config.FIREWALLD_SERVICES, config.ETC_FIREWALLD_SERVICES]),
         "zone" : (zone_reader, [config.FIREWALLD_ZONES, config.ETC_FIREWALLD_ZONES]),
+        "policy" : (policy_reader, [config.FIREWALLD_POLICIES, config.ETC_FIREWALLD_POLICIES]),
     }
     for reader in readers.keys():
         for dir in readers[reader][1]:
@@ -49,7 +51,7 @@ def check_config(fw=None):
                 if file.endswith(".xml"):
                     try:
                         obj = readers[reader][0](file, dir)
-                        if fw and reader == "zone":
+                        if fw and reader in ["zone", "policy"]:
                             obj.fw_config = fw.config
                         obj.check_config(obj.export_config())
                     except FirewallError as error:
