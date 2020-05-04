@@ -1006,19 +1006,19 @@ class FirewallZone(object):
         if enable:
             transaction.add_chain(p_name, "filter", "FORWARD_IN")
 
-            for interface in self._zones[zone].settings["interfaces"]:
-                for backend in self._fw.enabled_backends():
-                    if not backend.policies_supported:
-                        continue
-                    rules = backend.build_zone_forward_rules(enable, zone, p_name, "filter", interface=interface)
-                    transaction.add_rules(backend, rules)
+        for interface in self._zones[zone].settings["interfaces"]:
+            for backend in self._fw.enabled_backends():
+                if not backend.policies_supported:
+                    continue
+                rules = backend.build_zone_forward_rules(enable, zone, p_name, "filter", interface=interface)
+                transaction.add_rules(backend, rules)
 
-            for ipv,source in self._zones[zone].settings["sources"]:
-                for backend in [self._fw.get_backend_by_ipv(ipv)] if ipv else self._fw.enabled_backends():
-                    if not backend.policies_supported:
-                        continue
-                    rules = backend.build_zone_forward_rules(enable, zone, p_name, "filter", source=source)
-                    transaction.add_rules(backend, rules)
+        for ipv,source in self._zones[zone].settings["sources"]:
+            for backend in [self._fw.get_backend_by_ipv(ipv)] if ipv else self._fw.enabled_backends():
+                if not backend.policies_supported:
+                    continue
+                rules = backend.build_zone_forward_rules(enable, zone, p_name, "filter", source=source)
+                transaction.add_rules(backend, rules)
 
     def __forward_id(self):
         return True
