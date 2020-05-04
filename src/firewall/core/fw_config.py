@@ -800,7 +800,6 @@ class FirewallConfig(object):
 
         if obj.builtin:
             x = copy.copy(obj)
-            x.cleanup()
             x.fw_config = self
             x.import_config_dict(conf_dict)
             x.path = config.ETC_FIREWALLD_ZONES
@@ -811,7 +810,6 @@ class FirewallConfig(object):
             zone_writer(x)
             return x
         else:
-            obj.cleanup()
             obj.fw_config = self
             obj.import_config_dict(conf_dict)
             zone_writer(obj)
