@@ -566,7 +566,6 @@ class FirewallConfig(object):
 
         if obj.builtin:
             x = copy.copy(obj)
-            x.cleanup()
             x.import_config(conf_dict)
             x.path = config.ETC_FIREWALLD_SERVICES
             x.builtin = False
@@ -576,7 +575,6 @@ class FirewallConfig(object):
             service_writer(x)
             return x
         else:
-            obj.cleanup()
             obj.import_config(conf_dict)
             service_writer(obj)
             return obj
