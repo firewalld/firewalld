@@ -259,7 +259,9 @@ class FirewallZone(object):
                 elif key == "icmp_block_inversion":
                     continue
                 elif key == "forward":
-                    self._forward(enable, zone, transaction)
+                    # no need to call this when applying the zone as the rules
+                    # will be generated when adding the interfaces/sources
+                    pass
                 else:
                     log.warning("Zone '%s': Unknown setting '%s:%s', "
                                 "unable to apply", zone, key, args)
