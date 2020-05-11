@@ -1,0 +1,67 @@
+dnl ###############
+dnl ## XML tests ##
+dnl ###############
+
+FWD_START_TEST([policy - xml])
+AT_KEYWORDS(policy xml)
+
+AT_CHECK([mkdir -p ./policies])
+
+dnl something in all elements
+AT_DATA([./policies/foobar.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<policy target="CONTINUE" priority="-123">
+<short>foobar</short>
+<description>foobar policy</description>
+<ingress-zone name="public" />
+<egress-zone name="ANY" />
+<service name="ssh" />
+<service name="https" />
+<port port="1234" protocol="tcp" />
+<icmp-block name="echo-request" />
+<masquerade />
+<forward-port port="1234" protocol="tcp" to-port="4321" to-addr="10.10.10.1" />
+<source-port port="1234" protocol="udp" />
+<protocol value="ipv6-icmp" />
+<rule family="ipv4">
+    <source address="10.10.10.0/24" />
+    <destination address="192.168.10.0/24" />
+    <service name="ssh" />
+    <accept>
+        <limit value="5/m" />
+    </accept>
+</rule>
+<rule>
+    <port port="1234" protocol="tcp" />
+    <reject />
+</rule>
+<rule family="ipv4">
+    <source address="10.10.10.0/24" />
+    <icmp-block name="echo-request" />
+</rule>
+<rule>
+    <icmp-type name="echo-reply" />
+    <drop />
+</rule>
+<rule family="ipv4">
+    <forward-port port="1234" protocol="tcp" to-port="4321" to-addr="10.10.10.1" />
+</rule>
+<rule>
+    <source-port port="1234" protocol="udp" />
+    <log prefix="LOG: " level="warning" />
+</rule>
+<rule family="ipv6">
+    <protocol value="ipv6-icmp" />
+    <audit />
+    <accept />
+</rule>
+<rule family="ipv4">
+    <destination address="192.168.10.0/24" />
+    <mark set="123" />
+</rule>
+</policy>
+])
+FWD_CHECK([--check-config], 0, [ignore], [ignore])
+FWD_RELOAD
+
+FWD_END_TEST
