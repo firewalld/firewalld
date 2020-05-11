@@ -597,3 +597,27 @@ m4_define([NMCLI_CHECK], [
     NS_CHECK([PIPESTATUS0([nmcli $1], [TRIM_WHITESPACE])],
              [$2], [m4_strip([$3])], [m4_strip([$4])], [$5], [$6])
 ])
+
+m4_define([IF_HOST_SUPPORTS_NFT_RULE_INDEX], [
+    m4_if(nftables, FIREWALL_BACKEND, [
+        AT_DATA([./nft_rule_index.nft], [
+            add table inet firewalld_check_rule_index
+            add chain inet firewalld_check_rule_index foobar { type filter hook input priority 0 ; }
+            add rule inet firewalld_check_rule_index foobar tcp dport 1234 accept
+            add rule inet firewalld_check_rule_index foobar accept
+            insert rule inet firewalld_check_rule_index foobar index 1 udp dport 4321 accept
+])
+        NS_CHECK([nft -f ./nft_rule_index.nft])
+
+        if test "$( NS_CMD([nft list chain inet firewalld_check_rule_index foobar | head -n 5 |tail -n 1 | TRIM_WHITESPACE]) )" = "udp dport 4321 accept"; then
+            :
+            $1
+        else
+            :
+            $2
+        fi
+
+        NS_CHECK([rm ./nft_rule_index.nft])
+        NS_CHECK([nft delete table inet firewalld_check_rule_index])
+    ], [$1])
+])
