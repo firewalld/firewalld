@@ -1,0 +1,107 @@
+FWD_START_TEST([ports])
+AT_KEYWORDS(policy port)
+
+FWD_CHECK([--permanent --new-policy=foobar], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-ingress-zone ANY], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-egress-zone HOST], 0, [ignore])
+
+dnl permanent --> runtime
+FWD_CHECK([--permanent --policy=foobar --add-port 1234/tcp], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-port 1234/udp], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-port 4321/udp], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-rich-rule='rule port port=4444 protocol=udp accept'], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar --query-port 1234/tcp], 0, ignore)
+FWD_CHECK([--permanent --policy foobar --query-port 1234/udp], 0, ignore)
+FWD_CHECK([--permanent --policy foobar --query-port 4321/udp], 0, ignore)
+FWD_CHECK([--permanent --policy=foobar --query-rich-rule='rule port port=4444 protocol=udp accept'], 0, [ignore])
+FWD_RELOAD
+FWD_CHECK([--policy foobar --query-port 1234/tcp], 0, ignore)
+FWD_CHECK([--policy foobar --query-port 1234/udp], 0, ignore)
+FWD_CHECK([--policy foobar --query-port 4321/udp], 0, ignore)
+FWD_CHECK([--policy=foobar --query-rich-rule='rule port port=4444 protocol=udp accept'], 0, [ignore])
+NFT_LIST_RULES([inet], [filter_IN_policy_foobar_allow], 0, [dnl
+    table inet firewalld {
+        chain filter_IN_policy_foobar_allow {
+            tcp dport 1234 ct state new,untracked accept
+            udp dport 1234 ct state new,untracked accept
+            udp dport 4321 ct state new,untracked accept
+            udp dport 4444 ct state new,untracked accept
+        }
+    }
+])
+IPTABLES_LIST_RULES([filter], [IN_foobar_allow], 0, [dnl
+    ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:1234 ctstate NEW,UNTRACKED
+    ACCEPT udp -- 0.0.0.0/0 0.0.0.0/0 udp dpt:1234 ctstate NEW,UNTRACKED
+    ACCEPT udp -- 0.0.0.0/0 0.0.0.0/0 udp dpt:4321 ctstate NEW,UNTRACKED
+    ACCEPT udp -- 0.0.0.0/0 0.0.0.0/0 udp dpt:4444 ctstate NEW,UNTRACKED
+])
+IP6TABLES_LIST_RULES([filter], [IN_foobar_allow], 0, [dnl
+    ACCEPT tcp ::/0 ::/0 tcp dpt:1234 ctstate NEW,UNTRACKED
+    ACCEPT udp ::/0 ::/0 udp dpt:1234 ctstate NEW,UNTRACKED
+    ACCEPT udp ::/0 ::/0 udp dpt:4321 ctstate NEW,UNTRACKED
+    ACCEPT udp ::/0 ::/0 udp dpt:4444 ctstate NEW,UNTRACKED
+])
+FWD_CHECK([--permanent --policy=foobar --remove-port 1234/tcp], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar --query-port 1234/tcp], 1, [ignore])
+FWD_CHECK([--permanent --policy foobar --query-port 1234/udp], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --remove-port 1234/udp], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --remove-port 4321/udp], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --remove-rich-rule='rule port port=4444 protocol=udp accept'], 0, [ignore])
+FWD_CHECK([--policy=foobar --remove-port 1234/tcp], 0, [ignore])
+FWD_CHECK([--policy foobar --query-port 1234/tcp], 1, [ignore])
+FWD_CHECK([--policy foobar --query-port 1234/udp], 0, [ignore])
+FWD_CHECK([--policy=foobar --remove-port 1234/udp], 0, [ignore])
+FWD_CHECK([--policy=foobar --remove-port 4321/udp], 0, [ignore])
+FWD_CHECK([--policy=foobar --remove-rich-rule='rule port port=4444 protocol=udp accept'], 0, [ignore])
+
+dnl runtime --> permanent
+m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
+FWD_CHECK([--policy=foobar --add-port 1234/udp], 0, [ignore])
+FWD_CHECK([--policy=foobar --add-rich-rule='rule port port=4444 protocol=sctp accept'], 0, [ignore])
+FWD_CHECK([--policy foobar --query-port 1234/udp], 0, [ignore])
+FWD_CHECK([--policy=foobar --query-rich-rule='rule port port=4444 protocol=sctp accept'], 0, [ignore])
+FWD_CHECK([--runtime-to-permanent], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar --query-port 1234/udp], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --query-rich-rule='rule port port=4444 protocol=sctp accept'], 0, [ignore])
+NFT_LIST_RULES([inet], [filter_IN_policy_foobar_allow], 0, [dnl
+    table inet firewalld {
+        chain filter_IN_policy_foobar_allow {
+            udp dport 1234 ct state new,untracked accept
+            sctp dport 4444 ct state new,untracked accept
+        }
+    }
+])
+IPTABLES_LIST_RULES([filter], [IN_foobar_allow], 0, [dnl
+    ACCEPT udp -- 0.0.0.0/0 0.0.0.0/0 udp dpt:1234 ctstate NEW,UNTRACKED
+    ACCEPT sctp -- 0.0.0.0/0 0.0.0.0/0 sctp dpt:4444 ctstate NEW,UNTRACKED
+])
+IP6TABLES_LIST_RULES([filter], [IN_foobar_allow], 0, [dnl
+    ACCEPT udp ::/0 ::/0 udp dpt:1234 ctstate NEW,UNTRACKED
+    ACCEPT sctp ::/0 ::/0 sctp dpt:4444 ctstate NEW,UNTRACKED
+])
+FWD_CHECK([--permanent --policy=foobar --remove-port 1234/udp], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --remove-rich-rule='rule port port=4444 protocol=sctp accept'], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar --query-port 1234/udp], 1, [ignore])
+FWD_CHECK([--permanent --policy=foobar --query-rich-rule='rule port port=4444 protocol=sctp accept'], 1, [ignore])
+FWD_CHECK([--policy=foobar --remove-port 1234/udp], 0, [ignore])
+FWD_CHECK([--policy=foobar --remove-rich-rule='rule port port=4444 protocol=sctp accept'], 0, [ignore])
+FWD_CHECK([--policy foobar --query-port 1234/udp], 1, [ignore])
+FWD_CHECK([--policy=foobar --query-rich-rule='rule port port=4444 protocol=sctp accept'], 1, [ignore])
+])
+
+dnl invalid ports
+FWD_CHECK([--permanent --policy=foobar --add-port 1234], 102, [ignore], [ignore])
+FWD_CHECK([--policy=foobar --add-port 1234], 102, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-port 123443/tcp], 102, [ignore], [ignore])
+FWD_CHECK([--policy=foobar --add-port 123443/tcp], 102, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-port 1234/bogus], 103, [ignore], [ignore])
+FWD_CHECK([--policy=foobar --add-port 1234/bogus], 103, [ignore], [ignore])
+
+FWD_CHECK([--permanent --policy=foobar --add-rich-rule='rule port port=4444 accept'], 103, [ignore], [ignore])
+FWD_CHECK([            --policy=foobar --add-rich-rule='rule port port=4444 accept'], 103, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-rich-rule='rule port port=99999 protocol=tcp accept'], 102, [ignore], [ignore])
+FWD_CHECK([            --policy=foobar --add-rich-rule='rule port port=99999 protocol=tcp accept'], 102, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-rich-rule='rule port port=4444 protocol=bogus accept'], 103, [ignore], [ignore])
+FWD_CHECK([            --policy=foobar --add-rich-rule='rule port port=4444 protocol=bogus accept'], 103, [ignore], [ignore])
+
+FWD_END_TEST
