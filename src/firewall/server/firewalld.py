@@ -478,6 +478,24 @@ class FirewallD(slip.dbus.service.Object):
                     (name, e))
                 error = True
 
+        # policies
+
+        config_names = self.config.getPolicyNames()
+        for name in self.fw.policy.get_policies_not_derived_from_zone():
+            conf = self.getPolicySettings(name)
+            try:
+                if name in config_names:
+                    conf_obj = self.config.getPolicyByName(name)
+                    conf_obj.update(conf)
+                else:
+                    log.debug1("Creating policy '%s'" % name)
+                    self.config.addPolicy(name, conf)
+            except Exception as e:
+                log.warning(
+                    "Runtime To Permanent failed on policy '%s': %s" % \
+                    (name, e))
+                error = True
+
         # helpers
 
         config_names = self.config.getHelperNames()
@@ -922,6 +940,30 @@ class FirewallD(slip.dbus.service.Object):
     def ZoneUpdated(self, zone, settings):
         log.debug1("zone.ZoneUpdated('%s', '%s')" % (zone, settings))
 
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_POLICY, in_signature='s',
+                         out_signature="a{sv}")
+    @dbus_handle_exceptions
+    def getPolicySettings(self, policy, sender=None):
+        policy = dbus_to_python(policy, str)
+        log.debug1("policy.getPolicySettings(%s)", policy)
+        return self.fw.policy.get_config_with_settings_dict(policy)
+
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_POLICY, in_signature='sa{sv}')
+    @dbus_handle_exceptions
+    def setPolicySettings(self, policy, settings, sender=None):
+        policy = dbus_to_python(policy, str)
+        log.debug1("policy.setPolicySettings(%s)", policy)
+        self.accessCheck(sender)
+        self.fw.policy.set_config_with_settings_dict(policy, settings, sender)
+        self.PolicyUpdated(policy, settings)
+
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_POLICY, signature='sa{sv}')
+    @dbus_handle_exceptions
+    def PolicyUpdated(self, policy, settings):
+        log.debug1("policy.PolicyUpdated('%s', '%s')" % (policy, settings))
+
     @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_INFO)
     @dbus_service_method(config.dbus.DBUS_INTERFACE, in_signature='',
                          out_signature='as')
@@ -1079,6 +1121,36 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def DefaultZoneChanged(self, zone):
         log.debug1("DefaultZoneChanged('%s')" % (zone))
+
+    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+    # POLICY INTERFACE
+    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+    # POLICIES
+
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_POLICY, in_signature='',
+                         out_signature='as')
+    @dbus_handle_exceptions
+    def getPolicies(self, sender=None):
+        log.debug1("policy.getPolicies()")
+        return self.fw.policy.get_policies_not_derived_from_zone()
+
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_POLICY, in_signature='',
+                         out_signature='a{sa{sas}}')
+    @dbus_handle_exceptions
+    def getActivePolicies(self, sender=None):
+        log.debug1("policy.getActivePolicies()")
+        policies = { }
+        for policy in self.fw.policy.get_policies_not_derived_from_zone():
+            ingress_zones = self.fw.policy.list_ingress_zones(policy)
+            egress_zones = self.fw.policy.list_egress_zones(policy)
+            if len(ingress_zones) > 0 and len(egress_zones) > 0:
+                policies[policy] = { }
+                policies[policy]["ingress_zones"] = ingress_zones
+                policies[policy]["egress_zones"] = egress_zones
+        return policies
 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
     # ZONE INTERFACE
