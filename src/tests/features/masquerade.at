@@ -1,0 +1,115 @@
+FWD_START_TEST([masquerade])
+AT_KEYWORDS(policy masquerade)
+
+FWD_CHECK([--permanent --zone=public --add-interface foobar0], 0, [ignore])
+
+FWD_CHECK([--permanent --new-policy=foobar], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-ingress-zone ANY], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-egress-zone public], 0, [ignore])
+
+dnl permanent --> runtime
+FWD_CHECK([--permanent --policy=foobar --add-masquerade], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-rich-rule='rule family=ipv4 source address=10.10.10.0/24 masquerade'], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar --query-masquerade], 0, ignore)
+FWD_CHECK([--permanent --policy=foobar --query-rich-rule='rule family=ipv4 source address=10.10.10.0/24 masquerade'], 0, [ignore])
+FWD_RELOAD
+FWD_CHECK([--policy foobar --query-masquerade], 0, ignore)
+FWD_CHECK([--policy=foobar --query-rich-rule='rule family=ipv4 source address=10.10.10.0/24 masquerade'], 0, [ignore])
+NFT_LIST_RULES([ip], [nat_POST_policy_foobar_allow], 0, [dnl
+    table ip firewalld {
+        chain nat_POST_policy_foobar_allow {
+            oifname != "lo" masquerade
+            ip saddr 10.10.10.0/24 oifname != "lo" masquerade
+        }
+    }
+])
+NFT_LIST_RULES([ip6], [nat_POST_policy_foobar_allow], 0, [dnl
+    table ip6 firewalld {
+        chain nat_POST_policy_foobar_allow {
+        }
+    }
+])
+IPTABLES_LIST_RULES([nat], [POST_foobar_allow], 0, [dnl
+    MASQUERADE all -- 0.0.0.0/0 0.0.0.0/0
+    MASQUERADE all -- 10.10.10.0/24 0.0.0.0/0
+])
+IP6TABLES_LIST_RULES([nat], [POST_foobar_allow], 0, [dnl
+])
+FWD_CHECK([--permanent --policy=foobar --remove-masquerade], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --remove-rich-rule='rule family=ipv4 source address=10.10.10.0/24 masquerade'], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar --query-masquerade], 1, [ignore])
+FWD_CHECK([--permanent --policy=foobar --query-rich-rule='rule family=ipv4 source address=10.10.10.0/24 masquerade'], 1, [ignore])
+FWD_CHECK([--policy=foobar --remove-masquerade], 0, [ignore])
+FWD_CHECK([--policy=foobar --remove-rich-rule='rule family=ipv4 source address=10.10.10.0/24 masquerade'], 0, [ignore])
+FWD_CHECK([--policy foobar --query-masquerade], 1, [ignore])
+FWD_CHECK([--policy=foobar --query-rich-rule='rule family=ipv4 source address=10.10.10.0/24 masquerade'], 1, [ignore])
+
+dnl runtime --> permanent
+m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
+FWD_CHECK([--policy=foobar --add-masquerade], 0, [ignore])
+FWD_CHECK([--policy=foobar --add-rich-rule='rule family=ipv6 source address=1234::/64 masquerade'], 0, [ignore])
+FWD_CHECK([--policy foobar --query-masquerade], 0, [ignore])
+FWD_CHECK([--policy=foobar --query-rich-rule='rule family=ipv6 source address=1234::/64 masquerade'], 0, [ignore])
+FWD_CHECK([--runtime-to-permanent], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar --query-masquerade], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --query-rich-rule='rule family=ipv6 source address=1234::/64 masquerade'], 0, [ignore])
+NFT_LIST_RULES([ip], [nat_POST_policy_foobar_allow], 0, [dnl
+    table ip firewalld {
+        chain nat_POST_policy_foobar_allow {
+            oifname != "lo" masquerade
+        }
+    }
+])
+NFT_LIST_RULES([ip6], [nat_POST_policy_foobar_allow], 0, [dnl
+    table ip6 firewalld {
+        chain nat_POST_policy_foobar_allow {
+            ip6 saddr 1234::/64 oifname != "lo" masquerade
+        }
+    }
+])
+IPTABLES_LIST_RULES([nat], [POST_foobar_allow], 0, [dnl
+    MASQUERADE all -- 0.0.0.0/0 0.0.0.0/0
+])
+IP6TABLES_LIST_RULES([nat], [POST_foobar_allow], 0, [dnl
+    MASQUERADE all 1234::/64 ::/0
+])
+FWD_CHECK([--permanent --policy=foobar --remove-masquerade], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --remove-rich-rule='rule family=ipv6 source address=1234::/64 masquerade'], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar --query-masquerade], 1, [ignore])
+FWD_CHECK([--permanent --policy=foobar --query-rich-rule='rule family=ipv6 source address=1234::/64 masquerade'], 1, [ignore])
+])
+
+dnl invalid for --> HOST
+FWD_CHECK([--permanent --new-policy=foobar_host], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar_host --add-ingress-zone internal], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar_host --add-egress-zone HOST], 0, [ignore])
+FWD_RELOAD
+FWD_CHECK([--permanent --policy=foobar_host --add-masquerade], 112, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar_host --add-rich-rule='rule family=ipv4 source address=10.10.10.0/24 masquerade'], 112, [ignore], [ignore])
+FWD_CHECK([--policy=foobar_host --add-masquerade], 112, [ignore], [ignore])
+FWD_CHECK([--policy=foobar_host --add-rich-rule='rule family=ipv4 source address=10.10.10.0/24 masquerade'], 112, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar_host --remove-ingress-zone internal], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar_host --remove-egress-zone HOST], 0, [ignore])
+
+dnl invalid for zone --> zone if ingress zone has interfaces
+dnl
+FWD_CHECK([--permanent --new-policy=foobar_int_to_pub], 0, [ignore])
+FWD_CHECK([--permanent --zone=internal --add-interface foobar1], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar_int_to_pub --add-ingress-zone internal], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar_int_to_pub --add-egress-zone public], 0, [ignore])
+FWD_RELOAD
+FWD_CHECK([--permanent --policy=foobar_int_to_pub --add-masquerade], 112, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar_int_to_pub --add-rich-rule='rule family=ipv4 source address=10.10.10.0/24 masquerade'], 112, [ignore], [ignore])
+FWD_CHECK([--policy=foobar_int_to_pub --add-masquerade], 112, [ignore], [ignore])
+FWD_CHECK([--policy=foobar_int_to_pub --add-rich-rule='rule family=ipv4 source address=10.10.10.0/24 masquerade'], 112, [ignore], [ignore])
+FWD_CHECK([--permanent --zone=internal --remove-interface foobar1], 0, [ignore])
+
+dnl valid for zone --> zone if ingress zone has only sources
+dnl
+FWD_CHECK([--permanent --zone=internal --add-source 10.10.10.0/24], 0, [ignore])
+FWD_RELOAD
+FWD_CHECK([--permanent --policy=foobar_int_to_pub --add-masquerade], 0, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar_int_to_pub --add-rich-rule='rule family=ipv4 source address=10.10.10.0/24 masquerade'], 0, [ignore], [ignore])
+FWD_CHECK([--permanent --zone=internal --remove-source 10.10.10.0/24], 0, [ignore])
+
+FWD_END_TEST([-e '/ERROR: INVALID_ZONE:/d'])
