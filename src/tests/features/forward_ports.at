@@ -1,0 +1,214 @@
+FWD_START_TEST([forward ports])
+AT_KEYWORDS(policy forward_port)
+
+FWD_CHECK([--permanent --new-policy=foobar], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-ingress-zone ANY], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-egress-zone ANY], 0, [ignore])
+
+dnl permanent --> runtime
+FWD_CHECK([--permanent --policy=foobar --add-forward-port port=33:proto=tcp:toport=33:toaddr=10.10.10.10], 0, [ignore])
+IF_HOST_SUPPORTS_IPV6_RULES([
+FWD_CHECK([--permanent --policy=foobar --add-forward-port port=44:proto=udp:toport=4444:toaddr=1234::4321], 0, [ignore])
+])
+FWD_CHECK([--permanent --policy=foobar --add-rich-rule='rule family=ipv4 forward-port port=444 protocol=udp to-port=4444 to-addr=10.44.44.44'], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar --query-forward-port port=33:proto=tcp:toport=33:toaddr=10.10.10.10], 0, ignore)
+IF_HOST_SUPPORTS_IPV6_RULES([
+FWD_CHECK([--permanent --policy foobar --query-forward-port port=44:proto=udp:toport=4444:toaddr=1234::4321], 0, ignore)
+])
+FWD_CHECK([--permanent --policy=foobar --query-rich-rule='rule family=ipv4 forward-port port=444 protocol=udp to-port=4444 to-addr=10.44.44.44'], 0, [ignore])
+FWD_RELOAD
+FWD_CHECK([--policy foobar --query-forward-port port=33:proto=tcp:toport=33:toaddr=10.10.10.10], 0, ignore)
+IF_HOST_SUPPORTS_IPV6_RULES([
+FWD_CHECK([--policy foobar --query-forward-port port=44:proto=udp:toport=4444:toaddr=1234::4321], 0, ignore)
+])
+FWD_CHECK([--policy=foobar --query-rich-rule='rule family=ipv4 forward-port port=444 protocol=udp to-port=4444 to-addr=10.44.44.44'], 0, [ignore])
+NFT_LIST_RULES([ip], [nat_PRE_policy_foobar_allow], 0, [dnl
+    table ip firewalld {
+        chain nat_PRE_policy_foobar_allow {
+            tcp dport 33 dnat to 10.10.10.10:33
+            udp dport 444 dnat to 10.44.44.44:4444
+        }
+    }
+])
+NFT_LIST_RULES([ip6], [nat_PRE_policy_foobar_allow], 0, [dnl
+    table ip6 firewalld {
+        chain nat_PRE_policy_foobar_allow {
+            udp dport 44 dnat to [[1234::4321]:4444]
+        }
+    }
+])
+IPTABLES_LIST_RULES([nat], [PRE_foobar_allow], 0, [dnl
+    DNAT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:33 to:10.10.10.10:33
+    DNAT udp -- 0.0.0.0/0 0.0.0.0/0 udp dpt:444 to:10.44.44.44:4444
+])
+IP6TABLES_LIST_RULES([nat], [PRE_foobar_allow], 0, [dnl
+    DNAT udp ::/0 ::/0 udp dpt:44 [to:[1234::4321]:4444]
+])
+FWD_CHECK([--permanent --policy foobar --query-forward-port port=33:proto=tcp:toport=33:toaddr=10.10.10.10], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --remove-forward-port port=33:proto=tcp:toport=33:toaddr=10.10.10.10], 0, [ignore])
+IF_HOST_SUPPORTS_IPV6_RULES([
+FWD_CHECK([--permanent --policy=foobar --remove-forward-port port=44:proto=udp:toport=4444:toaddr=1234::4321], 0, [ignore])
+])
+FWD_CHECK([--permanent --policy=foobar --remove-rich-rule='rule family=ipv4 forward-port port=444 protocol=udp to-port=4444 to-addr=10.44.44.44'], 0, [ignore])
+FWD_CHECK([--policy foobar --query-forward-port port=33:proto=tcp:toport=33:toaddr=10.10.10.10], 0, [ignore])
+FWD_CHECK([--policy=foobar --remove-forward-port port=33:proto=tcp:toport=33:toaddr=10.10.10.10], 0, [ignore])
+IF_HOST_SUPPORTS_IPV6_RULES([
+FWD_CHECK([--policy=foobar --remove-forward-port port=44:proto=udp:toport=4444:toaddr=1234::4321], 0, [ignore])
+])
+FWD_CHECK([--policy=foobar --remove-rich-rule='rule family=ipv4 forward-port port=444 protocol=udp to-port=4444 to-addr=10.44.44.44'], 0, [ignore])
+
+dnl runtime --> permanent
+m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
+FWD_CHECK([--policy=foobar --add-forward-port port=33:proto=tcp:toport=33:toaddr=10.10.10.10], 0, [ignore])
+FWD_CHECK([--policy=foobar --add-rich-rule='rule family=ipv4 forward-port port=444 protocol=udp to-port=4444 to-addr=10.44.44.44'], 0, [ignore])
+FWD_CHECK([--policy foobar --query-forward-port port=33:proto=tcp:toport=33:toaddr=10.10.10.10], 0, [ignore])
+FWD_CHECK([--policy=foobar --query-rich-rule='rule family=ipv4 forward-port port=444 protocol=udp to-port=4444 to-addr=10.44.44.44'], 0, [ignore])
+FWD_CHECK([--runtime-to-permanent], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar --query-forward-port port=33:proto=tcp:toport=33:toaddr=10.10.10.10], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --query-rich-rule='rule family=ipv4 forward-port port=444 protocol=udp to-port=4444 to-addr=10.44.44.44'], 0, [ignore])
+NFT_LIST_RULES([ip], [nat_PRE_policy_foobar_allow], 0, [dnl
+    table ip firewalld {
+        chain nat_PRE_policy_foobar_allow {
+            tcp dport 33 dnat to 10.10.10.10:33
+            udp dport 444 dnat to 10.44.44.44:4444
+        }
+    }
+])
+NFT_LIST_RULES([ip6], [nat_PRE_policy_foobar_allow], 0, [dnl
+    table ip6 firewalld {
+        chain nat_PRE_policy_foobar_allow {
+        }
+    }
+])
+IPTABLES_LIST_RULES([nat], [PRE_foobar_allow], 0, [dnl
+    DNAT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:33 to:10.10.10.10:33
+    DNAT udp -- 0.0.0.0/0 0.0.0.0/0 udp dpt:444 to:10.44.44.44:4444
+])
+IP6TABLES_LIST_RULES([nat], [PRE_foobar_allow], 0, [dnl
+])
+FWD_CHECK([--permanent --policy=foobar --remove-forward-port port=33:proto=tcp:toport=33:toaddr=10.10.10.10], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --remove-rich-rule='rule family=ipv4 forward-port port=444 protocol=udp to-port=4444 to-addr=10.44.44.44'], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar --query-forward-port port=33:proto=tcp:toport=33:toaddr=10.10.10.10], 1, [ignore])
+FWD_CHECK([--permanent --policy=foobar --query-rich-rule='rule family=ipv4 forward-port port=444 protocol=udp to-port=4444 to-addr=10.44.44.44'], 1, [ignore])
+FWD_CHECK([--policy=foobar --remove-forward-port port=33:proto=tcp:toport=33:toaddr=10.10.10.10], 0, [ignore])
+FWD_CHECK([--policy=foobar --remove-rich-rule='rule family=ipv4 forward-port port=444 protocol=udp to-port=4444 to-addr=10.44.44.44'], 0, [ignore])
+FWD_CHECK([--policy foobar --query-forward-port port=33:proto=tcp:toport=33:toaddr=10.10.10.10], 1, [ignore])
+FWD_CHECK([--policy=foobar --query-rich-rule='rule family=ipv4 forward-port port=444 protocol=udp to-port=4444 to-addr=10.44.44.44'], 1, [ignore])
+])
+
+dnl invalid ports
+FWD_CHECK([--permanent --policy=foobar --add-forward-port 1234], 106, [ignore], [ignore])
+FWD_CHECK([--policy=foobar --add-forward-port 1234], 106, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-forward-port port=11:proto=tcp], 106, [ignore], [ignore])
+FWD_CHECK([--policy=foobar --add-forward-port port=11:proto=tcp], 106, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-forward-port port=11:proto=tcpp:toport=1111], 103, [ignore], [ignore])
+FWD_CHECK([--policy=foobar --add-forward-port port=11:proto=tcpp:toport=1111], 103, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-forward-port port=11:proto=tcp:toport=1111:toaddr=10.10.10.10.10], 105, [ignore], [ignore])
+FWD_CHECK([--policy=foobar --add-forward-port port=11:proto=tcp:toport=1111:toaddr=10.10.10.10.10], 105, [ignore], [ignore])
+
+FWD_CHECK([--permanent --policy=foobar --add-rich-rule='rule family=ipv4 forward-port port=444'], 103, [ignore], [ignore])
+FWD_CHECK([            --policy=foobar --add-rich-rule='rule family=ipv4 forward-port port=444'], 103, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-rich-rule='rule family=ipv4 forward-port port=444 protocol=tcp'], 102, [ignore], [ignore])
+FWD_CHECK([            --policy=foobar --add-rich-rule='rule family=ipv4 forward-port port=444 protocol=tcp'], 102, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-rich-rule='rule family=ipv4 forward-port port=444 protocol=tcpp to-port=1111'], 103, [ignore], [ignore])
+FWD_CHECK([            --policy=foobar --add-rich-rule='rule family=ipv4 forward-port port=444 protocol=tcpp to-port=1111'], 103, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-rich-rule='rule family=ipv4 forward-port port=444 protocol=tcp to-port=1111 to-addr=10.10.10.10.10'], 105, [ignore], [ignore])
+FWD_CHECK([            --policy=foobar --add-rich-rule='rule family=ipv4 forward-port port=444 protocol=tcp to-port=1111 to-addr=10.10.10.10.10'], 105, [ignore], [ignore])
+
+FWD_CHECK([--permanent --policy=foobar --remove-egress-zone ANY], 0, [ignore])
+FWD_CHECK([            --policy=foobar --remove-egress-zone ANY], 0, [ignore])
+
+dnl if egress-zone is HOST then to-addr is invalid
+FWD_CHECK([--permanent --policy=foobar --add-egress-zone HOST], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-forward-port port=22:proto=tcp:toport=2222:toaddr=10.0.0.1], 106, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-rich-rule='rule family=ipv4 forward-port port=444 protocol=udp to-port=4444 to-addr=10.44.44.44'], 106, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-forward-port port=22:proto=tcp:toport=2222], 0, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-rich-rule='rule family=ipv6 forward-port port=444 protocol=udp to-port=4444'], 0, [ignore], [ignore])
+FWD_CHECK([--policy=foobar --add-egress-zone HOST], 0, [ignore])
+FWD_CHECK([--policy=foobar --add-forward-port port=22:proto=tcp:toport=2222:toaddr=10.0.0.1], 106, [ignore], [ignore])
+FWD_CHECK([--policy=foobar --add-rich-rule='rule family=ipv4 forward-port port=444 protocol=udp to-port=4444 to-addr=10.44.44.44'], 106, [ignore], [ignore])
+FWD_CHECK([--policy=foobar --add-forward-port port=22:proto=tcp:toport=2222], 0, [ignore], [ignore])
+FWD_CHECK([--policy=foobar --add-rich-rule='rule family=ipv6 forward-port port=444 protocol=udp to-port=4444'], 0, [ignore], [ignore])
+NFT_LIST_RULES([ip], [nat_PRE_policy_foobar_allow], 0, [dnl
+    table ip firewalld {
+        chain nat_PRE_policy_foobar_allow {
+            tcp dport 22 redirect to :2222
+        }
+    }
+])
+NFT_LIST_RULES([ip6], [nat_PRE_policy_foobar_allow], 0, [dnl
+    table ip6 firewalld {
+        chain nat_PRE_policy_foobar_allow {
+            udp dport 444 redirect to :4444
+        }
+    }
+])
+IPTABLES_LIST_RULES([nat], [PRE_foobar_allow], 0, [dnl
+    DNAT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:22 to::2222
+])
+IP6TABLES_LIST_RULES([nat], [PRE_foobar_allow], 0, [dnl
+    DNAT udp ::/0 ::/0 udp dpt:444 to::4444
+])
+FWD_CHECK([--permanent --policy=foobar --remove-forward-port port=22:proto=tcp:toport=2222], 0, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --remove-rich-rule='rule family=ipv6 forward-port port=444 protocol=udp to-port=4444'], 0, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --remove-egress-zone HOST], 0, [ignore])
+FWD_CHECK([--policy=foobar --remove-forward-port port=22:proto=tcp:toport=2222], 0, [ignore], [ignore])
+FWD_CHECK([--policy=foobar --remove-rich-rule='rule family=ipv6 forward-port port=444 protocol=udp to-port=4444'], 0, [ignore], [ignore])
+FWD_CHECK([--policy=foobar --remove-egress-zone HOST], 0, [ignore])
+
+dnl if egress-zone is ANY then to-addr is required
+FWD_CHECK([--permanent --policy=foobar --add-egress-zone ANY], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-forward-port port=22:proto=tcp:toport=2222], 106, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-forward-port port=22:proto=tcp:toport=2222:toaddr=10.0.0.1], 0, [ignore], [ignore])
+FWD_CHECK([--policy=foobar --add-egress-zone ANY], 0, [ignore])
+FWD_CHECK([--policy=foobar --add-forward-port port=22:proto=tcp:toport=2222], 106, [ignore], [ignore])
+FWD_CHECK([--policy=foobar --add-forward-port port=22:proto=tcp:toport=2222:toaddr=10.0.0.1], 0, [ignore], [ignore])
+
+FWD_CHECK([--permanent --policy=foobar --remove-forward-port port=22:proto=tcp:toport=2222:toaddr=10.0.0.1], 0, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --remove-egress-zone ANY], 0, [ignore])
+FWD_CHECK([--policy=foobar --remove-forward-port port=22:proto=tcp:toport=2222:toaddr=10.0.0.1], 0, [ignore], [ignore])
+FWD_CHECK([--policy=foobar --remove-egress-zone ANY], 0, [ignore])
+
+dnl if egress-zone is a zone then the zone must not have interfaces
+FWD_CHECK([--permanent --zone internal --add-interface foobar0], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-egress-zone internal], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-forward-port port=22:proto=tcp:toport=2222], 106, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-forward-port port=22:proto=tcp:toport=2222:toaddr=10.0.0.1], 112, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-rich-rule='rule family=ipv4 forward-port port=444 protocol=udp to-port=4444'], 106, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-rich-rule='rule family=ipv4 forward-port port=444 protocol=udp to-port=4444 to-addr=10.44.44.44'], 112, [ignore], [ignore])
+FWD_CHECK([--zone internal --add-interface foobar0], 0, [ignore])
+FWD_CHECK([--policy=foobar --add-egress-zone internal], 0, [ignore])
+FWD_CHECK([--policy=foobar --add-forward-port port=22:proto=tcp:toport=2222], 106, [ignore], [ignore])
+FWD_CHECK([--policy=foobar --add-forward-port port=22:proto=tcp:toport=2222:toaddr=10.0.0.1], 112, [ignore], [ignore])
+FWD_CHECK([--policy=foobar --add-rich-rule='rule family=ipv4 forward-port port=444 protocol=udp to-port=4444'], 106, [ignore], [ignore])
+FWD_CHECK([--policy=foobar --add-rich-rule='rule family=ipv4 forward-port port=444 protocol=udp to-port=4444 to-addr=10.44.44.44'], 112, [ignore], [ignore])
+
+FWD_CHECK([--permanent --zone internal --remove-interface foobar0], 0, [ignore])
+FWD_CHECK([--zone internal --remove-interface foobar0], 0, [ignore])
+
+dnl if egress-zone is a zone and it only has sources, then toaddr must be
+dnl specified
+FWD_CHECK([--permanent --zone internal --add-source 10.10.10.0/24], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-forward-port port=22:proto=tcp:toport=2222], 106, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-forward-port port=22:proto=tcp:toport=2222:toaddr=10.0.0.1], 0, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-rich-rule='rule family=ipv4 forward-port port=444 protocol=udp to-port=4444'], 106, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-rich-rule='rule family=ipv4 forward-port port=444 protocol=udp to-port=4444 to-addr=10.44.44.44'], 0, [ignore], [ignore])
+FWD_CHECK([--zone internal --add-source 10.10.10.0/24], 0, [ignore])
+FWD_CHECK([--policy=foobar --add-forward-port port=22:proto=tcp:toport=2222], 106, [ignore], [ignore])
+FWD_CHECK([--policy=foobar --add-forward-port port=22:proto=tcp:toport=2222:toaddr=10.0.0.1], 0, [ignore], [ignore])
+FWD_CHECK([--policy=foobar --add-rich-rule='rule family=ipv4 forward-port port=444 protocol=udp to-port=4444'], 106, [ignore], [ignore])
+FWD_CHECK([--policy=foobar --add-rich-rule='rule family=ipv4 forward-port port=444 protocol=udp to-port=4444 to-addr=10.44.44.44'], 0, [ignore], [ignore])
+NFT_LIST_RULES([ip], [nat_PRE_policy_foobar_allow], 0, [dnl
+    table ip firewalld {
+        chain nat_PRE_policy_foobar_allow {
+            tcp dport 22 dnat to 10.0.0.1:2222
+            udp dport 444 dnat to 10.44.44.44:4444
+        }
+    }
+])
+IPTABLES_LIST_RULES([nat], [PRE_foobar_allow], 0, [dnl
+    DNAT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:22 to:10.0.0.1:2222
+    DNAT udp -- 0.0.0.0/0 0.0.0.0/0 udp dpt:444 to:10.44.44.44:4444
+])
+
+FWD_END_TEST([-e '/ERROR: INVALID_FORWARD/d' -e '/ERROR: INVALID_ZONE/d'])
