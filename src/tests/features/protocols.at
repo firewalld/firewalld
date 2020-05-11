@@ -1,0 +1,98 @@
+FWD_START_TEST([protocols])
+AT_KEYWORDS(policy protocol)
+
+FWD_CHECK([--permanent --new-policy=foobar], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-ingress-zone ANY], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-egress-zone HOST], 0, [ignore])
+
+dnl permanent --> runtime
+FWD_CHECK([--permanent --policy=foobar --add-protocol ipv6-icmp], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-protocol dccp], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-protocol gre], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-rich-rule='rule protocol value="sctp" accept'], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar --query-protocol ipv6-icmp], 0, ignore)
+FWD_CHECK([--permanent --policy foobar --query-protocol dccp], 0, ignore)
+FWD_CHECK([--permanent --policy foobar --query-protocol gre], 0, ignore)
+FWD_CHECK([--permanent --policy=foobar --query-rich-rule='rule protocol value="sctp" accept'], 0, [ignore])
+FWD_RELOAD
+FWD_CHECK([--policy foobar --query-protocol ipv6-icmp], 0, ignore)
+FWD_CHECK([--policy foobar --query-protocol dccp], 0, ignore)
+FWD_CHECK([--policy foobar --query-protocol gre], 0, ignore)
+FWD_CHECK([--policy=foobar --query-rich-rule='rule protocol value="sctp" accept'], 0, [ignore])
+NFT_LIST_RULES([inet], [filter_IN_policy_foobar_allow], 0, [dnl
+    table inet firewalld {
+        chain filter_IN_policy_foobar_allow {
+            meta l4proto sctp ct state new,untracked accept
+            meta l4proto ipv6-icmp ct state new,untracked accept
+            meta l4proto dccp ct state new,untracked accept
+            meta l4proto gre ct state new,untracked accept
+        }
+    }
+])
+IPTABLES_LIST_RULES([filter], [IN_foobar_allow], 0, [dnl
+    ACCEPT sctp -- 0.0.0.0/0 0.0.0.0/0 ctstate NEW,UNTRACKED
+    ACCEPT icmpv6-- 0.0.0.0/0 0.0.0.0/0 ctstate NEW,UNTRACKED
+    ACCEPT 33 -- 0.0.0.0/0 0.0.0.0/0 ctstate NEW,UNTRACKED
+    ACCEPT 47 -- 0.0.0.0/0 0.0.0.0/0 ctstate NEW,UNTRACKED
+])
+IP6TABLES_LIST_RULES([filter], [IN_foobar_allow], 0, [dnl
+    ACCEPT sctp ::/0 ::/0 ctstate NEW,UNTRACKED
+    ACCEPT icmpv6 ::/0 ::/0 ctstate NEW,UNTRACKED
+    ACCEPT 33 ::/0 ::/0 ctstate NEW,UNTRACKED
+    ACCEPT 47 ::/0 ::/0 ctstate NEW,UNTRACKED
+])
+FWD_CHECK([--permanent --policy=foobar --remove-protocol ipv6-icmp], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar --query-protocol ipv6-icmp], 1, [ignore])
+FWD_CHECK([--permanent --policy foobar --query-protocol dccp], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --remove-protocol dccp], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --remove-protocol gre], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --remove-rich-rule='rule protocol value="sctp" accept'], 0, [ignore])
+FWD_CHECK([--policy=foobar --remove-protocol ipv6-icmp], 0, [ignore])
+FWD_CHECK([--policy foobar --query-protocol ipv6-icmp], 1, [ignore])
+FWD_CHECK([--policy foobar --query-protocol dccp], 0, [ignore])
+FWD_CHECK([--policy=foobar --remove-protocol dccp], 0, [ignore])
+FWD_CHECK([--policy=foobar --remove-protocol gre], 0, [ignore])
+FWD_CHECK([--policy=foobar --remove-rich-rule='rule protocol value="sctp" accept'], 0, [ignore])
+
+dnl runtime --> permanent
+m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
+FWD_CHECK([--policy=foobar --add-protocol ipv6-icmp], 0, [ignore])
+FWD_CHECK([--policy=foobar --add-rich-rule='rule protocol value="sctp" accept'], 0, [ignore])
+FWD_CHECK([--policy foobar --query-protocol ipv6-icmp], 0, [ignore])
+FWD_CHECK([--policy=foobar --query-rich-rule='rule protocol value="sctp" accept'], 0, [ignore])
+FWD_CHECK([--runtime-to-permanent], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar --query-protocol ipv6-icmp], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --query-rich-rule='rule protocol value="sctp" accept'], 0, [ignore])
+NFT_LIST_RULES([inet], [filter_IN_policy_foobar_allow], 0, [dnl
+    table inet firewalld {
+        chain filter_IN_policy_foobar_allow {
+            meta l4proto ipv6-icmp ct state new,untracked accept
+            meta l4proto sctp ct state new,untracked accept
+        }
+    }
+])
+IPTABLES_LIST_RULES([filter], [IN_foobar_allow], 0, [dnl
+    ACCEPT icmpv6-- 0.0.0.0/0 0.0.0.0/0 ctstate NEW,UNTRACKED
+    ACCEPT sctp -- 0.0.0.0/0 0.0.0.0/0 ctstate NEW,UNTRACKED
+])
+IP6TABLES_LIST_RULES([filter], [IN_foobar_allow], 0, [dnl
+    ACCEPT icmpv6 ::/0 ::/0 ctstate NEW,UNTRACKED
+    ACCEPT sctp ::/0 ::/0 ctstate NEW,UNTRACKED
+])
+FWD_CHECK([--permanent --policy=foobar --remove-protocol ipv6-icmp], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --remove-rich-rule='rule protocol value="sctp" accept'], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar --query-protocol ipv6-icmp], 1, [ignore])
+FWD_CHECK([--permanent --policy=foobar --query-rich-rule='rule protocol value="sctp" accept'], 1, [ignore])
+FWD_CHECK([--policy=foobar --remove-protocol ipv6-icmp], 0, [ignore])
+FWD_CHECK([--policy=foobar --remove-rich-rule='rule protocol value="sctp" accept'], 0, [ignore])
+FWD_CHECK([--policy foobar --query-protocol ipv6-icmp], 1, [ignore])
+FWD_CHECK([--policy=foobar --query-rich-rule='rule protocol value="sctp" accept'], 1, [ignore])
+])
+
+dnl invalid protocols
+FWD_CHECK([--permanent --policy=foobar --add-protocol dummy], 103, [ignore], [ignore])
+FWD_CHECK([--policy=foobar --add-protocol dummy], 103, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-rich-rule='rule protocol value="dummy" accept'], 103, [ignore], [ignore])
+FWD_CHECK([--policy=foobar --add-rich-rule='rule protocol value="dummy" accept'], 103, [ignore], [ignore])
+
+FWD_END_TEST([-e '/ERROR: INVALID_PROTOCOL: dummy/d'])
