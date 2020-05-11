@@ -2297,6 +2297,84 @@
       </refsect3>
     </refsect2>
 
+    <refsect2 id="FirewallD1.policy">
+      <title>org.fedoraproject.FirewallD1.policy</title>
+      <para>
+        Operations in this interface allows to get, add, remove and query runtime policy settings.
+        For permanent settings see <link linkend="FirewallD1.config.policy">org.fedoraproject.FirewallD1.config.policy</link> interface.
+      </para>
+
+      <refsect3 id="FirewallD1.policy.Methods">
+        <title>Methods</title>
+        <variablelist>
+          <varlistentry id="FirewallD1.policy.Methods.getActivePolicies">
+            <term><methodname>getActivePolicies</methodname>() &rarr; a{sa{sas}}</term>
+            <listitem>
+              <para>
+                Return dictionary of currently active policies altogether with ingress zones and egress zones used in these policies.
+                Active policies are policies, that have a binding to an active ingress zone and an active egress zone.
+              </para>
+              <para>
+                Return value is a dictionary where keys are policy names (s) and values are again dictionaries where keys are either 'ingress_zones' or 'egress_zones' and values are arrays of zone names (s).
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.policy.Methods.getPolicies">
+            <term><methodname>getPolicies</methodname>() &rarr; as</term>
+            <listitem>
+              <para>
+                Return array of names (s) of predefined policies known to current runtime environment.
+                For list of policies known to permanent environment see <link linkend="FirewallD1.config.Methods.listPolicies">org.fedoraproject.FirewallD1.config.Methods.listPolicies</link>.
+                The lists (of policies known to runtime and permanent environment) will contain same policies in most cases,
+                but might differ for example if <link linkend="FirewallD1.config.Methods.addPolicy">org.fedoraproject.FirewallD1.config.Methods.addPolicy</link> has been called recently, but firewalld has not been reloaded since then.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.policy.Methods.getPolicySettings">
+            <term><methodname>getPolicySettings</methodname>(s: <parameter>policy</parameter>) &rarr; a{sv}</term>
+            <listitem>
+              <para>
+                Return runtime settings of given <replaceable>policy</replaceable>.
+                For getting permanent settings see <link linkend="FirewallD1.config.policy.Methods.getSettings">org.fedoraproject.FirewallD1.config.policy.Methods.getSettings</link>.
+                Settings are a dictionary indexed by keywords. For possible keywords see <link linkend="FirewallD1.config.Methods.addPolicy">org.fedoraproject.FirewallD1.config.Methods.addPolicy</link>. If the value is empty it may be omitted.
+              </para>
+              <para>
+                Possible errors: INVALID_POLICY
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.policy.Methods.setPolicySettings">
+            <term><methodname>setPolicySettings</methodname>(s: <parameter>policy</parameter>, a{sv}: <parameter>settings</parameter>, i: <parameter>timeout</parameter>)</term>
+            <listitem>
+              <para>
+                Set runtime settings of given <replaceable>policy</replaceable>.
+                For setting permanent settings see <link linkend="FirewallD1.config.policy.Methods.update">org.fedoraproject.FirewallD1.config.policy.Methods.update</link>.
+                Settings are a dictionary indexed by keywords. For possible keywords see <link linkend="FirewallD1.config.Methods.addPolicy">org.fedoraproject.FirewallD1.config.Methods.addPolicy</link>. To zero a value pass an empty string or list.
+                Some keywords are not available to modify in the runtime: <literal>description</literal>, <literal>name</literal>, <literal>priority</literal>, <literal>target</literal>, <literal>version</literal>.
+              </para>
+              <para>
+                Possible errors: INVALID_POLICY
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect3>
+
+      <refsect3 id="FirewallD1.policy.Signals">
+        <title>Signals</title>
+        <variablelist>
+          <varlistentry id="FirewallD1.policy.Signals.PolicyUpdated">
+            <term>ForwardPortAdded(s: policy, a{sv}: settings)</term>
+            <listitem>
+              <para>
+                Emitted when a policy's settings are updated via <link linkend="FirewallD1.policy.Methods.setPolicySettings">org.fedoraproject.FirewallD1.policy.Methods.setPolicySettings</link>
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect3>
+    </refsect2>
+
     <refsect2 id="FirewallD1.config">
       <title>org.fedoraproject.FirewallD1.config</title>
       <para>
@@ -4570,7 +4648,7 @@
             <listitem>
               <para>
                 Return permanent settings of given <replaceable>policy</replaceable>.
-                For getting runtime settings see <link linkend="FirewallD1.Methods.getPolicySettings">org.fedoraproject.FirewallD1.Methods.getPolicySettings</link>.
+                For getting runtime settings see <link linkend="FirewallD1.policy.Methods.getPolicySettings">org.fedoraproject.FirewallD1.policy.Methods.getPolicySettings</link>.
                 Settings are a dictionary indexed by keywords. For possible keywords see <link linkend="FirewallD1.config.Methods.addPolicy">org.fedoraproject.FirewallD1.config.Methods.addPolicy</link>.
               </para>
             </listitem>
