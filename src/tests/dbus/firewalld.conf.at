@@ -7,6 +7,12 @@ IF_HOST_SUPPORTS_NFT_FIB([
    EXPECTED_IPV6_RPFILTER_VALUE=no
 ])
 
+IF_HOST_SUPPORTS_NFT_RULE_INDEX([
+    EXPECTED_INDIVIDUAL_CALLS_VALUE=no
+], [
+    EXPECTED_INDIVIDUAL_CALLS_VALUE=yes
+])
+
 dnl Verify defaults over dbus. Should be inline with default firewalld.conf.
 DBUS_GETALL([config], [config], 0, [dnl
 string "AllowZoneDrifting" : variant string "no"
@@ -16,7 +22,7 @@ string "DefaultZone" : variant string "public"
 string "FirewallBackend" : variant string "nftables"
 string "FlushAllOnReload" : variant string "yes"
 string "IPv6_rpfilter" : variant string m4_escape(["${EXPECTED_IPV6_RPFILTER_VALUE}"])
-string "IndividualCalls" : variant string "no"
+string "IndividualCalls" : variant string m4_escape(["${EXPECTED_INDIVIDUAL_CALLS_VALUE}"])
 string "Lockdown" : variant string "no"
 string "LogDenied" : variant string "off"
 string "MinimalMark" : variant int32 100

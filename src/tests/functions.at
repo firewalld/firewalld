@@ -221,6 +221,10 @@ m4_define([FWD_START_TEST], [
         fi
         echo "kill $DBUS_PID" >> ./cleanup_late
 
+        IF_HOST_SUPPORTS_NFT_RULE_INDEX([], [
+            AT_CHECK([sed -i 's/^IndividualCalls.*/IndividualCalls=yes/' ./firewalld.conf])
+        ])
+
         FWD_START_FIREWALLD
     ])
 ])
