@@ -1,0 +1,97 @@
+FWD_START_TEST([services])
+AT_KEYWORDS(policy service)
+
+FWD_CHECK([--permanent --new-policy=foobar], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-ingress-zone ANY], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-egress-zone HOST], 0, [ignore])
+
+dnl simple service
+dnl permanent --> runtime
+FWD_CHECK([--permanent --policy=foobar --add-service ssh], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-rich-rule='rule family=ipv4 source address="10.10.10.0/24" service name=ssh accept'], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar --query-service ssh], 0, ignore)
+FWD_CHECK([--permanent --policy=foobar --query-rich-rule='rule family=ipv4 source address="10.10.10.0/24" service name=ssh accept'], 0, [ignore])
+FWD_RELOAD
+FWD_CHECK([--policy foobar --query-service ssh], 0, ignore)
+FWD_CHECK([--policy=foobar --query-rich-rule='rule family=ipv4 source address="10.10.10.0/24" service name=ssh accept'], 0, [ignore])
+NFT_LIST_RULES([inet], [filter_IN_policy_foobar_allow], 0, [dnl
+    table inet firewalld {
+        chain filter_IN_policy_foobar_allow {
+            tcp dport 22 ct state new,untracked accept
+            ip saddr 10.10.10.0/24 tcp dport 22 ct state new,untracked accept
+        }
+    }
+])
+IPTABLES_LIST_RULES([filter], [IN_foobar_allow], 0, [dnl
+    ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:22 ctstate NEW,UNTRACKED
+    ACCEPT tcp -- 10.10.10.0/24 0.0.0.0/0 tcp dpt:22 ctstate NEW,UNTRACKED
+])
+IP6TABLES_LIST_RULES([filter], [IN_foobar_allow], 0, [dnl
+    ACCEPT tcp ::/0 ::/0 tcp dpt:22 ctstate NEW,UNTRACKED
+])
+m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [
+    FWD_CHECK([--permanent --policy=foobar --remove-service-from-policy ssh], 0, [ignore])
+], [
+    FWD_CHECK([--permanent --policy=foobar --remove-service ssh], 0, [ignore])
+])
+FWD_CHECK([--permanent --policy=foobar --remove-rich-rule='rule family=ipv4 source address="10.10.10.0/24" service name=ssh accept'], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar --query-service ssh], 1, ignore)
+FWD_CHECK([--permanent --policy=foobar --query-rich-rule='rule family=ipv4 source address="10.10.10.0/24" service name=ssh accept'], 1, [ignore])
+FWD_CHECK([--policy=foobar --remove-service ssh], 0, [ignore])
+FWD_CHECK([--policy=foobar --remove-rich-rule='rule family=ipv4 source address="10.10.10.0/24" service name=ssh accept'], 0, [ignore])
+FWD_CHECK([--policy foobar --query-service ssh], 1, ignore)
+FWD_CHECK([--policy=foobar --query-rich-rule='rule family=ipv4 source address="10.10.10.0/24" service name=ssh accept'], 1, [ignore])
+
+dnl service with helpers
+dnl runtime --> permanent
+m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
+FWD_CHECK([--policy=foobar --add-service ftp], 0, [ignore])
+FWD_CHECK([--policy=foobar --add-rich-rule='rule family=ipv4 source address="10.10.10.0/24" service name=ftp accept'], 0, [ignore])
+FWD_CHECK([--policy foobar --query-service ftp], 0, ignore)
+FWD_CHECK([--policy=foobar --query-rich-rule='rule family=ipv4 source address="10.10.10.0/24" service name=ftp accept'], 0, [ignore])
+FWD_CHECK([--runtime-to-permanent], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar --query-service ftp], 0, ignore)
+FWD_CHECK([--permanent --policy=foobar --query-rich-rule='rule family=ipv4 source address="10.10.10.0/24" service name=ftp accept'], 0, [ignore])
+NFT_LIST_RULES([inet], [filter_IN_policy_foobar_allow], 0, [dnl
+    table inet firewalld {
+        chain filter_IN_policy_foobar_allow {
+            tcp dport 21 ct helper set "helper-ftp-tcp"
+            tcp dport 21 ct state new,untracked accept
+            ip saddr 10.10.10.0/24 tcp dport 21 ct state new,untracked accept
+        }
+    }
+])
+IPTABLES_LIST_RULES([filter], [IN_foobar_allow], 0, [dnl
+    ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:21 ctstate NEW,UNTRACKED
+    ACCEPT tcp -- 10.10.10.0/24 0.0.0.0/0 tcp dpt:21 ctstate NEW,UNTRACKED
+])
+IP6TABLES_LIST_RULES([filter], [IN_foobar_allow], 0, [dnl
+    ACCEPT tcp ::/0 ::/0 tcp dpt:21 ctstate NEW,UNTRACKED
+])
+dnl iptables needs the helper rules in the raw table
+IPTABLES_LIST_RULES([raw], [PRE_foobar_allow], 0, [dnl
+    CT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:21 CT helper ftp
+    CT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:21 CT helper ftp
+])
+IP6TABLES_LIST_RULES([raw], [PRE_foobar_allow], 0, [dnl
+    CT tcp ::/0 ::/0 tcp dpt:21 CT helper ftp
+])
+FWD_CHECK([--permanent --policy=foobar --remove-service ftp], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --remove-rich-rule='rule family=ipv4 source address="10.10.10.0/24" service name=ftp accept'], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar --query-service ftp], 1, ignore)
+FWD_CHECK([--permanent --policy=foobar --query-rich-rule='rule family=ipv4 source address="10.10.10.0/24" service name=ftp accept'], 1, [ignore])
+FWD_CHECK([--policy=foobar --remove-service ftp], 0, [ignore])
+FWD_CHECK([--policy=foobar --remove-rich-rule='rule family=ipv4 source address="10.10.10.0/24" service name=ftp accept'], 0, [ignore])
+FWD_CHECK([--policy foobar --query-service ftp], 1, ignore)
+FWD_CHECK([--policy=foobar --query-rich-rule='rule family=ipv4 source address="10.10.10.0/24" service name=ftp accept'], 1, [ignore])
+])
+
+dnl invalid services
+FWD_CHECK([--permanent --policy=foobar --add-service does-not-exist], 101, [ignore], [ignore])
+FWD_CHECK([--policy=foobar --add-service does-not-exist], 101, [ignore], [ignore])
+
+dnl invalid options
+FWD_CHECK([--permanent --policy=foobar --add-interface raboof0 --add-service ssh], 2, [ignore], [ignore])
+FWD_CHECK([--policy=foobar --add-interface raboof0 --add-service ssh], 2, [ignore], [ignore])
+
+FWD_END_TEST([-e '/ERROR: INVALID_SERVICE/d'])
