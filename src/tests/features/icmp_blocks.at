@@ -1,0 +1,148 @@
+FWD_START_TEST([ICMP blocks])
+AT_KEYWORDS(policy icmp_block)
+
+FWD_CHECK([--permanent --new-policy=foobar], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-ingress-zone ANY], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-egress-zone HOST], 0, [ignore])
+
+dnl permanent --> runtime
+FWD_CHECK([--permanent --policy=foobar --add-icmp-block echo-request], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-icmp-block echo-reply], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-icmp-block redirect], 0, [ignore])
+IF_HOST_SUPPORTS_IPV6_RULES([
+FWD_CHECK([--permanent --policy=foobar --add-rich-rule='rule family=ipv6 source address=1234:5678::/64 icmp-block name="redirect"'], 0, [ignore])
+])
+FWD_CHECK([--permanent --policy foobar --query-icmp-block echo-request], 0, ignore)
+FWD_CHECK([--permanent --policy foobar --query-icmp-block echo-reply], 0, ignore)
+FWD_CHECK([--permanent --policy foobar --query-icmp-block redirect], 0, ignore)
+IF_HOST_SUPPORTS_IPV6_RULES([
+FWD_CHECK([--permanent --policy=foobar --query-rich-rule='rule family=ipv6 source address=1234:5678::/64 icmp-block name="redirect"'], 0, [ignore])
+])
+FWD_RELOAD
+FWD_CHECK([--policy foobar --query-icmp-block echo-request], 0, ignore)
+FWD_CHECK([--policy foobar --query-icmp-block echo-reply], 0, ignore)
+FWD_CHECK([--policy foobar --query-icmp-block redirect], 0, ignore)
+IF_HOST_SUPPORTS_IPV6_RULES([
+FWD_CHECK([--policy=foobar --query-rich-rule='rule family=ipv6 source address=1234:5678::/64 icmp-block name="redirect"'], 0, [ignore])
+])
+NFT_LIST_RULES([inet], [filter_IN_policy_foobar_allow], 0, [dnl
+    table inet firewalld {
+        chain filter_IN_policy_foobar_allow {
+        }
+    }
+])
+NFT_LIST_RULES([inet], [filter_IN_policy_foobar_deny], 0, [dnl
+    table inet firewalld {
+        chain filter_IN_policy_foobar_deny {
+            icmp type echo-request reject with icmpx type admin-prohibited
+            icmpv6 type echo-request reject with icmpx type admin-prohibited
+            icmp type echo-reply reject with icmpx type admin-prohibited
+            icmpv6 type echo-reply reject with icmpx type admin-prohibited
+            icmp type redirect reject with icmpx type admin-prohibited
+            icmpv6 type nd-redirect reject with icmpx type admin-prohibited
+            ip6 saddr 1234:5678::/64 icmpv6 type nd-redirect reject with icmpx type admin-prohibited
+        }
+    }
+])
+IPTABLES_LIST_RULES([filter], [IN_foobar_allow], 0, [dnl
+])
+IP6TABLES_LIST_RULES([filter], [IN_foobar_allow], 0, [dnl
+])
+IPTABLES_LIST_RULES([filter], [IN_foobar_deny], 0, [dnl
+    REJECT icmp -- 0.0.0.0/0 0.0.0.0/0 icmptype 8 reject-with icmp-host-prohibited
+    REJECT icmp -- 0.0.0.0/0 0.0.0.0/0 icmptype 0 reject-with icmp-host-prohibited
+    REJECT icmp -- 0.0.0.0/0 0.0.0.0/0 icmptype 5 reject-with icmp-host-prohibited
+])
+IP6TABLES_LIST_RULES([filter], [IN_foobar_deny], 0, [dnl
+    REJECT icmpv6 ::/0 ::/0 ipv6-icmptype 128 reject-with icmp6-adm-prohibited
+    REJECT icmpv6 ::/0 ::/0 ipv6-icmptype 129 reject-with icmp6-adm-prohibited
+    REJECT icmpv6 ::/0 ::/0 ipv6-icmptype 137 reject-with icmp6-adm-prohibited
+    REJECT icmpv6 1234:5678::/64 ::/0 ipv6-icmptype 137 reject-with icmp6-adm-prohibited
+])
+FWD_CHECK([--permanent --policy=foobar --remove-icmp-block echo-request], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar --query-icmp-block echo-request], 1, [ignore])
+FWD_CHECK([--permanent --policy foobar --query-icmp-block echo-reply], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --remove-icmp-block echo-reply], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --remove-icmp-block redirect], 0, [ignore])
+IF_HOST_SUPPORTS_IPV6_RULES([
+FWD_CHECK([--permanent --policy=foobar --remove-rich-rule='rule family=ipv6 source address=1234:5678::/64 icmp-block name="redirect"'], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --query-rich-rule='rule family=ipv6 source address=1234:5678::/64 icmp-block name="redirect"'], 1, [ignore])
+])
+FWD_CHECK([--policy=foobar --remove-icmp-block echo-request], 0, [ignore])
+FWD_CHECK([--policy foobar --query-icmp-block echo-request], 1, [ignore])
+FWD_CHECK([--policy foobar --query-icmp-block echo-reply], 0, [ignore])
+FWD_CHECK([--policy=foobar --remove-icmp-block echo-reply], 0, [ignore])
+FWD_CHECK([--policy=foobar --remove-icmp-block redirect], 0, [ignore])
+IF_HOST_SUPPORTS_IPV6_RULES([
+FWD_CHECK([--policy=foobar --remove-rich-rule='rule family=ipv6 source address=1234:5678::/64 icmp-block name="redirect"'], 0, [ignore])
+FWD_CHECK([--policy=foobar --query-rich-rule='rule family=ipv6 source address=1234:5678::/64 icmp-block name="redirect"'], 1, [ignore])
+])
+
+dnl runtime --> permanent
+m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
+FWD_CHECK([--policy=foobar --add-icmp-block echo-request], 0, [ignore])
+IF_HOST_SUPPORTS_IPV6_RULES([
+FWD_CHECK([--policy=foobar --add-rich-rule='rule family=ipv6 source address=1234:5678::/64 icmp-block name="redirect"'], 0, [ignore])
+])
+FWD_CHECK([--policy foobar --query-icmp-block echo-request], 0, [ignore])
+IF_HOST_SUPPORTS_IPV6_RULES([
+FWD_CHECK([--policy=foobar --query-rich-rule='rule family=ipv6 source address=1234:5678::/64 icmp-block name="redirect"'], 0, [ignore])
+])
+FWD_CHECK([--runtime-to-permanent], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar --query-icmp-block echo-request], 0, [ignore])
+IF_HOST_SUPPORTS_IPV6_RULES([
+FWD_CHECK([--permanent --policy=foobar --query-rich-rule='rule family=ipv6 source address=1234:5678::/64 icmp-block name="redirect"'], 0, [ignore])
+])
+NFT_LIST_RULES([inet], [filter_IN_policy_foobar_allow], 0, [dnl
+    table inet firewalld {
+        chain filter_IN_policy_foobar_allow {
+        }
+    }
+])
+NFT_LIST_RULES([inet], [filter_IN_policy_foobar_deny], 0, [dnl
+    table inet firewalld {
+        chain filter_IN_policy_foobar_deny {
+            icmp type echo-request reject with icmpx type admin-prohibited
+            icmpv6 type echo-request reject with icmpx type admin-prohibited
+            ip6 saddr 1234:5678::/64 icmpv6 type nd-redirect reject with icmpx type admin-prohibited
+        }
+    }
+])
+IPTABLES_LIST_RULES([filter], [IN_foobar_allow], 0, [dnl
+])
+IP6TABLES_LIST_RULES([filter], [IN_foobar_allow], 0, [dnl
+])
+IPTABLES_LIST_RULES([filter], [IN_foobar_deny], 0, [dnl
+    REJECT icmp -- 0.0.0.0/0 0.0.0.0/0 icmptype 8 reject-with icmp-host-prohibited
+])
+IP6TABLES_LIST_RULES([filter], [IN_foobar_deny], 0, [dnl
+    REJECT icmpv6 ::/0 ::/0 ipv6-icmptype 128 reject-with icmp6-adm-prohibited
+    REJECT icmpv6 1234:5678::/64 ::/0 ipv6-icmptype 137 reject-with icmp6-adm-prohibited
+])
+FWD_CHECK([--permanent --policy=foobar --remove-icmp-block echo-request], 0, [ignore])
+IF_HOST_SUPPORTS_IPV6_RULES([
+FWD_CHECK([--permanent --policy=foobar --remove-rich-rule='rule family=ipv6 source address=1234:5678::/64 icmp-block name="redirect"'], 0, [ignore])
+])
+FWD_CHECK([--permanent --policy foobar --query-icmp-block echo-request], 1, [ignore])
+IF_HOST_SUPPORTS_IPV6_RULES([
+FWD_CHECK([--permanent --policy=foobar --query-rich-rule='rule family=ipv6 source address=1234:5678::/64 icmp-block name="redirect"'], 1, [ignore])
+])
+FWD_CHECK([--policy=foobar --remove-icmp-block echo-request], 0, [ignore])
+IF_HOST_SUPPORTS_IPV6_RULES([
+FWD_CHECK([--policy=foobar --remove-rich-rule='rule family=ipv6 source address=1234:5678::/64 icmp-block name="redirect"'], 0, [ignore])
+])
+FWD_CHECK([--policy foobar --query-icmp-block echo-request], 1, [ignore])
+IF_HOST_SUPPORTS_IPV6_RULES([
+FWD_CHECK([--policy=foobar --query-rich-rule='rule family=ipv6 source address=1234:5678::/64 icmp-block name="redirect"'], 1, [ignore])
+])
+])
+
+dnl invalid icmp blocks
+FWD_CHECK([--permanent --policy=foobar --add-icmp-block dummy], 107, [ignore], [ignore])
+FWD_CHECK([--policy=foobar --add-icmp-block dummy], 107, [ignore], [ignore])
+IF_HOST_SUPPORTS_IPV6_RULES([
+FWD_CHECK([--permanent --policy=foobar --add-rich-rule='rule family=ipv6 source address=1234:5678::/64 icmp-block name="dummy"'], 107, [ignore], [ignore])
+FWD_CHECK([--policy=foobar --add-rich-rule='rule family=ipv6 source address=1234:5678::/64 icmp-block name="dummy"'], 107, [ignore], [ignore])
+])
+
+FWD_END_TEST([-e '/ERROR: INVALID_ICMPTYPE:/d'])
