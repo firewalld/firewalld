@@ -625,7 +625,10 @@ FWD_START_TEST([forward])
     ])
 
     dnl zone source
-    FWD_CHECK([--zone=internal --add-source=10.10.10.0/24 --add-source=1234::/64], 0, ignore)
+    FWD_CHECK([--zone=internal --add-source=10.10.10.0/24], 0, ignore)
+    IF_HOST_SUPPORTS_IPV6_RULES([
+    FWD_CHECK([--zone=internal --add-source=1234::/64], 0, ignore)
+    ])
     FWD_CHECK([--zone=internal --add-forward], 0, ignore)
     NFT_LIST_RULES([inet], [filter_FWDI_internal_allow], 0, [dnl
         table inet firewalld {
@@ -641,7 +644,9 @@ FWD_START_TEST([forward])
     IP6TABLES_LIST_RULES([filter], [FWDI_internal_allow], 0, [dnl
         ACCEPT all ::/0 1234::/64
     ])
+    IF_HOST_SUPPORTS_IPV6_RULES([
     FWD_CHECK([--zone=internal --remove-source=1234::/64], 0, ignore)
+    ])
     NFT_LIST_RULES([inet], [filter_FWDI_internal_allow], 0, [dnl
         table inet firewalld {
             chain filter_FWDI_internal_allow {
@@ -654,7 +659,10 @@ FWD_START_TEST([forward])
     ])
     IP6TABLES_LIST_RULES([filter], [FWDI_internal_allow], 0, [dnl
     ])
-    FWD_CHECK([--zone=internal --add-source=10.20.20.0/24 --add-source=4321::/64], 0, ignore)
+    FWD_CHECK([--zone=internal --add-source=10.20.20.0/24], 0, ignore)
+    IF_HOST_SUPPORTS_IPV6_RULES([
+    FWD_CHECK([--zone=internal --add-source=4321::/64], 0, ignore)
+    ])
     NFT_LIST_RULES([inet], [filter_FWDI_internal_allow], 0, [dnl
         table inet firewalld {
             chain filter_FWDI_internal_allow {
