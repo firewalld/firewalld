@@ -118,6 +118,11 @@ class FirewallIPSet(object):
                         # no entries visible for ipsets with timeout
                         continue
 
+                try:
+                    backend.set_flush(obj.name)
+                except Exception as msg:
+                    raise FirewallError(errors.COMMAND_FAILED, msg)
+
                 for entry in obj.entries:
                     try:
                         backend.set_add(obj.name, entry)
