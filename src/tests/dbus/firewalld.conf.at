@@ -1,36 +1,26 @@
 FWD_START_TEST([firewalld.conf])
 AT_KEYWORDS(dbus)
 
-dnl Verify defaults over dbus. Should be inline with default firewalld.conf.
 IF_HOST_SUPPORTS_NFT_FIB([
-DBUS_GETALL([config], [config], 0, [dnl
-string "AllowZoneDrifting" : variant string "no"
-string "AutomaticHelpers" : variant string "system"
-string "CleanupOnExit" : variant string "no"
-string "DefaultZone" : variant string "public"
-string "FirewallBackend" : variant string "nftables"
-string "FlushAllOnReload" : variant string "yes"
-string "IPv6_rpfilter" : variant string "yes"
-string "IndividualCalls" : variant string "no"
-string "Lockdown" : variant string "no"
-string "LogDenied" : variant string "off"
-string "MinimalMark" : variant int32 100
-string "RFC3964_IPv4" : variant string "yes"
-])], [
-DBUS_GETALL([config], [config], 0, [dnl
-string "AllowZoneDrifting" : variant string "no"
-string "AutomaticHelpers" : variant string "system"
-string "CleanupOnExit" : variant string "no"
-string "DefaultZone" : variant string "public"
-string "FirewallBackend" : variant string "nftables"
-string "FlushAllOnReload" : variant string "yes"
-string "IPv6_rpfilter" : variant string "no"
-string "IndividualCalls" : variant string "no"
-string "Lockdown" : variant string "no"
-string "LogDenied" : variant string "off"
-string "MinimalMark" : variant int32 100
-string "RFC3964_IPv4" : variant string "yes"
+   EXPECTED_IPV6_RPFILTER_VALUE=yes
+], [
+   EXPECTED_IPV6_RPFILTER_VALUE=no
 ])
+
+dnl Verify defaults over dbus. Should be inline with default firewalld.conf.
+DBUS_GETALL([config], [config], 0, [dnl
+string "AllowZoneDrifting" : variant string "no"
+string "AutomaticHelpers" : variant string "system"
+string "CleanupOnExit" : variant string "no"
+string "DefaultZone" : variant string "public"
+string "FirewallBackend" : variant string "nftables"
+string "FlushAllOnReload" : variant string "yes"
+string "IPv6_rpfilter" : variant string m4_escape(["${EXPECTED_IPV6_RPFILTER_VALUE}"])
+string "IndividualCalls" : variant string "no"
+string "Lockdown" : variant string "no"
+string "LogDenied" : variant string "off"
+string "MinimalMark" : variant int32 100
+string "RFC3964_IPv4" : variant string "yes"
 ])
 
 m4_define([_helper], [
