@@ -2425,6 +2425,37 @@
               </para>
             </listitem>
           </varlistentry>
+          <varlistentry id="FirewallD1.config.Methods.addPolicy">
+            <term><methodname>addPolicy</methodname>(s: policy, a{sv}: settings) &rarr; o</term>
+            <listitem>
+              <para>
+                Add <replaceable>policy</replaceable> with given <replaceable>settings</replaceable> into permanent configuration.
+                Settings are a dictionary indexed by keywords. For the type of each value see below. If a keyword is omitted the default value will be used.
+              </para>
+              <para>
+                <variablelist>
+                  <varlistentry><term><parameter>description (s)</parameter>: see <literal>description</literal> tag in <citerefentry><refentrytitle>firewalld.policy</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>egress_zones as</parameter>: array of zone names. See <literal>egress-zone</literal> tag in <citerefentry><refentrytitle>firewalld.policy</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>forward_ports (a(ssss))</parameter>: array of (port, protocol, to-port, to-addr). See <literal>forward-port</literal> tag in <citerefentry><refentrytitle>firewalld.policy</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>icmp_blocks (as)</parameter>: array of icmp-blocks. See <literal>icmp-block</literal> tag in <citerefentry><refentrytitle>firewalld.policy</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>ingress_zones as</parameter>: array of zone names. See <literal>ingress-zone</literal> tag in <citerefentry><refentrytitle>firewalld.policy</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>masquerade (b)</parameter>: see <literal>masquerade</literal> tag in <citerefentry><refentrytitle>firewalld.policy</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>ports (a(ss))</parameter>: array of port and protocol pairs. See <literal>port</literal> tag in <citerefentry><refentrytitle>firewalld.policy</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>priority (i)</parameter>: see <literal>priority</literal> tag in <citerefentry><refentrytitle>firewalld.policy</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>protocols (as)</parameter>: array of protocols, see <literal>protocol</literal> tag in <citerefentry><refentrytitle>firewalld.policy</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>rich_rules (as)</parameter>: array of rich-language rules. See <literal>rule</literal> tag in <citerefentry><refentrytitle>firewalld.policy</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>services (as)</parameter>: array of service names, see <literal>service</literal> tag in <citerefentry><refentrytitle>firewalld.policy</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>short (s)</parameter>: see <literal>short</literal> tag in <citerefentry><refentrytitle>firewalld.policy</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>source_ports (a(ss))</parameter>: array of port and protocol pairs. See <literal>source-port</literal> tag in <citerefentry><refentrytitle>firewalld.policy</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>target (s)</parameter>: see <literal>target</literal> attribute of <literal>policy</literal> tag in <citerefentry><refentrytitle>firewalld.policy</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>version (s)</parameter>: see <literal>version</literal> attribute of <literal>policy</literal> tag in <citerefentry><refentrytitle>firewalld.policy</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                </variablelist>
+              </para>
+              <para>
+                Possible errors: NAME_CONFLICT, INVALID_NAME, INVALID_TYPE
+              </para>
+            </listitem>
+          </varlistentry>
 	  <varlistentry id="FirewallD1.config.Methods.getHelperByName">
             <term><methodname>getHelperByName</methodname>(s: helper) &rarr; o</term>
             <listitem>
@@ -2536,6 +2567,25 @@
               </para>
             </listitem>
           </varlistentry>
+          <varlistentry id="FirewallD1.config.Methods.getPolicyByName">
+            <term><methodname>getPolicyByName</methodname>(s: policy) &rarr; o</term>
+            <listitem>
+              <para>
+                Return object path (permanent configuration) of <replaceable>policy</replaceable> with given name.
+              </para>
+              <para>
+                Possible errors: INVALID_POLICY
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.Methods.getPolicyNames">
+            <term><methodname>getPolicyNames</methodname>() &rarr; as</term>
+            <listitem>
+              <para>
+                Return list of <replaceable>policy</replaceable> names (permanent configuration).
+              </para>
+            </listitem>
+          </varlistentry>
           <varlistentry id="FirewallD1.config.Methods.listHelpers">
             <term><methodname>listHelpers</methodname>() &rarr; ao</term>
             <listitem>
@@ -2580,6 +2630,17 @@
 		For list of zones known to runtime environment see <link linkend="FirewallD1.zone.Methods.getZones">org.fedoraproject.FirewallD1.zone.Methods.getZones</link>.
 		The lists (of zones known to runtime and permanent environment) will contain same zones in most cases,
 		but might differ for example if <link linkend="FirewallD1.config.Methods.addZone">org.fedoraproject.FirewallD1.config.Methods.addZone</link> has been called recently, but firewalld has not been reloaded since then.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.Methods.listPolicies">
+            <term><methodname>listPolicies</methodname>() &rarr; ao</term>
+            <listitem>
+              <para>
+                List object paths of policies known to permanent environment.
+                For list of policies known to runtime environment see <link linkend="FirewallD1.policy.Methods.getPolicies">org.fedoraproject.FirewallD1.policy.Methods.getPolicies</link>.
+                The lists (of policies known to runtime and permanent environment) will contain same policies in most cases,
+                but might differ for example if <link linkend="FirewallD1.config.Methods.addPolicy">org.fedoraproject.FirewallD1.config.Methods.addPolicy</link> has been called recently, but firewalld has not been reloaded since then.
               </para>
             </listitem>
           </varlistentry>
@@ -4489,6 +4550,149 @@
             <listitem>
               <para>
 		Path to directory where the zone configuration is stored. Should be either /usr/lib/firewalld/zones or /etc/firewalld/zones.
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect3>
+    </refsect2>
+
+    <refsect2 id="FirewallD1.config.policy">
+      <title>org.fedoraproject.FirewallD1.config.policy</title>
+      <para>
+        Interface for permanent policy configuration, see also <citerefentry><refentrytitle>firewalld.policy</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+      </para>
+      <refsect3 id="FirewallD1.config.policy.Methods">
+        <title>Methods</title>
+        <variablelist>
+          <varlistentry id="FirewallD1.config.policy.Methods.getSettings">
+            <term><methodname>getSettings</methodname>() &rarr; a{sv}</term>
+            <listitem>
+              <para>
+                Return permanent settings of given <replaceable>policy</replaceable>.
+                For getting runtime settings see <link linkend="FirewallD1.Methods.getPolicySettings">org.fedoraproject.FirewallD1.Methods.getPolicySettings</link>.
+                Settings are a dictionary indexed by keywords. For possible keywords see <link linkend="FirewallD1.config.Methods.addPolicy">org.fedoraproject.FirewallD1.config.Methods.addPolicy</link>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.policy.Methods.loadDefaults">
+            <term><methodname>loadDefaults</methodname>() &rarr; Nothing</term>
+            <listitem>
+              <para>
+                Load default settings for built-in policy.
+              </para>
+              <para>
+                Possible errors: NO_DEFAULTS
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.policy.Methods.remove">
+            <term><methodname>remove</methodname>() &rarr; Nothing</term>
+            <listitem>
+              <para>
+                Remove not built-in policy.
+              </para>
+              <para>
+                Possible errors: BUILTIN_POLICY
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.policy.Methods.rename">
+            <term><methodname>rename</methodname>(s: name) &rarr; Nothing</term>
+            <listitem>
+              <para>
+                Rename not built-in policy to <replaceable>name</replaceable>.
+              </para>
+              <para>
+                Possible errors: BUILTIN_POLICY
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.policy.Methods.update">
+            <term><methodname>update</methodname>(a{sv}: settings) &rarr; Nothing</term>
+            <listitem>
+              <para>
+                Update settings of policy to <replaceable>settings</replaceable>.
+                Settings are a dictionary indexed by keywords. For possible keywords see <link linkend="FirewallD1.config.Methods.addPolicy">org.fedoraproject.FirewallD1.config.Methods.addPolicy</link>. To zero a value pass an empty string or list.
+              </para>
+          <para>
+            Possible errors: INVALID_TYPE
+          </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect3>
+
+      <refsect3 id="FirewallD1.config.policy.Signals">
+        <title>Signals</title>
+        <variablelist>
+          <varlistentry id="FirewallD1.config.policy.Signals.Removed">
+            <term>Removed(s: name)</term>
+            <listitem>
+              <para>
+                Emitted when policy with <replaceable>name</replaceable> has been removed.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.policy.Signals.Renamed">
+            <term>Renamed(s: name)</term>
+            <listitem>
+              <para>
+                Emitted when policy has been renamed to <replaceable>name</replaceable>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.policy.Signals.Updated">
+            <term>Updated(s: name)</term>
+            <listitem>
+              <para>
+                Emitted when policy with <replaceable>name</replaceable> has been updated.
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect3>
+
+      <refsect3 id="FirewallD1.config.policy.Properties">
+        <title>Properties</title>
+        <variablelist>
+          <varlistentry id="FirewallD1.config.policy.Properties.builtin">
+            <term>builtin - b - (ro)</term>
+            <listitem>
+              <para>
+                True if policy is build-in, false else.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.policy.Properties.default">
+            <term>default - b - (ro)</term>
+            <listitem>
+              <para>
+                True if build-in policy has default settings. False if it has been modified. Always False for not build-in policies.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.policy.Properties.filename">
+            <term>filename - s - (ro)</term>
+            <listitem>
+              <para>
+                Name (including .xml extension) of file where the configuration is stored.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.policy.Properties.name">
+            <term>name - s - (ro)</term>
+            <listitem>
+              <para>
+                Name of policy.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.policy.Properties.path">
+            <term>path - s - (ro)</term>
+            <listitem>
+              <para>
+                Path to directory where the policy configuration is stored. Should be either /usr/lib/firewalld/policies or /etc/firewalld/policies.
               </para>
             </listitem>
           </varlistentry>
