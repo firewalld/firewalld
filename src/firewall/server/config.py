@@ -38,6 +38,7 @@ from firewall.server.decorators import handle_exceptions, \
 from firewall.server.config_icmptype import FirewallDConfigIcmpType
 from firewall.server.config_service import FirewallDConfigService
 from firewall.server.config_zone import FirewallDConfigZone
+from firewall.server.config_policy import FirewallDConfigPolicy
 from firewall.server.config_ipset import FirewallDConfigIPSet
 from firewall.server.config_helper import FirewallDConfigHelper
 from firewall.core.io.icmptype import IcmpType
@@ -84,6 +85,8 @@ class FirewallDConfig(slip.dbus.service.Object):
         self.watcher.add_watch_dir(config.ETC_FIREWALLD_SERVICES)
         self.watcher.add_watch_dir(config.FIREWALLD_ZONES)
         self.watcher.add_watch_dir(config.ETC_FIREWALLD_ZONES)
+        self.watcher.add_watch_dir(config.FIREWALLD_POLICIES)
+        self.watcher.add_watch_dir(config.ETC_FIREWALLD_POLICIES)
         # Add watches for combined zone directories
         if os.path.exists(config.ETC_FIREWALLD_ZONES):
             for filename in sorted(os.listdir(config.ETC_FIREWALLD_ZONES)):
@@ -121,6 +124,8 @@ class FirewallDConfig(slip.dbus.service.Object):
         self.zone_idx = 0
         self.helpers = [ ]
         self.helper_idx = 0
+        self.policy_objects = [ ]
+        self.policy_object_idx = 0
 
         for ipset in self.config.get_ipsets():
             self._addIPSet(self.config.get_ipset(ipset))
@@ -132,6 +137,8 @@ class FirewallDConfig(slip.dbus.service.Object):
             self._addZone(self.config.get_zone(zone))
         for helper in self.config.get_helpers():
             self._addHelper(self.config.get_helper(helper))
+        for policy in self.config.get_policy_objects():
+            self._addPolicy(self.config.get_policy_object(policy))
 
     @handle_exceptions
     def __del__(self):
@@ -157,6 +164,10 @@ class FirewallDConfig(slip.dbus.service.Object):
             del item
         while len(self.helpers) > 0:
             item = self.helpers.pop()
+            item.unregister()
+            del item
+        while len(self.policy_objects) > 0:
+            item = self.policy_objects.pop()
             item.unregister()
             del item
         self._init_vars()
@@ -291,6 +302,20 @@ class FirewallDConfig(slip.dbus.service.Object):
                 return
             self.Updated()
 
+        elif (name.startswith(config.FIREWALLD_POLICIES) or \
+              name.startswith(config.ETC_FIREWALLD_POLICIES)) and \
+             name.endswith(".xml"):
+            try:
+                (what, obj) = self.config.update_policy_object_from_path(name)
+            except Exception as msg:
+                log.error("Failed to load policy file '%s': %s" % (name, msg))
+                return
+            if what == "new":
+                self._addPolicy(obj)
+            elif what == "remove":
+                self.removePolicy(obj)
+            elif what == "update":
+                self._updatePolicy(obj)
 
     @handle_exceptions
     def _addIcmpType(self, obj):
@@ -323,6 +348,14 @@ class FirewallDConfig(slip.dbus.service.Object):
                 settings[index].remove(obj.name)
                 zone.obj = self.config.set_zone_config(zone.obj, settings)
                 zone.Updated(zone.obj.name)
+
+        for policy in self.policy_objects:
+            settings = policy.getSettings()
+            # if this IcmpType is used in a policy remove it from that policy first
+            if "icmp_blocks" in settings and obj.name in settings["icmp_blocks"]:
+                settings["icmp_blocks"].remove(obj.name)
+                policy.obj = self.config.set_policy_object_config_dict(policy.obj, settings)
+                policy.Updated(policy.obj.name)
 
         for icmptype in self.icmptypes:
             if icmptype.obj == obj:
@@ -362,6 +395,14 @@ class FirewallDConfig(slip.dbus.service.Object):
                 zone.obj = self.config.set_zone_config(zone.obj, settings)
                 zone.Updated(zone.obj.name)
 
+        for policy in self.policy_objects:
+            settings = policy.getSettings()
+            # if this Service is used in a policy remove it from that policy first
+            if "services" in settings and obj.name in settings["services"]:
+                settings["services"].remove(obj.name)
+                policy.obj = self.config.set_policy_object_config_dict(policy.obj, settings)
+                policy.Updated(policy.obj.name)
+
         for service in self.services:
             if service.obj == obj:
                 service.Removed(obj.name)
@@ -396,6 +437,34 @@ class FirewallDConfig(slip.dbus.service.Object):
                 zone.unregister()
                 self.zones.remove(zone)
                 del zone
+
+    @handle_exceptions
+    def _addPolicy(self, obj):
+        # TODO: check for idx overflow
+        config_policy = FirewallDConfigPolicy(
+            self, self.config, obj, self.policy_object_idx, self.busname,
+            "%s/%d" % (config.dbus.DBUS_PATH_CONFIG_POLICY, self.policy_object_idx))
+        self.policy_objects.append(config_policy)
+        self.policy_object_idx += 1
+        self.PolicyAdded(obj.name)
+        return config_policy
+
+    @handle_exceptions
+    def _updatePolicy(self, obj):
+        for policy in self.policy_objects:
+            if policy.obj.name == obj.name and policy.obj.path == obj.path and \
+                    policy.obj.filename == obj.filename:
+                policy.obj = obj
+                policy.Updated(obj.name)
+
+    @handle_exceptions
+    def removePolicy(self, obj):
+        for policy in self.policy_objects:
+            if policy.obj == obj:
+                policy.Removed(obj.name)
+                policy.unregister()
+                self.policy_objects.remove(policy)
+                del policy
 
     @handle_exceptions
     def _addIPSet(self, obj):
@@ -1226,6 +1295,60 @@ class FirewallDConfig(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def ZoneAdded(self, zone):
         log.debug1("config.ZoneAdded('%s')" % (zone))
+
+    # policies
+
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG, out_signature='ao')
+    @dbus_handle_exceptions
+    def listPolicies(self, sender=None):
+        """list policies objects paths
+        """
+        log.debug1("config.listPolicies()")
+        return self.policy_objects
+
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG, out_signature='as')
+    @dbus_handle_exceptions
+    def getPolicyNames(self, sender=None):
+        """get policy names
+        """
+        log.debug1("config.getPolicyNames()")
+        policies = [ ]
+        for obj in self.policy_objects:
+            policies.append(obj.obj.name)
+        return sorted(policies)
+
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG, in_signature='s',
+                         out_signature='o')
+    @dbus_handle_exceptions
+    def getPolicyByName(self, policy, sender=None):
+        """object path of policy with given name
+        """
+        policy = dbus_to_python(policy, str)
+        log.debug1("config.getPolicyByName('%s')", policy)
+        for obj in self.policy_objects:
+            if obj.obj.name == policy:
+                return obj
+        raise FirewallError(errors.INVALID_POLICY, policy)
+
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG,
+                         in_signature="sa{sv}",
+                         out_signature='o')
+    @dbus_handle_exceptions
+    def addPolicy(self, policy, settings, sender=None):
+        """add policy with given name and settings
+        """
+        policy = dbus_to_python(policy, str)
+        settings = dbus_to_python(settings)
+        log.debug1("config.addPolicy('%s')", policy)
+        self.accessCheck(sender)
+        obj = self.config.new_policy_object_dict(policy, settings)
+        config_policy = self._addPolicy(obj)
+        return config_policy
+
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_CONFIG, signature='s')
+    @dbus_handle_exceptions
+    def PolicyAdded(self, policy):
+        log.debug1("config.PolicyAdded('%s')" % (policy))
 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
