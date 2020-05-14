@@ -1,0 +1,176 @@
+FWD_START_TEST([dbus api - policy permanent functional])
+AT_KEYWORDS(dbus policy)
+
+dnl ####################
+dnl Global APIs
+dnl ####################
+
+DBUS_CHECK([config], [config.listPolicies], [], 0, [stdout])
+NS_CHECK([sed -e ["s/['][,]/'\n/g"] ./stdout |dnl
+          sed -e ["s/.*config\/policy\/\([^']\+\)['].*/\1/"] |dnl
+          while read LINE; do { echo "${LINE}" | grep ["^[0-9]\+$"] ; } || exit 1; done], 0, [ignore])
+
+DBUS_CHECK([config], [config.getPolicyNames], [], 0, [dnl
+    m4_escape([(['allow-host-ipv6'],)])
+])
+
+DBUS_CHECK([config], [config.getPolicyByName], ["allow-host-ipv6"], 0, [stdout])
+NS_CHECK([sed -e ["s/.*config\/policy\/\([^']\+\)['].*/\1/"] ./stdout | grep ["^[0-9]\+$"]], 0, [ignore])
+
+DBUS_CHECK([config], [config.addPolicy],
+    ["foobar" dnl name
+     '{"version": <"1.0">, dnl
+       "short": <"foobar">, dnl
+       "description": <"foobar policy">, dnl
+       "target": <"CONTINUE">, dnl
+       "services": m4_escape([<["ssh", "mdns"]>]), dnl
+       "ports": m4_escape([<[("1234", "tcp"), ("1234", "udp")]>]), dnl
+       "icmp_blocks": m4_escape([<["echo-request"]>]), dnl
+       "masquerade": <false>, dnl
+       "forward_ports": m4_escape([<[("1234", "tcp", "4321", ""), ("1234", "udp", "4321", "")]>]), dnl
+       "rich_rules": m4_escape([<["rule family=ipv4 source address=10.20.20.20 drop"]>]), dnl
+       "protocols": m4_escape([<["icmp"]>]), dnl
+       "source_ports": m4_escape([<[("1234", "tcp"), ("1234", "udp")]>]), dnl
+       "ingress_zones": m4_escape([<["public"]>]), dnl
+       "egress_zones": m4_escape([<["HOST"]>]), dnl
+       "priority": <-100> dnl
+      }' dnl
+    ], 0, [stdout])
+DBUS_FOOBAR_POLICY_OBJ=[$(sed -e "s/.*config\/policy\/\([^']\+\)['].*/\1/" ./stdout)]
+export DBUS_FOOBAR_POLICY_OBJ
+
+dnl ####################
+dnl Policy object APIs
+dnl ####################
+
+DBUS_CHECK([config/policy/${DBUS_FOOBAR_POLICY_OBJ}], [config.policy.getSettings], [], 0, [dnl
+       'description': <'foobar policy'>
+       'egress_zones': m4_escape([<['HOST']>])
+       'forward_ports': m4_escape([<[('1234', 'tcp', '4321', ''), ('1234', 'udp', '4321', '')]>])
+       'icmp_blocks': m4_escape([<['echo-request']>])
+       'ingress_zones': m4_escape([<['public']>])
+       'masquerade': <false>
+       'ports': m4_escape([<[('1234', 'tcp'), ('1234', 'udp')]>])
+       'priority': <-100>
+       'protocols': m4_escape([<['icmp']>])
+       'rich_rules': m4_escape([<['rule family="ipv4" source address="10.20.20.20" drop']>])
+       'services': m4_escape([<['ssh', 'mdns']>])
+       'short': <'foobar'>
+       'source_ports': m4_escape([<[('1234', 'tcp'), ('1234', 'udp')]>])
+       'target': <'CONTINUE'>
+       'version': <'1.0'>
+])
+
+dnl Update all fields
+dnl
+DBUS_CHECK([config/policy/${DBUS_FOOBAR_POLICY_OBJ}], [config.policy.update], [dnl
+     '{"version": <"1.1">, dnl
+       "short": <"foobar update">, dnl
+       "description": <"foobar policy update">, dnl
+       "target": <"DROP">, dnl
+       "services": m4_escape([<["mdns"]>]), dnl
+       "ports": m4_escape([<[("1234", "udp")]>]), dnl
+       "icmp_blocks": m4_escape([<["echo-request", "echo-reply"]>]), dnl
+       "masquerade": <false>, dnl
+       "forward_ports": m4_escape([<[("1234", "udp", "4321", "10.10.10.10")]>]), dnl
+       "rich_rules": m4_escape([<["rule family=ipv4 source address=10.20.20.20 accept"]>]), dnl
+       "protocols": m4_escape([<["ipv6-icmp"]>]), dnl
+       "source_ports": m4_escape([<[("1234", "udp")]>]), dnl
+       "ingress_zones": m4_escape([<["public", "external"]>]), dnl
+       "egress_zones": m4_escape([<["internal"]>]), dnl
+       "priority": <200> dnl
+      }' dnl
+    ], 0, [ignore])
+DBUS_CHECK([config/policy/${DBUS_FOOBAR_POLICY_OBJ}], [config.policy.getSettings], [], 0, [dnl
+       'description': <'foobar policy update'>
+       'egress_zones': m4_escape([<['internal']>])
+       'forward_ports': m4_escape([<[('1234', 'udp', '4321', '10.10.10.10')]>])
+       'icmp_blocks': m4_escape([<['echo-request', 'echo-reply']>])
+       'ingress_zones': m4_escape([<['public', 'external']>])
+       'masquerade': <false>
+       'ports': m4_escape([<[('1234', 'udp')]>])
+       'priority': <200>
+       'protocols': m4_escape([<['ipv6-icmp']>])
+       'rich_rules': m4_escape([<['rule family="ipv4" source address="10.20.20.20" accept']>])
+       'services': m4_escape([<['mdns']>])
+       'short': <'foobar update'>
+       'source_ports': m4_escape([<[('1234', 'udp')]>])
+       'target': <'DROP'>
+       'version': <'1.1'>
+])
+
+dnl Update single field
+DBUS_CHECK([config/policy/${DBUS_FOOBAR_POLICY_OBJ}], [config.policy.update], [dnl
+     '{"version": <"1.2">, dnl
+       "target": <"DROP"> dnl
+      }' dnl
+    ], 0, [ignore])
+dnl clear a field
+DBUS_CHECK([config/policy/${DBUS_FOOBAR_POLICY_OBJ}], [config.policy.update], [dnl
+     '{"version": <"1.3">, dnl
+       "icmp_blocks": m4_escape([<@as []>]) dnl
+      }' dnl
+    ], 0, [ignore])
+dnl clear another field
+DBUS_CHECK([config/policy/${DBUS_FOOBAR_POLICY_OBJ}], [config.policy.update], [dnl
+     '{"version": <"1.4">, dnl
+       "forward_ports": m4_escape([<@a(ssss) []>]) dnl
+      }' dnl
+    ], 0, [ignore])
+dnl verify the updates
+DBUS_CHECK([config/policy/${DBUS_FOOBAR_POLICY_OBJ}], [config.policy.getSettings], [], 0, [dnl
+       'description': <'foobar policy update'>
+       'egress_zones': m4_escape([<['internal']>])
+       'ingress_zones': m4_escape([<['public', 'external']>])
+       'masquerade': <false>
+       'ports': m4_escape([<[('1234', 'udp')]>])
+       'priority': <200>
+       'protocols': m4_escape([<['ipv6-icmp']>])
+       'rich_rules': m4_escape([<['rule family="ipv4" source address="10.20.20.20" accept']>])
+       'services': m4_escape([<['mdns']>])
+       'short': <'foobar update'>
+       'source_ports': m4_escape([<[('1234', 'udp')]>])
+       'target': <'DROP'>
+       'version': <'1.4'>
+])
+
+DBUS_CHECK([config/policy/${DBUS_FOOBAR_POLICY_OBJ}], [config.policy.rename], ["foobar-renamed"], 0, [ignore])
+DBUS_CHECK([config], [config.getPolicyByName], ["foobar-renamed"], 0, [ignore])
+
+DBUS_CHECK([config/policy/${DBUS_FOOBAR_POLICY_OBJ}], [config.policy.remove], [], 0, [ignore])
+DBUS_CHECK([config], [config.getPolicyByName], ["foobar-renamed"], 1, [ignore], [ignore])
+
+dnl make a change to builtin and verify loadDefaults()
+DBUS_CHECK([config], [config.getPolicyByName], ["allow-host-ipv6"], 0, [stdout])
+DBUS_BUILTIN_POLICY_OBJ=[$(sed -e "s/.*config\/policy\/\([^']\+\)['].*/\1/" ./stdout)]
+export DBUS_BUILTIN_POLICY_OBJ
+DBUS_CHECK([config/policy/${DBUS_BUILTIN_POLICY_OBJ}], [config.policy.update], [dnl
+     '{"version": <"1.2">, dnl
+       "target": <"DROP"> dnl
+      }' dnl
+    ], 0, [ignore])
+DBUS_CHECK([config/policy/${DBUS_BUILTIN_POLICY_OBJ}], [config.policy.getSettings], [], 0, [dnl
+    'description': <'Allows basic IPv6 functionality for the host running firewalld.'>
+    'egress_zones': m4_escape([<['HOST']>])
+    'ingress_zones': m4_escape([<['ANY']>])
+    'masquerade': <false>
+    'priority': <-15000>
+    'rich_rules': m4_escape([<['rule family="ipv6" icmp-type name="neighbour-advertisement" accept', 'rule family="ipv6" icmp-type name="neighbour-solicitation" accept', 'rule family="ipv6" icmp-type name="router-advertisement" accept', 'rule family="ipv6" icmp-type name="redirect" accept']>])
+    'short': <'Allow host IPv6'>
+    'target': <'DROP'>
+    'version': <'1.2'>
+])
+
+DBUS_CHECK([config/policy/${DBUS_BUILTIN_POLICY_OBJ}], [config.policy.loadDefaults], [], 0, [ignore])
+DBUS_CHECK([config/policy/${DBUS_BUILTIN_POLICY_OBJ}], [config.policy.getSettings], [], 0, [dnl
+    'description': <'Allows basic IPv6 functionality for the host running firewalld.'>
+    'egress_zones': m4_escape([<['HOST']>])
+    'ingress_zones': m4_escape([<['ANY']>])
+    'masquerade': <false>
+    'priority': <-15000>
+    'rich_rules': m4_escape([<['rule family="ipv6" icmp-type name="neighbour-advertisement" accept', 'rule family="ipv6" icmp-type name="neighbour-solicitation" accept', 'rule family="ipv6" icmp-type name="router-advertisement" accept', 'rule family="ipv6" icmp-type name="redirect" accept']>])
+    'short': <'Allow host IPv6'>
+    'target': <'CONTINUE'>
+])
+
+FWD_END_TEST([-e '/ERROR: INVALID_POLICY: foobar-renamed/d'])
