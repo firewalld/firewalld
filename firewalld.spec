@@ -221,6 +221,7 @@ fi
 %{_datadir}/zsh/site-functions/_firewalld
 %{_prefix}/lib/firewalld/icmptypes/*.xml
 %{_prefix}/lib/firewalld/ipsets/README
+%{_prefix}/lib/firewalld/policies/*.xml
 %{_prefix}/lib/firewalld/services/*.xml
 %{_prefix}/lib/firewalld/zones/*.xml
 %{_prefix}/lib/firewalld/helpers/*.xml
@@ -230,6 +231,7 @@ fi
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld/helpers
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld/icmptypes
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld/ipsets
+%attr(0750,root,root) %dir %{_sysconfdir}/firewalld/policies
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld/services
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld/zones
 %defattr(0644,root,root)
@@ -287,6 +289,7 @@ fi
 %dir %{_prefix}/lib/firewalld/helpers
 %dir %{_prefix}/lib/firewalld/icmptypes
 %dir %{_prefix}/lib/firewalld/ipsets
+%dir %{_prefix}/lib/firewalld/policies
 %dir %{_prefix}/lib/firewalld/services
 %dir %{_prefix}/lib/firewalld/zones
 %{_rpmconfigdir}/macros.d/macros.firewalld

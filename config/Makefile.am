@@ -114,6 +114,7 @@ CONFIG_FILES = \
 	icmptypes/unknown-header-type.xml \
 	icmptypes/unknown-option.xml \
 	ipsets/README \
+	policies/allow-host-ipv6.xml \
 	services/amanda-client.xml \
 	services/amanda-k5-client.xml \
 	services/amqp.xml \
@@ -410,12 +411,14 @@ install-config:
 	$(MKDIR_P) $(DESTDIR)$(sconfdir)
 	$(MKDIR_P) $(DESTDIR)$(sconfdir)/icmptypes
 	$(MKDIR_P) $(DESTDIR)$(sconfdir)/ipsets
+	$(MKDIR_P) $(DESTDIR)$(sconfdir)/policies
 	$(MKDIR_P) $(DESTDIR)$(sconfdir)/services
 	$(MKDIR_P) $(DESTDIR)$(sconfdir)/zones
 	$(MKDIR_P) $(DESTDIR)$(sconfdir)/helpers
 	$(MKDIR_P) $(DESTDIR)$(prefixlibdir)
 	cp -r $(srcdir)/icmptypes $(DESTDIR)$(prefixlibdir)
 	cp -r $(srcdir)/ipsets $(DESTDIR)$(prefixlibdir)
+	cp -r $(srcdir)/policies $(DESTDIR)$(prefixlibdir)
 	cp -r $(srcdir)/services $(DESTDIR)$(prefixlibdir)
 	cp -r $(srcdir)/zones $(DESTDIR)$(prefixlibdir)
 	cp -r $(srcdir)/helpers $(DESTDIR)$(prefixlibdir)
@@ -423,12 +426,15 @@ install-config:
 uninstall-config:
 	rmdir $(DESTDIR)$(sconfdir)/icmptypes
 	rmdir $(DESTDIR)$(sconfdir)/ipsets
+	rmdir $(DESTDIR)$(sconfdir)/policies
 	rmdir $(DESTDIR)$(sconfdir)/services
 	rmdir $(DESTDIR)$(sconfdir)/zones
 	rm -f $(DESTDIR)$(prefixlibdir)/icmptypes/*
 	rmdir $(DESTDIR)$(prefixlibdir)/icmptypes
 	rm -f $(DESTDIR)$(prefixlibdir)/ipsets/*
 	rmdir $(DESTDIR)$(prefixlibdir)/ipsets
+	rm -f $(DESTDIR)$(prefixlibdir)/policies/*
+	rmdir $(DESTDIR)$(prefixlibdir)/policies
 	rm -f $(DESTDIR)$(prefixlibdir)/services/*
 	rmdir $(DESTDIR)$(prefixlibdir)/services
 	rm -f $(DESTDIR)$(prefixlibdir)/zones/*
