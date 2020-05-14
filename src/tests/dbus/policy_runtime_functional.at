@@ -1,0 +1,116 @@
+FWD_START_TEST([dbus api - policy runtime functional])
+AT_KEYWORDS(dbus policy)
+
+dnl #################
+dnl Settings
+dnl #################
+
+DBUS_CHECK([], [policy.getPolicySettings], ["allow-host-ipv6"], 0, [dnl
+    'description': <'Allows basic IPv6 functionality for the host running firewalld.'>
+    'egress_zones': m4_escape([<['HOST']>])
+    'ingress_zones': m4_escape([<['ANY']>])
+    'masquerade': <false>
+    'priority': <-15000>
+    'rich_rules': m4_escape([<['rule family="ipv6" icmp-type name="neighbour-advertisement" accept', 'rule family="ipv6" icmp-type name="neighbour-solicitation" accept', 'rule family="ipv6" icmp-type name="router-advertisement" accept', 'rule family="ipv6" icmp-type name="redirect" accept']>])
+    'short': <'Allow host IPv6'>
+    'target': <'CONTINUE'>
+])
+
+dnl Update all fields
+dnl
+DBUS_CHECK([], [policy.setPolicySettings], [dnl
+    "allow-host-ipv6" dnl
+     '{"services": m4_escape([<["mdns"]>]), dnl
+       "ports": m4_escape([<[("1234", "udp")]>]), dnl
+       "icmp_blocks": m4_escape([<["echo-request"]>]), dnl
+       "masquerade": <false>, dnl
+       "forward_ports": m4_escape([<[("1234", "udp", "4321", "")]>]), dnl
+       "rich_rules": m4_escape([<["rule family=ipv4 source address=10.20.20.20 accept"]>]), dnl
+       "protocols": m4_escape([<["ipv6-icmp"]>]), dnl
+       "source_ports": m4_escape([<[("1234", "udp")]>]), dnl
+       "ingress_zones": m4_escape([<["ANY"]>]), dnl
+       "egress_zones": m4_escape([<["HOST"]>]) dnl
+      }' dnl
+    ], 0, [ignore])
+DBUS_CHECK([], [policy.getPolicySettings], ["allow-host-ipv6"], 0, [dnl
+    'description': <'Allows basic IPv6 functionality for the host running firewalld.'>
+    'egress_zones': m4_escape([<['HOST']>])
+    'forward_ports': m4_escape([<[('1234', 'udp', '4321', '')]>])
+    'icmp_blocks': m4_escape([<['echo-request']>])
+    'ingress_zones': m4_escape([<['ANY']>])
+    'masquerade': <false>
+    'ports': m4_escape([<[('1234', 'udp')]>])
+    'priority': <-15000>
+    'protocols': m4_escape([<['ipv6-icmp']>])
+    'rich_rules': m4_escape([<['rule family="ipv4" source address="10.20.20.20" accept']>])
+    'services': m4_escape([<['mdns']>])
+    'short': <'Allow host IPv6'>
+    'source_ports': m4_escape([<[('1234', 'udp')]>])
+    'target': <'CONTINUE'>
+])
+dnl Do it again to make sure we don't get ALREADY_ENABLED
+DBUS_CHECK([], [policy.setPolicySettings], [dnl
+    "allow-host-ipv6" dnl
+     '{"services": m4_escape([<["mdns"]>]), dnl
+       "ports": m4_escape([<[("1234", "udp")]>]), dnl
+       "icmp_blocks": m4_escape([<["echo-request"]>]), dnl
+       "masquerade": <false>, dnl
+       "forward_ports": m4_escape([<[("1234", "udp", "4321", "")]>]), dnl
+       "rich_rules": m4_escape([<["rule family=ipv4 source address=10.20.20.20 accept"]>]), dnl
+       "protocols": m4_escape([<["ipv6-icmp"]>]), dnl
+       "source_ports": m4_escape([<[("1234", "udp")]>]), dnl
+       "ingress_zones": m4_escape([<["ANY"]>]), dnl
+       "egress_zones": m4_escape([<["HOST"]>]) dnl
+      }' dnl
+    ], 0, [ignore])
+
+dnl Update some fields
+DBUS_CHECK([], [policy.setPolicySettings], [dnl
+    "allow-host-ipv6" dnl
+     '{"services": m4_escape([<["mdns", "ssh"]>]), dnl
+       "icmp_blocks": m4_escape([<["echo-reply"]>]) dnl
+      }'dnl
+    ], 0, [ignore])
+dnl clear a field
+DBUS_CHECK([], [policy.setPolicySettings], [dnl
+    "allow-host-ipv6" dnl
+     '{"rich_rules": m4_escape([<@as []>]) dnl
+      }'dnl
+    ], 0, [ignore])
+dnl clear another field
+DBUS_CHECK([], [policy.setPolicySettings], [dnl
+    "allow-host-ipv6" dnl
+     '{"forward_ports": m4_escape([<@a(ssss) []>]) dnl
+      }'dnl
+    ], 0, [ignore])
+dnl verify the updates
+DBUS_CHECK([], [policy.getPolicySettings], ["allow-host-ipv6"], 0, [dnl
+    'description': <'Allows basic IPv6 functionality for the host running firewalld.'>
+    'egress_zones': m4_escape([<['HOST']>])
+    'icmp_blocks': m4_escape([<['echo-reply']>])
+    'ingress_zones': m4_escape([<['ANY']>])
+    'masquerade': <false>
+    'ports': m4_escape([<[('1234', 'udp')]>])
+    'priority': <-15000>
+    'protocols': m4_escape([<['ipv6-icmp']>])
+    'services': m4_escape([<['mdns', 'ssh']>])
+    'short': <'Allow host IPv6'>
+    'source_ports': m4_escape([<[('1234', 'udp')]>])
+    'target': <'CONTINUE'>
+])
+
+FWD_RELOAD
+
+dnl #################
+dnl Fetching Policies
+dnl #################
+
+DBUS_CHECK([], [policy.getPolicies], [], 0, [dnl
+    m4_escape([(['allow-host-ipv6'],)])
+])
+
+DBUS_CHECK([], [policy.getActivePolicies], [], 0, [dnl
+    ['allow-host-ipv6': {'ingress_zones': ['ANY'], 'egress_zones': ['HOST']}]
+])
+
+FWD_END_TEST
