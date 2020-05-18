@@ -348,6 +348,11 @@ class FirewallZone(object):
             # omit empty entries
             if value or isinstance(value, bool):
                 conf[key] = value
+            # make sure to remove values that were in permanent, but no longer
+            # in runtime.
+            elif key in conf:
+                del conf[key]
+
         return conf
 
     def set_config_with_settings_dict(self, zone, settings, sender):
