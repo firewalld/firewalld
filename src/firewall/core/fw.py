@@ -1159,3 +1159,24 @@ class Firewall(object):
                 del combined[key]
 
         return combined
+
+    def get_added_and_removed_settings(self, old_settings, new_settings):
+        add_settings = {}
+        remove_settings = {}
+        for key in (set(old_settings.keys()) | set(new_settings.keys())):
+            if key in new_settings:
+                if isinstance(new_settings[key], list):
+                    old = set(old_settings[key] if key in old_settings else [])
+                    add_settings[key] = list(set(new_settings[key]) - old)
+                    remove_settings[key] = list((old ^ set(new_settings[key])) & old)
+                # check for bool or int because dbus.Boolean is a subclass of
+                # int (because bool can't be subclassed).
+                elif isinstance(new_settings[key], bool) or isinstance(new_settings[key], int):
+                    if not old_settings[key] and new_settings[key]:
+                        add_settings[key] = True
+                    elif old_settings[key] and not new_settings[key]:
+                        remove_settings[key] = False
+                else:
+                    raise FirewallError(errors.INVALID_SETTING, "Unhandled setting type {} key {}".format(type(new_settings[key]), key))
+
+        return (add_settings, remove_settings)

@@ -371,23 +371,7 @@ class FirewallZone(object):
         }
 
         old_settings = self.get_config_with_settings_dict(zone)
-        add_settings = {}
-        remove_settings = {}
-        for key in (set(old_settings.keys()) | set(settings.keys())):
-            if key in settings:
-                if isinstance(settings[key], list):
-                    old = set(old_settings[key] if key in old_settings else [])
-                    add_settings[key] = list(set(settings[key]) - old)
-                    remove_settings[key] = list((old ^ set(settings[key])) & old)
-                # check for bool or int because dbus.Boolean is a subclass of
-                # int (because bool can't be subclassed).
-                elif isinstance(settings[key], bool) or isinstance(settings[key], int):
-                    if not old_settings[key] and settings[key]:
-                        add_settings[key] = True
-                    elif old_settings[key] and not settings[key]:
-                        remove_settings[key] = False
-                else:
-                    raise FirewallError(errors.INVALID_SETTING, "Unhandled setting type {} key {}".format(type(settings[key]), key))
+        (add_settings, remove_settings) = self._fw.get_added_and_removed_settings(old_settings, settings)
 
         for key in remove_settings:
             if isinstance(remove_settings[key], list):
