@@ -390,6 +390,12 @@ DBUS_CHECK([], [zone.setZoneSettings2], [dnl
      '{"forward_ports": <@a(ssss) @<:@@:>@> dnl
       }'dnl
     ], 0, [ignore])
+dnl clear another field
+DBUS_CHECK([], [zone.setZoneSettings2], [dnl
+    "public" dnl
+     '{"services": <@as @<:@@:>@> dnl
+      }'dnl
+    ], 0, [ignore])
 dnl verify the updates
 DBUS_CHECK([], [zone.getZoneSettings2], ["public"], 0, [dnl
        'description': <'For use in public areas. You do not trust the other computers on networks to not harm your computer. Only selected incoming connections are accepted.'>
@@ -400,7 +406,6 @@ DBUS_CHECK([], [zone.getZoneSettings2], ["public"], 0, [dnl
        'masquerade': <false>
        'ports': <@<:@('1234', 'udp')@:>@>
        'protocols': <@<:@'ipv6-icmp'@:>@>
-       'services': <@<:@'mdns', 'ssh'@:>@>
        'short': <'Public'>
        'source_ports': <@<:@('1234', 'udp')@:>@>
        'sources': <@<:@'10.10.10.0/24'@:>@>
