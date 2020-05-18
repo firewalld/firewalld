@@ -329,31 +329,23 @@ class FirewallZone(object):
         """
         :return: exported config updated with runtime settings
         """
-        conf = self.get_zone(zone).export_config_dict()
-        if conf["target"] == DEFAULT_ZONE_TARGET:
-            conf["target"] = "default"
-        for key,value in {  "services": self.list_services(zone),
-                            "ports": self.list_ports(zone),
-                            "icmp_blocks": self.list_icmp_blocks(zone),
-                            "masquerade": self.query_masquerade(zone),
-                            "forward_ports": self.list_forward_ports(zone),
-                            "interfaces": self.list_interfaces(zone),
-                            "sources": self.list_sources(zone),
-                            "rules_str": self.list_rules(zone),
-                            "protocols": self.list_protocols(zone),
-                            "source_ports": self.list_source_ports(zone),
-                            "icmp_block_inversion": self.query_icmp_block_inversion(zone),
-                            "forward": self.query_forward(zone),
-                            }.items():
-            # omit empty entries
-            if value or isinstance(value, bool):
-                conf[key] = value
-            # make sure to remove values that were in permanent, but no longer
-            # in runtime.
-            elif key in conf:
-                del conf[key]
-
-        return conf
+        permanent = self.get_zone(zone).export_config_dict()
+        if permanent["target"] == DEFAULT_ZONE_TARGET:
+            permanent["target"] = "default"
+        runtime = { "services": self.list_services(zone),
+                    "ports": self.list_ports(zone),
+                    "icmp_blocks": self.list_icmp_blocks(zone),
+                    "masquerade": self.query_masquerade(zone),
+                    "forward_ports": self.list_forward_ports(zone),
+                    "interfaces": self.list_interfaces(zone),
+                    "sources": self.list_sources(zone),
+                    "rules_str": self.list_rules(zone),
+                    "protocols": self.list_protocols(zone),
+                    "source_ports": self.list_source_ports(zone),
+                    "icmp_block_inversion": self.query_icmp_block_inversion(zone),
+                    "forward": self.query_forward(zone),
+                    }
+        return self._fw.combine_runtime_with_permanent_settings(permanent, runtime)
 
     def set_config_with_settings_dict(self, zone, settings, sender):
         # stupid wrappers to convert rich rule string to rich rule object

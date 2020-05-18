@@ -195,27 +195,19 @@ class FirewallPolicy(object):
         """
         :return: exported config updated with runtime settings
         """
-        conf = self.get_policy(policy).export_config_dict()
-        for key,value in {  "services": self.list_services(policy),
-                            "ports": self.list_ports(policy),
-                            "icmp_blocks": self.list_icmp_blocks(policy),
-                            "masquerade": self.query_masquerade(policy),
-                            "forward_ports": self.list_forward_ports(policy),
-                            "rich_rules": self.list_rules(policy),
-                            "protocols": self.list_protocols(policy),
-                            "source_ports": self.list_source_ports(policy),
-                            "ingress_zones": self.list_ingress_zones(policy),
-                            "egress_zones": self.list_egress_zones(policy),
-                            }.items():
-            # omit empty entries
-            if value or isinstance(value, bool):
-                conf[key] = value
-            # make sure to remove values that were in permanent, but no longer
-            # in runtime.
-            elif key in conf:
-                del conf[key]
-
-        return conf
+        permanent = self.get_policy(policy).export_config_dict()
+        runtime = { "services": self.list_services(policy),
+                    "ports": self.list_ports(policy),
+                    "icmp_blocks": self.list_icmp_blocks(policy),
+                    "masquerade": self.query_masquerade(policy),
+                    "forward_ports": self.list_forward_ports(policy),
+                    "rich_rules": self.list_rules(policy),
+                    "protocols": self.list_protocols(policy),
+                    "source_ports": self.list_source_ports(policy),
+                    "ingress_zones": self.list_ingress_zones(policy),
+                    "egress_zones": self.list_egress_zones(policy),
+                    }
+        return self._fw.combine_runtime_with_permanent_settings(permanent, runtime)
 
     def set_config_with_settings_dict(self, policy, settings, sender):
         # stupid wrappers to convert rich rule string to rich rule object

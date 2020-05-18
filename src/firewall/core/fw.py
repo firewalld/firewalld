@@ -1145,3 +1145,17 @@ class Firewall(object):
                     self.zone.change_zone_of_interface("", iface)
         else:
             raise FirewallError(errors.ZONE_ALREADY_SET, _zone)
+
+    def combine_runtime_with_permanent_settings(self, permanent, runtime):
+        combined = permanent.copy()
+
+        for key,value in runtime.items():
+            # omit empty entries
+            if value or isinstance(value, bool):
+                combined[key] = value
+            # make sure to remove values that were in permanent, but no
+            # longer in runtime.
+            elif key in combined:
+                del combined[key]
+
+        return combined
