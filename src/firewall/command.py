@@ -377,15 +377,11 @@ class FirewallCommand(object):
                                 "Module name '%s' too short" % value)
         return value
 
-    def print_zone_info(self, zone, settings, default_zone=None, extra_interfaces=[]): # pylint: disable=R0914
+    def print_zone_policy_info(self, zone, settings, default_zone=None, extra_interfaces=[], isPolicy=True): # pylint: disable=R0914
         target = settings.getTarget()
-        icmp_block_inversion = settings.getIcmpBlockInversion()
-        interfaces = sorted(set(settings.getInterfaces() + extra_interfaces))
-        sources = settings.getSources()
         services = settings.getServices()
         ports = settings.getPorts()
         protocols = settings.getProtocols()
-        forward = settings.getForward()
         masquerade = settings.getMasquerade()
         forward_ports = settings.getForwardPorts()
         source_ports = settings.getSourcePorts()
@@ -393,6 +389,15 @@ class FirewallCommand(object):
         rules = settings.getRichRules()
         description = settings.getDescription()
         short_description = settings.getShort()
+        if isPolicy:
+            ingress_zones = settings.getIngressZones()
+            egress_zones = settings.getEgressZones()
+            priority = settings.getPriority()
+        else:
+            icmp_block_inversion = settings.getIcmpBlockInversion()
+            interfaces = sorted(set(settings.getInterfaces() + extra_interfaces))
+            sources = settings.getSources()
+            forward = settings.getForward()
 
         def rich_rule_sorted_key(rule):
             priority = 0
@@ -411,7 +416,8 @@ class FirewallCommand(object):
         if default_zone is not None:
             if zone == default_zone:
                 attributes.append("default")
-        if interfaces or sources:
+        if (not isPolicy and (interfaces or sources)) or \
+           (    isPolicy and ingress_zones and egress_zones):
             attributes.append("active")
         if attributes:
             zone = zone + " (%s)" % ", ".join(attributes)
@@ -419,16 +425,24 @@ class FirewallCommand(object):
         if self.verbose:
             self.print_msg("  summary: " + short_description)
             self.print_msg("  description: " + description)
+        if isPolicy:
+            self.print_msg("  priority: " + str(priority))
         self.print_msg("  target: " + target)
-        self.print_msg("  icmp-block-inversion: %s" % \
-                       ("yes" if icmp_block_inversion else "no"))
-        self.print_msg("  interfaces: " + " ".join(interfaces))
-        self.print_msg("  sources: " + " ".join(sources))
+        if not isPolicy:
+            self.print_msg("  icmp-block-inversion: %s" % \
+                           ("yes" if icmp_block_inversion else "no"))
+        if isPolicy:
+            self.print_msg("  ingress-zones: " + " ".join(ingress_zones))
+            self.print_msg("  egress-zones: " + " ".join(egress_zones))
+        else:
+            self.print_msg("  interfaces: " + " ".join(interfaces))
+            self.print_msg("  sources: " + " ".join(sources))
         self.print_msg("  services: " + " ".join(sorted(services)))
         self.print_msg("  ports: " + " ".join(["%s/%s" % (port[0], port[1])
                                                for port in ports]))
         self.print_msg("  protocols: " + " ".join(sorted(protocols)))
-        self.print_msg("  forward: %s" % ("yes" if forward else "no"))
+        if not isPolicy:
+            self.print_msg("  forward: %s" % ("yes" if forward else "no"))
         self.print_msg("  masquerade: %s" % ("yes" if masquerade else "no"))
         self.print_msg("  forward-ports: " + ("\n\t" if forward_ports else "") +
                        "\n\t".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % \
@@ -441,6 +455,12 @@ class FirewallCommand(object):
         self.print_msg("  icmp-blocks: " + " ".join(icmp_blocks))
         self.print_msg("  rich rules: " + ("\n\t" if rules else "") +
                             "\n\t".join(sorted(rules, key=rich_rule_sorted_key)))
+
+    def print_zone_info(self, zone, settings, default_zone=None, extra_interfaces=[]):
+        self.print_zone_policy_info(zone, settings, default_zone=default_zone, extra_interfaces=extra_interfaces, isPolicy=False)
+
+    def print_policy_info(self, policy, settings, default_zone=None, extra_interfaces=[]):
+        self.print_zone_policy_info(policy, settings, default_zone=default_zone, extra_interfaces=extra_interfaces, isPolicy=True)
 
     def print_service_info(self, service, settings):
         ports = settings.getPorts()
