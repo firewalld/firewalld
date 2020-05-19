@@ -168,9 +168,9 @@ IPSet Options
   --ipset=<ipset> --get-entries
                        List entries of an ipset
   --ipset=<ipset> --add-entries-from-file=<entry>
-                       Add a new entries to an ipset [P]
+                       Add a new entries to an ipset
   --ipset=<ipset> --remove-entries-from-file=<entry>
-                       Remove entries from an ipset [P]
+                       Remove entries from an ipset
 
 IcmpType Options
   --new-icmptype=<icmptype>
@@ -328,11 +328,11 @@ Options to Adapt and Query Zones
                        Return whether the IPv4 forward port has been added for
                        a zone [Z]
   --add-forward        Enable forwarding of packets between interfaces and
-                       sources in a zone [P] [Z] [T]
+                       sources in a zone [Z]
   --remove-forward     Disable forwarding of packets between interfaces and
-                       sources in a zone [P] [Z]
+                       sources in a zone [Z]
   --query-forward      Return whether forwarding of packets between interfaces
-                       and sources has been enabled for a zone [P] [Z]
+                       and sources has been enabled for a zone [Z]
   --add-masquerade     Enable IPv4 masquerade for a zone [Z]
   --remove-masquerade  Disable IPv4 masquerade for a zone [Z]
   --query-masquerade   Return whether IPv4 masquerading has been enabled for a
