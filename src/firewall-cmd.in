@@ -30,7 +30,8 @@ import os
 
 from firewall.client import FirewallClient, FirewallClientIPSetSettings, \
     FirewallClientZoneSettings, FirewallClientServiceSettings, \
-    FirewallClientIcmpTypeSettings, FirewallClientHelperSettings
+    FirewallClientIcmpTypeSettings, FirewallClientHelperSettings, \
+    FirewallClientPolicySettings
 from firewall.errors import FirewallError
 from firewall import errors
 from firewall.functions import joinArgs, splitArgs, getPortRange
@@ -38,6 +39,7 @@ from firewall.core.fw_nm import nm_is_imported, \
     nm_get_connection_of_interface, nm_get_zone_of_connection, \
     nm_set_zone_of_connection, nm_get_interfaces_in_zone
 from firewall.core.io.zone import zone_reader
+from firewall.core.io.policy import policy_reader
 from firewall.core.io.service import service_reader
 from firewall.core.io.ipset import ipset_reader
 from firewall.core.io.icmptype import icmptype_reader
@@ -88,14 +90,31 @@ Zone Options
                        Add a new zone from file with optional name [P only]
   --delete-zone=<zone> Delete an existing zone [P only]
   --load-zone-defaults=<zone>
-                       Load zone default settings [P only] [Z]
+                       Load zone default settings [P only]
   --zone=<zone>        Use this zone to set or query options, else default zone
                        Usable for options marked with [Z]
-  --get-target         Get the zone target [P only] [Z]
-  --set-target=<target>
-                       Set the zone target [P only] [Z]
   --info-zone=<zone>   Print information about a zone
   --path-zone=<zone>   Print file path of a zone [P only]
+
+Policy Options
+  --get-policies       Print predefined policies
+  --get-active-policies 
+                       Print currently active policies
+  --list-all-policies  List everything added for or enabled in all policies
+  --new-policy=<policy> 
+                       Add a new empty policy
+  --new-policy-from-file=<filename> [--name=<policy>]
+                       Add a new policy from file with optional name override [P only]
+  --delete-policy=<policy>
+                       Delete an existing policy
+  --load-policy-defaults=<policy>
+                       Load policy default settings
+  --policy=<policy>    Use this policy to set or query options
+                       Usable for options marked with [O]
+  --info-policy=<policy>
+                       Print information about a policy
+  --path-policy=<policy>
+                       Print file path of a policy
 
 IPSet Options
   --get-ipset-types    Print the supported ipset types
@@ -231,53 +250,75 @@ Service Options
   --service=<service> --get-includes
                        List includes of service [P only]
 
-Options to Adapt and Query Zones
-  --list-all           List everything added for or enabled in a zone [P] [Z]
-  --list-services      List services added for a zone [P] [Z]
+Options to Adapt and Query Zones and Policies
+  --list-all           List everything added for or enabled [P] [Z] [O]
   --timeout=<timeval>  Enable an option for timeval time, where timeval is
                        a number followed by one of letters 's' or 'm' or 'h'
                        Usable for options marked with [T]
   --set-description=<description>
-                       Set new description to zone [P only] [Z]
-  --get-description    Print description for zone [P only] [Z]
+                       Set new description [P only] [Z] [O]
+  --get-description    Print description [P only] [Z] [O]
+  --get-target         Get the target [P only] [Z] [O]
+  --set-target=<target>
+                       Set the target [P only] [Z] [O]
   --set-short=<description>
-                       Set new short description to zone [P only] [Z]
-  --get-short          Print short description for zone [P only] [Z]
+                       Set new short description [Z] [O]
+  --get-short          Print short description [P only] [Z] [O]
+  --list-services      List services added [P] [Z]
   --add-service=<service>
-                       Add a service for a zone [P] [Z] [T]
+                       Add a service [P] [Z] [O] [T]
   --remove-service=<service>
-                       Remove a service from a zone [P] [Z]
+                       Remove a service [P] [Z] [O]
   --query-service=<service>
-                       Return whether service has been added for a zone [P] [Z]
-  --list-ports         List ports added for a zone [P] [Z]
+                       Return whether service has been added [P] [Z] [O]
+  --list-ports         List ports added [P] [Z] [O]
   --add-port=<portid>[-<portid>]/<protocol>
-                       Add the port for a zone [P] [Z] [T]
+                       Add the port [P] [Z] [O] [T]
   --remove-port=<portid>[-<portid>]/<protocol>
-                       Remove the port from a zone [P] [Z]
+                       Remove the port [P] [Z] [O]
   --query-port=<portid>[-<portid>]/<protocol>
-                       Return whether the port has been added for zone [P] [Z]
-  --list-protocols     List protocols added for a zone [P] [Z]
+                       Return whether the port has been added [P] [Z] [O]
+  --list-protocols     List protocols added [P] [Z] [O]
   --add-protocol=<protocol>
-                       Add the protocol for a zone [P] [Z] [T]
+                       Add the protocol [P] [Z] [O] [T]
   --remove-protocol=<protocol>
-                       Remove the protocol from a zone [P] [Z]
+                       Remove the protocol [P] [Z] [O]
   --query-protocol=<protocol>
-                       Return whether the protocol has been added for zone [P] [Z]
-  --list-source-ports  List source ports added for a zone [P] [Z]
+                       Return whether the protocol has been added [P] [Z] [O]
+  --list-source-ports  List source ports added [P] [Z] [O]
   --add-source-port=<portid>[-<portid>]/<protocol>
-                       Add the source port for a zone [P] [Z] [T]
+                       Add the source port [P] [Z] [O] [T]
   --remove-source-port=<portid>[-<portid>]/<protocol>
-                       Remove the source port from a zone [P] [Z]
+                       Remove the source port [P] [Z] [O]
   --query-source-port=<portid>[-<portid>]/<protocol>
-                       Return whether the source port has been added for zone [P] [Z]
-  --list-icmp-blocks   List Internet ICMP type blocks added for a zone [P] [Z]
+                       Return whether the source port has been added [P] [Z] [O]
+  --list-icmp-blocks   List Internet ICMP type blocks added [P] [Z] [O]
   --add-icmp-block=<icmptype>
-                       Add an ICMP block for a zone [P] [Z] [T]
+                       Add an ICMP block [P] [Z] [O] [T]
   --remove-icmp-block=<icmptype>
-                       Remove the ICMP block from a zone [P] [Z]
+                       Remove the ICMP block [P] [Z] [O]
   --query-icmp-block=<icmptype>
-                       Return whether an ICMP block has been added for a zone
-                       [P] [Z]
+                       Return whether an ICMP block has been added [P] [Z] [O]
+  --list-forward-ports List IPv4 forward ports added [P] [Z] [O]
+  --add-forward-port=port=<portid>[-<portid>]:proto=<protocol>[:toport=<portid>[-<portid>]][:toaddr=<address>[/<mask>]]
+                       Add the IPv4 forward port [P] [Z] [O] [T]
+  --remove-forward-port=port=<portid>[-<portid>]:proto=<protocol>[:toport=<portid>[-<portid>]][:toaddr=<address>[/<mask>]]
+                       Remove the IPv4 forward port [P] [Z] [O]
+  --query-forward-port=port=<portid>[-<portid>]:proto=<protocol>[:toport=<portid>[-<portid>]][:toaddr=<address>[/<mask>]]
+                       Return whether the IPv4 forward port has been added [P] [Z] [O]
+  --add-masquerade     Enable IPv4 masquerade [P] [Z] [O] [T]
+  --remove-masquerade  Disable IPv4 masquerade [P] [Z] [O]
+  --query-masquerade   Return whether IPv4 masquerading has been enabled [P] [Z] [O]
+  --list-rich-rules    List rich language rules added [P] [Z] [O]
+  --add-rich-rule=<rule>
+                       Add rich language rule 'rule' [P] [Z] [O] [T]
+  --remove-rich-rule=<rule>
+                       Remove rich language rule 'rule' [P] [Z] [O]
+  --query-rich-rule=<rule>
+                       Return whether a rich language rule 'rule' has been
+                       added [P] [Z] [O]
+
+Options to Adapt and Query Zones
   --add-icmp-block-inversion
                        Enable inversion of icmp blocks for a zone [P] [Z]
   --remove-icmp-block-inversion
@@ -285,32 +326,35 @@ Options to Adapt and Query Zones
   --query-icmp-block-inversion
                        Return whether inversion of icmp blocks has been enabled
                        for a zone [P] [Z]
-  --list-forward-ports List IPv4 forward ports added for a zone [P] [Z]
-  --add-forward-port=port=<portid>[-<portid>]:proto=<protocol>[:toport=<portid>[-<portid>]][:toaddr=<address>[/<mask>]]
-                       Add the IPv4 forward port for a zone [P] [Z] [T]
-  --remove-forward-port=port=<portid>[-<portid>]:proto=<protocol>[:toport=<portid>[-<portid>]][:toaddr=<address>[/<mask>]]
-                       Remove the IPv4 forward port from a zone [P] [Z]
-  --query-forward-port=port=<portid>[-<portid>]:proto=<protocol>[:toport=<portid>[-<portid>]][:toaddr=<address>[/<mask>]]
-                       Return whether the IPv4 forward port has been added for
-                       a zone [P] [Z]
   --add-forward        Enable forwarding of packets between interfaces and
                        sources in a zone [P] [Z] [T]
   --remove-forward     Disable forwarding of packets between interfaces and
                        sources in a zone [P] [Z]
   --query-forward      Return whether forwarding of packets between interfaces
                        and sources has been enabled for a zone [P] [Z]
-  --add-masquerade     Enable IPv4 masquerade for a zone [P] [Z] [T]
-  --remove-masquerade  Disable IPv4 masquerade for a zone [P] [Z]
-  --query-masquerade   Return whether IPv4 masquerading has been enabled for a
-                       zone [P] [Z]
-  --list-rich-rules    List rich language rules added for a zone [P] [Z]
-  --add-rich-rule=<rule>
-                       Add rich language rule 'rule' for a zone [P] [Z] [T]
-  --remove-rich-rule=<rule>
-                       Remove rich language rule 'rule' from a zone [P] [Z]
-  --query-rich-rule=<rule>
-                       Return whether a rich language rule 'rule' has been
-                       added for a zone [P] [Z]
+
+Options to Adapt and Query Policies
+  --get-priority       Get the priority [P only] [O]
+  --set-priority=<priority>
+                       Set the priority [P only] [O]
+  --list-ingress-zones
+                       List ingress zones that are bound to a policy [P] [O]
+  --add-ingress-zone=<zone>
+                       Add the ingress zone to a policy [P] [O]
+  --remove-ingress-zone=<zone>
+                       Remove the ingress zone from a policy [P] [O]
+  --query-ingress-zone=<zone>
+                       Query whether the ingress zone has been adedd to a
+                       policy [P] [O]
+  --list-egress-zones
+                       List egress zones that are bound to a policy [P] [O]
+  --add-egress-zone=<zone>
+                       Add the egress zone to a policy [P] [O]
+  --remove-egress-zone=<zone>
+                       Remove the egress zone from a policy [P] [O]
+  --query-egress-zone=<zone>
+                       Query whether the egress zone has been adedd to a
+                       policy [P] [O]
 
 Options to Handle Bindings of Interfaces
   --list-interfaces    List interfaces that are bound to a zone [P] [Z]
@@ -528,14 +572,18 @@ parser_group_standalone.add_argument("--query-lockdown", action="store_true")
 parser_group_standalone.add_argument("--get-default-zone", action="store_true")
 parser_group_standalone.add_argument("--set-default-zone", metavar="<zone>")
 parser_group_standalone.add_argument("--get-zones", action="store_true")
+parser_group_standalone.add_argument("--get-policies", action="store_true")
 parser_group_standalone.add_argument("--get-services", action="store_true")
 parser_group_standalone.add_argument("--get-icmptypes", action="store_true")
 parser_group_standalone.add_argument("--get-active-zones", action="store_true")
+parser_group_standalone.add_argument("--get-active-policies", action="store_true")
 parser_group_standalone.add_argument("--get-zone-of-interface", metavar="<iface>", action='append')
 parser_group_standalone.add_argument("--get-zone-of-source", metavar="<source>", action='append')
 parser_group_standalone.add_argument("--list-all-zones", action="store_true")
+parser_group_standalone.add_argument("--list-all-policies", action="store_true")
 
 parser_group_standalone.add_argument("--info-zone", metavar="<zone>")
+parser_group_standalone.add_argument("--info-policy", metavar="<policy>")
 parser_group_standalone.add_argument("--info-service", metavar="<service>")
 parser_group_standalone.add_argument("--info-icmptype", metavar="<icmptype>")
 parser_group_standalone.add_argument("--info-ipset", metavar="<ipset>")
@@ -555,6 +603,10 @@ parser_group_config.add_argument("--new-zone", metavar="<zone>")
 parser_group_config.add_argument("--new-zone-from-file", metavar="<filename>")
 parser_group_config.add_argument("--delete-zone", metavar="<zone>")
 parser_group_config.add_argument("--load-zone-defaults", metavar="<zone>")
+parser_group_config.add_argument("--new-policy", metavar="<policy>")
+parser_group_config.add_argument("--new-policy-from-file", metavar="<filename>")
+parser_group_config.add_argument("--delete-policy", metavar="<policy>")
+parser_group_config.add_argument("--load-policy-defaults", metavar="<policy>")
 parser_group_config.add_argument("--new-ipset", metavar="<ipset>")
 parser_group_config.add_argument("--new-ipset-from-file", metavar="<filename>")
 parser_group_config.add_argument("--delete-ipset", metavar="<ipset>")
@@ -565,6 +617,7 @@ parser_group_config.add_argument("--delete-helper", metavar="<helper>")
 parser_group_config.add_argument("--load-helper-defaults", metavar="<helper>")
 
 parser_group_config.add_argument("--path-zone", metavar="<zone>")
+parser_group_config.add_argument("--path-policy", metavar="<policy>")
 parser_group_config.add_argument("--path-service", metavar="<service>")
 parser_group_config.add_argument("--path-icmptype", metavar="<icmptype>")
 parser_group_config.add_argument("--path-ipset", metavar="<ipset>")
@@ -595,59 +648,70 @@ parser_group_lockdown_whitelist.add_argument("--query-lockdown-whitelist-user", 
 
 parser.add_argument("--permanent", action="store_true")
 parser.add_argument("--zone", default="", metavar="<zone>")
+parser.add_argument("--policy", default="", metavar="<policy>")
 parser.add_argument("--timeout", default="0", metavar="<seconds>")
 
-parser_group_zone = parser.add_mutually_exclusive_group()
-parser_group_zone.add_argument("--add-interface", metavar="<iface>", action='append')
-parser_group_zone.add_argument("--remove-interface", metavar="<iface>", action='append')
-parser_group_zone.add_argument("--query-interface", metavar="<iface>", action='append')
-parser_group_zone.add_argument("--change-interface", "--change-zone", metavar="<iface>", action='append')
-parser_group_zone.add_argument("--list-interfaces", action="store_true")
-parser_group_zone.add_argument("--add-source", metavar="<source>", action='append')
-parser_group_zone.add_argument("--remove-source", metavar="<source>", action='append')
-parser_group_zone.add_argument("--query-source", metavar="<source>", action='append')
-parser_group_zone.add_argument("--change-source", metavar="<source>", action='append')
-parser_group_zone.add_argument("--list-sources", action="store_true")
-parser_group_zone.add_argument("--add-rich-rule", metavar="<rule>", action='append')
-parser_group_zone.add_argument("--remove-rich-rule", metavar="<rule>", action='append')
-parser_group_zone.add_argument("--query-rich-rule", metavar="<rule>", action='append')
-parser_group_zone.add_argument("--add-service", metavar="<service>", action='append')
-parser_group_zone.add_argument("--remove-service", metavar="<zone>", action='append')
-parser_group_zone.add_argument("--query-service", metavar="<zone>", action='append')
-parser_group_zone.add_argument("--add-port", metavar="<port>", action='append')
-parser_group_zone.add_argument("--remove-port", metavar="<port>", action='append')
-parser_group_zone.add_argument("--query-port", metavar="<port>", action='append')
-parser_group_zone.add_argument("--add-protocol", metavar="<protocol>", action='append')
-parser_group_zone.add_argument("--remove-protocol", metavar="<protocol>", action='append')
-parser_group_zone.add_argument("--query-protocol", metavar="<protocol>", action='append')
-parser_group_zone.add_argument("--add-source-port", metavar="<port>", action='append')
-parser_group_zone.add_argument("--remove-source-port", metavar="<port>", action='append')
-parser_group_zone.add_argument("--query-source-port", metavar="<port>", action='append')
-parser_group_zone.add_argument("--add-forward", action="store_true")
-parser_group_zone.add_argument("--remove-forward", action="store_true")
-parser_group_zone.add_argument("--query-forward", action="store_true")
-parser_group_zone.add_argument("--add-masquerade", action="store_true")
-parser_group_zone.add_argument("--remove-masquerade", action="store_true")
-parser_group_zone.add_argument("--query-masquerade", action="store_true")
-parser_group_zone.add_argument("--add-icmp-block", metavar="<icmptype>", action='append')
-parser_group_zone.add_argument("--remove-icmp-block", metavar="<icmptype>", action='append')
-parser_group_zone.add_argument("--query-icmp-block", metavar="<icmptype>", action='append')
-parser_group_zone.add_argument("--add-icmp-block-inversion", action="store_true")
-parser_group_zone.add_argument("--remove-icmp-block-inversion", action="store_true")
-parser_group_zone.add_argument("--query-icmp-block-inversion", action="store_true")
-parser_group_zone.add_argument("--add-forward-port", metavar="<port>", action='append')
-parser_group_zone.add_argument("--remove-forward-port", metavar="<port>", action='append')
-parser_group_zone.add_argument("--query-forward-port", metavar="<port>", action='append')
-parser_group_zone.add_argument("--list-rich-rules", action="store_true")
-parser_group_zone.add_argument("--list-services", action="store_true")
-parser_group_zone.add_argument("--list-ports", action="store_true")
-parser_group_zone.add_argument("--list-protocols", action="store_true")
-parser_group_zone.add_argument("--list-icmp-blocks", action="store_true")
-parser_group_zone.add_argument("--list-forward-ports", action="store_true")
-parser_group_zone.add_argument("--list-source-ports", action="store_true")
-parser_group_zone.add_argument("--list-all", action="store_true")
-parser_group_zone.add_argument("--get-target", action="store_true")
-parser_group_zone.add_argument("--set-target", metavar="<target>")
+parser_group_zone_or_policy = parser.add_mutually_exclusive_group()
+parser_group_zone_or_policy.add_argument("--add-interface", metavar="<iface>", action='append')
+parser_group_zone_or_policy.add_argument("--remove-interface", metavar="<iface>", action='append')
+parser_group_zone_or_policy.add_argument("--query-interface", metavar="<iface>", action='append')
+parser_group_zone_or_policy.add_argument("--change-interface", "--change-zone", metavar="<iface>", action='append')
+parser_group_zone_or_policy.add_argument("--list-interfaces", action="store_true")
+parser_group_zone_or_policy.add_argument("--add-source", metavar="<source>", action='append')
+parser_group_zone_or_policy.add_argument("--remove-source", metavar="<source>", action='append')
+parser_group_zone_or_policy.add_argument("--query-source", metavar="<source>", action='append')
+parser_group_zone_or_policy.add_argument("--change-source", metavar="<source>", action='append')
+parser_group_zone_or_policy.add_argument("--list-sources", action="store_true")
+parser_group_zone_or_policy.add_argument("--add-ingress-zone", metavar="<zone>", action='append')
+parser_group_zone_or_policy.add_argument("--remove-ingress-zone", metavar="<zone>", action='append')
+parser_group_zone_or_policy.add_argument("--query-ingress-zone", metavar="<zone>", action='append')
+parser_group_zone_or_policy.add_argument("--list-ingress-zones", action="store_true")
+parser_group_zone_or_policy.add_argument("--add-egress-zone", metavar="<zone>", action='append')
+parser_group_zone_or_policy.add_argument("--remove-egress-zone", metavar="<zone>", action='append')
+parser_group_zone_or_policy.add_argument("--query-egress-zone", metavar="<zone>", action='append')
+parser_group_zone_or_policy.add_argument("--list-egress-zones", action="store_true")
+parser_group_zone_or_policy.add_argument("--add-rich-rule", metavar="<rule>", action='append')
+parser_group_zone_or_policy.add_argument("--remove-rich-rule", metavar="<rule>", action='append')
+parser_group_zone_or_policy.add_argument("--query-rich-rule", metavar="<rule>", action='append')
+parser_group_zone_or_policy.add_argument("--add-service", metavar="<service>", action='append')
+parser_group_zone_or_policy.add_argument("--remove-service", metavar="<zone_or_policy>", action='append')
+parser_group_zone_or_policy.add_argument("--query-service", metavar="<zone_or_policy>", action='append')
+parser_group_zone_or_policy.add_argument("--add-port", metavar="<port>", action='append')
+parser_group_zone_or_policy.add_argument("--remove-port", metavar="<port>", action='append')
+parser_group_zone_or_policy.add_argument("--query-port", metavar="<port>", action='append')
+parser_group_zone_or_policy.add_argument("--add-protocol", metavar="<protocol>", action='append')
+parser_group_zone_or_policy.add_argument("--remove-protocol", metavar="<protocol>", action='append')
+parser_group_zone_or_policy.add_argument("--query-protocol", metavar="<protocol>", action='append')
+parser_group_zone_or_policy.add_argument("--add-source-port", metavar="<port>", action='append')
+parser_group_zone_or_policy.add_argument("--remove-source-port", metavar="<port>", action='append')
+parser_group_zone_or_policy.add_argument("--query-source-port", metavar="<port>", action='append')
+parser_group_zone_or_policy.add_argument("--add-forward", action="store_true")
+parser_group_zone_or_policy.add_argument("--remove-forward", action="store_true")
+parser_group_zone_or_policy.add_argument("--query-forward", action="store_true")
+parser_group_zone_or_policy.add_argument("--add-masquerade", action="store_true")
+parser_group_zone_or_policy.add_argument("--remove-masquerade", action="store_true")
+parser_group_zone_or_policy.add_argument("--query-masquerade", action="store_true")
+parser_group_zone_or_policy.add_argument("--add-icmp-block", metavar="<icmptype>", action='append')
+parser_group_zone_or_policy.add_argument("--remove-icmp-block", metavar="<icmptype>", action='append')
+parser_group_zone_or_policy.add_argument("--query-icmp-block", metavar="<icmptype>", action='append')
+parser_group_zone_or_policy.add_argument("--add-icmp-block-inversion", action="store_true")
+parser_group_zone_or_policy.add_argument("--remove-icmp-block-inversion", action="store_true")
+parser_group_zone_or_policy.add_argument("--query-icmp-block-inversion", action="store_true")
+parser_group_zone_or_policy.add_argument("--add-forward-port", metavar="<port>", action='append')
+parser_group_zone_or_policy.add_argument("--remove-forward-port", metavar="<port>", action='append')
+parser_group_zone_or_policy.add_argument("--query-forward-port", metavar="<port>", action='append')
+parser_group_zone_or_policy.add_argument("--list-rich-rules", action="store_true")
+parser_group_zone_or_policy.add_argument("--list-services", action="store_true")
+parser_group_zone_or_policy.add_argument("--list-ports", action="store_true")
+parser_group_zone_or_policy.add_argument("--list-protocols", action="store_true")
+parser_group_zone_or_policy.add_argument("--list-icmp-blocks", action="store_true")
+parser_group_zone_or_policy.add_argument("--list-forward-ports", action="store_true")
+parser_group_zone_or_policy.add_argument("--list-source-ports", action="store_true")
+parser_group_zone_or_policy.add_argument("--list-all", action="store_true")
+parser_group_zone_or_policy.add_argument("--get-target", action="store_true")
+parser_group_zone_or_policy.add_argument("--set-target", metavar="<target>")
+parser_group_zone_or_policy.add_argument("--get-priority", action="store_true")
+parser_group_zone_or_policy.add_argument("--set-priority", metavar="<priority>")
 
 parser.add_argument("--option", metavar="<key>[=<value>]", action='append')
 parser.add_argument("--type", metavar="<ipsettype>")
@@ -792,7 +856,8 @@ options_standalone = a.help or a.version or \
     a.get_default_zone or a.set_default_zone or \
     a.get_active_zones or a.get_ipset_types or \
     a.get_log_denied or a.set_log_denied or \
-    a.get_automatic_helpers or a.set_automatic_helpers or a.check_config
+    a.get_automatic_helpers or a.set_automatic_helpers or a.check_config or \
+    a.get_active_policies
 
 options_desc_xml_file = a.set_description or a.get_description or \
                         a.set_short or a.get_short
@@ -815,39 +880,48 @@ options_config = a.get_zones or a.get_services or a.get_icmptypes or \
                  options_lockdown_whitelist or a.list_all_zones or \
                  a.get_zone_of_interface or a.get_zone_of_source or \
                  a.info_zone or a.info_icmptype or a.info_service or \
-                 a.info_ipset or a.get_ipsets or a.info_helper or \
-                 a.get_helpers
+                 a.info_ipset or a.info_policy or a.get_ipsets or a.info_helper or \
+                 a.get_helpers or a.get_policies or a.list_all_policies
 
-options_zone_action_action = \
+options_zone_and_policy_adapt_query = \
     a.add_service or a.remove_service or a.query_service or \
     a.add_port or a.remove_port or a.query_port or \
     a.add_protocol or a.remove_protocol or a.query_protocol or \
     a.add_source_port or a.remove_source_port or a.query_source_port or \
     a.add_icmp_block or a.remove_icmp_block or a.query_icmp_block or \
-    a.add_forward_port or a.remove_forward_port or a.query_forward_port
+    a.add_forward_port or a.remove_forward_port or a.query_forward_port or \
+    a.add_rich_rule or a.remove_rich_rule or a.query_rich_rule or \
+    a.add_masquerade or a.remove_masquerade or a.query_masquerade or \
+    a.list_services or a.list_ports or a.list_protocols or \
+    a.list_source_ports or \
+    a.list_icmp_blocks or a.list_forward_ports or a.list_rich_rules or \
+    a.list_all or a.get_target or a.set_target
 
-options_zone_interfaces_sources = \
+options_zone_unique = \
+    a.add_icmp_block_inversion or a.remove_icmp_block_inversion or \
+    a.query_icmp_block_inversion or \
+    a.add_forward or a.remove_forward or a.query_forward or \
     a.list_interfaces or a.change_interface or \
     a.add_interface or a.remove_interface or a.query_interface or \
     a.list_sources or a.change_source or \
     a.add_source or a.remove_source or a.query_source
 
-options_zone_adapt_query = \
-    a.add_rich_rule or a.remove_rich_rule or a.query_rich_rule or \
-    a.add_forward or a.remove_forward or a.query_forward or \
-    a.add_masquerade or a.remove_masquerade or a.query_masquerade or \
-    a.list_services or a.list_ports or a.list_protocols or \
-    a.list_source_ports or \
-    a.list_icmp_blocks or a.list_forward_ports or a.list_rich_rules or \
-    a.add_icmp_block_inversion or a.remove_icmp_block_inversion or \
-    a.query_icmp_block_inversion or \
-    a.list_all or a.get_target or a.set_target
+options_zone_ops = options_zone_unique or options_zone_and_policy_adapt_query
 
-options_zone_ops = options_zone_interfaces_sources or \
-                   options_zone_action_action or options_zone_adapt_query
+options_policy_unique = \
+    a.list_ingress_zones or a.add_ingress_zone or \
+    a.remove_ingress_zone or a.query_ingress_zone or \
+    a.list_egress_zones or a.add_egress_zone or \
+    a.remove_egress_zone or a.query_egress_zone or \
+    a.set_priority or a.get_priority
+
+options_policy_ops = options_policy_unique or options_zone_and_policy_adapt_query
 
 options_zone = a.zone or a.timeout != "0" or options_zone_ops or \
                options_desc_xml_file
+
+options_policy = a.policy or a.timeout != "0" or options_policy_ops or \
+                 options_desc_xml_file
 
 options_ipset = a.add_entry or a.remove_entry or a.query_entry or \
                 a.get_entries or a.add_entries_from_file or \
@@ -880,6 +954,7 @@ options_helper = a.add_port or a.remove_port or a.query_port or \
 
 options_permanent = a.permanent or options_config or \
                     a.zone or options_zone_ops or \
+                    a.policy or options_policy_ops or \
                     a.ipset or options_ipset or \
                     a.helper or options_helper
 
@@ -892,6 +967,9 @@ options_permanent_only = a.new_icmptype or a.delete_icmptype or \
                          a.new_zone or a.delete_zone or \
                          a.new_zone_from_file or \
                          a.load_zone_defaults or \
+                         a.new_policy or a.delete_policy or \
+                         a.new_policy_from_file or \
+                         a.load_policy_defaults or \
                          a.new_ipset or a.delete_ipset or \
                          a.new_ipset_from_file or \
                          a.load_ipset_defaults or \
@@ -902,7 +980,8 @@ options_permanent_only = a.new_icmptype or a.delete_icmptype or \
                          (a.service and options_service) or \
                          (a.helper and options_helper) or \
                          a.path_zone or a.path_icmptype or a.path_service or \
-                         a.path_ipset or a.path_helper or options_desc_xml_file
+                         a.path_ipset or a.path_helper or options_desc_xml_file or \
+                         a.path_policy
 
 options_direct = a.passthrough or \
            a.add_chain or a.remove_chain or a.query_chain or \
@@ -927,7 +1006,9 @@ options_list_get = a.help or a.version or a.list_all or a.list_all_zones or \
  a.info_zone or a.info_icmptype or a.info_service or \
  a.info_ipset or a.get_ipsets or a.get_entries or \
  a.info_helper or a.get_helpers or \
- a.get_destinations or a.get_description
+ a.get_destinations or a.get_description or \
+ a.list_all_policies or a.info_policy or a.get_policies or \
+ a.get_active_policies
 
 # Set quiet and verbose
 
@@ -941,13 +1022,13 @@ sys.excepthook = myexcepthook
 
 if not (options_standalone or options_ipset or \
         options_icmptype or options_service or options_helper or \
-        options_config or options_zone_ops or \
+        options_config or options_zone_ops or options_policy or \
         options_direct or options_permanent_only):
     cmd.fail(parser.format_usage() + "No option specified.")
 
 if options_standalone and (options_zone or options_permanent or \
-                           options_direct or options_permanent_only or\
-                           options_ipset):
+                           options_direct or options_permanent_only or \
+                           options_ipset or options_policy):
     cmd.fail(parser.format_usage() +
              "Can't use stand-alone options with other options.")
 
@@ -960,7 +1041,7 @@ if (options_icmptype and not a.icmptype) and \
 
 if (options_helper and not a.helper) and \
    not (options_service and a.service) and \
-   not options_zone and not options_desc_xml_file:
+   not options_zone and not options_desc_xml_file and not options_policy:
     cmd.fail(parser.format_usage() + "No helper specified.")
 
 if (options_direct or options_permanent_only) and \
@@ -977,16 +1058,16 @@ if a.zone and a.direct:
 
 if a.name and not (a.new_zone_from_file or a.new_service_from_file or \
                    a.new_ipset_from_file or a.new_icmptype_from_file or \
-                   a.new_helper_from_file):
+                   a.new_helper_from_file or a.new_policy_from_file):
     cmd.fail(parser.format_usage() + "Wrong usage of '--name' option.")
 
 if options_require_permanent and not a.permanent:
     cmd.fail(parser.format_usage() +
              "Option can be used only with --permanent.")
 
-if options_config and options_zone:
+if options_config and (options_zone or options_policy):
     cmd.fail(parser.format_usage() +
-             "Wrong usage of --get-zones | --get-services | --get-icmptypes.")
+             "Wrong usage of --get-zones | --get-services | --get-icmptypes | --get-policies.")
 
 if a.timeout != "0":
     value = 0
@@ -1046,6 +1127,18 @@ if a.quiet and options_list_get:
     cmd.set_quiet(a.quiet)
     cmd.fail("-q/--quiet can't be used with this option(s)")
 
+if a.zone and a.policy:
+    cmd.fail(parser.format_usage() + "Can't use --zone with --policy.")
+
+if a.policy and options_zone_unique:
+    cmd.fail(parser.format_usage() + "Can't use --policy with zone only options.")
+
+if a.zone and options_policy_unique:
+    cmd.fail(parser.format_usage() + "Can't use --zone with policy only options.")
+
+if not a.policy and options_policy_unique:
+    cmd.fail(parser.format_usage() + "Must use --policy with policy only options.")
+
 if a.help:
     __usage()
     sys.exit(0)
@@ -1066,7 +1159,7 @@ if not fw.connected:
         cmd.print_and_exit ("FirewallD is not running", errors.NOT_RUNNING)
 cmd.set_fw(fw)
 
-if options_zone_ops and not zone and not \
+if options_zone_ops and not zone and not a.policy and not \
    (a.service and options_service) and not \
    (a.helper and options_helper):
     default = fw.getDefaultZone()
@@ -1275,6 +1368,50 @@ if a.permanent:
         zone = fw.config().getZoneByName(a.path_zone)
         cmd.print_and_exit("%s/%s" % (zone.get_property("path"),
                                       zone.get_property("filename")))
+
+    elif a.get_policies:
+        cmd.print_and_exit(" ".join(fw.config().getPolicyNames()))
+
+    elif a.new_policy:
+        config = fw.config()
+        config.addPolicy(a.new_policy, FirewallClientPolicySettings())
+
+    elif a.new_policy_from_file:
+        filename = os.path.basename(a.new_policy_from_file)
+        dirname = os.path.dirname(a.new_policy_from_file)
+        if dirname == "":
+            dirname = "./"
+        try:
+            obj = policy_reader(filename, dirname)
+        except FirewallError as msg:
+            cmd.fail("Failed to load policy file '%s': %s" % \
+                   (a.new_policy_from_file, msg))
+        except IOError as msg:
+            cmd.fail("Failed to load policy file: %s" % msg)
+
+        if a.name:
+            obj.name = a.name
+
+        config = fw.config()
+        config.addPolicy(obj.name, obj.export_config_dict())
+
+    elif a.delete_policy:
+        policy = fw.config().getPolicyByName(a.delete_policy)
+        policy.remove()
+
+    elif a.load_policy_defaults:
+        policy = fw.config().getPolicyByName(a.load_policy_defaults)
+        policy.loadDefaults()
+
+    elif a.info_policy:
+        policy = fw.config().getPolicyByName(a.info_policy)
+        cmd.print_policy_info(a.info_policy, policy.getSettings())
+        sys.exit(0)
+
+    elif a.path_policy:
+        policy = fw.config().getPolicyByName(a.path_policy)
+        cmd.print_and_exit("%s/%s" % (policy.get_property("path"),
+                                      policy.get_property("filename")))
 
     elif a.get_services:
         cmd.print_and_exit(" ".join(fw.config().getServiceNames()))
@@ -1854,6 +1991,198 @@ if a.permanent:
                                                   joinArgs(rule)))
             sys.exit(0)
 
+    elif a.list_all_policies:
+        names = fw.config().getPolicyNames()
+        for policy in sorted(names):
+            settings = fw.config().getPolicyByName(policy).getSettings()
+            cmd.print_policy_info(policy, settings)
+            cmd.print_msg("")
+        sys.exit(0)
+
+    elif a.policy:
+        fw_policy = fw.config().getPolicyByName(a.policy)
+        settings = fw_policy.getSettings()
+
+        # list all policy settings
+        if a.list_all:
+            cmd.print_policy_info(a.policy, settings)
+            sys.exit(0)
+
+        # ingress zones
+        elif a.list_ingress_zones:
+            l = settings.getIngressZones()
+            cmd.print_and_exit(" ".join(sorted(l)))
+        elif a.add_ingress_zone:
+            cmd.add_sequence(a.add_ingress_zone, settings.addIngressZone,
+                             settings.queryIngressZone, None, "'%s'")
+        elif a.remove_ingress_zone:
+            cmd.remove_sequence(a.remove_ingress_zone, settings.removeIngressZone,
+                                settings.queryIngressZone, None, "'%s'")
+        elif a.query_ingress_zone:
+            cmd.query_sequence(a.query_ingress_zone, settings.queryIngressZone,
+                               None, "'%s'")
+
+        # egress zones
+        elif a.list_egress_zones:
+            l = settings.getEgressZones()
+            cmd.print_and_exit(" ".join(sorted(l)))
+        elif a.add_egress_zone:
+            cmd.add_sequence(a.add_egress_zone, settings.addEgressZone,
+                             settings.queryEgressZone, None, "'%s'")
+        elif a.remove_egress_zone:
+            cmd.remove_sequence(a.remove_egress_zone, settings.removeEgressZone,
+                                settings.queryEgressZone, None, "'%s'")
+        elif a.query_egress_zone:
+            cmd.query_sequence(a.query_egress_zone, settings.queryEgressZone,
+                               None, "'%s'")
+
+        # priority
+        elif a.get_priority:
+            cmd.print_and_exit(str(settings.getPriority()))
+        elif a.set_priority:
+            settings.setPriority(a.set_priority)
+
+        # rich rules
+        elif a.list_rich_rules:
+            l = settings.getRichRules()
+            cmd.print_and_exit("\n".join(l))
+        elif a.add_rich_rule:
+            cmd.add_sequence(a.add_rich_rule, settings.addRichRule,
+                             settings.queryRichRule, None, "'%s'")
+        elif a.remove_rich_rule:
+            cmd.remove_sequence(a.remove_rich_rule, settings.removeRichRule,
+                                settings.queryRichRule, None, "'%s'")
+        elif a.query_rich_rule:
+            cmd.query_sequence(a.query_rich_rule, settings.queryRichRule,
+                               None, "'%s'")
+
+        # service
+        elif a.list_services:
+            l = settings.getServices()
+            cmd.print_and_exit(" ".join(sorted(l)))
+        elif a.add_service:
+            cmd.add_sequence(a.add_service, settings.addService,
+                             settings.queryService, None, "'%s'")
+        elif a.remove_service:
+            cmd.remove_sequence(a.remove_service, settings.removeService,
+                                settings.queryService, None, "'%s'")
+        elif a.query_service:
+            cmd.query_sequence(a.query_service, settings.queryService,
+                               None, "'%s'")
+
+        # port
+        elif a.list_ports:
+            l = settings.getPorts()
+            cmd.print_and_exit(" ".join(["%s/%s" % (port[0], port[1]) for port in sorted(l, key=lambda x: (x[1], getPortRange(x[0])[0]))]))
+        elif a.add_port:
+            cmd.add_sequence(a.add_port, settings.addPort,
+                             settings.queryPort, cmd.parse_port, "%s/%s")
+        elif a.remove_port:
+            cmd.remove_sequence(a.remove_port, settings.removePort,
+                                settings.queryPort, cmd.parse_port, "%s/%s")
+        elif a.query_port:
+            cmd.query_sequence(a.query_port, settings.queryPort,
+                               cmd.parse_port, "%s/%s")
+
+        # protocol
+        elif a.list_protocols:
+            l = settings.getProtocols()
+            cmd.print_and_exit(" ".join(["%s" % protocol for protocol in sorted(l)]))
+        elif a.add_protocol:
+            cmd.add_sequence(a.add_protocol, settings.addProtocol,
+                             settings.queryProtocol, None, "'%s'")
+        elif a.remove_protocol:
+            cmd.remove_sequence(a.remove_protocol, settings.removeProtocol,
+                                settings.queryProtocol, None, "'%s'")
+        elif a.query_protocol:
+            cmd.query_sequence(a.query_protocol, settings.queryProtocol,
+                               None, "'%s'")
+
+        # source port
+        elif a.list_source_ports:
+            l = settings.getSourcePorts()
+            cmd.print_and_exit(" ".join(["%s/%s" % (port[0], port[1]) for port in sorted(l, key=lambda x: (x[1], getPortRange(x[0])[0]))]))
+        elif a.add_source_port:
+            cmd.add_sequence(a.add_source_port, settings.addSourcePort,
+                             settings.querySourcePort, cmd.parse_port, "%s/%s")
+        elif a.remove_source_port:
+            cmd.remove_sequence(a.remove_source_port, settings.removeSourcePort,
+                                settings.querySourcePort, cmd.parse_port,
+                                "%s/%s")
+        elif a.query_source_port:
+            cmd.query_sequence(a.query_source_port, settings.querySourcePort,
+                               cmd.parse_port, "%s/%s")
+
+        # masquerade
+        elif a.add_masquerade:
+            settings.addMasquerade()
+        elif a.remove_masquerade:
+            settings.removeMasquerade()
+        elif a.query_masquerade:
+            cmd.print_query_result(settings.queryMasquerade())
+
+        # forward port
+        elif a.list_forward_ports:
+            l = settings.getForwardPorts()
+            cmd.print_and_exit("\n".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % (port, protocol, toport, toaddr) for (port, protocol, toport, toaddr) in l]))
+        elif a.add_forward_port:
+            cmd.add_sequence(a.add_forward_port, settings.addForwardPort,
+                             settings.queryForwardPort, cmd.parse_forward_port,
+                             "port=%s:proto=%s:toport=%s:toaddr=%s")
+        elif a.remove_forward_port:
+            cmd.remove_sequence(a.remove_forward_port,
+                                settings.removeForwardPort,
+                                settings.queryForwardPort,
+                                cmd.parse_forward_port,
+                                "port=%s:proto=%s:toport=%s:toaddr=%s")
+        elif a.query_forward_port:
+            cmd.query_sequence(a.query_forward_port, settings.queryForwardPort,
+                               cmd.parse_forward_port,
+                               "port=%s:proto=%s:toport=%s:toaddr=%s")
+
+        # block icmp
+        elif a.list_icmp_blocks:
+            l = settings.getIcmpBlocks()
+            cmd.print_and_exit(" ".join(l))
+        elif a.add_icmp_block:
+            cmd.add_sequence(a.add_icmp_block, settings.addIcmpBlock,
+                             settings.queryIcmpBlock, None, "'%s'")
+        elif a.remove_icmp_block:
+            cmd.remove_sequence(a.remove_icmp_block, settings.removeIcmpBlock,
+                                settings.queryIcmpBlock, None, "'%s'")
+        elif a.query_icmp_block:
+            cmd.query_sequence(a.query_icmp_block, settings.queryIcmpBlock,
+                               None, "'%s'")
+
+        # target
+        elif a.get_target:
+            target = settings.getTarget()
+            cmd.print_and_exit(target)
+        elif a.set_target:
+            settings.setTarget(a.set_target)
+
+        # set description
+        elif a.set_description:
+            settings = fw.config().getPolicyByName(a.policy).getSettings()
+            settings.setDescription(a.set_description)
+
+        # get description
+        elif a.get_description:
+            settings = fw.config().getPolicyByName(a.policy).getSettings()
+            cmd.print_and_exit(settings.getDescription())
+
+        # set short description
+        elif a.set_short:
+            settings = fw.config().getPolicyByName(a.policy).getSettings()
+            settings.setShort(a.set_short)
+
+        # get short description
+        elif a.get_short:
+            settings = fw.config().getPolicyByName(a.policy).getSettings()
+            cmd.print_and_exit(settings.getShort())
+
+        fw_policy.update(settings)
+
     else:
         if zone == "":
             zone = fw.getDefaultZone()
@@ -2258,6 +2587,16 @@ elif a.get_active_zones:
             if x in zones[zone]:
                 cmd.print_msg("  %s: %s" % (x, " ".join(zones[zone][x])))
     sys.exit(0)
+elif a.get_policies:
+    cmd.print_and_exit(" ".join(fw.getPolicies()))
+elif a.get_active_policies:
+    policies = fw.getActivePolicies()
+    for policy in policies:
+        cmd.print_msg("%s" % policy)
+        for x in [ "ingress_zones", "egress_zones" ]:
+            if x in policies[policy]:
+                cmd.print_msg("  %s: %s" % (x.replace("_", "-"), " ".join(policies[policy][x])))
+    sys.exit(0)
 elif a.get_services:
     l = fw.listServices()
     cmd.print_and_exit(" ".join(l))
@@ -2507,6 +2846,160 @@ elif a.remove_source:
 elif a.query_source:
     cmd.x_query_sequence(zone, a.query_source, fw.querySource, None, "'%s'")
 
+# policy
+elif a.policy:
+    settings = fw.getPolicySettings(a.policy)
+
+    if a.list_all:
+        cmd.print_policy_info(a.policy, settings)
+        sys.exit(0)
+
+    # ingress zones
+    elif a.list_ingress_zones:
+        l = settings.getIngressZones()
+        cmd.print_and_exit(" ".join(sorted(l)))
+    elif a.add_ingress_zone:
+        cmd.add_sequence(a.add_ingress_zone, settings.addIngressZone,
+                         settings.queryIngressZone, None, "'%s'")
+    elif a.remove_ingress_zone:
+        cmd.remove_sequence(a.remove_ingress_zone, settings.removeIngressZone,
+                            settings.queryIngressZone, None, "'%s'")
+    elif a.query_ingress_zone:
+        cmd.query_sequence(a.query_ingress_zone, settings.queryIngressZone,
+                           None, "'%s'")
+
+    # egress zones
+    elif a.list_egress_zones:
+        l = settings.getEgressZones()
+        cmd.print_and_exit(" ".join(sorted(l)))
+    elif a.add_egress_zone:
+        cmd.add_sequence(a.add_egress_zone, settings.addEgressZone,
+                         settings.queryEgressZone, None, "'%s'")
+    elif a.remove_egress_zone:
+        cmd.remove_sequence(a.remove_egress_zone, settings.removeEgressZone,
+                            settings.queryEgressZone, None, "'%s'")
+    elif a.query_egress_zone:
+        cmd.query_sequence(a.query_egress_zone, settings.queryEgressZone,
+                           None, "'%s'")
+
+    # rich rules
+    elif a.list_rich_rules:
+        l = settings.getRichRules()
+        cmd.print_and_exit("\n".join(l))
+    elif a.add_rich_rule:
+        cmd.add_sequence(a.add_rich_rule, settings.addRichRule,
+                         settings.queryRichRule, None, "'%s'")
+    elif a.remove_rich_rule:
+        cmd.remove_sequence(a.remove_rich_rule, settings.removeRichRule,
+                            settings.queryRichRule, None, "'%s'")
+    elif a.query_rich_rule:
+        cmd.query_sequence(a.query_rich_rule, settings.queryRichRule,
+                           None, "'%s'")
+
+    # service
+    if a.list_services:
+        l = settings.getServices()
+        cmd.print_and_exit(" ".join(sorted(l)))
+    elif a.add_service:
+        cmd.add_sequence(a.add_service, settings.addService,
+                         settings.queryService, None, "'%s'")
+    elif a.remove_service:
+        cmd.remove_sequence(a.remove_service, settings.removeService,
+                            settings.queryService, None, "'%s'")
+    elif a.query_service:
+        cmd.query_sequence(a.query_service, settings.queryService,
+                           None, "'%s'")
+
+    # port
+    elif a.list_ports:
+        l = settings.getPorts()
+        cmd.print_and_exit(" ".join(["%s/%s" % (port[0], port[1]) for port in sorted(l, key=lambda x: (x[1], getPortRange(x[0])[0]))]))
+    elif a.add_port:
+        cmd.add_sequence(a.add_port, settings.addPort,
+                         settings.queryPort, cmd.parse_port, "%s/%s")
+    elif a.remove_port:
+        cmd.remove_sequence(a.remove_port, settings.removePort,
+                            settings.queryPort, cmd.parse_port, "%s/%s")
+    elif a.query_port:
+        cmd.query_sequence(a.query_port, settings.queryPort,
+                           cmd.parse_port, "%s/%s")
+
+    # protocol
+    elif a.list_protocols:
+        l = settings.getProtocols()
+        cmd.print_and_exit(" ".join(["%s" % protocol for protocol in sorted(l)]))
+    elif a.add_protocol:
+        cmd.add_sequence(a.add_protocol, settings.addProtocol,
+                         settings.queryProtocol, None, "'%s'")
+    elif a.remove_protocol:
+        cmd.remove_sequence(a.remove_protocol, settings.removeProtocol,
+                            settings.queryProtocol, None, "'%s'")
+    elif a.query_protocol:
+        cmd.query_sequence(a.query_protocol, settings.queryProtocol,
+                           None, "'%s'")
+
+    # source port
+    elif a.list_source_ports:
+        l = settings.getSourcePorts()
+        cmd.print_and_exit(" ".join(["%s/%s" % (port[0], port[1]) for port in sorted(l, key=lambda x: (x[1], getPortRange(x[0])[0]))]))
+    elif a.add_source_port:
+        cmd.add_sequence(a.add_source_port, settings.addSourcePort,
+                         settings.querySourcePort, cmd.parse_port, "%s/%s")
+    elif a.remove_source_port:
+        cmd.remove_sequence(a.remove_source_port, settings.removeSourcePort,
+                            settings.querySourcePort, cmd.parse_port,
+                            "%s/%s")
+    elif a.query_source_port:
+        cmd.query_sequence(a.query_source_port, settings.querySourcePort,
+                           cmd.parse_port, "%s/%s")
+
+    # masquerade
+    elif a.add_masquerade:
+        settings.addMasquerade()
+    elif a.remove_masquerade:
+        settings.removeMasquerade()
+    elif a.query_masquerade:
+        cmd.print_query_result(settings.queryMasquerade())
+
+    # forward port
+    elif a.list_forward_ports:
+        l = settings.getForwardPorts()
+        cmd.print_and_exit("\n".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % (port, protocol, toport, toaddr) for (port, protocol, toport, toaddr) in l]))
+    elif a.add_forward_port:
+        cmd.add_sequence(a.add_forward_port, settings.addForwardPort,
+                         settings.queryForwardPort, cmd.parse_forward_port,
+                         "port=%s:proto=%s:toport=%s:toaddr=%s")
+    elif a.remove_forward_port:
+        cmd.remove_sequence(a.remove_forward_port,
+                            settings.removeForwardPort,
+                            settings.queryForwardPort,
+                            cmd.parse_forward_port,
+                            "port=%s:proto=%s:toport=%s:toaddr=%s")
+    elif a.query_forward_port:
+        cmd.query_sequence(a.query_forward_port, settings.queryForwardPort,
+                           cmd.parse_forward_port,
+                           "port=%s:proto=%s:toport=%s:toaddr=%s")
+
+    # block icmp
+    elif a.list_icmp_blocks:
+        l = settings.getIcmpBlocks()
+        cmd.print_and_exit(" ".join(l))
+    elif a.add_icmp_block:
+        cmd.add_sequence(a.add_icmp_block, settings.addIcmpBlock,
+                         settings.queryIcmpBlock, None, "'%s'")
+    elif a.remove_icmp_block:
+        cmd.remove_sequence(a.remove_icmp_block, settings.removeIcmpBlock,
+                            settings.queryIcmpBlock, None, "'%s'")
+    elif a.query_icmp_block:
+        cmd.query_sequence(a.query_icmp_block, settings.queryIcmpBlock,
+                           None, "'%s'")
+
+    fw.setPolicySettings(a.policy, settings)
+
+# endif a.policy
+#
+# else zone:
+
 # rich rules
 elif a.list_rich_rules:
     l = fw.getRichRules(zone)
@@ -2648,8 +3141,18 @@ elif a.list_all_zones:
         cmd.print_msg("")
     sys.exit(0)
 
+elif a.list_all_policies:
+    for policy in fw.getPolicies():
+        cmd.print_policy_info(policy, fw.getPolicySettings(policy))
+        cmd.print_msg("")
+    sys.exit(0)
+
 elif a.info_zone:
     cmd.print_zone_info(a.info_zone, fw.getZoneSettings(a.info_zone), True)
+    sys.exit(0)
+
+elif a.info_policy:
+    cmd.print_policy_info(a.info_policy, fw.getPolicySettings(a.info_policy))
     sys.exit(0)
 
 elif a.info_service:
