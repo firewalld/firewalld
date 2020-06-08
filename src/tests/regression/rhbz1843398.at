@@ -1,0 +1,8 @@
+FWD_START_TEST([rich rule source mac])
+AT_KEYWORDS(rich rhbz1843398 gh643)
+
+FWD_CHECK([--permanent --add-rich-rule='rule source mac="11:22:33:44:55:66" reject'], 0, [ignore])
+FWD_CHECK([            --add-rich-rule='rule source mac="11:22:33:44:55:66" reject'], 0, [ignore])
+FWD_RELOAD
+
+FWD_END_TEST
