@@ -1060,7 +1060,7 @@ class nftables(object):
                 if addr_field == "daddr":
                     raise FirewallError(INVALID_RULE, "%s._rule_addr_fragment()", (self.__class__))
                 family = "ether"
-            if check_single_address("ipv4", address):
+            elif check_single_address("ipv4", address):
                 family = "ip"
             elif check_address("ipv4", address):
                 family = "ip"
