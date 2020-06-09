@@ -15,7 +15,9 @@ NFT_LIST_RULES([inet], [filter_INPUT], 0, [dnl
             ct state established,related accept
             ct status dnat accept
             iifname "lo" accept
+            jump filter_INPUT_POLICIES_pre
             jump filter_INPUT_ZONES
+            jump filter_INPUT_POLICIES_post
             ct state invalid log prefix "STATE_INVALID_DROP: "
             ct state invalid drop
             log prefix "FINAL_REJECT: "
@@ -30,8 +32,10 @@ NFT_LIST_RULES([inet], [filter_FORWARD], 0, [dnl
             ct status dnat accept
             iifname "lo" accept
             ip6 daddr { ::/96, ::ffff:0.0.0.0/96, 2002::/24, 2002:a00::/24, 2002:7f00::/24, 2002:a9fe::/32, 2002:ac10::/28, 2002:c0a8::/32, 2002:e000::/19 } log prefix "RFC3964_IPv4_REJECT: " reject with icmpv6 type addr-unreachable
+            jump filter_FORWARD_POLICIES_pre
             jump filter_FORWARD_IN_ZONES
             jump filter_FORWARD_OUT_ZONES
+            jump filter_FORWARD_POLICIES_post
             ct state invalid log prefix "STATE_INVALID_DROP: "
             ct state invalid drop
             log prefix "FINAL_REJECT: "

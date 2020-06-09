@@ -1570,7 +1570,9 @@ FWD_START_TEST([rich rules priority])
         ct state established,related accept
         ct status dnat accept
         iifname "lo" accept
+        jump filter_INPUT_POLICIES_pre
         jump filter_INPUT_ZONES
+        jump filter_INPUT_POLICIES_post
         ct state invalid drop
         reject with icmpx type admin-prohibited
         }

@@ -842,7 +842,7 @@ class ip4tables(object):
 
         return [rule]
 
-    def build_policy_chain_rules(self, enable, policy, table):
+    def build_policy_chain_rules(self, enable, policy, table, chain):
         add_del_chain = { True: "-N", False: "-X" }[enable]
         add_del_rule = { True: "-A", False: "-D" }[enable]
         _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX)

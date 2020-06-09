@@ -18,7 +18,9 @@ NFT_LIST_RULES([inet], [filter_INPUT], 0, [dnl
             ct state established,related accept
             ct status dnat accept
             iifname "lo" accept
+            jump filter_INPUT_POLICIES_pre
             jump filter_INPUT_ZONES
+            jump filter_INPUT_POLICIES_post
             ct state invalid drop
             reject with icmpx type admin-prohibited
         }
@@ -42,8 +44,10 @@ NFT_LIST_RULES([inet], [filter_FORWARD], 0, [dnl
             ct status dnat accept
             iifname "lo" accept
             ip6 daddr { ::/96, ::ffff:0.0.0.0/96, 2002::/24, 2002:a00::/24, 2002:7f00::/24, 2002:a9fe::/32, 2002:ac10::/28, 2002:c0a8::/32, 2002:e000::/19 } reject with icmpv6 type addr-unreachable
+            jump filter_FORWARD_POLICIES_pre
             jump filter_FORWARD_IN_ZONES
             jump filter_FORWARD_OUT_ZONES
+            jump filter_FORWARD_POLICIES_post
             ct state invalid drop
             reject with icmpx type admin-prohibited
         }
@@ -77,7 +81,6 @@ IF_HOST_SUPPORTS_NFT_FIB([
             chain raw_PREROUTING {
                 icmpv6 type { nd-router-advert, nd-neighbor-solicit } accept
                 meta nfproto ipv6 fib saddr . iif oif missing drop
-                jump raw_PREROUTING_ZONES
             }
         }
     ])
@@ -85,26 +88,16 @@ IF_HOST_SUPPORTS_NFT_FIB([
     NFT_LIST_RULES([inet], [raw_PREROUTING], 0, [dnl
         table inet firewalld {
             chain raw_PREROUTING {
-                jump raw_PREROUTING_ZONES
             }
         }
     ])
 ])
-NFT_LIST_RULES([inet], [raw_PREROUTING_ZONES], 0, [dnl
-    table inet firewalld {
-        chain raw_PREROUTING_ZONES {
-            ip6 saddr dead:beef::/54 goto raw_PRE_public
-            ip saddr 1.2.3.0/24 goto raw_PRE_trusted
-            iifname "dummy0" goto raw_PRE_trusted
-            iifname "dummy1" goto raw_PRE_public
-            goto raw_PRE_public
-        }
-    }
-])
 NFT_LIST_RULES([inet], [mangle_PREROUTING], 0, [dnl
     table inet firewalld {
         chain mangle_PREROUTING {
+            jump mangle_PREROUTING_POLICIES_pre
             jump mangle_PREROUTING_ZONES
+            jump mangle_PREROUTING_POLICIES_post
         }
     }
 ])
@@ -122,7 +115,9 @@ NFT_LIST_RULES([inet], [mangle_PREROUTING_ZONES], 0, [dnl
 NFT_LIST_RULES([ip], [nat_PREROUTING], 0, [dnl
     table ip firewalld {
         chain nat_PREROUTING {
+            jump nat_PREROUTING_POLICIES_pre
             jump nat_PREROUTING_ZONES
+            jump nat_PREROUTING_POLICIES_post
         }
     }
 ])
@@ -139,7 +134,9 @@ NFT_LIST_RULES([ip], [nat_PREROUTING_ZONES], 0, [dnl
 NFT_LIST_RULES([ip], [nat_POSTROUTING], 0, [dnl
     table ip firewalld {
         chain nat_POSTROUTING {
+            jump nat_POSTROUTING_POLICIES_pre
             jump nat_POSTROUTING_ZONES
+            jump nat_POSTROUTING_POLICIES_post
         }
     }
 ])
@@ -156,7 +153,9 @@ NFT_LIST_RULES([ip], [nat_POSTROUTING_ZONES], 0, [dnl
 NFT_LIST_RULES([ip6], [nat_PREROUTING], 0, [dnl
     table ip6 firewalld {
         chain nat_PREROUTING {
+            jump nat_PREROUTING_POLICIES_pre
             jump nat_PREROUTING_ZONES
+            jump nat_PREROUTING_POLICIES_post
         }
     }
 ])
@@ -173,7 +172,9 @@ NFT_LIST_RULES([ip6], [nat_PREROUTING_ZONES], 0, [dnl
 NFT_LIST_RULES([ip6], [nat_POSTROUTING], 0, [dnl
     table ip6 firewalld {
         chain nat_POSTROUTING {
+            jump nat_POSTROUTING_POLICIES_pre
             jump nat_POSTROUTING_ZONES
+            jump nat_POSTROUTING_POLICIES_post
         }
     }
 ])
@@ -359,8 +360,10 @@ NFT_LIST_RULES([inet], [filter_INPUT], 0, [dnl
             ct state established,related accept
             ct status dnat accept
             iifname "lo" accept
+            jump filter_INPUT_POLICIES_pre
             jump filter_INPUT_ZONES_SOURCE
             jump filter_INPUT_ZONES
+            jump filter_INPUT_POLICIES_post
             ct state invalid drop
             reject with icmpx type admin-prohibited
         }
@@ -390,10 +393,12 @@ NFT_LIST_RULES([inet], [filter_FORWARD], 0, [dnl
             ct status dnat accept
             iifname "lo" accept
             ip6 daddr { ::/96, ::ffff:0.0.0.0/96, 2002::/24, 2002:a00::/24, 2002:7f00::/24, 2002:a9fe::/32, 2002:ac10::/28, 2002:c0a8::/32, 2002:e000::/19 } reject with icmpv6 type addr-unreachable
+            jump filter_FORWARD_POLICIES_pre
             jump filter_FORWARD_IN_ZONES_SOURCE
             jump filter_FORWARD_IN_ZONES
             jump filter_FORWARD_OUT_ZONES_SOURCE
             jump filter_FORWARD_OUT_ZONES
+            jump filter_FORWARD_POLICIES_post
             ct state invalid drop
             reject with icmpx type admin-prohibited
         }
@@ -439,8 +444,6 @@ IF_HOST_SUPPORTS_NFT_FIB([
             chain raw_PREROUTING {
                 icmpv6 type { nd-router-advert, nd-neighbor-solicit } accept
                 meta nfproto ipv6 fib saddr . iif oif missing drop
-                jump raw_PREROUTING_ZONES_SOURCE
-                jump raw_PREROUTING_ZONES
             }
         }
     ])
@@ -448,34 +451,17 @@ IF_HOST_SUPPORTS_NFT_FIB([
     NFT_LIST_RULES([inet], [raw_PREROUTING], 0, [dnl
         table inet firewalld {
             chain raw_PREROUTING {
-                jump raw_PREROUTING_ZONES_SOURCE
-                jump raw_PREROUTING_ZONES
             }
         }
     ])
 ])
-NFT_LIST_RULES([inet], [raw_PREROUTING_ZONES_SOURCE], 0, [dnl
-    table inet firewalld {
-        chain raw_PREROUTING_ZONES_SOURCE {
-            ip6 saddr dead:beef::/54 goto raw_PRE_public
-            ip saddr 1.2.3.0/24 goto raw_PRE_trusted
-        }
-    }
-])
-NFT_LIST_RULES([inet], [raw_PREROUTING_ZONES], 0, [dnl
-    table inet firewalld {
-        chain raw_PREROUTING_ZONES {
-            iifname "dummy0" goto raw_PRE_trusted
-            iifname "dummy1" goto raw_PRE_public
-            goto raw_PRE_public
-        }
-    }
-])
 NFT_LIST_RULES([inet], [mangle_PREROUTING], 0, [dnl
     table inet firewalld {
         chain mangle_PREROUTING {
+            jump mangle_PREROUTING_POLICIES_pre
             jump mangle_PREROUTING_ZONES_SOURCE
             jump mangle_PREROUTING_ZONES
+            jump mangle_PREROUTING_POLICIES_post
         }
     }
 ])
@@ -499,8 +485,10 @@ NFT_LIST_RULES([inet], [mangle_PREROUTING_ZONES], 0, [dnl
 NFT_LIST_RULES([ip], [nat_PREROUTING], 0, [dnl
     table ip firewalld {
         chain nat_PREROUTING {
+            jump nat_PREROUTING_POLICIES_pre
             jump nat_PREROUTING_ZONES_SOURCE
             jump nat_PREROUTING_ZONES
+            jump nat_PREROUTING_POLICIES_post
         }
     }
 ])
@@ -523,8 +511,10 @@ NFT_LIST_RULES([ip], [nat_PREROUTING_ZONES], 0, [dnl
 NFT_LIST_RULES([ip], [nat_POSTROUTING], 0, [dnl
     table ip firewalld {
         chain nat_POSTROUTING {
+            jump nat_POSTROUTING_POLICIES_pre
             jump nat_POSTROUTING_ZONES_SOURCE
             jump nat_POSTROUTING_ZONES
+            jump nat_POSTROUTING_POLICIES_post
         }
     }
 ])
@@ -547,8 +537,10 @@ NFT_LIST_RULES([ip], [nat_POSTROUTING_ZONES], 0, [dnl
 NFT_LIST_RULES([ip6], [nat_PREROUTING], 0, [dnl
     table ip6 firewalld {
         chain nat_PREROUTING {
+            jump nat_PREROUTING_POLICIES_pre
             jump nat_PREROUTING_ZONES_SOURCE
             jump nat_PREROUTING_ZONES
+            jump nat_PREROUTING_POLICIES_post
         }
     }
 ])
@@ -571,8 +563,10 @@ NFT_LIST_RULES([ip6], [nat_PREROUTING_ZONES], 0, [dnl
 NFT_LIST_RULES([ip6], [nat_POSTROUTING], 0, [dnl
     table ip6 firewalld {
         chain nat_POSTROUTING {
+            jump nat_POSTROUTING_POLICIES_pre
             jump nat_POSTROUTING_ZONES_SOURCE
             jump nat_POSTROUTING_ZONES
+            jump nat_POSTROUTING_POLICIES_post
         }
     }
 ])

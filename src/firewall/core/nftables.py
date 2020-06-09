@@ -167,6 +167,7 @@ class nftables(object):
         self.rule_to_handle = {}
         self.rule_ref_count = {}
         self.rich_rule_priority_counts = {}
+        self.policy_priority_counts = {}
         self.zone_source_index_cache = {}
         self.created_tables = {"inet": [], "ip": [], "ip6": []}
 
@@ -229,42 +230,42 @@ class nftables(object):
         else:
             raise FirewallError(UNKNOWN_ERROR, "Failed to reverse rule")
 
-    def _set_rule_replace_rich_rule_priority(self, rule, rich_rule_priority_counts):
+    def _set_rule_replace_priority(self, rule, priority_counts, token):
         for verb in ["add", "insert", "delete"]:
             if verb in rule:
                 break
 
-        if "%%RICH_RULE_PRIORITY%%" in rule[verb]["rule"]:
-            priority = rule[verb]["rule"]["%%RICH_RULE_PRIORITY%%"]
-            del rule[verb]["rule"]["%%RICH_RULE_PRIORITY%%"]
+        if token in rule[verb]["rule"]:
+            priority = rule[verb]["rule"][token]
+            del rule[verb]["rule"][token]
             if type(priority) != int:
-                raise FirewallError(INVALID_RULE, "rich rule priority must be followed by a number")
+                raise FirewallError(INVALID_RULE, "priority must be followed by a number")
             chain = (rule[verb]["rule"]["family"], rule[verb]["rule"]["chain"]) # family, chain
             # Add the rule to the priority counts. We don't need to store the
             # rule, just bump the ref count for the priority value.
             if verb == "delete":
-                if chain not in rich_rule_priority_counts or \
-                   priority not in rich_rule_priority_counts[chain] or \
-                   rich_rule_priority_counts[chain][priority] <= 0:
-                    raise FirewallError(UNKNOWN_ERROR, "nonexistent or underflow of rich rule priority count")
+                if chain not in priority_counts or \
+                   priority not in priority_counts[chain] or \
+                   priority_counts[chain][priority] <= 0:
+                    raise FirewallError(UNKNOWN_ERROR, "nonexistent or underflow of priority count")
 
-                rich_rule_priority_counts[chain][priority] -= 1
+                priority_counts[chain][priority] -= 1
             else:
-                if chain not in rich_rule_priority_counts:
-                    rich_rule_priority_counts[chain] = {}
-                if priority not in rich_rule_priority_counts[chain]:
-                    rich_rule_priority_counts[chain][priority] = 0
+                if chain not in priority_counts:
+                    priority_counts[chain] = {}
+                if priority not in priority_counts[chain]:
+                    priority_counts[chain][priority] = 0
 
                 # calculate index of new rule
                 index = 0
-                for p in sorted(rich_rule_priority_counts[chain].keys()):
+                for p in sorted(priority_counts[chain].keys()):
                     if p == priority and verb == "insert":
                         break
-                    index += rich_rule_priority_counts[chain][p]
+                    index += priority_counts[chain][p]
                     if p == priority and verb == "add":
                         break
 
-                rich_rule_priority_counts[chain][priority] += 1
+                priority_counts[chain][priority] += 1
 
                 _verb_snippet = rule[verb]
                 del rule[verb]
@@ -295,6 +296,7 @@ class nftables(object):
         _deduplicated_rules = []
         _executed_rules = []
         rich_rule_priority_counts = copy.deepcopy(self.rich_rule_priority_counts)
+        policy_priority_counts = copy.deepcopy(self.policy_priority_counts)
         zone_source_index_cache = copy.deepcopy(self.zone_source_index_cache)
         rule_ref_count = self.rule_ref_count.copy()
         for rule in rules:
@@ -336,7 +338,8 @@ class nftables(object):
                 # does not tolerate them.
                 _rule[verb]["rule"]["expr"] = list(filter(None, _rule[verb]["rule"]["expr"]))
 
-                self._set_rule_replace_rich_rule_priority(_rule, rich_rule_priority_counts)
+                self._set_rule_replace_priority(_rule, rich_rule_priority_counts, "%%RICH_RULE_PRIORITY%%")
+                self._set_rule_replace_priority(_rule, policy_priority_counts, "%%POLICY_PRIORITY%%")
                 self._run_replace_zone_source(_rule, zone_source_index_cache)
 
                 # delete using rule handle
@@ -358,6 +361,7 @@ class nftables(object):
             raise ValueError("'%s' failed: %s\nJSON blob:\n%s" % ("python-nftables", error, json.dumps(json_blob)))
 
         self.rich_rule_priority_counts = rich_rule_priority_counts
+        self.policy_priority_counts = policy_priority_counts
         self.zone_source_index_cache = zone_source_index_cache
         self.rule_ref_count = rule_ref_count
 
@@ -404,6 +408,7 @@ class nftables(object):
         self.rule_to_handle = saved_rule_to_handle
         self.rule_ref_count = saved_rule_ref_count
         self.rich_rule_priority_counts = {}
+        self.policy_priority_counts = {}
         self.zone_source_index_cache = {}
 
         rules = []
@@ -507,16 +512,6 @@ class nftables(object):
                                                     "hook": "%s" % IPTABLES_TO_NFT_HOOK["raw"][chain][0],
                                                     "prio": IPTABLES_TO_NFT_HOOK["raw"][chain][1]}}})
 
-        for chain in ["PREROUTING"]:
-            for dispatch_suffix in ["ZONES_SOURCE", "ZONES"] if self._fw._allow_zone_drifting else ["ZONES"]:
-                default_rules.append({"add": {"chain": {"family": "inet",
-                                                        "table": TABLE_NAME,
-                                                        "name": "raw_%s_%s" % (chain, dispatch_suffix)}}})
-                default_rules.append({"add": {"rule":  {"family": "inet",
-                                                        "table": TABLE_NAME,
-                                                        "chain": "raw_%s" % chain,
-                                                        "expr": [{"jump": {"target": "raw_%s_%s" % (chain, dispatch_suffix)}}]}}})
-
         for chain in IPTABLES_TO_NFT_HOOK["mangle"].keys():
             default_rules.append({"add": {"chain": {"family": "inet",
                                                     "table": TABLE_NAME,
@@ -524,7 +519,7 @@ class nftables(object):
                                                     "type": "filter",
                                                     "hook": "%s" % IPTABLES_TO_NFT_HOOK["mangle"][chain][0],
                                                     "prio": IPTABLES_TO_NFT_HOOK["mangle"][chain][1]}}})
-            for dispatch_suffix in ["ZONES_SOURCE", "ZONES"] if self._fw._allow_zone_drifting else ["ZONES"]:
+            for dispatch_suffix in ["POLICIES_pre", "ZONES_SOURCE", "ZONES", "POLICIES_post"] if self._fw._allow_zone_drifting else ["POLICIES_pre", "ZONES", "POLICIES_post"]:
                 default_rules.append({"add": {"chain": {"family": "inet",
                                                         "table": TABLE_NAME,
                                                         "name": "mangle_%s_%s" % (chain, dispatch_suffix)}}})
@@ -542,7 +537,7 @@ class nftables(object):
                                                         "hook": "%s" % IPTABLES_TO_NFT_HOOK["nat"][chain][0],
                                                         "prio": IPTABLES_TO_NFT_HOOK["nat"][chain][1]}}})
 
-                for dispatch_suffix in ["ZONES_SOURCE", "ZONES"] if self._fw._allow_zone_drifting else ["ZONES"]:
+                for dispatch_suffix in ["POLICIES_pre", "ZONES_SOURCE", "ZONES", "POLICIES_post"] if self._fw._allow_zone_drifting else ["POLICIES_pre", "ZONES", "POLICIES_post"]:
                     default_rules.append({"add": {"chain": {"family": family,
                                                             "table": TABLE_NAME,
                                                             "name": "nat_%s_%s" % (chain, dispatch_suffix)}}})
@@ -581,7 +576,7 @@ class nftables(object):
                                                                     "op": "==",
                                                                     "right": "lo"}},
                                                          {"accept": None}]}}})
-        for dispatch_suffix in ["ZONES_SOURCE", "ZONES"] if self._fw._allow_zone_drifting else ["ZONES"]:
+        for dispatch_suffix in ["POLICIES_pre", "ZONES_SOURCE", "ZONES", "POLICIES_post"] if self._fw._allow_zone_drifting else ["POLICIES_pre", "ZONES", "POLICIES_post"]:
             default_rules.append({"add": {"chain": {"family": "inet",
                                                     "table": TABLE_NAME,
                                                     "name": "filter_%s_%s" % ("INPUT", dispatch_suffix)}}})
@@ -638,6 +633,14 @@ class nftables(object):
                                                                     "op": "==",
                                                                     "right": "lo"}},
                                                          {"accept": None}]}}})
+        for dispatch_suffix in ["POLICIES_pre"]:
+            default_rules.append({"add": {"chain": {"family": "inet",
+                                                    "table": TABLE_NAME,
+                                                    "name": "filter_%s_%s" % ("FORWARD", dispatch_suffix)}}})
+            default_rules.append({"add": {"rule":  {"family": "inet",
+                                                    "table": TABLE_NAME,
+                                                    "chain": "filter_%s" % "FORWARD",
+                                                    "expr": [{"jump": {"target": "filter_%s_%s" % ("FORWARD", dispatch_suffix)}}]}}})
         for direction in ["IN", "OUT"]:
             for dispatch_suffix in ["ZONES_SOURCE", "ZONES"] if self._fw._allow_zone_drifting else ["ZONES"]:
                 default_rules.append({"add": {"chain": {"family": "inet",
@@ -647,6 +650,14 @@ class nftables(object):
                                                         "table": TABLE_NAME,
                                                         "chain": "filter_%s" % "FORWARD",
                                                         "expr": [{"jump": {"target": "filter_%s_%s_%s" % ("FORWARD", direction, dispatch_suffix)}}]}}})
+        for dispatch_suffix in ["POLICIES_post"]:
+            default_rules.append({"add": {"chain": {"family": "inet",
+                                                    "table": TABLE_NAME,
+                                                    "name": "filter_%s_%s" % ("FORWARD", dispatch_suffix)}}})
+            default_rules.append({"add": {"rule":  {"family": "inet",
+                                                    "table": TABLE_NAME,
+                                                    "chain": "filter_%s" % "FORWARD",
+                                                    "expr": [{"jump": {"target": "filter_%s_%s" % ("FORWARD", dispatch_suffix)}}]}}})
         if log_denied != "off":
             default_rules.append({"add": {"rule":  {"family": "inet",
                                                     "table": TABLE_NAME,
@@ -682,6 +693,22 @@ class nftables(object):
                                                           "op": "==",
                                                           "right": "lo"}},
                                                          {"accept": None}]}}})
+        for dispatch_suffix in ["POLICIES_pre"]:
+            default_rules.append({"add": {"chain": {"family": "inet",
+                                                    "table": TABLE_NAME,
+                                                    "name": "filter_%s_%s" % ("OUTPUT", dispatch_suffix)}}})
+            default_rules.append({"add": {"rule":  {"family": "inet",
+                                                    "table": TABLE_NAME,
+                                                    "chain": "filter_%s" % "OUTPUT",
+                                                    "expr": [{"jump": {"target": "filter_%s_%s" % ("OUTPUT", dispatch_suffix)}}]}}})
+        for dispatch_suffix in ["POLICIES_post"]:
+            default_rules.append({"add": {"chain": {"family": "inet",
+                                                    "table": TABLE_NAME,
+                                                    "name": "filter_%s_%s" % ("OUTPUT", dispatch_suffix)}}})
+            default_rules.append({"add": {"rule":  {"family": "inet",
+                                                    "table": TABLE_NAME,
+                                                    "chain": "filter_%s" % "OUTPUT",
+                                                    "expr": [{"jump": {"target": "filter_%s_%s" % ("OUTPUT", dispatch_suffix)}}]}}})
 
         return default_rules
 
@@ -697,6 +724,113 @@ class nftables(object):
 
         return []
 
+    def build_policy_ingress_egress_rules(self, enable, policy, table, chain,
+                                          ingress_interfaces, egress_interfaces,
+                                          ingress_sources, egress_sources,
+                                          family="inet"):
+        # nat tables need to use ip/ip6 family
+        if table == "nat" and family == "inet":
+            rules = []
+            rules.extend(self.build_policy_ingress_egress_rules(enable, policy, table, chain,
+                                          ingress_interfaces, egress_interfaces,
+                                          ingress_sources, egress_sources,
+                                          family="ip"))
+            rules.extend(self.build_policy_ingress_egress_rules(enable, policy, table, chain,
+                                          ingress_interfaces, egress_interfaces,
+                                          ingress_sources, egress_sources,
+                                          family="ip6"))
+            return rules
+
+        p_obj = self._fw.policy.get_policy(policy)
+        chain_suffix = "pre" if p_obj.priority < 0 else "post"
+        isSNAT = True if (table == "nat" and chain == "POSTROUTING") else False
+        _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX, isSNAT)
+
+        ingress_fragments = []
+        egress_fragments = []
+        if ingress_interfaces:
+            ingress_fragments.append({"match": {"left": {"meta": {"key": "iifname"}},
+                                                "op": "==",
+                                                "right": {"set": list(ingress_interfaces)}}})
+        if egress_interfaces:
+            egress_fragments.append({"match": {"left": {"meta": {"key": "oifname"}},
+                                               "op": "==",
+                                               "right": {"set": list(egress_interfaces)}}})
+        ipv_to_family = {"ipv4": "ip", "ipv6": "ip6"}
+        if ingress_sources:
+            for src in ingress_sources:
+                # skip if this source doesn't apply to the current family.
+                if table == "nat":
+                    ipv = self._fw.zone.check_source(src)
+                    if ipv in ipv_to_family and family != ipv_to_family[ipv]:
+                        continue
+
+                ingress_fragments.append(self._rule_addr_fragment("saddr", src))
+        if egress_sources:
+            for dst in egress_sources:
+                # skip if this source doesn't apply to the current family.
+                if table == "nat":
+                    ipv = self._fw.zone.check_source(dst)
+                    if ipv in ipv_to_family and family != ipv_to_family[ipv]:
+                        continue
+
+                egress_fragments.append(self._rule_addr_fragment("daddr", dst))
+
+        def _generate_policy_dispatch_rule(ingress_fragment, egress_fragment):
+            expr_fragments = []
+            if ingress_fragment:
+                expr_fragments.append(ingress_fragment)
+            if egress_fragment:
+                expr_fragments.append(egress_fragment)
+            expr_fragments.append({"jump": {"target": "%s_%s" % (table, _policy)}})
+
+            rule = {"family": family,
+                    "table": TABLE_NAME,
+                    "chain": "%s_%s_POLICIES_%s" % (table, chain, chain_suffix),
+                    "expr": expr_fragments}
+            rule.update(self._policy_priority_fragment(p_obj))
+
+            if enable:
+                return {"add": {"rule": rule}}
+            else:
+                return {"delete": {"rule": rule}}
+
+        rules = []
+        if ingress_fragments: # zone --> [zone, ANY, HOST]
+            for ingress_fragment in ingress_fragments:
+                if egress_fragments:
+                    # zone --> zone
+                    for egress_fragment in egress_fragments:
+                        rules.append(_generate_policy_dispatch_rule(ingress_fragment, egress_fragment))
+                elif table =="nat" and egress_sources:
+                    # if the egress source is not for the current family (there
+                    # are no egress fragments), then avoid creating an invalid
+                    # catch all rule.
+                    pass
+                else:
+                    # zone --> [ANY, HOST]
+                    rules.append(_generate_policy_dispatch_rule(ingress_fragment, None))
+        elif table =="nat" and ingress_sources:
+            # if the ingress source is not for the current family (there are no
+            # ingress fragments), then avoid creating an invalid catch all
+            # rule.
+            pass
+        else: # [ANY, HOST] --> [zone, ANY, HOST]
+            if egress_fragments:
+                # [ANY, HOST] --> zone
+                for egress_fragment in egress_fragments:
+                    rules.append(_generate_policy_dispatch_rule(None, egress_fragment))
+            elif table =="nat" and egress_sources:
+                # if the egress source is not for the current family (there are
+                # no egress fragments), then avoid creating an invalid catch
+                # all rule.
+                pass
+            else:
+                # [ANY, HOST] --> [ANY, HOST]
+                rules.append(_generate_policy_dispatch_rule(None, None))
+
+        return rules
+
     def build_zone_source_interface_rules(self, enable, zone, policy, interface,
                                           table, chain, append=False,
                                           family="inet"):
@@ -709,7 +843,8 @@ class nftables(object):
                             interface, table, chain, append, "ip6"))
             return rules
 
-        _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX)
+        isSNAT = True if (table == "nat" and chain == "POSTROUTING") else False
+        _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX, isSNAT=isSNAT)
         opt = {
             "PREROUTING": "iifname",
             "POSTROUTING": "oifname",
@@ -774,7 +909,8 @@ class nftables(object):
                                     address, table, chain, "ip6"))
             return rules
 
-        _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX)
+        isSNAT = True if (table == "nat" and chain == "POSTROUTING") else False
+        _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX, isSNAT=isSNAT)
         add_del = { True: "insert", False: "delete" }[enable]
 
         opt = {
@@ -801,16 +937,17 @@ class nftables(object):
         rule.update(self._zone_source_fragment(zone, address))
         return [{add_del: {"rule": rule}}]
 
-    def build_policy_chain_rules(self, enable, policy, table, family="inet"):
+    def build_policy_chain_rules(self, enable, policy, table, chain, family="inet"):
         # nat tables needs to use ip/ip6 family
         if table == "nat" and family == "inet":
             rules = []
-            rules.extend(self.build_policy_chain_rules(enable, policy, table, "ip"))
-            rules.extend(self.build_policy_chain_rules(enable, policy, table, "ip6"))
+            rules.extend(self.build_policy_chain_rules(enable, policy, table, chain, "ip"))
+            rules.extend(self.build_policy_chain_rules(enable, policy, table, chain, "ip6"))
             return rules
 
         add_del = { True: "add", False: "delete" }[enable]
-        _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX)
+        isSNAT = True if (table == "nat" and chain == "POSTROUTING") else False
+        _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX, isSNAT=isSNAT)
 
         rules = []
         rules.append({add_del: {"chain": {"family": family,
@@ -843,7 +980,7 @@ class nftables(object):
 
         if table == "filter" and \
            target in ["ACCEPT", "REJECT", "%%REJECT%%", "DROP"]:
-            if target == "%%REJECT%%":
+            if target in ["%%REJECT%%", "REJECT"]:
                 target_fragment = self._reject_fragment()
             else:
                 target_fragment = {target.lower(): None}
@@ -970,6 +1107,9 @@ class nftables(object):
             addr_split = address.split("/")
             address = normalizeIP6(addr_split[0]) + "/" + addr_split[1]
         return {"%%ZONE_SOURCE%%": {"zone": zone, "address": address}}
+
+    def _policy_priority_fragment(self, policy):
+        return {"%%POLICY_PRIORITY%%": policy.priority}
 
     def _rich_rule_priority_fragment(self, rich_rule):
         if not rich_rule or rich_rule.priority == 0:
@@ -1286,7 +1426,7 @@ class nftables(object):
 
     def _build_policy_masquerade_nat_rules(self, enable, policy, family, rich_rule=None):
         table = "nat"
-        _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX)
+        _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX, isSNAT=True)
 
         add_del = { True: "add", False: "delete" }[enable]
 
