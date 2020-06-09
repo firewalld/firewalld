@@ -697,12 +697,8 @@ class Policy(IO_Object):
                 if zone not in existing_zones:
                     raise FirewallError(errors.INVALID_ZONE,
                                         "'%s' not among existing zones" % (zone))
-                if item == "ingress_zones":
-                    _add_to_zone_list = self.ingress_zones
-                else:
-                    _add_to_zone_list = self.egress_zones
-                if ((zone not in ["ANY", "HOST"] and (set(["ANY", "HOST"]) & set(_add_to_zone_list))) or \
-                   (zone in ["ANY", "HOST"] and (set(_add_to_zone_list) - set([zone])))):
+                if ((zone not in ["ANY", "HOST"] and (set(["ANY", "HOST"]) & set(config))) or \
+                   (zone in ["ANY", "HOST"] and (set(config) - set([zone])))):
                     raise FirewallError(errors.INVALID_ZONE,
                                         "'%s' may only contain one of: many regular zones, ANY, or HOST" % (item))
                 if zone == "HOST" and \

@@ -450,6 +450,10 @@ class Firewall(object):
         self.zone.change_default_zone(None, self._default_zone,
                                       use_transaction=transaction)
 
+        # apply policies
+        log.debug1("Applying used policies")
+        self.policy.apply_policies(use_transaction=transaction)
+
         # Execute transaction
         transaction.execute(True)
 
