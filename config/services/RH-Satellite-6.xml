@@ -2,17 +2,11 @@
 <service>
   <short>Red Hat Satellite 6</short>
   <description>Red Hat Satellite 6 is a systems management server that can be used to configure new systems, subscribe to updates, and maintain installations in distributed environments.</description>
-  <include service="dns"/>
-  <include service="http"/>
-  <include service="https"/>
-  <include service="dhcp"/>
-  <include service="tftp"/>
-  <port protocol="udp" port="68"/>
+  <include service="foreman"/>
   <port protocol="tcp" port="5000"/>
   <port protocol="tcp" port="5646-5647"/>
   <port protocol="tcp" port="5671"/>
   <port protocol="tcp" port="8000"/>
   <port protocol="tcp" port="8080"/>
-  <port protocol="tcp" port="8140"/>
   <port protocol="tcp" port="9090"/>
 </service>
