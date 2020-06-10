@@ -233,6 +233,7 @@ CONFIG_FILES = \
 	services/redis-sentinel.xml \
 	services/redis.xml \
 	services/RH-Satellite-6.xml \
+	services/RH-Satellite-6-capsule.xml \
 	services/rpc-bind.xml \
 	services/rsh.xml \
 	services/rsyncd.xml \
