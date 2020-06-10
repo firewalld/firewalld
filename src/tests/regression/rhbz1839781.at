@@ -1,0 +1,123 @@
+FWD_START_TEST([service RH-Satellite-6])
+AT_KEYWORDS(service rhbz1839781)
+
+FWD_CHECK([--zone trusted --add-interface dummy0], 0, [ignore])
+FWD_CHECK([--zone trusted --add-service RH-Satellite-6], 0, [ignore])
+
+NFT_LIST_RULES([inet], [filter_IN_trusted_allow], 0, [dnl
+    table inet firewalld {
+        chain filter_IN_trusted_allow {
+            tcp dport 53 ct state new,untracked accept
+            udp dport 53 ct state new,untracked accept
+            tcp dport 80 ct state new,untracked accept
+            tcp dport 443 ct state new,untracked accept
+            udp dport 67 ct state new,untracked accept
+            udp dport 69 ct helper set "helper-tftp-udp"
+            udp dport 69 ct state new,untracked accept
+            udp dport 68 ct state new,untracked accept
+            tcp dport 8140 ct state new,untracked accept
+            tcp dport 5000 ct state new,untracked accept
+            tcp dport 5646-5647 ct state new,untracked accept
+            tcp dport 5671 ct state new,untracked accept
+            tcp dport 8000 ct state new,untracked accept
+            tcp dport 8080 ct state new,untracked accept
+            tcp dport 9090 ct state new,untracked accept
+        }
+    }
+])
+
+IPTABLES_LIST_RULES([filter], [IN_trusted_allow], 0, [dnl
+    ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:53 ctstate NEW,UNTRACKED
+    ACCEPT udp -- 0.0.0.0/0 0.0.0.0/0 udp dpt:53 ctstate NEW,UNTRACKED
+    ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:80 ctstate NEW,UNTRACKED
+    ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:443 ctstate NEW,UNTRACKED
+    ACCEPT udp -- 0.0.0.0/0 0.0.0.0/0 udp dpt:67 ctstate NEW,UNTRACKED
+    ACCEPT udp -- 0.0.0.0/0 0.0.0.0/0 udp dpt:69 ctstate NEW,UNTRACKED
+    ACCEPT udp -- 0.0.0.0/0 0.0.0.0/0 udp dpt:68 ctstate NEW,UNTRACKED
+    ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:8140 ctstate NEW,UNTRACKED
+    ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:5000 ctstate NEW,UNTRACKED
+    ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpts:5646:5647 ctstate NEW,UNTRACKED
+    ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:5671 ctstate NEW,UNTRACKED
+    ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:8000 ctstate NEW,UNTRACKED
+    ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:8080 ctstate NEW,UNTRACKED
+    ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:9090 ctstate NEW,UNTRACKED
+])
+IP6TABLES_LIST_RULES([filter], [IN_trusted_allow], 0, [dnl
+    ACCEPT tcp ::/0 ::/0 tcp dpt:53 ctstate NEW,UNTRACKED
+    ACCEPT udp ::/0 ::/0 udp dpt:53 ctstate NEW,UNTRACKED
+    ACCEPT tcp ::/0 ::/0 tcp dpt:80 ctstate NEW,UNTRACKED
+    ACCEPT tcp ::/0 ::/0 tcp dpt:443 ctstate NEW,UNTRACKED
+    ACCEPT udp ::/0 ::/0 udp dpt:67 ctstate NEW,UNTRACKED
+    ACCEPT udp ::/0 ::/0 udp dpt:69 ctstate NEW,UNTRACKED
+    ACCEPT udp ::/0 ::/0 udp dpt:68 ctstate NEW,UNTRACKED
+    ACCEPT tcp ::/0 ::/0 tcp dpt:8140 ctstate NEW,UNTRACKED
+    ACCEPT tcp ::/0 ::/0 tcp dpt:5000 ctstate NEW,UNTRACKED
+    ACCEPT tcp ::/0 ::/0 tcp dpts:5646:5647 ctstate NEW,UNTRACKED
+    ACCEPT tcp ::/0 ::/0 tcp dpt:5671 ctstate NEW,UNTRACKED
+    ACCEPT tcp ::/0 ::/0 tcp dpt:8000 ctstate NEW,UNTRACKED
+    ACCEPT tcp ::/0 ::/0 tcp dpt:8080 ctstate NEW,UNTRACKED
+    ACCEPT tcp ::/0 ::/0 tcp dpt:9090 ctstate NEW,UNTRACKED
+])
+
+FWD_CHECK([--zone trusted --remove-service RH-Satellite-6], 0, [ignore])
+FWD_CHECK([--zone trusted --add-service RH-Satellite-6-capsule], 0, [ignore])
+
+NFT_LIST_RULES([inet], [filter_IN_trusted_allow], 0, [dnl
+    table inet firewalld {
+        chain filter_IN_trusted_allow {
+            tcp dport 53 ct state new,untracked accept
+            udp dport 53 ct state new,untracked accept
+            tcp dport 80 ct state new,untracked accept
+            tcp dport 443 ct state new,untracked accept
+            udp dport 67 ct state new,untracked accept
+            udp dport 69 ct helper set "helper-tftp-udp"
+            udp dport 69 ct state new,untracked accept
+            udp dport 68 ct state new,untracked accept
+            tcp dport 8140 ct state new,untracked accept
+            tcp dport 5000 ct state new,untracked accept
+            tcp dport 5646-5647 ct state new,untracked accept
+            tcp dport 5671 ct state new,untracked accept
+            tcp dport 8000 ct state new,untracked accept
+            tcp dport 8080 ct state new,untracked accept
+            tcp dport 9090 ct state new,untracked accept
+            tcp dport 8443 ct state new,untracked accept
+        }
+    }
+])
+
+IPTABLES_LIST_RULES([filter], [IN_trusted_allow], 0, [dnl
+    ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:53 ctstate NEW,UNTRACKED
+    ACCEPT udp -- 0.0.0.0/0 0.0.0.0/0 udp dpt:53 ctstate NEW,UNTRACKED
+    ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:80 ctstate NEW,UNTRACKED
+    ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:443 ctstate NEW,UNTRACKED
+    ACCEPT udp -- 0.0.0.0/0 0.0.0.0/0 udp dpt:67 ctstate NEW,UNTRACKED
+    ACCEPT udp -- 0.0.0.0/0 0.0.0.0/0 udp dpt:69 ctstate NEW,UNTRACKED
+    ACCEPT udp -- 0.0.0.0/0 0.0.0.0/0 udp dpt:68 ctstate NEW,UNTRACKED
+    ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:8140 ctstate NEW,UNTRACKED
+    ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:5000 ctstate NEW,UNTRACKED
+    ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpts:5646:5647 ctstate NEW,UNTRACKED
+    ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:5671 ctstate NEW,UNTRACKED
+    ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:8000 ctstate NEW,UNTRACKED
+    ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:8080 ctstate NEW,UNTRACKED
+    ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:9090 ctstate NEW,UNTRACKED
+    ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:8443 ctstate NEW,UNTRACKED
+])
+IP6TABLES_LIST_RULES([filter], [IN_trusted_allow], 0, [dnl
+    ACCEPT tcp ::/0 ::/0 tcp dpt:53 ctstate NEW,UNTRACKED
+    ACCEPT udp ::/0 ::/0 udp dpt:53 ctstate NEW,UNTRACKED
+    ACCEPT tcp ::/0 ::/0 tcp dpt:80 ctstate NEW,UNTRACKED
+    ACCEPT tcp ::/0 ::/0 tcp dpt:443 ctstate NEW,UNTRACKED
+    ACCEPT udp ::/0 ::/0 udp dpt:67 ctstate NEW,UNTRACKED
+    ACCEPT udp ::/0 ::/0 udp dpt:69 ctstate NEW,UNTRACKED
+    ACCEPT udp ::/0 ::/0 udp dpt:68 ctstate NEW,UNTRACKED
+    ACCEPT tcp ::/0 ::/0 tcp dpt:8140 ctstate NEW,UNTRACKED
+    ACCEPT tcp ::/0 ::/0 tcp dpt:5000 ctstate NEW,UNTRACKED
+    ACCEPT tcp ::/0 ::/0 tcp dpts:5646:5647 ctstate NEW,UNTRACKED
+    ACCEPT tcp ::/0 ::/0 tcp dpt:5671 ctstate NEW,UNTRACKED
+    ACCEPT tcp ::/0 ::/0 tcp dpt:8000 ctstate NEW,UNTRACKED
+    ACCEPT tcp ::/0 ::/0 tcp dpt:8080 ctstate NEW,UNTRACKED
+    ACCEPT tcp ::/0 ::/0 tcp dpt:9090 ctstate NEW,UNTRACKED
+    ACCEPT tcp ::/0 ::/0 tcp dpt:8443 ctstate NEW,UNTRACKED
+])
+
+FWD_END_TEST
