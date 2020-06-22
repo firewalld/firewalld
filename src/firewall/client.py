@@ -114,6 +114,8 @@ class FirewallClientZoneSettings(object):
     def getSettingsDict(self):
         settings = {}
         for key,value in zip(self.settings_name, self.settings):
+            if key == 'UNUSED':
+                continue
             settings[key] = value
         return settings
     @handle_exceptions
@@ -124,12 +126,33 @@ class FirewallClientZoneSettings(object):
     def getSettingsDbusDict(self):
         settings = {}
         for key,value,sig in zip(self.settings_name, self.settings, self.settings_dbus_type):
+            if key == 'UNUSED':
+                continue
             if type(value) is list:
                 settings[key] = dbus.Array(value, signature=sig)
             elif type(value) is dict:
                 settings[key] = dbus.Dictionary(value, signature=sig)
             else:
                 settings[key] = value
+        return settings
+
+    @handle_exceptions
+    def getRuntimeSettingsDict(self):
+        settings = self.getSettingsDict()
+        # These are not configurable at runtime:
+        del settings['version']
+        del settings['short']
+        del settings['description']
+        del settings['target']
+        return settings
+    @handle_exceptions
+    def getRuntimeSettingsDbusDict(self):
+        settings = self.getSettingsDbusDict()
+        # These are not configurable at runtime:
+        del settings['version']
+        del settings['short']
+        del settings['description']
+        del settings['target']
         return settings
 
     @handle_exceptions
@@ -3114,7 +3137,7 @@ class FirewallClient(object):
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def setZoneSettings(self, zone, settings):
-        self.fw_zone.setZoneSettings2(zone, settings.getSettingsDbusDict())
+        self.fw_zone.setZoneSettings2(zone, settings.getRuntimeSettingsDbusDict())
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
