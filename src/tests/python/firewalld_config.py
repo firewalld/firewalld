@@ -119,6 +119,9 @@ class TestFirewallDInterfaceConfig(unittest.TestCase):
         self.assertEquals(self.fw.queryMasquerade(zone_name), zone_masquerade)
         self.assertEquals(self.fw.getForwardPorts(zone_name).sort(), zone_forward_ports.sort())
 
+        print ("Checking that settings can be roundtripped through setZoneSettings")
+        self.fw.setZoneSettings(zone_name, zone_settings)
+
         print ("Renaming zone to name that already exists")
         config_zone = self.fw.config().getZoneByName(zone_name)
         self.assertRaisesRegexp(Exception, 'NAME_CONFLICT', config_zone.rename, "home")
