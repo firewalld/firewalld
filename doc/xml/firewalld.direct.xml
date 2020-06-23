@@ -273,16 +273,16 @@
     <title>Example</title>
 
     <para>
-      Blacklisting of the networks 192.168.1.0/24 and 192.168.5.0/24 with logging and dropping early in the raw table:
+      Denylisting of the networks 192.168.1.0/24 and 192.168.5.0/24 with logging and dropping early in the raw table:
       
       <programlisting>
 &lt;?xml version="1.0" encoding="utf-8"?&gt;
 &lt;direct&gt;
-  &lt;chain ipv="ipv4" table="raw" chain="blacklist"/&gt;
-  &lt;rule ipv="ipv4" table="raw" chain="PREROUTING" priority="0"&gt;-s 192.168.1.0/24 -j blacklist&lt;/rule&gt;
-  &lt;rule ipv="ipv4" table="raw" chain="PREROUTING" priority="1"&gt;-s 192.168.5.0/24 -j blacklist&lt;/rule&gt;
-  &lt;rule ipv="ipv4" table="raw" chain="blacklist" priority="0"&gt;-m limit --limit 1/min -j LOG --log-prefix "blacklisted: "&lt;/rule&gt;
-  &lt;rule ipv="ipv4" table="raw" chain="blacklist" priority="1"&gt;-j DROP&lt;/rule&gt;
+  &lt;chain ipv="ipv4" table="raw" chain="denylist"/&gt;
+  &lt;rule ipv="ipv4" table="raw" chain="PREROUTING" priority="0"&gt;-s 192.168.1.0/24 -j denylist&lt;/rule&gt;
+  &lt;rule ipv="ipv4" table="raw" chain="PREROUTING" priority="1"&gt;-s 192.168.5.0/24 -j denylist&lt;/rule&gt;
+  &lt;rule ipv="ipv4" table="raw" chain="denylist" priority="0"&gt;-m limit --limit 1/min -j LOG --log-prefix "denylisted: "&lt;/rule&gt;
+  &lt;rule ipv="ipv4" table="raw" chain="denylist" priority="1"&gt;-j DROP&lt;/rule&gt;
 &lt;/direct&gt;
       </programlisting>
       
