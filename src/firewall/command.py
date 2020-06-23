@@ -428,7 +428,7 @@ class FirewallCommand(object):
                                                for port in ports]))
         self.print_msg("  protocols: " + " ".join(sorted(protocols)))
         self.print_msg("  masquerade: %s" % ("yes" if masquerade else "no"))
-        self.print_msg("  forward-ports: " +
+        self.print_msg("  forward-ports: " + ("\n\t" if forward_ports else "") +
                        "\n\t".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % \
                                     (port, proto, toport, toaddr)
                                     for (port, proto, toport, toaddr) in \
@@ -437,8 +437,8 @@ class FirewallCommand(object):
                        " ".join(["%s/%s" % (port[0], port[1])
                                  for port in source_ports]))
         self.print_msg("  icmp-blocks: " + " ".join(icmp_blocks))
-        self.print_msg("  rich rules: \n\t" + "\n\t".join(
-                            sorted(rules, key=rich_rule_sorted_key)))
+        self.print_msg("  rich rules: " + ("\n\t" if rules else "") +
+                            "\n\t".join(sorted(rules, key=rich_rule_sorted_key)))
 
     def print_service_info(self, service, settings):
         ports = settings.getPorts()
