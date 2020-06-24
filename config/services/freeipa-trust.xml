@@ -9,6 +9,6 @@
   <port protocol="udp" port="389"/>
   <port protocol="tcp" port="445"/>
   <port protocol="udp" port="445"/>
-  <port protocol="tcp" port="1024-1300"/>
+  <port protocol="tcp" port="49152-65535"/><!-- Dynamic RPC Ports -->
   <port protocol="tcp" port="3268"/>
 </service>
