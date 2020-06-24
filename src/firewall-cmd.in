@@ -961,6 +961,9 @@ if (a.direct and not options_direct) or (options_direct and not a.direct):
     cmd.fail(parser.format_usage() +
              "Wrong usage of 'direct' options.")
 
+if a.zone and a.direct:
+    cmd.fail(parser.format_usage() + "--zone is an invalid option with --direct")
+
 if a.name and not (a.new_zone_from_file or a.new_service_from_file or \
                    a.new_ipset_from_file or a.new_icmptype_from_file or \
                    a.new_helper_from_file):

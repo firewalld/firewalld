@@ -1,0 +1,8 @@
+FWD_START_TEST([direct zone])
+    AT_KEYWORDS(direct rhbz1483921)
+
+    FWD_CHECK([firewall-cmd --zone=public --permanent --direct --add-rule ipv4 nat OUTPUT 1 -p tcp --dport 8443 -j DNAT --to-port 9443], 2, ignore,ignore)
+    
+    FWD_CHECK([firewall-cmd --zone=public --direct --add-rule ipv4 nat OUTPUT 1 -p tcp --dport 8443 -j DNAT --to-port 9443], 2, ignore,ignore)
+FWD_END_TEST
+
