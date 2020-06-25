@@ -379,7 +379,10 @@ class Rich_Rule(object):
                         raise FirewallError(errors.INVALID_RULE, "'family' attribute cannot have '%s' value. Use 'ipv4' or 'ipv6' instead." % attr_value)
                     self.family = attr_value
                 elif attr_name == 'priority':
-                    self.priority = int(attr_value)
+                    try:
+                        self.priority = int(attr_value)
+                    except ValueError:
+                        raise FirewallError(errors.INVALID_RULE, "invalid 'priority' attribute value '%s'." % attr_value)
                 elif attr_name:
                     if attr_name == 'protocol':
                         err_msg = "wrong 'protocol' usage. Use either 'rule protocol value=...' or  'rule [forward-]port protocol=...'."

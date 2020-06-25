@@ -1,0 +1,12 @@
+FWD_START_TEST([rich rule invalid priority])
+AT_KEYWORDS(rich rhbz1689429)
+
+FWD_CHECK([--add-rich-rule='rule priority=foo accept'], 122, [],
+	  [Error: INVALID_RULE: invalid 'priority' attribute value 'foo'.
+])
+FWD_CHECK([--permanent --add-rich-rule='rule priority=foo accept'], 122, [],
+	  [Error: INVALID_RULE: invalid 'priority' attribute value 'foo'.
+])
+FWD_RELOAD
+
+FWD_END_TEST([ignore])
