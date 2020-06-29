@@ -1577,6 +1577,9 @@ try:
         if not a.type:
             cmd.fail(parser.format_usage() + "No type specified.")
 
+        if a.type=='hash:mac' and a.family:
+            cmd.fail(parser.format_usage() + "--family is not compatible with the hash:mac type")
+        
         settings = FirewallClientIPSetSettings()
         settings.setType(a.type)
         if a.option:
