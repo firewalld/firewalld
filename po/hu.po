@@ -20,21 +20,22 @@
 # Meskó Balázs <meskobalazs@gmail.com>, 2017. #zanata
 # Eric Garver <e@erig.me>, 2018. #zanata
 # Meskó Balázs <meskobalazs@gmail.com>, 2018. #zanata
+# Balázs Meskó <meskobalazs@mailbox.org>, 2020.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-30 09:54-0400\n"
-"PO-Revision-Date: 2018-11-16 08:24+0000\n"
-"Last-Translator: Copied by Zanata <copied-by-zanata@zanata.org>\n"
-"Language-Team: Hungarian (http://www.transifex.com/projects/p/firewalld/"
-"language/hu/)\n"
+"POT-Creation-Date: 2020-06-30 13:30-0400\n"
+"PO-Revision-Date: 2020-04-20 16:40+0000\n"
+"Last-Translator: Balázs Meskó <meskobalazs@mailbox.org>\n"
+"Language-Team: Hungarian <https://translate.fedoraproject.org/projects/"
+"firewalld/master/hu/>\n"
 "Language: hu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Zanata 4.6.2\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.0.1\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:416
 msgid "Firewall Applet"
@@ -1450,8 +1451,8 @@ msgid ""
 "An IPSet can be used to create white or black lists and is able to store for "
 "example IP addresses, port numbers or MAC addresses. "
 msgstr ""
-"Az IP-készletek használhatóak fehér vagy fekete listák létrehozásához, "
-"valamint képesek IP-címeket, portszámokat vagy MAC-címeket tárolni."
+"Az IP-készletek használhatók fehér- vagy feketelisták létrehozásához, "
+"valamint képesek IP-címeket, portszámokat vagy MAC-címeket tárolni. "
 
 #: ../src/firewall-config.glade.h:155
 msgid "IPSet"
@@ -1937,7 +1938,8 @@ msgid "Please enter a rich rule."
 msgstr "Adjon meg egy gazdag szabályt."
 
 #: ../src/firewall-config.glade.h:255
-msgid "For host or network white or blacklisting deactivate the element."
+#, fuzzy
+msgid "For host or network allow or denylisting deactivate the element."
 msgstr ""
 "Gépnél vagy hálózatnál a fehér vagy fekete lista használata kikapcsolja az "
 "elemet."
