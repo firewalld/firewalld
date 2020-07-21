@@ -508,11 +508,13 @@ def ppid_of_pid(pid):
 def max_policy_name_len():
     """
     iptables limits length of chain to (currently) 28 chars.
-    The longest chain we create is pol_<policy>_allow,
-    which leaves 28 - 10 = 18 chars for <policy>.
+    The longest chain we create is POST_<policy>_allow,
+    which leaves 28 - 11 = 17 chars for <policy>.
     """
     from firewall.core.ipXtables import POLICY_CHAIN_PREFIX
-    return 28 - (len(POLICY_CHAIN_PREFIX) + len("_allow"))
+    from firewall.core.base import SHORTCUTS
+    longest_shortcut = max(map(len, SHORTCUTS.values()))
+    return 28 - (longest_shortcut + len(POLICY_CHAIN_PREFIX) + len("_allow"))
 
 def max_zone_name_len():
     """

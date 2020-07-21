@@ -32,7 +32,7 @@ from firewall.core.rich import Rich_Accept, Rich_Reject, Rich_Drop, Rich_Mark, \
                                Rich_Masquerade, Rich_ForwardPort, Rich_IcmpBlock
 import string
 
-POLICY_CHAIN_PREFIX = "pol_"
+POLICY_CHAIN_PREFIX = ""
 
 BUILT_IN_CHAINS = {
     "security": [ "INPUT", "OUTPUT", "FORWARD" ],
