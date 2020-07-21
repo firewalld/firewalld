@@ -993,7 +993,8 @@ class nftables(object):
         if rich_rule.log.prefix:
             log_options["prefix"] = "%s" % rich_rule.log.prefix
         if rich_rule.log.level:
-            log_options["level"] = "%s" % rich_rule.log.level
+            level = "warn" if "warning" == rich_rule.log.level else rich_rule.log.level
+            log_options["level"] = "%s" % level
 
         rule = {"family": "inet",
                 "table": TABLE_NAME,
