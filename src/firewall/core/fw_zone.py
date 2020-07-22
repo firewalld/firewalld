@@ -1522,14 +1522,17 @@ class FirewallZone(object):
                     transaction.add_rules(backend, rules)
 
     def _rule_prepare(self, enable, zone, rule, transaction):
-        if rule.family is not None:
+        ipvs = []
+        if rule.family:
             ipvs = [ rule.family ]
-        else:
-            ipvs = [ipv for ipv in ["ipv4", "ipv6"] if self._fw.is_ipv_enabled(ipv)]
+        elif rule.element and (isinstance(rule.element, Rich_IcmpBlock) or isinstance(rule.element, Rich_IcmpType)):
+            ict = self._fw.icmptype.get_icmptype(rule.element.name)
+            if ict.destination:
+                ipvs = [ipv for ipv in ["ipv4", "ipv6"] if ipv in ict.destination]
 
         source_ipv = self._rule_source_ipv(rule.source)
-        if source_ipv is not None and source_ipv != "":
-            if rule.family is not None:
+        if source_ipv:
+            if rule.family:
                 # rule family is defined by user, no way to change it
                 if rule.family != source_ipv:
                     raise FirewallError(errors.INVALID_RULE,
@@ -1537,6 +1540,9 @@ class FirewallZone(object):
             else:
                 # use the source family as rule family
                 ipvs = [ source_ipv ]
+
+        if not ipvs:
+            ipvs = [ipv for ipv in ["ipv4", "ipv6"] if self._fw.is_ipv_enabled(ipv)]
 
         # add an element to object to allow backends to know what ipvs this applies to
         rule.ipvs = ipvs
@@ -1699,16 +1705,6 @@ class FirewallZone(object):
                     # icmp block might have reject or drop action, but not accept
                     raise FirewallError(errors.INVALID_RULE,
                                         "IcmpBlock not usable with accept action")
-                if ict.destination:
-                    for ipv in ipvs:
-                        if ipv in ict.destination \
-                           and not backend.is_ipv_supported(ipv):
-                            raise FirewallError(
-                                errors.INVALID_RULE,
-                                "Icmp%s %s not usable with %s" % \
-                                ("Block" if type(rule.element) == \
-                                 Rich_IcmpBlock else "Type",
-                                 rule.element.name, backend.name))
 
                 table = "filter"
                 if enable:
