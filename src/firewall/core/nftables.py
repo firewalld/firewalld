@@ -1405,7 +1405,7 @@ class nftables(object):
             return ICMP_TYPES_FRAGMENTS[ipv][icmp_type]
         else:
             raise FirewallError(INVALID_ICMPTYPE,
-                                "ICMP type '%s' not supported by %s" % (icmp_type, self.name))
+                                "ICMP type '%s' not supported by %s for %s" % (icmp_type, self.name, ipv))
 
     def build_policy_icmp_block_rules(self, enable, policy, ict, rich_rule=None):
         table = "filter"
