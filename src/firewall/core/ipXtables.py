@@ -795,6 +795,28 @@ class ip4tables(object):
         rule += [ "-t", table, opt, interface, action, _policy ]
         return [rule]
 
+    def _rule_addr_fragment(self, opt, address, invert=False):
+        if address.startswith("ipset:"):
+            name = address[6:]
+            if opt == "-d":
+                opt = "dst"
+            else:
+                opt = "src"
+            flags = ",".join([opt] * self._fw.ipset.get_dimension(name))
+            return ["-m", "set", "--match-set", name, flags]
+        elif check_mac(address):
+            # outgoing can not be set
+            if opt == "-d":
+                raise FirewallError(INVALID_ADDR, "Can't match a destination MAC.")
+            return ["-m", "mac", "--mac-source", address.upper()]
+        else:
+            if check_single_address("ipv6", address):
+                address = normalizeIP6(address)
+            elif check_address("ipv6", address):
+                addr_split = address.split("/")
+                address = normalizeIP6(addr_split[0]) + "/" + addr_split[1]
+            return [opt, address]
+
     def build_zone_source_address_rules(self, enable, zone, policy,
                                         address, table, chain):
         add_del = { True: "-I", False: "-D" }[enable]
@@ -814,40 +836,10 @@ class ip4tables(object):
         else:
             zone_dispatch_chain = "%s_ZONES" % (chain)
 
-        action = "-g"
+        rule = [add_del, zone_dispatch_chain, "%%ZONE_SOURCE%%", zone, "-t", table]
+        rule.extend(self._rule_addr_fragment(opt, address))
+        rule.extend(["-g", _policy])
 
-        if address.startswith("ipset:"):
-            name = address[6:]
-            if opt == "-d":
-                opt = "dst"
-            else:
-                opt = "src"
-            flags = ",".join([opt] * self._fw.ipset.get_dimension(name))
-            rule = [ add_del, zone_dispatch_chain,
-                     "%%ZONE_SOURCE%%", zone,
-                     "-t", table,
-                     "-m", "set", "--match-set", name,
-                     flags, action, _policy ]
-        else:
-            if check_mac(address):
-                # outgoing can not be set
-                if opt == "-d":
-                    return ""
-                rule = [ add_del, zone_dispatch_chain,
-                         "%%ZONE_SOURCE%%", zone,
-                         "-t", table,
-                         "-m", "mac", "--mac-source", address.upper(),
-                         action, _policy ]
-            else:
-                if check_single_address("ipv6", address):
-                    address = normalizeIP6(address)
-                elif check_address("ipv6", address):
-                    addr_split = address.split("/")
-                    address = normalizeIP6(addr_split[0]) + "/" + addr_split[1]
-                rule = [ add_del, zone_dispatch_chain,
-                         "%%ZONE_SOURCE%%", zone,
-                         "-t", table,
-                         opt, address, action, _policy ]
         return [rule]
 
     def build_policy_chain_rules(self, policy, table):
