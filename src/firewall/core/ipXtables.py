@@ -27,7 +27,7 @@ from firewall.core.logger import log
 from firewall.functions import tempFile, readfile, splitArgs, check_mac, portStr, \
                                check_single_address, check_address, normalizeIP6
 from firewall import config
-from firewall.errors import FirewallError, INVALID_PASSTHROUGH, INVALID_RULE, UNKNOWN_ERROR
+from firewall.errors import FirewallError, INVALID_PASSTHROUGH, INVALID_RULE, UNKNOWN_ERROR, INVALID_ADDR
 from firewall.core.rich import Rich_Accept, Rich_Reject, Rich_Drop, Rich_Mark, \
                                Rich_Masquerade, Rich_ForwardPort, Rich_IcmpBlock
 import string
@@ -179,6 +179,7 @@ class ip4tables(object):
         self.fill_exists()
         self.available_tables = []
         self.rich_rule_priority_counts = {}
+        self.policy_priority_counts = {}
         self.zone_source_index_cache = []
         self.our_chains = {} # chains created by firewalld
 
@@ -332,7 +333,7 @@ class ip4tables(object):
             rule[0] = "-I"
             rule.insert(2, "%d" % (index + 1))
 
-    def _set_rule_replace_rich_rule_priority(self, rule, rich_rule_priority_counts):
+    def _set_rule_replace_priority(self, rule, priority_counts, token):
         """
         Change something like
           -t filter -I public_IN %%RICH_RULE_PRIORITY%% 123
@@ -344,7 +345,7 @@ class ip4tables(object):
           -t filter -I public_IN
         """
         try:
-            i = rule.index("%%RICH_RULE_PRIORITY%%")
+            i = rule.index(token)
         except ValueError:
             pass
         else:
@@ -354,7 +355,7 @@ class ip4tables(object):
             rule.pop(i)
             priority = rule.pop(i)
             if type(priority) != int:
-                raise FirewallError(INVALID_RULE, "rich rule priority must be followed by a number")
+                raise FirewallError(INVALID_RULE, "priority must be followed by a number")
 
             table = "filter"
             for opt in [ "-t", "--table" ]:
@@ -386,28 +387,28 @@ class ip4tables(object):
             # Add the rule to the priority counts. We don't need to store the
             # rule, just bump the ref count for the priority value.
             if not rule_add:
-                if chain not in rich_rule_priority_counts or \
-                   priority not in rich_rule_priority_counts[chain] or \
-                   rich_rule_priority_counts[chain][priority] <= 0:
-                    raise FirewallError(UNKNOWN_ERROR, "nonexistent or underflow of rich rule priority count")
+                if chain not in priority_counts or \
+                   priority not in priority_counts[chain] or \
+                   priority_counts[chain][priority] <= 0:
+                    raise FirewallError(UNKNOWN_ERROR, "nonexistent or underflow of priority count")
 
-                rich_rule_priority_counts[chain][priority] -= 1
+                priority_counts[chain][priority] -= 1
             else:
-                if chain not in rich_rule_priority_counts:
-                    rich_rule_priority_counts[chain] = {}
-                if priority not in rich_rule_priority_counts[chain]:
-                    rich_rule_priority_counts[chain][priority] = 0
+                if chain not in priority_counts:
+                    priority_counts[chain] = {}
+                if priority not in priority_counts[chain]:
+                    priority_counts[chain][priority] = 0
 
                 # calculate index of new rule
                 index = 1
-                for p in sorted(rich_rule_priority_counts[chain].keys()):
+                for p in sorted(priority_counts[chain].keys()):
                     if p == priority and insert:
                         break
-                    index += rich_rule_priority_counts[chain][p]
+                    index += priority_counts[chain][p]
                     if p == priority:
                         break
 
-                rich_rule_priority_counts[chain][priority] += 1
+                priority_counts[chain][priority] += 1
 
                 rule[insert_add_index] = "-I"
                 rule.insert(insert_add_index+2, "%d" % index)
@@ -417,6 +418,7 @@ class ip4tables(object):
 
         table_rules = { }
         rich_rule_priority_counts = copy.deepcopy(self.rich_rule_priority_counts)
+        policy_priority_counts = copy.deepcopy(self.policy_priority_counts)
         zone_source_index_cache = copy.deepcopy(self.zone_source_index_cache)
         for _rule in rules:
             rule = _rule[:]
@@ -441,7 +443,8 @@ class ip4tables(object):
                 else:
                     rule.pop(i)
 
-            self._set_rule_replace_rich_rule_priority(rule, rich_rule_priority_counts)
+            self._set_rule_replace_priority(rule, rich_rule_priority_counts, "%%RICH_RULE_PRIORITY%%")
+            self._set_rule_replace_priority(rule, policy_priority_counts, "%%POLICY_PRIORITY%%")
             self._run_replace_zone_source(rule, zone_source_index_cache)
 
             table = "filter"
@@ -506,6 +509,7 @@ class ip4tables(object):
             raise ValueError("'%s %s' failed: %s" % (self._restore_command,
                                                      " ".join(args), ret))
         self.rich_rule_priority_counts = rich_rule_priority_counts
+        self.policy_priority_counts = policy_priority_counts
         self.zone_source_index_cache = zone_source_index_cache
 
     def set_rule(self, rule, log_denied):
@@ -530,13 +534,16 @@ class ip4tables(object):
                 rule.pop(i)
 
         rich_rule_priority_counts = copy.deepcopy(self.rich_rule_priority_counts)
+        policy_priority_counts = copy.deepcopy(self.policy_priority_counts)
         zone_source_index_cache = copy.deepcopy(self.zone_source_index_cache)
-        self._set_rule_replace_rich_rule_priority(rule, rich_rule_priority_counts)
+        self._set_rule_replace_priority(rule, rich_rule_priority_counts, "%%RICH_RULE_PRIORITY%%")
+        self._set_rule_replace_priority(rule, policy_priority_counts, "%%POLICY_PRIORITY%%")
         self._run_replace_zone_source(rule, zone_source_index_cache)
 
         output = self.__run(rule)
 
         self.rich_rule_priority_counts = rich_rule_priority_counts
+        self.policy_priority_counts = policy_priority_counts
         self.zone_source_index_cache = zone_source_index_cache
         return output
 
@@ -589,6 +596,7 @@ class ip4tables(object):
 
     def build_flush_rules(self):
         self.rich_rule_priority_counts = {}
+        self.policy_priority_counts = {}
         self.zone_source_index_cache = []
         rules = []
         for table in BUILT_IN_CHAINS.keys():
@@ -670,7 +678,7 @@ class ip4tables(object):
                 self.our_chains["raw"].add("%s_direct" % chain)
 
                 if chain == "PREROUTING":
-                    for dispatch_suffix in ["ZONES_SOURCE", "ZONES"] if self._fw._allow_zone_drifting else ["ZONES"]:
+                    for dispatch_suffix in ["POLICIES_pre", "ZONES_SOURCE", "ZONES", "POLICIES_post"] if self._fw._allow_zone_drifting else ["POLICIES_pre", "ZONES", "POLICIES_post"]:
                         default_rules["raw"].append("-N %s_%s" % (chain, dispatch_suffix))
                         default_rules["raw"].append("-A %s -j %s_%s" % (chain, chain, dispatch_suffix))
                         self.our_chains["raw"].update(set(["%s_%s" % (chain, dispatch_suffix)]))
@@ -684,7 +692,7 @@ class ip4tables(object):
                 self.our_chains["mangle"].add("%s_direct" % chain)
 
                 if chain == "PREROUTING":
-                    for dispatch_suffix in ["ZONES_SOURCE", "ZONES"] if self._fw._allow_zone_drifting else ["ZONES"]:
+                    for dispatch_suffix in ["POLICIES_pre", "ZONES_SOURCE", "ZONES", "POLICIES_post"] if self._fw._allow_zone_drifting else ["POLICIES_pre", "ZONES", "POLICIES_post"]:
                         default_rules["mangle"].append("-N %s_%s" % (chain, dispatch_suffix))
                         default_rules["mangle"].append("-A %s -j %s_%s" % (chain, chain, dispatch_suffix))
                         self.our_chains["mangle"].update(set(["%s_%s" % (chain, dispatch_suffix)]))
@@ -698,7 +706,7 @@ class ip4tables(object):
                 self.our_chains["nat"].add("%s_direct" % chain)
 
                 if chain in [ "PREROUTING", "POSTROUTING" ]:
-                    for dispatch_suffix in ["ZONES_SOURCE", "ZONES"] if self._fw._allow_zone_drifting else ["ZONES"]:
+                    for dispatch_suffix in ["POLICIES_pre", "ZONES_SOURCE", "ZONES", "POLICIES_post"] if self._fw._allow_zone_drifting else ["POLICIES_pre", "ZONES", "POLICIES_post"]:
                         default_rules["nat"].append("-N %s_%s" % (chain, dispatch_suffix))
                         default_rules["nat"].append("-A %s -j %s_%s" % (chain, chain, dispatch_suffix))
                         self.our_chains["nat"].update(set(["%s_%s" % (chain, dispatch_suffix)]))
@@ -710,7 +718,7 @@ class ip4tables(object):
         default_rules["filter"].append("-N INPUT_direct")
         default_rules["filter"].append("-A INPUT -j INPUT_direct")
         self.our_chains["filter"].update(set("INPUT_direct"))
-        for dispatch_suffix in ["ZONES_SOURCE", "ZONES"] if self._fw._allow_zone_drifting else ["ZONES"]:
+        for dispatch_suffix in ["POLICIES_pre", "ZONES_SOURCE", "ZONES", "POLICIES_post"] if self._fw._allow_zone_drifting else ["POLICIES_pre", "ZONES", "POLICIES_post"]:
             default_rules["filter"].append("-N INPUT_%s" % (dispatch_suffix))
             default_rules["filter"].append("-A INPUT -j INPUT_%s" % (dispatch_suffix))
             self.our_chains["filter"].update(set("INPUT_%s" % (dispatch_suffix)))
@@ -726,11 +734,19 @@ class ip4tables(object):
         default_rules["filter"].append("-N FORWARD_direct")
         default_rules["filter"].append("-A FORWARD -j FORWARD_direct")
         self.our_chains["filter"].update(set("FORWARD_direct"))
+        for dispatch_suffix in ["POLICIES_pre"]:
+            default_rules["filter"].append("-N FORWARD_%s" % (dispatch_suffix))
+            default_rules["filter"].append("-A FORWARD -j FORWARD_%s" % (dispatch_suffix))
+            self.our_chains["filter"].update(set("FORWARD_%s" % (dispatch_suffix)))
         for direction in ["IN", "OUT"]:
             for dispatch_suffix in ["ZONES_SOURCE", "ZONES"] if self._fw._allow_zone_drifting else ["ZONES"]:
                 default_rules["filter"].append("-N FORWARD_%s_%s" % (direction, dispatch_suffix))
                 default_rules["filter"].append("-A FORWARD -j FORWARD_%s_%s" % (direction, dispatch_suffix))
                 self.our_chains["filter"].update(set("FORWARD_%s_%s" % (direction, dispatch_suffix)))
+        for dispatch_suffix in ["POLICIES_post"]:
+            default_rules["filter"].append("-N FORWARD_%s" % (dispatch_suffix))
+            default_rules["filter"].append("-A FORWARD -j FORWARD_%s" % (dispatch_suffix))
+            self.our_chains["filter"].update(set("FORWARD_%s" % (dispatch_suffix)))
         if log_denied != "off":
             default_rules["filter"].append("-A FORWARD -m conntrack --ctstate INVALID %%LOGTYPE%% -j LOG --log-prefix 'STATE_INVALID_DROP: '")
         default_rules["filter"].append("-A FORWARD -m conntrack --ctstate INVALID -j DROP")
@@ -745,6 +761,14 @@ class ip4tables(object):
             "-A OUTPUT -j OUTPUT_direct",
         ]
         self.our_chains["filter"].update(set("OUTPUT_direct"))
+        for dispatch_suffix in ["POLICIES_pre"]:
+            default_rules["filter"].append("-N OUTPUT_%s" % (dispatch_suffix))
+            default_rules["filter"].append("-A OUTPUT -j OUTPUT_%s" % (dispatch_suffix))
+            self.our_chains["filter"].update(set("OUTPUT_%s" % (dispatch_suffix)))
+        for dispatch_suffix in ["POLICIES_post"]:
+            default_rules["filter"].append("-N OUTPUT_%s" % (dispatch_suffix))
+            default_rules["filter"].append("-A OUTPUT -j OUTPUT_%s" % (dispatch_suffix))
+            self.our_chains["filter"].update(set("OUTPUT_%s" % (dispatch_suffix)))
 
         final_default_rules = []
         for table in default_rules:
@@ -770,9 +794,83 @@ class ip4tables(object):
 
         return {}
 
+    def build_policy_ingress_egress_rules(self, enable, policy, table, chain,
+                                          ingress_interfaces, egress_interfaces,
+                                          ingress_sources, egress_sources):
+        p_obj = self._fw.policy.get_policy(policy)
+        chain_suffix = "pre" if p_obj.priority < 0 else "post"
+        isSNAT = True if (table == "nat" and chain == "POSTROUTING") else False
+        _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX, isSNAT)
+
+        ingress_fragments = []
+        egress_fragments = []
+        for interface in ingress_interfaces:
+            ingress_fragments.append(["-i", interface])
+        for interface in egress_interfaces:
+            egress_fragments.append(["-o", interface])
+        for addr in ingress_sources:
+            ipv = self._fw.zone.check_source(addr)
+            if ipv in ["ipv4", "ipv6"] and not self.is_ipv_supported(ipv):
+                continue
+            ingress_fragments.append(self._rule_addr_fragment("-s", addr))
+        for addr in egress_sources:
+            ipv = self._fw.zone.check_source(addr)
+            if ipv in ["ipv4", "ipv6"] and not self.is_ipv_supported(ipv):
+                continue
+            egress_fragments.append(self._rule_addr_fragment("-d", addr))
+
+        def _generate_policy_dispatch_rule(ingress_fragment, egress_fragment):
+            add_del = {True: "-A", False: "-D" }[enable]
+            rule = ["-t", table, add_del, "%s_POLICIES_%s" % (chain, chain_suffix),
+                    "%%POLICY_PRIORITY%%", p_obj.priority]
+            if ingress_fragment:
+                rule.extend(ingress_fragment)
+            if egress_fragment:
+                rule.extend(egress_fragment)
+            rule.extend(["-j", _policy])
+
+            return rule
+
+        rules = []
+        if ingress_fragments:
+            # zone --> [zone, ANY, HOST]
+            for ingress_fragment in ingress_fragments:
+                # zone --> zone
+                if egress_fragments:
+                    for egress_fragment in egress_fragments:
+                        rules.append(_generate_policy_dispatch_rule(ingress_fragment, egress_fragment))
+                elif egress_sources:
+                    # if the egress source is not for the current family (there
+                    # are no egress fragments), then avoid creating an invalid
+                    # catch all rule.
+                    pass
+                else:
+                    rules.append(_generate_policy_dispatch_rule(ingress_fragment, None))
+        elif ingress_sources:
+            # if the ingress source is not for the current family (there are no
+            # ingress fragments), then avoid creating an invalid catch all
+            # rule.
+            pass
+        else: # [ANY, HOST] --> [zone, ANY, HOST]
+            # [ANY, HOST] --> zone
+            if egress_fragments:
+                for egress_fragment in egress_fragments:
+                    rules.append(_generate_policy_dispatch_rule(None, egress_fragment))
+            elif egress_sources:
+                # if the egress source is not for the current family (there
+                # are no egress fragments), then avoid creating an invalid
+                # catch all rule.
+                pass
+            else:
+                # [ANY, HOST] --> [ANY, HOST]
+                rules.append(_generate_policy_dispatch_rule(None, None))
+
+        return rules
+
     def build_zone_source_interface_rules(self, enable, zone, policy, interface,
                                           table, chain, append=False):
-        _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX)
+        isSNAT = True if (table == "nat" and chain == "POSTROUTING") else False
+        _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX, isSNAT=isSNAT)
         opt = {
             "PREROUTING": "-i",
             "POSTROUTING": "-o",
@@ -821,7 +919,8 @@ class ip4tables(object):
                                         address, table, chain):
         add_del = { True: "-I", False: "-D" }[enable]
 
-        _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX)
+        isSNAT = True if (table == "nat" and chain == "POSTROUTING") else False
+        _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX, isSNAT=isSNAT)
         opt = {
             "PREROUTING": "-s",
             "POSTROUTING": "-d",
@@ -845,7 +944,8 @@ class ip4tables(object):
     def build_policy_chain_rules(self, enable, policy, table, chain):
         add_del_chain = { True: "-N", False: "-X" }[enable]
         add_del_rule = { True: "-A", False: "-D" }[enable]
-        _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX)
+        isSNAT = True if (table == "nat" and chain == "POSTROUTING") else False
+        _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX, isSNAT=isSNAT)
 
         self.our_chains[table].update(set([_policy,
                                       "%s_log" % _policy,
@@ -1167,7 +1267,7 @@ class ip4tables(object):
 
     def build_policy_masquerade_rules(self, enable, policy, rich_rule=None):
         table = "nat"
-        _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX)
+        _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX, isSNAT=True)
 
         add_del = { True: "-A", False: "-D" }[enable]
 
