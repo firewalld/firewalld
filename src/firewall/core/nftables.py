@@ -801,30 +801,31 @@ class nftables(object):
         rule.update(self._zone_source_fragment(zone, address))
         return [{add_del: {"rule": rule}}]
 
-    def build_policy_chain_rules(self, policy, table, family="inet"):
+    def build_policy_chain_rules(self, enable, policy, table, family="inet"):
         # nat tables needs to use ip/ip6 family
         if table == "nat" and family == "inet":
             rules = []
-            rules.extend(self.build_policy_chain_rules(policy, table, "ip"))
-            rules.extend(self.build_policy_chain_rules(policy, table, "ip6"))
+            rules.extend(self.build_policy_chain_rules(enable, policy, table, "ip"))
+            rules.extend(self.build_policy_chain_rules(enable, policy, table, "ip6"))
             return rules
 
+        add_del = { True: "add", False: "delete" }[enable]
         _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX)
 
         rules = []
-        rules.append({"add": {"chain": {"family": family,
-                                        "table": TABLE_NAME,
-                                        "name": "%s_%s" % (table, _policy)}}})
+        rules.append({add_del: {"chain": {"family": family,
+                                          "table": TABLE_NAME,
+                                          "name": "%s_%s" % (table, _policy)}}})
         for chain_suffix in ["pre", "log", "deny", "allow", "post"]:
-            rules.append({"add": {"chain": {"family": family,
-                                            "table": TABLE_NAME,
-                                            "name": "%s_%s_%s" % (table, _policy, chain_suffix)}}})
+            rules.append({add_del: {"chain": {"family": family,
+                                              "table": TABLE_NAME,
+                                              "name": "%s_%s_%s" % (table, _policy, chain_suffix)}}})
 
         for chain_suffix in ["pre", "log", "deny", "allow", "post"]:
-            rules.append({"add": {"rule": {"family": family,
-                                           "table": TABLE_NAME,
-                                           "chain": "%s_%s" % (table, _policy),
-                                           "expr": [{"jump": {"target": "%s_%s_%s" % (table, _policy, chain_suffix)}}]}}})
+            rules.append({add_del: {"rule": {"family": family,
+                                             "table": TABLE_NAME,
+                                             "chain": "%s_%s" % (table, _policy),
+                                             "expr": [{"jump": {"target": "%s_%s_%s" % (table, _policy, chain_suffix)}}]}}})
 
         target = self._fw.policy._policies[policy].target
 
@@ -834,11 +835,11 @@ class nftables(object):
                     log_suffix = target
                     if target == "%%REJECT%%":
                         log_suffix = "REJECT"
-                    rules.append({"add": {"rule": {"family": family,
-                                                   "table": TABLE_NAME,
-                                                   "chain": "%s_%s" % (table, _policy),
-                                                   "expr": [self._pkttype_match_fragment(self._fw.get_log_denied()),
-                                                            {"log": {"prefix": "\"filter_%s_%s: \"" % (_policy, log_suffix)}}]}}})
+                    rules.append({add_del: {"rule": {"family": family,
+                                                     "table": TABLE_NAME,
+                                                     "chain": "%s_%s" % (table, _policy),
+                                                     "expr": [self._pkttype_match_fragment(self._fw.get_log_denied()),
+                                                              {"log": {"prefix": "\"filter_%s_%s: \"" % (_policy, log_suffix)}}]}}})
 
         if table == "filter" and \
            target in ["ACCEPT", "REJECT", "%%REJECT%%", "DROP"]:
@@ -846,10 +847,13 @@ class nftables(object):
                 target_fragment = self._reject_fragment()
             else:
                 target_fragment = {target.lower(): None}
-            rules.append({"add": {"rule": {"family": family,
-                                           "table": TABLE_NAME,
-                                           "chain": "%s_%s" % (table, _policy),
-                                           "expr": [target_fragment]}}})
+            rules.append({add_del: {"rule": {"family": family,
+                                             "table": TABLE_NAME,
+                                             "chain": "%s_%s" % (table, _policy),
+                                             "expr": [target_fragment]}}})
+
+        if not enable:
+            rules.reverse()
 
         return rules
 
