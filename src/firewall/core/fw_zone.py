@@ -697,18 +697,12 @@ class FirewallZone(object):
                 continue
             for policy in self._zone_policies[zone]:
                 for (table, chain) in self._fw.policy._get_table_chains_for_zone_dispatch(policy):
-                    # create needed chains if not done already
-                    if enable:
-                        transaction.add_chain(policy, table, chain)
-
                     rules = backend.build_zone_source_interface_rules(enable,
                                     zone, policy, interface, table, chain, append)
                     transaction.add_rules(backend, rules)
 
             # intra zone forward
             policy = self.policy_name_from_zones(zone, "ANY")
-            if enable:
-                transaction.add_chain(policy, "filter", "FORWARD_IN")
             # Skip adding wildcard/catch-all interface (for default
             # zone). Otherwise it would allow forwarding from interface
             # in default zone -> interface not in default zone (but in
@@ -749,18 +743,12 @@ class FirewallZone(object):
                 continue
             for policy in self._zone_policies[zone]:
                 for (table, chain) in self._fw.policy._get_table_chains_for_zone_dispatch(policy):
-                    # create needed chains if not done already
-                    if enable:
-                        transaction.add_chain(policy, table, chain)
-
                     rules = backend.build_zone_source_address_rules(enable, zone,
                                             policy, source, table, chain)
                     transaction.add_rules(backend, rules)
 
             # intra zone forward
             policy = self.policy_name_from_zones(zone, "ANY")
-            if enable:
-                transaction.add_chain(policy, "filter", "FORWARD_IN")
             if self.get_settings(zone)["forward"]:
                 rules = backend.build_zone_forward_rules(enable, zone, policy, "filter", source=source)
                 transaction.add_rules(backend, rules)
@@ -1008,8 +996,6 @@ class FirewallZone(object):
 
     def _forward(self, enable, zone, transaction):
         p_name = self.policy_name_from_zones(zone, "ANY")
-        if enable:
-            transaction.add_chain(p_name, "filter", "FORWARD_IN")
 
         for interface in self._zones[zone].settings["interfaces"]:
             for backend in self._fw.enabled_backends():

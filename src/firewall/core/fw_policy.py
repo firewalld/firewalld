@@ -8,7 +8,7 @@ from firewall.functions import portStr, checkIPnMask, checkIP6nMask, \
     checkProtocol, enable_ip_forwarding, check_single_address, \
     portInPortRange, get_nf_conntrack_short_name, coalescePortRange, breakPortRange
 from firewall.core.rich import Rich_Rule, Rich_Accept, \
-    Rich_Mark, Rich_Service, Rich_Port, Rich_Protocol, \
+    Rich_Service, Rich_Port, Rich_Protocol, \
     Rich_Masquerade, Rich_ForwardPort, Rich_SourcePort, Rich_IcmpBlock, \
     Rich_IcmpType
 from firewall.core.fw_transaction import FirewallTransaction
@@ -124,6 +124,12 @@ class FirewallPolicy(object):
         else:
             transaction = use_transaction
 
+        if enable:
+            # build the base chain layout of the policy
+            for (table, chain) in self._get_table_chains_for_policy_dispatch(policy) if not obj.derived_from_zone \
+                             else self._get_table_chains_for_zone_dispatch(policy):
+                self.gen_chain_rules(policy, True, table, chain, transaction)
+
         settings = self.get_settings(policy)
         for key in settings:
             for args in settings[key]:
@@ -152,6 +158,12 @@ class FirewallPolicy(object):
                 else:
                     log.warning("Policy '%s': Unknown setting '%s:%s', "
                                 "unable to apply", policy, key, args)
+
+        if not enable:
+            for (table, chain) in self._get_table_chains_for_policy_dispatch(policy) if not obj.derived_from_zone \
+                             else self._get_table_chains_for_zone_dispatch(policy):
+                self.gen_chain_rules(policy, False, table, chain, transaction)
+            obj.applied = False
 
         if use_transaction is None:
             transaction.execute(enable)
@@ -1054,43 +1066,40 @@ class FirewallPolicy(object):
             self.get_settings(policy)["icmp_block_inversion"]
 
     def gen_chain_rules(self, policy, create, table, chain, transaction):
-        # HACK: iptables backend has to support the (raw, PREROUTING) chain in
-        # multiple policies derived for zones - this is due to conntrack
-        # helpers. As such, track it in the policy matching zone --> HOST.
         obj = self._fw.policy.get_policy(policy)
-        if obj.derived_from_zone and table == "raw" and chain == "PREROUTING":
-            for p in self._fw.zone._zone_policies[obj.derived_from_zone]:
-                p_obj = self._fw.policy.get_policy(p)
-                if p_obj.egress_zones[0] == "HOST":
-                    tracking_policy = p
-                    break
+        if obj.derived_from_zone:
+            # For policies derived from zones, use only the first policy in the
+            # list to track chain creation. The chain names are converted to
+            # zone-based names as such they're "global" for all zone derived
+            # policies.
+            tracking_policy = self._fw.zone._zone_policies[obj.derived_from_zone][0]
         else:
             tracking_policy = policy
 
         if create:
             if tracking_policy in self._chains and  \
-               table in self._chains[tracking_policy]:
+               (table, chain) in self._chains[tracking_policy]:
                 return
         else:
             if tracking_policy not in self._chains or \
-               table not in self._chains[tracking_policy]:
+               (table, chain) not in self._chains[tracking_policy]:
                 return
 
         for backend in self._fw.enabled_backends():
             if backend.policies_supported and \
                table in backend.get_available_tables():
-                rules = backend.build_policy_chain_rules(policy, table)
+                rules = backend.build_policy_chain_rules(create, policy, table)
                 transaction.add_rules(backend, rules)
 
-        self._register_chains(tracking_policy, create, [table])
-        transaction.add_fail(self._register_chains, tracking_policy, not create, [table])
+        self._register_chains(tracking_policy, create, [(table, chain)])
+        transaction.add_fail(self._register_chains, tracking_policy, not create, [(table, chain)])
 
     def _register_chains(self, policy, create, tables):
-        for table in tables:
+        for (table, chain) in tables:
             if create:
-                self._chains.setdefault(policy, []).append(table)
+                self._chains.setdefault(policy, []).append((table, chain))
             else:
-                self._chains[policy].remove(table)
+                self._chains[policy].remove((table, chain))
                 if len(self._chains[policy]) == 0:
                     del self._chains[policy]
 
@@ -1166,10 +1175,6 @@ class FirewallPolicy(object):
                     destinations.append(None)
 
                 for destination in destinations:
-                    if enable:
-                        transaction.add_chain(policy, "filter", "INPUT")
-                        transaction.add_chain(policy, "raw", "PREROUTING")
-
                     if type(rule.action) == Rich_Accept:
                         # only load modules for accept action
                         helpers = self.get_helpers_for_service_modules(svc.modules,
@@ -1198,23 +1203,17 @@ class FirewallPolicy(object):
 
                     # create rules
                     for (port,proto) in svc.ports:
-                        if enable and type(rule.action) == Rich_Mark:
-                            transaction.add_chain(policy, "mangle", "PREROUTING")
                         rules = backend.build_policy_ports_rules(
                                     enable, policy, proto, port, destination, rule)
                         transaction.add_rules(backend, rules)
 
                     for proto in svc.protocols:
-                        if enable and type(rule.action) == Rich_Mark:
-                            transaction.add_chain(policy, "mangle", "PREROUTING")
                         rules = backend.build_policy_protocol_rules(
                                     enable, policy, proto, destination, rule)
                         transaction.add_rules(backend, rules)
 
                     # create rules
                     for (port,proto) in svc.source_ports:
-                        if enable and type(rule.action) == Rich_Mark:
-                            transaction.add_chain(policy, "mangle", "PREROUTING")
                         rules = backend.build_policy_source_ports_rules(
                                     enable, policy, proto, port, destination, rule)
                         transaction.add_rules(backend, rules)
@@ -1225,11 +1224,6 @@ class FirewallPolicy(object):
                 protocol = rule.element.protocol
                 self.check_port(port, protocol)
 
-                if enable:
-                    transaction.add_chain(policy, "filter", "INPUT")
-                if enable and type(rule.action) == Rich_Mark:
-                    transaction.add_chain(policy, "mangle", "PREROUTING")
-
                 rules = backend.build_policy_ports_rules(
                             enable, policy, protocol, port, None, rule)
                 transaction.add_rules(backend, rules)
@@ -1239,11 +1233,6 @@ class FirewallPolicy(object):
                 protocol = rule.element.value
                 self.check_protocol(protocol)
 
-                if enable:
-                    transaction.add_chain(policy, "filter", "INPUT")
-                if enable and type(rule.action) == Rich_Mark:
-                    transaction.add_chain(policy, "mangle", "PREROUTING")
-
                 rules = backend.build_policy_protocol_rules(
                             enable, policy, protocol, None, rule)
                 transaction.add_rules(backend, rules)
@@ -1251,8 +1240,6 @@ class FirewallPolicy(object):
             # MASQUERADE
             elif type(rule.element) == Rich_Masquerade:
                 if enable:
-                    transaction.add_chain(policy, "nat", "POSTROUTING")
-                    transaction.add_chain(policy, "filter", "FORWARD_OUT")
                     for ipv in ipvs:
                         if backend.is_ipv_supported(ipv):
                             transaction.add_post(enable_ip_forwarding, ipv)
@@ -1272,9 +1259,6 @@ class FirewallPolicy(object):
                     if toaddr and enable:
                         transaction.add_post(enable_ip_forwarding, ipv)
 
-                if enable:
-                    transaction.add_chain(policy, "nat", "PREROUTING")
-
                 rules = backend.build_policy_forward_port_rules(
                                     enable, policy, port, protocol, toport,
                                     toaddr, rule)
@@ -1285,11 +1269,6 @@ class FirewallPolicy(object):
                 port = rule.element.port
                 protocol = rule.element.protocol
                 self.check_port(port, protocol)
-
-                if enable:
-                    transaction.add_chain(policy, "filter", "INPUT")
-                if enable and type(rule.action) == Rich_Mark:
-                    transaction.add_chain(policy, "mangle", "PREROUTING")
 
                 rules = backend.build_policy_source_ports_rules(
                             enable, policy, protocol, port, None, rule)
@@ -1306,20 +1285,10 @@ class FirewallPolicy(object):
                     raise FirewallError(errors.INVALID_RULE,
                                         "IcmpBlock not usable with accept action")
 
-                table = "filter"
-                if enable:
-                    transaction.add_chain(policy, table, "INPUT")
-                    transaction.add_chain(policy, table, "FORWARD_IN")
-
                 rules = backend.build_policy_icmp_block_rules(enable, policy, ict, rule)
                 transaction.add_rules(backend, rules)
 
             elif rule.element is None:
-                if enable:
-                    transaction.add_chain(policy, "filter", "INPUT")
-                if enable and type(rule.action) == Rich_Mark:
-                    transaction.add_chain(policy, "mangle", "PREROUTING")
-
                 rules = backend.build_policy_rich_source_destination_rules(
                             enable, policy, rule)
                 transaction.add_rules(backend, rules)
@@ -1344,10 +1313,6 @@ class FirewallPolicy(object):
             self.check_service(include)
             included_services.append(include)
             self._service(enable, policy, include, transaction, included_services=included_services)
-
-        if enable:
-            transaction.add_chain(policy, "raw", "PREROUTING")
-            transaction.add_chain(policy, "filter", "INPUT")
 
         # build a list of (backend, destination). The destination may be ipv4,
         # ipv6 or None
@@ -1398,9 +1363,6 @@ class FirewallPolicy(object):
                 transaction.add_rules(backend, rules)
 
     def _port(self, enable, policy, port, protocol, transaction):
-        if enable:
-            transaction.add_chain(policy, "filter", "INPUT")
-
         for backend in self._fw.enabled_backends():
             if not backend.policies_supported:
                 continue
@@ -1410,9 +1372,6 @@ class FirewallPolicy(object):
             transaction.add_rules(backend, rules)
 
     def _protocol(self, enable, policy, protocol, transaction):
-        if enable:
-            transaction.add_chain(policy, "filter", "INPUT")
-
         for backend in self._fw.enabled_backends():
             if not backend.policies_supported:
                 continue
@@ -1421,9 +1380,6 @@ class FirewallPolicy(object):
             transaction.add_rules(backend, rules)
 
     def _source_port(self, enable, policy, port, protocol, transaction):
-        if enable:
-            transaction.add_chain(policy, "filter", "INPUT")
-
         for backend in self._fw.enabled_backends():
             if not backend.policies_supported:
                 continue
@@ -1432,10 +1388,6 @@ class FirewallPolicy(object):
             transaction.add_rules(backend, rules)
 
     def _masquerade(self, enable, policy, transaction):
-        if enable:
-            transaction.add_chain(policy, "nat", "POSTROUTING")
-            transaction.add_chain(policy, "filter", "FORWARD_OUT")
-
         ipv = "ipv4"
         transaction.add_post(enable_ip_forwarding, ipv)
 
@@ -1450,9 +1402,6 @@ class FirewallPolicy(object):
         else:
             ipv = "ipv4"
 
-        if enable:
-            transaction.add_chain(policy, "nat", "PREROUTING")
-
         if toaddr and enable:
             transaction.add_post(enable_ip_forwarding, ipv)
         backend = self._fw.get_backend_by_ipv(ipv)
@@ -1463,10 +1412,6 @@ class FirewallPolicy(object):
 
     def _icmp_block(self, enable, policy, icmp, transaction):
         ict = self._fw.config.get_icmptype(icmp)
-
-        if enable:
-            transaction.add_chain(policy, "filter", "INPUT")
-            transaction.add_chain(policy, "filter", "FORWARD_IN")
 
         for backend in self._fw.enabled_backends():
             if not backend.policies_supported:
@@ -1498,9 +1443,6 @@ class FirewallPolicy(object):
             # rule
             return
 
-        transaction.add_chain(policy, "filter", "INPUT")
-        transaction.add_chain(policy, "filter", "FORWARD_IN")
-
         for backend in self._fw.enabled_backends():
             if not backend.policies_supported:
                 continue
@@ -1513,11 +1455,11 @@ class FirewallPolicy(object):
         obj = self._policies[policy]
         if obj.egress_zones[0] == "HOST":
             # zone --> Host
-            return [("filter", "INPUT")]
+            return [("filter", "INPUT"), ("raw", "PREROUTING")]
         elif obj.egress_zones[0] == "ANY":
             # zone --> any
             return [("filter", "FORWARD_IN"), ("nat", "PREROUTING"),
-                    ("mangle", "PREROUTING"), ("raw", "PREROUTING")]
+                    ("mangle", "PREROUTING")]
         elif obj.ingress_zones[0] == "ANY":
             # any --> zone
             return [("filter", "FORWARD_OUT"), ("nat", "POSTROUTING")]

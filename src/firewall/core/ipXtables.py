@@ -842,7 +842,9 @@ class ip4tables(object):
 
         return [rule]
 
-    def build_policy_chain_rules(self, policy, table):
+    def build_policy_chain_rules(self, enable, policy, table):
+        add_del_chain = { True: "-N", False: "-X" }[enable]
+        add_del_rule = { True: "-A", False: "-D" }[enable]
         _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX)
 
         self.our_chains[table].update(set([_policy,
@@ -853,34 +855,37 @@ class ip4tables(object):
                                       "%s_allow" % _policy]))
 
         rules = []
-        rules.append([ "-N", _policy, "-t", table ])
-        rules.append([ "-N", "%s_pre" % _policy, "-t", table ])
-        rules.append([ "-N", "%s_log" % _policy, "-t", table ])
-        rules.append([ "-N", "%s_deny" % _policy, "-t", table ])
-        rules.append([ "-N", "%s_allow" % _policy, "-t", table ])
-        rules.append([ "-N", "%s_post" % _policy, "-t", table ])
-        rules.append([ "-A", _policy, "-t", table, "-j", "%s_pre" % _policy ])
-        rules.append([ "-A", _policy, "-t", table, "-j", "%s_log" % _policy ])
-        rules.append([ "-A", _policy, "-t", table, "-j", "%s_deny" % _policy ])
-        rules.append([ "-A", _policy, "-t", table, "-j", "%s_allow" % _policy ])
-        rules.append([ "-A", _policy, "-t", table, "-j", "%s_post" % _policy ])
+        rules.append([ add_del_chain, _policy, "-t", table ])
+        rules.append([ add_del_chain, "%s_pre" % _policy, "-t", table ])
+        rules.append([ add_del_chain, "%s_log" % _policy, "-t", table ])
+        rules.append([ add_del_chain, "%s_deny" % _policy, "-t", table ])
+        rules.append([ add_del_chain, "%s_allow" % _policy, "-t", table ])
+        rules.append([ add_del_chain, "%s_post" % _policy, "-t", table ])
+        rules.append([ add_del_rule, _policy, "-t", table, "-j", "%s_pre" % _policy ])
+        rules.append([ add_del_rule, _policy, "-t", table, "-j", "%s_log" % _policy ])
+        rules.append([ add_del_rule, _policy, "-t", table, "-j", "%s_deny" % _policy ])
+        rules.append([ add_del_rule, _policy, "-t", table, "-j", "%s_allow" % _policy ])
+        rules.append([ add_del_rule, _policy, "-t", table, "-j", "%s_post" % _policy ])
 
         target = self._fw.policy._policies[policy].target
 
         if self._fw.get_log_denied() != "off":
             if table == "filter":
                 if target in [ "REJECT", "%%REJECT%%" ]:
-                    rules.append([ "-A", _policy, "-t", table, "%%LOGTYPE%%",
+                    rules.append([ add_del_rule, _policy, "-t", table, "%%LOGTYPE%%",
                                    "-j", "LOG", "--log-prefix",
                                    "\"%s_REJECT: \"" % _policy ])
                 if target == "DROP":
-                    rules.append([ "-A", _policy, "-t", table, "%%LOGTYPE%%",
+                    rules.append([ add_del_rule, _policy, "-t", table, "%%LOGTYPE%%",
                                    "-j", "LOG", "--log-prefix",
                                    "\"%s_DROP: \"" % _policy ])
 
         if table == "filter" and \
            target in [ "ACCEPT", "REJECT", "%%REJECT%%", "DROP" ]:
-            rules.append([ "-A", _policy, "-t", table, "-j", target ])
+            rules.append([ add_del_rule, _policy, "-t", table, "-j", target ])
+
+        if not enable:
+            rules.reverse()
 
         return rules
 
