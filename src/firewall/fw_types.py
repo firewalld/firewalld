@@ -54,10 +54,10 @@ class LastUpdatedOrderedDict(object):
         self._dict[key] = value
 
     def __getitem__(self, key):
-        if key in self._dict:
-            return self._dict[key]
-        else:
+        if type(key) == int:
             return self._list[key]
+        else:
+            return self._dict[key]
 
     def __len__(self):
         return len(self._list)
