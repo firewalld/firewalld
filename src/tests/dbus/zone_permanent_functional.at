@@ -30,8 +30,12 @@ export DBUS_FOOBAR_ZONE_OBJ
 
 dnl Get Zones
 dnl
+if NS_CMD([firewall-cmd --get-zones |grep "nm-shared" >/dev/null]); then
+    NM_SHARED="'nm-shared', "
+    export NM_SHARED
+fi
 DBUS_CHECK([config], [config.getZoneNames], [], 0, [dnl
-    [(['block', 'dmz', 'drop', 'external', 'foobar', 'home', 'internal', 'public', 'trusted', 'work'],)]
+    (@<:@'block', 'dmz', 'drop', 'external', 'foobar', 'home', 'internal', m4_escape([${NM_SHARED}])'public', 'trusted', 'work'@:>@,)
 ])
 DBUS_CHECK([config], [config.listZones], [], 0, [stdout])
 NS_CHECK([sed -e ["s/['][,]/'\n/g"] ./stdout |dnl
