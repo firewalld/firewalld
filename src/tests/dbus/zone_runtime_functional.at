@@ -36,8 +36,12 @@ DBUS_CHECK([], [getDefaultZone], [], 0, [dnl
 ])
 
 dnl Fetching Zones
+if NS_CMD([firewall-cmd --get-zones |grep "nm-shared" >/dev/null]); then
+    NM_SHARED="'nm-shared', "
+    export NM_SHARED
+fi
 DBUS_CHECK([], [zone.getZones], [], 0, [dnl
-    [(['block', 'dmz', 'drop', 'external', 'home', 'internal', 'public', 'trusted', 'work'],)]
+    (@<:@'block', 'dmz', 'drop', 'external', 'home', 'internal', m4_escape([${NM_SHARED}])'public', 'trusted', 'work'@:>@,)
 ])
 FWD_CHECK([-q --zone public --add-interface dummy0])
 FWD_CHECK([-q --zone public --add-source 10.1.1.1])
