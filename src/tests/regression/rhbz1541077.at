@@ -4,6 +4,6 @@ AT_KEYWORDS(ipset rhbz1541077)
 FWD_CHECK([--permanent --new-ipset hashmacv6 --type hash:mac --family inet6], 2, [ignore], [ignore])
 FWD_CHECK([--new-ipset hashmacv6 --type hash:mac --family inet6], 2, [ignore], [ignore])
 
-AT_CHECK([firewall-offline-cmd --new-ipset hashmacv6 --type hash:mac --family inet6], 2, [ignore], [ignore])
+FWD_OFFLINE_CHECK([--new-ipset hashmacv6 --type hash:mac --family inet6], 2, [ignore], [ignore])
 
 FWD_END_TEST
