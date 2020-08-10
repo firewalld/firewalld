@@ -49,7 +49,7 @@ install:
     && tar xf ${OLDPWD}/.travis/python-slip-0.6.5.tar.bz2
     && cd python-slip-0.6.5
     && make
-    && pip install .
+    && python ./setup.py install --prefix=${VIRTUAL_ENV}
     && popd
   - test x"$NEED_NFTABLES" = x
     || { sudo apt-get -qq -y install libmnl-dev libgmp-dev libreadline-dev
