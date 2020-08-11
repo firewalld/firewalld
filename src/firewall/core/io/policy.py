@@ -77,6 +77,19 @@ def common_startElement(obj, name, attrs):
             else:
                 log.warning("Protocol '%s' already set, ignoring.",
                             attrs["value"])
+    
+    elif name == "tcp-mss-clamp":
+        if obj._rule:
+            if obj._rule.element:            
+                log.warning("Invalid rule: More than one element in rule '%s', ignoring.",
+                            str(obj._rule))
+                obj._rule_error = True
+                return True
+            obj._rule.element = rich.Rich_Tcp_Mss_Clamp(attrs["value"])
+        else:
+            log.warning("Tcp-mss-clamp value '%s' already set, ignoring.",
+                        attrs["value"])
+    
     elif name == "icmp-block":
         if obj._rule:
             if obj._rule.element:
@@ -469,6 +482,9 @@ def common_writer(obj, handler):
             elif type(rule.element) == rich.Rich_Protocol:
                 element = "protocol"
                 attrs["value"] = rule.element.value
+            elif type(rule.element) == rich.Rich_Tcp_Mss_Clamp:
+                element = "tcp-mss-clamp"
+                attrs["value"] = rule.element.value
             elif type(rule.element) == rich.Rich_Masquerade:
                 element = "masquerade"
             elif type(rule.element) == rich.Rich_IcmpBlock:
@@ -628,6 +644,7 @@ class Policy(IO_Object):
         "destination": [ "invert" ],
         "log": [ "prefix", "level" ],
         "reject": [ "type" ],
+        "tcp-mss-clamp": [ "value" ],
         }
 
     def __init__(self):

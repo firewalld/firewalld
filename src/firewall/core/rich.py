@@ -24,7 +24,7 @@ __all__ = [ "Rich_Source", "Rich_Destination", "Rich_Service", "Rich_Port",
             "Rich_IcmpType",
             "Rich_SourcePort", "Rich_ForwardPort", "Rich_Log", "Rich_Audit",
             "Rich_Accept", "Rich_Reject", "Rich_Drop", "Rich_Mark",
-            "Rich_Limit", "Rich_Rule" ]
+            "Rich_Limit", "Rich_Rule", "Rich_Tcp_Mss_Clamp" ]
 
 from firewall import functions
 from firewall.core.ipset import check_ipset_name
@@ -117,7 +117,16 @@ class Rich_IcmpType(object):
         self.name = name
 
     def __str__(self):
+
         return 'icmp-type name="%s"' % (self.name)
+ 
+class Rich_Tcp_Mss_Clamp(object):
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return 'tcp-mss-clamp value="%s"' % (self.value)
+
 
 class Rich_ForwardPort(object):
     def __init__(self, port, protocol, to_port, to_address):
@@ -289,7 +298,7 @@ class Rich_Rule(object):
     def _lexer(self, rule_str):
         """ Lexical analysis """
         tokens = []
-
+        
         for r in functions.splitArgs(rule_str):
             if "=" in r:
                 attr = r.split('=')
@@ -340,7 +349,7 @@ class Rich_Rule(object):
                 if element in ['rule', 'source', 'destination', 'protocol',
                                'service', 'port', 'icmp-block', 'icmp-type', 'masquerade',
                                'forward-port', 'source-port', 'log', 'audit',
-                               'accept', 'drop', 'reject', 'mark', 'limit', 'not', 'NOT', 'EOL']:
+                               'accept', 'drop', 'reject', 'mark', 'limit', 'not', 'NOT', 'EOL', 'tcp-mss-clamp']:
                     if element == 'source' and self.source:
                         raise FirewallError(errors.INVALID_RULE, "more than one 'source' element")
                     elif element == 'destination' and self.destination:
@@ -417,6 +426,12 @@ class Rich_Rule(object):
                     in_elements.pop() # protocol
                 else:
                     raise FirewallError(errors.INVALID_RULE, "invalid 'protocol' element")
+            elif in_element == 'tcp-mss-clamp':
+                if attr_name == 'value':
+                    self.element = Rich_Tcp_Mss_Clamp(attr_value)
+                    in_elements.pop()   #tcp-mss-clamp
+                else:
+                    raise FirewallError(errors.INVALID_RULE, "invalid 'tcp-mss-clamp' element")
             elif in_element == 'service':
                 if attr_name == 'name':
                     self.element = Rich_Service(attr_value)
@@ -610,7 +625,7 @@ class Rich_Rule(object):
         elif type(self.element) == Rich_Protocol:
             if not functions.checkProtocol(self.element.value):
                 raise FirewallError(errors.INVALID_PROTOCOL, self.element.value)
-
+        
         # masquerade
         elif type(self.element) == Rich_Masquerade:
             if self.action is not None:
@@ -655,16 +670,29 @@ class Rich_Rule(object):
                 raise FirewallError(errors.INVALID_RULE, "forward-port and action")
 
         # source-port
-        elif type(self.element) == Rich_SourcePort:
-            if not functions.check_port(self.element.port):
-                raise FirewallError(errors.INVALID_PORT, self.element.port)
-            if self.element.protocol not in [ "tcp", "udp", "sctp", "dccp" ]:
+        elif type(self.element) == Rich_SourcePort:	
+            if not functions.check_port(self.element.port):	
+                raise FirewallError(errors.INVALID_PORT, self.element.port)	
+            if self.element.protocol not in [ "tcp", "udp", "sctp", "dccp" ]:	
                 raise FirewallError(errors.INVALID_PROTOCOL, self.element.protocol)
-
-        # other element and not empty?
-        elif self.element is not None:
-            raise FirewallError(errors.INVALID_RULE, "Unknown element %s" % 
-                                type(self.element))
+        
+        # tcp-mss-clamp
+        elif type(self.element) == Rich_Tcp_Mss_Clamp:
+            if str(self.element.value):
+                if ((str(self.element.value)).isdigit()):
+                    if int(str(self.element.value)) < 536:
+                        raise FirewallError(errors.INVALID_RULE, self.element.value)
+                    else:
+                        pass
+                elif str(self.element.value) != "pmtu":
+                    raise FirewallError(errors.INVALID_RULE, self.element.value)
+                else:
+                    pass
+        
+        # other element and not empty?	
+        elif self.element is not None:	
+            raise FirewallError(errors.INVALID_RULE, "Unknown element %s" % 	
+                                type(self.element))	
 
         # log
         if self.log is not None:
