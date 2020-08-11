@@ -1,0 +1,24 @@
+dnl ###############
+dnl ## XML tests ##
+dnl ###############
+
+FWD_START_TEST([tcp-mss-clamp])
+AT_KEYWORDS(tcp-mss-clamp)
+
+AT_CHECK([mkdir -p ./zones])
+
+AT_DATA([./zones/tcp.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+  <service name="ssh"/>
+  <service name="dhcpv6-client"/>
+  <rule>
+    <tcp-mss-clamp value="536"/>
+    <accept/>
+  </rule>
+</zone>
+])
+FWD_CHECK([--check-config],0, ignore)
+FWD_RELOAD
+FWD_END_TEST()
+

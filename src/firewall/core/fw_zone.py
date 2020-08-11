@@ -26,7 +26,7 @@ from firewall.core.fw_transaction import FirewallTransaction
 from firewall.core.io.policy import Policy
 from firewall.core.logger import log
 from firewall.core.rich import Rich_Service, Rich_Port, Rich_Protocol, Rich_SourcePort, Rich_ForwardPort, \
-                               Rich_IcmpBlock, Rich_IcmpType, Rich_Masquerade, Rich_Mark
+                               Rich_IcmpBlock, Rich_IcmpType, Rich_Masquerade, Rich_Mark, Rich_Tcp_Mss_Clamp
 from firewall.functions import checkIPnMask, checkIP6nMask, check_mac
 from firewall import errors
 from firewall.errors import FirewallError
@@ -858,6 +858,8 @@ class FirewallZone(object):
             return [self.policy_name_from_zones(zone, "ANY")]
         elif type(rule.element) in [Rich_Masquerade]:
             return [self.policy_name_from_zones("ANY", zone)]
+        elif type(rule.element) in [Rich_Tcp_Mss_Clamp]:
+            return [self.policy_name_from_zones("ANY",zone)]
         elif rule.element is None:
             return [self.policy_name_from_zones(zone, "HOST")]
         else:
