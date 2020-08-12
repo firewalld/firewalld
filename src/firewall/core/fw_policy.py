@@ -62,14 +62,6 @@ class FirewallPolicy(object):
         p = self._fw.check_policy(policy)
         return self._policies[p]
 
-    def _first_except(self, e, f, name, *args, **kwargs):
-        try:
-            f(name, *args, **kwargs)
-        except FirewallError as error:
-            if not e:
-                return error
-        return e
-
     def add_policy(self, obj):
         obj.settings = { x : LastUpdatedOrderedDict()
                          for x in [ "services", "ports",
