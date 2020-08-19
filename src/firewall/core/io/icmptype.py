@@ -75,7 +75,7 @@ class IcmpType(IO_Object):
         self.description = u2b_if_py2(self.description)
         self.destination = [u2b_if_py2(m) for m in self.destination]
 
-    def _check_config(self, config, item):
+    def _check_config(self, config, item, all_config):
         if item == "destination":
             for destination in config:
                 if destination not in [ "ipv4", "ipv6" ]:

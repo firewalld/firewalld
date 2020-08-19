@@ -277,7 +277,7 @@ class IPSet(IO_Object):
                 raise FirewallError(errors.INVALID_IPSET,
                                     "ipset type '%s' not usable" % ipset_type)
 
-    def _check_config(self, config, item):
+    def _check_config(self, config, item, all_config):
         if item == "type":
             if config not in IPSET_TYPES:
                 raise FirewallError(errors.INVALID_TYPE,

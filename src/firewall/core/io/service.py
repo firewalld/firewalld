@@ -106,7 +106,7 @@ class Service(IO_Object):
         self.includes = [u2b_if_py2(s) for s in self.includes]
         self.helpers = [u2b_if_py2(s) for s in self.helpers]
 
-    def _check_config(self, config, item):
+    def _check_config(self, config, item, all_config):
         if item == "ports":
             for port in config:
                 if port[0] != "":
