@@ -185,7 +185,7 @@ class Zone(IO_Object):
         del conf["UNUSED"]
         return conf
 
-    def _check_config(self, config, item):
+    def _check_config(self, config, item, all_config):
         if item == "services" and self.fw_config:
             existing_services = self.fw_config.get_services()
             for service in config:

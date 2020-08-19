@@ -118,10 +118,10 @@ class LockdownWhitelist(IO_Object):
 #        self.gids = [ ]
 #        self.groups = [ ]
 
-    def _check_config(self, config, item):
+    def _check_config(self, config, item, all_config):
         if item in [ "commands", "contexts", "users", "uids" ]:
             for x in config:
-                self._check_config(x, item[:-1])
+                self._check_config(x, item[:-1], all_config)
         elif item == "command":
             if not checkCommand(config):
                 raise FirewallError(errors.INVALID_COMMAND, config)

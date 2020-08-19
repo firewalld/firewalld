@@ -117,7 +117,7 @@ class IO_Object(object):
                 (len(conf), len(self.IMPORT_EXPORT_STRUCTURE)))
         for i,(element,value) in enumerate(self.IMPORT_EXPORT_STRUCTURE):
             self._check_config_structure(conf[i], value)
-            self._check_config(conf[i], element)
+            self._check_config(conf[i], element, conf)
 
     def check_config_dict(self, conf):
         type_formats = dict([(x[0], x[1]) for x in self.IMPORT_EXPORT_STRUCTURE])
@@ -125,9 +125,9 @@ class IO_Object(object):
             if key not in [x for (x,y) in self.IMPORT_EXPORT_STRUCTURE]:
                 raise FirewallError(errors.INVALID_OPTION, "option '{}' is not valid".format(key))
             self._check_config_structure(conf[key], type_formats[key])
-            self._check_config(conf[key], key)
+            self._check_config(conf[key], key, conf)
 
-    def _check_config(self, dummy1, dummy2):
+    def _check_config(self, dummy1, dummy2, dummy3):
         # to be overloaded by sub classes
         return
 

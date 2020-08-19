@@ -142,7 +142,7 @@ class Direct(IO_Object):
         self.rules = LastUpdatedOrderedDict()
         self.passthroughs = LastUpdatedOrderedDict()
 
-    def _check_config(self, conf, item):
+    def _check_config(self, conf, item, all_conf):
         pass
         # check arg lists
 

@@ -90,7 +90,7 @@ class Helper(IO_Object):
             raise FirewallError(errors.INVALID_IPV,
                                 "'%s' not in '%s'" % (ipv, ipvs))
 
-    def _check_config(self, config, item):
+    def _check_config(self, config, item, all_config):
         if item == "ports":
             for port in config:
                 check_port(port[0])
