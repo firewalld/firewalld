@@ -4,7 +4,8 @@ if ENABLE_DOCS
 EXTRA_DIST = $(HTMLS:../html/%.html=%.xml) \
 	authors.xml notes.xml seealso.xml errorcodes.xml \
 	transform-man.xsl.in transform-html.xsl.in \
-	firewalld.xml.in firewall-cmd.xml.in
+	firewalld.xml.in firewall-cmd.xml.in \
+	policy_zone_syntax.xml policy_zone_descriptions.xml
 
 man_MANS = $(man1_MANS) $(man5_MANS)
 HTMLS = $(man1_MANS:../man/man1/%.1=../html/%.html) $(man5_MANS:../man/man5/%.5=../html/%.html)
@@ -27,7 +28,9 @@ man5_MANS = \
 	../man/man5/firewalld.richlanguage.5 \
 	../man/man5/firewalld.service.5 \
 	../man/man5/firewalld.zone.5 \
-	../man/man5/firewalld.zones.5
+	../man/man5/firewalld.zones.5 \
+	../man/man5/firewalld.policy.5 \
+	../man/man5/firewalld.policies.5
 endif
 
 CLEAN_FILES = *~ errorcodes.xml
@@ -50,13 +53,13 @@ clean:
 ../man/man1/firewall-cmd.1: errorcodes.xml
 ../html/firewall-cmd.html: errorcodes.xml
 
-../man/man1/%.1: %.xml authors.xml notes.xml seealso.xml transform-man.xsl
+../man/man1/%.1: %.xml authors.xml notes.xml seealso.xml transform-man.xsl policy_zone_syntax.xml policy_zone_descriptions.xml
 	$(XSLTPROC) -o $@ $(XSLTPROC_MAN_FLAGS) $<
 
-../man/man5/%.5: %.xml authors.xml notes.xml seealso.xml transform-man.xsl
+../man/man5/%.5: %.xml authors.xml notes.xml seealso.xml transform-man.xsl policy_zone_syntax.xml policy_zone_descriptions.xml
 	$(XSLTPROC) -o $@ $(XSLTPROC_MAN_FLAGS) $<
 
-../html/%.html: %.xml authors.xml notes.xml seealso.xml transform-html.xsl
+../html/%.html: %.xml authors.xml notes.xml seealso.xml transform-html.xsl policy_zone_syntax.xml policy_zone_descriptions.xml
 	mkdir -p $(dir $@) # avoid xsltproc directory create race
 	$(XSLTPROC) -o $@ $(XSLTPROC_HTML_FLAGS) $<
 
