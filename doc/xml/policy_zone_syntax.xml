@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  This file is part of firewalld.
+
+  Copyright (C) 2020 Red Hat, Inc.
+  Authors:
+  Eric Garver <eric@garver.life>
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+    [ &lt;short&gt;<replaceable>short description</replaceable>&lt;/short&gt; ]
+    [ &lt;description&gt;<replaceable>description</replaceable>&lt;/description&gt; ]
+    [ &lt;service name="<replaceable>string</replaceable>"/&gt; ]
+    [ &lt;port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>|<literal>sctp</literal>|<literal>dccp</literal>"/&gt; ]
+    [ &lt;protocol value="<replaceable>protocol</replaceable>"/&gt; ]
+    [ &lt;icmp-block name="<replaceable>string</replaceable>"/&gt; ]
+    [ &lt;masquerade/&gt; ]
+    [ &lt;forward-port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>|<literal>sctp</literal>|<literal>dccp</literal>" [to-port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]"] [to-addr="<replaceable>IP address</replaceable>"]/&gt; ]
+    [ &lt;source-port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>|<literal>sctp</literal>|<literal>dccp</literal>"/&gt; ]
+    [
+        &lt;rule [family="<literal>ipv4</literal>|<literal>ipv6</literal>"]&gt;
+            [ &lt;source address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]"|mac="<replaceable>MAC</replaceable>"|ipset="<replaceable>ipset</replaceable>" [invert="<replaceable>True</replaceable>"]/&gt; ]
+            [ &lt;destination address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]" [invert="<replaceable>True</replaceable>"]/&gt; ]
+            [
+                &lt;service name="<replaceable>string</replaceable>"/&gt; |
+                &lt;port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>|<literal>sctp</literal>|<literal>dccp</literal>"/&gt; |
+                &lt;protocol value="<replaceable>protocol</replaceable>"/&gt; |
+                &lt;icmp-block name="<replaceable>icmptype</replaceable>"/&gt; |
+                &lt;icmp-type name="<replaceable>icmptype</replaceable>"/&gt; |
+                &lt;masquerade/&gt; |
+                &lt;forward-port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>|<literal>sctp</literal>|<literal>dccp</literal>" [to-port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]"] [to-addr="<replaceable>address</replaceable>"]/&gt;
+            ]
+            [ &lt;log [prefix="<replaceable>prefixtext</replaceable>"] [level="<literal>emerg</literal>|<literal>alert</literal>|<literal>crit</literal>|<literal>err</literal>|<literal>warn</literal>|<literal>notice</literal>|<literal>info</literal>|<literal>debug</literal>"]&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/log&gt; ]
+            [ &lt;audit&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/audit&gt; ]
+            [
+                &lt;accept&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/accept&gt; |
+                &lt;reject [type="<replaceable>rejecttype</replaceable>"]&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/reject&gt; |
+                &lt;drop&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/drop&gt; |
+                &lt;mark set="<replaceable>mark</replaceable>[/<replaceable>mask</replaceable>]"&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/mark&gt;
+            ]
+        &lt;/rule&gt;
+    ]

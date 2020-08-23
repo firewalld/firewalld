@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN" "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd"
+[
+<!ENTITY authors SYSTEM "authors.xml">
+<!ENTITY seealso SYSTEM "seealso.xml">
+<!ENTITY notes SYSTEM "notes.xml">
+<!ENTITY policy_zone_syntax SYSTEM "policy_zone_syntax.xml">
+<!ENTITY policy_zone_descriptions SYSTEM "policy_zone_descriptions.xml">
+]>
+
+<!--
+  This file is part of firewalld.
+
+  Copyright (C) 2020 Red Hat, Inc.
+  Authors:
+  Eric Garver <eric@garver.life>
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<refentry id="firewalld.policy">
+
+    <refentryinfo>
+        <title>firewalld.policy</title>
+        <productname>firewalld</productname>
+        &authors;
+    </refentryinfo>
+
+    <refmeta>
+        <refentrytitle>firewalld.policy</refentrytitle>
+        <manvolnum>5</manvolnum>
+    </refmeta>
+
+    <refnamediv>
+        <refname>firewalld.policy</refname>
+        <refpurpose>firewalld policy configuration files</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+        <para>
+            <filename><config.sysconfdir/>/firewalld/policies/policy.xml</filename>
+        </para>
+        <para>
+            <filename><config.prefix/>/lib/firewalld/policies/policy.xml</filename>
+        </para>
+    </refsynopsisdiv>
+
+    <refsect1 id="description">
+        <title>Description</title>
+
+        <para>
+            A firewalld policy configuration file contains the information for
+            a policy.  These are the policy descriptions, services, ports,
+            protocols, icmp-blocks, masquerade, forward-ports and rich language
+            rules in an XML file format.  The file name has to be
+            <replaceable>policy_name</replaceable>.xml where length of
+            <replaceable>policy_name</replaceable> is currently limited to 17
+            chars.
+        </para>
+
+        <para>
+            This is the structure of a policy configuration file:
+
+            <programlisting>
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;policy [version="<replaceable>versionstring</replaceable>"] [target="<literal>CONTINUE</literal>|<literal>ACCEPT</literal>|<literal>REJECT</literal>|<literal>DROP</literal>"] [priority="<replaceable>priority</replaceable>"]&gt;
+    [ &lt;ingress-zone name="<replaceable>zone</replaceable>"/&gt; ]
+    [ &lt;egress-zone name="<replaceable>zone</replaceable>"/&gt; ]
+
+    &policy_zone_syntax;
+
+&lt;/policy&gt;
+            </programlisting>
+        </para>
+
+        <para>
+            The config can contain these tags and attributes. Some of them are
+            mandatory, others optional.
+        </para>
+
+        <refsect2 id="policy">
+            <title>policy</title>
+            <para>
+                The mandatory policy start and end tag defines the policy. This
+                tag can only be used once in a policy configuration file. There
+                are optional attributes for policy:
+            </para>
+
+            <variablelist>
+                <varlistentry>
+                    <term>version="<replaceable>string</replaceable>"</term>
+                    <listitem>
+                        <para>
+                            To give the policy a version.
+                        </para>
+                    </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                    <term>target="<literal>CONTINUE</literal><literal>ACCEPT</literal>|<literal>REJECT</literal>|<literal>DROP</literal>"</term>
+                    <listitem>
+                        <para>
+                            Can be used to accept, reject or drop every packet
+                            that doesn't match any rule (port, service, etc.).
+                            The <literal>CONTINUE</literal> is the default and
+                            used for policies that an non-terminal.
+                        </para>
+                    </listitem>
+                </varlistentry>
+            </variablelist>
+        </refsect2>
+
+        <refsect2 id="ingress-zone">
+            <title>ingress-zone</title>
+            <para>
+                An optional element that can be used several times. It can be
+                the name of a firewalld zone or one of the symbolic zones:
+                HOST, ANY. See
+                <citerefentry><refentrytitle>firewalld.policies</refentrytitle><manvolnum>5</manvolnum></citerefentry>
+                for information about symbolic zones.
+            </para>
+        </refsect2>
+
+        <refsect2 id="egress-zone">
+            <title>egress-zone</title>
+            <para>
+                An optional element that can be used several times. It can be
+                the name of a firewalld zone or one of the symbolic zones:
+                HOST, ANY. See
+                <citerefentry><refentrytitle>firewalld.policies</refentrytitle><manvolnum>5</manvolnum></citerefentry>
+                for information about symbolic zones.
+            </para>
+        </refsect2>
+
+        &policy_zone_descriptions;
+
+    </refsect1>
+
+  &seealso;
+
+  &notes;
+
+</refentry>

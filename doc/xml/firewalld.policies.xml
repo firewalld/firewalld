@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN" "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd"
+[
+<!ENTITY authors SYSTEM "authors.xml">
+<!ENTITY seealso SYSTEM "seealso.xml">
+<!ENTITY notes SYSTEM "notes.xml">
+]>
+
+<!--
+  This file is part of firewalld.
+
+  Copyright (C) 2020 Red Hat, Inc.
+  Authors:
+  Eric Garver <eric@garver.life>
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<refentry id="firewalld.policies">
+
+    <refentryinfo>
+        <title>firewalld.policies</title>
+        <productname>firewalld</productname>
+        &authors;
+    </refentryinfo>
+
+    <refmeta>
+        <refentrytitle>firewalld.policies</refentrytitle>
+        <manvolnum>5</manvolnum>
+    </refmeta>
+
+    <refnamediv>
+        <refname>firewalld.policies</refname>
+        <refpurpose>firewalld policies</refpurpose>
+    </refnamediv>
+
+    <refsect1 id="description">
+        <title>Description</title>
+
+        <refsect2 id="whatisapolicy">
+            <title>What is a policy?</title>
+
+            <para>
+                A policy applies a set of rules to traffic flowing between
+                between zones (see zones (see <citerefentry>
+                <refentrytitle>firewalld.zones</refentrytitle>
+                <manvolnum>5</manvolnum> </citerefentry>). The policy affects
+                traffic in a unidirectional manner, e.g. zoneA to zoneB. This
+                allows asynchronous filtering policies.
+            </para>
+
+            <para>
+                A policy's relationship to zones is defined by assigning
+                assigning a set set of ingress zones and a set of egress zones.
+                For example, if the set of ingress zones "public" and the set
+                of egress zones contains "internal" then the policy will affect
+                all traffic flowing from the "public" zone to the "internal"
+                zone. However, since policies are unidirectional it will not
+                apply to traffic flowing from "internal" to "public". Note that
+                the ingress set and egress set can contain multiple zones.
+            </para>
+        </refsect2>
+
+        <refsect2 id="activepolicies">
+            <title>Active Policies</title>
+            <para>
+                Policies only become active if all of the following are true.
+            </para>
+            <itemizedlist>
+                <listitem>
+                    <para>
+                        The ingress zones list contain at least one regular zone
+                        or a single symbolic zone.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>
+                        The egress zones list contain at least one regular zone
+                        or a single symbolic zone.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>
+                        For non symbolic zones, the zone must be active. That
+                        is, it must have interfaces or sources assigned to it.
+                    </para>
+                </listitem>
+            </itemizedlist>
+            <para>
+                If the policy is not active then the policy has no effect.
+            </para>
+        </refsect2>
+
+        <refsect2 id="symboliczones">
+            <title>Symbolic Zones</title>
+            <para>
+                Regular zones are not enough to express every form of packet
+                filtering. For example there is no zone to represent traffic
+                flowing to or from the host running firewalld. As such, there
+                are some symbolic zones to fill these gaps. However, symbolic
+                zones are unique in that they're the only zone allowed in the
+                ingress or egress zone sets. For example, you cannot use
+                "public" and "HOST" in the ingress zones.
+            </para>
+
+            <para>
+                Symbolic zones:
+            </para>
+            <orderedlist>
+                <listitem>
+                    <para>HOST</para>
+                    <para>
+                        This symbolic zone is for traffic flowing to or from
+                        the host running firewalld. This corresponds to
+                        netfilter (iptables/nftables) chains INPUT and OUTPUT.
+                    </para>
+                    <itemizedlist>
+                        <listitem>
+                            <para>
+                                If used in the ingress zones list it will apply to
+                                traffic on the INPUT chain.
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>
+                                If used in the egress zones list it will apply
+                                to traffic on the OUTPUT chain.
+                            </para>
+                        </listitem>
+                    </itemizedlist>
+                </listitem>
+
+                <listitem>
+                    <para>ANY</para>
+                    <para>
+                        This symbolic zone behaves like a wildcard for the
+                        ingress and egress zones. With the exception that it
+                        does not include "HOST". Its useful if you want a
+                        policy to apply to every zone.
+                    </para>
+                    <itemizedlist>
+                        <listitem>
+                            <para>
+                                If used in the ingress zones list it will apply
+                                for traffic originating from any zone.
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>
+                                If used in the egress zones list it will apply
+                                for traffic destined to any zone.
+                            </para>
+                        </listitem>
+                    </itemizedlist>
+                </listitem>
+            </orderedlist>
+        </refsect2>
+
+        <refsect2 id="predefinedpolicies">
+            <title>Predefined Policies</title>
+            <para>
+                firewalld ships with some predefined policies. These may or may
+                not be active by default. For details see the description of
+                each policy.
+            </para>
+            <itemizedlist>
+                <listitem>
+                    <para>
+                        allow-host-ipv6
+                    </para>
+                </listitem>
+            </itemizedlist>
+        </refsect2>
+
+        <refsect2 id="similaritiestozones">
+            <title>Similarity to Zones</title>
+            <para>
+                Policies are similar to zones in that they are an attachment
+                point for firewalld's primitives: services, ports, forward
+                ports, etc. This is not a coincidence. Policies are a
+                generalization of how zones have traditionally achieved
+                filtering.  In fact, in modern firewalld zones are internally
+                implemented as a set of policies.
+            </para>
+            <para>
+                The main difference between policies and zones is that policies
+                allow filtering in all directions: input, output, and
+                forwarding. With a couple of exceptions zones only allow input
+                filtering which is sufficient for an end station firewalling.
+                However, for network level filtering or filtering on behalf of
+                virtual machines and containers something more flexible, i.e.
+                policies, are needed.
+            </para>
+        </refsect2>
+
+    </refsect1>
+
+    &seealso;
+
+    &notes;
+
+</refentry>
