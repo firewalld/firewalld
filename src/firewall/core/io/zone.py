@@ -120,6 +120,7 @@ class Zone(IO_Object):
         self.sources = [ ]
         self.fw_config = None # to be able to check services and a icmp_blocks
         self.rules = [ ]
+        self.rules_str = [ ]
         self.icmp_block_inversion = False
         self.combined = False
         self.applied = False
@@ -141,6 +142,7 @@ class Zone(IO_Object):
         del self.sources[:]
         self.fw_config = None # to be able to check services and a icmp_blocks
         del self.rules[:]
+        del self.rules_str[:]
         self.icmp_block_inversion = False
         self.combined = False
         self.applied = False
@@ -163,17 +165,13 @@ class Zone(IO_Object):
         self.interfaces = [u2b_if_py2(i) for i in self.interfaces]
         self.sources = [u2b_if_py2(s) for s in self.sources]
         self.rules = [u2b_if_py2(s) for s in self.rules]
-
-    def __getattr__(self, name):
-        if name == "rules_str":
-            rules_str = [str(rule) for rule in self.rules]
-            return rules_str
-        else:
-            return getattr(super(Zone, self), name)
+        self.rules_str = [u2b_if_py2(s) for s in self.rules_str]
 
     def __setattr__(self, name, value):
         if name == "rules_str":
             self.rules = [rich.Rich_Rule(rule_str=s) for s in value]
+            # must convert back to string to get the canonical string.
+            super(Zone, self).__setattr__(name, [str(s) for s in self.rules])
         else:
             super(Zone, self).__setattr__(name, value)
 
@@ -307,6 +305,7 @@ class Zone(IO_Object):
                 self.source_ports.append(port)
         for rule in zone.rules:
             self.rules.append(rule)
+            self.rules_str.append(str(rule))
         if zone.icmp_block_inversion:
             self.icmp_block_inversion = True
 
@@ -687,9 +686,9 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                 except Exception as e:
                     log.warning("%s: %s", e, str(self._rule))
                 else:
-                    if str(self._rule) not in \
-                       [ str(x) for x in self.item.rules ]:
+                    if str(self._rule) not in self.item.rules_str:
                         self.item.rules.append(self._rule)
+                        self.item.rules_str.append(str(self._rule))
                     else:
                         log.warning("Rule '%s' already set, ignoring.",
                                     str(self._rule))
