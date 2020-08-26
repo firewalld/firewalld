@@ -1,0 +1,18 @@
+FWD_START_TEST([rich rule parsing bottleneck])
+AT_KEYWORDS(rich offline rhbz1871298)
+
+AT_SKIP_IF([! NS_CMD([which timeout >/dev/null 2>&1])])
+
+NS_CHECK([mkdir -p ./zones])
+NS_CHECK([echo '<?xml version="1.0" encoding="utf-8"?>' > ./zones/foobar.xml])
+NS_CHECK([echo "<zone>" >> ./zones/foobar.xml])
+NS_CHECK([echo "<short>foobar</short>" >> ./zones/foobar.xml])
+NS_CHECK([sh -c 'for I in $(seq 10000); do echo "<rule family=\"ipv4\"><port protocol=\"tcp\" port=\"$I\" /><accept/></rule>" >> ./zones/foobar.xml; done'])
+NS_CHECK([echo "</zone>" >> ./zones/foobar.xml])
+
+if test "x${FIREWALLD_DEFAULT_CONFIG}" != x ; then
+    FIREWALL_OFFLINE_CMD_ARGS+=" --default-config ${FIREWALLD_DEFAULT_CONFIG}"
+fi
+NS_CHECK([timeout 45 firewall-offline-cmd --system-config ./ $FIREWALL_OFFLINE_CMD_ARGS --check-config], 0, [ignore])
+
+FWD_END_TEST
