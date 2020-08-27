@@ -1123,7 +1123,7 @@ class FirewallPolicy(object):
         if rule.family:
             ipvs = [ rule.family ]
         elif rule.element and (isinstance(rule.element, Rich_IcmpBlock) or isinstance(rule.element, Rich_IcmpType)):
-            ict = self._fw.icmptype.get_icmptype(rule.element.name)
+            ict = self._fw.config.get_icmptype(rule.element.name)
             if ict.destination:
                 ipvs = [ipv for ipv in ["ipv4", "ipv6"] if ipv in ict.destination]
 
@@ -1295,7 +1295,7 @@ class FirewallPolicy(object):
             # ICMP BLOCK and ICMP TYPE
             elif type(rule.element) == Rich_IcmpBlock or \
                  type(rule.element) == Rich_IcmpType:
-                ict = self._fw.icmptype.get_icmptype(rule.element.name)
+                ict = self._fw.config.get_icmptype(rule.element.name)
 
                 if type(rule.element) == Rich_IcmpBlock and \
                    rule.action and type(rule.action) == Rich_Accept:
@@ -1459,7 +1459,7 @@ class FirewallPolicy(object):
         transaction.add_rules(backend, rules)
 
     def _icmp_block(self, enable, policy, icmp, transaction):
-        ict = self._fw.icmptype.get_icmptype(icmp)
+        ict = self._fw.config.get_icmptype(icmp)
 
         if enable:
             transaction.add_chain(policy, "filter", "INPUT")
