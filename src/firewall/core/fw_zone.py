@@ -1542,7 +1542,10 @@ class FirewallZone(object):
                 ipvs = [ source_ipv ]
 
         if not ipvs:
-            ipvs = [ipv for ipv in ["ipv4", "ipv6"] if self._fw.is_ipv_enabled(ipv)]
+            ipvs = ["ipv4", "ipv6"]
+
+        # clamp ipvs to those that are actually enabled.
+        ipvs = [ipv for ipv in ipvs if self._fw.is_ipv_enabled(ipv)]
 
         # add an element to object to allow backends to know what ipvs this applies to
         rule.ipvs = ipvs
