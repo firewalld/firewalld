@@ -82,7 +82,7 @@ def _icmp_types_fragments(protocol, type, code=None):
     fragments = [{"match": {"left": {"payload": {"protocol": protocol, "field": "type"}},
                             "op": "==",
                             "right": type}}]
-    if code:
+    if code is not None:
         fragments.append({"match": {"left": {"payload": {"protocol": protocol, "field": "code"}},
                                     "op": "==",
                                     "right": code}})
