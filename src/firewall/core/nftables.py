@@ -1183,8 +1183,14 @@ class nftables(object):
             table = "mangle"
             _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX)
             chain = "%s_%s_%s" % (table, _policy, chain_suffix)
-            rule_action = {"mangle": {"key": {"meta": {"key": "mark"}},
-                                      "value": rich_rule.action.set}}
+            value = rich_rule.action.set.split("/")
+            if len(value) > 1:
+                rule_action = {"mangle": {"key": {"meta": {"key": "mark"}},
+                                          "value": {"^": [{"&": [{"meta": {"key": "mark"}}, value[1]]}, value[0]]}}}
+            else:
+                rule_action = {"mangle": {"key": {"meta": {"key": "mark"}},
+                                          "value": value[0]}}
+
         else:
             raise FirewallError(INVALID_RULE,
                                 "Unknown action %s" % type(rich_rule.action))
