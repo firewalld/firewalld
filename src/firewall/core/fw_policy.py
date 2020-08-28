@@ -1619,6 +1619,12 @@ class FirewallPolicy(object):
                  type(rule.element) == Rich_IcmpType:
                 ict = self._fw.config.get_icmptype(rule.element.name)
 
+                if rule.family and ict.destination and \
+                   rule.family not in ict.destination:
+                    raise FirewallError(errors.INVALID_ICMPTYPE,
+                                        "rich rule family '%s' conflicts with icmp type '%s'" % \
+                                        (rule.family, rule.element.name))
+
                 if type(rule.element) == Rich_IcmpBlock and \
                    rule.action and type(rule.action) == Rich_Accept:
                     # icmp block might have reject or drop action, but not accept
