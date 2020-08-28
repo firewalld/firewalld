@@ -128,13 +128,13 @@
                     <itemizedlist>
                         <listitem>
                             <para>
-                                If used in the ingress zones list it will apply to
+                                If used in the egress zones list it will apply to
                                 traffic on the INPUT chain.
                             </para>
                         </listitem>
                         <listitem>
                             <para>
-                                If used in the egress zones list it will apply
+                                If used in the ingress zones list it will apply
                                 to traffic on the OUTPUT chain.
                             </para>
                         </listitem>
@@ -146,7 +146,7 @@
                     <para>
                         This symbolic zone behaves like a wildcard for the
                         ingress and egress zones. With the exception that it
-                        does not include "HOST". Its useful if you want a
+                        does not include "HOST". It's useful if you want a
                         policy to apply to every zone.
                     </para>
                     <itemizedlist>
