@@ -4,7 +4,15 @@ AT_KEYWORDS(rich icmp rhbz1855140)
 FWD_CHECK([--permanent --zone public --add-rich-rule='rule icmp-type name="echo-request" accept'], 0, ignore)
 FWD_CHECK([--permanent --zone public --add-rich-rule='rule icmp-type name="neighbour-advertisement" accept'], 0, ignore)
 FWD_CHECK([--permanent --zone public --add-rich-rule='rule icmp-type name="timestamp-request" accept'], 0, ignore)
+FWD_CHECK([--permanent --zone public --add-rich-rule 'rule icmp-type name=bad-header mark set=0x86/0x86'], 0, ignore)
 FWD_RELOAD
+NFT_LIST_RULES([inet], [mangle_PRE_public_allow], 0, [dnl
+    table inet firewalld {
+        chain mangle_PRE_public_allow {
+            icmpv6 type parameter-problem icmpv6 code no-route mark set mark & 0x00000086 ^ 0x00000086
+        }
+    }
+])
 NFT_LIST_RULES([inet], [filter_IN_public_allow], 0, [dnl
     table inet firewalld {
         chain filter_IN_public_allow {
@@ -17,10 +25,15 @@ NFT_LIST_RULES([inet], [filter_IN_public_allow], 0, [dnl
         }
     }
 ])
+IPTABLES_LIST_RULES([mangle], [PRE_public_allow], 0, [dnl
+])
 IPTABLES_LIST_RULES([filter], [IN_public_allow], 0, [dnl
     ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:22 ctstate NEW,UNTRACKED
     ACCEPT icmp -- 0.0.0.0/0 0.0.0.0/0 icmptype 8
     ACCEPT icmp -- 0.0.0.0/0 0.0.0.0/0 icmptype 13
+])
+IP6TABLES_LIST_RULES([mangle], [PRE_public_allow], 0, [dnl
+    MARK icmpv6 ::/0 ::/0 ipv6-icmptype 4 code 0 MARK or 0x86
 ])
 IP6TABLES_LIST_RULES([filter], [IN_public_allow], 0, [dnl
     ACCEPT tcp ::/0 ::/0 tcp dpt:22 ctstate NEW,UNTRACKED
@@ -29,4 +42,12 @@ IP6TABLES_LIST_RULES([filter], [IN_public_allow], 0, [dnl
     ACCEPT icmpv6 ::/0 ::/0 ipv6-icmptype 136
 ])
 
-FWD_END_TEST
+dnl verify bad icmptypes are rejected
+FWD_CHECK([--permanent --add-rich-rule 'rule icmp-type name=bogus mark set=0x86/0x86'], 107, [ignore], [ignore])
+FWD_CHECK([            --add-rich-rule 'rule icmp-type name=bogus mark set=0x86/0x86'], 107, [ignore], [ignore])
+FWD_CHECK([--permanent --add-rich-rule 'rule family=ipv6 icmp-type name=timestamp-request drop'], 107, [ignore], [ignore])
+IF_HOST_SUPPORTS_IPV6_RULES([
+FWD_CHECK([            --add-rich-rule 'rule family=ipv6 icmp-type name=timestamp-request drop'], 107, [ignore], [ignore])
+])
+
+FWD_END_TEST([-e '/ERROR: INVALID_ICMPTYPE:/d'])
