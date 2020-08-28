@@ -1719,6 +1719,8 @@ class FirewallZone(object):
                 if enable:
                     transaction.add_chain(zone, table, "INPUT")
                     transaction.add_chain(zone, table, "FORWARD_IN")
+                if enable and type(rule.action) == Rich_Mark:
+                    transaction.add_chain(zone, "mangle", "PREROUTING")
 
                 rules = backend.build_zone_icmp_block_rules(enable, zone, ict, rule)
                 transaction.add_rules(backend, rules)

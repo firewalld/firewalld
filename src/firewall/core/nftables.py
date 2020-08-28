@@ -1043,8 +1043,13 @@ class nftables(object):
                                                 zone=zone)
             table = "mangle"
             chain = "%s_%s_%s" % (table, target, chain_suffix)
-            rule_action = {"mangle": {"key": {"meta": {"key": "mark"}},
-                                      "value": rich_rule.action.set}}
+            value = rich_rule.action.set.split("/")
+            if len(value) > 1:
+                rule_action = {"mangle": {"key": {"meta": {"key": "mark"}},
+                                          "value": {"^": [{"&": [{"meta": {"key": "mark"}}, value[1]]}, value[0]]}}}
+            else:
+                rule_action = {"mangle": {"key": {"meta": {"key": "mark"}},
+                                          "value": value[0]}}
         else:
             raise FirewallError(INVALID_RULE,
                                 "Unknown action %s" % type(rich_rule.action))
