@@ -347,6 +347,12 @@ def common_check_config(obj, config, item, all_config):
                     raise FirewallError(errors.INVALID_ICMPTYPE,
                                         "'%s' not among existing icmp types" % \
                                         obj_rich.element.name)
+                elif obj_rich.family:
+                    ict = obj.fw_config.get_icmptype(obj_rich.element.name)
+                    if ict.destination and obj_rich.family not in ict.destination:
+                        raise FirewallError(errors.INVALID_ICMPTYPE,
+                                            "rich rule family '%s' conflicts with icmp type '%s'" % \
+                                            (obj_rich.family, obj_rich.element.name))
 
 def common_writer(obj, handler):
     # short
