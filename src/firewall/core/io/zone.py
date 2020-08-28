@@ -232,7 +232,22 @@ class Zone(IO_Object):
                     raise FirewallError(errors.INVALID_ADDR, source)
         elif item == "rules_str":
             for rule in config:
-                rich.Rich_Rule(rule_str=rule)
+                obj_rich = rich.Rich_Rule(rule_str=rule)
+                if self.fw_config and obj_rich.element and (isinstance(obj_rich.element, rich.Rich_IcmpBlock) or
+                                                           isinstance(obj_rich.element, rich.Rich_IcmpType)):
+                    existing_icmptypes = self.fw_config.get_icmptypes()
+                    if obj_rich.element.name not in existing_icmptypes:
+                        raise FirewallError(errors.INVALID_ICMPTYPE,
+                                            "'%s' not among existing icmp types" % \
+                                            obj_rich.element.name)
+
+                    elif obj_rich.family:
+                        ict = self.fw_config.get_icmptype(obj_rich.element.name)
+                        if ict.destination and obj_rich.family not in ict.destination:
+                            raise FirewallError(errors.INVALID_ICMPTYPE,
+                                                "rich rule family '%s' conflicts with icmp type '%s'" % \
+                                                (obj_rich.family, obj_rich.element.name))
+
 
     def check_name(self, name):
         super(Zone, self).check_name(name)
