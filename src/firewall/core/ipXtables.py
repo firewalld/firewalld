@@ -1240,8 +1240,13 @@ class ip4tables(object):
             proto = [ "-p", "ipv6-icmp" ]
             match = [ "-m", "icmp6", "--icmpv6-type", ict.name ]
 
+        if rich_rule and rich_rule.action and isinstance(rich_rule.action, Rich_Mark):
+            chains = ["PREROUTING"]
+        else:
+            chains = ["INPUT", "FORWARD_IN"]
+
         rules = []
-        for chain in ["INPUT", "FORWARD_IN"]:
+        for chain in chains:
             target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[chain],
                                                 zone=zone)
             if self._fw.zone.query_icmp_block_inversion(zone):
