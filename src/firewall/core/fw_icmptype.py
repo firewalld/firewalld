@@ -57,13 +57,13 @@ class FirewallIcmpType(object):
         ipvs = orig_ipvs[:]
         for ipv in orig_ipvs:
             if ipv == "ipv4":
-                if not self._fw.ip4tables_enabled:
+                if not self._fw.ip4tables_enabled and not self._fw.nftables_enabled:
                     continue
-                supported_icmps = self._fw.ip4tables_supported_icmp_types
+                supported_icmps = self._fw.ipv4_supported_icmp_types
             elif ipv == "ipv6":
-                if not self._fw.ip6tables_enabled:
+                if not self._fw.ip6tables_enabled and not self._fw.nftables_enabled:
                     continue
-                supported_icmps = self._fw.ip6tables_supported_icmp_types
+                supported_icmps = self._fw.ipv6_supported_icmp_types
             else:
                 supported_icmps = [ ]
             if obj.name.lower() not in supported_icmps:
