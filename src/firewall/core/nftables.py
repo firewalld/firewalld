@@ -480,13 +480,13 @@ class nftables(object):
 
         return rules
 
-    def supported_icmp_types(self):
+    def supported_icmp_types(self, ipv=None):
         # nftables supports any icmp_type via arbitrary type/code matching.
         # We just need a translation for it in ICMP_TYPES_FRAGMENTS.
         supported = set()
 
-        for ipv in ICMP_TYPES_FRAGMENTS.keys():
-            supported.update(ICMP_TYPES_FRAGMENTS[ipv].keys())
+        for _ipv in [ipv] if ipv else ICMP_TYPES_FRAGMENTS.keys():
+            supported.update(ICMP_TYPES_FRAGMENTS[_ipv].keys())
 
         return list(supported)
 

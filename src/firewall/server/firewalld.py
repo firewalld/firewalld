@@ -162,7 +162,7 @@ class FirewallD(slip.dbus.service.Object):
             return dbus.Boolean(self.fw.ip4tables_enabled)
 
         elif prop == "IPv4ICMPTypes":
-            return dbus.Array(self.fw.ip4tables_supported_icmp_types, "s")
+            return dbus.Array(self.fw.ipv4_supported_icmp_types, "s")
 
         elif prop == "IPv6":
             return dbus.Boolean(self.fw.ip6tables_enabled)
@@ -171,7 +171,7 @@ class FirewallD(slip.dbus.service.Object):
             return dbus.Boolean(self.fw.ipv6_rpfilter_enabled)
 
         elif prop == "IPv6ICMPTypes":
-            return dbus.Array(self.fw.ip6tables_supported_icmp_types, "s")
+            return dbus.Array(self.fw.ipv6_supported_icmp_types, "s")
 
         elif prop == "BRIDGE":
             return dbus.Boolean(self.fw.ebtables_enabled)

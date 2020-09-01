@@ -612,7 +612,7 @@ class ip4tables(object):
                 rules.append(["-t", table, "-P", chain, _policy])
         return rules
 
-    def supported_icmp_types(self):
+    def supported_icmp_types(self, ipv=None):
         """Return ICMP types that are supported by the iptables/ip6tables command and kernel"""
         ret = [ ]
         output = ""

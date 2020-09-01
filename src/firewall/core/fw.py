@@ -76,10 +76,10 @@ class Firewall(object):
         else:
             self.ip4tables_backend = ipXtables.ip4tables(self)
             self.ip4tables_enabled = True
-            self.ip4tables_supported_icmp_types = [ ]
+            self.ipv4_supported_icmp_types = [ ]
             self.ip6tables_backend = ipXtables.ip6tables(self)
             self.ip6tables_enabled = True
-            self.ip6tables_supported_icmp_types = [ ]
+            self.ipv6_supported_icmp_types = [ ]
             self.ebtables_backend = ebtables.ebtables()
             self.ebtables_enabled = True
             self.ipset_backend = ipset.ipset()
@@ -172,11 +172,13 @@ class Firewall(object):
                 log.warning("iptables-restore and iptables are missing, "
                             "disabling IPv4 firewall.")
                 self.ip4tables_enabled = False
-        if self.ip4tables_enabled:
-            self.ip4tables_supported_icmp_types = \
-                self.ip4tables_backend.supported_icmp_types()
+        if self.nftables_enabled:
+            self.ipv4_supported_icmp_types = self.nftables_backend.supported_icmp_types("ipv4")
         else:
-            self.ip4tables_supported_icmp_types = [ ]
+            if self.ip4tables_enabled:
+                self.ipv4_supported_icmp_types = self.ip4tables_backend.supported_icmp_types()
+            else:
+                self.ipv4_supported_icmp_types = [ ]
         self.ip6tables_backend.fill_exists()
         if not self.ip6tables_backend.restore_command_exists:
             if self.ip6tables_backend.command_exists:
@@ -186,11 +188,13 @@ class Firewall(object):
                 log.warning("ip6tables-restore and ip6tables are missing, "
                             "disabling IPv6 firewall.")
                 self.ip6tables_enabled = False
-        if self.ip6tables_enabled:
-            self.ip6tables_supported_icmp_types = \
-                self.ip6tables_backend.supported_icmp_types()
+        if self.nftables_enabled:
+            self.ipv6_supported_icmp_types = self.nftables_backend.supported_icmp_types("ipv6")
         else:
-            self.ip6tables_supported_icmp_types = [ ]
+            if self.ip6tables_enabled:
+                self.ipv6_supported_icmp_types = self.ip6tables_backend.supported_icmp_types()
+            else:
+                self.ipv6_supported_icmp_types = [ ]
         self.ebtables_backend.fill_exists()
         if not self.ebtables_backend.restore_command_exists:
             if self.ebtables_backend.command_exists:
