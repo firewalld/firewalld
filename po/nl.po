@@ -4,30 +4,30 @@
 #
 # Translators:
 # Bart Couvreur <couf@fedoraproject.org>, 2007
-# Geert Warrink <geert.warrink@onsnet.nu>, 2009-2014
+# Geert Warrink <geert.warrink@onsnet.nu>, 2009-2014, 2020.
 # Richard E. van der Luit <nippur@fedoraproject.org>, 2009-2010
 # Taco Witte <T.C.Witte@phys.uu.nl>, 2002
 # Tino Meinen <a.t.meinen@chello.nl>, 2002-2003
-# Geert Warrink <geert.warrink@onsnet.nu>, 2015. #zanata
-# Geert Warrink <geert.warrink@onsnet.nu>, 2016. #zanata
-# Geert Warrink <geert.warrink@onsnet.nu>, 2017. #zanata
+# Geert Warrink <geert.warrink@onsnet.nu>, 2015. #zanata, 2020.
+# Geert Warrink <geert.warrink@onsnet.nu>, 2016. #zanata, 2020.
+# Geert Warrink <geert.warrink@onsnet.nu>, 2017. #zanata, 2020.
 # Eric Garver <e@erig.me>, 2018. #zanata
-# Geert Warrink <geert.warrink@onsnet.nu>, 2018. #zanata
+# Geert Warrink <geert.warrink@onsnet.nu>, 2018. #zanata, 2020.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-06-30 13:30-0400\n"
-"PO-Revision-Date: 2018-11-16 08:26+0000\n"
-"Last-Translator: Copied by Zanata <copied-by-zanata@zanata.org>\n"
-"Language-Team: Dutch (http://www.transifex.com/projects/p/firewalld/language/"
-"nl/)\n"
+"PO-Revision-Date: 2020-07-23 15:28+0000\n"
+"Last-Translator: Geert Warrink <geert.warrink@onsnet.nu>\n"
+"Language-Team: Dutch <https://translate.fedoraproject.org/projects/firewalld/"
+"master/nl/>\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Zanata 4.6.2\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.1.1\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:416
 msgid "Firewall Applet"
@@ -152,7 +152,7 @@ msgstr "Verbindingen"
 #: ../src/firewall-config.in:2477 ../src/firewall-config.in:2673
 #: ../src/firewall-config.in:2698 ../src/firewall-config.glade.h:130
 msgid "Interfaces"
-msgstr "interface"
+msgstr "Interfaces"
 
 #: ../src/firewall-applet.in:516 ../src/firewall-config.in:622
 #: ../src/firewall-config.in:2508 ../src/firewall-config.in:2676
@@ -182,7 +182,7 @@ msgstr "{entry} (Standaard zone: {default_zone})"
 
 #: ../src/firewall-applet.in:778 ../src/firewall-config.in:1574
 msgid "Failed to get connections from NetworkManager"
-msgstr "Verbinding van NetworkManager krijgen mislukte"
+msgstr "Verbindingen van NetworkManager krijgen mislukte"
 
 #: ../src/firewall-applet.in:790 ../src/firewall-config.in:1386
 msgid "No NetworkManager imports available"
@@ -190,11 +190,11 @@ msgstr "Er is geen NetworkManager import beschikbaar"
 
 #: ../src/firewall-applet.in:868
 msgid "No connection to firewall daemon"
-msgstr "Geen verbinding met firewall daemon"
+msgstr "Geen verbinding met firewall-daemon"
 
 #: ../src/firewall-applet.in:876 ../src/firewall-applet.in:1014
 msgid "All network traffic is blocked."
-msgstr "Alle netwerkverkeer is geblokkeerd"
+msgstr "Alle netwerkverkeer is geblokkeerd."
 
 #: ../src/firewall-applet.in:880
 #, c-format
@@ -230,7 +230,7 @@ msgstr "Geen actieve zones."
 
 #: ../src/firewall-applet.in:972
 msgid "Connection to FirewallD established."
-msgstr "Verbinding met FirewallD hersteld"
+msgstr "Verbinding met FirewallD tot stand gebracht."
 
 #: ../src/firewall-applet.in:984
 msgid "Connection to FirewallD lost."
@@ -243,11 +243,11 @@ msgstr "FirewallD is opnieuw geladen."
 #: ../src/firewall-applet.in:996
 #, c-format
 msgid "Default zone changed to '%s'."
-msgstr "Standaard zone veranderd naar '%s'."
+msgstr "Standaard zone is veranderd naar '%s'."
 
 #: ../src/firewall-applet.in:1015
 msgid "Network traffic is not blocked anymore."
-msgstr "Netwerkverkeer in niet meer geblokkeerd."
+msgstr "Netwerkverkeer is niet meer geblokkeerd."
 
 #: ../src/firewall-applet.in:1041 ../src/firewall-applet.in:1095
 msgid "activated"
@@ -293,19 +293,19 @@ msgstr "Zone '%s' is geactiveerd voor bron '%s'"
 
 #: ../src/firewall-config.in:89
 msgid "Connection to firewalld established."
-msgstr "Verbinding met firewalld ingesteld"
+msgstr "Verbinding met firewalld tot stand gebracht."
 
 #: ../src/firewall-config.in:91
 msgid "Trying to connect to firewalld, waiting..."
-msgstr "Bezig met met verbinden naar firewalld, wacht..."
+msgstr "Bezig met verbinden naar firewalld, wachten..."
 
 #: ../src/firewall-config.in:93
 msgid ""
 "Failed to connect to firewalld. Please make sure that the service has been "
 "started correctly and try again."
 msgstr ""
-"Verbinding maken met de firewall is mislukt. Zorg ervoor dat de dienst juist "
-"is opgestart en probeer het opnieuw."
+"Verbinding maken met de firewall is mislukt. Zorg ervoor dat de service "
+"juist is opgestart en probeer het opnieuw."
 
 #: ../src/firewall-config.in:95
 msgid "Changes applied."
@@ -339,7 +339,7 @@ msgstr "Context"
 
 #: ../src/firewall-config.in:206 ../src/firewall-config.glade.h:4
 msgid "Command line"
-msgstr "Opdrachtregel"
+msgstr "Commandoregel"
 
 #: ../src/firewall-config.in:225 ../src/firewall-config.glade.h:300
 msgid "User name"
@@ -401,7 +401,7 @@ msgstr "Naar adres"
 
 #: ../src/firewall-config.in:616
 msgid "Bindings"
-msgstr "Verbindingen"
+msgstr "Bindingen"
 
 #: ../src/firewall-config.in:651 ../src/firewall-config.glade.h:233
 msgid "Entry"
@@ -445,11 +445,11 @@ msgstr "Interface"
 
 #: ../src/firewall-config.in:942
 msgid "Comment"
-msgstr "Opmerking"
+msgstr "Commentaar"
 
 #: ../src/firewall-config.in:961 ../src/firewall-config.glade.h:27
 msgid "Source"
-msgstr "Bropn"
+msgstr "Bron"
 
 #: ../src/firewall-config.in:1615 ../src/firewall-config.in:2811
 #: ../src/firewall-config.in:2859
@@ -567,7 +567,7 @@ msgstr "Zone '%s': Service '%s' is niet beschikbaar."
 #: ../src/firewall-config.in:2812 ../src/firewall-config.in:2860
 #: ../src/firewall-config.glade.h:163
 msgid "Remove"
-msgstr "Verwijder zone"
+msgstr "Verwijder"
 
 #: ../src/firewall-config.in:2812 ../src/firewall-config.in:2860
 msgid "Ignore"
@@ -580,7 +580,7 @@ msgstr "Zone '%s': ICMP type '%s' is niet beschikbaar."
 
 #: ../src/firewall-config.in:3011
 msgid "Built-in zone, rename not supported."
-msgstr "Ingebouwde zone, hernoemen niet ondersteund"
+msgstr "Ingebouwde zone, hernoemen niet ondersteund."
 
 #: ../src/firewall-config.in:3126 ../src/firewall-config.in:3626
 #: ../src/firewall-config.glade.h:270
@@ -666,11 +666,11 @@ msgstr ""
 
 #: ../src/firewall-config.in:5393
 msgid "Built-in service, rename not supported."
-msgstr "Ingebouwde service, hernoemen niet ondersteund"
+msgstr "Ingebouwde service, hernoemen niet ondersteund."
 
 #: ../src/firewall-config.in:5602
 msgid "Please enter an ipv4 address with the form address[/mask]."
-msgstr "Vul een ipv4 adres in met het formaat  adres[/masker]."
+msgstr "Vul een ipv4 adres in met het formaat adres[/masker]."
 
 #: ../src/firewall-config.in:5603
 msgid "The mask can be a network mask or a number."
@@ -678,7 +678,7 @@ msgstr "Het masker kan een netwerkmasker of een getal zijn."
 
 #: ../src/firewall-config.in:5605
 msgid "Please enter an ipv6 address with the form address[/mask]."
-msgstr "Vul een ipv6 adres in met het formaat  adres[/masker]."
+msgstr "Vul een ipv6 adres in met het formaat adres[/masker]."
 
 #: ../src/firewall-config.in:5606
 msgid "The mask is a number."
@@ -729,11 +729,11 @@ msgstr "IPv6"
 
 #: ../src/firewall-config.in:6406
 msgid "Built-in helper, rename not supported."
-msgstr "Ingebouwde helper, hernoemen wordt niet ondersteund"
+msgstr "Ingebouwde helper, hernoemen wordt niet ondersteund."
 
 #: ../src/firewall-config.in:6884
 msgid "Built-in icmp, rename not supported."
-msgstr "Ingebouwde icmp, hernoemen niet ondersteund"
+msgstr "Ingebouwde icmp, hernoemen niet ondersteund."
 
 #: ../src/firewall-config.in:7956
 #, c-format
@@ -772,7 +772,7 @@ msgstr "Selecteer de standaard zone uit de lijst hieronder."
 
 #: ../src/firewall-config.glade.h:10
 msgid "Direct Chain"
-msgstr "Directe keten "
+msgstr "Directe keten"
 
 #: ../src/firewall-config.glade.h:11
 msgid "Please select ipv and table and enter the chain name."
@@ -808,7 +808,7 @@ msgstr "Tabel:"
 
 #: ../src/firewall-config.glade.h:19
 msgid "Direct Passthrough Rule"
-msgstr "Direct doorgeven regel "
+msgstr "Direct doorgeven regel"
 
 #: ../src/firewall-config.glade.h:20
 msgid "Please select ipv and enter the args."
@@ -825,7 +825,7 @@ msgstr "Poort doorsturen"
 #: ../src/firewall-config.glade.h:23
 msgid ""
 "Please select the source and destination options according to your needs."
-msgstr "Selecteer a.u.b. de bron en bestemming opties naar jouw behoefte."
+msgstr "Selecteer de bron- en bestemmingsopties naar jouw behoefte."
 
 #: ../src/firewall-config.glade.h:24
 msgid "Port / Port Range:"
@@ -849,7 +849,7 @@ msgid ""
 "be different to the source port."
 msgstr ""
 "Als je lokaal doorzenden aanzet, moet je een poort opgeven. Deze poort moet "
-"verschillen van de bron poort."
+"verschillen van de bronpoort."
 
 #: ../src/firewall-config.glade.h:30
 msgid "Local forwarding"
@@ -865,11 +865,11 @@ msgstr "Basis helperinstellingen"
 
 #: ../src/firewall-config.glade.h:33
 msgid "Please configure base helper settings:"
-msgstr "Configureer de basis helperinstellingen"
+msgstr "Configureer de basis helper instellingen:"
 
 #: ../src/firewall-config.glade.h:34
 msgid "Bold entries are mandatory, all others are optional."
-msgstr "Vetee ingangen zijn verplicht, alle andere zijn optioneel."
+msgstr "Vette ingangen zijn verplicht, alle andere zijn optioneel."
 
 #: ../src/firewall-config.glade.h:35
 msgid "Name:"
@@ -905,19 +905,19 @@ msgstr "Selecteer een helper:"
 
 #: ../src/firewall-config.glade.h:46
 msgid "Base ICMP Type Settings"
-msgstr "Basis ICMP type instellingen"
+msgstr "Basis ICMP-type instellingen"
 
 #: ../src/firewall-config.glade.h:47
 msgid "Please configure base ICMP type settings:"
-msgstr "Configureer basis ICMP type instellingen:"
+msgstr "Configureer basis ICMP-type instellingen:"
 
 #: ../src/firewall-config.glade.h:48
 msgid "ICMP Type"
-msgstr "ICMP type"
+msgstr "ICMP-type"
 
 #: ../src/firewall-config.glade.h:49
 msgid "Please select an ICMP type"
-msgstr "Selecteer een ICMP type"
+msgstr "Selecteer een ICMP-type"
 
 #: ../src/firewall-config.glade.h:50
 msgid "Add Entry"
@@ -925,7 +925,7 @@ msgstr "Ingang toevoegen"
 
 #: ../src/firewall-config.glade.h:51
 msgid "Add Entries From File"
-msgstr "Voeg ingangen uit het bestand"
+msgstr "Voeg ingangen uit bestand"
 
 #: ../src/firewall-config.glade.h:52
 msgid "Remove Selected Entry"
@@ -937,7 +937,7 @@ msgstr "Verwijder alle ingangen"
 
 #: ../src/firewall-config.glade.h:54
 msgid "Remove Entries From File"
-msgstr "Verwijder ingangen uit het bestand"
+msgstr "Verwijder ingangen uit bestand"
 
 #: ../src/firewall-config.glade.h:56
 msgid "_File"
@@ -960,7 +960,7 @@ msgstr ""
 "Laadt firewall regels opnieuw in. De huidige permanente configuratie zal de "
 "nieuwe runtime configuratie worden. D.w.z. dat alle runtime veranderingen "
 "gemaakt tot herladen verloren gaan bij het herladen als ze niet in de "
-"permanente configuratie toegepast zijn.   "
+"permanente configuratie toegepast zijn."
 
 #: ../src/firewall-config.glade.h:60
 msgid "Change which zone a network connection belongs to."
@@ -980,7 +980,7 @@ msgstr "Verander log-geweigerd"
 
 #: ../src/firewall-config.glade.h:65
 msgid "Change LogDenied value."
-msgstr "Verander log-geweigerd waarde"
+msgstr "Verander log-geweigerd waarde."
 
 #: ../src/firewall-config.glade.h:66
 msgid "Configure Automatic Helper Assigment"
@@ -988,7 +988,7 @@ msgstr "Configureer automatische helper toekenning"
 
 #: ../src/firewall-config.glade.h:67
 msgid "Configure Automatic Helper Assignment setting."
-msgstr "Configureer automatische helper toekenningsinstellingen"
+msgstr "Configureer automatische helper toekenningsinstellingen."
 
 #: ../src/firewall-config.glade.h:68
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
@@ -998,7 +998,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:69
 msgid "Panic Mode"
-msgstr "Paniek modus"
+msgstr "Paniekmodus"
 
 #: ../src/firewall-config.glade.h:70
 msgid ""
@@ -1014,7 +1014,7 @@ msgstr "Vergrendelen"
 
 #: ../src/firewall-config.glade.h:72
 msgid "Make runtime configuration permanent"
-msgstr "Maak runtime configuratie permanent"
+msgstr "Maak runtime-configuratie permanent"
 
 #: ../src/firewall-config.glade.h:73
 msgid "Runtime To Permanent"
@@ -1030,7 +1030,7 @@ msgstr "IPSets"
 
 #: ../src/firewall-config.glade.h:76
 msgid "ICMP Types"
-msgstr "ICMP types"
+msgstr "ICMP-types"
 
 #: ../src/firewall-config.glade.h:77
 msgid "Helpers"
@@ -1038,7 +1038,7 @@ msgstr "Helpers"
 
 #: ../src/firewall-config.glade.h:78
 msgid "Direct Configuration"
-msgstr "directe configuratie"
+msgstr "Directe configuratie"
 
 #: ../src/firewall-config.glade.h:79
 msgid "Lockdown Whitelist"
@@ -1058,7 +1058,7 @@ msgstr "Zone wijzigen"
 
 #: ../src/firewall-config.glade.h:83
 msgid "Change zone of binding"
-msgstr "Verander zone van verbinding"
+msgstr "Verander zone van binding"
 
 #: ../src/firewall-config.glade.h:84
 msgid ""
@@ -1085,7 +1085,7 @@ msgid ""
 "system reload or restart."
 msgstr ""
 "Huidige zichtbare configuratie. Runtime configuratie is de actuele actieve "
-"configuratie. Persistente configuratie zal actief zijn na het herladen  of "
+"configuratie. Persistente configuratie zal actief zijn na het herladen of "
 "herstarten van service of systeem."
 
 #: ../src/firewall-config.glade.h:88
@@ -1143,15 +1143,15 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:97
 msgid "Add Port"
-msgstr "Naar poort"
+msgstr "Poort toevoegen"
 
 #: ../src/firewall-config.glade.h:98
 msgid "Edit Port"
-msgstr "Bewerk zone"
+msgstr "Bewerk poort"
 
 #: ../src/firewall-config.glade.h:99
 msgid "Remove Port"
-msgstr "Verwijder zone"
+msgstr "Verwijder poort"
 
 #: ../src/firewall-config.glade.h:100
 msgid "Ports"
@@ -1257,8 +1257,8 @@ msgid ""
 "Mark the ICMP types in the list, which should be rejected. All other ICMP "
 "types are allowed to pass the firewall. The default is no limitation."
 msgstr ""
-"Markeer de ICMP types die geweigerd moeten worden in de lijst. Aan alle "
-"andere ICMP types is het toegestaan de firewall te passeren. De standaard is "
+"Markeer de ICMP-types die geweigerd moeten worden in de lijst. Aan alle "
+"andere ICMP-types is het toegestaan de firewall te passeren. De standaard is "
 "geen beperking."
 
 #: ../src/firewall-config.glade.h:118
@@ -1276,7 +1276,7 @@ msgstr "Omkeerfilter"
 
 #: ../src/firewall-config.glade.h:120
 msgid "ICMP Filter"
-msgstr "ICMP filter"
+msgstr "ICMP-filter"
 
 #: ../src/firewall-config.glade.h:121
 msgid "Here you can set rich language rules for the zone."
@@ -1326,8 +1326,8 @@ msgid ""
 "masquerading will not work for MAC source bindings."
 msgstr ""
 "Voeg ingangen toe om bronadressen of gebieden te binden aan de zone. Je kunt "
-"ook een MAC bronadres binden, echter met beperkingen. Poort doorsturen en "
-"maskeren zal niet werken voor MAC bronbindingen."
+"ook een MAC-bronadres binden, echter met beperkingen. Poort doorsturen en "
+"maskeren zal niet werken voor MAC-bronbindingen."
 
 #: ../src/firewall-config.glade.h:132
 msgid "Add Source"
@@ -1437,7 +1437,7 @@ msgid ""
 "example IP addresses, port numbers or MAC addresses. "
 msgstr ""
 "Een IPSet kan gebruikt worden voor het aanmaken van witte of zwarte lijsten "
-"en kan bijvoorbeeld IP adressen, poortnummers of MAC adressen opslaan."
+"en kan bijvoorbeeld IP-adressen, poortnummers of MAC-adressen opslaan. "
 
 #: ../src/firewall-config.glade.h:155
 msgid "IPSet"
@@ -1457,7 +1457,7 @@ msgstr "Verwijder IPSet"
 
 #: ../src/firewall-config.glade.h:159
 msgid "Load IPSet Defaults"
-msgstr "Laad IPSet standaardinstellingen"
+msgstr "Laad IPSet-standaardinstellingen"
 
 #: ../src/firewall-config.glade.h:160
 msgid ""
@@ -1500,36 +1500,36 @@ msgid ""
 "A firewalld icmptype provides the information for an Internet Control "
 "Message Protocol (ICMP) type for firewalld."
 msgstr ""
-"Een firewalld icmp type geeft de informatie voor een Internet Control "
+"Een firewalld icmp-type geeft de informatie voor een Internet Control "
 "Message Protocol (ICMP) type voor firewalld."
 
 #: ../src/firewall-config.glade.h:167
 msgid "Add ICMP Type"
-msgstr "Voeg ICMP type toe"
+msgstr "Voeg ICMP-type toe"
 
 #: ../src/firewall-config.glade.h:168
 msgid "Edit ICMP Type"
-msgstr "Bewerk ICMP type"
+msgstr "Bewerk ICMP-type"
 
 #: ../src/firewall-config.glade.h:169
 msgid "Remove ICMP Type"
-msgstr "Verwijder ICMP type"
+msgstr "Verwijder ICMP-type"
 
 #: ../src/firewall-config.glade.h:170
 msgid "Load ICMP Type Defaults"
-msgstr "Laad ICMP type standaardinstellingen"
+msgstr "Laad ICMP-type standaardinstellingen"
 
 #: ../src/firewall-config.glade.h:171
 msgid "Specify whether this ICMP Type is available for IPv4 and/or IPv6."
-msgstr "Specificeer of dit ICMP type beschikbaar is voor IPv4 en/of IPv6."
+msgstr "Specificeer of dit ICMP-type beschikbaar is voor IPv4 en/of IPv6."
 
 #: ../src/firewall-config.glade.h:172
 msgid ""
 "ICMP Types can only be changed in the permanent configuration view. The "
 "runtime configuration of ICMP Types is fixed."
 msgstr ""
-"ICMP types kunnen alleen in de permanente configuratie view veranderd "
-"worden. De runtime configuratie van ICMP types is gefixeerd."
+"ICMP-types kunnen alleen in de permanente configuratie view veranderd "
+"worden. De runtime configuratie van ICMP-types is gefixeerd."
 
 #: ../src/firewall-config.glade.h:173
 msgid ""
@@ -1538,11 +1538,11 @@ msgid ""
 "are using ports that are unrelated to the signaling connection and are "
 "therefore blocked by the firewall without the helper."
 msgstr ""
-"Een verbindings trackhelper assisteert bij het laten werken van protocollen "
+"Een verbindingstrackhelper assisteert bij het laten werken van protocollen "
 "die verschillende flows gebruiken voor signalering en data overdrachten. De "
-"data overdrachten gebruiken poorten die niet gerelelateerd zijn aan de "
-"signaleringsverbinding  en worden daarom zonder de helper geblokkeerd door "
-"de firewall."
+"data overdrachten gebruiken poorten die niet gerelateerd zijn aan de "
+"signaleringsverbinding en worden daarom zonder de helper geblokkeerd door de "
+"firewall."
 
 #: ../src/firewall-config.glade.h:174
 msgid "Define ports or port ranges, which are monitored by the helper."
@@ -1556,10 +1556,10 @@ msgid ""
 "as a last resort when it is not possible to use other firewalld features."
 msgstr ""
 "De directe configuratie biedt een rechtstreekse toegang tot de firewall aan. "
-"Deze opties vereisen dat de gebruiker basis iptables concepten begrijpt, d.w."
-"z. tabellen, ketens, commando's, parameters en doelen. Directe configuratie "
-"moet alleen als laatste redmiddel gebruikt worden als het niet mogelijk is "
-"om andere firewalld functies te gebruiken.  "
+"Deze opties vereisen dat de gebruiker basis iptables concepten begrijpt, "
+"d.w.z. tabellen, ketens, commando's, parameters en doelen. Directe "
+"configuratie moet alleen als laatste redmiddel gebruikt worden als het niet "
+"mogelijk is om andere firewalld functies te gebruiken."
 
 #: ../src/firewall-config.glade.h:176
 msgid ""
@@ -1596,7 +1596,7 @@ msgid ""
 "Add a rule with the arguments args to a chain in a table with a priority."
 msgstr ""
 "Voeg een regel met de argumenten args toe aan een keten in een tabel met een "
-"prioriteit. "
+"prioriteit."
 
 #: ../src/firewall-config.glade.h:183
 msgid ""
@@ -1611,7 +1611,7 @@ msgstr ""
 "betekent het toevoegen van een regel bovenin de keten, met een hogere "
 "prioriteit wordt de regel lager toegevoegd. Regels met dezelfde prioriteit "
 "bevinden zich op hetzelfde niveau en de volgorde van deze regels is niet "
-"gefixeerd en kan veranderen. Als je er zeker van wilt zijn dat dat een regel "
+"gefixeerd en kan veranderen. Als je er zeker van wilt zijn dat een regel "
 "wordt toegevoegd na een andere, gebruik je een lage prioriteit voor de "
 "eerste en een hogere voor de volgende."
 
@@ -1706,7 +1706,7 @@ msgid ""
 "command lines starting with the command will match. If the '*' is not there "
 "the absolute command inclusive arguments must match."
 msgstr ""
-"Ials een commando ingang in de whitelist eindigt met een asterisk '*', dan "
+"Als een commando ingang in de whitelist eindigt met een asterisk '*', dan "
 "zullen alle commandoregels die beginnen met het commando matchen. Als de '*' "
 "niet aanwezig is, dan moet het gehele commando matchen inclusief argumenten."
 
@@ -1748,34 +1748,34 @@ msgstr "Gebruikersnamen"
 
 #: ../src/firewall-config.glade.h:210
 msgid "User ids."
-msgstr "Gebruiker id's."
+msgstr "Gebruiker-id's."
 
 #: ../src/firewall-config.glade.h:211
 msgid "Add User Id"
-msgstr "Voeg gebruikers ID toe"
+msgstr "Voeg gebruiker-ID toe"
 
 #: ../src/firewall-config.glade.h:212
 msgid "Edit User Id"
-msgstr "Bewerk gebruikers ID"
+msgstr "Bewerk gebruiker-ID"
 
 #: ../src/firewall-config.glade.h:213
 msgid "Remove User Id"
-msgstr "Verwijder gebruikers ID"
+msgstr "Verwijder gebruiker-ID"
 
 #: ../src/firewall-config.glade.h:214
 msgid "User Ids"
-msgstr "Gebruiker id's"
+msgstr "Gebruiker-id's"
 
 #: ../src/firewall-config.glade.h:215
 msgid "Current default zone of the system."
-msgstr "Huidige standaard zonen van het systeem."
+msgstr "Huidige standaard zone van het systeem."
 
 #: ../src/firewall-config.glade.h:216
 msgctxt ""
 "Meaning: Log of denied packets. But this is too long. LogDenied is also the "
 "parameter used in firewalld.conf."
 msgid "Log Denied:"
-msgstr "Log-geweigerd"
+msgstr "Log-geweigerd:"
 
 #: ../src/firewall-config.glade.h:217
 msgid "Panic Mode:"
@@ -1790,7 +1790,7 @@ msgstr "Automatische helpers:"
 
 #: ../src/firewall-config.glade.h:219
 msgid "Lockdown:"
-msgstr "Vergendeling:"
+msgstr "Vergrendeling:"
 
 #: ../src/firewall-config.glade.h:220
 msgid "Default Zone:"
@@ -1802,11 +1802,11 @@ msgstr "Voer een interfacenaam in:"
 
 #: ../src/firewall-config.glade.h:223
 msgid "Base IPSet Settings"
-msgstr "Basis IPSet instellingen"
+msgstr "Basis IPSet-instellingen"
 
 #: ../src/firewall-config.glade.h:224
 msgid "Please configure base ipset settings:"
-msgstr "Configureer de basis ipset instellingen:"
+msgstr "Configureer de basis ipset-instellingen:"
 
 #: ../src/firewall-config.glade.h:225
 msgid "Type:"
@@ -1842,7 +1842,7 @@ msgstr "Selecteer een ipset:"
 
 #: ../src/firewall-config.glade.h:234
 msgid "Please enter an ipset entry:"
-msgstr "Voer een ipsetinvoer in:"
+msgstr "Voer een ipset-ingang in:"
 
 #: ../src/firewall-config.glade.h:235
 msgid "Log Denied"
@@ -1850,7 +1850,7 @@ msgstr "Log-geweigerd"
 
 #: ../src/firewall-config.glade.h:236
 msgid "Please select the log denied value:"
-msgstr "Selecteer de log-geweigerd waarde"
+msgstr "Selecteer de log-geweigerd waarde:"
 
 #: ../src/firewall-config.glade.h:237
 msgid "Mark"
@@ -1858,13 +1858,13 @@ msgstr "Markeer"
 
 #: ../src/firewall-config.glade.h:238
 msgid "Please enter a mark with an optional mask."
-msgstr "Vul een markeerteken in met een optioneel masker"
+msgstr "Vul een markeerteken in met een optioneel masker."
 
 #: ../src/firewall-config.glade.h:239
 msgid "The mark and the mask fields are both 32 bits wide unsigned numbers."
 msgstr ""
-"De martkeer en masker velden  zijn beid 32 bits brede gehele getaalen zonder "
-"teken"
+"De markeer en masker velden zijn beide 32 bits brede gehele getallen zonder "
+"teken."
 
 #: ../src/firewall-config.glade.h:240
 msgid "Mark:"
@@ -1916,18 +1916,15 @@ msgstr "Ander protocol:"
 
 #: ../src/firewall-config.glade.h:253
 msgid "Rich Rule"
-msgstr "Rch regel"
+msgstr "Rich regel"
 
 #: ../src/firewall-config.glade.h:254
 msgid "Please enter a rich rule."
 msgstr "Voer een rich regel in."
 
 #: ../src/firewall-config.glade.h:255
-#, fuzzy
 msgid "For host or network allow or denylisting deactivate the element."
-msgstr ""
-"Deactiveer het element voor toevoegen aan host of netwerk white of black "
-"list. "
+msgstr "Deactiveer het element voor de host of het netwerk."
 
 #: ../src/firewall-config.glade.h:256
 msgid "Source:"
@@ -2007,11 +2004,11 @@ msgstr "Voer een bron in."
 
 #: ../src/firewall-config.glade.h:298
 msgid "User ID"
-msgstr "Gebruiker ID"
+msgstr "Gebruiker-ID"
 
 #: ../src/firewall-config.glade.h:299
 msgid "Please enter the user id."
-msgstr "Vul een gebruiker id in."
+msgstr "Vul een gebruiker-id in."
 
 #: ../src/firewall-config.glade.h:301
 msgid "Please enter the user name."
