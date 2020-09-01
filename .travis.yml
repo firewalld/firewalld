@@ -16,6 +16,10 @@ env:
 # nftables backend
   - MAKE_ARGS="-C src/tests check-local" TESTSUITEFLAGS="-k nftables -j$(nproc)"
     NEED_NFTABLES=1 RETEST=1
+# nftables backend, but missing ip6tables
+  - MAKE_ARGS="-C src/tests check-local" TESTSUITEFLAGS="-k nftables -j$(nproc)"
+    IP6TABLES="/bin/false" IP6TABLES_RESTORE="/bin/false"
+    NEED_NFTABLES=1 RETEST=1
 # iptables backend
   - MAKE_ARGS="-C src/tests check-local" TESTSUITEFLAGS="-k iptables -j$(nproc)"
     NEED_NFTABLES=1 RETEST=1
