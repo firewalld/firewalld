@@ -678,16 +678,12 @@ class Rich_Rule(object):
         
         # tcp-mss-clamp
         elif type(self.element) == Rich_Tcp_Mss_Clamp:
-            if str(self.element.value):
-                if ((str(self.element.value)).isdigit()):
-                    if int(str(self.element.value)) < 536:
+            if self.element.value:
+                if (self.element.value).isdigit():
+                    if int(self.element.value) < 536:
                         raise FirewallError(errors.INVALID_RULE, self.element.value)
-                    else:
-                        pass
-                elif str(self.element.value) != "pmtu":
+                elif self.element.value != "pmtu":
                     raise FirewallError(errors.INVALID_RULE, self.element.value)
-                else:
-                    pass
         
         # other element and not empty?	
         elif self.element is not None:	
