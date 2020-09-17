@@ -1116,6 +1116,7 @@ class nftables(object):
             return {}
         return {"%%RICH_RULE_PRIORITY%%": rich_rule.priority}
 
+
     def _rich_rule_log(self, policy, rich_rule, enable, table, expr_fragments):
         if not rich_rule.log:
             return {}
@@ -1336,6 +1337,42 @@ class nftables(object):
                                              "table": TABLE_NAME,
                                              "chain": "%s_%s_allow" % (table, _policy),
                                              "expr": expr_fragments + [{"accept": None}]}}})
+
+        return rules
+
+    def build_policy_tcp_mss_clamp_rules(self, enable, policy, tcp_mss_clamp_value, 
+                                      destination=None, rich_rule=None):
+        table = "filter" 
+        
+        expr_fragments = []
+        if rich_rule:
+            expr_fragments.append(self._rich_rule_family_fragment(rich_rule.family))
+        if destination:
+            expr_fragments.append(self._rule_addr_fragment("daddr", destination))
+        if rich_rule:
+            expr_fragments.append(self._rich_rule_destination_fragment(rich_rule.destination))
+            expr_fragments.append(self._rich_rule_source_fragment(rich_rule.source))
+
+        expr_fragments.append({"match": {"op": "==",
+                                         "left": {"meta": {"key": "oifname"}},
+                                         "right": "ppp0"}})
+
+        expr_fragments.append({"match": {"op": "in",
+                                         "left": {"payload": {"protocol": "tcp","field": "flags"}},
+                                         "right": "syn"}})
+
+        if tcp_mss_clamp_value == "pmtu":
+            expr_fragments.append({"mangle": {"key": {"tcp option": {"name": "maxseg","field": "size"}},
+                                              "value": {"rt": {"key": "mtu" }}}})
+        else:
+            expr_fragments.append({"mangle": {"key": {"tcp option": {"name": "maxseg","field": "size"}},
+                                              "value": tcp_mss_clamp_value}}) 
+
+        rules = []
+        if rich_rule:
+            rules.append(self._rich_rule_log(policy, rich_rule, enable, table, expr_fragments))
+            rules.append(self._rich_rule_audit(policy, rich_rule, enable, table, expr_fragments))
+            rules.append(self._rich_rule_action(policy, rich_rule, enable, table, expr_fragments))
 
         return rules
 

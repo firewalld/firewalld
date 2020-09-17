@@ -679,10 +679,7 @@ class Rich_Rule(object):
         # tcp-mss-clamp
         elif type(self.element) == Rich_Tcp_Mss_Clamp:
             if self.element.value:
-                if (self.element.value).isdigit():
-                    if int(self.element.value) < 536:
-                        raise FirewallError(errors.INVALID_RULE, self.element.value)
-                elif self.element.value != "pmtu":
+                if not functions.checkTcpMssClamp(self.element.value):
                     raise FirewallError(errors.INVALID_RULE, self.element.value)
         
         # other element and not empty?	

@@ -27,7 +27,7 @@ __all__ = [ "PY2", "getPortID", "getPortRange", "portStr", "getServiceName",
             "check_single_address", "check_mac", "uniqify", "ppid_of_pid",
             "max_zone_name_len", "checkUser", "checkUid", "checkCommand",
             "checkContext", "joinArgs", "splitArgs",
-            "b2u", "u2b", "u2b_if_py2", "max_policy_name_len"]
+            "b2u", "u2b", "u2b_if_py2", "max_policy_name_len", "checkTcpMssClamp"]
 
 import socket
 import os
@@ -346,6 +346,15 @@ def checkProtocol(protocol):
             return False
 
     return True
+
+def checkTcpMssClamp(tcp_mss_clamp_value):
+    if tcp_mss_clamp_value:
+        if tcp_mss_clamp_value.isdigit():
+            if int(tcp_mss_clamp_value) < 536:
+                return False                
+        elif tcp_mss_clamp_value != "pmtu":
+            return False
+    return True 
 
 def checkInterface(iface):
     """ Check interface string
