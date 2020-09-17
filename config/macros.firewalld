@@ -2,5 +2,5 @@
 
 # put this into %post otherwise firewalld won't load new service/zone file
 %firewalld_reload() \
-test -f %{_bindir}/firewall-cmd && firewall-cmd --reload --quiet || : \
+test -x %{_bindir}/firewall-cmd && firewall-cmd --reload --quiet || : \
 %{nil}
