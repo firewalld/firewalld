@@ -6,11 +6,12 @@ import time
 from firewall.core.logger import log
 from firewall.functions import portStr, checkIPnMask, checkIP6nMask, \
     checkProtocol, enable_ip_forwarding, check_single_address, \
-    portInPortRange, get_nf_conntrack_short_name, coalescePortRange, breakPortRange
+    portInPortRange, get_nf_conntrack_short_name, coalescePortRange, breakPortRange, \
+    checkTcpMssClamp
 from firewall.core.rich import Rich_Rule, Rich_Accept, \
     Rich_Service, Rich_Port, Rich_Protocol, \
     Rich_Masquerade, Rich_ForwardPort, Rich_SourcePort, Rich_IcmpBlock, \
-    Rich_IcmpType, Rich_Mark
+    Rich_IcmpType, Rich_Mark, Rich_Tcp_Mss_Clamp
 from firewall.core.fw_transaction import FirewallTransaction
 from firewall import errors
 from firewall.errors import FirewallError
@@ -833,6 +834,10 @@ class FirewallPolicy(object):
         if not checkProtocol(protocol):
             raise FirewallError(errors.INVALID_PROTOCOL, protocol)
 
+    def check_tcp_mss_clamp(self, tcp_mss_clamp_value):
+        if not checkTcpMssClamp(tcp_mss_clamp_value):
+            raise FirewallError(errors.INVALID_RULE, "tcp-mss-clamp value must be greater than or equal to 536, or the value 'pmtu'. Invalid value '%s'" % (tcp_mss_clamp_value))
+
     def __protocol_id(self, protocol):
         self.check_protocol(protocol)
         return protocol
@@ -1576,6 +1581,15 @@ class FirewallPolicy(object):
                 rules = backend.build_policy_protocol_rules(
                             enable, policy, protocol, None, rule)
                 transaction.add_rules(backend, rules)
+
+            # TCP/MSS CLAMP
+            elif type(rule.element) == Rich_Tcp_Mss_Clamp:
+                tcp_mss_clamp_value = rule.element.value
+                self.check_tcp_mss_clamp(tcp_mss_clamp_value)
+
+                rules = backend.build_policy_tcp_mss_clamp_rules(
+                            enable, policy, tcp_mss_clamp_value, None, rule)
+                transaction.add_rules(backend, rules) 
 
             # MASQUERADE
             elif type(rule.element) == Rich_Masquerade:

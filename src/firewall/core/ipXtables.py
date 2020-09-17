@@ -1080,13 +1080,14 @@ class ip4tables(object):
     def _rich_rule_action(self, policy, rich_rule, enable, table, rule_fragment):
         if not rich_rule.action:
             return []
-
-        add_del = { True: "-A", False: "-D" }[enable]
-
+        
+        add_del = { True: "-A", False: "-D" }[enable] 
+        
         _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX)
 
         chain_suffix = self._rich_rule_chain_suffix(rich_rule)
         chain = "%s_%s" % (_policy, chain_suffix)
+        
         if type(rich_rule.action) == Rich_Accept:
             rule_action = [ "-j", "ACCEPT" ]
         elif type(rich_rule.action) == Rich_Reject:
@@ -1108,7 +1109,7 @@ class ip4tables(object):
         rule += self._rich_rule_priority_fragment(rich_rule)
         rule += rule_fragment + rule_action
         rule += self._rule_limit(rich_rule.action.limit)
-
+       
         return rule
 
     def _rich_rule_destination_fragment(self, rich_dest):
@@ -1206,6 +1207,39 @@ class ip4tables(object):
         else:
             rules.append([add_del, "%s_allow" % (_policy), "-t", table] +
                          rule_fragment + [ "-j", "ACCEPT" ])
+
+        return rules
+
+    def build_policy_tcp_mss_clamp_rules(self, enable, policy, tcp_mss_clamp_value, destination=None, rich_rule=None):   
+        add_del = { True: "-A", False: "-D" }[enable]
+        table = "filter"
+        _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX)
+       
+        chain_suffix = self._rich_rule_chain_suffix(rich_rule)
+        chain = "%s_%s" % (_policy, chain_suffix)
+        
+        rule_fragment = ["-p", "tcp"]
+        if destination:
+            rule_fragment += [ "-d", destination ]
+        if rich_rule:
+            rule_fragment += self._rich_rule_destination_fragment(rich_rule.destination)
+            rule_fragment += self._rich_rule_source_fragment(rich_rule.source)
+
+        if tcp_mss_clamp_value == "pmtu":
+            rule_fragment += ["--tcp-flags", "SYN,RST", "SYN","-j", "TCPMSS", "--clamp-mss-to-pmtu"]
+        else:
+            rule_fragment += ["--tcp-flags", "SYN,RST", "SYN", "-j", "TCPMSS", "--set-mss", tcp_mss_clamp_value]
+        
+        rule = ["-t", table, add_del, chain]
+        rule += self._rich_rule_priority_fragment(rich_rule)
+        rule += rule_fragment
+        rule += self._rule_limit(rich_rule.action.limit)
+
+        rules = []
+        if rich_rule:
+            rules.append(self._rich_rule_log(policy, rich_rule, enable, table, rule_fragment))
+            rules.append(self._rich_rule_audit(policy, rich_rule, enable, table, rule_fragment))
+            rules.append(rule)
 
         return rules
 
