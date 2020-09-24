@@ -2395,7 +2395,7 @@ For interfaces that are not under control of NetworkManager, firewalld tries to 
 	If a command entry on the whitelist ends with an asterisk '*', then all command lines starting with the command will match. If the '*' is not there the absolute command inclusive arguments must match.
       </para>
       <para>
-	Commands for user root and others is not always the same. Example: As root <command>/bin/firewall-cmd</command> is used, as a normal user <command>/usr/bin/firewall-cmd</command> is be used on Fedora. 
+	Command paths for users are not always the same and depends on the users PATH. Some distributions symlink <command>/bin</command> to <command>/usr/bin</command> in which case it depends on the order they appear in the PATH environment variable.
       </para>
       <para>
 	The context is the security (SELinux) context of a running application or service. To get the context of a running application use <command>ps -e --context</command>.
