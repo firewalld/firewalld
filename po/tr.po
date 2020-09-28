@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-06-30 13:30-0400\n"
-"PO-Revision-Date: 2020-07-01 19:40+0000\n"
+"PO-Revision-Date: 2020-09-28 20:29+0000\n"
 "Last-Translator: Oğuz Ersen <oguzersen@protonmail.com>\n"
 "Language-Team: Turkish <https://translate.fedoraproject.org/projects/"
 "firewalld/master/tr/>\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n>1);\n"
-"X-Generator: Weblate 4.1.1\n"
+"X-Generator: Weblate 4.2.2\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:416
 msgid "Firewall Applet"
@@ -39,7 +39,7 @@ msgstr "Güvenlik Duvarı Yapılandırması"
 #. Translators: These are searchable keywords for the firewall configuration tool
 #: ../config/firewall-config.desktop.in.h:4
 msgid "firewall;network;security;iptables;netfilter;"
-msgstr "güvenlik-duvarı;ağ;güvenlik;iptables;netfilter;"
+msgstr "firewall;network;security;iptables;netfilter;güvenlik duvarı;ağ;koruma;"
 
 #: ../src/firewall-applet.in:92 ../src/firewall-config.in:7988
 #, c-format
@@ -69,12 +69,12 @@ msgstr "'%s' kaynağı için bölge seç"
 
 #: ../src/firewall-applet.in:207
 msgid "Configure Shields Up/Down Zones"
-msgstr "Kalkanlar Aktif/Aktif Değil Bölgeleri Yapılandır"
+msgstr "Kalkanlar Yukarı/Aşağı Bölgelerini Yapılandır"
 
 #: ../src/firewall-applet.in:220
 msgid "Here you can select the zones used for Shields Up and Shields Down."
 msgstr ""
-"Burada Kalkanlar Aktif ve Kalkanlar Aktif Değil için kullanılan bölgeleri "
+"Burada Kalkanlar Yukarı ve Kalkanlar Aşağı için kullanılan bölgeleri "
 "seçebilirsiniz."
 
 #: ../src/firewall-applet.in:226
@@ -88,7 +88,7 @@ msgstr ""
 
 #: ../src/firewall-applet.in:235
 msgid "Shields Up Zone:"
-msgstr "Kalkanlar Aktif Bölge:"
+msgstr "Kalkanlar Yukarı Bölgesi:"
 
 #: ../src/firewall-applet.in:244 ../src/firewall-applet.in:257
 msgid "Reset To Default"
@@ -96,7 +96,7 @@ msgstr "Öntanımlılara Sıfırla"
 
 #: ../src/firewall-applet.in:248
 msgid "Shields Down Zone:"
-msgstr "Kalkanlar Aktif Değil Bölge:"
+msgstr "Kalkanlar Aşağı Bölgesi:"
 
 #: ../src/firewall-applet.in:340
 #, c-format
@@ -113,7 +113,7 @@ msgstr "Lisans"
 
 #: ../src/firewall-applet.in:470
 msgid "Shields Up"
-msgstr "Kalkanlar Aktif"
+msgstr "Kalkanlar Yukarı"
 
 #: ../src/firewall-applet.in:477
 msgid "Enable Notifications"
@@ -129,7 +129,7 @@ msgstr "Bağlantı Bölgelerini Değiştir..."
 
 #: ../src/firewall-applet.in:491
 msgid "Configure Shields UP/Down Zones..."
-msgstr "Kalkanlar Aktif/Aktif Değil Bölgeleri Yapılandır..."
+msgstr "Kalkanlar Yukarı/Aşağı Bölgelerini Yapılandır..."
 
 #: ../src/firewall-applet.in:495
 msgid "Block all network traffic"
@@ -204,26 +204,26 @@ msgid ""
 "interface '{interface}'"
 msgstr ""
 "Öntanımlı Bölge '{default_zone}', '{interface}' arayüzünde '{connection}' "
-"bağlantısı için aktif"
+"bağlantısı için etkin"
 
 #: ../src/firewall-applet.in:889
 msgid ""
 "Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
 msgstr ""
 "'{zone}' bölgesi, '{interface}' arayüzünde '{connection}' bağlantısı için "
-"aktif"
+"etkin"
 
 #: ../src/firewall-applet.in:901
 msgid "Zone '{zone}' active for interface '{interface}'"
-msgstr "'{zone}' bölgesi '{interface}' arayüzü için aktif"
+msgstr "'{zone}' bölgesi '{interface}' arayüzü için etkin"
 
 #: ../src/firewall-applet.in:909
 msgid "Zone '{zone}' active for source {source}"
-msgstr "'{zone}' bölgesi, {source} kaynağı için aktif"
+msgstr "'{zone}' bölgesi, {source} kaynağı için etkin"
 
 #: ../src/firewall-applet.in:913
 msgid "No Active Zones."
-msgstr "Aktif Bölge Yok."
+msgstr "Etkin Bölge Yok."
 
 #: ../src/firewall-applet.in:972
 msgid "Connection to FirewallD established."
@@ -248,7 +248,7 @@ msgstr "Artık Ağ trafği bloke edilmiyor."
 
 #: ../src/firewall-applet.in:1041 ../src/firewall-applet.in:1095
 msgid "activated"
-msgstr "aktifleştirildi"
+msgstr "etkinleştirildi"
 
 #: ../src/firewall-applet.in:1042 ../src/firewall-applet.in:1096
 msgid "deactivated"
@@ -277,7 +277,7 @@ msgstr "'{zone}' bölgesi, '{interface}' arayüzü için {activated_deactivated}
 #: ../src/firewall-applet.in:1080
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
-msgstr "'%s' bölgesi, '%s' arayüzü için aktifleştirildi"
+msgstr "'%s' bölgesi, '%s' arayüzü için etkinleştirildi"
 
 #: ../src/firewall-applet.in:1097
 msgid "Zone '{zone}' {activated_deactivated} for source '{source}'"
@@ -286,7 +286,7 @@ msgstr "'{zone}' bölgesi, '{source}' kaynağı için {activated_deactivated}"
 #: ../src/firewall-applet.in:1121
 #, c-format
 msgid "Zone '%s' activated for source '%s'"
-msgstr "'%s' bölgesi, '%s' kaynağı için aktifleştirildi"
+msgstr "'%s' bölgesi, '%s' kaynağı için etkinleştirildi"
 
 #: ../src/firewall-config.in:89
 msgid "Connection to firewalld established."
@@ -1045,7 +1045,7 @@ msgstr "Kilitleme Beyaz Listesi"
 
 #: ../src/firewall-config.glade.h:80
 msgid "Active Bindings"
-msgstr "Aktif Bağlamalar"
+msgstr "Etkin Bağlamalar"
 
 #: ../src/firewall-config.glade.h:81
 msgid "_Help"
@@ -1063,14 +1063,14 @@ msgstr "Bağlamanın bölgesini değiştir"
 msgid ""
 "Hide active runtime bindings of connections, interfaces and sources to zones"
 msgstr ""
-"Bağlantıların, arayüzlerin ve kaynakların bölgelere aktif çalışma zamanı "
+"Bağlantıların, arayüzlerin ve kaynakların bölgelere etkin çalışma zamanı "
 "bağlamalarını gizle"
 
 #: ../src/firewall-config.glade.h:85
 msgid ""
 "Show active runtime bindings of connections, interfaces and sources to zones"
 msgstr ""
-"Bağlantıların, arayüzlerin ve kaynakların bölgelere aktif çalışma zamanı "
+"Bağlantıların, arayüzlerin ve kaynakların bölgelere etkin çalışma zamanı "
 "bağlamalarını göster"
 
 #: ../src/firewall-config.glade.h:86
