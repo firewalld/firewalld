@@ -579,7 +579,7 @@
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.ipset.Methods.queryEntry">
-            <term><methodname>queryService</methodname>(s: ipset, s: entry) &rarr; b</term>
+            <term><methodname>queryEntry</methodname>(s: ipset, s: entry) &rarr; b</term>
             <listitem>
               <para>
 		Return whether <replaceable>entry</replaceable> has been added to <replaceable>ipset</replaceable>.
@@ -591,7 +591,7 @@
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.ipset.Methods.queryIPSet">
-            <term><methodname>queryService</methodname>(s: ipset) &rarr; b</term>
+            <term><methodname>queryIPSet</methodname>(s: ipset) &rarr; b</term>
             <listitem>
               <para>
 		Return whether <replaceable>ipset</replaceable> is defined in runtime configuration.
