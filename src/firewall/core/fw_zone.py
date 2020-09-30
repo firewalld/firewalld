@@ -708,11 +708,11 @@ class FirewallZone(object):
                     # after the transaction ends and therefore the interface
                     # has been added to the zone's settings, update the
                     # dependent policies
-                    transaction.add_post(lambda: (policy in self._fw.policy.get_active_policies_not_derived_from_zone()) and \
-                                                 self._fw.policy._ingress_egress_zones_transaction(True, policy))
+                    transaction.add_post(lambda p: (p in self._fw.policy.get_active_policies_not_derived_from_zone()) and \
+                                                   self._fw.policy._ingress_egress_zones_transaction(True, p), policy)
             elif enable:
-                transaction.add_post(lambda: (policy in self._fw.policy.get_active_policies_not_derived_from_zone()) and \
-                                             self._fw.policy.apply_policy_settings(policy))
+                transaction.add_post(lambda p: (p in self._fw.policy.get_active_policies_not_derived_from_zone()) and \
+                                               self._fw.policy.apply_policy_settings(p), policy)
 
     # IPSETS
 
@@ -772,11 +772,11 @@ class FirewallZone(object):
                     # after the transaction ends and therefore the sources
                     # has been added to the zone's settings, update the
                     # dependent policies
-                    transaction.add_post(lambda: (policy in self._fw.policy.get_active_policies_not_derived_from_zone()) and \
-                                                 self._fw.policy._ingress_egress_zones_transaction(True, policy))
+                    transaction.add_post(lambda p: (p in self._fw.policy.get_active_policies_not_derived_from_zone()) and \
+                                                   self._fw.policy._ingress_egress_zones_transaction(True, p), policy)
             elif enable:
-                transaction.add_post(lambda: (policy in self._fw.policy.get_active_policies_not_derived_from_zone()) and \
-                                             self._fw.policy.apply_policy_settings(policy))
+                transaction.add_post(lambda p: (p in self._fw.policy.get_active_policies_not_derived_from_zone()) and \
+                                               self._fw.policy.apply_policy_settings(p), policy)
 
     def add_service(self, zone, service, timeout=0, sender=None):
         zone = self._fw.check_zone(zone)
