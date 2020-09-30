@@ -1143,13 +1143,10 @@ class FirewallD(slip.dbus.service.Object):
     def getActivePolicies(self, sender=None):
         log.debug1("policy.getActivePolicies()")
         policies = { }
-        for policy in self.fw.policy.get_policies_not_derived_from_zone():
-            ingress_zones = self.fw.policy.list_ingress_zones(policy)
-            egress_zones = self.fw.policy.list_egress_zones(policy)
-            if len(ingress_zones) > 0 and len(egress_zones) > 0:
-                policies[policy] = { }
-                policies[policy]["ingress_zones"] = ingress_zones
-                policies[policy]["egress_zones"] = egress_zones
+        for policy in self.fw.policy.get_active_policies_not_derived_from_zone():
+            policies[policy] = { }
+            policies[policy]["ingress_zones"] = self.fw.policy.list_ingress_zones(policy)
+            policies[policy]["egress_zones"] = self.fw.policy.list_egress_zones(policy)
         return policies
 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
