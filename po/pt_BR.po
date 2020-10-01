@@ -30,21 +30,22 @@
 # Mateus de Melo Santos <mateusms@tutanota.com>, 2017. #zanata
 # Eric Garver <e@erig.me>, 2018. #zanata
 # Renan Marcos Ferreira <renan.ferreira18@fatec.sp.gov.br>, 2018. #zanata
+# Rafael Fontenelle <rafaelff@gnome.org>, 2020.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-06-30 13:30-0400\n"
-"PO-Revision-Date: 2018-11-16 08:27+0000\n"
-"Last-Translator: Copied by Zanata <copied-by-zanata@zanata.org>\n"
-"Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/"
-"firewalld/language/pt_BR/)\n"
+"PO-Revision-Date: 2020-09-12 16:29+0000\n"
+"Last-Translator: Rafael Fontenelle <rafaelff@gnome.org>\n"
+"Language-Team: Portuguese (Brazil) <https://translate.fedoraproject.org/"
+"projects/firewalld/master/pt_BR/>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Zanata 4.6.2\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 4.2.2\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:416
 msgid "Firewall Applet"
@@ -61,7 +62,7 @@ msgstr "Configuração do Firewall"
 #. Translators: These are searchable keywords for the firewall configuration tool
 #: ../config/firewall-config.desktop.in.h:4
 msgid "firewall;network;security;iptables;netfilter;"
-msgstr "firewall;network;security;iptables;netfilter;"
+msgstr "firewall;network;rede;security;segurança;iptables;netfilter;"
 
 #: ../src/firewall-applet.in:92 ../src/firewall-config.in:7988
 #, c-format
@@ -113,7 +114,7 @@ msgstr "Levantar Escudos da Zona:"
 
 #: ../src/firewall-applet.in:244 ../src/firewall-applet.in:257
 msgid "Reset To Default"
-msgstr "Restaurar para o padrão "
+msgstr "Restaurar para o padrão"
 
 #: ../src/firewall-applet.in:248
 msgid "Shields Down Zone:"
@@ -158,7 +159,7 @@ msgstr "Bloquear todo o tráfego de rede"
 
 #: ../src/firewall-applet.in:500
 msgid "About"
-msgstr "Sobre "
+msgstr "Sobre"
 
 #: ../src/firewall-applet.in:508 ../src/firewall-config.in:618
 #: ../src/firewall-config.in:2389 ../src/firewall-config.in:2670
@@ -204,15 +205,15 @@ msgstr "Falha ao obter conexões de NetworkManager"
 
 #: ../src/firewall-applet.in:790 ../src/firewall-config.in:1386
 msgid "No NetworkManager imports available"
-msgstr " NetworkManager sem importações disponíveis"
+msgstr "Sem importações do NetworkManager disponíveis"
 
 #: ../src/firewall-applet.in:868
 msgid "No connection to firewall daemon"
-msgstr "Sem conexão com o daemon do Firewall."
+msgstr "Sem conexão com o daemon do firewall"
 
 #: ../src/firewall-applet.in:876 ../src/firewall-applet.in:1014
 msgid "All network traffic is blocked."
-msgstr "Todo o tráfego de rede está bloqueado"
+msgstr "Todo o tráfego de rede está bloqueado."
 
 #: ../src/firewall-applet.in:880
 #, c-format
@@ -243,7 +244,7 @@ msgstr "Zona '{zone}' ativa para a fonte {source}"
 
 #: ../src/firewall-applet.in:913
 msgid "No Active Zones."
-msgstr "Não há Zonas Ativas"
+msgstr "Não há zonas ativas."
 
 #: ../src/firewall-applet.in:972
 msgid "Connection to FirewallD established."
@@ -255,7 +256,7 @@ msgstr "Conexão com FirewallD perdida."
 
 #: ../src/firewall-applet.in:989
 msgid "FirewallD has been reloaded."
-msgstr "O FirewallD  foi recarregado"
+msgstr "O FirewallD  foi recarregado."
 
 #: ../src/firewall-applet.in:996
 #, c-format
@@ -264,7 +265,7 @@ msgstr "Zona padrão alterada para '%s'."
 
 #: ../src/firewall-applet.in:1015
 msgid "Network traffic is not blocked anymore."
-msgstr "O tráfego de rede não está mais sendo bloqueado"
+msgstr "O tráfego de rede não está mais sendo bloqueado."
 
 #: ../src/firewall-applet.in:1041 ../src/firewall-applet.in:1095
 msgid "activated"
@@ -332,7 +333,7 @@ msgstr "Alterações aplicadas."
 #: ../src/firewall-config.in:96
 #, c-format
 msgid "Used by network connection '%s'"
-msgstr "Usado por conexão de rede '%s' "
+msgstr "Usado por conexão de rede \"%s\""
 
 #: ../src/firewall-config.in:97
 #, c-format
@@ -341,7 +342,7 @@ msgstr "Zona padrão utilizada pela conexão de rede '%s'"
 
 #: ../src/firewall-config.in:99
 msgid "enabled"
-msgstr "ativado "
+msgstr "ativado"
 
 #: ../src/firewall-config.in:100
 msgid "disabled"
@@ -349,7 +350,7 @@ msgstr "desabilitado"
 
 #: ../src/firewall-config.in:125
 msgid "Failed to load icons."
-msgstr "Falha ao carregar ícones"
+msgstr "Falha ao carregar ícones."
 
 #: ../src/firewall-config.in:187 ../src/firewall-config.glade.h:6
 msgid "Context"
@@ -481,13 +482,13 @@ msgstr "Erro"
 #: ../src/firewall-config.in:2044 ../src/firewall-config.in:3211
 #: ../src/firewall-config.in:3709 ../src/firewall-config.glade.h:262
 msgid "accept"
-msgstr "aceitar "
+msgstr "aceitar"
 
 #: ../src/firewall-config.in:2046 ../src/firewall-config.in:3213
 #: ../src/firewall-config.in:3711 ../src/firewall-config.in:3859
 #: ../src/firewall-config.glade.h:263
 msgid "reject"
-msgstr "rejeitar "
+msgstr "rejeitar"
 
 #: ../src/firewall-config.in:2050 ../src/firewall-config.in:3228
 #: ../src/firewall-config.in:3716 ../src/firewall-config.glade.h:264
@@ -498,7 +499,7 @@ msgstr "descer"
 #: ../src/firewall-config.in:3718 ../src/firewall-config.in:3860
 #: ../src/firewall-config.glade.h:265
 msgid "mark"
-msgstr "marcação "
+msgstr "marcar"
 
 #: ../src/firewall-config.in:2055 ../src/firewall-config.in:2099
 #: ../src/firewall-config.in:2104
@@ -527,7 +528,7 @@ msgstr "protocolo"
 #: ../src/firewall-config.in:3686 ../src/firewall-config.in:3872
 #: ../src/firewall-config.glade.h:291
 msgid "masquerade"
-msgstr "Mascaramento"
+msgstr "mascaramento"
 
 #: ../src/firewall-config.in:2080 ../src/firewall-config.in:3184
 #: ../src/firewall-config.in:3358 ../src/firewall-config.in:3672
@@ -603,7 +604,7 @@ msgstr "Zona embutida, renomeação não é suportada."
 #: ../src/firewall-config.in:3126 ../src/firewall-config.in:3626
 #: ../src/firewall-config.glade.h:270
 msgid "second"
-msgstr "segundos "
+msgstr "segundo"
 
 #: ../src/firewall-config.in:3127 ../src/firewall-config.in:3627
 #: ../src/firewall-config.glade.h:271
@@ -623,17 +624,17 @@ msgstr "dia"
 #: ../src/firewall-config.in:3130 ../src/firewall-config.in:3630
 #: ../src/firewall-config.glade.h:276
 msgid "emergency"
-msgstr "emergência "
+msgstr "emergência"
 
 #: ../src/firewall-config.in:3131 ../src/firewall-config.in:3631
 #: ../src/firewall-config.glade.h:277
 msgid "alert"
-msgstr "alerta "
+msgstr "alerta"
 
 #: ../src/firewall-config.in:3132 ../src/firewall-config.in:3632
 #: ../src/firewall-config.glade.h:278
 msgid "critical"
-msgstr "critical "
+msgstr "crítico"
 
 #: ../src/firewall-config.in:3133 ../src/firewall-config.in:3633
 #: ../src/firewall-config.glade.h:279
@@ -648,12 +649,12 @@ msgstr "aviso"
 #: ../src/firewall-config.in:3135 ../src/firewall-config.in:3635
 #: ../src/firewall-config.glade.h:281
 msgid "notice"
-msgstr "notificação "
+msgstr "aviso"
 
 #: ../src/firewall-config.in:3136 ../src/firewall-config.in:3636
 #: ../src/firewall-config.glade.h:282
 msgid "info"
-msgstr "informação "
+msgstr "info"
 
 #: ../src/firewall-config.in:3137 ../src/firewall-config.in:3637
 #: ../src/firewall-config.glade.h:283
@@ -688,12 +689,11 @@ msgstr "Serviço embutido, renomeação não é suportada."
 
 #: ../src/firewall-config.in:5602
 msgid "Please enter an ipv4 address with the form address[/mask]."
-msgstr ""
-"Por favor, insira um endereço ipv4  com o formulário de endereço [/mask]."
+msgstr "Por favor, insira um endereço ipv4 na forma de endereço[/mask]."
 
 #: ../src/firewall-config.in:5603
 msgid "The mask can be a network mask or a number."
-msgstr "A máscara pode ser uma máscara de rede ou um número. "
+msgstr "A máscara pode ser uma máscara de rede ou um número."
 
 #: ../src/firewall-config.in:5605
 msgid "Please enter an ipv6 address with the form address[/mask]."
@@ -702,7 +702,7 @@ msgstr ""
 
 #: ../src/firewall-config.in:5606
 msgid "The mask is a number."
-msgstr "A máscara é um número. "
+msgstr "A máscara é um número."
 
 #: ../src/firewall-config.in:5608
 msgid "Please enter an ipv4 or ipv6 address with the form address[/mask]."
@@ -716,11 +716,11 @@ msgid ""
 "The mask is a number for ipv6."
 msgstr ""
 "A máscara pode ser uma máscara de rede ou um número para ipv4.\n"
-"A máscara é um número para ipv6. "
+"A máscara é um número para ipv6."
 
 #: ../src/firewall-config.in:5793
 msgid "Built-in ipset, rename not supported."
-msgstr "Ipset embutido, renomeação não é suportada. "
+msgstr "IPset embutido, renomeação não é suportada."
 
 #: ../src/firewall-config.in:5885 ../src/firewall-config.in:5967
 msgid "Please select a file"
@@ -728,7 +728,7 @@ msgstr "Por favor selecione um arquivo"
 
 #: ../src/firewall-config.in:5892 ../src/firewall-config.in:5974
 msgid "Text Files"
-msgstr "Arquivo Texto "
+msgstr "Arquivos texto"
 
 #: ../src/firewall-config.in:5897 ../src/firewall-config.in:5979
 msgid "All Files"
@@ -751,7 +751,7 @@ msgstr "IPv6"
 
 #: ../src/firewall-config.in:6406
 msgid "Built-in helper, rename not supported."
-msgstr "Ajuda embutida, renomeação não é suportada"
+msgstr "Auxiliar embutido, renomeação não é suportada."
 
 #: ../src/firewall-config.in:6884
 msgid "Built-in icmp, rename not supported."
@@ -913,7 +913,7 @@ msgstr "Descrição:"
 
 #: ../src/firewall-config.glade.h:39
 msgid "Family:"
-msgstr "Família"
+msgstr "Família:"
 
 #: ../src/firewall-config.glade.h:43
 msgid "Module:"
@@ -941,7 +941,7 @@ msgstr "Tipo de ICMP"
 
 #: ../src/firewall-config.glade.h:49
 msgid "Please select an ICMP type"
-msgstr "Por favor, selecione um tipo de ICMP "
+msgstr "Por favor, selecione um tipo de ICMP"
 
 #: ../src/firewall-config.glade.h:50
 msgid "Add Entry"
@@ -1946,10 +1946,8 @@ msgid "Please enter a rich rule."
 msgstr "Por favor insira uma regra valiosa."
 
 #: ../src/firewall-config.glade.h:255
-#, fuzzy
 msgid "For host or network allow or denylisting deactivate the element."
-msgstr ""
-"Para o host ou rede de whitelisting ou blacklisting  desativar o elemento"
+msgstr "Para permitir ou negar um host ou rede, desative o elemento."
 
 #: ../src/firewall-config.glade.h:256
 msgid "Source:"

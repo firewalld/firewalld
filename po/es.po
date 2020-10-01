@@ -27,21 +27,22 @@
 # Máximo Castañeda Riloba <mcrcctm@gmail.com>, 2017. #zanata
 # Eric Garver <e@erig.me>, 2018. #zanata
 # Máximo Castañeda Riloba <mcrcctm@gmail.com>, 2018. #zanata
+# Emilio Herrera <ehespinosa57@gmail.com>, 2020.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-06-30 13:30-0400\n"
-"PO-Revision-Date: 2018-11-16 08:22+0000\n"
-"Last-Translator: Copied by Zanata <copied-by-zanata@zanata.org>\n"
-"Language-Team: Spanish (http://www.transifex.com/projects/p/firewalld/"
-"language/es/)\n"
+"PO-Revision-Date: 2020-09-27 17:29+0000\n"
+"Last-Translator: Emilio Herrera <ehespinosa57@gmail.com>\n"
+"Language-Team: Spanish <https://translate.fedoraproject.org/projects/"
+"firewalld/master/es/>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Zanata 4.6.2\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.2.2\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:416
 msgid "Firewall Applet"
@@ -715,7 +716,7 @@ msgstr ""
 
 #: ../src/firewall-config.in:5793
 msgid "Built-in ipset, rename not supported."
-msgstr "IPset incorporado, no se puede renombrar"
+msgstr "IPset incorporado, no se puede renombrar."
 
 #: ../src/firewall-config.in:5885 ../src/firewall-config.in:5967
 msgid "Please select a file"
@@ -773,7 +774,7 @@ msgstr "Agentes automáticos"
 
 #: ../src/firewall-config.glade.h:3
 msgid "Please select the automatic helpers value:"
-msgstr "Elija el valor para los agentes automáticos"
+msgstr "Por favor selecciones el valor de los auxiliares automáticos:"
 
 #: ../src/firewall-config.glade.h:5
 msgid "Please enter the command line."
@@ -813,7 +814,7 @@ msgstr "nat"
 
 #: ../src/firewall-config.glade.h:16
 msgid "raw"
-msgstr "raw"
+msgstr "crudo"
 
 #: ../src/firewall-config.glade.h:17
 msgid "security"
@@ -1229,7 +1230,7 @@ msgid ""
 "networks."
 msgstr ""
 "Si habilita el enmascaramiento, se activará el reenvío de IP para sus redes "
-"IPv4"
+"IPv4."
 
 #: ../src/firewall-config.glade.h:111
 msgid "Masquerading"
@@ -1848,7 +1849,7 @@ msgstr "Máximo número de elementos; valor predeterminado: 65536"
 
 #: ../src/firewall-config.glade.h:232
 msgid "Please select an ipset:"
-msgstr "Elija un IPSet"
+msgstr "Por favor elija un IPSet:"
 
 #: ../src/firewall-config.glade.h:234
 msgid "Please enter an ipset entry:"
@@ -1884,7 +1885,7 @@ msgstr "Máscara:"
 
 #: ../src/firewall-config.glade.h:242
 msgid "Please select a netfilter conntrack helper:"
-msgstr "Elija un agente netfilter de seguimiento de conexiones"
+msgstr "Por favor elija un agente netfilter de seguimiento de conexiones:"
 
 #: ../src/firewall-config.glade.h:243
 msgid "- Select -"
@@ -1931,9 +1932,9 @@ msgid "Please enter a rich rule."
 msgstr "Introduzca una regla rica."
 
 #: ../src/firewall-config.glade.h:255
-#, fuzzy
 msgid "For host or network allow or denylisting deactivate the element."
-msgstr "Para enlistar o deslistar un equipo o red, desactive el elemento."
+msgstr ""
+"Para permitir o denegar el listado de host o red desactive el elemento."
 
 #: ../src/firewall-config.glade.h:256
 msgid "Source:"
@@ -2037,7 +2038,7 @@ msgstr "Por favor configure la zona base:"
 
 #: ../src/firewall-config.glade.h:305
 msgid "Default Target"
-msgstr "Objetivo por defecto:"
+msgstr "Objetivo por defecto"
 
 #: ../src/firewall-config.glade.h:306
 msgid "Target:"
