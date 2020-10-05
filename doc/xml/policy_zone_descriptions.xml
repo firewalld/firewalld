@@ -130,6 +130,25 @@
     </variablelist>
 </refsect2>
 
+<refsect2 id="tcp-mss-clamp">
+    <title>tcp-mss-clamp</title>
+    <para>
+        Is an optional empty-element tag and can be used several times. If left empty
+	maximum segment size is set to 'pmtu'. This tag has exactly one optional attribute:
+      </para>
+      <variablelist>
+        <varlistentry>
+          <term>value="<replaceable>string</replaceable>"</term>
+          <listitem>
+            <para>
+              Value can set maximum segment size to 'pmtu' (Path Maximum Transmission Unit) or
+	      a user-defined value that is greater than or equal to 536.
+            </para>
+          </listitem>
+        </varlistentry>
+    </variablelist>
+</refsect2>
+
 <refsect2 id="masquerade">
     <title>masquerade</title>
     <para>
