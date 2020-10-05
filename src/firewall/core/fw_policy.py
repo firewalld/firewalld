@@ -1589,7 +1589,7 @@ class FirewallPolicy(object):
 
                 rules = backend.build_policy_tcp_mss_clamp_rules(
                             enable, policy, tcp_mss_clamp_value, None, rule)
-                transaction.add_rules(backend, rules) 
+                transaction.add_rules(backend, rules)
 
             # MASQUERADE
             elif type(rule.element) == Rich_Masquerade:

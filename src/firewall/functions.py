@@ -351,10 +351,12 @@ def checkTcpMssClamp(tcp_mss_clamp_value):
     if tcp_mss_clamp_value:
         if tcp_mss_clamp_value.isdigit():
             if int(tcp_mss_clamp_value) < 536:
-                return False                
+                return False
+        elif tcp_mss_clamp_value == "None":
+            return True
         elif tcp_mss_clamp_value != "pmtu":
             return False
-    return True 
+    return True
 
 def checkInterface(iface):
     """ Check interface string

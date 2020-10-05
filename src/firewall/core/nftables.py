@@ -30,7 +30,8 @@ from firewall.errors import FirewallError, UNKNOWN_ERROR, INVALID_RULE, \
                             INVALID_ICMPTYPE, INVALID_TYPE, INVALID_ENTRY, \
                             INVALID_PORT
 from firewall.core.rich import Rich_Accept, Rich_Reject, Rich_Drop, Rich_Mark, \
-                               Rich_Masquerade, Rich_ForwardPort, Rich_IcmpBlock
+                               Rich_Masquerade, Rich_ForwardPort, Rich_IcmpBlock, \
+                               Rich_Tcp_Mss_Clamp
 from nftables.nftables import Nftables
 
 TABLE_NAME = "firewalld"
@@ -1065,7 +1066,7 @@ class nftables(object):
                           "per": rich_to_nft[limit.value[i+1]]}}
 
     def _rich_rule_chain_suffix(self, rich_rule):
-        if type(rich_rule.element) in [Rich_Masquerade, Rich_ForwardPort, Rich_IcmpBlock]:
+        if type(rich_rule.element) in [Rich_Masquerade, Rich_ForwardPort, Rich_IcmpBlock, Rich_Tcp_Mss_Clamp]:
             # These are special and don't have an explicit action
             pass
         elif rich_rule.action:
@@ -1075,7 +1076,7 @@ class nftables(object):
             raise FirewallError(INVALID_RULE, "No rule action specified.")
 
         if rich_rule.priority == 0:
-            if type(rich_rule.element) in [Rich_Masquerade, Rich_ForwardPort] or \
+            if type(rich_rule.element) in [Rich_Masquerade, Rich_ForwardPort, Rich_Tcp_Mss_Clamp] or \
                type(rich_rule.action) in [Rich_Accept, Rich_Mark]:
                 return "allow"
             elif type(rich_rule.element) in [Rich_IcmpBlock] or \
@@ -1115,7 +1116,6 @@ class nftables(object):
         if not rich_rule or rich_rule.priority == 0:
             return {}
         return {"%%RICH_RULE_PRIORITY%%": rich_rule.priority}
-
 
     def _rich_rule_log(self, policy, rich_rule, enable, table, expr_fragments):
         if not rich_rule.log:
@@ -1342,37 +1342,31 @@ class nftables(object):
 
     def build_policy_tcp_mss_clamp_rules(self, enable, policy, tcp_mss_clamp_value, 
                                       destination=None, rich_rule=None):
-        table = "filter" 
-        
+        table = "filter"
+        _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX)
+        add_del = { True: "add", False: "delete" }[enable]
+
         expr_fragments = []
-        if rich_rule:
-            expr_fragments.append(self._rich_rule_family_fragment(rich_rule.family))
-        if destination:
-            expr_fragments.append(self._rule_addr_fragment("daddr", destination))
         if rich_rule:
             expr_fragments.append(self._rich_rule_destination_fragment(rich_rule.destination))
             expr_fragments.append(self._rich_rule_source_fragment(rich_rule.source))
-
-        expr_fragments.append({"match": {"op": "==",
-                                         "left": {"meta": {"key": "oifname"}},
-                                         "right": "ppp0"}})
+            chain_suffix = self._rich_rule_chain_suffix(rich_rule)
 
         expr_fragments.append({"match": {"op": "in",
                                          "left": {"payload": {"protocol": "tcp","field": "flags"}},
                                          "right": "syn"}})
 
-        if tcp_mss_clamp_value == "pmtu":
+        if tcp_mss_clamp_value == "pmtu" or tcp_mss_clamp_value is None:
             expr_fragments.append({"mangle": {"key": {"tcp option": {"name": "maxseg","field": "size"}},
                                               "value": {"rt": {"key": "mtu" }}}})
         else:
             expr_fragments.append({"mangle": {"key": {"tcp option": {"name": "maxseg","field": "size"}},
-                                              "value": tcp_mss_clamp_value}}) 
-
+                                              "value": tcp_mss_clamp_value}})
         rules = []
-        if rich_rule:
-            rules.append(self._rich_rule_log(policy, rich_rule, enable, table, expr_fragments))
-            rules.append(self._rich_rule_audit(policy, rich_rule, enable, table, expr_fragments))
-            rules.append(self._rich_rule_action(policy, rich_rule, enable, table, expr_fragments))
+        rules.append({add_del: {"rule": {"family": "inet",
+                                "table": TABLE_NAME,
+                                "chain": "filter_%s_%s" % (_policy, chain_suffix),
+                                "expr": expr_fragments}}})
 
         return rules
 

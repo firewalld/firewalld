@@ -85,8 +85,14 @@ def common_startElement(obj, name, attrs):
                             str(obj._rule))
                 obj._rule_error = True
                 return True
-            obj._rule.element = rich.Rich_Tcp_Mss_Clamp(attrs["value"])
-    
+            _value="pmtu"
+            if "value" in attrs:
+                _value = attrs["value"]
+            obj._rule.element = rich.Rich_Tcp_Mss_Clamp(_value)
+        else:
+            log.warning("Invalid rule: tcp-mss-clamp '%s' outside of rule",
+                        attrs["value"])
+
     elif name == "icmp-block":
         if obj._rule:
             if obj._rule.element:

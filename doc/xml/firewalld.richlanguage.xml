@@ -178,6 +178,22 @@ protocol value="protocol value"
     </refsect2>
 
     <refsect2>
+      <title>Tcp-Mss-Clamp</title>
+      <para>
+        <programlisting>
+tcp-mss-clamp="value=pmtu|value=number >= 536|None"
+        </programlisting>
+      </para>
+      <para>
+        The tcp-mss-clamp sets the maximum segment size in the rule.
+      </para>
+      <para>
+        The tcp-mss-clamp has an optional attribute value can be either be set to "pmtu" or a number greater than or equal to 536. If attribute
+	value is not present then the maximum segment size is automatically set to "pmtu".
+      </para>
+    </refsect2>
+
+    <refsect2>
       <title>ICMP-Block</title>
       <para>
 	<programlisting>

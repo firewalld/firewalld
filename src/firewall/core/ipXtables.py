@@ -29,7 +29,7 @@ from firewall.functions import tempFile, readfile, splitArgs, check_mac, portStr
 from firewall import config
 from firewall.errors import FirewallError, INVALID_PASSTHROUGH, INVALID_RULE, UNKNOWN_ERROR, INVALID_ADDR
 from firewall.core.rich import Rich_Accept, Rich_Reject, Rich_Drop, Rich_Mark, \
-                               Rich_Masquerade, Rich_ForwardPort, Rich_IcmpBlock
+                               Rich_Masquerade, Rich_ForwardPort, Rich_IcmpBlock, Rich_Tcp_Mss_Clamp
 import string
 
 POLICY_CHAIN_PREFIX = ""
@@ -995,7 +995,7 @@ class ip4tables(object):
         return []
 
     def _rich_rule_chain_suffix(self, rich_rule):
-        if type(rich_rule.element) in [Rich_Masquerade, Rich_ForwardPort, Rich_IcmpBlock]:
+        if type(rich_rule.element) in [Rich_Masquerade, Rich_ForwardPort, Rich_IcmpBlock, Rich_Tcp_Mss_Clamp]:
             # These are special and don't have an explicit action
             pass
         elif rich_rule.action:
@@ -1005,7 +1005,7 @@ class ip4tables(object):
             raise FirewallError(INVALID_RULE, "No rule action specified.")
 
         if rich_rule.priority == 0:
-            if type(rich_rule.element) in [Rich_Masquerade, Rich_ForwardPort] or \
+            if type(rich_rule.element) in [Rich_Masquerade, Rich_ForwardPort, Rich_Tcp_Mss_Clamp] or \
                type(rich_rule.action) in [Rich_Accept, Rich_Mark]:
                 return "allow"
             elif type(rich_rule.element) in [Rich_IcmpBlock] or \
@@ -1080,14 +1080,13 @@ class ip4tables(object):
     def _rich_rule_action(self, policy, rich_rule, enable, table, rule_fragment):
         if not rich_rule.action:
             return []
-        
-        add_del = { True: "-A", False: "-D" }[enable] 
-        
+
+        add_del = { True: "-A", False: "-D" }[enable]
+
         _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX)
 
         chain_suffix = self._rich_rule_chain_suffix(rich_rule)
         chain = "%s_%s" % (_policy, chain_suffix)
-        
         if type(rich_rule.action) == Rich_Accept:
             rule_action = [ "-j", "ACCEPT" ]
         elif type(rich_rule.action) == Rich_Reject:
@@ -1109,7 +1108,7 @@ class ip4tables(object):
         rule += self._rich_rule_priority_fragment(rich_rule)
         rule += rule_fragment + rule_action
         rule += self._rule_limit(rich_rule.action.limit)
-       
+
         return rule
 
     def _rich_rule_destination_fragment(self, rich_dest):
@@ -1210,37 +1209,32 @@ class ip4tables(object):
 
         return rules
 
-    def build_policy_tcp_mss_clamp_rules(self, enable, policy, tcp_mss_clamp_value, destination=None, rich_rule=None):   
-        add_del = { True: "-A", False: "-D" }[enable]
+    def build_policy_tcp_mss_clamp_rules(self, enable, policy, tcp_mss_clamp_value, destination=None, rich_rule=None):
         table = "filter"
         _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX)
-       
-        chain_suffix = self._rich_rule_chain_suffix(rich_rule)
-        chain = "%s_%s" % (_policy, chain_suffix)
-        
-        rule_fragment = ["-p", "tcp"]
-        if destination:
-            rule_fragment += [ "-d", destination ]
+        add_del = { True: "-A", False: "-D" }[enable]
+
+        rule_fragment = []
         if rich_rule:
+            chain_suffix = self._rich_rule_chain_suffix(rich_rule)
+            rule_fragment += self._rich_rule_priority_fragment(rich_rule)
             rule_fragment += self._rich_rule_destination_fragment(rich_rule.destination)
             rule_fragment += self._rich_rule_source_fragment(rich_rule.source)
 
-        if tcp_mss_clamp_value == "pmtu":
+        rules = []
+        rule_fragment = ["-p", "tcp"]
+        if tcp_mss_clamp_value == "pmtu" or tcp_mss_clamp_value is None:
             rule_fragment += ["--tcp-flags", "SYN,RST", "SYN","-j", "TCPMSS", "--clamp-mss-to-pmtu"]
         else:
             rule_fragment += ["--tcp-flags", "SYN,RST", "SYN", "-j", "TCPMSS", "--set-mss", tcp_mss_clamp_value]
-        
-        rule = ["-t", table, add_del, chain]
-        rule += self._rich_rule_priority_fragment(rich_rule)
-        rule += rule_fragment
-        rule += self._rule_limit(rich_rule.action.limit)
 
-        rules = []
         if rich_rule:
-            rules.append(self._rich_rule_log(policy, rich_rule, enable, table, rule_fragment))
-            rules.append(self._rich_rule_audit(policy, rich_rule, enable, table, rule_fragment))
-            rules.append(rule)
-
+            chain_suffix = self._rich_rule_chain_suffix(rich_rule)
+            rule_fragment += self._rich_rule_priority_fragment(rich_rule)
+            rule_fragment += self._rich_rule_destination_fragment(rich_rule.destination)
+            rule_fragment += self._rich_rule_source_fragment(rich_rule.source)
+        rules.append(["-t", "filter", add_del, "%s_%s" % (_policy, chain_suffix)]
+                     + rule_fragment)
         return rules
 
     def build_policy_source_ports_rules(self, enable, policy, proto, port,
