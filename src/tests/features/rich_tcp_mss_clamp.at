@@ -44,7 +44,8 @@ AT_DATA([./zones/tcp.xml], [dnl
 m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [FWD_CHECK([--check-config], 0, ignore, [dnl
 WARNING: INVALID_RULE: thisdoesnotexist: rule tcp-mss-clamp value="thisdoesnotexist"
 WARNING: INVALID_RULE: thisdoesnotexist: rule tcp-mss-clamp value="thisdoesnotexist"
-])], [FWD_GREP_LOG([dnl
+])], [FWD_CHECK([--check-config], 0, ignore, ignore)
+FWD_GREP_LOG([dnl
 WARNING: INVALID_RULE: thisdoesnotexist: rule tcp-mss-clamp value="thisdoesnotexist"
 ])])
 
