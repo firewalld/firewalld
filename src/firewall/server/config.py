@@ -65,7 +65,7 @@ class FirewallDConfig(slip.dbus.service.Object):
     persistent = True
     """ Make FirewallD persistent. """
     default_polkit_auth_required = config.dbus.PK_ACTION_CONFIG
-    """ Use config.dbus.PK_ACTION_INFO as a default """
+    """ Use config.dbus.PK_ACTION_CONFIG as a default """
 
     @handle_exceptions
     def __init__(self, conf, *args, **kwargs):
@@ -646,6 +646,7 @@ class FirewallDConfig(slip.dbus.service.Object):
                 "org.freedesktop.DBus.Error.InvalidArgs: "
                 "Property '%s' does not exist" % prop)
 
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG_INFO)
     @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='ss',
                          out_signature='v')
     @dbus_handle_exceptions
@@ -669,6 +670,7 @@ class FirewallDConfig(slip.dbus.service.Object):
 
         return self._get_dbus_property(property_name)
 
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG_INFO)
     @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='s',
                          out_signature='a{sv}')
     @dbus_handle_exceptions
