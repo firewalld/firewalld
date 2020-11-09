@@ -689,6 +689,13 @@ class nftables(object):
         # filter, OUTPUT
         default_rules.append({"add": {"rule":  {"family": "inet",
                                                 "table": TABLE_NAME,
+                                                "chain": "filter_%s" % "OUTPUT",
+                                                "expr": [{"match": {"left": {"ct": {"key": "state"}},
+                                                                    "op": "in",
+                                                                    "right": {"set": ["established", "related"]}}},
+                                                         {"accept": None}]}}})
+        default_rules.append({"add": {"rule":  {"family": "inet",
+                                                "table": TABLE_NAME,
                                                 "chain": "filter_OUTPUT",
                                                 "expr": [{"match": {"left": {"meta": {"key": "oifname"}},
                                                           "op": "==",
@@ -1733,7 +1740,7 @@ class nftables(object):
         rules.append({"add": {"rule": {"family": "inet",
                                        "table": TABLE_NAME,
                                        "chain": "filter_OUTPUT",
-                                       "index": 0,
+                                       "index": 1,
                                        "expr": expr_fragments}}})
         rules.append({"add": {"rule": {"family": "inet",
                                        "table": TABLE_NAME,
