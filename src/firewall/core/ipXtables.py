@@ -725,6 +725,7 @@ class ip4tables(object):
         default_rules["filter"] += [
             "-N OUTPUT_direct",
 
+            "-A OUTPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT",
             "-A OUTPUT -o lo -j ACCEPT",
             "-A OUTPUT -j OUTPUT_direct",
         ]
@@ -1469,7 +1470,7 @@ class ip6tables(ip4tables):
                               "--log-prefix", "\"RFC3964_IPv4_REJECT: \""])
 
         # Inject into FORWARD and OUTPUT chains
-        rules.append(["-t", "filter", "-I", "OUTPUT", "3",
+        rules.append(["-t", "filter", "-I", "OUTPUT", "4",
                       "-j", chain_name])
         rules.append(["-t", "filter", "-I", "FORWARD", "4",
                       "-j", chain_name])
