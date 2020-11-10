@@ -129,7 +129,7 @@ source [not] address="address[/mask]"|mac="mac-address"|ipset="ipset"
       <title>Destination</title>
       <para>
 	<programlisting>
-destination [not] address="address[/mask]"
+destination [not] address="address[/mask]"|ipset="ipset"
 	</programlisting>
 	With the destination address the target can be limited to the destination address. The destination address is using the same syntax as the source address.
       </para>

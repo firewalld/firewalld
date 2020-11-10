@@ -73,7 +73,7 @@ class Zone(IO_Object):
         "interface": [ "name" ],
         "rule": None,
         "source": None,
-        "destination": [ "address" ],
+        "destination": None,
         "protocol": [ "value" ],
         "source-port": [ "port", "protocol" ],
         "log":  None,
@@ -91,7 +91,7 @@ class Zone(IO_Object):
         "forward-port": [ "to-port", "to-addr" ],
         "rule": [ "family", "priority" ],
         "source": [ "address", "mac", "invert", "family", "ipset" ],
-        "destination": [ "invert" ],
+        "destination": [ "address", "invert", "ipset" ],
         "log": [ "prefix", "level" ],
         "reject": [ "type" ],
         "tcp-mss-clamp": [ "value" ],
@@ -199,6 +199,11 @@ class Zone(IO_Object):
                 if not checkIPnMask(source) and not checkIP6nMask(source) and \
                    not check_mac(source) and not source.startswith("ipset:"):
                     raise FirewallError(errors.INVALID_ADDR, source)
+        elif item == "destination":
+            for destination in config:
+                if not checkIPnMask(destination) and not checkIP6nMask(destination) and \
+                   not destination.startswith("ipset:"):
+                    raise FirewallError(errors.INVALID_ADDR, destination)
 
     def check_name(self, name):
         super(Zone, self).check_name(name)

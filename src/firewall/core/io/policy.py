@@ -202,11 +202,18 @@ def common_startElement(obj, name, attrs):
                         str(obj._rule))
             return True
         invert = False
+        address = None
+        if "address" in attrs:
+            address = attrs["address"]
+        ipset = None
+        if "ipset" in attrs:
+            ipset = attrs["ipset"]
         if "invert" in attrs and \
                 attrs["invert"].lower() in [ "yes", "true" ]:
             invert = True
-        obj._rule.destination = rich.Rich_Destination(attrs["address"],
-                                                       invert)
+        obj._rule.destination = rich.Rich_Destination(address,
+                                                      ipset,
+                                                      invert)
 
     elif name in [ "accept", "reject", "drop", "mark" ]:
         if not obj._rule:
@@ -463,7 +470,11 @@ def common_writer(obj, handler):
 
         # destination
         if rule.destination:
-            attrs = { "address": rule.destination.addr }
+            attrs = { }
+            if rule.destination.addr:
+                attrs["address"] = rule.destination.addr
+            if rule.destination.ipset:
+                attrs["ipset"] = rule.destination.ipset
             if rule.destination.invert:
                 attrs["invert"] = "True"
             handler.ignorableWhitespace("    ")
@@ -626,7 +637,7 @@ class Policy(IO_Object):
         "forward-port": [ "port", "protocol" ],
         "rule": None,
         "source": None,
-        "destination": [ "address" ],
+        "destination": None,
         "protocol": [ "value" ],
         "source-port": [ "port", "protocol" ],
         "log":  None,
@@ -644,7 +655,7 @@ class Policy(IO_Object):
         "forward-port": [ "to-port", "to-addr" ],
         "rule": [ "family", "priority" ],
         "source": [ "address", "mac", "invert", "family", "ipset" ],
-        "destination": [ "invert" ],
+        "destination": [ "address", "invert", "ipset" ],
         "log": [ "prefix", "level" ],
         "reject": [ "type" ],
         "tcp-mss-clamp": [ "value" ],
