@@ -63,13 +63,27 @@ class Rich_Source(object):
                                 "no address, mac and ipset")
 
 class Rich_Destination(object):
-    def __init__(self, addr, invert=False):
+    def __init__(self, addr, ipset, invert=False):
         self.addr = addr
+        if self.addr == "":
+            self.addr = None
+        self.ipset = ipset
+        if self.ipset == "":
+            self.ipset = None
         self.invert = invert
+        if self.addr is None and self.ipset is None:
+            raise FirewallError(errors.INVALID_RULE,
+                                "no address and ipset")
 
     def __str__(self):
-        return 'destination %saddress="%s"' % ("not " if self.invert else "",
-                                               self.addr)
+        ret = 'destination%s ' % (" NOT" if self.invert else "")
+        if self.addr is not None:
+            return ret + 'address="%s"' % self.addr
+        elif self.ipset is not None:
+            return ret + 'ipset="%s"' % self.ipset
+        else:
+            raise FirewallError(errors.INVALID_RULE,
+                                "no address and ipset")
 
 class Rich_Service(object):
     def __init__(self, name):
@@ -409,12 +423,12 @@ class Rich_Rule(object):
                     attrs.clear()
                     index = index -1 # return token to input
             elif in_element == 'destination':
-                if attr_name in ['address', 'invert']:
+                if attr_name in ['address', 'ipset', 'invert']:
                     attrs[attr_name] = attr_value
                 elif element in ['not', 'NOT']:
                     attrs['invert'] = True
                 else:
-                    self.destination = Rich_Destination(attrs.get('address'), attrs.get('invert'))
+                    self.destination = Rich_Destination(attrs.get('address'), attrs.get('ipset'), attrs.get('invert', False))
                     in_elements.pop() # destination
                     attrs.clear()
                     index = index -1 # return token to input
@@ -601,12 +615,20 @@ class Rich_Rule(object):
 
         # destination
         if self.destination is not None:
-            if self.family is None:
-                raise FirewallError(errors.INVALID_FAMILY)
-            if self.destination.addr is None or \
-                    not functions.check_address(self.family,
-                                                self.destination.addr):
-                raise FirewallError(errors.INVALID_ADDR, str(self.destination.addr))
+            if self.destination.addr is not None:
+                if self.family is None:
+                    raise FirewallError(errors.INVALID_FAMILY)
+                if self.destination.ipset is not None:
+                    raise FirewallError(errors.INVALID_DESTINATION, "address and ipset")
+                if not functions.check_address(self.family, self.destination.addr):
+                    raise FirewallError(errors.INVALID_ADDR, str(self.destination.addr))
+
+            elif self.destination.ipset is not None:
+                if not check_ipset_name(self.destination.ipset):
+                    raise FirewallError(errors.INVALID_IPSET, str(self.destination.ipset))
+
+            else:
+                raise FirewallError(errors.INVALID_RULE, "invalid destination")
 
         # service
         if type(self.element) == Rich_Service:

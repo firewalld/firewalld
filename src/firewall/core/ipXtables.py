@@ -1117,15 +1117,22 @@ class ip4tables(object):
             return []
 
         rule_fragment = []
-        if rich_dest.invert:
-            rule_fragment.append("!")
-        if check_single_address("ipv6", rich_dest.addr):
-            rule_fragment += [ "-d", normalizeIP6(rich_dest.addr) ]
-        elif check_address("ipv6", rich_dest.addr):
-            addr_split = rich_dest.addr.split("/")
-            rule_fragment += [ "-d", normalizeIP6(addr_split[0]) + "/" + addr_split[1] ]
-        else:
-            rule_fragment += [ "-d", rich_dest.addr ]
+        if rich_dest.addr:
+            if rich_dest.invert:
+                rule_fragment.append("!")
+            if check_single_address("ipv6", rich_dest.addr):
+                rule_fragment += [ "-d", normalizeIP6(rich_dest.addr) ]
+            elif check_address("ipv6", rich_dest.addr):
+                addr_split = rich_dest.addr.split("/")
+                rule_fragment += [ "-d", normalizeIP6(addr_split[0]) + "/" + addr_split[1] ]
+            else:
+                rule_fragment += [ "-d", rich_dest.addr ]
+        elif rich_dest.ipset:
+            rule_fragment += [ "-m", "set" ]
+            if rich_dest.invert:
+                rule_fragment.append("!")
+            flags = self._fw.zone._ipset_match_flags(rich_dest.ipset, "dst")
+            rule_fragment += [ "--match-set", rich_dest.ipset, flags ]
 
         return rule_fragment
 
