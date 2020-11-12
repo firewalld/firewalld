@@ -1,0 +1,30 @@
+FWD_START_TEST([rich destination ipset])
+AT_KEYWORDS(rich ipset)
+
+FWD_CHECK([--permanent --new-ipset=foobar --type=hash:ip], 0, [ignore])
+FWD_RELOAD
+
+FWD_CHECK([--permanent --add-rich-rule='rule family=ipv4 destination ipset=foobar accept'], 0, [ignore])
+FWD_CHECK([            --add-rich-rule='rule family=ipv4 destination ipset=foobar accept'], 0, [ignore])
+NFT_LIST_RULES([inet], [filter_IN_public_allow], 0, [dnl
+    table inet firewalld {
+        chain filter_IN_public_allow {
+            tcp dport 22 ct state new,untracked accept
+            ip6 daddr fe80::/64 udp dport 546 ct state new,untracked accept
+            ip daddr @foobar accept
+        }
+    }
+])
+IPTABLES_LIST_RULES([filter], [IN_public_allow], 0, [dnl
+    ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:22 ctstate NEW,UNTRACKED
+    ACCEPT all -- 0.0.0.0/0 0.0.0.0/0 match-set foobar dst
+])
+
+dnl negative tests
+FWD_CHECK([--permanent --add-rich-rule='rule family=ipv4 destination bogus=foobar accept'], 122, [ignore], [ignore])
+FWD_CHECK([            --add-rich-rule='rule family=ipv4 destination bogus=foobar accept'], 122, [ignore], [ignore])
+FWD_CHECK([--permanent --add-rich-rule='rule family=ipv4 destination address=10.0.0.1 ipset=foobar accept'], 121, [ignore], [ignore])
+FWD_CHECK([            --add-rich-rule='rule family=ipv4 destination address=10.0.0.1 ipset=foobar accept'], 121, [ignore], [ignore])
+
+FWD_END_TEST([-e '/ERROR: INVALID_RULE: bad attribute/d'dnl
+              -e '/ERROR: INVALID_DESTINATION: address and ipset/d'])
