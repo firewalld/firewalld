@@ -1,0 +1,24 @@
+FWD_START_TEST([rich rules strip non-printable characters])
+AT_KEYWORDS(rich rhbz1596304)
+
+dnl source address contains a tab character
+FWD_CHECK([--permanent --zone=public --add-rich-rule 'rule family="ipv4" source address="104.243.250.0/22	" port port=80 protocol=tcp accept'],0,ignore)
+FWD_RELOAD
+FWD_CHECK([--list-all | TRIM_WHITESPACE], 0, [m4_strip([dnl
+        public
+        target: default
+        icmp-block-inversion: no
+        interfaces:
+        sources:
+        services: dhcpv6-client ssh
+        ports:
+        protocols:
+        forward: no
+        masquerade: no
+        forward-ports:
+        source-ports:
+        icmp-blocks:
+        rich rules:
+	rule family="ipv4" source address="104.243.250.0/22" port port="80" protocol="tcp" accept
+    ])])
+FWD_END_TEST
