@@ -27,7 +27,8 @@ __all__ = [ "PY2", "getPortID", "getPortRange", "portStr", "getServiceName",
             "check_single_address", "check_mac", "uniqify", "ppid_of_pid",
             "max_zone_name_len", "checkUser", "checkUid", "checkCommand",
             "checkContext", "joinArgs", "splitArgs",
-            "b2u", "u2b", "u2b_if_py2", "max_policy_name_len"]
+            "b2u", "u2b", "u2b_if_py2", "max_policy_name_len",
+            "stripNonPrintableCharacters"]
 
 import socket
 import os
@@ -41,6 +42,10 @@ from firewall.core.logger import log
 from firewall.config import FIREWALLD_TEMPDIR, FIREWALLD_PIDFILE
 
 PY2 = sys.version < '3'
+
+NOPRINT_TRANS_TABLE = {
+    i: None for i in range(0, sys.maxunicode + 1) if not chr(i).isprintable()
+}
 
 def getPortID(port):
     """ Check and Get port id from port string or port id using socket.getservbyname
@@ -310,6 +315,9 @@ def checkIPnMask(ip):
             if i < 0 or i > 32:
                 return False
     return True
+
+def stripNonPrintableCharacters(rule_str):
+    return rule_str.translate(NOPRINT_TRANS_TABLE)
 
 def checkIP6nMask(ip):
     if "/" in ip:
