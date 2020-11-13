@@ -667,8 +667,6 @@ class FirewallDConfig(slip.dbus.service.Object):
                 "org.freedesktop.DBus.Error.UnknownInterface: "
                 "Interface '%s' does not exist" % interface_name)
 
-        return self._get_dbus_property(property_name)
-
     @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='s',
                          out_signature='a{sv}')
     @dbus_handle_exceptions
