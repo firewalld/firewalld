@@ -307,6 +307,8 @@ class Rich_Rule(object):
         if not rule_str:
             raise FirewallError(errors.INVALID_RULE, 'empty rule')
 
+        rule_str = functions.stripNonPrintableCharacters(rule_str)
+
         self.priority = 0
         self.family = None
         self.source = None
