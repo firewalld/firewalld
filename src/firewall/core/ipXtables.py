@@ -814,6 +814,10 @@ class ip4tables(object):
         else:
             zone_dispatch_chain = "%s_ZONES" % (chain)
 
+        # iptables can not match destination MAC
+        if check_mac(address) and chain in ["POSTROUTING", "FORWARD_OUT", "OUTPUT"]:
+            return []
+
         target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[chain], zone=zone)
         action = "-g"
 
