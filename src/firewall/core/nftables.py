@@ -1138,8 +1138,6 @@ class nftables(object):
             return self._set_match_fragment(address[len("ipset:"):], True if "daddr" == addr_field else False, invert)
         else:
             if check_mac(address):
-                if addr_field == "daddr":
-                    raise FirewallError(INVALID_RULE, "%s._rule_addr_fragment()", (self.__class__))
                 family = "ether"
             elif check_single_address("ipv4", address):
                 family = "ip"

@@ -818,6 +818,10 @@ class ip4tables(object):
             ipv = self._fw.zone.check_source(addr)
             if ipv in ["ipv4", "ipv6"] and not self.is_ipv_supported(ipv):
                 continue
+            # iptables can not match destination MAC
+            if check_mac(addr) and chain in ["POSTROUTING", "FORWARD_OUT", "OUTPUT"]:
+                continue
+
             egress_fragments.append(self._rule_addr_fragment("-d", addr))
 
         def _generate_policy_dispatch_rule(ingress_fragment, egress_fragment):
@@ -935,6 +939,10 @@ class ip4tables(object):
             zone_dispatch_chain = "%s_ZONES_SOURCE" % (chain)
         else:
             zone_dispatch_chain = "%s_ZONES" % (chain)
+
+        # iptables can not match destination MAC
+        if check_mac(address) and chain in ["POSTROUTING", "FORWARD_OUT", "OUTPUT"]:
+            return []
 
         rule = [add_del, zone_dispatch_chain, "%%ZONE_SOURCE%%", zone, "-t", table]
         rule.extend(self._rule_addr_fragment(opt, address))
@@ -1297,6 +1305,10 @@ class ip4tables(object):
             rules.append(["-t", "filter", add_del, "%s_allow" % _policy,
                           "-o", interface, "-j", "ACCEPT"])
         else: # source
+            # iptables can not match destination MAC
+            if check_mac(source):
+                return []
+
             rules.append(["-t", "filter", add_del, "%s_allow" % _policy]
                          + self._rule_addr_fragment("-d", source) +
                          ["-j", "ACCEPT"])
