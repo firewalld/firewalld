@@ -1,0 +1,25 @@
+FWD_START_TEST([add source with mac address])
+AT_KEYWORDS(gh703)
+
+FWD_CHECK([--zone=home --add-source=34:7e:5c:3a:4c:32], 0, [ignore])
+
+NFT_LIST_RULES([ip], [nat_POSTROUTING_ZONES], 0, [dnl
+    table ip firewalld {
+        chain nat_POSTROUTING_ZONES {
+            ether daddr 34:7e:5c:3a:4c:32 goto nat_POST_home
+            goto nat_POST_public
+        }          
+    }          
+])
+NFT_LIST_RULES([ip6], [nat_POSTROUTING_ZONES], 0, [dnl
+    table ip6 firewalld {
+        chain nat_POSTROUTING_ZONES {
+            ether daddr 34:7e:5c:3a:4c:32 goto nat_POST_home
+            goto nat_POST_public
+        }          
+    }          
+])
+
+dnl NOTE: iptables does _not_ support matching mac destination.
+
+FWD_END_TEST
