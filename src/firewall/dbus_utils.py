@@ -27,12 +27,9 @@ __all__ = [ "command_of_pid", "pid_of_sender", "uid_of_sender", "user_of_uid",
 
 import dbus
 import pwd
-import sys
 from xml.dom import minidom
 
 from firewall.core.logger import log
-
-PY2 = sys.version < '3'
 
 def command_of_pid(pid):
     """ Get command for pid from /proc """
@@ -106,8 +103,6 @@ def dbus_to_python(obj, expected_type=None):
     elif isinstance(obj, dbus.Boolean):
         python_obj = bool(obj)
     elif isinstance(obj, dbus.String):
-        python_obj = obj.encode('utf-8') if PY2 else str(obj)
-    elif PY2 and isinstance(obj, dbus.UTF8String):  # Python3 has no UTF8String
         python_obj = str(obj)
     elif isinstance(obj, dbus.ObjectPath):
         python_obj = str(obj)
@@ -180,8 +175,6 @@ def dbus_signature(obj):
         return '(%s)' % obj.signature
     elif isinstance(obj, dbus.Dictionary):
         return 'a{%s}' % obj.signature
-    elif PY2 and isinstance(obj, dbus.UTF8String):
-        return 's'
     else:
         raise TypeError("Unhandled %s" % repr(obj))
 
