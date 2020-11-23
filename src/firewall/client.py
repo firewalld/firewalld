@@ -32,7 +32,6 @@ from decorator import decorator
 from firewall import config
 from firewall.core.base import DEFAULT_ZONE_TARGET, DEFAULT_POLICY_TARGET, DEFAULT_POLICY_PRIORITY
 from firewall.dbus_utils import dbus_to_python
-from firewall.functions import b2u
 from firewall.core.rich import Rich_Rule
 from firewall import errors
 from firewall.errors import FirewallError
@@ -66,17 +65,17 @@ def handle_exceptions(func, *args, **kwargs):
                 if dbus_message:
                     exception_handler(dbus_message)
                 else:
-                    exception_handler(b2u(str(e)))
+                    exception_handler(str(e))
         except FirewallError as e:
             if not exception_handler:
                 raise
             else:
-                exception_handler(b2u(str(e)))
+                exception_handler(str(e))
         except Exception:
             if not exception_handler:
                 raise
             else:
-                exception_handler(b2u(traceback.format_exc()))
+                exception_handler(traceback.format_exc())
         if not not_authorized_loop:
             break
 
