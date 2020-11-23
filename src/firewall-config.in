@@ -2287,12 +2287,10 @@ class FirewallConfig(object):
         if "NotAuthorizedException" in exception_message:
             self._error(_("Authorization failed."))
         elif "INVALID_NAME" in exception_message:
-            msg = exception_message.replace("INVALID_NAME",
-                                            functions.b2u(_("Invalid name")))
+            msg = exception_message.replace("INVALID_NAME", _("Invalid name"))
             self._warning(msg)
         elif "NAME_CONFLICT" in exception_message:
-            msg = exception_message.replace(
-                "NAME_CONFLICT", functions.b2u(_("Name already exists")))
+            msg = exception_message.replace("NAME_CONFLICT", _("Name already exists"))
             self._warning(msg)
         elif "NO_DEFAULTS" in exception_message:
             pass
