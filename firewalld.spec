@@ -1,10 +1,3 @@
-%if (0%{?fedora} >= 13 || 0%{?rhel} > 7)
-%global with_python3 1
-%if (0%{?fedora} >= 23 || 0%{?rhel} >= 8)
-%global use_python3 1
-%endif
-%endif
-
 Summary: A firewall daemon with D-Bus interface providing a dynamic firewall
 Name: firewalld
 Version: 0.9.999
@@ -23,40 +16,19 @@ BuildRequires: glib2, glib2-devel
 BuildRequires: systemd-units
 BuildRequires: docbook-style-xsl
 BuildRequires: libxslt
-BuildRequires: python2-devel
 BuildRequires: iptables, ebtables, ipset
-%if 0%{?with_python3}
-BuildRequires:  python3-devel
-%endif #0%{?with_python3}
+BuildRequires: python3-devel
 Requires: iptables, ebtables, ipset
 Requires(post): systemd
 Requires(preun): systemd
 Requires(postun): systemd
 Requires: firewalld-filesystem = %{version}-%{release}
-%if 0%{?use_python3}
 Requires: python3-firewall  = %{version}-%{release}
-%else #0%{?use_python3}
-Requires: python-firewall  = %{version}-%{release}
-%endif #0%{?use_python3}
 
 %description
 firewalld is a firewall service daemon that provides a dynamic customizable 
 firewall with a D-Bus interface.
 
-%package -n python-firewall
-Summary: Python2 bindings for firewalld
-Provides: python2-firewall
-Obsoletes: python2-firewall
-Requires: dbus-python
-Requires: python-slip-dbus
-Requires: python-decorator
-Requires: pygobject3-base
-Requires: python-nftables
-
-%description -n python-firewall
-Python2 bindings for firewalld.
-
-%if 0%{?with_python3}
 %package -n python3-firewall
 Summary: Python3 bindings for firewalld
 Requires: python3-dbus
@@ -71,7 +43,6 @@ Requires: python3-gobject
 
 %description -n python3-firewall
 Python3 bindings for firewalld.
-%endif #0%{?with_python3}
 
 %package -n firewalld-filesystem
 Summary: Firewalld directory layout and rpm macros
@@ -85,13 +56,8 @@ Summary: Firewall panel applet
 Requires: %{name} = %{version}-%{release}
 Requires: firewall-config = %{version}-%{release}
 Requires: hicolor-icon-theme
-%if 0%{?use_python3}
 Requires: python3-qt5
 Requires: python3-gobject
-%else
-Requires: python-qt5
-Requires: pygobject3-base
-%endif
 Requires: libnotify
 Requires: NetworkManager-libnm
 Requires: dbus-x11
@@ -105,11 +71,7 @@ Summary: Firewall configuration application
 Requires: %{name} = %{version}-%{release}
 Requires: hicolor-icon-theme
 Requires: gtk3
-%if 0%{?use_python3}
 Requires: python3-gobject
-%else
-Requires: pygobject3-base
-%endif
 Requires: NetworkManager-libnm
 Requires: dbus-x11
 
@@ -121,46 +83,12 @@ firewalld.
 %autosetup
 ./autogen.sh
 
-%if 0%{?with_python3}
-rm -rf %{py3dir}
-cp -a . %{py3dir}
-%endif #0%{?with_python3}
-
 %build
-%configure --enable-sysconfig --enable-rpmmacros
-%if 0%{?use_python3}
-make -C src %{?_smp_mflags}
-%else
-make %{?_smp_mflags}
-%endif
-
-%if 0%{?with_python3}
-pushd %{py3dir}
 %configure --enable-sysconfig --enable-rpmmacros PYTHON=%{__python3}
-%if 0%{?use_python3}
 make %{?_smp_mflags}
-%else
-make -C src %{?_smp_mflags}
-%endif
-popd
-%endif #0%{?with_python3}
 
 %install
-%if 0%{?use_python3}
-make -C src install-nobase_dist_pythonDATA PYTHON=%{__python2} DESTDIR=%{buildroot}
-%else
-make install PYTHON=%{__python2} DESTDIR=%{buildroot}
-%endif #0%{?use_python3}
-
-%if 0%{?with_python3}
-pushd %{py3dir}
-%if 0%{?use_python3}
-make install PYTHON=%{__python3} DESTDIR=%{buildroot}
-%else
-make -C src install-nobase_dist_pythonDATA PYTHON=%{__python3} DESTDIR=%{buildroot}
-%endif #0%{?use_python3}
-popd
-%endif #0%{?with_python3}
+make install DESTDIR=%{buildroot}
 
 desktop-file-install --delete-original \
   --dir %{buildroot}%{_sysconfdir}/xdg/autostart \
@@ -248,19 +176,6 @@ fi
 %{_sysconfdir}/modprobe.d/firewalld-sysctls.conf
 %{_sysconfdir}/logrotate.d/firewalld
 
-%files -n python-firewall
-%attr(0755,root,root) %dir %{python2_sitelib}/firewall
-%attr(0755,root,root) %dir %{python2_sitelib}/firewall/config
-%attr(0755,root,root) %dir %{python2_sitelib}/firewall/core
-%attr(0755,root,root) %dir %{python2_sitelib}/firewall/core/io
-%attr(0755,root,root) %dir %{python2_sitelib}/firewall/server
-%{python2_sitelib}/firewall/*.py*
-%{python2_sitelib}/firewall/config/*.py*
-%{python2_sitelib}/firewall/core/*.py*
-%{python2_sitelib}/firewall/core/io/*.py*
-%{python2_sitelib}/firewall/server/*.py*
-
-%if 0%{?with_python3}
 %files -n python3-firewall
 %attr(0755,root,root) %dir %{python3_sitelib}/firewall
 %attr(0755,root,root) %dir %{python3_sitelib}/firewall/__pycache__
@@ -282,7 +197,6 @@ fi
 %{python3_sitelib}/firewall/core/io/__pycache__/*.py*
 %{python3_sitelib}/firewall/server/*.py*
 %{python3_sitelib}/firewall/server/__pycache__/*.py*
-%endif #0%{?with_python3}
 
 %files -n firewalld-filesystem
 %dir %{_prefix}/lib/firewalld
