@@ -27,8 +27,7 @@ import io
 import shutil
 
 from firewall import config
-from firewall.functions import u2b_if_py2
-from firewall.core.io.io_object import PY2, IO_Object, \
+from firewall.core.io.io_object import IO_Object, \
     IO_Object_ContentHandler, IO_Object_XMLGenerator, check_port, \
     check_tcpudp
 from firewall.core.logger import log
@@ -72,17 +71,6 @@ class Helper(IO_Object):
         self.module = ""
         self.family = ""
         del self.ports[:]
-
-    def encode_strings(self):
-        """ HACK. I haven't been able to make sax parser return
-            strings encoded (because of python 2) instead of in unicode.
-            Get rid of it once we throw out python 2 support."""
-        self.version = u2b_if_py2(self.version)
-        self.short = u2b_if_py2(self.short)
-        self.description = u2b_if_py2(self.description)
-        self.module = u2b_if_py2(self.module)
-        self.family = u2b_if_py2(self.family)
-        self.ports = [(u2b_if_py2(po),u2b_if_py2(pr)) for (po,pr) in self.ports]
 
     def check_ipv(self, ipv):
         ipvs = [ 'ipv4', 'ipv6' ]
@@ -167,8 +155,6 @@ def helper_reader(filename, path):
                                 msg.getException())
     del handler
     del parser
-    if PY2:
-        helper.encode_strings()
     return helper
 
 def helper_writer(helper, path=None):
