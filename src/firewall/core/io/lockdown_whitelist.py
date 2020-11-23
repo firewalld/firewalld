@@ -25,11 +25,11 @@ import io
 import shutil
 
 from firewall import config
-from firewall.core.io.io_object import PY2, IO_Object, \
+from firewall.core.io.io_object import IO_Object, \
                     IO_Object_ContentHandler, IO_Object_XMLGenerator
 from firewall.core.logger import log
 from firewall.functions import uniqify, checkUser, checkUid, checkCommand, \
-                               checkContext, u2b_if_py2
+                               checkContext
 from firewall import errors
 from firewall.errors import FirewallError
 
@@ -142,14 +142,6 @@ class LockdownWhitelist(IO_Object):
         del self.uids[:]
 #        del self.gids[:]
 #        del self.groups[:]
-
-    def encode_strings(self):
-        """ HACK. I haven't been able to make sax parser return
-            strings encoded (because of python 2) instead of in unicode.
-            Get rid of it once we throw out python 2 support."""
-        self.commands = [ u2b_if_py2(x) for x in self.commands ]
-        self.contexts = [ u2b_if_py2(x) for x in self.contexts ]
-        self.users = [ u2b_if_py2(x) for x in self.users ]
 
     # commands
 
@@ -331,8 +323,6 @@ class LockdownWhitelist(IO_Object):
                                 msg.getException())
         del handler
         del parser
-        if PY2:
-            self.encode_strings()
 
     def write(self):
         if os.path.exists(self.filename):
