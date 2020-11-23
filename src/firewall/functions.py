@@ -19,7 +19,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-__all__ = [ "PY2", "getPortID", "getPortRange", "portStr", "getServiceName",
+__all__ = [ "getPortID", "getPortRange", "portStr", "getServiceName",
             "checkIP", "checkIP6", "checkIPnMask", "checkIP6nMask",
             "checkProtocol", "checkInterface", "checkUINT32",
             "firewalld_is_active", "tempFile", "readfile", "writefile",
@@ -27,7 +27,7 @@ __all__ = [ "PY2", "getPortID", "getPortRange", "portStr", "getServiceName",
             "check_single_address", "check_mac", "uniqify", "ppid_of_pid",
             "max_zone_name_len", "checkUser", "checkUid", "checkCommand",
             "checkContext", "joinArgs", "splitArgs",
-            "b2u", "u2b", "u2b_if_py2", "max_policy_name_len", "checkTcpMssClamp"]
+            "max_policy_name_len", "checkTcpMssClamp"]
 
 import socket
 import os
@@ -35,12 +35,9 @@ import os.path
 import shlex
 import pipes
 import string
-import sys
 import tempfile
 from firewall.core.logger import log
 from firewall.config import FIREWALLD_TEMPDIR, FIREWALLD_PIDFILE
-
-PY2 = sys.version < '3'
 
 def getPortID(port):
     """ Check and Get port id from port string or port id using socket.getservbyname
@@ -592,28 +589,4 @@ def joinArgs(args):
         return " ".join(pipes.quote(a) for a in args)
 
 def splitArgs(_string):
-    if PY2 and isinstance(_string, unicode): # noqa: F821
-        # Python2's shlex doesn't like unicode
-        _string = u2b(_string)
-        splits = shlex.split(_string)
-        return map(b2u, splits)
-    else:
-        return shlex.split(_string)
-
-def b2u(_string):
-    """ bytes to unicode """
-    if isinstance(_string, bytes):
-        return _string.decode('UTF-8', 'replace')
-    return _string
-
-def u2b(_string):
-    """ unicode to bytes """
-    if not isinstance(_string, bytes):
-        return _string.encode('UTF-8', 'replace')
-    return _string
-
-def u2b_if_py2(_string):
-    """ unicode to bytes only if Python 2"""
-    if PY2 and isinstance(_string, unicode): # noqa: F821
-        return _string.encode('UTF-8', 'replace')
-    return _string
+    return shlex.split(_string)
