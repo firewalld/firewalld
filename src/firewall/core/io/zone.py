@@ -27,9 +27,9 @@ import io
 import shutil
 
 from firewall import config
-from firewall.functions import checkIPnMask, checkIP6nMask, checkInterface, uniqify, max_zone_name_len, u2b_if_py2, check_mac
+from firewall.functions import checkIPnMask, checkIP6nMask, checkInterface, uniqify, max_zone_name_len, check_mac
 from firewall.core.base import DEFAULT_ZONE_TARGET, ZONE_TARGETS
-from firewall.core.io.io_object import PY2, IO_Object, \
+from firewall.core.io.io_object import IO_Object, \
     IO_Object_ContentHandler, IO_Object_XMLGenerator
 from firewall.core.io.policy import common_startElement, common_endElement, common_check_config, common_writer
 from firewall.core import rich
@@ -150,26 +150,6 @@ class Zone(IO_Object):
         self.icmp_block_inversion = False
         self.combined = False
         self.applied = False
-
-    def encode_strings(self):
-        """ HACK. I haven't been able to make sax parser return
-            strings encoded (because of python 2) instead of in unicode.
-            Get rid of it once we throw out python 2 support."""
-        self.version = u2b_if_py2(self.version)
-        self.short = u2b_if_py2(self.short)
-        self.description = u2b_if_py2(self.description)
-        self.target = u2b_if_py2(self.target)
-        self.services = [u2b_if_py2(s) for s in self.services]
-        self.ports = [(u2b_if_py2(po),u2b_if_py2(pr)) for (po,pr) in self.ports]
-        self.protocols = [u2b_if_py2(pr) for pr in self.protocols]
-        self.icmp_blocks = [u2b_if_py2(i) for i in self.icmp_blocks]
-        self.forward_ports = [(u2b_if_py2(p1),u2b_if_py2(p2),u2b_if_py2(p3),u2b_if_py2(p4)) for (p1,p2,p3,p4) in self.forward_ports]
-        self.source_ports = [(u2b_if_py2(po),u2b_if_py2(pr)) for (po,pr)
-                             in self.source_ports]
-        self.interfaces = [u2b_if_py2(i) for i in self.interfaces]
-        self.sources = [u2b_if_py2(s) for s in self.sources]
-        self.rules = [u2b_if_py2(s) for s in self.rules]
-        self.rules_str = [u2b_if_py2(s) for s in self.rules_str]
 
     def __setattr__(self, name, value):
         if name == "rules_str":
@@ -420,8 +400,6 @@ def zone_reader(filename, path, no_check_name=False):
                                 msg.getException())
     del handler
     del parser
-    if PY2:
-        zone.encode_strings()
     return zone
 
 def zone_writer(zone, path=None):
