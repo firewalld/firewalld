@@ -27,8 +27,7 @@ import io
 import shutil
 
 from firewall import config
-from firewall.functions import u2b_if_py2
-from firewall.core.io.io_object import PY2, IO_Object, \
+from firewall.core.io.io_object import IO_Object, \
     IO_Object_ContentHandler, IO_Object_XMLGenerator
 from firewall.core.logger import log
 from firewall import errors
@@ -65,15 +64,6 @@ class IcmpType(IO_Object):
         self.short = ""
         self.description = ""
         del self.destination[:]
-
-    def encode_strings(self):
-        """ HACK. I haven't been able to make sax parser return
-            strings encoded (because of python 2) instead of in unicode.
-            Get rid of it once we throw out python 2 support."""
-        self.version = u2b_if_py2(self.version)
-        self.short = u2b_if_py2(self.short)
-        self.description = u2b_if_py2(self.description)
-        self.destination = [u2b_if_py2(m) for m in self.destination]
 
     def _check_config(self, config, item, all_config):
         if item == "destination":
@@ -132,8 +122,6 @@ def icmptype_reader(filename, path):
                                 msg.getException())
     del handler
     del parser
-    if PY2:
-        icmptype.encode_strings()
     return icmptype
 
 def icmptype_writer(icmptype, path=None):
