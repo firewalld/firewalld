@@ -26,7 +26,6 @@ import shutil
 
 from firewall import config
 from firewall.core.logger import log
-from firewall.functions import b2u, u2b, PY2
 
 valid_keys = [ "DefaultZone", "MinimalMark", "CleanupOnExit", "Lockdown",
                "IPv6_rpfilter", "IndividualCalls", "LogDenied",
@@ -52,8 +51,8 @@ class firewalld_conf(object):
         return self._config.get(key.strip())
 
     def set(self, key, value):
-        _key = b2u(key.strip())
-        self._config[_key] = b2u(value.strip())
+        _key = key.strip()
+        self._config[_key] = value.strip()
         if _key in self._deleted:
             self._deleted.remove(_key)
 
@@ -63,7 +62,7 @@ class firewalld_conf(object):
             if s:
                 s += '\n'
             s += '%s=%s' % (key, value)
-        return u2b(s) if PY2 else s
+        return s
 
     # load self.filename
     def read(self):
