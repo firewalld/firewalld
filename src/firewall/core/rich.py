@@ -759,7 +759,7 @@ class Rich_Rule(object):
         if self.action:
             ret += " %s" % self.action
 
-        return (functions.u2b(ret)) if functions.PY2 else ret
+        return ret
 
 
 #class Rich_RawRule(object):
