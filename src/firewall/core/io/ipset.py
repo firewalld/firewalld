@@ -30,9 +30,9 @@ import shutil
 
 from firewall import config
 from firewall.functions import checkIP, checkIP6, checkIPnMask, \
-    checkIP6nMask, u2b_if_py2, check_mac, check_port, checkInterface, \
+    checkIP6nMask, check_mac, check_port, checkInterface, \
     checkProtocol
-from firewall.core.io.io_object import PY2, IO_Object, \
+from firewall.core.io.io_object import IO_Object, \
     IO_Object_ContentHandler, IO_Object_XMLGenerator
 from firewall.core.ipset import IPSET_TYPES, IPSET_CREATE_OPTIONS
 from firewall.core.icmp import check_icmp_name, check_icmp_type, \
@@ -82,18 +82,6 @@ class IPSet(IO_Object):
         del self.entries[:]
         self.options.clear()
         self.applied = False
-
-    def encode_strings(self):
-        """ HACK. I haven't been able to make sax parser return
-            strings encoded (because of python 2) instead of in unicode.
-            Get rid of it once we throw out python 2 support."""
-        self.version = u2b_if_py2(self.version)
-        self.short = u2b_if_py2(self.short)
-        self.description = u2b_if_py2(self.description)
-        self.type = u2b_if_py2(self.type)
-        self.options = { u2b_if_py2(k):u2b_if_py2(v)
-                         for k, v in self.options.items() }
-        self.entries = [ u2b_if_py2(e) for e in self.entries ]
 
     @staticmethod
     def check_entry(entry, options, ipset_type):
@@ -423,8 +411,6 @@ def ipset_reader(filename, path):
                 entries_set.add(ipset.entries[i])
                 i += 1
     del entries_set
-    if PY2:
-        ipset.encode_strings()
 
     return ipset
 
