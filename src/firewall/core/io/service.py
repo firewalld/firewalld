@@ -27,8 +27,7 @@ import io
 import shutil
 
 from firewall import config
-from firewall.functions import u2b_if_py2
-from firewall.core.io.io_object import PY2, IO_Object, \
+from firewall.core.io.io_object import IO_Object, \
     IO_Object_ContentHandler, IO_Object_XMLGenerator, check_port, \
     check_tcpudp, check_protocol, check_address
 from firewall.core.logger import log
@@ -89,22 +88,6 @@ class Service(IO_Object):
         del self.source_ports[:]
         del self.includes[:]
         del self.helpers[:]
-
-    def encode_strings(self):
-        """ HACK. I haven't been able to make sax parser return
-            strings encoded (because of python 2) instead of in unicode.
-            Get rid of it once we throw out python 2 support."""
-        self.version = u2b_if_py2(self.version)
-        self.short = u2b_if_py2(self.short)
-        self.description = u2b_if_py2(self.description)
-        self.ports = [(u2b_if_py2(po),u2b_if_py2(pr)) for (po,pr) in self.ports]
-        self.modules = [u2b_if_py2(m) for m in self.modules]
-        self.destination = {u2b_if_py2(k):u2b_if_py2(v) for k,v in self.destination.items()}
-        self.protocols = [u2b_if_py2(pr) for pr in self.protocols]
-        self.source_ports = [(u2b_if_py2(po),u2b_if_py2(pr)) for (po,pr)
-                             in self.source_ports]
-        self.includes = [u2b_if_py2(s) for s in self.includes]
-        self.helpers = [u2b_if_py2(s) for s in self.helpers]
 
     def _check_config(self, config, item, all_config):
         if item == "ports":
@@ -251,8 +234,6 @@ def service_reader(filename, path):
                                 msg.getException())
     del handler
     del parser
-    if PY2:
-        service.encode_strings()
     return service
 
 def service_writer(service, path=None):
