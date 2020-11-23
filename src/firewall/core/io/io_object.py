@@ -21,22 +21,17 @@
 
 """Generic io_object handler, io specific check methods."""
 
-__all__ = [ "PY2",
-            "IO_Object", "IO_Object_ContentHandler", "IO_Object_XMLGenerator",
+__all__ = [ "IO_Object", "IO_Object_ContentHandler", "IO_Object_XMLGenerator",
             "check_port", "check_tcpudp", "check_protocol", "check_address" ]
 
 import xml.sax as sax
 import xml.sax.saxutils as saxutils
 import copy
-import sys
 from collections import OrderedDict
 
 from firewall import functions
-from firewall.functions import b2u
 from firewall import errors
 from firewall.errors import FirewallError
-
-PY2 = sys.version < '3'
 
 class IO_Object(object):
     """ Abstract IO_Object as base for icmptype, service and zone """
@@ -256,54 +251,13 @@ class IO_Object_XMLGenerator(saxutils.XMLGenerator):
         self._pending_start_element = False
         self._short_empty_elements = False
 
-    def startElement(self, name, attrs):
-        """ saxutils.XMLGenerator.startElement() expects name and attrs to be
-            unicode and bad things happen if any of them is (utf-8) encoded.
-            We override the method here to sanitize this case.
-            Can be removed once we drop Python2 support.
-        """
-        if PY2:
-            attrs = { b2u(name):b2u(value) for name, value in attrs.items() }
-        saxutils.XMLGenerator.startElement(self, name, attrs)
-
     def simpleElement(self, name, attrs):
         """ slightly modified startElement()
         """
-        if PY2:
-            self._write(u'<' + b2u(name))
-            for (name, value) in attrs.items():
-                self._write(u' %s=%s' % (b2u(name),
-                                         saxutils.quoteattr(b2u(value))))
-            self._write(u'/>')
-        else:
-            self._write('<' + name)
-            for (name, value) in attrs.items():
-                self._write(' %s=%s' % (name, saxutils.quoteattr(value)))
-            self._write('/>')
-
-    def endElement(self, name):
-        """ saxutils.XMLGenerator.endElement() expects name to be
-            unicode and bad things happen if it's (utf-8) encoded.
-            We override the method here to sanitize this case.
-            Can be removed once we drop Python2 support.
-        """
-        saxutils.XMLGenerator.endElement(self, b2u(name))
-
-    def characters(self, content):
-        """ saxutils.XMLGenerator.characters() expects content to be
-            unicode and bad things happen if it's (utf-8) encoded.
-            We override the method here to sanitize this case.
-            Can be removed once we drop Python2 support.
-        """
-        saxutils.XMLGenerator.characters(self, b2u(content))
-
-    def ignorableWhitespace(self, content):
-        """ saxutils.XMLGenerator.ignorableWhitespace() expects content to be
-            unicode and bad things happen if it's (utf-8) encoded.
-            We override the method here to sanitize this case.
-            Can be removed once we drop Python2 support.
-        """
-        saxutils.XMLGenerator.ignorableWhitespace(self, b2u(content))
+        self._write('<' + name)
+        for (name, value) in attrs.items():
+            self._write(' %s=%s' % (name, saxutils.quoteattr(value)))
+        self._write('/>')
 
 def check_port(port):
     port_range = functions.getPortRange(port)
