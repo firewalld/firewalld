@@ -57,7 +57,7 @@ class Zone(IO_Object):
         ( "protocols", [ "", ], ),                     # as
         ( "source_ports", [ ( "", "" ), ], ),          # a(ss)
         ( "icmp_block_inversion", False ),             # b
-        ( "forward", False ),                          # b
+        ( "forward", True ),                           # b
         )
     ADDITIONAL_ALNUM_CHARS = [ "_", "-", "/" ]
     PARSER_REQUIRED_ELEMENT_ATTRS = {
@@ -115,7 +115,7 @@ class Zone(IO_Object):
         self.ports = [ ]
         self.protocols = [ ]
         self.icmp_blocks = [ ]
-        self.forward = False
+        self.forward = True
         self.masquerade = False
         self.forward_ports = [ ]
         self.source_ports = [ ]
@@ -138,7 +138,7 @@ class Zone(IO_Object):
         del self.ports[:]
         del self.protocols[:]
         del self.icmp_blocks[:]
-        self.forward = False
+        self.forward = True
         self.masquerade = False
         del self.forward_ports[:]
         del self.source_ports[:]
@@ -385,6 +385,10 @@ def zone_reader(filename, path, no_check_name=False):
     zone.path = path
     zone.builtin = False if path.startswith(config.ETC_FIREWALLD) else True
     zone.default = zone.builtin
+    # new Zone() objects default this to True, but if reading on disk
+    # configuration we have to assume False, because the absence of
+    # <forward> element indicates False. Presence indicates True.
+    zone.forward = False
     handler = zone_ContentHandler(zone)
     parser = sax.make_parser()
     parser.setContentHandler(handler)
