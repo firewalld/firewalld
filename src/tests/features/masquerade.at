@@ -15,17 +15,11 @@ FWD_CHECK([--permanent --policy=foobar --query-rich-rule='rule family=ipv4 sourc
 FWD_RELOAD
 FWD_CHECK([--policy foobar --query-masquerade], 0, ignore)
 FWD_CHECK([--policy=foobar --query-rich-rule='rule family=ipv4 source address=10.10.10.0/24 masquerade'], 0, [ignore])
-NFT_LIST_RULES([ip], [nat_POST_policy_foobar_allow], 0, [dnl
-    table ip firewalld {
+NFT_LIST_RULES([inet], [nat_POST_policy_foobar_allow], 0, [dnl
+    table inet firewalld {
         chain nat_POST_policy_foobar_allow {
-            oifname != "lo" masquerade
+            meta nfproto ipv4 oifname != "lo" masquerade
             ip saddr 10.10.10.0/24 oifname != "lo" masquerade
-        }
-    }
-])
-NFT_LIST_RULES([ip6], [nat_POST_policy_foobar_allow], 0, [dnl
-    table ip6 firewalld {
-        chain nat_POST_policy_foobar_allow {
         }
     }
 ])
@@ -53,16 +47,10 @@ FWD_CHECK([--policy=foobar --query-rich-rule='rule family=ipv6 source address=12
 FWD_CHECK([--runtime-to-permanent], 0, [ignore])
 FWD_CHECK([--permanent --policy foobar --query-masquerade], 0, [ignore])
 FWD_CHECK([--permanent --policy=foobar --query-rich-rule='rule family=ipv6 source address=1234::/64 masquerade'], 0, [ignore])
-NFT_LIST_RULES([ip], [nat_POST_policy_foobar_allow], 0, [dnl
-    table ip firewalld {
+NFT_LIST_RULES([inet], [nat_POST_policy_foobar_allow], 0, [dnl
+    table inet firewalld {
         chain nat_POST_policy_foobar_allow {
-            oifname != "lo" masquerade
-        }
-    }
-])
-NFT_LIST_RULES([ip6], [nat_POST_policy_foobar_allow], 0, [dnl
-    table ip6 firewalld {
-        chain nat_POST_policy_foobar_allow {
+            meta nfproto ipv4 oifname != "lo" masquerade
             ip6 saddr 1234::/64 oifname != "lo" masquerade
         }
     }

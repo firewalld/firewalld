@@ -97,36 +97,26 @@ NFT_LIST_RULES([inet], [filter_INPUT_ZONES], 0, [dnl
         }
     }
 ])
-NFT_LIST_RULES([ip], [nat_POSTROUTING_ZONES], 0, [dnl
-    table ip firewalld {
+NFT_LIST_RULES([inet], [nat_POSTROUTING_ZONES], 0, [dnl
+    table inet firewalld {
         chain nat_POSTROUTING_ZONES {
             ip daddr 10.1.1.1 goto nat_POST_foobar_00
-            ip daddr 10.1.1.0/24 goto nat_POST_foobar_01
-            ip daddr 10.10.10.10 goto nat_POST_foobar_010
-            ip daddr @ipsetv4 goto nat_POST_foobar_011
-            ip daddr 10.1.0.0/16 goto nat_POST_foobar_02
-            ip daddr 10.2.2.0/24 goto nat_POST_foobar_03
-            ip daddr 10.2.0.0/16 goto nat_POST_foobar_04
-            ip daddr 10.0.0.0/8 goto nat_POST_foobar_05
-            ip daddr 20.20.20.20 goto nat_POST_public
-            oifname "foobar2" goto nat_POST_foobar_010
-            oifname "foobar1" goto nat_POST_trusted
-            oifname "foobar0" goto nat_POST_internal
-            goto nat_POST_public
-        }
-    }
-])
-NFT_LIST_RULES([ip6], [nat_POSTROUTING_ZONES], 0, [dnl
-    table ip6 firewalld {
-        chain nat_POSTROUTING_ZONES {
             ip6 daddr 1234:5678::1:1:1 goto nat_POST_foobar_00
+            ip daddr 10.1.1.0/24 goto nat_POST_foobar_01
             ip6 daddr 1234:5678::1:1:0/112 goto nat_POST_foobar_01
+            ip daddr 10.10.10.10 goto nat_POST_foobar_010
             ip6 daddr 1234:5678::10:10:10 goto nat_POST_foobar_010
+            ip daddr @ipsetv4 goto nat_POST_foobar_011
             ip6 daddr @ipsetv6 goto nat_POST_foobar_012
+            ip daddr 10.1.0.0/16 goto nat_POST_foobar_02
             ip6 daddr 1234:5678::1:0:0/96 goto nat_POST_foobar_02
+            ip daddr 10.2.2.0/24 goto nat_POST_foobar_03
             ip6 daddr 1234:5678::2:2:0/112 goto nat_POST_foobar_03
+            ip daddr 10.2.0.0/16 goto nat_POST_foobar_04
             ip6 daddr 1234:5678::2:0:0/96 goto nat_POST_foobar_04
+            ip daddr 10.0.0.0/8 goto nat_POST_foobar_05
             ip6 daddr 1234:5678::/80 goto nat_POST_foobar_05
+            ip daddr 20.20.20.20 goto nat_POST_public
             ip6 daddr 1234:5678::20:20:20 goto nat_POST_public
             oifname "foobar2" goto nat_POST_foobar_010
             oifname "foobar1" goto nat_POST_trusted
@@ -250,48 +240,32 @@ NFT_LIST_RULES([inet], [filter_INPUT_ZONES], 0, [dnl
         }
     }
 ])
-NFT_LIST_RULES([ip], [nat_POSTROUTING_ZONES_SOURCE], 0, [dnl
-    table ip firewalld {
+NFT_LIST_RULES([inet], [nat_POSTROUTING_ZONES_SOURCE], 0, [dnl
+    table inet firewalld {
         chain nat_POSTROUTING_ZONES_SOURCE {
             ip daddr 10.1.1.1 goto nat_POST_foobar_00
-            ip daddr 10.1.1.0/24 goto nat_POST_foobar_01
-            ip daddr 10.10.10.10 goto nat_POST_foobar_010
-            ip daddr @ipsetv4 goto nat_POST_foobar_011
-            ip daddr 10.1.0.0/16 goto nat_POST_foobar_02
-            ip daddr 10.2.2.0/24 goto nat_POST_foobar_03
-            ip daddr 10.2.0.0/16 goto nat_POST_foobar_04
-            ip daddr 10.0.0.0/8 goto nat_POST_foobar_05
-            ip daddr 20.20.20.20 goto nat_POST_public
-        }
-    }
-])
-NFT_LIST_RULES([ip], [nat_POSTROUTING_ZONES], 0, [dnl
-    table ip firewalld {
-        chain nat_POSTROUTING_ZONES {
-            oifname "foobar2" goto nat_POST_foobar_010
-            oifname "foobar1" goto nat_POST_trusted
-            oifname "foobar0" goto nat_POST_internal
-            goto nat_POST_public
-        }
-    }
-])
-NFT_LIST_RULES([ip6], [nat_POSTROUTING_ZONES_SOURCE], 0, [dnl
-    table ip6 firewalld {
-        chain nat_POSTROUTING_ZONES_SOURCE {
             ip6 daddr 1234:5678::1:1:1 goto nat_POST_foobar_00
+            ip daddr 10.1.1.0/24 goto nat_POST_foobar_01
             ip6 daddr 1234:5678::1:1:0/112 goto nat_POST_foobar_01
+            ip daddr 10.10.10.10 goto nat_POST_foobar_010
             ip6 daddr 1234:5678::10:10:10 goto nat_POST_foobar_010
+            ip daddr @ipsetv4 goto nat_POST_foobar_011
             ip6 daddr @ipsetv6 goto nat_POST_foobar_012
+            ip daddr 10.1.0.0/16 goto nat_POST_foobar_02
             ip6 daddr 1234:5678::1:0:0/96 goto nat_POST_foobar_02
+            ip daddr 10.2.2.0/24 goto nat_POST_foobar_03
             ip6 daddr 1234:5678::2:2:0/112 goto nat_POST_foobar_03
+            ip daddr 10.2.0.0/16 goto nat_POST_foobar_04
             ip6 daddr 1234:5678::2:0:0/96 goto nat_POST_foobar_04
+            ip daddr 10.0.0.0/8 goto nat_POST_foobar_05
             ip6 daddr 1234:5678::/80 goto nat_POST_foobar_05
+            ip daddr 20.20.20.20 goto nat_POST_public
             ip6 daddr 1234:5678::20:20:20 goto nat_POST_public
         }
     }
 ])
-NFT_LIST_RULES([ip6], [nat_POSTROUTING_ZONES], 0, [dnl
-    table ip6 firewalld {
+NFT_LIST_RULES([inet], [nat_POSTROUTING_ZONES], 0, [dnl
+    table inet firewalld {
         chain nat_POSTROUTING_ZONES {
             oifname "foobar2" goto nat_POST_foobar_010
             oifname "foobar1" goto nat_POST_trusted
