@@ -1977,7 +1977,7 @@ FWD_START_TEST([rich rules priority])
         services: dhcpv6-client ssh
         ports:
         protocols:
-        forward: no
+        forward: yes
         masquerade: no
         forward-ports:
         source-ports:
