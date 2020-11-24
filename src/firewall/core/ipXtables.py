@@ -1297,8 +1297,9 @@ class ip4tables(object):
             rules.append(["-t", "filter", add_del, "%s_allow" % _policy,
                           "-o", interface, "-j", "ACCEPT"])
         else: # source
-            rules.append(["-t", "filter", add_del, "%s_allow" % _policy,
-                          "-d", source, "-j", "ACCEPT"])
+            rules.append(["-t", "filter", add_del, "%s_allow" % _policy]
+                         + self._rule_addr_fragment("-d", source) +
+                         ["-j", "ACCEPT"])
         return rules
 
     def build_policy_masquerade_rules(self, enable, policy, rich_rule=None):
