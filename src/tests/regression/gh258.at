@@ -112,8 +112,8 @@ NFT_LIST_RULES([inet], [mangle_PREROUTING_ZONES], 0, [dnl
         }
     }
 ])
-NFT_LIST_RULES([ip], [nat_PREROUTING], 0, [dnl
-    table ip firewalld {
+NFT_LIST_RULES([inet], [nat_PREROUTING], 0, [dnl
+    table inet firewalld {
         chain nat_PREROUTING {
             jump nat_PREROUTING_POLICIES_pre
             jump nat_PREROUTING_ZONES
@@ -121,9 +121,10 @@ NFT_LIST_RULES([ip], [nat_PREROUTING], 0, [dnl
         }
     }
 ])
-NFT_LIST_RULES([ip], [nat_PREROUTING_ZONES], 0, [dnl
-    table ip firewalld {
+NFT_LIST_RULES([inet], [nat_PREROUTING_ZONES], 0, [dnl
+    table inet firewalld {
         chain nat_PREROUTING_ZONES {
+            ip6 saddr dead:beef::/54 goto nat_PRE_public
             ip saddr 1.2.3.0/24 goto nat_PRE_trusted
             iifname "dummy0" goto nat_PRE_trusted
             iifname "dummy1" goto nat_PRE_public
@@ -131,8 +132,8 @@ NFT_LIST_RULES([ip], [nat_PREROUTING_ZONES], 0, [dnl
         }
     }
 ])
-NFT_LIST_RULES([ip], [nat_POSTROUTING], 0, [dnl
-    table ip firewalld {
+NFT_LIST_RULES([inet], [nat_POSTROUTING], 0, [dnl
+    table inet firewalld {
         chain nat_POSTROUTING {
             jump nat_POSTROUTING_POLICIES_pre
             jump nat_POSTROUTING_ZONES
@@ -140,48 +141,11 @@ NFT_LIST_RULES([ip], [nat_POSTROUTING], 0, [dnl
         }
     }
 ])
-NFT_LIST_RULES([ip], [nat_POSTROUTING_ZONES], 0, [dnl
-    table ip firewalld {
-        chain nat_POSTROUTING_ZONES {
-            ip daddr 1.2.3.0/24 goto nat_POST_trusted
-            oifname "dummy0" goto nat_POST_trusted
-            oifname "dummy1" goto nat_POST_public
-            goto nat_POST_public
-        }
-    }
-])
-NFT_LIST_RULES([ip6], [nat_PREROUTING], 0, [dnl
-    table ip6 firewalld {
-        chain nat_PREROUTING {
-            jump nat_PREROUTING_POLICIES_pre
-            jump nat_PREROUTING_ZONES
-            jump nat_PREROUTING_POLICIES_post
-        }
-    }
-])
-NFT_LIST_RULES([ip6], [nat_PREROUTING_ZONES], 0, [dnl
-    table ip6 firewalld {
-        chain nat_PREROUTING_ZONES {
-            ip6 saddr dead:beef::/54 goto nat_PRE_public
-            iifname "dummy0" goto nat_PRE_trusted
-            iifname "dummy1" goto nat_PRE_public
-            goto nat_PRE_public
-        }
-    }
-])
-NFT_LIST_RULES([ip6], [nat_POSTROUTING], 0, [dnl
-    table ip6 firewalld {
-        chain nat_POSTROUTING {
-            jump nat_POSTROUTING_POLICIES_pre
-            jump nat_POSTROUTING_ZONES
-            jump nat_POSTROUTING_POLICIES_post
-        }
-    }
-])
-NFT_LIST_RULES([ip6], [nat_POSTROUTING_ZONES], 0, [dnl
-    table ip6 firewalld {
+NFT_LIST_RULES([inet], [nat_POSTROUTING_ZONES], 0, [dnl
+    table inet firewalld {
         chain nat_POSTROUTING_ZONES {
             ip6 daddr dead:beef::/54 goto nat_POST_public
+            ip daddr 1.2.3.0/24 goto nat_POST_trusted
             oifname "dummy0" goto nat_POST_trusted
             oifname "dummy1" goto nat_POST_public
             goto nat_POST_public
@@ -506,8 +470,8 @@ NFT_LIST_RULES([inet], [mangle_PREROUTING_ZONES], 0, [dnl
         }
     }
 ])
-NFT_LIST_RULES([ip], [nat_PREROUTING], 0, [dnl
-    table ip firewalld {
+NFT_LIST_RULES([inet], [nat_PREROUTING], 0, [dnl
+    table inet firewalld {
         chain nat_PREROUTING {
             jump nat_PREROUTING_POLICIES_pre
             jump nat_PREROUTING_ZONES_SOURCE
@@ -516,15 +480,16 @@ NFT_LIST_RULES([ip], [nat_PREROUTING], 0, [dnl
         }
     }
 ])
-NFT_LIST_RULES([ip], [nat_PREROUTING_ZONES_SOURCE], 0, [dnl
-    table ip firewalld {
+NFT_LIST_RULES([inet], [nat_PREROUTING_ZONES_SOURCE], 0, [dnl
+    table inet firewalld {
         chain nat_PREROUTING_ZONES_SOURCE {
+            ip6 saddr dead:beef::/54 goto nat_PRE_public
             ip saddr 1.2.3.0/24 goto nat_PRE_trusted
         }
     }
 ])
-NFT_LIST_RULES([ip], [nat_PREROUTING_ZONES], 0, [dnl
-    table ip firewalld {
+NFT_LIST_RULES([inet], [nat_PREROUTING_ZONES], 0, [dnl
+    table inet firewalld {
         chain nat_PREROUTING_ZONES {
             iifname "dummy0" goto nat_PRE_trusted
             iifname "dummy1" goto nat_PRE_public
@@ -532,8 +497,8 @@ NFT_LIST_RULES([ip], [nat_PREROUTING_ZONES], 0, [dnl
         }
     }
 ])
-NFT_LIST_RULES([ip], [nat_POSTROUTING], 0, [dnl
-    table ip firewalld {
+NFT_LIST_RULES([inet], [nat_POSTROUTING], 0, [dnl
+    table inet firewalld {
         chain nat_POSTROUTING {
             jump nat_POSTROUTING_POLICIES_pre
             jump nat_POSTROUTING_ZONES_SOURCE
@@ -542,67 +507,16 @@ NFT_LIST_RULES([ip], [nat_POSTROUTING], 0, [dnl
         }
     }
 ])
-NFT_LIST_RULES([ip], [nat_POSTROUTING_ZONES_SOURCE], 0, [dnl
-    table ip firewalld {
+NFT_LIST_RULES([inet], [nat_POSTROUTING_ZONES_SOURCE], 0, [dnl
+    table inet firewalld {
         chain nat_POSTROUTING_ZONES_SOURCE {
+            ip6 daddr dead:beef::/54 goto nat_POST_public
             ip daddr 1.2.3.0/24 goto nat_POST_trusted
         }
     }
 ])
-NFT_LIST_RULES([ip], [nat_POSTROUTING_ZONES], 0, [dnl
-    table ip firewalld {
-        chain nat_POSTROUTING_ZONES {
-            oifname "dummy0" goto nat_POST_trusted
-            oifname "dummy1" goto nat_POST_public
-            goto nat_POST_public
-        }
-    }
-])
-NFT_LIST_RULES([ip6], [nat_PREROUTING], 0, [dnl
-    table ip6 firewalld {
-        chain nat_PREROUTING {
-            jump nat_PREROUTING_POLICIES_pre
-            jump nat_PREROUTING_ZONES_SOURCE
-            jump nat_PREROUTING_ZONES
-            jump nat_PREROUTING_POLICIES_post
-        }
-    }
-])
-NFT_LIST_RULES([ip6], [nat_PREROUTING_ZONES_SOURCE], 0, [dnl
-    table ip6 firewalld {
-        chain nat_PREROUTING_ZONES_SOURCE {
-            ip6 saddr dead:beef::/54 goto nat_PRE_public
-        }
-    }
-])
-NFT_LIST_RULES([ip6], [nat_PREROUTING_ZONES], 0, [dnl
-    table ip6 firewalld {
-        chain nat_PREROUTING_ZONES {
-            iifname "dummy0" goto nat_PRE_trusted
-            iifname "dummy1" goto nat_PRE_public
-            goto nat_PRE_public
-        }
-    }
-])
-NFT_LIST_RULES([ip6], [nat_POSTROUTING], 0, [dnl
-    table ip6 firewalld {
-        chain nat_POSTROUTING {
-            jump nat_POSTROUTING_POLICIES_pre
-            jump nat_POSTROUTING_ZONES_SOURCE
-            jump nat_POSTROUTING_ZONES
-            jump nat_POSTROUTING_POLICIES_post
-        }
-    }
-])
-NFT_LIST_RULES([ip6], [nat_POSTROUTING_ZONES_SOURCE], 0, [dnl
-    table ip6 firewalld {
-        chain nat_POSTROUTING_ZONES_SOURCE {
-            ip6 daddr dead:beef::/54 goto nat_POST_public
-        }
-    }
-])
-NFT_LIST_RULES([ip6], [nat_POSTROUTING_ZONES], 0, [dnl
-    table ip6 firewalld {
+NFT_LIST_RULES([inet], [nat_POSTROUTING_ZONES], 0, [dnl
+    table inet firewalld {
         chain nat_POSTROUTING_ZONES {
             oifname "dummy0" goto nat_POST_trusted
             oifname "dummy1" goto nat_POST_public

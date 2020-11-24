@@ -476,16 +476,10 @@ FWD_START_TEST([masquerade])
 
     FWD_CHECK([--add-masquerade --zone=public], 0, ignore)
     dnl man page says this should only affect IPv4, so verify that.
-    NFT_LIST_RULES([ip], [nat_POST_public_allow], 0, [dnl
-        table ip firewalld {
+    NFT_LIST_RULES([inet], [nat_POST_public_allow], 0, [dnl
+        table inet firewalld {
             chain nat_POST_public_allow {
-                oifname != "lo" masquerade
-            }
-        }
-    ])
-    NFT_LIST_RULES([ip6], [nat_POST_public_allow], 0, [dnl
-        table ip6 firewalld {
-            chain nat_POST_public_allow {
+                meta nfproto ipv4 oifname != "lo" masquerade
             }
         }
     ])
@@ -698,16 +692,10 @@ FWD_START_TEST([forward ports])
     FWD_CHECK([--add-forward-port=666], 106, ignore, ignore)
     FWD_CHECK([--add-forward-port=port=11:proto=tcp:toport=22], 0, ignore)
     dnl man page says this should only affect IPv4, so verify that.
-    NFT_LIST_RULES([ip], [nat_PRE_public_allow], 0, [dnl
-        table ip firewalld {
+    NFT_LIST_RULES([inet], [nat_PRE_public_allow], 0, [dnl
+        table inet firewalld {
             chain nat_PRE_public_allow {
-                tcp dport 11 redirect to :22
-            }
-        }
-    ])
-    NFT_LIST_RULES([ip6], [nat_PRE_public_allow], 0, [dnl
-        table ip6 firewalld {
-            chain nat_PRE_public_allow {
+                meta nfproto ipv4 tcp dport 11 redirect to :22
             }
         }
     ])
@@ -720,16 +708,10 @@ FWD_START_TEST([forward ports])
     FWD_CHECK([--add-forward-port=port=33:proto=tcp:toaddr=4444], 105, ignore, ignore) dnl bad address
     FWD_CHECK([--add-forward-port=port=33:proto=tcp:toaddr=4.4.4.4 --zone=public], 0, ignore)
     dnl man page says this should only affect IPv4, so verify that.
-    NFT_LIST_RULES([ip], [nat_PRE_public_allow], 0, [dnl
-        table ip firewalld {
+    NFT_LIST_RULES([inet], [nat_PRE_public_allow], 0, [dnl
+        table inet firewalld {
             chain nat_PRE_public_allow {
-                tcp dport 33 dnat to 4.4.4.4
-            }
-        }
-    ])
-    NFT_LIST_RULES([ip6], [nat_PRE_public_allow], 0, [dnl
-        table ip6 firewalld {
-            chain nat_PRE_public_allow {
+                meta nfproto ipv4 tcp dport 33 dnat ip to 4.4.4.4
             }
         }
     ])
@@ -750,16 +732,10 @@ FWD_START_TEST([forward ports])
     IF_HOST_SUPPORTS_IPV6_RULES([
     FWD_CHECK([--add-forward-port=port=66:proto=sctp:toport=66:toaddr=fd00:dead:beef:ff0::], 0, ignore)
     dnl this should only affect IPv6, so verify that.
-    NFT_LIST_RULES([ip], [nat_PRE_public_allow], 0, [dnl
-        table ip firewalld {
+    NFT_LIST_RULES([inet], [nat_PRE_public_allow], 0, [dnl
+        table inet firewalld {
             chain nat_PRE_public_allow {
-            }
-        }
-    ])
-    NFT_LIST_RULES([ip6], [nat_PRE_public_allow], 0, [dnl
-        table ip6 firewalld {
-            chain nat_PRE_public_allow {
-                sctp dport 66 dnat to [[fd00:dead:beef:ff0::]:66]
+                meta nfproto ipv6 sctp dport 66 dnat ip6 to [[fd00:dead:beef:ff0::]:66]
             }
         }
     ])
@@ -1619,60 +1595,36 @@ FWD_START_TEST([rich rules priority])
         }
         }
     ])
-    NFT_LIST_RULES([ip], [nat_PRE_public_pre], 0, [dnl
-        table ip firewalld {
+    NFT_LIST_RULES([inet], [nat_PRE_public_pre], 0, [dnl
+        table inet firewalld {
         chain nat_PRE_public_pre {
-        tcp dport 8888 redirect to :80
-        tcp dport 8080 dnat to 10.1.1.1:80
+        meta nfproto ipv6 tcp dport 999 redirect to :99
+        meta nfproto ipv6 tcp dport 9999 dnat ip6 to [[1234::4321]:9999]
+        meta nfproto ipv4 tcp dport 8888 redirect to :80
+        meta nfproto ipv4 tcp dport 8080 dnat ip to 10.1.1.1:80
         }
         }
     ])
-    NFT_LIST_RULES([ip], [nat_PRE_public_allow], 0, [dnl
-        table ip firewalld {
+    NFT_LIST_RULES([inet], [nat_PRE_public_allow], 0, [dnl
+        table inet firewalld {
         chain nat_PRE_public_allow {
-        tcp dport 222 redirect to :22
-        tcp dport 2222 dnat to 10.1.1.1:22
+        meta nfproto ipv4 tcp dport 222 redirect to :22
+        meta nfproto ipv4 tcp dport 2222 dnat ip to 10.1.1.1:22
+        meta nfproto ipv6 tcp dport 9090 redirect to :90
         }
         }
     ])
-    NFT_LIST_RULES([ip], [nat_POST_public_pre], 0, [dnl
-        table ip firewalld {
+    NFT_LIST_RULES([inet], [nat_POST_public_pre], 0, [dnl
+        table inet firewalld {
         chain nat_POST_public_pre {
         ip saddr 10.1.1.0/24 oifname != "lo" masquerade
         }
         }
     ])
-    NFT_LIST_RULES([ip], [nat_POST_public_allow], 0, [dnl
-        table ip firewalld {
+    NFT_LIST_RULES([inet], [nat_POST_public_allow], 0, [dnl
+        table inet firewalld {
         chain nat_POST_public_allow {
         ip saddr 10.10.0.0/16 oifname != "lo" masquerade
-        }
-        }
-    ])
-    NFT_LIST_RULES([ip6], [nat_PRE_public_pre], 0,
-        [[table ip6 firewalld {
-        chain nat_PRE_public_pre {
-        tcp dport 999 redirect to :99
-        tcp dport 9999 dnat to [1234::4321]:9999
-        }
-        }
-    ]])
-    NFT_LIST_RULES([ip6], [nat_PRE_public_allow], 0, [dnl
-        table ip6 firewalld {
-        chain nat_PRE_public_allow {
-        tcp dport 9090 redirect to :90
-        }
-        }
-    ])
-    NFT_LIST_RULES([ip6], [nat_POST_public_pre], 0, [dnl
-        table ip6 firewalld {
-        chain nat_POST_public_pre {
-        }
-        }
-    ])
-    NFT_LIST_RULES([ip6], [nat_POST_public_allow], 0, [dnl
-        table ip6 firewalld {
-        chain nat_POST_public_allow {
         }
         }
     ])

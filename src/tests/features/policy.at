@@ -689,15 +689,8 @@ IP6TABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
 ])
 dnl (nat, prerouting)
-NFT_LIST_RULES([ip], [nat_PREROUTING_POLICIES_pre], 0, [dnl
-    table ip firewalld {
-        chain nat_PREROUTING_POLICIES_pre {
-            jump nat_PRE_policy_allow-host-ipv6
-        }
-    }
-])
-NFT_LIST_RULES([ip6], [nat_PREROUTING_POLICIES_pre], 0, [dnl
-    table ip6 firewalld {
+NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
+    table inet firewalld {
         chain nat_PREROUTING_POLICIES_pre {
             jump nat_PRE_policy_allow-host-ipv6
         }
@@ -710,14 +703,8 @@ IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
 ])
 dnl (nat, postrouting)
-NFT_LIST_RULES([ip], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
-    table ip firewalld {
-        chain nat_POSTROUTING_POLICIES_pre {
-        }
-    }
-])
-NFT_LIST_RULES([ip6], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
-    table ip6 firewalld {
+NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
+    table inet firewalld {
         chain nat_POSTROUTING_POLICIES_pre {
         }
     }
@@ -799,16 +786,8 @@ IP6TABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_foobar all ::/0 ::/0
 ])
 dnl (nat, prerouting)
-NFT_LIST_RULES([ip], [nat_PREROUTING_POLICIES_pre], 0, [dnl
-    table ip firewalld {
-        chain nat_PREROUTING_POLICIES_pre {
-            jump nat_PRE_policy_allow-host-ipv6
-            jump nat_PRE_policy_foobar
-        }
-    }
-])
-NFT_LIST_RULES([ip6], [nat_PREROUTING_POLICIES_pre], 0, [dnl
-    table ip6 firewalld {
+NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
+    table inet firewalld {
         chain nat_PREROUTING_POLICIES_pre {
             jump nat_PRE_policy_allow-host-ipv6
             jump nat_PRE_policy_foobar
@@ -824,14 +803,8 @@ IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_foobar all ::/0 ::/0
 ])
 dnl (nat, postrouting)
-NFT_LIST_RULES([ip], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
-    table ip firewalld {
-        chain nat_POSTROUTING_POLICIES_pre {
-        }
-    }
-])
-NFT_LIST_RULES([ip6], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
-    table ip6 firewalld {
+NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
+    table inet firewalld {
         chain nat_POSTROUTING_POLICIES_pre {
         }
     }
@@ -908,15 +881,8 @@ IP6TABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
 ])
 dnl (nat, prerouting)
-NFT_LIST_RULES([ip], [nat_PREROUTING_POLICIES_pre], 0, [dnl
-    table ip firewalld {
-        chain nat_PREROUTING_POLICIES_pre {
-            jump nat_PRE_policy_allow-host-ipv6
-        }
-    }
-])
-NFT_LIST_RULES([ip6], [nat_PREROUTING_POLICIES_pre], 0, [dnl
-    table ip6 firewalld {
+NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
+    table inet firewalld {
         chain nat_PREROUTING_POLICIES_pre {
             jump nat_PRE_policy_allow-host-ipv6
         }
@@ -929,14 +895,8 @@ IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
 ])
 dnl (nat, postrouting)
-NFT_LIST_RULES([ip], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
-    table ip firewalld {
-        chain nat_POSTROUTING_POLICIES_pre {
-        }
-    }
-])
-NFT_LIST_RULES([ip6], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
-    table ip6 firewalld {
+NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
+    table inet firewalld {
         chain nat_POSTROUTING_POLICIES_pre {
         }
     }
@@ -1013,15 +973,8 @@ IP6TABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
 ])
 dnl (nat, prerouting)
-NFT_LIST_RULES([ip], [nat_PREROUTING_POLICIES_pre], 0, [dnl
-    table ip firewalld {
-        chain nat_PREROUTING_POLICIES_pre {
-            jump nat_PRE_policy_allow-host-ipv6
-        }
-    }
-])
-NFT_LIST_RULES([ip6], [nat_PREROUTING_POLICIES_pre], 0, [dnl
-    table ip6 firewalld {
+NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
+    table inet firewalld {
         chain nat_PREROUTING_POLICIES_pre {
             jump nat_PRE_policy_allow-host-ipv6
         }
@@ -1034,14 +987,8 @@ IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
 ])
 dnl (nat, postrouting)
-NFT_LIST_RULES([ip], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
-    table ip firewalld {
-        chain nat_POSTROUTING_POLICIES_pre {
-        }
-    }
-])
-NFT_LIST_RULES([ip6], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
-    table ip6 firewalld {
+NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
+    table inet firewalld {
         chain nat_POSTROUTING_POLICIES_pre {
         }
     }
@@ -1123,16 +1070,8 @@ IP6TABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_foobar all ::/0 ::/0
 ])
 dnl (nat, prerouting)
-NFT_LIST_RULES([ip], [nat_PREROUTING_POLICIES_pre], 0, [dnl
-    table ip firewalld {
-        chain nat_PREROUTING_POLICIES_pre {
-            jump nat_PRE_policy_allow-host-ipv6
-            jump nat_PRE_policy_foobar
-        }
-    }
-])
-NFT_LIST_RULES([ip6], [nat_PREROUTING_POLICIES_pre], 0, [dnl
-    table ip6 firewalld {
+NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
+    table inet firewalld {
         chain nat_PREROUTING_POLICIES_pre {
             jump nat_PRE_policy_allow-host-ipv6
             jump nat_PRE_policy_foobar
@@ -1148,15 +1087,8 @@ IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_foobar all ::/0 ::/0
 ])
 dnl (nat, postrouting)
-NFT_LIST_RULES([ip], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
-    table ip firewalld {
-        chain nat_POSTROUTING_POLICIES_pre {
-            jump nat_POST_policy_foobar
-        }
-    }
-])
-NFT_LIST_RULES([ip6], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
-    table ip6 firewalld {
+NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
+    table inet firewalld {
         chain nat_POSTROUTING_POLICIES_pre {
             jump nat_POST_policy_foobar
         }
@@ -1238,15 +1170,8 @@ IP6TABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
 ])
 dnl (nat, prerouting)
-NFT_LIST_RULES([ip], [nat_PREROUTING_POLICIES_pre], 0, [dnl
-    table ip firewalld {
-        chain nat_PREROUTING_POLICIES_pre {
-            jump nat_PRE_policy_allow-host-ipv6
-        }
-    }
-])
-NFT_LIST_RULES([ip6], [nat_PREROUTING_POLICIES_pre], 0, [dnl
-    table ip6 firewalld {
+NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
+    table inet firewalld {
         chain nat_PREROUTING_POLICIES_pre {
             jump nat_PRE_policy_allow-host-ipv6
         }
@@ -1259,15 +1184,8 @@ IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
 ])
 dnl (nat, postrouting)
-NFT_LIST_RULES([ip], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
-    table ip firewalld {
-        chain nat_POSTROUTING_POLICIES_pre {
-            oifname { "foobar0" } jump nat_POST_policy_foobar
-        }
-    }
-])
-NFT_LIST_RULES([ip6], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
-    table ip6 firewalld {
+NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
+    table inet firewalld {
         chain nat_POSTROUTING_POLICIES_pre {
             oifname { "foobar0" } jump nat_POST_policy_foobar
         }
@@ -1352,18 +1270,11 @@ IP6TABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
 ])
 dnl (nat, prerouting)
-NFT_LIST_RULES([ip], [nat_PREROUTING_POLICIES_pre], 0, [dnl
-    table ip firewalld {
+NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
+    table inet firewalld {
         chain nat_PREROUTING_POLICIES_pre {
             jump nat_PRE_policy_allow-host-ipv6
             ip daddr 10.10.10.0/24 jump nat_PRE_policy_foobar
-        }
-    }
-])
-NFT_LIST_RULES([ip6], [nat_PREROUTING_POLICIES_pre], 0, [dnl
-    table ip6 firewalld {
-        chain nat_PREROUTING_POLICIES_pre {
-            jump nat_PRE_policy_allow-host-ipv6
         }
     }
 ])
@@ -1375,16 +1286,10 @@ IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
 ])
 dnl (nat, postrouting)
-NFT_LIST_RULES([ip], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
-    table ip firewalld {
+NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
+    table inet firewalld {
         chain nat_POSTROUTING_POLICIES_pre {
             ip daddr 10.10.10.0/24 jump nat_POST_policy_foobar
-        }
-    }
-])
-NFT_LIST_RULES([ip6], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
-    table ip6 firewalld {
-        chain nat_POSTROUTING_POLICIES_pre {
         }
     }
 ])
@@ -1468,16 +1373,8 @@ IP6TABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_foobar all ::/0 ::/0
 ])
 dnl (nat, prerouting)
-NFT_LIST_RULES([ip], [nat_PREROUTING_POLICIES_pre], 0, [dnl
-    table ip firewalld {
-        chain nat_PREROUTING_POLICIES_pre {
-            jump nat_PRE_policy_allow-host-ipv6
-            iifname { "foobar1" } jump nat_PRE_policy_foobar
-        }
-    }
-])
-NFT_LIST_RULES([ip6], [nat_PREROUTING_POLICIES_pre], 0, [dnl
-    table ip6 firewalld {
+NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
+    table inet firewalld {
         chain nat_PREROUTING_POLICIES_pre {
             jump nat_PRE_policy_allow-host-ipv6
             iifname { "foobar1" } jump nat_PRE_policy_foobar
@@ -1493,14 +1390,8 @@ IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_foobar all ::/0 ::/0
 ])
 dnl (nat, postrouting)
-NFT_LIST_RULES([ip], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
-    table ip firewalld {
-        chain nat_POSTROUTING_POLICIES_pre {
-        }
-    }
-])
-NFT_LIST_RULES([ip6], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
-    table ip6 firewalld {
+NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
+    table inet firewalld {
         chain nat_POSTROUTING_POLICIES_pre {
         }
     }
@@ -1581,18 +1472,11 @@ IP6TABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
 ])
 dnl (nat, prerouting)
-NFT_LIST_RULES([ip], [nat_PREROUTING_POLICIES_pre], 0, [dnl
-    table ip firewalld {
+NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
+    table inet firewalld {
         chain nat_PREROUTING_POLICIES_pre {
             jump nat_PRE_policy_allow-host-ipv6
             ip saddr 10.10.10.0/24 jump nat_PRE_policy_foobar
-        }
-    }
-])
-NFT_LIST_RULES([ip6], [nat_PREROUTING_POLICIES_pre], 0, [dnl
-    table ip6 firewalld {
-        chain nat_PREROUTING_POLICIES_pre {
-            jump nat_PRE_policy_allow-host-ipv6
         }
     }
 ])
@@ -1604,16 +1488,10 @@ IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
 ])
 dnl (nat, postrouting)
-NFT_LIST_RULES([ip], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
-    table ip firewalld {
+NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
+    table inet firewalld {
         chain nat_POSTROUTING_POLICIES_pre {
             ip saddr 10.10.10.0/24 jump nat_POST_policy_foobar
-        }
-    }
-])
-NFT_LIST_RULES([ip6], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
-    table ip6 firewalld {
-        chain nat_POSTROUTING_POLICIES_pre {
         }
     }
 ])
@@ -1696,15 +1574,8 @@ IP6TABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
 ])
 dnl (nat, prerouting)
-NFT_LIST_RULES([ip], [nat_PREROUTING_POLICIES_pre], 0, [dnl
-    table ip firewalld {
-        chain nat_PREROUTING_POLICIES_pre {
-            jump nat_PRE_policy_allow-host-ipv6
-        }
-    }
-])
-NFT_LIST_RULES([ip6], [nat_PREROUTING_POLICIES_pre], 0, [dnl
-    table ip6 firewalld {
+NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
+    table inet firewalld {
         chain nat_PREROUTING_POLICIES_pre {
             jump nat_PRE_policy_allow-host-ipv6
         }
@@ -1717,14 +1588,8 @@ IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
 ])
 dnl (nat, postrouting)
-NFT_LIST_RULES([ip], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
-    table ip firewalld {
-        chain nat_POSTROUTING_POLICIES_pre {
-        }
-    }
-])
-NFT_LIST_RULES([ip6], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
-    table ip6 firewalld {
+NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
+    table inet firewalld {
         chain nat_POSTROUTING_POLICIES_pre {
         }
     }
@@ -1808,18 +1673,11 @@ IP6TABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
 ])
 dnl (nat, prerouting)
-NFT_LIST_RULES([ip], [nat_PREROUTING_POLICIES_pre], 0, [dnl
-    table ip firewalld {
+NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
+    table inet firewalld {
         chain nat_PREROUTING_POLICIES_pre {
             jump nat_PRE_policy_allow-host-ipv6
             iifname { "foobar1" } ip daddr 10.10.10.0/24 jump nat_PRE_policy_foobar
-        }
-    }
-])
-NFT_LIST_RULES([ip6], [nat_PREROUTING_POLICIES_pre], 0, [dnl
-    table ip6 firewalld {
-        chain nat_PREROUTING_POLICIES_pre {
-            jump nat_PRE_policy_allow-host-ipv6
         }
     }
 ])
@@ -1831,14 +1689,8 @@ IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
 ])
 dnl (nat, postrouting)
-NFT_LIST_RULES([ip], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
-    table ip firewalld {
-        chain nat_POSTROUTING_POLICIES_pre {
-        }
-    }
-])
-NFT_LIST_RULES([ip6], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
-    table ip6 firewalld {
+NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
+    table inet firewalld {
         chain nat_POSTROUTING_POLICIES_pre {
         }
     }
@@ -1920,15 +1772,8 @@ IP6TABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
 ])
 dnl (nat, prerouting)
-NFT_LIST_RULES([ip], [nat_PREROUTING_POLICIES_pre], 0, [dnl
-    table ip firewalld {
-        chain nat_PREROUTING_POLICIES_pre {
-            jump nat_PRE_policy_allow-host-ipv6
-        }
-    }
-])
-NFT_LIST_RULES([ip6], [nat_PREROUTING_POLICIES_pre], 0, [dnl
-    table ip6 firewalld {
+NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
+    table inet firewalld {
         chain nat_PREROUTING_POLICIES_pre {
             jump nat_PRE_policy_allow-host-ipv6
         }
@@ -1941,16 +1786,10 @@ IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
 ])
 dnl (nat, postrouting)
-NFT_LIST_RULES([ip], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
-    table ip firewalld {
+NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
+    table inet firewalld {
         chain nat_POSTROUTING_POLICIES_pre {
             ip saddr 10.10.10.0/24 oifname { "foobar0" } jump nat_POST_policy_foobar
-        }
-    }
-])
-NFT_LIST_RULES([ip6], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
-    table ip6 firewalld {
-        chain nat_POSTROUTING_POLICIES_pre {
         }
     }
 ])
@@ -2034,18 +1873,11 @@ IP6TABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
 ])
 dnl (nat, prerouting)
-NFT_LIST_RULES([ip], [nat_PREROUTING_POLICIES_pre], 0, [dnl
-    table ip firewalld {
+NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
+    table inet firewalld {
         chain nat_PREROUTING_POLICIES_pre {
             jump nat_PRE_policy_allow-host-ipv6
             ip saddr 10.10.10.0/24 ip daddr 10.20.20.0/24 jump nat_PRE_policy_foobar
-        }
-    }
-])
-NFT_LIST_RULES([ip6], [nat_PREROUTING_POLICIES_pre], 0, [dnl
-    table ip6 firewalld {
-        chain nat_PREROUTING_POLICIES_pre {
-            jump nat_PRE_policy_allow-host-ipv6
         }
     }
 ])
@@ -2057,16 +1889,10 @@ IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
 ])
 dnl (nat, postrouting)
-NFT_LIST_RULES([ip], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
-    table ip firewalld {
+NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
+    table inet firewalld {
         chain nat_POSTROUTING_POLICIES_pre {
             ip saddr 10.10.10.0/24 ip daddr 10.20.20.0/24 jump nat_POST_policy_foobar
-        }
-    }
-])
-NFT_LIST_RULES([ip6], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
-    table ip6 firewalld {
-        chain nat_POSTROUTING_POLICIES_pre {
         }
     }
 ])
@@ -2177,18 +2003,11 @@ dnl verify adding new sources updates the dispatch
 dnl catch edge cases (i.e. first interface)
 dnl
 FWD_CHECK([--zone public --add-source 10.10.10.0/24], 0, [ignore])
-NFT_LIST_RULES([ip], [nat_PREROUTING_POLICIES_pre], 0, [dnl
-    table ip firewalld {
+NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
+    table inet firewalld {
         chain nat_PREROUTING_POLICIES_pre {
             jump nat_PRE_policy_allow-host-ipv6
             iifname { "foobar0" } ip daddr 10.10.10.0/24 jump nat_PRE_policy_foobar
-        }
-    }
-])
-NFT_LIST_RULES([ip6], [nat_PREROUTING_POLICIES_pre], 0, [dnl
-    table ip6 firewalld {
-        chain nat_PREROUTING_POLICIES_pre {
-            jump nat_PRE_policy_allow-host-ipv6
         }
     }
 ])
@@ -2205,21 +2024,9 @@ dnl
 IF_HOST_SUPPORTS_IPV6_RULES([
 FWD_CHECK([--zone public --add-source 1234::/64], 0, [ignore])
 ])
-NFT_LIST_RULES([ip], [nat_PREROUTING_POLICIES_pre], 0, [dnl
-    table ip firewalld {
-        chain nat_PREROUTING_POLICIES_pre {
-            jump nat_PRE_policy_allow-host-ipv6
-            iifname { "foobar0" } ip daddr 10.10.10.0/24 jump nat_PRE_policy_foobar
-        }
-    }
-])
-NFT_LIST_RULES([ip6], [nat_PREROUTING_POLICIES_pre], 0, [dnl
-    table ip6 firewalld {
-        chain nat_PREROUTING_POLICIES_pre {
-            jump nat_PRE_policy_allow-host-ipv6
-            iifname { "foobar0" } ip6 daddr 1234::/64 jump nat_PRE_policy_foobar
-        }
-    }
+NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [stdout])
+m4_if(nftables, FIREWALL_BACKEND, [
+AT_CHECK([grep 'iifname { "foobar0" } ip6 daddr 1234::/64 jump nat_PRE_policy_foobar' ./stdout], 0, [ignore])
 ])
 IPTABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
@@ -2235,18 +2042,11 @@ dnl
 IF_HOST_SUPPORTS_IPV6_RULES([
 FWD_CHECK([--zone public --remove-source 1234::/64], 0, [ignore])
 ])
-NFT_LIST_RULES([ip], [nat_PREROUTING_POLICIES_pre], 0, [dnl
-    table ip firewalld {
+NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
+    table inet firewalld {
         chain nat_PREROUTING_POLICIES_pre {
             jump nat_PRE_policy_allow-host-ipv6
             iifname { "foobar0" } ip daddr 10.10.10.0/24 jump nat_PRE_policy_foobar
-        }
-    }
-])
-NFT_LIST_RULES([ip6], [nat_PREROUTING_POLICIES_pre], 0, [dnl
-    table ip6 firewalld {
-        chain nat_PREROUTING_POLICIES_pre {
-            jump nat_PRE_policy_allow-host-ipv6
         }
     }
 ])

@@ -22,18 +22,12 @@ IF_HOST_SUPPORTS_IPV6_RULES([
 FWD_CHECK([--policy foobar --query-forward-port port=44:proto=udp:toport=4444:toaddr=1234::4321], 0, ignore)
 ])
 FWD_CHECK([--policy=foobar --query-rich-rule='rule family=ipv4 forward-port port=444 protocol=udp to-port=4444 to-addr=10.44.44.44'], 0, [ignore])
-NFT_LIST_RULES([ip], [nat_PRE_policy_foobar_allow], 0, [dnl
-    table ip firewalld {
+NFT_LIST_RULES([inet], [nat_PRE_policy_foobar_allow], 0, [dnl
+    table inet firewalld {
         chain nat_PRE_policy_foobar_allow {
-            tcp dport 33 dnat to 10.10.10.10:33
-            udp dport 444 dnat to 10.44.44.44:4444
-        }
-    }
-])
-NFT_LIST_RULES([ip6], [nat_PRE_policy_foobar_allow], 0, [dnl
-    table ip6 firewalld {
-        chain nat_PRE_policy_foobar_allow {
-            udp dport 44 dnat to [[1234::4321]:4444]
+            meta nfproto ipv4 tcp dport 33 dnat ip to 10.10.10.10:33
+            meta nfproto ipv6 udp dport 44 dnat ip6 to [[1234::4321]:4444]
+            meta nfproto ipv4 udp dport 444 dnat ip to 10.44.44.44:4444
         }
     }
 ])
@@ -66,17 +60,11 @@ FWD_CHECK([--policy=foobar --query-rich-rule='rule family=ipv4 forward-port port
 FWD_CHECK([--runtime-to-permanent], 0, [ignore])
 FWD_CHECK([--permanent --policy foobar --query-forward-port port=33:proto=tcp:toport=33:toaddr=10.10.10.10], 0, [ignore])
 FWD_CHECK([--permanent --policy=foobar --query-rich-rule='rule family=ipv4 forward-port port=444 protocol=udp to-port=4444 to-addr=10.44.44.44'], 0, [ignore])
-NFT_LIST_RULES([ip], [nat_PRE_policy_foobar_allow], 0, [dnl
-    table ip firewalld {
+NFT_LIST_RULES([inet], [nat_PRE_policy_foobar_allow], 0, [dnl
+    table inet firewalld {
         chain nat_PRE_policy_foobar_allow {
-            tcp dport 33 dnat to 10.10.10.10:33
-            udp dport 444 dnat to 10.44.44.44:4444
-        }
-    }
-])
-NFT_LIST_RULES([ip6], [nat_PRE_policy_foobar_allow], 0, [dnl
-    table ip6 firewalld {
-        chain nat_PRE_policy_foobar_allow {
+            meta nfproto ipv4 tcp dport 33 dnat ip to 10.10.10.10:33
+            meta nfproto ipv4 udp dport 444 dnat ip to 10.44.44.44:4444
         }
     }
 ])
@@ -129,17 +117,11 @@ FWD_CHECK([--policy=foobar --add-forward-port port=22:proto=tcp:toport=2222:toad
 FWD_CHECK([--policy=foobar --add-rich-rule='rule family=ipv4 forward-port port=444 protocol=udp to-port=4444 to-addr=10.44.44.44'], 106, [ignore], [ignore])
 FWD_CHECK([--policy=foobar --add-forward-port port=22:proto=tcp:toport=2222], 0, [ignore], [ignore])
 FWD_CHECK([--policy=foobar --add-rich-rule='rule family=ipv6 forward-port port=444 protocol=udp to-port=4444'], 0, [ignore], [ignore])
-NFT_LIST_RULES([ip], [nat_PRE_policy_foobar_allow], 0, [dnl
-    table ip firewalld {
+NFT_LIST_RULES([inet], [nat_PRE_policy_foobar_allow], 0, [dnl
+    table inet firewalld {
         chain nat_PRE_policy_foobar_allow {
-            tcp dport 22 redirect to :2222
-        }
-    }
-])
-NFT_LIST_RULES([ip6], [nat_PRE_policy_foobar_allow], 0, [dnl
-    table ip6 firewalld {
-        chain nat_PRE_policy_foobar_allow {
-            udp dport 444 redirect to :4444
+            meta nfproto ipv4 tcp dport 22 redirect to :2222
+            meta nfproto ipv6 udp dport 444 redirect to :4444
         }
     }
 ])
@@ -198,11 +180,11 @@ FWD_CHECK([--policy=foobar --add-forward-port port=22:proto=tcp:toport=2222], 10
 FWD_CHECK([--policy=foobar --add-forward-port port=22:proto=tcp:toport=2222:toaddr=10.0.0.1], 0, [ignore], [ignore])
 FWD_CHECK([--policy=foobar --add-rich-rule='rule family=ipv4 forward-port port=444 protocol=udp to-port=4444'], 106, [ignore], [ignore])
 FWD_CHECK([--policy=foobar --add-rich-rule='rule family=ipv4 forward-port port=444 protocol=udp to-port=4444 to-addr=10.44.44.44'], 0, [ignore], [ignore])
-NFT_LIST_RULES([ip], [nat_PRE_policy_foobar_allow], 0, [dnl
-    table ip firewalld {
+NFT_LIST_RULES([inet], [nat_PRE_policy_foobar_allow], 0, [dnl
+    table inet firewalld {
         chain nat_PRE_policy_foobar_allow {
-            tcp dport 22 dnat to 10.0.0.1:2222
-            udp dport 444 dnat to 10.44.44.44:4444
+            meta nfproto ipv4 tcp dport 22 dnat ip to 10.0.0.1:2222
+            meta nfproto ipv4 udp dport 444 dnat ip to 10.44.44.44:4444
         }
     }
 ])

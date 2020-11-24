@@ -168,7 +168,7 @@ class nftables(object):
         self.rich_rule_priority_counts = {}
         self.policy_priority_counts = {}
         self.zone_source_index_cache = {}
-        self.created_tables = {"inet": [], "ip": [], "ip6": []}
+        self.created_tables = {"inet": []}
 
         self.nftables = Nftables()
         self.nftables.set_echo_output(True)
@@ -411,11 +411,10 @@ class nftables(object):
         self.zone_source_index_cache = {}
 
         rules = []
-        for family in ["inet", "ip", "ip6"]:
-            if TABLE_NAME in self.created_tables[family]:
-                rules.append({"delete": {"table": {"family": family,
-                                                   "name": TABLE_NAME}}})
-                self.created_tables[family].remove(TABLE_NAME)
+        if TABLE_NAME in self.created_tables["inet"]:
+            rules.append({"delete": {"table": {"family": "inet",
+                                               "name": TABLE_NAME}}})
+            self.created_tables["inet"].remove(TABLE_NAME)
         return rules
 
     def _build_set_policy_rules_ct_rules(self, enable):
@@ -495,10 +494,9 @@ class nftables(object):
 
     def build_default_tables(self):
         default_tables = []
-        for family in ["inet", "ip", "ip6"]:
-            default_tables.append({"add": {"table": {"family": family,
-                                                     "name": TABLE_NAME}}})
-            self.created_tables[family].append(TABLE_NAME)
+        default_tables.append({"add": {"table": {"family": "inet",
+                                                 "name": TABLE_NAME}}})
+        self.created_tables["inet"].append(TABLE_NAME)
         return default_tables
 
     def build_default_rules(self, log_denied="off"):
@@ -527,23 +525,22 @@ class nftables(object):
                                                         "chain": "mangle_%s" % chain,
                                                         "expr": [{"jump": {"target": "mangle_%s_%s" % (chain, dispatch_suffix)}}]}}})
 
-        for family in ["ip", "ip6"]:
-            for chain in IPTABLES_TO_NFT_HOOK["nat"].keys():
-                default_rules.append({"add": {"chain": {"family": family,
-                                                        "table": TABLE_NAME,
-                                                        "name": "nat_%s" % chain,
-                                                        "type": "nat",
-                                                        "hook": "%s" % IPTABLES_TO_NFT_HOOK["nat"][chain][0],
-                                                        "prio": IPTABLES_TO_NFT_HOOK["nat"][chain][1]}}})
+        for chain in IPTABLES_TO_NFT_HOOK["nat"].keys():
+            default_rules.append({"add": {"chain": {"family": "inet",
+                                                    "table": TABLE_NAME,
+                                                    "name": "nat_%s" % chain,
+                                                    "type": "nat",
+                                                    "hook": "%s" % IPTABLES_TO_NFT_HOOK["nat"][chain][0],
+                                                    "prio": IPTABLES_TO_NFT_HOOK["nat"][chain][1]}}})
 
-                for dispatch_suffix in ["POLICIES_pre", "ZONES_SOURCE", "ZONES", "POLICIES_post"] if self._fw._allow_zone_drifting else ["POLICIES_pre", "ZONES", "POLICIES_post"]:
-                    default_rules.append({"add": {"chain": {"family": family,
-                                                            "table": TABLE_NAME,
-                                                            "name": "nat_%s_%s" % (chain, dispatch_suffix)}}})
-                    default_rules.append({"add": {"rule":  {"family": family,
-                                                            "table": TABLE_NAME,
-                                                            "chain": "nat_%s" % chain,
-                                                            "expr": [{"jump": {"target": "nat_%s_%s" % (chain, dispatch_suffix)}}]}}})
+            for dispatch_suffix in ["POLICIES_pre", "ZONES_SOURCE", "ZONES", "POLICIES_post"] if self._fw._allow_zone_drifting else ["POLICIES_pre", "ZONES", "POLICIES_post"]:
+                default_rules.append({"add": {"chain": {"family": "inet",
+                                                        "table": TABLE_NAME,
+                                                        "name": "nat_%s_%s" % (chain, dispatch_suffix)}}})
+                default_rules.append({"add": {"rule":  {"family": "inet",
+                                                        "table": TABLE_NAME,
+                                                        "chain": "nat_%s" % chain,
+                                                        "expr": [{"jump": {"target": "nat_%s_%s" % (chain, dispatch_suffix)}}]}}})
 
         for chain in IPTABLES_TO_NFT_HOOK["filter"].keys():
             default_rules.append({"add": {"chain": {"family": "inet",
@@ -732,20 +729,7 @@ class nftables(object):
 
     def build_policy_ingress_egress_rules(self, enable, policy, table, chain,
                                           ingress_interfaces, egress_interfaces,
-                                          ingress_sources, egress_sources,
-                                          family="inet"):
-        # nat tables need to use ip/ip6 family
-        if table == "nat" and family == "inet":
-            rules = []
-            rules.extend(self.build_policy_ingress_egress_rules(enable, policy, table, chain,
-                                          ingress_interfaces, egress_interfaces,
-                                          ingress_sources, egress_sources,
-                                          family="ip"))
-            rules.extend(self.build_policy_ingress_egress_rules(enable, policy, table, chain,
-                                          ingress_interfaces, egress_interfaces,
-                                          ingress_sources, egress_sources,
-                                          family="ip6"))
-            return rules
+                                          ingress_sources, egress_sources):
 
         p_obj = self._fw.policy.get_policy(policy)
         chain_suffix = "pre" if p_obj.priority < 0 else "post"
@@ -762,24 +746,11 @@ class nftables(object):
             egress_fragments.append({"match": {"left": {"meta": {"key": "oifname"}},
                                                "op": "==",
                                                "right": {"set": list(egress_interfaces)}}})
-        ipv_to_family = {"ipv4": "ip", "ipv6": "ip6"}
         if ingress_sources:
             for src in ingress_sources:
-                # skip if this source doesn't apply to the current family.
-                if table == "nat":
-                    ipv = self._fw.zone.check_source(src)
-                    if ipv in ipv_to_family and family != ipv_to_family[ipv]:
-                        continue
-
                 ingress_fragments.append(self._rule_addr_fragment("saddr", src))
         if egress_sources:
             for dst in egress_sources:
-                # skip if this source doesn't apply to the current family.
-                if table == "nat":
-                    ipv = self._fw.zone.check_source(dst)
-                    if ipv in ipv_to_family and family != ipv_to_family[ipv]:
-                        continue
-
                 egress_fragments.append(self._rule_addr_fragment("daddr", dst))
 
         def _generate_policy_dispatch_rule(ingress_fragment, egress_fragment):
@@ -790,7 +761,7 @@ class nftables(object):
                 expr_fragments.append(egress_fragment)
             expr_fragments.append({"jump": {"target": "%s_%s" % (table, _policy)}})
 
-            rule = {"family": family,
+            rule = {"family": "inet",
                     "table": TABLE_NAME,
                     "chain": "%s_%s_POLICIES_%s" % (table, chain, chain_suffix),
                     "expr": expr_fragments}
@@ -808,29 +779,14 @@ class nftables(object):
                     # zone --> zone
                     for egress_fragment in egress_fragments:
                         rules.append(_generate_policy_dispatch_rule(ingress_fragment, egress_fragment))
-                elif table =="nat" and egress_sources:
-                    # if the egress source is not for the current family (there
-                    # are no egress fragments), then avoid creating an invalid
-                    # catch all rule.
-                    pass
                 else:
                     # zone --> [ANY, HOST]
                     rules.append(_generate_policy_dispatch_rule(ingress_fragment, None))
-        elif table =="nat" and ingress_sources:
-            # if the ingress source is not for the current family (there are no
-            # ingress fragments), then avoid creating an invalid catch all
-            # rule.
-            pass
         else: # [ANY, HOST] --> [zone, ANY, HOST]
             if egress_fragments:
                 # [ANY, HOST] --> zone
                 for egress_fragment in egress_fragments:
                     rules.append(_generate_policy_dispatch_rule(None, egress_fragment))
-            elif table =="nat" and egress_sources:
-                # if the egress source is not for the current family (there are
-                # no egress fragments), then avoid creating an invalid catch
-                # all rule.
-                pass
             else:
                 # [ANY, HOST] --> [ANY, HOST]
                 rules.append(_generate_policy_dispatch_rule(None, None))
@@ -838,16 +794,7 @@ class nftables(object):
         return rules
 
     def build_zone_source_interface_rules(self, enable, zone, policy, interface,
-                                          table, chain, append=False,
-                                          family="inet"):
-        # nat tables needs to use ip/ip6 family
-        if table == "nat" and family == "inet":
-            rules = []
-            rules.extend(self.build_zone_source_interface_rules(enable, zone, policy,
-                            interface, table, chain, append, "ip"))
-            rules.extend(self.build_zone_source_interface_rules(enable, zone, policy,
-                            interface, table, chain, append, "ip6"))
-            return rules
+                                          table, chain, append=False):
 
         isSNAT = True if (table == "nat" and chain == "POSTROUTING") else False
         _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX, isSNAT=isSNAT)
@@ -875,20 +822,20 @@ class nftables(object):
 
         if enable and not append:
             verb = "insert"
-            rule = {"family": family,
+            rule = {"family": "inet",
                     "table": TABLE_NAME,
                     "chain": "%s_%s_ZONES" % (table, chain),
                     "expr": expr_fragments}
             rule.update(self._zone_interface_fragment())
         elif enable:
             verb = "add"
-            rule = {"family": family,
+            rule = {"family": "inet",
                     "table": TABLE_NAME,
                     "chain": "%s_%s_ZONES" % (table, chain),
                     "expr": expr_fragments}
         else:
             verb = "delete"
-            rule = {"family": family,
+            rule = {"family": "inet",
                     "table": TABLE_NAME,
                     "chain": "%s_%s_ZONES" % (table, chain),
                     "expr": expr_fragments}
@@ -898,23 +845,7 @@ class nftables(object):
         return [{verb: {"rule": rule}}]
 
     def build_zone_source_address_rules(self, enable, zone, policy,
-                                        address, table, chain, family="inet"):
-        # nat tables needs to use ip/ip6 family
-        if table == "nat" and family == "inet":
-            rules = []
-            if address.startswith("ipset:"):
-                ipset_family = self._set_get_family(address[len("ipset:"):])
-            else:
-                ipset_family = None
-
-            if check_address("ipv4", address) or check_mac(address) or ipset_family == "ip":
-                rules.extend(self.build_zone_source_address_rules(enable, zone, policy,
-                                    address, table, chain, "ip"))
-            if check_address("ipv6", address) or check_mac(address) or ipset_family == "ip6":
-                rules.extend(self.build_zone_source_address_rules(enable, zone, policy,
-                                    address, table, chain, "ip6"))
-            return rules
-
+                                        address, table, chain):
         isSNAT = True if (table == "nat" and chain == "POSTROUTING") else False
         _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX, isSNAT=isSNAT)
         add_del = { True: "insert", False: "delete" }[enable]
@@ -935,7 +866,7 @@ class nftables(object):
 
         action = "goto"
 
-        rule = {"family": family,
+        rule = {"family": "inet",
                 "table": TABLE_NAME,
                 "chain": zone_dispatch_chain,
                 "expr": [self._rule_addr_fragment(opt, address),
@@ -943,29 +874,22 @@ class nftables(object):
         rule.update(self._zone_source_fragment(zone, address))
         return [{add_del: {"rule": rule}}]
 
-    def build_policy_chain_rules(self, enable, policy, table, chain, family="inet"):
-        # nat tables needs to use ip/ip6 family
-        if table == "nat" and family == "inet":
-            rules = []
-            rules.extend(self.build_policy_chain_rules(enable, policy, table, chain, "ip"))
-            rules.extend(self.build_policy_chain_rules(enable, policy, table, chain, "ip6"))
-            return rules
-
+    def build_policy_chain_rules(self, enable, policy, table, chain):
         add_del = { True: "add", False: "delete" }[enable]
         isSNAT = True if (table == "nat" and chain == "POSTROUTING") else False
         _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX, isSNAT=isSNAT)
 
         rules = []
-        rules.append({add_del: {"chain": {"family": family,
+        rules.append({add_del: {"chain": {"family": "inet",
                                           "table": TABLE_NAME,
                                           "name": "%s_%s" % (table, _policy)}}})
         for chain_suffix in ["pre", "log", "deny", "allow", "post"]:
-            rules.append({add_del: {"chain": {"family": family,
+            rules.append({add_del: {"chain": {"family": "inet",
                                               "table": TABLE_NAME,
                                               "name": "%s_%s_%s" % (table, _policy, chain_suffix)}}})
 
         for chain_suffix in ["pre", "log", "deny", "allow", "post"]:
-            rules.append({add_del: {"rule": {"family": family,
+            rules.append({add_del: {"rule": {"family": "inet",
                                              "table": TABLE_NAME,
                                              "chain": "%s_%s" % (table, _policy),
                                              "expr": [{"jump": {"target": "%s_%s_%s" % (table, _policy, chain_suffix)}}]}}})
@@ -978,7 +902,7 @@ class nftables(object):
                     log_suffix = target
                     if target == "%%REJECT%%":
                         log_suffix = "REJECT"
-                    rules.append({add_del: {"rule": {"family": family,
+                    rules.append({add_del: {"rule": {"family": "inet",
                                                      "table": TABLE_NAME,
                                                      "chain": "%s_%s" % (table, _policy),
                                                      "expr": [self._pkttype_match_fragment(self._fw.get_log_denied()),
@@ -990,7 +914,7 @@ class nftables(object):
                 target_fragment = self._reject_fragment()
             else:
                 target_fragment = {target.lower(): None}
-            rules.append({add_del: {"rule": {"family": family,
+            rules.append({add_del: {"rule": {"family": "inet",
                                              "table": TABLE_NAME,
                                              "chain": "%s_%s" % (table, _policy),
                                              "expr": [target_fragment]}}})
@@ -1471,21 +1395,26 @@ class nftables(object):
 
         return rules
 
-    def _build_policy_masquerade_nat_rules(self, enable, policy, family, rich_rule=None):
-        table = "nat"
-        _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX, isSNAT=True)
-
+    def build_policy_masquerade_rules(self, enable, policy, rich_rule=None):
         add_del = { True: "add", False: "delete" }[enable]
+
+        rules = []
 
         expr_fragments = []
         if rich_rule:
+            expr_fragments.append(self._rich_rule_family_fragment(rich_rule.family))
             expr_fragments.append(self._rich_rule_destination_fragment(rich_rule.destination))
             expr_fragments.append(self._rich_rule_source_fragment(rich_rule.source))
             chain_suffix = self._rich_rule_chain_suffix(rich_rule)
         else:
+            expr_fragments.append({"match": {"left": {"meta": {"key": "nfproto"}},
+                                             "op": "==",
+                                             "right": "ipv4"}})
             chain_suffix = "allow"
 
-        rule = {"family": family,
+        table = "nat"
+        _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX, isSNAT=True)
+        rule = {"family": "inet",
                 "table": TABLE_NAME,
                 "chain": "nat_%s_%s" % (_policy, chain_suffix),
                 "expr": expr_fragments +
@@ -1494,32 +1423,10 @@ class nftables(object):
                                     "right": "lo"}},
                          {"masquerade": None}]}
         rule.update(self._rich_rule_priority_fragment(rich_rule))
-        return [{add_del: {"rule": rule}}]
-
-    def build_policy_masquerade_rules(self, enable, policy, rich_rule=None):
-        # nat tables needs to use ip/ip6 family
-        rules = []
-        if rich_rule and (rich_rule.family and rich_rule.family == "ipv6"
-           or rich_rule.source and check_address("ipv6", rich_rule.source.addr)):
-            rules.extend(self._build_policy_masquerade_nat_rules(enable, policy, "ip6", rich_rule))
-        elif rich_rule and (rich_rule.family and rich_rule.family == "ipv4"
-           or rich_rule.source and check_address("ipv4", rich_rule.source.addr)):
-            rules.extend(self._build_policy_masquerade_nat_rules(enable, policy, "ip", rich_rule))
-        else:
-            rules.extend(self._build_policy_masquerade_nat_rules(enable, policy, "ip", rich_rule))
+        rules.append({add_del: {"rule": rule}})
 
         table = "filter"
         _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX)
-        add_del = { True: "add", False: "delete" }[enable]
-
-        expr_fragments = []
-        if rich_rule:
-            expr_fragments.append(self._rich_rule_destination_fragment(rich_rule.destination))
-            expr_fragments.append(self._rich_rule_source_fragment(rich_rule.source))
-            chain_suffix = self._rich_rule_chain_suffix(rich_rule)
-        else:
-            chain_suffix = "allow"
-
         rule = {"family": "inet",
                 "table": TABLE_NAME,
                 "chain": "filter_%s_%s" % (_policy, chain_suffix),
@@ -1533,19 +1440,25 @@ class nftables(object):
 
         return rules
 
-    def _build_policy_forward_port_nat_rules(self, enable, policy, port, protocol,
-                                           toaddr, toport, family,
-                                           rich_rule=None):
+    def build_policy_forward_port_rules(self, enable, policy, port,
+                                      protocol, toport, toaddr, rich_rule=None):
         table = "nat"
         _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX)
         add_del = { True: "add", False: "delete" }[enable]
 
         expr_fragments = []
         if rich_rule:
+            expr_fragments.append(self._rich_rule_family_fragment(rich_rule.family))
             expr_fragments.append(self._rich_rule_destination_fragment(rich_rule.destination))
             expr_fragments.append(self._rich_rule_source_fragment(rich_rule.source))
             chain_suffix = self._rich_rule_chain_suffix(rich_rule)
         else:
+            nfproto = "ipv4"
+            if toaddr and check_single_address("ipv6", toaddr):
+                nfproto = "ipv6"
+            expr_fragments.append({"match": {"left": {"meta": {"key": "nfproto"}},
+                                             "op": "==",
+                                             "right": nfproto}})
             chain_suffix = "allow"
 
         expr_fragments.append({"match": {"left": {"payload": {"protocol": protocol,
@@ -1563,33 +1476,12 @@ class nftables(object):
         else:
             expr_fragments.append({"redirect": {"port": self._port_fragment(toport)}})
 
-        rule = {"family": family,
+        rule = {"family": "inet",
                 "table": TABLE_NAME,
                 "chain": "nat_%s_%s" % (_policy, chain_suffix),
                 "expr": expr_fragments}
         rule.update(self._rich_rule_priority_fragment(rich_rule))
         return [{add_del: {"rule": rule}}]
-
-    def build_policy_forward_port_rules(self, enable, policy, port,
-                                      protocol, toport, toaddr, rich_rule=None):
-        rules = []
-        if rich_rule and (rich_rule.family and rich_rule.family == "ipv6"
-           or toaddr and check_single_address("ipv6", toaddr)):
-            rules.extend(self._build_policy_forward_port_nat_rules(enable, policy,
-                                port, protocol, toaddr, toport, "ip6", rich_rule))
-        elif rich_rule and (rich_rule.family and rich_rule.family == "ipv4"
-           or toaddr and check_single_address("ipv4", toaddr)):
-            rules.extend(self._build_policy_forward_port_nat_rules(enable, policy,
-                                port, protocol, toaddr, toport, "ip", rich_rule))
-        else:
-            if toaddr and check_single_address("ipv6", toaddr):
-                rules.extend(self._build_policy_forward_port_nat_rules(enable, policy,
-                                    port, protocol, toaddr, toport, "ip6", rich_rule))
-            else:
-                rules.extend(self._build_policy_forward_port_nat_rules(enable, policy,
-                                    port, protocol, toaddr, toport, "ip", rich_rule))
-
-        return rules
 
     def _icmp_types_to_nft_fragments(self, ipv, icmp_type):
         if icmp_type in ICMP_TYPES_FRAGMENTS[ipv]:
@@ -1804,7 +1696,8 @@ class nftables(object):
         else:
             ipv = "ipv4"
 
-        set_dict = {"table": TABLE_NAME,
+        set_dict = {"family": "inet",
+                    "table": TABLE_NAME,
                     "name": name,
                     "type": self._set_type_list(ipv, type)}
 
@@ -1820,24 +1713,17 @@ class nftables(object):
             if "maxelem" in options:
                 set_dict["size"] = options["maxelem"]
 
-        rules = []
-        for family in ["inet", "ip", "ip6"]:
-            rule_dict = {"family": family}
-            rule_dict.update(set_dict)
-            rules.append({"add": {"set": rule_dict}})
-
-        return rules
+        return [{"add": {"set": set_dict}}]
 
     def set_create(self, name, type, options=None):
         rules = self.build_set_create_rules(name, type, options)
         self.set_rules(rules, self._fw.get_log_denied())
 
     def set_destroy(self, name):
-        for family in ["inet", "ip", "ip6"]:
-            rule = {"delete": {"set": {"family": family,
-                                       "table": TABLE_NAME,
-                                       "name": name}}}
-            self.set_rule(rule, self._fw.get_log_denied())
+        rule = {"delete": {"set": {"family": "inet",
+                                   "table": TABLE_NAME,
+                                   "name": name}}}
+        self.set_rule(rule, self._fw.get_log_denied())
 
     def _set_match_fragment(self, name, match_dest, invert=False):
         type_format = self._fw.ipset.get_ipset(name).type.split(":")[1].split(",")
@@ -1914,11 +1800,10 @@ class nftables(object):
     def build_set_add_rules(self, name, entry):
         rules = []
         element = self._set_entry_fragment(name, entry)
-        for family in ["inet", "ip", "ip6"]:
-            rules.append({"add": {"element": {"family": family,
-                                              "table": TABLE_NAME,
-                                              "name": name,
-                                              "elem": element}}})
+        rules.append({"add": {"element": {"family": "inet",
+                                          "table": TABLE_NAME,
+                                          "name": name,
+                                          "elem": element}}})
         return rules
 
     def set_add(self, name, entry):
@@ -1927,21 +1812,16 @@ class nftables(object):
 
     def set_delete(self, name, entry):
         element = self._set_entry_fragment(name, entry)
-        for family in ["inet", "ip", "ip6"]:
-            rule = {"delete": {"element": {"family": family,
-                                           "table": TABLE_NAME,
-                                           "name": name,
-                                           "elem": element}}}
-            self.set_rule(rule, self._fw.get_log_denied())
+        rule = {"delete": {"element": {"family": "inet",
+                                       "table": TABLE_NAME,
+                                       "name": name,
+                                       "elem": element}}}
+        self.set_rule(rule, self._fw.get_log_denied())
 
     def build_set_flush_rules(self, name):
-        rules = []
-        for family in ["inet", "ip", "ip6"]:
-            rule = {"flush": {"set": {"family": family,
-                                      "table": TABLE_NAME,
-                                      "name": name}}}
-            rules.append(rule)
-        return rules
+        return [{"flush": {"set": {"family": "inet",
+                                   "table": TABLE_NAME,
+                                   "name": name}}}]
 
     def set_flush(self, name):
         rules = self.build_set_flush_rules(name)
