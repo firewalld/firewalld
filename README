@@ -25,9 +25,26 @@ the main firewalld repository.
 
 [1] https://translate.stg.fedoraproject.org/projects/firewalld/
 
+Dependencies
+------------
+These are the runtime dependencies:
+
+  ebtables
+  ipset
+  iptables
+  linux >= 5.3
+  python3-dbus
+  python3-decorator
+  python3-gobject
+  python3-nftables >= 0.9.4
+  python3-slip-dbus
+
+Note: python2 is _not_ supported.
+
 Working With The Source Repository
 ----------------------------------
-Install the following requirements or packages:
+In addition to the runtime dependencies some others are needed to build from
+source:
 
   desktop-file-utils: /usr/bin/desktop-file-install
   gettext
@@ -35,19 +52,6 @@ Install the following requirements or packages:
   glib2: /usr/bin/glib-compile-schemas
   glib2-devel: /usr/share/aclocal/gsettings.m4
   systemd-units
-  iptables
-  ebtables
-  ipset
-
-For use with Python 3:
-
-  python3-dbus
-  python3-slip-dbus
-  python3-decorator
-  python3-gobject
-  python3-nftables (nftables >= 0.9.3)
-
-Note: python2 is _not_ supported.
 
 To be able to create man pages and documentation from docbook files:
 
