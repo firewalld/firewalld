@@ -50,6 +50,12 @@ AT_DATA([./policies/foobar.xml], [dnl
     <source-port port="1234" protocol="udp" />
     <log prefix="LOG: " level="warning" />
 </rule>
+<rule>
+    <source-port port="1234" protocol="tcp" />
+    <nflog group="1" prefix="NFLOG: " queue-size="10">
+        <limit value="5/m" />
+    </nflog>
+</rule>
 <rule family="ipv6">
     <protocol value="ipv6-icmp" />
     <audit />

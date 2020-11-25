@@ -1336,8 +1336,13 @@ FWD_START_TEST([rich rules good])
     rich_rule_test([rule protocol value="ah" reject])
     rich_rule_test([rule protocol value="esp" accept])
     rich_rule_test([rule protocol value="sctp" log])
+    rich_rule_test([rule protocol value="igmp" log])
     rich_rule_test([rule family="ipv4" source address="192.168.0.0/24" service name="tftp" log prefix="tftp: " level="info" limit value="1/m" accept])
     rich_rule_test([rule family="ipv4" source not address="192.168.0.0/24" service name="dns" log prefix="dns: " level="info" limit value="2/m" drop])
+    rich_rule_test([rule family="ipv4" source address="192.168.0.0/24" service name="irc" nflog prefix="irc: " group=1000 queue-size=10 limit value="1/m" accept])
+    rich_rule_test([rule family="ipv4" source not address="192.168.0.0/24" service name="mysql" nflog prefix="mysql: " queue-size=100 limit value="2/m" drop])
+    rich_rule_test([rule family="ipv4" port port="2222" protocol="tcp" nflog prefix="port-2222: " queue-size=0 drop])
+    rich_rule_test([rule family="ipv4" port port="3333" protocol="udp" nflog prefix="port-3333: " queue-size=65535 accept])
     IF_HOST_SUPPORTS_IPV6_RULES([
     rich_rule_test([rule family="ipv6" source address="1:2:3:4:6::" service name="radius" log prefix="dns -- " level="info" limit value="3/m" reject type="icmp6-addr-unreachable" limit value="20/m"])
     rich_rule_test([rule family="ipv6" source address="1:2:3:4:6::" port port="4011" protocol="tcp" log prefix="port 4011: " level="info" limit value="4/m" drop])
@@ -1968,11 +1973,18 @@ FWD_START_TEST([rich rules bad])
     rich_rule_test([rule family="ipv4" masquerade drop], 122) dnl masquerade & action
     rich_rule_test([rule family="ipv4" icmp-block name="redirect" accept], 122) dnl icmp-block & action
     rich_rule_test([rule forward-port port="2222" to-port="22" protocol="tcp" family="ipv4" accept], 122) dnl forward-port & action
+    rich_rule_test([rule service name="ssh" log prefix="RRClag4hrBx9XZXk+46c6QavQehyRGdy3tjs7gzc+xfSzsd2smjoQ2NCPami6zVyjHtPGziBuqSWT0KII7QbHkwjNMr9pzbcbPue9PMTb5zXlMPphDjeuDdC3QTCH9rGQHooa9LiDWr+DqNPkBs+vb8r50eb+yEQIyhQaiDrQ0sc" drop], 141) dnl bad log prefix length
+    rich_rule_test([rule protocol value="sctp" nflog group=-1 drop], 142) dnl bad nflog group
+    rich_rule_test([rule family="ipv4" service name="https" nflog queue-size=-1 drop], 143) dnl bad nflog queue-size
+    rich_rule_test([rule family="ipv6" service name="https" nflog queue-size=65536 drop], 143) dnl threshold too high for nflog queue-size
     m4_undefine([rich_rule_test])
 FWD_END_TEST([-e '/ERROR: INVALID_RULE:/d' dnl
               -e '/ERROR: INVALID_LOG_LEVEL: eror/d' dnl
               -e '/ERROR: MISSING_FAMILY/d' dnl
-              -e '/ERROR: INVALID_LIMIT: 1\/2m/d'])
+              -e '/ERROR: INVALID_LIMIT: 1\/2m/d' dnl
+              -e '/ERROR: INVALID_LOG_PREFIX:/d' dnl
+              -e '/ERROR: INVALID_NFLOG_GROUP:/d' dnl
+              -e '/ERROR: INVALID_NFLOG_QUEUE:/d'])
 
 FWD_START_TEST([config validation])
     AT_KEYWORDS(check_config)
@@ -2311,6 +2323,21 @@ WARNING: INVALID_LIMIT: none: rule family="ipv4" source address="10.0.0.1/24" ac
 <?xml version="1.0" encoding="utf-8"?>
 <zone>
 <rule>
+<service name="bitcoin" />
+<log prefix="WtsDMDAMJvd24wejRBsImI2VSkBaAlo1h2TVgEmH5CpL1YjdCTnjO8mizyp4cBDNq9NXS6QAuRnq/vF5xsid1orzY4jKzaWhm5qrktZLi38jinLFixX97d5JcM9o5tSx9XwQyaHUJMmxcjKYrDQ2Pvo1KMgf4f7yDAcKJaoJiNYp" />
+</rule>
+</zone>
+])
+    FWD_CHECK([--check-config], 0, ignore, [dnl
+m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [dnl
+WARNING: Invalid rule: Invalid log prefix
+WARNING: Invalid rule: Invalid log prefix
+])])
+
+    AT_DATA([./zones/foobar.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+<rule>
 <source address="10.0.0.1/24" />
 <log level="super_critical" />
 </rule>
@@ -2320,6 +2347,36 @@ WARNING: INVALID_LIMIT: none: rule family="ipv4" source address="10.0.0.1/24" ac
 m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [dnl
 WARNING: Invalid rule: Invalid log level
 WARNING: Invalid rule: Invalid log level
+])])
+
+    AT_DATA([./zones/foobar.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+<rule family="ipv4">
+<forward-port port="1234" protocol="tcp" to-port="4321" to-addr="10.0.0.1" />
+<nflog group="65536" />
+</rule>
+</zone>
+])
+    FWD_CHECK([--check-config], 0, ignore, [dnl
+m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [dnl
+WARNING: Invalid rule: Invalid nflog group value
+WARNING: Invalid rule: Invalid nflog group value
+])])
+
+    AT_DATA([./zones/foobar.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+<rule>
+<port port="1234" protocol="tcp" />
+<nflog queue-size="-1" />
+</rule>
+</zone>
+])
+    FWD_CHECK([--check-config], 0, ignore, [dnl
+m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [dnl
+WARNING: Invalid rule: Invalid nflog queue-size
+WARNING: Invalid rule: Invalid nflog queue-size
 ])])
 
     AT_DATA([./zones/foobar.xml], [dnl

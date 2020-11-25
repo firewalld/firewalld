@@ -288,5 +288,35 @@ IP6TABLES_LIST_RULES([filter], [IN_foobar_post], 0, [dnl
     AUDIT all ::/0 ::/0 AUDIT accept
     ACCEPT all ::/0 ::/0
 ])
+FWD_CHECK([--permanent --policy foobar --remove-rich-rule='rule priority=32000 log prefix="LOG: " level="warning"'], 0, ignore)
+FWD_CHECK([--permanent --policy foobar --remove-rich-rule='rule priority=32001 audit accept'], 0, ignore)
+FWD_RELOAD
+
+dnl nflog/audit action
+dnl
+FWD_CHECK([--permanent --policy foobar --add-rich-rule='rule priority=32000 nflog prefix="NFLOG: " queue-size=10'], 0, ignore)
+FWD_CHECK([--permanent --policy foobar --add-rich-rule='rule priority=32001 audit accept'], 0, ignore)
+FWD_RELOAD
+NFT_LIST_RULES([inet], [filter_IN_policy_foobar_post], 0, [dnl
+    table inet firewalld {
+        chain filter_IN_policy_foobar_post {
+            ip saddr 10.10.10.15 accept
+            log prefix "NFLOG: " group 0 queue-threshold 10
+            log level audit
+            accept
+        }
+    }
+])
+IPTABLES_LIST_RULES([filter], [IN_foobar_post], 0, [dnl
+    ACCEPT all -- 10.10.10.15 0.0.0.0/0
+    NFLOG all -- 0.0.0.0/0 0.0.0.0/0 nflog-prefix "NFLOG: " nflog-threshold 10
+    AUDIT all -- 0.0.0.0/0 0.0.0.0/0 AUDIT accept
+    ACCEPT all -- 0.0.0.0/0 0.0.0.0/0
+])
+IP6TABLES_LIST_RULES([filter], [IN_foobar_post], 0, [dnl
+    NFLOG all ::/0 ::/0 nflog-prefix "NFLOG: " nflog-threshold 10
+    AUDIT all ::/0 ::/0 AUDIT accept
+    ACCEPT all ::/0 ::/0
+])
 
 FWD_END_TEST([-e '/ERROR: INVALID_ZONE:/d'])
