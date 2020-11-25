@@ -71,7 +71,7 @@ rule
   [source]
   [destination]
   service|port|protocol|icmp-block|icmp-type|masquerade|forward-port|source-port
-  [log]
+  [log|nflog]
   [audit]
   [accept|reject|drop|mark]
       </programlisting>
@@ -83,7 +83,7 @@ rule
       <programlisting>
 rule
   source
-  [log]
+  [log|nflog]
   [audit]
   accept|reject|drop|mark
       </programlisting>
@@ -280,9 +280,38 @@ log [prefix="prefix text"] [level="log level"] [limit value="rate/duration"]
       </para>
       <para>
 	Log new connection attempts to the rule with kernel logging for example in syslog.
-	You can define a prefix text that will be added to the log message as a prefix.
+	You can define a prefix text with a maximum length of 127 characters that will be added to the log message as a prefix.
 	Log level can be one of "<option>emerg</option>", "<option>alert</option>", "<option>crit</option>", "<option>error</option>", "<option>warning</option>", "<option>notice</option>", "<option>info</option>" or "<option>debug</option>", where default (i.e. if there's no one specified) is "<option>warning</option>". See <citerefentry><refentrytitle>syslog</refentrytitle><manvolnum>3</manvolnum></citerefentry> for description of levels.
 	See Limit section for description of <option>limit</option> tag.
+      </para>
+      <para>
+        <emphasis>Note:</emphasis> The iptables backend truncates prefix to 29 characters.
+      </para>
+    </refsect2>
+
+    <refsect2>
+      <title>NFLog</title>
+      <para>
+	<programlisting>
+nflog [group="group id"] [prefix="prefix text"] [queue-size="threshold"] [limit value="rate/duration"]
+	</programlisting>
+      </para>
+      <para>
+	Log new connection attempts to the rule using kernel logging to pass the packets through a 'netlink' socket to users or applications monitoring the multicast <option>group</option>.
+      The minimum and default value for <option>group</option> is 0, maximum value is 65535.
+	See NETLINK_NETFILTER in <citerefentry><refentrytitle>netlink</refentrytitle><manvolnum>7</manvolnum></citerefentry> man page and NFLOG in both <citerefentry><refentrytitle>iptables-extensions</refentrytitle><manvolnum>8</manvolnum></citerefentry> and <citerefentry><refentrytitle>nft</refentrytitle><manvolnum>8</manvolnum></citerefentry> man pages for a more detailed description.
+      </para>
+      <para>
+      You can define a prefix text with a maximum length of 127 characters that will be added to the log message as a prefix.
+      The <option>queue-size</option> option can be set to increase the queue threshold which can help limit context switching.
+      The default value for <option>queue-size</option> is 1, maximum value is 65535.
+	See <citerefentry><refentrytitle>iptables-extensions</refentrytitle><manvolnum>8</manvolnum></citerefentry> and <citerefentry><refentrytitle>nft</refentrytitle><manvolnum>8</manvolnum></citerefentry> for more details. 
+      </para>
+      <para>
+      See Limit section for description of <option>limit</option> tag.
+      </para>
+      <para>
+        <emphasis>Note:</emphasis> The iptables backend truncates prefix to 63 characters.
       </para>
     </refsect2>
 
@@ -348,7 +377,7 @@ limit value="rate/duration"
 	</programlisting>
       </para>
        <para>
-	 It is possible to limit Log, Audit and Action.
+	 It is possible to limit Log, NFLog, Audit and Action.
 	 A rule using this tag will match until this limit is reached.
 	 The rate is a natural positive number [1, ..]
 	 The duration is of "s", "m", "h", "d". "s" means seconds, "m" minutes, "h" hours and "d" days.
@@ -359,7 +388,7 @@ limit value="rate/duration"
     <refsect2>
       <title>Information about logging and actions</title>
       <para>
-	Logging can be done with the log and audit actions. A new chain is added to all zones: zone_log. This will be jumped into before the deny chain to be able to have a proper ordering.
+	Logging can be done with the log, nflog and audit actions. A new chain is added to all zones: zone_log. This will be jumped into before the deny chain to be able to have a proper ordering.
       </para>
       <para>
 	The rules or parts of them are placed in separate chains according to the priority and action of the rule:
@@ -377,7 +406,7 @@ limit value="rate/duration"
         When <emphasis>priority &lt; 0</emphasis>, the rich rule will be placed in the <replaceable>zone</replaceable>_pre chain.
       </para>
       <para>
-        When <emphasis>priority == 0</emphasis>Then all logging rules will be placed in the <replaceable>zone</replaceable>_log chain. All reject and drop rules will be placed in the <replaceable>zone</replaceable>_deny chain, which will be walked after the log chain. All accept rules will be placed in the <replaceable>zone</replaceable>_allow chain, which will be walked after the deny chain. If a rule contains log and also deny or allow actions, the parts are placed in the matching chains.
+        When <emphasis>priority == 0</emphasis> Then all logging rules will be placed in the <replaceable>zone</replaceable>_log chain. All reject and drop rules will be placed in the <replaceable>zone</replaceable>_deny chain, which will be walked after the log chain. All accept rules will be placed in the <replaceable>zone</replaceable>_allow chain, which will be walked after the deny chain. If a rule contains log and also deny or allow actions, the parts are placed in the matching chains.
       </para>
       <para>
         When <emphasis>priority &gt; 0</emphasis>, the rich rule will be placed in the <replaceable>zone</replaceable>_post chain.
