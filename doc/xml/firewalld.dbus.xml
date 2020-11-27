@@ -2798,6 +2798,14 @@
               </para>
             </listitem>
           </varlistentry>
+          <varlistentry id="FirewallD1.config.Properties.CleanupModulesOnExit">
+            <term>CleanupModulesOnExit - s - (rw)</term>
+            <listitem>
+              <para>
+    Setting this option to yes or true unloads all firewall-related kernel modules when firewalld is stopped.
+              </para>
+            </listitem>
+          </varlistentry>
           <varlistentry id="FirewallD1.config.Properties.CleanupOnExit">
             <term>CleanupOnExit - s - (rw)</term>
             <listitem>

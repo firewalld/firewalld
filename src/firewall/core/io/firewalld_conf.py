@@ -28,10 +28,11 @@ from firewall import config
 from firewall.core.logger import log
 from firewall.functions import b2u, u2b, PY2
 
-valid_keys = [ "DefaultZone", "MinimalMark", "CleanupOnExit", "Lockdown",
-               "IPv6_rpfilter", "IndividualCalls", "LogDenied",
-               "AutomaticHelpers", "FirewallBackend", "FlushAllOnReload",
-               "RFC3964_IPv4", "AllowZoneDrifting" ]
+valid_keys = [ "DefaultZone", "MinimalMark", "CleanupOnExit",
+               "CleanupModulesOnExit", "Lockdown", "IPv6_rpfilter",
+               "IndividualCalls", "LogDenied", "AutomaticHelpers",
+               "FirewallBackend", "FlushAllOnReload", "RFC3964_IPv4",
+               "AllowZoneDrifting" ]
 
 class firewalld_conf(object):
     def __init__(self, filename):
@@ -75,6 +76,7 @@ class firewalld_conf(object):
             self.set("DefaultZone", config.FALLBACK_ZONE)
             self.set("MinimalMark", str(config.FALLBACK_MINIMAL_MARK))
             self.set("CleanupOnExit", "yes" if config.FALLBACK_CLEANUP_ON_EXIT else "no")
+            self.set("CleanupModulesOnExit", "yes" if config.FALLBACK_CLEANUP_MODULES_ON_EXIT else "no")
             self.set("Lockdown", "yes" if config.FALLBACK_LOCKDOWN else "no")
             self.set("IPv6_rpfilter","yes" if config.FALLBACK_IPV6_RPFILTER else "no")
             self.set("IndividualCalls", "yes" if config.FALLBACK_INDIVIDUAL_CALLS else "no")
@@ -134,6 +136,15 @@ class firewalld_conf(object):
                             "value %s", value if value else '',
                             config.FALLBACK_CLEANUP_ON_EXIT)
             self.set("CleanupOnExit", "yes" if config.FALLBACK_CLEANUP_ON_EXIT else "no")
+
+        # check module cleanup on exit
+        value = self.get("CleanupModulesOnExit")
+        if not value or value.lower() not in [ "no", "false", "yes", "true" ]:
+            if value is not None:
+                log.warning("CleanupModulesOnExit '%s' is not valid, using default "
+                            "value %s", value if value else '',
+                            config.FALLBACK_CLEANUP_MODULES_ON_EXIT)
+            self.set("CleanupModulesOnExit", "yes" if config.FALLBACK_CLEANUP_MODULES_ON_EXIT else "no")
 
         # check lockdown
         value = self.get("Lockdown")

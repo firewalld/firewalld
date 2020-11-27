@@ -17,6 +17,7 @@ dnl Verify defaults over dbus. Should be inline with default firewalld.conf.
 DBUS_GETALL([config], [config], 0, [dnl
 string "AllowZoneDrifting" : variant string "no"
 string "AutomaticHelpers" : variant string "no"
+string "CleanupModulesOnExit" : variant string "yes"
 string "CleanupOnExit" : variant string "no"
 string "DefaultZone" : variant string "public"
 string "FirewallBackend" : variant string "nftables"
@@ -45,6 +46,7 @@ _helper([IPv6_rpfilter], [string:"yes"], [variant string "yes"])
 _helper([IndividualCalls], [string:"yes"], [variant string "yes"])
 _helper([FirewallBackend], [string:"iptables"], [variant string "iptables"])
 _helper([FlushAllOnReload], [string:"no"], [variant string "no"])
+_helper([CleanupModulesOnExit], [string:"no"], [variant string "no"])
 _helper([CleanupOnExit], [string:"yes"], [variant string "yes"])
 _helper([RFC3964_IPv4], [string:"no"], [variant string "no"])
 _helper([AllowZoneDrifting], [string:"yes"], [variant string "yes"])
