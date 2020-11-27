@@ -100,6 +100,7 @@ class FirewallDConfig(slip.dbus.service.Object):
         dbus_introspection_prepare_properties(self,
                                               config.dbus.DBUS_INTERFACE_CONFIG,
                                               { "CleanupOnExit": "readwrite",
+                                                "CleanupModulesOnExit": "readwrite",
                                                 "IPv6_rpfilter": "readwrite",
                                                 "Lockdown": "readwrite",
                                                 "MinimalMark": "readwrite",
@@ -554,9 +555,9 @@ class FirewallDConfig(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def _get_property(self, prop):
         if prop not in [ "DefaultZone", "MinimalMark", "CleanupOnExit",
-                         "Lockdown", "IPv6_rpfilter", "IndividualCalls",
-                         "LogDenied", "AutomaticHelpers", "FirewallBackend",
-                         "FlushAllOnReload", "RFC3964_IPv4",
+                         "CleanupModulesOnExit", "Lockdown", "IPv6_rpfilter",
+                         "IndividualCalls", "LogDenied", "AutomaticHelpers",
+                         "FirewallBackend", "FlushAllOnReload", "RFC3964_IPv4",
                          "AllowZoneDrifting" ]:
             raise dbus.exceptions.DBusException(
                 "org.freedesktop.DBus.Error.InvalidArgs: "
@@ -577,6 +578,10 @@ class FirewallDConfig(slip.dbus.service.Object):
         elif prop == "CleanupOnExit":
             if value is None:
                 value = "yes" if config.FALLBACK_CLEANUP_ON_EXIT else "no"
+            return dbus.String(value)
+        elif prop == "CleanupModulesOnExit":
+            if value is None:
+                value = "yes" if config.FALLBACK_CLEANUP_MODULES_ON_EXIT else "no"
             return dbus.String(value)
         elif prop == "Lockdown":
             if value is None:
@@ -622,6 +627,8 @@ class FirewallDConfig(slip.dbus.service.Object):
         elif prop == "MinimalMark":
             return dbus.Int32(self._get_property(prop))
         elif prop == "CleanupOnExit":
+            return dbus.String(self._get_property(prop))
+        elif prop == "CleanupModulesOnExit":
             return dbus.String(self._get_property(prop))
         elif prop == "Lockdown":
             return dbus.String(self._get_property(prop))
@@ -677,9 +684,9 @@ class FirewallDConfig(slip.dbus.service.Object):
         ret = { }
         if interface_name == config.dbus.DBUS_INTERFACE_CONFIG:
             for x in [ "DefaultZone", "MinimalMark", "CleanupOnExit",
-                       "Lockdown", "IPv6_rpfilter", "IndividualCalls",
-                       "LogDenied", "AutomaticHelpers", "FirewallBackend",
-                       "FlushAllOnReload", "RFC3964_IPv4",
+                       "CleanupModulesOnExit", "Lockdown", "IPv6_rpfilter",
+                       "IndividualCalls", "LogDenied", "AutomaticHelpers",
+                       "FirewallBackend", "FlushAllOnReload", "RFC3964_IPv4",
                        "AllowZoneDrifting" ]:
                 ret[x] = self._get_property(x)
         elif interface_name in [ config.dbus.DBUS_INTERFACE_CONFIG_DIRECT,
@@ -704,7 +711,8 @@ class FirewallDConfig(slip.dbus.service.Object):
         self.accessCheck(sender)
 
         if interface_name == config.dbus.DBUS_INTERFACE_CONFIG:
-            if property_name in [ "MinimalMark", "CleanupOnExit", "Lockdown",
+            if property_name in [ "MinimalMark", "CleanupOnExit",
+                                  "CleanupModulesOnExit", "Lockdown",
                                   "IPv6_rpfilter", "IndividualCalls",
                                   "LogDenied", "AutomaticHelpers",
                                   "FirewallBackend", "FlushAllOnReload",
@@ -720,8 +728,9 @@ class FirewallDConfig(slip.dbus.service.Object):
                     raise FirewallError(errors.INVALID_VALUE,
                                         "'%s' for %s" % \
                                         (new_value, property_name))
-                if property_name in [ "CleanupOnExit", "Lockdown",
-                                      "IPv6_rpfilter", "IndividualCalls" ]:
+                if property_name in [ "CleanupOnExit", "CleanupModulesOnExit",
+                                      "Lockdown", "IPv6_rpfilter",
+                                      "IndividualCalls" ]:
                     if new_value.lower() not in [ "yes", "no",
                                                   "true", "false" ]:
                         raise FirewallError(errors.INVALID_VALUE,

@@ -105,12 +105,13 @@ class Firewall(object):
         self.__init_vars()
 
     def __repr__(self):
-        return '%s(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)' % \
+        return '%s(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)' % \
             (self.__class__, self.ip4tables_enabled, self.ip6tables_enabled,
              self.ebtables_enabled, self._state, self._panic,
              self._default_zone, self._module_refcount, self._marks,
-             self.cleanup_on_exit, self.ipv6_rpfilter_enabled,
-             self.ipset_enabled, self._individual_calls, self._log_denied)
+             self.cleanup_on_exit, self.cleanup_modules_on_exit,
+             self.ipv6_rpfilter_enabled, self.ipset_enabled,
+             self._individual_calls, self._log_denied)
 
     def __init_vars(self):
         self._state = "INIT"
@@ -120,6 +121,7 @@ class Firewall(object):
         self._marks = [ ]
         # fallback settings will be overloaded by firewalld.conf
         self.cleanup_on_exit = config.FALLBACK_CLEANUP_ON_EXIT
+        self.cleanup_modules_on_exit = config.FALLBACK_CLEANUP_MODULES_ON_EXIT
         self.ipv6_rpfilter_enabled = config.FALLBACK_IPV6_RPFILTER
         self._individual_calls = config.FALLBACK_INDIVIDUAL_CALLS
         self._log_denied = config.FALLBACK_LOG_DENIED
@@ -231,6 +233,13 @@ class Firewall(object):
                     self.cleanup_on_exit = False
                 log.debug1("CleanupOnExit is set to '%s'",
                            self.cleanup_on_exit)
+
+            if self._firewalld_conf.get("CleanupModulesOnExit"):
+                value = self._firewalld_conf.get("CleanupModulesOnExit")
+                if value is not None and value.lower() in [ "yes", "true" ]:
+                    self.cleanup_modules_on_exit = True
+                log.debug1("CleanupModulesOnExit is set to '%s'",
+                           self.cleanup_modules_on_exit)
 
             if self._firewalld_conf.get("Lockdown"):
                 value = self._firewalld_conf.get("Lockdown")
@@ -667,11 +676,15 @@ class Firewall(object):
         self.__init_vars()
 
     def stop(self):
-        if self.cleanup_on_exit and not self._offline:
-            self.flush()
-            self.ipset.flush()
-            self.set_policy("ACCEPT")
-            self.modules_backend.unload_firewall_modules()
+        if not self._offline:
+            if self.cleanup_on_exit:
+                self.flush()
+                self.ipset.flush()
+                self.set_policy("ACCEPT")
+
+            if self.cleanup_modules_on_exit:
+                log.debug1('Unloading firewall kernel modules')
+                self.modules_backend.unload_firewall_modules()
 
         self.cleanup()
 

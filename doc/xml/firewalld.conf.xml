@@ -89,6 +89,17 @@
       </varlistentry>
 
       <varlistentry>
+        <term><option>CleanupModulesOnExit</option></term>
+        <listitem>
+          <para>
+            Setting this option to yes or true unloads all firewall-related
+            kernel modules when firewalld is stopped. The default value is no
+            or false.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
 	<term><option>CleanupOnExit</option></term>
         <listitem>
 	  <para>
