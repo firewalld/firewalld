@@ -1,0 +1,90 @@
+name: testsuite
+on: [push, pull_request]
+
+jobs:
+  test:
+    env:
+      apt-dependencies: |
+        autoconf automake ebtables intltool ipset iptables libdbus-1-dev \
+        libgirepository1.0-dev libglib2.0-dev libxml2-utils network-manager \
+        pkg-config 
+      pip-dependencies: |
+        decorator dbus-python PyGObject six
+
+    name: testsuite ${{ join(matrix.*, ' ') }}
+    runs-on: ubuntu-20.04
+
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.7]
+        keyword: [offline, nftables, iptables]
+        configure_args: ["", "IP6TABLES=/bin/false IP6TABLES_RESTORE=/bin/false"]
+        exclude:
+          - keyword: offline
+            configure_args: "IP6TABLES=/bin/false IP6TABLES_RESTORE=/bin/false"
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: apt install dependencies
+        run: sudo apt install -y ${{ env.apt-dependencies }}
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: pip install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install ${{ env.pip-dependencies }}
+
+      - name: install python-slip-dbus
+        run: |
+          cd /tmp
+          wget --retry-connrefused https://github.com/nphilipp/python-slip/releases/download/python-slip-0.6.5/python-slip-0.6.5.tar.bz2
+          tar xf python-slip-0.6.5.tar.bz2
+          cd python-slip-0.6.5
+          make
+          python ./setup.py install
+
+      - name: install nftables build dependencies
+        run: |
+          sudo apt install -y libmnl-dev libgmp-dev libreadline-dev libjansson-dev 
+
+      - name: install libnftnl
+        run: |
+          cd /tmp
+          wget --retry-connrefused https://netfilter.org/projects/libnftnl/files/libnftnl-1.1.6.tar.bz2
+          tar xf libnftnl-1.1.6.tar.bz2
+          cd libnftnl-1.1.6
+          ./configure
+          make
+          sudo make install
+          sudo ldconfig
+
+      - name: install nftables
+        run: |
+          cd /tmp
+          wget --retry-connrefused https://netfilter.org/projects/nftables/files/nftables-0.9.4.tar.bz2
+          tar xf nftables-0.9.4.tar.bz2
+          cd nftables-0.9.4
+          ./configure --disable-man-doc --with-json --enable-python
+          make
+          sudo make install
+          cd py
+          pip install .
+          sudo ldconfig
+
+      - name: build firewalld
+        run: |
+          ./autogen.sh
+          ./configure --disable-docs ${{ matrix.configure_args }}
+          make -j $(nproc)
+
+      - name: run testsuite
+        run: |
+          sudo make -C src/tests check-local TESTSUITEFLAGS="-k ${{ matrix.keyword }} -j$(nproc)" \
+          || sudo make -C src/tests check-local TESTSUITEFLAGS="--recheck --errexit --verbose"
