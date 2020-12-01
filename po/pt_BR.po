@@ -31,13 +31,15 @@
 # Eric Garver <e@erig.me>, 2018. #zanata
 # Renan Marcos Ferreira <renan.ferreira18@fatec.sp.gov.br>, 2018. #zanata
 # Rafael Fontenelle <rafaelff@gnome.org>, 2020.
+# Henrique Roberto Gattermann Mittelstaedt <henrique.roberto97@gmail.com>, 2020.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-06-30 13:30-0400\n"
-"PO-Revision-Date: 2020-09-12 16:29+0000\n"
-"Last-Translator: Rafael Fontenelle <rafaelff@gnome.org>\n"
+"PO-Revision-Date: 2020-12-01 02:35+0000\n"
+"Last-Translator: Henrique Roberto Gattermann Mittelstaedt <henrique."
+"roberto97@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://translate.fedoraproject.org/"
 "projects/firewalld/master/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -45,7 +47,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.2.2\n"
+"X-Generator: Weblate 4.3.2\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:416
 msgid "Firewall Applet"
@@ -256,7 +258,7 @@ msgstr "Conexão com FirewallD perdida."
 
 #: ../src/firewall-applet.in:989
 msgid "FirewallD has been reloaded."
-msgstr "O FirewallD  foi recarregado."
+msgstr "O FirewallD foi recarregado."
 
 #: ../src/firewall-applet.in:996
 #, c-format
@@ -1004,7 +1006,7 @@ msgstr "Modificação do log negada"
 
 #: ../src/firewall-config.glade.h:65
 msgid "Change LogDenied value."
-msgstr "Modificação do valor do log negada"
+msgstr "Modificação do valor do log negada."
 
 #: ../src/firewall-config.glade.h:66
 msgid "Configure Automatic Helper Assigment"
@@ -1012,7 +1014,7 @@ msgstr "Configurar Atribuição Automática de Ajuda"
 
 #: ../src/firewall-config.glade.h:67
 msgid "Configure Automatic Helper Assignment setting."
-msgstr "Configurar a definição de Atribuição Automática de Ajuda"
+msgstr "Configurar a definição de Atribuição Automática de Ajuda."
 
 #: ../src/firewall-config.glade.h:68
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
@@ -1029,7 +1031,7 @@ msgid ""
 "Lockdown locks firewall configuration so that only applications on lockdown "
 "whitelist are able to change it."
 msgstr ""
-"A configuração de bloqueio permite que  a configuração do firewall seja "
+"A configuração de bloqueio permite que a configuração do firewall seja "
 "alterada apenas pelos aplicativos na lista de permissões de bloqueio."
 
 #: ../src/firewall-config.glade.h:71
@@ -1110,7 +1112,7 @@ msgid ""
 msgstr ""
 "Configuração atualmente visível. A configuração de tempo de execução é a "
 "atual configuração ativa. A configuração permanente será ativada após o "
-"serviço ou o sistema ser recarregado ou reiniciado. "
+"serviço ou o sistema ser recarregado ou reiniciado."
 
 #: ../src/firewall-config.glade.h:88
 msgid ""
@@ -1185,7 +1187,7 @@ msgstr "Portas"
 msgid "Add protocols, which need to be accessible for all hosts or networks."
 msgstr ""
 "Adicionar protocolos que precisam estar acessíveis para todos os hosts ou "
-"redes. "
+"redes."
 
 #: ../src/firewall-config.glade.h:102
 msgid "Add Protocol"
@@ -1349,7 +1351,7 @@ msgstr ""
 "Adicione entradas para associar endereços de origem ou áreas à zona. Você "
 "pode também fazer a associação a um endereço de origem MAC, mas com "
 "limitações. O encaminhamento de portas e a aplicação de mascaramento não "
-"funcionarão para as associações de origem MAC. "
+"funcionarão para as associações de origem MAC."
 
 #: ../src/firewall-config.glade.h:132
 msgid "Add Source"
@@ -1373,7 +1375,7 @@ msgid ""
 "destination addresses."
 msgstr ""
 "Um serviço firewalld é uma combinação de portas, protocolos, módulos e "
-"endereços de destino. "
+"endereços de destino."
 
 #: ../src/firewall-config.glade.h:139
 msgid "Add Service"
@@ -1459,7 +1461,7 @@ msgid ""
 "example IP addresses, port numbers or MAC addresses. "
 msgstr ""
 "Um IPSet pode ser usado para criar listas brancas ou negras e pode "
-"armazenar, por exemplo, endereços de IP, números de portas ou endereços MAC."
+"armazenar, por exemplo, endereços de IP, números de portas ou endereços MAC. "
 
 #: ../src/firewall-config.glade.h:155
 msgid "IPSet"
@@ -1491,7 +1493,7 @@ msgstr ""
 "Entradas de IPSets. Você só será capaz de ver as entradas de ipsets que não "
 "estão utilizando a opção de tempo limite, além das entradas que foram "
 "adicionadas pelo firewalld. Entradas que foram diretamente adicionadas com o "
-"comando ipset não estarão listadas aqui. "
+"comando ipset não estarão listadas aqui."
 
 #: ../src/firewall-config.glade.h:161
 msgid ""
@@ -1499,8 +1501,7 @@ msgid ""
 "The entries should be taken care directly with the ipset command."
 msgstr ""
 "Este IPSet utiliza a opção de limite de tempo, portanto nenhuma entrada é "
-"visível aqui. As entradas devem ser atendidas diretamente pelo comando "
-"ipset. "
+"visível aqui. As entradas devem ser atendidas diretamente pelo comando ipset."
 
 #: ../src/firewall-config.glade.h:162
 msgid "Add"
@@ -1515,7 +1516,7 @@ msgid ""
 "IPSets can only be created or deleted in the permanent configuration view."
 msgstr ""
 "IPSets podem somente ser criados ou removidos na visualização de "
-"configurações permanentes. "
+"configurações permanentes."
 
 #: ../src/firewall-config.glade.h:166
 msgid ""
@@ -1539,7 +1540,7 @@ msgstr "Remover Tipo ICMP"
 
 #: ../src/firewall-config.glade.h:170
 msgid "Load ICMP Type Defaults"
-msgstr "Carregando os tipos de ICMP padrão. "
+msgstr "Carregando os tipos de ICMP padrão"
 
 #: ../src/firewall-config.glade.h:171
 msgid "Specify whether this ICMP Type is available for IPv4 and/or IPv6."
@@ -1596,7 +1597,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:177
 msgid "Additional chains for use with rules."
-msgstr "Cadeias adicionais para uso com regras"
+msgstr "Cadeias adicionais para uso com regras."
 
 #: ../src/firewall-config.glade.h:178
 msgid "Add Chain"
@@ -1659,7 +1660,7 @@ msgid ""
 "not placed in special chains. All iptables, ip6tables and ebtables options "
 "can be used."
 msgstr ""
-"As regras de repasse são diretamente repassados ​​para o firewall e não são "
+"As regras de repasse são diretamente repassados para o firewall e não são "
 "colocados em correntes especiais. Todos iptables, ip6tables e opções "
 "ebtables podem ser usados."
 
@@ -1692,7 +1693,7 @@ msgid ""
 "contain commands, contexts, users and user ids."
 msgstr ""
 "O recurso de bloqueio é uma versão light de políticas de usuário e "
-"aplicativo para firewalld. Limita alterações no firewall. O Bloqueio  de "
+"aplicativo para firewalld. Limita alterações no firewall. O bloqueio de "
 "whitelist pode conter comandos, contextos, usuários e IDs de usuário."
 
 #: ../src/firewall-config.glade.h:195
@@ -1728,8 +1729,8 @@ msgid ""
 "the absolute command inclusive arguments must match."
 msgstr ""
 "Se uma entrada de comando na whitelist termina com um asterisco '*', então "
-"todas as linhas de comando começando com o comando irá corresponder. Se o "
-"'*' não há argumentos, inclusive  o comando absoluto devem corresponder."
+"todas as linhas de comando começando com o comando irá corresponder. Se o '*"
+"' não há argumentos, inclusive o comando absoluto devem corresponder."
 
 #: ../src/firewall-config.glade.h:201
 msgid "Add Command Line"
@@ -1835,7 +1836,7 @@ msgstr "Tipo:"
 
 #: ../src/firewall-config.glade.h:226
 msgid "Timeout:"
-msgstr "Tempo limite: "
+msgstr "Tempo limite:"
 
 #: ../src/firewall-config.glade.h:227
 msgid "Hashsize:"
@@ -1847,7 +1848,7 @@ msgstr "Maxelem:"
 
 #: ../src/firewall-config.glade.h:229
 msgid "Timeout value in seconds"
-msgstr "Valor de limite de tempo em segundos "
+msgstr "Valor de limite de tempo em segundos"
 
 #: ../src/firewall-config.glade.h:230
 msgid "Initial hash size, default 1024"
@@ -1871,21 +1872,21 @@ msgstr "Log negado"
 
 #: ../src/firewall-config.glade.h:236
 msgid "Please select the log denied value:"
-msgstr "Por favor, escolha o valor de log negado: "
+msgstr "Por favor, escolha o valor de log negado:"
 
 #: ../src/firewall-config.glade.h:237
 msgid "Mark"
-msgstr "Marcação "
+msgstr "Marcação"
 
 #: ../src/firewall-config.glade.h:238
 msgid "Please enter a mark with an optional mask."
-msgstr "Por favor, insira uma marcação com uma máscara opcional. "
+msgstr "Por favor, insira uma marcação com uma máscara opcional."
 
 #: ../src/firewall-config.glade.h:239
 msgid "The mark and the mask fields are both 32 bits wide unsigned numbers."
 msgstr ""
 "A marcação e os campos de máscara são ambos números de 32 bits de largura "
-"sem sinais.  "
+"sem sinais."
 
 #: ../src/firewall-config.glade.h:240
 msgid "Mark:"
@@ -1979,7 +1980,7 @@ msgid ""
 "'ipv6' (not both)."
 msgstr ""
 "Para habilitar isto, o Action precisa estar definido como 'reject' e Family "
-"como 'ipv4' ou 'ipv6' (não como ambos)"
+"como 'ipv4' ou 'ipv6' (não como ambos)."
 
 #: ../src/firewall-config.glade.h:267
 msgid "with Type:"
@@ -2007,7 +2008,7 @@ msgstr "Elemento:"
 
 #: ../src/firewall-config.glade.h:293
 msgid "Action:"
-msgstr "Ação"
+msgstr "Ação:"
 
 #: ../src/firewall-config.glade.h:294
 msgid "Base Service Settings"
