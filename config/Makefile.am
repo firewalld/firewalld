@@ -159,6 +159,7 @@ CONFIG_FILES = \
 	services/freeipa-replication.xml \
 	services/freeipa-trust.xml \
 	services/ftp.xml \
+	services/galera.xml \
 	services/ganglia-client.xml \
 	services/ganglia-master.xml \
 	services/git.xml \
