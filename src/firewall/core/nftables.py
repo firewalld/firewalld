@@ -30,7 +30,7 @@ from firewall.errors import FirewallError, UNKNOWN_ERROR, INVALID_RULE, \
                             INVALID_PORT
 from firewall.core.rich import Rich_Accept, Rich_Reject, Rich_Drop, Rich_Mark, \
                                Rich_Masquerade, Rich_ForwardPort, Rich_IcmpBlock, \
-                               Rich_Tcp_Mss_Clamp
+                               Rich_Tcp_Mss_Clamp, Rich_NFLog
 from firewall.core.base import DEFAULT_ZONE_TARGET
 from nftables.nftables import Nftables
 
@@ -1050,11 +1050,17 @@ class nftables(object):
         chain_suffix = self._rich_rule_chain_suffix_from_log(rich_rule)
 
         log_options = {}
+        if type(rich_rule.log) == Rich_NFLog:
+            log_options["group"] = int(rich_rule.log.group) if rich_rule.log.group else 0
+            if rich_rule.log.threshold:
+                log_options["queue-threshold"] = int(rich_rule.log.threshold)
+        else:
+            if rich_rule.log.level:
+                level = "warn" if "warning" == rich_rule.log.level else rich_rule.log.level
+                log_options["level"] = "%s" % level
+
         if rich_rule.log.prefix:
             log_options["prefix"] = "%s" % rich_rule.log.prefix
-        if rich_rule.log.level:
-            level = "warn" if "warning" == rich_rule.log.level else rich_rule.log.level
-            log_options["level"] = "%s" % level
 
         rule = {"family": "inet",
                 "table": TABLE_NAME,
