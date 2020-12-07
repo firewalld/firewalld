@@ -10,7 +10,7 @@ import io
 import shutil
 
 from firewall import config
-from firewall.functions import checkIP, checkIP6
+from firewall.functions import checkIP, checkIP6, checkUINT16
 from firewall.functions import uniqify, max_policy_name_len, portStr
 from firewall.core.base import DEFAULT_POLICY_TARGET, POLICY_TARGETS, DEFAULT_POLICY_PRIORITY
 from firewall.core.io.io_object import IO_Object, \
@@ -253,8 +253,45 @@ def common_startElement(obj, name, attrs):
                 log.warning('Invalid rule: Invalid log level')
                 obj._rule_error = True
                 return True
-        prefix = attrs["prefix"] if "prefix" in attrs else None
+        prefix = None
+        if "prefix" in attrs:
+            prefix = attrs["prefix"]
+            if not prefix or len(prefix) > 127:
+                log.warning('Invalid rule: Invalid log prefix')
+                obj._rule_error = True
+                return True
         obj._rule.log = rich.Rich_Log(prefix, level)
+        obj._limit_ok = obj._rule.log
+
+    elif name == "nflog":
+        if not obj._rule:
+            log.warning('Invalid rule: Log outside of rule')
+            return True
+        if obj._rule.log:
+            log.warning('Invalid rule: More than one log')
+            return True
+        group = None
+        if "group" in attrs:
+            group = attrs["group"]
+            if not checkUINT16(group):
+                log.warning('Invalid rule: Invalid nflog group value')
+                obj._rule_error = True
+                return True
+        prefix = None
+        if "prefix" in attrs:
+            prefix = attrs["prefix"]
+            if not prefix or len(prefix) > 127:
+                log.warning('Invalid rule: Invalid nflog prefix')
+                obj._rule_error = True
+                return True
+        threshold = None
+        if "queue-size" in attrs:
+            threshold = attrs["queue-size"]
+            if not checkUINT16(threshold):
+                log.warning('Invalid rule: Invalid nflog queue-size')
+                obj._rule_error = True
+                return True
+        obj._rule.log = rich.Rich_NFLog(group, prefix, threshold)
         obj._limit_ok = obj._rule.log
 
     elif name == "audit":
@@ -532,23 +569,44 @@ def common_writer(obj, handler):
 
         # log
         if rule.log:
-            attrs = { }
-            if rule.log.prefix:
-                attrs["prefix"] = rule.log.prefix
-            if rule.log.level:
-                attrs["level"] = rule.log.level
-            if rule.log.limit:
-                handler.ignorableWhitespace("    ")
-                handler.startElement("log", attrs)
-                handler.ignorableWhitespace("\n      ")
-                handler.simpleElement("limit",
-                                      { "value": rule.log.limit.value })
-                handler.ignorableWhitespace("\n    ")
-                handler.endElement("log")
+            if type(rule.log) == rich.Rich_Log:
+                attrs = { }
+                if rule.log.prefix:
+                    attrs["prefix"] = rule.log.prefix
+                if rule.log.level:
+                    attrs["level"] = rule.log.level
+                if rule.log.limit:
+                    handler.ignorableWhitespace("    ")
+                    handler.startElement("log", attrs)
+                    handler.ignorableWhitespace("\n      ")
+                    handler.simpleElement("limit",
+                                        { "value": rule.log.limit.value })
+                    handler.ignorableWhitespace("\n    ")
+                    handler.endElement("log")
+                else:
+                    handler.ignorableWhitespace("    ")
+                    handler.simpleElement("log", attrs)
+                handler.ignorableWhitespace("\n")
             else:
-                handler.ignorableWhitespace("    ")
-                handler.simpleElement("log", attrs)
-            handler.ignorableWhitespace("\n")
+                attrs = { }
+                if rule.log.group:
+                    attrs["group"] = rule.log.group
+                if rule.log.prefix:
+                    attrs["prefix"] = rule.log.prefix
+                if rule.log.threshold:
+                    attrs["queue-size"] = rule.log.threshold
+                if rule.log.limit:
+                    handler.ignorableWhitespace("    ")
+                    handler.startElement("nflog", attrs)
+                    handler.ignorableWhitespace("\n      ")
+                    handler.simpleElement("limit",
+                                        { "value": rule.log.limit.value })
+                    handler.ignorableWhitespace("\n    ")
+                    handler.endElement("nflog")
+                else:
+                    handler.ignorableWhitespace("    ")
+                    handler.simpleElement("nflog", attrs)
+                handler.ignorableWhitespace("\n")
 
         # audit
         if rule.audit:
@@ -641,6 +699,7 @@ class Policy(IO_Object):
         "protocol": [ "value" ],
         "source-port": [ "port", "protocol" ],
         "log":  None,
+        "nflog":  None,
         "audit": None,
         "accept": None,
         "reject": None,
@@ -657,6 +716,7 @@ class Policy(IO_Object):
         "source": [ "address", "mac", "invert", "family", "ipset" ],
         "destination": [ "address", "invert", "ipset" ],
         "log": [ "prefix", "level" ],
+        "nflog": [ "group", "prefix", "queue-size" ],
         "reject": [ "type" ],
         "tcp-mss-clamp": [ "value" ],
         }

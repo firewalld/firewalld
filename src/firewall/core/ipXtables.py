@@ -28,7 +28,7 @@ from firewall.functions import tempFile, readfile, splitArgs, check_mac, portStr
                                check_single_address, check_address, normalizeIP6
 from firewall import config
 from firewall.errors import FirewallError, INVALID_PASSTHROUGH, INVALID_RULE, UNKNOWN_ERROR, INVALID_ADDR
-from firewall.core.rich import Rich_Accept, Rich_Reject, Rich_Drop, Rich_Mark, \
+from firewall.core.rich import Rich_Accept, Rich_Reject, Rich_Drop, Rich_Mark, Rich_NFLog, \
                                Rich_Masquerade, Rich_ForwardPort, Rich_IcmpBlock, Rich_Tcp_Mss_Clamp
 from firewall.core.base import DEFAULT_ZONE_TARGET
 import string
@@ -1024,11 +1024,20 @@ class ip4tables(object):
         chain_suffix = self._rich_rule_chain_suffix_from_log(rich_rule)
         rule = ["-t", table, add_del, "%s_%s" % (_policy, chain_suffix)]
         rule += self._rich_rule_priority_fragment(rich_rule)
-        rule += rule_fragment + [ "-j", "LOG" ]
-        if rich_rule.log.prefix:
-            rule += [ "--log-prefix", "'%s'" % rich_rule.log.prefix ]
-        if rich_rule.log.level:
-            rule += [ "--log-level", "%s" % rich_rule.log.level ]
+        if type(rich_rule.log) == Rich_NFLog:
+            rule += rule_fragment + [ "-j", "NFLOG" ]
+            if rich_rule.log.group:
+                rule += [ "--nflog-group", rich_rule.log.group ]
+            if rich_rule.log.prefix:
+                rule += [ "--nflog-prefix", "%s" % rich_rule.log.prefix ]
+            if rich_rule.log.threshold:
+                rule += [ "--nflog-threshold", rich_rule.log.threshold ]
+        else:
+            rule += rule_fragment + [ "-j", "LOG" ]
+            if rich_rule.log.prefix:
+                rule += [ "--log-prefix", "'%s'" % rich_rule.log.prefix ]
+            if rich_rule.log.level:
+                rule += [ "--log-level", "%s" % rich_rule.log.level ]
         rule += self._rule_limit(rich_rule.log.limit)
 
         return rule
