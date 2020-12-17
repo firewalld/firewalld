@@ -111,8 +111,8 @@ NFT_LIST_SET([foobar], 0, [dnl
 ])
 FWD_CHECK([-q --permanent --delete-ipset foobar])
 
-dnl do all again, but with CleanUpOnExit=no and stop
-AT_CHECK([sed -i 's/^CleanUpOnExit.*/CleanUpOnExit=no/' ./firewalld.conf])
+dnl do all again, but with CleanupOnExit=no and stop
+AT_CHECK([sed -i 's/^CleanupOnExit.*/CleanupOnExit=no/' ./firewalld.conf])
 FWD_CHECK([-q --permanent --new-ipset foobar --type hash:ip])
 FWD_CHECK([-q --permanent --ipset foobar --add-entry 1.2.3.4])
 FWD_RESTART
