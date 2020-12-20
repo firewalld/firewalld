@@ -441,9 +441,11 @@ class FirewallZone(object):
             raise FirewallError(errors.ZONE_ALREADY_SET,
                                 "'%s' already bound to '%s'" % (interface,
                                                                 zone))
-        if self.get_zone_of_interface(interface) is not None:
+        zoi = self.get_zone_of_interface(interface)
+        if zoi is not None:
             raise FirewallError(errors.ZONE_CONFLICT,
-                                "'%s' already bound to a zone" % interface)
+                                "'%s' already bound to '%s'" % (interface,
+                                                                 zoi))
 
         log.debug1("Setting zone of interface '%s' to '%s'" % (interface,
                                                                _zone))
