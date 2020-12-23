@@ -2121,6 +2121,17 @@
 
     <refsect2 id="direct_options">
       <title>Direct Options</title>
+
+      <refsect3>
+        <title>DEPRECATED</title>
+
+        <para>
+          The direct interface has been deprecated. It will be removed in a future
+          release. It is superseded by policies, see
+          <citerefentry><refentrytitle>firewalld.policies</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+        </para>
+      </refsect3>
+
       <para>
 	The direct options give a more direct access to the firewall. These options require user to know basic iptables concepts, i.e. <literal>table</literal> (filter/mangle/nat/...), <literal>chain</literal> (INPUT/OUTPUT/FORWARD/...), <literal>commands</literal> (-A/-D/-I/...), <literal>parameters</literal> (-p/-s/-d/-j/...) and <literal>targets</literal> (ACCEPT/DROP/REJECT/...).
       </para>
