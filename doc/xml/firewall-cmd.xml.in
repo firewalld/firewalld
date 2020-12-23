@@ -133,9 +133,9 @@
 	      if they have not been also in permanent configuration.
 	    </para>
 	    <para>
-	      Note: Runtime changes applied via the direct interface are not
+	      Note: If FlushAllOnReload=no, runtime changes applied via the direct interface are not
 	      affected and will therefore stay in place until firewalld daemon
-	      is restarted completely.
+	      is restarted completely. For FlushAllOnReload, see <citerefentry><refentrytitle>firewalld.conf</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
 	    </para>
 	  </listitem>
 	</varlistentry>
@@ -147,9 +147,9 @@
 	      Reload firewall completely, even netfilter kernel modules. This will most likely terminate active connections, because state information is lost. This option should only be used in case of severe firewall problems. For example if there are state information problems that no connection can be established with correct firewall rules.
 	    </para>
 	    <para>
-	      Note: Runtime changes applied via the direct interface are not
+	      Note: If FlushAllOnReload=no, runtime changes applied via the direct interface are not
 	      affected and will therefore stay in place until firewalld daemon
-	      is restarted completely.
+	      is restarted completely. For FlushAllOnReload, see <citerefentry><refentrytitle>firewalld.conf</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
 	    </para>
 	  </listitem>
 	</varlistentry>
