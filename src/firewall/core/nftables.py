@@ -207,10 +207,7 @@ class nftables(object):
 
                 index = zone_source_index_cache[family].index(zone_source)
             else:
-                if self._fw._allow_zone_drifting:
-                    index = 0
-                else:
-                    index = len(zone_source_index_cache[family])
+                index = len(zone_source_index_cache[family])
 
             _verb_snippet = rule[verb]
             del rule[verb]
@@ -516,7 +513,7 @@ class nftables(object):
                                                     "type": "filter",
                                                     "hook": "%s" % IPTABLES_TO_NFT_HOOK["mangle"][chain][0],
                                                     "prio": IPTABLES_TO_NFT_HOOK["mangle"][chain][1]}}})
-            for dispatch_suffix in ["POLICIES_pre", "ZONES_SOURCE", "ZONES", "POLICIES_post"] if self._fw._allow_zone_drifting else ["POLICIES_pre", "ZONES", "POLICIES_post"]:
+            for dispatch_suffix in ["POLICIES_pre", "ZONES", "POLICIES_post"]:
                 default_rules.append({"add": {"chain": {"family": "inet",
                                                         "table": TABLE_NAME,
                                                         "name": "mangle_%s_%s" % (chain, dispatch_suffix)}}})
@@ -533,7 +530,7 @@ class nftables(object):
                                                     "hook": "%s" % IPTABLES_TO_NFT_HOOK["nat"][chain][0],
                                                     "prio": IPTABLES_TO_NFT_HOOK["nat"][chain][1]}}})
 
-            for dispatch_suffix in ["POLICIES_pre", "ZONES_SOURCE", "ZONES", "POLICIES_post"] if self._fw._allow_zone_drifting else ["POLICIES_pre", "ZONES", "POLICIES_post"]:
+            for dispatch_suffix in ["POLICIES_pre", "ZONES", "POLICIES_post"]:
                 default_rules.append({"add": {"chain": {"family": "inet",
                                                         "table": TABLE_NAME,
                                                         "name": "nat_%s_%s" % (chain, dispatch_suffix)}}})
@@ -572,7 +569,7 @@ class nftables(object):
                                                                     "op": "==",
                                                                     "right": "lo"}},
                                                          {"accept": None}]}}})
-        for dispatch_suffix in ["POLICIES_pre", "ZONES_SOURCE", "ZONES", "POLICIES_post"] if self._fw._allow_zone_drifting else ["POLICIES_pre", "ZONES", "POLICIES_post"]:
+        for dispatch_suffix in ["POLICIES_pre", "ZONES", "POLICIES_post"]:
             default_rules.append({"add": {"chain": {"family": "inet",
                                                     "table": TABLE_NAME,
                                                     "name": "filter_%s_%s" % ("INPUT", dispatch_suffix)}}})
@@ -638,7 +635,7 @@ class nftables(object):
                                                     "chain": "filter_%s" % "FORWARD",
                                                     "expr": [{"jump": {"target": "filter_%s_%s" % ("FORWARD", dispatch_suffix)}}]}}})
         for direction in ["IN", "OUT"]:
-            for dispatch_suffix in ["ZONES_SOURCE", "ZONES"] if self._fw._allow_zone_drifting else ["ZONES"]:
+            for dispatch_suffix in ["ZONES"]:
                 default_rules.append({"add": {"chain": {"family": "inet",
                                                         "table": TABLE_NAME,
                                                         "name": "filter_%s_%s_%s" % ("FORWARD", direction, dispatch_suffix)}}})
@@ -859,16 +856,11 @@ class nftables(object):
             "OUTPUT": "daddr",
         }[chain]
 
-        if self._fw._allow_zone_drifting:
-            zone_dispatch_chain = "%s_%s_ZONES_SOURCE" % (table, chain)
-        else:
-            zone_dispatch_chain = "%s_%s_ZONES" % (table, chain)
-
         action = "goto"
 
         rule = {"family": "inet",
                 "table": TABLE_NAME,
-                "chain": zone_dispatch_chain,
+                "chain": "%s_%s_ZONES" % (table, chain),
                 "expr": [self._rule_addr_fragment(opt, address),
                          {action: {"target": "%s_%s" % (table, _policy)}}]}
         rule.update(self._zone_source_fragment(zone, address))
