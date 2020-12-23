@@ -325,10 +325,7 @@ class ip4tables(object):
 
                 index = zone_source_index_cache.index(zone_source)
             else:
-                if self._fw._allow_zone_drifting:
-                    index = 0
-                else:
-                    index = len(zone_source_index_cache)
+                index = len(zone_source_index_cache)
 
             rule[0] = "-I"
             rule.insert(2, "%d" % (index + 1))
@@ -678,7 +675,7 @@ class ip4tables(object):
                 self.our_chains["raw"].add("%s_direct" % chain)
 
                 if chain == "PREROUTING":
-                    for dispatch_suffix in ["POLICIES_pre", "ZONES_SOURCE", "ZONES", "POLICIES_post"] if self._fw._allow_zone_drifting else ["POLICIES_pre", "ZONES", "POLICIES_post"]:
+                    for dispatch_suffix in ["POLICIES_pre", "ZONES", "POLICIES_post"]:
                         default_rules["raw"].append("-N %s_%s" % (chain, dispatch_suffix))
                         default_rules["raw"].append("-A %s -j %s_%s" % (chain, chain, dispatch_suffix))
                         self.our_chains["raw"].update(set(["%s_%s" % (chain, dispatch_suffix)]))
@@ -692,7 +689,7 @@ class ip4tables(object):
                 self.our_chains["mangle"].add("%s_direct" % chain)
 
                 if chain == "PREROUTING":
-                    for dispatch_suffix in ["POLICIES_pre", "ZONES_SOURCE", "ZONES", "POLICIES_post"] if self._fw._allow_zone_drifting else ["POLICIES_pre", "ZONES", "POLICIES_post"]:
+                    for dispatch_suffix in ["POLICIES_pre", "ZONES", "POLICIES_post"]:
                         default_rules["mangle"].append("-N %s_%s" % (chain, dispatch_suffix))
                         default_rules["mangle"].append("-A %s -j %s_%s" % (chain, chain, dispatch_suffix))
                         self.our_chains["mangle"].update(set(["%s_%s" % (chain, dispatch_suffix)]))
@@ -706,7 +703,7 @@ class ip4tables(object):
                 self.our_chains["nat"].add("%s_direct" % chain)
 
                 if chain in [ "PREROUTING", "POSTROUTING" ]:
-                    for dispatch_suffix in ["POLICIES_pre", "ZONES_SOURCE", "ZONES", "POLICIES_post"] if self._fw._allow_zone_drifting else ["POLICIES_pre", "ZONES", "POLICIES_post"]:
+                    for dispatch_suffix in ["POLICIES_pre", "ZONES", "POLICIES_post"]:
                         default_rules["nat"].append("-N %s_%s" % (chain, dispatch_suffix))
                         default_rules["nat"].append("-A %s -j %s_%s" % (chain, chain, dispatch_suffix))
                         self.our_chains["nat"].update(set(["%s_%s" % (chain, dispatch_suffix)]))
@@ -718,7 +715,7 @@ class ip4tables(object):
         default_rules["filter"].append("-N INPUT_direct")
         default_rules["filter"].append("-A INPUT -j INPUT_direct")
         self.our_chains["filter"].update(set("INPUT_direct"))
-        for dispatch_suffix in ["POLICIES_pre", "ZONES_SOURCE", "ZONES", "POLICIES_post"] if self._fw._allow_zone_drifting else ["POLICIES_pre", "ZONES", "POLICIES_post"]:
+        for dispatch_suffix in ["POLICIES_pre", "ZONES", "POLICIES_post"]:
             default_rules["filter"].append("-N INPUT_%s" % (dispatch_suffix))
             default_rules["filter"].append("-A INPUT -j INPUT_%s" % (dispatch_suffix))
             self.our_chains["filter"].update(set("INPUT_%s" % (dispatch_suffix)))
@@ -739,7 +736,7 @@ class ip4tables(object):
             default_rules["filter"].append("-A FORWARD -j FORWARD_%s" % (dispatch_suffix))
             self.our_chains["filter"].update(set("FORWARD_%s" % (dispatch_suffix)))
         for direction in ["IN", "OUT"]:
-            for dispatch_suffix in ["ZONES_SOURCE", "ZONES"] if self._fw._allow_zone_drifting else ["ZONES"]:
+            for dispatch_suffix in ["ZONES"]:
                 default_rules["filter"].append("-N FORWARD_%s_%s" % (direction, dispatch_suffix))
                 default_rules["filter"].append("-A FORWARD -j FORWARD_%s_%s" % (direction, dispatch_suffix))
                 self.our_chains["filter"].update(set("FORWARD_%s_%s" % (direction, dispatch_suffix)))
@@ -935,16 +932,11 @@ class ip4tables(object):
             "OUTPUT": "-d",
         }[chain]
 
-        if self._fw._allow_zone_drifting:
-            zone_dispatch_chain = "%s_ZONES_SOURCE" % (chain)
-        else:
-            zone_dispatch_chain = "%s_ZONES" % (chain)
-
         # iptables can not match destination MAC
         if check_mac(address) and chain in ["POSTROUTING", "FORWARD_OUT", "OUTPUT"]:
             return []
 
-        rule = [add_del, zone_dispatch_chain, "%%ZONE_SOURCE%%", zone, "-t", table]
+        rule = [add_del, "%s_ZONES" % (chain), "%%ZONE_SOURCE%%", zone, "-t", table]
         rule.extend(self._rule_addr_fragment(opt, address))
         rule.extend(["-g", _policy])
 
