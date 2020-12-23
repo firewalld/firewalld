@@ -651,15 +651,6 @@
               </listitem>
               </itemizedlist>
               </listitem>
-
-              <listitem><para>Zone drifting from source-based zone to interface-based zone</para>
-              <para>
-                This only applies if <option>AllowZoneDrifting</option> is enabled. See <citerefentry><refentrytitle>firewalld.conf</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
-              </para>
-              <para>
-                If a packet ingresses a source-based zone with a <replaceable>target</replaceable> of <literal>default</literal>, it may still enter an interface-based zone (including the default zone).
-              </para>
-              </listitem>
             </orderedlist>
           </para>
         </listitem>
