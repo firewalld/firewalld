@@ -197,6 +197,17 @@
 
     <refsect2>
       <title>Direct interface</title>
+
+      <refsect3>
+        <title>DEPRECATED</title>
+
+        <para>
+          The direct interface has been deprecated. It will be removed in a future
+          release. It is superseded by policies, see
+          <citerefentry><refentrytitle>firewalld.policies</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+        </para>
+      </refsect3>
+
       <para>
 	The direct interface is mainly used by services or applications to add specific firewall rules. It requires basic knowledge of ip(6)tables concepts (tables, chains, commands, parameters, targets).
       </para>
