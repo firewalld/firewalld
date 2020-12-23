@@ -2821,6 +2821,10 @@
                 interface. Valid options are; nftables, iptables. Default in
                 nftables.
               </para>
+              <para>
+                <emphasis role="bold">Note</emphasis>: The iptables backend
+                is deprecated. It will be removed in a future release.
+              </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.config.Properties.FlushAllOnReload">
