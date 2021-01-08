@@ -43,7 +43,12 @@ from firewall.config import FIREWALLD_TEMPDIR, FIREWALLD_PIDFILE
 PY2 = sys.version < '3'
 
 NOPRINT_TRANS_TABLE = {
-    i: None for i in range(0, sys.maxunicode + 1) if not chr(i).isprintable()
+    # Limit to C0 and C1 code points. Building entries for all unicode code
+    # points requires too much memory.
+    # C0 = [0, 31]
+    # C1 = [127, 159]
+    #
+    i: None for i in range(0, 160) if not (i > 31 and i < 127)
 }
 
 def getPortID(port):
