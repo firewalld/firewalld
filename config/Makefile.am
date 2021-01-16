@@ -121,6 +121,7 @@ CONFIG_FILES = \
 	services/amqps.xml \
 	services/apcupsd.xml \
 	services/audit.xml \
+	services/ausweisapp2.xml \
 	services/bacula-client.xml \
 	services/bacula.xml \
 	services/bb.xml \
