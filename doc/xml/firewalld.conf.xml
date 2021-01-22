@@ -198,17 +198,7 @@
             <term><option>AllowZoneDrifting</option></term>
             <listitem>
                 <para>
-                Older versions of firewalld had undocumented behavior known
-                as "zone drifting". This allowed packets to ingress multiple
-                zones - this is a violation of zone based firewalls. However,
-                some users rely on this behavior to have a "catch-all" zone,
-                e.g. the default zone. You can enable this if you desire such
-                behavior. It's disabled by default for security reasons.
-                Note: If "yes" packets will only drift from source based zones
-                to interface based zones (including the default zone). Packets
-                never drift from interface based zones to other interfaces
-                based zones (including the default zone).
-                Valid values; "yes", "no". Defaults to "no".
+                  Deprecated. This option is ignored and no longer used.
                 </para>
             </listitem>
         </varlistentry>

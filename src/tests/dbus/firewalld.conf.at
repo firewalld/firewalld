@@ -49,7 +49,7 @@ _helper([FlushAllOnReload], [string:"no"], [variant string "no"])
 _helper([CleanupModulesOnExit], [string:"yes"], [variant string "yes"])
 _helper([CleanupOnExit], [string:"no"], [variant string "no"])
 _helper([RFC3964_IPv4], [string:"no"], [variant string "no"])
-_helper([AllowZoneDrifting], [string:"yes"], [variant string "yes"])
+_helper([AllowZoneDrifting], [string:"yes"], [variant string "no"])
 dnl Note: DefaultZone is RO
 m4_undefine([_helper])
 
