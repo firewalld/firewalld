@@ -219,7 +219,7 @@ class firewalld_conf(object):
                 log.warning("AllowZoneDrifting '%s' is not valid, using default "
                             "value %s", value if value else '',
                             config.FALLBACK_ALLOW_ZONE_DRIFTING)
-            self.set("AllowZoneDrifting", str(config.FALLBACK_ALLOW_ZONE_DRIFTING))
+            self.set("AllowZoneDrifting", "yes" if config.FALLBACK_ALLOW_ZONE_DRIFTING else "no")
 
     # save to self.filename if there are key/value changes
     def write(self):
@@ -296,7 +296,7 @@ class firewalld_conf(object):
             for (key,value) in self._config.items():
                 if key in done:
                     continue
-                if key in ["MinimalMark", "AutomaticHelpers"]: # omit deprecated from new config
+                if key in ["MinimalMark", "AutomaticHelpers", "AllowZoneDrifting"]: # omit deprecated from new config
                     continue
                 if not empty:
                     temp_file.write(u"\n")

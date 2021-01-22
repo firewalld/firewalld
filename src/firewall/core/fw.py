@@ -300,19 +300,6 @@ class Firewall(object):
                 log.debug1("RFC3964_IPv4 is set to '%s'",
                            self._rfc3964_ipv4)
 
-            if self._firewalld_conf.get("AllowZoneDrifting"):
-                value = self._firewalld_conf.get("AllowZoneDrifting")
-                if value.lower() in [ "no", "false" ]:
-                    self._allow_zone_drifting = False
-                else:
-                    self._allow_zone_drifting = True
-                    log.warning("AllowZoneDrifting is enabled. This is considered "
-                                "an insecure configuration option. It will be "
-                                "removed in a future release. Please consider "
-                                "disabling it now.")
-                log.debug1("AllowZoneDrifting is set to '%s'",
-                           self._allow_zone_drifting)
-
         self.config.set_firewalld_conf(copy.deepcopy(self._firewalld_conf))
 
         self._select_firewall_backend(self._firewall_backend)

@@ -716,7 +716,7 @@ class FirewallDConfig(slip.dbus.service.Object):
                                   "IPv6_rpfilter", "IndividualCalls",
                                   "LogDenied",
                                   "FirewallBackend", "FlushAllOnReload",
-                                  "RFC3964_IPv4", "AllowZoneDrifting" ]:
+                                  "RFC3964_IPv4"]:
                 if property_name in [ "CleanupOnExit", "CleanupModulesOnExit",
                                       "Lockdown", "IPv6_rpfilter",
                                       "IndividualCalls", "FlushAllOnReload",
@@ -736,11 +736,6 @@ class FirewallDConfig(slip.dbus.service.Object):
                         raise FirewallError(errors.INVALID_VALUE,
                                             "'%s' for %s" % \
                                             (new_value, property_name))
-                elif property_name == "AllowZoneDrifting":
-                    if new_value.lower() not in ["yes", "true", "no", "false"]:
-                        raise FirewallError(errors.INVALID_VALUE,
-                                            "'%s' for %s" % \
-                                            (new_value, property_name))
                 else:
                     raise dbus.exceptions.DBusException(
                         "org.freedesktop.DBus.Error.InvalidArgs: "
@@ -750,7 +745,7 @@ class FirewallDConfig(slip.dbus.service.Object):
                 self.config.get_firewalld_conf().write()
                 self.PropertiesChanged(interface_name,
                                        { property_name: new_value }, [ ])
-            elif property_name in ["MinimalMark", "AutomaticHelpers"]:
+            elif property_name in ["MinimalMark", "AutomaticHelpers", "AllowZoneDrifting"]:
                 # deprecated fields. Ignore setting them.
                 pass
             else:
