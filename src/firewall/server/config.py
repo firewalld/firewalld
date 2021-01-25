@@ -719,37 +719,32 @@ class FirewallDConfig(slip.dbus.service.Object):
                                   "RFC3964_IPv4", "AllowZoneDrifting" ]:
                 if property_name in [ "CleanupOnExit", "CleanupModulesOnExit",
                                       "Lockdown", "IPv6_rpfilter",
-                                      "IndividualCalls" ]:
+                                      "IndividualCalls", "FlushAllOnReload",
+                                      "RFC3964_IPv4"]:
                     if new_value.lower() not in [ "yes", "no",
                                                   "true", "false" ]:
                         raise FirewallError(errors.INVALID_VALUE,
                                             "'%s' for %s" % \
                                             (new_value, property_name))
-                if property_name == "LogDenied":
+                elif property_name == "LogDenied":
                     if new_value not in config.LOG_DENIED_VALUES:
                         raise FirewallError(errors.INVALID_VALUE,
                                             "'%s' for %s" % \
                                             (new_value, property_name))
-                if property_name == "FirewallBackend":
+                elif property_name == "FirewallBackend":
                     if new_value not in config.FIREWALL_BACKEND_VALUES:
                         raise FirewallError(errors.INVALID_VALUE,
                                             "'%s' for %s" % \
                                             (new_value, property_name))
-                if property_name == "FlushAllOnReload":
+                elif property_name == "AllowZoneDrifting":
                     if new_value.lower() not in ["yes", "true", "no", "false"]:
                         raise FirewallError(errors.INVALID_VALUE,
                                             "'%s' for %s" % \
                                             (new_value, property_name))
-                if property_name == "RFC3964_IPv4":
-                    if new_value.lower() not in ["yes", "true", "no", "false"]:
-                        raise FirewallError(errors.INVALID_VALUE,
-                                            "'%s' for %s" % \
-                                            (new_value, property_name))
-                if property_name == "AllowZoneDrifting":
-                    if new_value.lower() not in ["yes", "true", "no", "false"]:
-                        raise FirewallError(errors.INVALID_VALUE,
-                                            "'%s' for %s" % \
-                                            (new_value, property_name))
+                else:
+                    raise dbus.exceptions.DBusException(
+                        "org.freedesktop.DBus.Error.InvalidArgs: "
+                        "Property '%s' does not exist" % property_name)
 
                 self.config.get_firewalld_conf().set(property_name, new_value)
                 self.config.get_firewalld_conf().write()
