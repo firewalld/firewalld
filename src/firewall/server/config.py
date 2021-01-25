@@ -711,23 +711,12 @@ class FirewallDConfig(slip.dbus.service.Object):
         self.accessCheck(sender)
 
         if interface_name == config.dbus.DBUS_INTERFACE_CONFIG:
-            if property_name in [ "MinimalMark", "CleanupOnExit",
+            if property_name in [ "CleanupOnExit",
                                   "CleanupModulesOnExit", "Lockdown",
                                   "IPv6_rpfilter", "IndividualCalls",
-                                  "LogDenied", "AutomaticHelpers",
+                                  "LogDenied",
                                   "FirewallBackend", "FlushAllOnReload",
                                   "RFC3964_IPv4", "AllowZoneDrifting" ]:
-                if property_name == "MinimalMark":
-                    try:
-                        int(new_value)
-                    except ValueError:
-                        raise FirewallError(errors.INVALID_MARK, new_value)
-                try:
-                    new_value = str(new_value)
-                except:
-                    raise FirewallError(errors.INVALID_VALUE,
-                                        "'%s' for %s" % \
-                                        (new_value, property_name))
                 if property_name in [ "CleanupOnExit", "CleanupModulesOnExit",
                                       "Lockdown", "IPv6_rpfilter",
                                       "IndividualCalls" ]:
@@ -738,11 +727,6 @@ class FirewallDConfig(slip.dbus.service.Object):
                                             (new_value, property_name))
                 if property_name == "LogDenied":
                     if new_value not in config.LOG_DENIED_VALUES:
-                        raise FirewallError(errors.INVALID_VALUE,
-                                            "'%s' for %s" % \
-                                            (new_value, property_name))
-                if property_name == "AutomaticHelpers":
-                    if new_value not in config.AUTOMATIC_HELPERS_VALUES:
                         raise FirewallError(errors.INVALID_VALUE,
                                             "'%s' for %s" % \
                                             (new_value, property_name))
@@ -771,6 +755,9 @@ class FirewallDConfig(slip.dbus.service.Object):
                 self.config.get_firewalld_conf().write()
                 self.PropertiesChanged(interface_name,
                                        { property_name: new_value }, [ ])
+            elif property_name in ["MinimalMark", "AutomaticHelpers"]:
+                # deprecated fields. Ignore setting them.
+                pass
             else:
                 raise dbus.exceptions.DBusException(
                     "org.freedesktop.DBus.Error.InvalidArgs: "
