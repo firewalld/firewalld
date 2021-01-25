@@ -37,8 +37,8 @@ $3
 ])
 
 dnl Test individual Set/Get
-_helper([MinimalMark], [int32:1234], [variant int32 1234])
-_helper([AutomaticHelpers], [string:"no"], [variant string "no"])
+_helper([MinimalMark], [int32:1234], [variant int32 100])
+_helper([AutomaticHelpers], [string:"yes"], [variant string "no"])
 _helper([Lockdown], [string:"yes"], [variant string "yes"])
 _helper([LogDenied], [string:"all"], [variant string "all"])
 _helper([IPv6_rpfilter], [string:"yes"], [variant string "yes"])
