@@ -18,11 +18,19 @@ jobs:
       fail-fast: false
       matrix:
         python-version: [3.7]
+        libnftnl-version: [libnftnl-1.1.6]
+        nftables-version: [v0.9.4]
         keyword: [offline, nftables, iptables]
         configure_args: ["", "IP6TABLES=/bin/false IP6TABLES_RESTORE=/bin/false"]
         exclude:
           - keyword: offline
             configure_args: "IP6TABLES=/bin/false IP6TABLES_RESTORE=/bin/false"
+        include:
+          - python-version: 3.7
+            libnftnl-version: master
+            nftables-version: master
+            keyword: nftables
+            configure_args: ""
 
     steps:
       - name: checkout
@@ -54,23 +62,23 @@ jobs:
         run: |
           sudo apt install -y libmnl-dev libgmp-dev libreadline-dev libjansson-dev 
 
-      - name: install libnftnl
+      - name: install libnftnl ${{ matrix.libnftnl-version }}
         run: |
           cd /tmp
-          wget --retry-connrefused https://netfilter.org/projects/libnftnl/files/libnftnl-1.1.6.tar.bz2
-          tar xf libnftnl-1.1.6.tar.bz2
-          cd libnftnl-1.1.6
+          git clone --depth=1 --branch ${{ matrix.libnftnl-version }} git://git.netfilter.org/libnftnl
+          cd libnftnl
+          ./autogen.sh
           ./configure
           make
           sudo make install
           sudo ldconfig
 
-      - name: install nftables
+      - name: install nftables ${{ matrix.nftables-version }}
         run: |
           cd /tmp
-          wget --retry-connrefused https://netfilter.org/projects/nftables/files/nftables-0.9.4.tar.bz2
-          tar xf nftables-0.9.4.tar.bz2
-          cd nftables-0.9.4
+          git clone --depth=1 --branch ${{ matrix.nftables-version }} git://git.netfilter.org/nftables
+          cd nftables
+          ./autogen.sh
           ./configure --disable-man-doc --with-json --enable-python
           make
           sudo make install
