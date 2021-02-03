@@ -395,6 +395,7 @@ m4_define([NFT_LIST_RULES_NORMALIZE], [dnl
         -e '/type.*hook.*priority.*policy.*/d'dnl
         dnl tranform ct state { established,related } to ct state established,related
         -e '/ct \(state\|status\)/{s/\(ct \(state\|status\)\) {/\1/g; s/ }//; s/\(@<:@a-z@:>@*\), /\1,/g;}' dnl
+        -e 's/reject with icmp[[x6]]\? type port-unreachable/reject/' dnl
 ])
 
 m4_define([NFT_LIST_RULES_ALWAYS], [
