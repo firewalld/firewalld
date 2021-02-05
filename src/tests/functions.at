@@ -447,7 +447,7 @@ m4_define([DBUS_INTROSPECT], [
     NS_CHECK([PIPESTATUS0([gdbus introspect --xml --system --dest=org.fedoraproject.FirewallD1 dnl
                            m4_ifblank([$1], [--object-path /org/fedoraproject/FirewallD1],
                                             [--object-path /org/fedoraproject/FirewallD1/$1])], dnl
-                          [m4_ifnblank([$2], [xmllint --xpath '$2' - |]) xmllint --c14n - | TRIM_WHITESPACE])],
+                          [m4_ifnblank([$2], [xmllint --xpath '$2' - |]) xmllint --format - | xmllint --c14n - | TRIM_WHITESPACE])],
              [$3], [m4_strip([$4])], [m4_strip([$5])], [$6], [$7])
 ])
 
