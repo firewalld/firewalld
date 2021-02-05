@@ -220,3 +220,36 @@ def dbus_introspection_add_properties(obj, data, interface):
     new_data = doc.toxml()
     doc.unlink()
     return new_data
+
+def dbus_introspection_add_deprecated(obj, data, interface, deprecated_methods, deprecated_signals):
+    doc = minidom.parseString(data)
+
+    if interface in deprecated_methods:
+        for node in doc.getElementsByTagName("interface"):
+            if node.hasAttribute("name") and \
+               node.getAttribute("name") == interface:
+                for method_node in node.getElementsByTagName("method"):
+                    if method_node.hasAttribute("name") and \
+                       method_node.getAttribute("name") in deprecated_methods[interface]:
+                        annotation = doc.createElement("annotation")
+                        annotation.setAttribute("name", "org.freedesktop.DBus.Deprecated")
+                        annotation.setAttribute("value", "true")
+                        method_node.appendChild(annotation)
+
+    if interface in deprecated_signals:
+        for node in doc.getElementsByTagName("interface"):
+            if node.hasAttribute("name") and \
+               node.getAttribute("name") == interface:
+                for signal_node in node.getElementsByTagName("signal"):
+                    if signal_node.hasAttribute("name") and \
+                       signal_node.getAttribute("name") in deprecated_signals[interface]:
+                        annotation = doc.createElement("annotation")
+                        annotation.setAttribute("name", "org.freedesktop.DBus.Deprecated")
+                        annotation.setAttribute("value", "true")
+                        signal_node.appendChild(annotation)
+
+    log.debug10(doc.toxml())
+    data = doc.toxml()
+    doc.unlink()
+
+    return data

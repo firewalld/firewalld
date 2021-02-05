@@ -26,6 +26,7 @@ __all__ = ["FirewallDBusException", "handle_exceptions",
 import dbus
 import dbus.service
 import traceback
+import functools
 from dbus.exceptions import DBusException
 from decorator import decorator
 
@@ -85,3 +86,30 @@ def dbus_service_method(*args, **kwargs):
     """Add sender argument for D-Bus"""
     kwargs.setdefault("sender_keyword", "sender")
     return dbus.service.method(*args, **kwargs)
+
+class dbus_service_method_deprecated:
+    """Decorator that maintains a list of deprecated methods in dbus
+    interfaces.
+    """
+    deprecated = {}
+
+    def __init__(self, interface=None):
+        self.interface = interface
+        if self.interface:
+            if self.interface not in self.deprecated:
+                self.deprecated[self.interface] = set()
+
+    def __call__(self, func):
+        if self.interface:
+            self.deprecated[self.interface].add(func.__name__)
+
+        @functools.wraps(func)
+        def _impl(*args, **kwargs):
+            return func(*args, **kwargs)
+        return _impl
+
+class dbus_service_signal_deprecated(dbus_service_method_deprecated):
+    """Decorator that maintains a list of deprecated signals in dbus
+    interfaces.
+    """
+    pass
