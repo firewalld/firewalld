@@ -1,0 +1,391 @@
+FWD_START_TEST([dbus api - direct signatures])
+AT_KEYWORDS(dbus direct)
+
+dnl ###############################
+dnl ########## runtime ############
+dnl ###############################
+
+DBUS_INTROSPECT([], [[//method[@name="addChain"]]], 0, [dnl
+    <method name="addChain">
+        <arg direction="in" name="ipv" type="s"></arg>
+        <arg direction="in" name="table" type="s"></arg>
+        <arg direction="in" name="chain" type="s"></arg>
+        <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
+    </method>
+])
+
+DBUS_INTROSPECT([], [[//method[@name="addPassthrough"]]], 0, [dnl
+    <method name="addPassthrough">
+        <arg direction="in" name="ipv" type="s"></arg>
+        <arg direction="in" name="args" type="as"></arg>
+        <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
+    </method>
+])
+
+DBUS_INTROSPECT([], [[//method[@name="addRule"]]], 0, [dnl
+    <method name="addRule">
+        <arg direction="in" name="ipv" type="s"></arg>
+        <arg direction="in" name="table" type="s"></arg>
+        <arg direction="in" name="chain" type="s"></arg>
+        <arg direction="in" name="priority" type="i"></arg>
+        <arg direction="in" name="args" type="as"></arg>
+        <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
+    </method>
+])
+
+DBUS_INTROSPECT([], [[//method[@name="getAllChains"]]], 0, [dnl
+    <method name="getAllChains">
+        <arg direction="out" type="a(sss)"></arg>
+        <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
+    </method>
+])
+
+DBUS_INTROSPECT([], [[//method[@name="getAllPassthroughs"]]], 0, [dnl
+    <method name="getAllPassthroughs">
+        <arg direction="out" type="a(sas)"></arg>
+        <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
+    </method>
+])
+
+DBUS_INTROSPECT([], [[//method[@name="getAllRules"]]], 0, [dnl
+    <method name="getAllRules">
+        <arg direction="out" type="a(sssias)"></arg>
+        <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
+    </method>
+])
+
+DBUS_INTROSPECT([], [[//method[@name="getChains"]]], 0, [dnl
+    <method name="getChains">
+        <arg direction="in" name="ipv" type="s"></arg>
+        <arg direction="in" name="table" type="s"></arg>
+        <arg direction="out" type="as"></arg>
+        <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
+    </method>
+])
+
+DBUS_INTROSPECT([], [[//method[@name="getPassthroughs"]]], 0, [dnl
+    <method name="getPassthroughs">
+        <arg direction="in" name="ipv" type="s"></arg>
+        <arg direction="out" type="aas"></arg>
+        <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
+    </method>
+])
+
+DBUS_INTROSPECT([], [[//method[@name="getRules"]]], 0, [dnl
+    <method name="getRules">
+        <arg direction="in" name="ipv" type="s"></arg>
+        <arg direction="in" name="table" type="s"></arg>
+        <arg direction="in" name="chain" type="s"></arg>
+        <arg direction="out" type="a(ias)"></arg>
+        <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
+    </method>
+])
+
+DBUS_INTROSPECT([], [[//method[@name="passthrough"]]], 0, [dnl
+    <method name="passthrough">
+        <arg direction="in" name="ipv" type="s"></arg>
+        <arg direction="in" name="args" type="as"></arg>
+        <arg direction="out" type="s"></arg>
+        <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
+    </method>
+])
+
+DBUS_INTROSPECT([], [[//method[@name="queryChain"]]], 0, [dnl
+    <method name="queryChain">
+        <arg direction="in" name="ipv" type="s"></arg>
+        <arg direction="in" name="table" type="s"></arg>
+        <arg direction="in" name="chain" type="s"></arg>
+        <arg direction="out" type="b"></arg>
+        <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
+    </method>
+])
+
+DBUS_INTROSPECT([], [[//method[@name="queryPassthrough"]]], 0, [dnl
+    <method name="queryPassthrough">
+        <arg direction="in" name="ipv" type="s"></arg>
+        <arg direction="in" name="args" type="as"></arg>
+        <arg direction="out" type="b"></arg>
+        <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
+    </method>
+])
+
+DBUS_INTROSPECT([], [[//method[@name="queryRule"]]], 0, [dnl
+    <method name="queryRule">
+        <arg direction="in" name="ipv" type="s"></arg>
+        <arg direction="in" name="table" type="s"></arg>
+        <arg direction="in" name="chain" type="s"></arg>
+        <arg direction="in" name="priority" type="i"></arg>
+        <arg direction="in" name="args" type="as"></arg>
+        <arg direction="out" type="b"></arg>
+        <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
+    </method>
+])
+
+DBUS_INTROSPECT([], [[//method[@name="removeAllPassthroughs"]]], 0, [dnl
+    <method name="removeAllPassthroughs">
+        <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
+    </method>
+])
+
+DBUS_INTROSPECT([], [[//method[@name="removeChain"]]], 0, [dnl
+    <method name="removeChain">
+        <arg direction="in" name="ipv" type="s"></arg>
+        <arg direction="in" name="table" type="s"></arg>
+        <arg direction="in" name="chain" type="s"></arg>
+        <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
+    </method>
+])
+
+DBUS_INTROSPECT([], [[//method[@name="removePassthrough"]]], 0, [dnl
+    <method name="removePassthrough">
+        <arg direction="in" name="ipv" type="s"></arg>
+        <arg direction="in" name="args" type="as"></arg>
+        <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
+    </method>
+])
+
+DBUS_INTROSPECT([], [[//method[@name="removeRule"]]], 0, [dnl
+    <method name="removeRule">
+        <arg direction="in" name="ipv" type="s"></arg>
+        <arg direction="in" name="table" type="s"></arg>
+        <arg direction="in" name="chain" type="s"></arg>
+        <arg direction="in" name="priority" type="i"></arg>
+        <arg direction="in" name="args" type="as"></arg>
+        <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
+    </method>
+])
+
+DBUS_INTROSPECT([], [[//method[@name="removeRules"]]], 0, [dnl
+    <method name="removeRules">
+        <arg direction="in" name="ipv" type="s"></arg>
+        <arg direction="in" name="table" type="s"></arg>
+        <arg direction="in" name="chain" type="s"></arg>
+        <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
+    </method>
+])
+
+DBUS_INTROSPECT([], [[//signal[@name="ChainAdded"]]], 0, [dnl
+    <signal name="ChainAdded">
+        <arg name="ipv" type="s"></arg>
+        <arg name="table" type="s"></arg>
+        <arg name="chain" type="s"></arg>
+        <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
+    </signal>  
+])
+
+DBUS_INTROSPECT([], [[//signal[@name="ChainRemoved"]]], 0, [dnl
+    <signal name="ChainRemoved">
+        <arg name="ipv" type="s"></arg>
+        <arg name="table" type="s"></arg>
+        <arg name="chain" type="s"></arg>
+        <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
+    </signal>
+])
+
+DBUS_INTROSPECT([], [[//signal[@name="PassthroughAdded"]]], 0, [dnl
+    <signal name="PassthroughAdded">
+        <arg name="ipv" type="s"></arg>
+        <arg name="args" type="as"></arg>
+        <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
+    </signal>
+])
+
+DBUS_INTROSPECT([], [[//signal[@name="PassthroughRemoved"]]], 0, [dnl
+    <signal name="PassthroughRemoved">
+        <arg name="ipv" type="s"></arg>
+        <arg name="args" type="as"></arg>
+        <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
+    </signal>
+])
+
+DBUS_INTROSPECT([], [[//signal[@name="RuleAdded"]]], 0, [dnl
+    <signal name="RuleAdded">
+        <arg name="ipv" type="s"></arg>
+        <arg name="table" type="s"></arg>
+        <arg name="chain" type="s"></arg>
+        <arg name="priority" type="i"></arg>
+        <arg name="args" type="as"></arg>
+        <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
+    </signal>
+])
+
+DBUS_INTROSPECT([], [[//signal[@name="RuleRemoved"]]], 0, [dnl
+    <signal name="RuleRemoved">
+        <arg name="ipv" type="s"></arg>
+        <arg name="table" type="s"></arg>
+        <arg name="chain" type="s"></arg>
+        <arg name="priority" type="i"></arg>
+        <arg name="args" type="as"></arg>
+        <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
+    </signal>
+])
+
+dnl ###############################
+dnl ######### permanent ###########
+dnl ###############################
+
+DBUS_INTROSPECT([config], [[//interface[@name="org.fedoraproject.FirewallD1.config.direct"]//method[@name="getSettings"]]], 0, [dnl
+    <method name="getSettings">
+        <arg direction="out" type="(a(sss)a(sssias)a(sas))"></arg>
+        <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
+    </method>
+])
+
+DBUS_INTROSPECT([config], [[//interface[@name="org.fedoraproject.FirewallD1.config.direct"]//method[@name="update"]]], 0, [dnl
+    <method name="update">
+        <arg direction="in" name="settings" type="(a(sss)a(sssias)a(sas))"></arg>
+        <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
+    </method>
+])
+
+DBUS_INTROSPECT([config], [[//interface[@name="org.fedoraproject.FirewallD1.config.direct"]//method[@name="addChain"]]], 0, [dnl
+    <method name="addChain">
+        <arg direction="in" name="ipv" type="s"></arg>
+        <arg direction="in" name="table" type="s"></arg>
+        <arg direction="in" name="chain" type="s"></arg>
+        <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
+    </method>
+])
+
+DBUS_INTROSPECT([config], [[//interface[@name="org.fedoraproject.FirewallD1.config.direct"]//method[@name="addPassthrough"]]], 0, [dnl
+    <method name="addPassthrough">
+        <arg direction="in" name="ipv" type="s"></arg>
+        <arg direction="in" name="args" type="as"></arg>
+        <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
+    </method>
+])
+
+DBUS_INTROSPECT([config], [[//interface[@name="org.fedoraproject.FirewallD1.config.direct"]//method[@name="addRule"]]], 0, [dnl
+    <method name="addRule">
+        <arg direction="in" name="ipv" type="s"></arg>
+        <arg direction="in" name="table" type="s"></arg>
+        <arg direction="in" name="chain" type="s"></arg>
+        <arg direction="in" name="priority" type="i"></arg>
+        <arg direction="in" name="args" type="as"></arg>
+        <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
+    </method>
+])
+
+DBUS_INTROSPECT([config], [[//interface[@name="org.fedoraproject.FirewallD1.config.direct"]//method[@name="getAllChains"]]], 0, [dnl
+    <method name="getAllChains">
+        <arg direction="out" type="a(sss)"></arg>
+        <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
+    </method>
+])
+
+DBUS_INTROSPECT([config], [[//interface[@name="org.fedoraproject.FirewallD1.config.direct"]//method[@name="getAllPassthroughs"]]], 0, [dnl
+    <method name="getAllPassthroughs">
+        <arg direction="out" type="a(sas)"></arg>
+        <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
+    </method>
+])
+
+DBUS_INTROSPECT([config], [[//interface[@name="org.fedoraproject.FirewallD1.config.direct"]//method[@name="getAllRules"]]], 0, [dnl
+    <method name="getAllRules">
+        <arg direction="out" type="a(sssias)"></arg>
+        <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
+    </method>
+])
+
+DBUS_INTROSPECT([config], [[//interface[@name="org.fedoraproject.FirewallD1.config.direct"]//method[@name="getChains"]]], 0, [dnl
+    <method name="getChains">
+        <arg direction="in" name="ipv" type="s"></arg>
+        <arg direction="in" name="table" type="s"></arg>
+        <arg direction="out" type="as"></arg>
+        <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
+    </method>
+])
+
+DBUS_INTROSPECT([config], [[//interface[@name="org.fedoraproject.FirewallD1.config.direct"]//method[@name="getPassthroughs"]]], 0, [dnl
+    <method name="getPassthroughs">
+        <arg direction="in" name="ipv" type="s"></arg>
+        <arg direction="out" type="aas"></arg>
+        <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
+    </method>
+])
+
+DBUS_INTROSPECT([config], [[//interface[@name="org.fedoraproject.FirewallD1.config.direct"]//method[@name="getRules"]]], 0, [dnl
+    <method name="getRules">
+        <arg direction="in" name="ipv" type="s"></arg>
+        <arg direction="in" name="table" type="s"></arg>
+        <arg direction="in" name="chain" type="s"></arg>
+        <arg direction="out" type="a(ias)"></arg>
+        <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
+    </method>
+])
+
+DBUS_INTROSPECT([config], [[//interface[@name="org.fedoraproject.FirewallD1.config.direct"]//method[@name="queryChain"]]], 0, [dnl
+    <method name="queryChain">
+        <arg direction="in" name="ipv" type="s"></arg>
+        <arg direction="in" name="table" type="s"></arg>
+        <arg direction="in" name="chain" type="s"></arg>
+        <arg direction="out" type="b"></arg>
+        <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
+    </method>
+])
+
+DBUS_INTROSPECT([config], [[//interface[@name="org.fedoraproject.FirewallD1.config.direct"]//method[@name="queryPassthrough"]]], 0, [dnl
+    <method name="queryPassthrough">
+        <arg direction="in" name="ipv" type="s"></arg>
+        <arg direction="in" name="args" type="as"></arg>
+        <arg direction="out" type="b"></arg>
+        <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
+    </method>
+])
+
+DBUS_INTROSPECT([config], [[//interface[@name="org.fedoraproject.FirewallD1.config.direct"]//method[@name="queryRule"]]], 0, [dnl
+    <method name="queryRule">
+        <arg direction="in" name="ipv" type="s"></arg>
+        <arg direction="in" name="table" type="s"></arg>
+        <arg direction="in" name="chain" type="s"></arg>
+        <arg direction="in" name="priority" type="i"></arg>
+        <arg direction="in" name="args" type="as"></arg>
+        <arg direction="out" type="b"></arg>
+        <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
+    </method>
+])
+
+DBUS_INTROSPECT([config], [[//interface[@name="org.fedoraproject.FirewallD1.config.direct"]//method[@name="removeChain"]]], 0, [dnl
+    <method name="removeChain">
+        <arg direction="in" name="ipv" type="s"></arg>
+        <arg direction="in" name="table" type="s"></arg>
+        <arg direction="in" name="chain" type="s"></arg>
+        <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
+    </method>
+])
+
+DBUS_INTROSPECT([config], [[//interface[@name="org.fedoraproject.FirewallD1.config.direct"]//method[@name="removePassthrough"]]], 0, [dnl
+    <method name="removePassthrough">
+        <arg direction="in" name="ipv" type="s"></arg>
+        <arg direction="in" name="args" type="as"></arg>
+        <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
+    </method>
+])
+
+DBUS_INTROSPECT([config], [[//interface[@name="org.fedoraproject.FirewallD1.config.direct"]//method[@name="removeRule"]]], 0, [dnl
+    <method name="removeRule">
+        <arg direction="in" name="ipv" type="s"></arg>
+        <arg direction="in" name="table" type="s"></arg>
+        <arg direction="in" name="chain" type="s"></arg>
+        <arg direction="in" name="priority" type="i"></arg>
+        <arg direction="in" name="args" type="as"></arg>
+        <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
+    </method>
+])
+
+DBUS_INTROSPECT([config], [[//interface[@name="org.fedoraproject.FirewallD1.config.direct"]//method[@name="removeRules"]]], 0, [dnl
+    <method name="removeRules">
+        <arg direction="in" name="ipv" type="s"></arg>
+        <arg direction="in" name="table" type="s"></arg>
+        <arg direction="in" name="chain" type="s"></arg>
+        <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
+    </method>
+])
+
+DBUS_INTROSPECT([config], [[//interface[@name="org.fedoraproject.FirewallD1.config.direct"]//signal[@name="Updated"]]], 0, [dnl
+    <signal name="Updated">
+        <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
+    </signal>
+])
+
+FWD_END_TEST
