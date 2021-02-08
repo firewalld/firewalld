@@ -40,12 +40,15 @@ from firewall.client import FirewallClientZoneSettings
 from firewall.server.decorators import dbus_handle_exceptions, \
                                        dbus_service_method, \
                                        handle_exceptions, \
-                                       FirewallDBusException
+                                       FirewallDBusException, \
+                                       dbus_service_method_deprecated, \
+                                       dbus_service_signal_deprecated
 from firewall.server.config import FirewallDConfig
 from firewall.dbus_utils import dbus_to_python, \
     command_of_sender, context_of_sender, uid_of_sender, user_of_uid, \
     dbus_introspection_prepare_properties, \
-    dbus_introspection_add_properties
+    dbus_introspection_add_properties, \
+    dbus_introspection_add_deprecated
 from firewall.core.io.functions import check_config
 from firewall.core.io.ipset import IPSet
 from firewall.core.io.icmptype import IcmpType
@@ -300,8 +303,16 @@ class FirewallD(slip.dbus.service.Object):
         data = super(FirewallD, self).Introspect(self.path,
                                                  self.busname.get_bus())
 
-        return dbus_introspection_add_properties(self, data,
+        data = dbus_introspection_add_properties(self, data,
                                                  config.dbus.DBUS_INTERFACE)
+
+        for interface in [config.dbus.DBUS_INTERFACE_DIRECT]:
+            data = dbus_introspection_add_deprecated(self, data,
+                                                     interface,
+                                                     dbus_service_method_deprecated().deprecated,
+                                                     dbus_service_signal_deprecated().deprecated)
+
+        return data
 
     # reload
 
@@ -2176,6 +2187,7 @@ class FirewallD(slip.dbus.service.Object):
     # DIRECT CHAIN
 
     @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_DIRECT)
+    @dbus_service_method_deprecated(config.dbus.DBUS_INTERFACE_DIRECT)
     @dbus_service_method(config.dbus.DBUS_INTERFACE_DIRECT, in_signature='sss',
                          out_signature='')
     @dbus_handle_exceptions
@@ -2190,6 +2202,7 @@ class FirewallD(slip.dbus.service.Object):
         self.ChainAdded(ipv, table, chain)
 
     @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_DIRECT)
+    @dbus_service_method_deprecated(config.dbus.DBUS_INTERFACE_DIRECT)
     @dbus_service_method(config.dbus.DBUS_INTERFACE_DIRECT, in_signature='sss',
                          out_signature='')
     @dbus_handle_exceptions
@@ -2204,6 +2217,7 @@ class FirewallD(slip.dbus.service.Object):
         self.ChainRemoved(ipv, table, chain)
     
     @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_DIRECT_INFO)
+    @dbus_service_method_deprecated(config.dbus.DBUS_INTERFACE_DIRECT)
     @dbus_service_method(config.dbus.DBUS_INTERFACE_DIRECT, in_signature='sss',
                          out_signature='b')
     @dbus_handle_exceptions
@@ -2216,6 +2230,7 @@ class FirewallD(slip.dbus.service.Object):
         return self.fw.direct.query_chain(ipv, table, chain)
 
     @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_DIRECT_INFO)
+    @dbus_service_method_deprecated(config.dbus.DBUS_INTERFACE_DIRECT)
     @dbus_service_method(config.dbus.DBUS_INTERFACE_DIRECT, in_signature='ss',
                          out_signature='as')
     @dbus_handle_exceptions
@@ -2227,6 +2242,7 @@ class FirewallD(slip.dbus.service.Object):
         return self.fw.direct.get_chains(ipv, table)
 
     @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_DIRECT_INFO)
+    @dbus_service_method_deprecated(config.dbus.DBUS_INTERFACE_DIRECT)
     @dbus_service_method(config.dbus.DBUS_INTERFACE_DIRECT, in_signature='',
                          out_signature='a(sss)')
     @dbus_handle_exceptions
@@ -2235,11 +2251,13 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("direct.getAllChains()")
         return self.fw.direct.get_all_chains()
 
+    @dbus_service_signal_deprecated(config.dbus.DBUS_INTERFACE_DIRECT)
     @dbus.service.signal(config.dbus.DBUS_INTERFACE_DIRECT, signature='sss')
     @dbus_handle_exceptions
     def ChainAdded(self, ipv, table, chain):
         log.debug1("direct.ChainAdded('%s', '%s', '%s')" % (ipv, table, chain))
 
+    @dbus_service_signal_deprecated(config.dbus.DBUS_INTERFACE_DIRECT)
     @dbus.service.signal(config.dbus.DBUS_INTERFACE_DIRECT, signature='sss')
     @dbus_handle_exceptions
     def ChainRemoved(self, ipv, table, chain):
@@ -2251,6 +2269,7 @@ class FirewallD(slip.dbus.service.Object):
     # DIRECT RULE
 
     @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_DIRECT)
+    @dbus_service_method_deprecated(config.dbus.DBUS_INTERFACE_DIRECT)
     @dbus_service_method(config.dbus.DBUS_INTERFACE_DIRECT,
                          in_signature='sssias', out_signature='')
     @dbus_handle_exceptions
@@ -2268,6 +2287,7 @@ class FirewallD(slip.dbus.service.Object):
         self.RuleAdded(ipv, table, chain, priority, args)
 
     @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_DIRECT)
+    @dbus_service_method_deprecated(config.dbus.DBUS_INTERFACE_DIRECT)
     @dbus_service_method(config.dbus.DBUS_INTERFACE_DIRECT,
                          in_signature='sssias', out_signature='')
     @dbus_handle_exceptions
@@ -2285,6 +2305,7 @@ class FirewallD(slip.dbus.service.Object):
         self.RuleRemoved(ipv, table, chain, priority, args)
     
     @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_DIRECT)
+    @dbus_service_method_deprecated(config.dbus.DBUS_INTERFACE_DIRECT)
     @dbus_service_method(config.dbus.DBUS_INTERFACE_DIRECT, in_signature='sss',
                          out_signature='')
     @dbus_handle_exceptions
@@ -2300,6 +2321,7 @@ class FirewallD(slip.dbus.service.Object):
             self.RuleRemoved(ipv, table, chain, priority, args)
 
     @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_DIRECT_INFO)
+    @dbus_service_method_deprecated(config.dbus.DBUS_INTERFACE_DIRECT)
     @dbus_service_method(config.dbus.DBUS_INTERFACE_DIRECT,
                          in_signature='sssias', out_signature='b')
     @dbus_handle_exceptions
@@ -2315,6 +2337,7 @@ class FirewallD(slip.dbus.service.Object):
         return self.fw.direct.query_rule(ipv, table, chain, priority, args)
 
     @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_DIRECT_INFO)
+    @dbus_service_method_deprecated(config.dbus.DBUS_INTERFACE_DIRECT)
     @dbus_service_method(config.dbus.DBUS_INTERFACE_DIRECT, in_signature='sss',
                          out_signature='a(ias)')
     @dbus_handle_exceptions
@@ -2327,6 +2350,7 @@ class FirewallD(slip.dbus.service.Object):
         return self.fw.direct.get_rules(ipv, table, chain)
 
     @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_DIRECT_INFO)
+    @dbus_service_method_deprecated(config.dbus.DBUS_INTERFACE_DIRECT)
     @dbus_service_method(config.dbus.DBUS_INTERFACE_DIRECT, in_signature='',
                          out_signature='a(sssias)')
     @dbus_handle_exceptions
@@ -2335,12 +2359,14 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("direct.getAllRules()")
         return self.fw.direct.get_all_rules()
 
+    @dbus_service_signal_deprecated(config.dbus.DBUS_INTERFACE_DIRECT)
     @dbus.service.signal(config.dbus.DBUS_INTERFACE_DIRECT, signature='sssias')
     @dbus_handle_exceptions
     def RuleAdded(self, ipv, table, chain, priority, args): # pylint: disable=R0913
         log.debug1("direct.RuleAdded('%s', '%s', '%s', %d, '%s')" % \
                        (ipv, table, chain, priority, "','".join(args)))
 
+    @dbus_service_signal_deprecated(config.dbus.DBUS_INTERFACE_DIRECT)
     @dbus.service.signal(config.dbus.DBUS_INTERFACE_DIRECT, signature='sssias')
     @dbus_handle_exceptions
     def RuleRemoved(self, ipv, table, chain, priority, args): # pylint: disable=R0913
@@ -2352,6 +2378,7 @@ class FirewallD(slip.dbus.service.Object):
     # DIRECT PASSTHROUGH (untracked)
 
     @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_DIRECT)
+    @dbus_service_method_deprecated(config.dbus.DBUS_INTERFACE_DIRECT)
     @dbus_service_method(config.dbus.DBUS_INTERFACE_DIRECT, in_signature='sas',
                          out_signature='s')
     @dbus_handle_exceptions
@@ -2379,6 +2406,7 @@ class FirewallD(slip.dbus.service.Object):
     # DIRECT PASSTHROUGH (tracked)
 
     @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_DIRECT)
+    @dbus_service_method_deprecated(config.dbus.DBUS_INTERFACE_DIRECT)
     @dbus_service_method(config.dbus.DBUS_INTERFACE_DIRECT, in_signature='sas',
                          out_signature='')
     @dbus_handle_exceptions
@@ -2393,6 +2421,7 @@ class FirewallD(slip.dbus.service.Object):
         self.PassthroughAdded(ipv, args)
 
     @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_DIRECT)
+    @dbus_service_method_deprecated(config.dbus.DBUS_INTERFACE_DIRECT)
     @dbus_service_method(config.dbus.DBUS_INTERFACE_DIRECT, in_signature='sas',
                          out_signature='')
     @dbus_handle_exceptions
@@ -2407,6 +2436,7 @@ class FirewallD(slip.dbus.service.Object):
         self.PassthroughRemoved(ipv, args)
 
     @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_DIRECT_INFO)
+    @dbus_service_method_deprecated(config.dbus.DBUS_INTERFACE_DIRECT)
     @dbus_service_method(config.dbus.DBUS_INTERFACE_DIRECT, in_signature='sas',
                          out_signature='b')
     @dbus_handle_exceptions
@@ -2419,6 +2449,7 @@ class FirewallD(slip.dbus.service.Object):
         return self.fw.direct.query_passthrough(ipv, args)
 
     @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_DIRECT_INFO)
+    @dbus_service_method_deprecated(config.dbus.DBUS_INTERFACE_DIRECT)
     @dbus_service_method(config.dbus.DBUS_INTERFACE_DIRECT, in_signature='',
                          out_signature='a(sas)')
     @dbus_handle_exceptions
@@ -2428,6 +2459,7 @@ class FirewallD(slip.dbus.service.Object):
         return self.fw.direct.get_all_passthroughs()
 
     @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_DIRECT)
+    @dbus_service_method_deprecated(config.dbus.DBUS_INTERFACE_DIRECT)
     @dbus_service_method(config.dbus.DBUS_INTERFACE_DIRECT, in_signature='',
                          out_signature='')
     @dbus_handle_exceptions
@@ -2439,6 +2471,7 @@ class FirewallD(slip.dbus.service.Object):
             self.removePassthrough(*passthrough)
 
     @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_DIRECT_INFO)
+    @dbus_service_method_deprecated(config.dbus.DBUS_INTERFACE_DIRECT)
     @dbus_service_method(config.dbus.DBUS_INTERFACE_DIRECT, in_signature='s',
                          out_signature='aas')
     @dbus_handle_exceptions
@@ -2448,12 +2481,14 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("direct.getPassthroughs('%s')", ipv)
         return self.fw.direct.get_passthroughs(ipv)
 
+    @dbus_service_signal_deprecated(config.dbus.DBUS_INTERFACE_DIRECT)
     @dbus.service.signal(config.dbus.DBUS_INTERFACE_DIRECT, signature='sas')
     @dbus_handle_exceptions
     def PassthroughAdded(self, ipv, args):
         log.debug1("direct.PassthroughAdded('%s', '%s')" % \
                        (ipv, "','".join(args)))
 
+    @dbus_service_signal_deprecated(config.dbus.DBUS_INTERFACE_DIRECT)
     @dbus.service.signal(config.dbus.DBUS_INTERFACE_DIRECT, signature='sas')
     @dbus_handle_exceptions
     def PassthroughRemoved(self, ipv, args):
