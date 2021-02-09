@@ -69,12 +69,24 @@ DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//me
         <arg direction="out" type="s"></arg>
     </method>
 ])
+DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//signal[@name="InterfaceAdded"]]], 0, [dnl
+    <signal name="InterfaceAdded">
+        <arg name="zone" type="s"></arg>
+        <arg name="interface" type="s"></arg>
+    </signal>
+])
 DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//method[@name="changeZone"]]], 0, [dnl
     <method name="changeZone">
         <arg direction="in" name="zone" type="s"></arg>
         <arg direction="in" name="interface" type="s"></arg>
         <arg direction="out" type="s"></arg>
     </method>
+])
+DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//signal[@name="ZoneChanged"]]], 0, [dnl
+    <signal name="ZoneChanged">
+        <arg name="zone" type="s"></arg>
+        <arg name="interface" type="s"></arg>
+    </signal>
 ])
 DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//method[@name="changeZoneOfInterface"]]], 0, [dnl
     <method name="changeZoneOfInterface">
@@ -89,6 +101,12 @@ DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//me
         <arg direction="in" name="interface" type="s"></arg>
         <arg direction="out" type="s"></arg>
     </method>
+])
+DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//signal[@name="InterfaceRemoved"]]], 0, [dnl
+    <signal name="InterfaceRemoved">
+        <arg name="zone" type="s"></arg>
+        <arg name="interface" type="s"></arg>
+    </signal>
 ])
 DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//method[@name="queryInterface"]]], 0, [dnl
     <method name="queryInterface">
@@ -112,6 +130,12 @@ DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//me
         <arg direction="out" type="s"></arg>
     </method>
 ])
+DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//signal[@name="SourceAdded"]]], 0, [dnl
+    <signal name="SourceAdded">
+        <arg name="zone" type="s"></arg>
+        <arg name="source" type="s"></arg>
+    </signal>
+])
 DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//method[@name="changeZoneOfSource"]]], 0, [dnl
     <method name="changeZoneOfSource">
         <arg direction="in" name="zone" type="s"></arg>
@@ -125,6 +149,12 @@ DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//me
         <arg direction="in" name="source" type="s"></arg>
         <arg direction="out" type="s"></arg>
     </method>
+])
+DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//signal[@name="SourceRemoved"]]], 0, [dnl
+    <signal name="SourceRemoved">
+        <arg name="zone" type="s"></arg>
+        <arg name="source" type="s"></arg>
+    </signal>
 ])
 DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//method[@name="querySource"]]], 0, [dnl
     <method name="querySource">
@@ -149,12 +179,25 @@ DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//me
         <arg direction="out" type="s"></arg>
     </method>
 ])
+DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//signal[@name="ServiceAdded"]]], 0, [dnl
+    <signal name="ServiceAdded">
+        <arg name="zone" type="s"></arg>
+        <arg name="service" type="s"></arg>
+        <arg name="timeout" type="i"></arg>
+    </signal>
+])
 DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//method[@name="removeService"]]], 0, [dnl
     <method name="removeService">
         <arg direction="in" name="zone" type="s"></arg>
         <arg direction="in" name="service" type="s"></arg>
         <arg direction="out" type="s"></arg>
     </method>
+])
+DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//signal[@name="ServiceRemoved"]]], 0, [dnl
+    <signal name="ServiceRemoved">
+        <arg name="zone" type="s"></arg>
+        <arg name="service" type="s"></arg>
+    </signal>
 ])
 DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//method[@name="queryService"]]], 0, [dnl
     <method name="queryService">
@@ -179,12 +222,25 @@ DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//me
         <arg direction="out" type="s"></arg>
     </method>
 ])
+DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//signal[@name="ProtocolAdded"]]], 0, [dnl
+    <signal name="ProtocolAdded">
+        <arg name="zone" type="s"></arg>
+        <arg name="protocol" type="s"></arg>
+        <arg name="timeout" type="i"></arg>
+    </signal>
+])
 DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//method[@name="removeProtocol"]]], 0, [dnl
     <method name="removeProtocol">
         <arg direction="in" name="zone" type="s"></arg>
         <arg direction="in" name="protocol" type="s"></arg>
         <arg direction="out" type="s"></arg>
     </method>
+])
+DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//signal[@name="ProtocolRemoved"]]], 0, [dnl
+    <signal name="ProtocolRemoved">
+        <arg name="zone" type="s"></arg>
+        <arg name="protocol" type="s"></arg>
+    </signal>
 ])
 DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//method[@name="queryProtocol"]]], 0, [dnl
     <method name="queryProtocol">
@@ -210,6 +266,14 @@ DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//me
         <arg direction="out" type="s"></arg>
     </method>
 ])
+DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//signal[@name="PortAdded"]]], 0, [dnl
+    <signal name="PortAdded">
+        <arg name="zone" type="s"></arg>
+        <arg name="port" type="s"></arg>
+        <arg name="protocol" type="s"></arg>
+        <arg name="timeout" type="i"></arg>
+    </signal>
+])
 DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//method[@name="removePort"]]], 0, [dnl
     <method name="removePort">
         <arg direction="in" name="zone" type="s"></arg>
@@ -217,6 +281,13 @@ DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//me
         <arg direction="in" name="protocol" type="s"></arg>
         <arg direction="out" type="s"></arg>
     </method>
+])
+DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//signal[@name="PortRemoved"]]], 0, [dnl
+    <signal name="PortRemoved">
+        <arg name="zone" type="s"></arg>
+        <arg name="port" type="s"></arg>
+        <arg name="protocol" type="s"></arg>
+    </signal>
 ])
 DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//method[@name="queryPort"]]], 0, [dnl
     <method name="queryPort">
@@ -245,6 +316,14 @@ DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//me
         <arg direction="out" type="s"></arg>
     </method>
 ])
+DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//signal[@name="SourcePortAdded"]]], 0, [dnl
+    <signal name="SourcePortAdded">
+        <arg name="zone" type="s"></arg>
+        <arg name="port" type="s"></arg>
+        <arg name="protocol" type="s"></arg>
+        <arg name="timeout" type="i"></arg>
+    </signal>
+])
 DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//method[@name="removeSourcePort"]]], 0, [dnl
     <method name="removeSourcePort">
         <arg direction="in" name="zone" type="s"></arg>
@@ -252,6 +331,13 @@ DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//me
         <arg direction="in" name="protocol" type="s"></arg>
         <arg direction="out" type="s"></arg>
     </method>
+])
+DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//signal[@name="SourcePortRemoved"]]], 0, [dnl
+    <signal name="SourcePortRemoved">
+        <arg name="zone" type="s"></arg>
+        <arg name="port" type="s"></arg>
+        <arg name="protocol" type="s"></arg>
+    </signal>
 ])
 DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//method[@name="querySourcePort"]]], 0, [dnl
     <method name="querySourcePort">
@@ -282,6 +368,16 @@ DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//me
         <arg direction="out" type="s"></arg>
     </method>
 ])
+DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//signal[@name="ForwardPortAdded"]]], 0, [dnl
+    <signal name="ForwardPortAdded">
+        <arg name="zone" type="s"></arg>
+        <arg name="port" type="s"></arg>
+        <arg name="protocol" type="s"></arg>
+        <arg name="toport" type="s"></arg>
+        <arg name="toaddr" type="s"></arg>
+        <arg name="timeout" type="i"></arg>
+    </signal>
+])
 DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//method[@name="removeForwardPort"]]], 0, [dnl
     <method name="removeForwardPort">
         <arg direction="in" name="zone" type="s"></arg>
@@ -291,6 +387,15 @@ DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//me
         <arg direction="in" name="toaddr" type="s"></arg>
         <arg direction="out" type="s"></arg>
     </method>
+])
+DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//signal[@name="ForwardPortRemoved"]]], 0, [dnl
+    <signal name="ForwardPortRemoved">
+        <arg name="zone" type="s"></arg>
+        <arg name="port" type="s"></arg>
+        <arg name="protocol" type="s"></arg>
+        <arg name="toport" type="s"></arg>
+        <arg name="toaddr" type="s"></arg>
+    </signal>
 ])
 DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//method[@name="queryForwardPort"]]], 0, [dnl
     <method name="queryForwardPort">
@@ -319,11 +424,22 @@ DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//me
         <arg direction="out" type="s"></arg>
     </method>
 ])
+DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//signal[@name="MasqueradeAdded"]]], 0, [dnl
+    <signal name="MasqueradeAdded">
+        <arg name="zone" type="s"></arg>
+        <arg name="timeout" type="i"></arg>
+    </signal>
+])
 DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//method[@name="removeMasquerade"]]], 0, [dnl
     <method name="removeMasquerade">
         <arg direction="in" name="zone" type="s"></arg>
         <arg direction="out" type="s"></arg>
     </method>
+])
+DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//signal[@name="MasqueradeRemoved"]]], 0, [dnl
+    <signal name="MasqueradeRemoved">
+        <arg name="zone" type="s"></arg>
+    </signal>
 ])
 DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//method[@name="queryMasquerade"]]], 0, [dnl
     <method name="queryMasquerade">
@@ -341,12 +457,25 @@ DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//me
         <arg direction="out" type="s"></arg>
     </method>
 ])
+DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//signal[@name="IcmpBlockAdded"]]], 0, [dnl
+    <signal name="IcmpBlockAdded">
+        <arg name="zone" type="s"></arg>
+        <arg name="icmp" type="s"></arg>
+        <arg name="timeout" type="i"></arg>
+    </signal>
+])
 DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//method[@name="removeIcmpBlock"]]], 0, [dnl
     <method name="removeIcmpBlock">
         <arg direction="in" name="zone" type="s"></arg>
         <arg direction="in" name="icmp" type="s"></arg>
         <arg direction="out" type="s"></arg>
     </method>
+])
+DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//signal[@name="IcmpBlockRemoved"]]], 0, [dnl
+    <signal name="IcmpBlockRemoved">
+        <arg name="zone" type="s"></arg>
+        <arg name="icmp" type="s"></arg>
+    </signal>
 ])
 DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//method[@name="queryIcmpBlock"]]], 0, [dnl
     <method name="queryIcmpBlock">
@@ -369,11 +498,21 @@ DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//me
         <arg direction="out" type="s"></arg>
     </method>
 ])
+DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//signal[@name="IcmpBlockInversionAdded"]]], 0, [dnl
+    <signal name="IcmpBlockInversionAdded">
+        <arg name="zone" type="s"></arg>
+    </signal>
+])
 DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//method[@name="removeIcmpBlockInversion"]]], 0, [dnl
     <method name="removeIcmpBlockInversion">
         <arg direction="in" name="zone" type="s"></arg>
         <arg direction="out" type="s"></arg>
     </method>
+])
+DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//signal[@name="IcmpBlockInversionRemoved"]]], 0, [dnl
+    <signal name="IcmpBlockInversionRemoved">
+        <arg name="zone" type="s"></arg>
+    </signal>
 ])
 DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//method[@name="queryIcmpBlockInversion"]]], 0, [dnl
     <method name="queryIcmpBlockInversion">
@@ -391,12 +530,25 @@ DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//me
         <arg direction="out" type="s"></arg>
     </method>
 ])
+DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//signal[@name="RichRuleAdded"]]], 0, [dnl
+    <signal name="RichRuleAdded">
+        <arg name="zone" type="s"></arg>
+        <arg name="rule" type="s"></arg>
+        <arg name="timeout" type="i"></arg>
+    </signal>
+])
 DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//method[@name="removeRichRule"]]], 0, [dnl
     <method name="removeRichRule">
         <arg direction="in" name="zone" type="s"></arg>
         <arg direction="in" name="rule" type="s"></arg>
         <arg direction="out" type="s"></arg>
     </method>
+])
+DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//signal[@name="RichRuleRemoved"]]], 0, [dnl
+    <signal name="RichRuleRemoved">
+        <arg name="zone" type="s"></arg>
+        <arg name="rule" type="s"></arg>
+    </signal>
 ])
 DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.zone"]//method[@name="queryRichRule"]]], 0, [dnl
     <method name="queryRichRule">
