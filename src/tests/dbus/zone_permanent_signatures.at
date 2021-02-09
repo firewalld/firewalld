@@ -5,23 +5,23 @@ dnl ####################
 dnl Global APIs
 dnl ####################
 
-DBUS_INTROSPECT([config], [[//method[@name="listZones"]]], 0, [dnl
+DBUS_INTROSPECT([config], [[//interface[@name="org.fedoraproject.FirewallD1.config"]//method[@name="listZones"]]], 0, [dnl
     <method name="listZones">
         <arg direction="out" type="ao"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config], [[//method[@name="getZoneNames"]]], 0, [dnl
+DBUS_INTROSPECT([config], [[//interface[@name="org.fedoraproject.FirewallD1.config"]//method[@name="getZoneNames"]]], 0, [dnl
     <method name="getZoneNames">
         <arg direction="out" type="as"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config], [[//method[@name="getZoneByName"]]], 0, [dnl
+DBUS_INTROSPECT([config], [[//interface[@name="org.fedoraproject.FirewallD1.config"]//method[@name="getZoneByName"]]], 0, [dnl
     <method name="getZoneByName">
         <arg direction="in" name="zone" type="s"></arg>
         <arg direction="out" type="o"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config], [[//method[@name="addZone"]]], 0, [dnl
+DBUS_INTROSPECT([config], [[//interface[@name="org.fedoraproject.FirewallD1.config"]//method[@name="addZone"]]], 0, [dnl
     <method name="addZone">
         <arg direction="in" name="zone" type="s"></arg>
         <arg direction="in" name="settings" type="(sssbsasa(ss)asba(ssss)asasasasa(ss)b)"></arg>
@@ -30,13 +30,13 @@ DBUS_INTROSPECT([config], [[//method[@name="addZone"]]], 0, [dnl
 ])
 
 dnl zone relation to interface/sources
-DBUS_INTROSPECT([config], [[//method[@name="getZoneOfInterface"]]], 0, [dnl
+DBUS_INTROSPECT([config], [[//interface[@name="org.fedoraproject.FirewallD1.config"]//method[@name="getZoneOfInterface"]]], 0, [dnl
     <method name="getZoneOfInterface">
         <arg direction="in" name="iface" type="s"></arg>
         <arg direction="out" type="s"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config], [[//method[@name="getZoneOfSource"]]], 0, [dnl
+DBUS_INTROSPECT([config], [[//interface[@name="org.fedoraproject.FirewallD1.config"]//method[@name="getZoneOfSource"]]], 0, [dnl
     <method name="getZoneOfSource">
         <arg direction="in" name="source" type="s"></arg>
         <arg direction="out" type="s"></arg>
@@ -53,29 +53,29 @@ DBUS_CHECK([config], [config.getZoneByName], ["public"], 0, [stdout])
 DBUS_PUBLIC_ZONE_OBJ=[$(sed -e "s/.*config\/zone\/\([^']\+\)['].*/\1/" ./stdout)]
 export DBUS_PUBLIC_ZONE_OBJ
 
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="getSettings"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="getSettings"]]], 0, [dnl
     <method name="getSettings">
         <arg direction="out" type="(sssbsasa(ss)asba(ssss)asasasasa(ss)b)"></arg>
     </method>
 ])
 
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="update"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="update"]]], 0, [dnl
     <method name="update">
         <arg direction="in" name="settings" type="(sssbsasa(ss)asba(ssss)asasasasa(ss)b)"></arg>
     </method>
 ])
 
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="loadDefaults"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="loadDefaults"]]], 0, [dnl
     <method name="loadDefaults">
     </method>
 ])
 
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="remove"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="remove"]]], 0, [dnl
     <method name="remove">
     </method>
 ])
 
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="rename"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="rename"]]], 0, [dnl
     <method name="rename">
         <arg direction="in" name="name" type="s"></arg>
     </method>
@@ -83,12 +83,12 @@ DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="rename"
 
 dnl Version
 dnl
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="getVersion"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="getVersion"]]], 0, [dnl
     <method name="getVersion">
         <arg direction="out" type="s"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="setVersion"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="setVersion"]]], 0, [dnl
     <method name="setVersion">
         <arg direction="in" name="version" type="s"></arg>
     </method>
@@ -96,12 +96,12 @@ DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="setVers
 
 dnl Short
 dnl
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="getShort"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="getShort"]]], 0, [dnl
     <method name="getShort">
         <arg direction="out" type="s"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="setShort"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="setShort"]]], 0, [dnl
     <method name="setShort">
         <arg direction="in" name="short" type="s"></arg>
     </method>
@@ -109,12 +109,12 @@ DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="setShor
 
 dnl Description
 dnl
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="getDescription"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="getDescription"]]], 0, [dnl
     <method name="getDescription">
         <arg direction="out" type="s"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="setDescription"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="setDescription"]]], 0, [dnl
     <method name="setDescription">
         <arg direction="in" name="description" type="s"></arg>
     </method>
@@ -122,12 +122,12 @@ DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="setDesc
 
 dnl Target
 dnl
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="getTarget"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="getTarget"]]], 0, [dnl
     <method name="getTarget">
         <arg direction="out" type="s"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="setTarget"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="setTarget"]]], 0, [dnl
     <method name="setTarget">
         <arg direction="in" name="target" type="s"></arg>
     </method>
@@ -135,27 +135,27 @@ DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="setTarg
 
 dnl Interfaces
 dnl
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="getInterfaces"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="getInterfaces"]]], 0, [dnl
     <method name="getInterfaces">
         <arg direction="out" type="as"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="setInterfaces"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="setInterfaces"]]], 0, [dnl
     <method name="setInterfaces">
         <arg direction="in" name="interfaces" type="as"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="addInterface"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="addInterface"]]], 0, [dnl
     <method name="addInterface">
         <arg direction="in" name="interface" type="s"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="removeInterface"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="removeInterface"]]], 0, [dnl
     <method name="removeInterface">
         <arg direction="in" name="interface" type="s"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="queryInterface"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="queryInterface"]]], 0, [dnl
     <method name="queryInterface">
         <arg direction="in" name="interface" type="s"></arg>
         <arg direction="out" type="b"></arg>
@@ -164,27 +164,27 @@ DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="queryIn
 
 dnl Sources
 dnl
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="getSources"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="getSources"]]], 0, [dnl
     <method name="getSources">
         <arg direction="out" type="as"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="setSources"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="setSources"]]], 0, [dnl
     <method name="setSources">
         <arg direction="in" name="sources" type="as"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="addSource"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="addSource"]]], 0, [dnl
     <method name="addSource">
         <arg direction="in" name="source" type="s"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="removeSource"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="removeSource"]]], 0, [dnl
     <method name="removeSource">
         <arg direction="in" name="source" type="s"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="querySource"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="querySource"]]], 0, [dnl
     <method name="querySource">
         <arg direction="in" name="source" type="s"></arg>
         <arg direction="out" type="b"></arg>
@@ -193,27 +193,27 @@ DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="querySo
 
 dnl Services
 dnl
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="getServices"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="getServices"]]], 0, [dnl
     <method name="getServices">
         <arg direction="out" type="as"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="setServices"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="setServices"]]], 0, [dnl
     <method name="setServices">
         <arg direction="in" name="services" type="as"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="addService"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="addService"]]], 0, [dnl
     <method name="addService">
         <arg direction="in" name="service" type="s"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="removeService"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="removeService"]]], 0, [dnl
     <method name="removeService">
         <arg direction="in" name="service" type="s"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="queryService"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="queryService"]]], 0, [dnl
     <method name="queryService">
         <arg direction="in" name="service" type="s"></arg>
         <arg direction="out" type="b"></arg>
@@ -222,29 +222,29 @@ DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="querySe
 
 dnl Ports
 dnl
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="getPorts"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="getPorts"]]], 0, [dnl
     <method name="getPorts">
         <arg direction="out" type="a(ss)"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="setPorts"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="setPorts"]]], 0, [dnl
     <method name="setPorts">
         <arg direction="in" name="ports" type="a(ss)"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="addPort"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="addPort"]]], 0, [dnl
     <method name="addPort">
         <arg direction="in" name="port" type="s"></arg>
         <arg direction="in" name="protocol" type="s"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="removePort"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="removePort"]]], 0, [dnl
     <method name="removePort">
         <arg direction="in" name="port" type="s"></arg>
         <arg direction="in" name="protocol" type="s"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="queryPort"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="queryPort"]]], 0, [dnl
     <method name="queryPort">
         <arg direction="in" name="port" type="s"></arg>
         <arg direction="in" name="protocol" type="s"></arg>
@@ -254,29 +254,29 @@ DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="queryPo
 
 dnl Source Ports
 dnl
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="getSourcePorts"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="getSourcePorts"]]], 0, [dnl
     <method name="getSourcePorts">
         <arg direction="out" type="a(ss)"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="setSourcePorts"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="setSourcePorts"]]], 0, [dnl
     <method name="setSourcePorts">
         <arg direction="in" name="ports" type="a(ss)"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="addSourcePort"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="addSourcePort"]]], 0, [dnl
     <method name="addSourcePort">
         <arg direction="in" name="port" type="s"></arg>
         <arg direction="in" name="protocol" type="s"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="removeSourcePort"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="removeSourcePort"]]], 0, [dnl
     <method name="removeSourcePort">
         <arg direction="in" name="port" type="s"></arg>
         <arg direction="in" name="protocol" type="s"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="querySourcePort"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="querySourcePort"]]], 0, [dnl
     <method name="querySourcePort">
         <arg direction="in" name="port" type="s"></arg>
         <arg direction="in" name="protocol" type="s"></arg>
@@ -286,27 +286,27 @@ DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="querySo
 
 dnl Protocol
 dnl
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="getProtocols"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="getProtocols"]]], 0, [dnl
     <method name="getProtocols">
         <arg direction="out" type="as"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="setProtocols"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="setProtocols"]]], 0, [dnl
     <method name="setProtocols">
         <arg direction="in" name="protocols" type="as"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="addProtocol"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="addProtocol"]]], 0, [dnl
     <method name="addProtocol">
         <arg direction="in" name="protocol" type="s"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="removeProtocol"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="removeProtocol"]]], 0, [dnl
     <method name="removeProtocol">
         <arg direction="in" name="protocol" type="s"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="queryProtocol"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="queryProtocol"]]], 0, [dnl
     <method name="queryProtocol">
         <arg direction="in" name="protocol" type="s"></arg>
         <arg direction="out" type="b"></arg>
@@ -315,17 +315,17 @@ DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="queryPr
 
 dnl Forward Ports
 dnl
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="getForwardPorts"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="getForwardPorts"]]], 0, [dnl
     <method name="getForwardPorts">
         <arg direction="out" type="a(ssss)"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="setForwardPorts"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="setForwardPorts"]]], 0, [dnl
     <method name="setForwardPorts">
         <arg direction="in" name="ports" type="a(ssss)"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="addForwardPort"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="addForwardPort"]]], 0, [dnl
     <method name="addForwardPort">
         <arg direction="in" name="port" type="s"></arg>
         <arg direction="in" name="protocol" type="s"></arg>
@@ -333,7 +333,7 @@ DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="addForw
         <arg direction="in" name="toaddr" type="s"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="removeForwardPort"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="removeForwardPort"]]], 0, [dnl
     <method name="removeForwardPort">
         <arg direction="in" name="port" type="s"></arg>
         <arg direction="in" name="protocol" type="s"></arg>
@@ -341,7 +341,7 @@ DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="removeF
         <arg direction="in" name="toaddr" type="s"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="queryForwardPort"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="queryForwardPort"]]], 0, [dnl
     <method name="queryForwardPort">
         <arg direction="in" name="port" type="s"></arg>
         <arg direction="in" name="protocol" type="s"></arg>
@@ -353,25 +353,25 @@ DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="queryFo
 
 dnl Masquerade
 dnl
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="getMasquerade"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="getMasquerade"]]], 0, [dnl
     <method name="getMasquerade">
         <arg direction="out" type="b"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="setMasquerade"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="setMasquerade"]]], 0, [dnl
     <method name="setMasquerade">
         <arg direction="in" name="masquerade" type="b"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="addMasquerade"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="addMasquerade"]]], 0, [dnl
     <method name="addMasquerade">
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="removeMasquerade"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="removeMasquerade"]]], 0, [dnl
     <method name="removeMasquerade">
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="queryMasquerade"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="queryMasquerade"]]], 0, [dnl
     <method name="queryMasquerade">
         <arg direction="out" type="b"></arg>
     </method>
@@ -379,27 +379,27 @@ DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="queryMa
 
 dnl ICMP Block
 dnl
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="getIcmpBlocks"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="getIcmpBlocks"]]], 0, [dnl
     <method name="getIcmpBlocks">
         <arg direction="out" type="as"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="setIcmpBlocks"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="setIcmpBlocks"]]], 0, [dnl
     <method name="setIcmpBlocks">
         <arg direction="in" name="icmptypes" type="as"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="addIcmpBlock"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="addIcmpBlock"]]], 0, [dnl
     <method name="addIcmpBlock">
         <arg direction="in" name="icmptype" type="s"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="removeIcmpBlock"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="removeIcmpBlock"]]], 0, [dnl
     <method name="removeIcmpBlock">
         <arg direction="in" name="icmptype" type="s"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="queryIcmpBlock"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="queryIcmpBlock"]]], 0, [dnl
     <method name="queryIcmpBlock">
         <arg direction="in" name="icmptype" type="s"></arg>
         <arg direction="out" type="b"></arg>
@@ -408,25 +408,25 @@ DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="queryIc
 
 dnl ICMP Block Inversion
 dnl
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="getIcmpBlockInversion"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="getIcmpBlockInversion"]]], 0, [dnl
     <method name="getIcmpBlockInversion">
         <arg direction="out" type="b"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="setIcmpBlockInversion"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="setIcmpBlockInversion"]]], 0, [dnl
     <method name="setIcmpBlockInversion">
         <arg direction="in" name="flag" type="b"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="addIcmpBlockInversion"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="addIcmpBlockInversion"]]], 0, [dnl
     <method name="addIcmpBlockInversion">
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="removeIcmpBlockInversion"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="removeIcmpBlockInversion"]]], 0, [dnl
     <method name="removeIcmpBlockInversion">
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="queryIcmpBlockInversion"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="queryIcmpBlockInversion"]]], 0, [dnl
     <method name="queryIcmpBlockInversion">
         <arg direction="out" type="b"></arg>
     </method>
@@ -434,27 +434,27 @@ DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="queryIc
 
 dnl Rich Rules
 dnl
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="getRichRules"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="getRichRules"]]], 0, [dnl
     <method name="getRichRules">
         <arg direction="out" type="as"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="setRichRules"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="setRichRules"]]], 0, [dnl
     <method name="setRichRules">
         <arg direction="in" name="rules" type="as"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="addRichRule"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="addRichRule"]]], 0, [dnl
     <method name="addRichRule">
         <arg direction="in" name="rule" type="s"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="removeRichRule"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="removeRichRule"]]], 0, [dnl
     <method name="removeRichRule">
         <arg direction="in" name="rule" type="s"></arg>
     </method>
 ])
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="queryRichRule"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="queryRichRule"]]], 0, [dnl
     <method name="queryRichRule">
         <arg direction="in" name="rule" type="s"></arg>
         <arg direction="out" type="b"></arg>
@@ -465,7 +465,7 @@ dnl ###################
 dnl new dict based APIs
 dnl ###################
 
-DBUS_INTROSPECT([config], [[//method[@name="addZone2"]]], 0, [dnl
+DBUS_INTROSPECT([config], [[//interface[@name="org.fedoraproject.FirewallD1.config"]//method[@name="addZone2"]]], 0, [dnl
     <method name="addZone2">
         <arg direction="in" name="zone" type="s"></arg>
         <arg direction="in" name="settings" type="a{sv}"></arg>
@@ -473,13 +473,13 @@ DBUS_INTROSPECT([config], [[//method[@name="addZone2"]]], 0, [dnl
     </method>
 ])
 
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="getSettings2"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="getSettings2"]]], 0, [dnl
     <method name="getSettings2">
         <arg direction="out" type="a{sv}"></arg>
     </method>
 ])
 
-DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//method[@name="update2"]]], 0, [dnl
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="update2"]]], 0, [dnl
     <method name="update2">
         <arg direction="in" name="settings" type="a{sv}"></arg>
     </method>
