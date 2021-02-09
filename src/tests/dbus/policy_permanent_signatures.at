@@ -48,16 +48,31 @@ DBUS_INTROSPECT([config/policy/${DBUS_POLICY_OBJ}], [[//interface[@name="org.fed
         <arg direction="in" name="settings" type="a{sv}"></arg>
     </method>
 ])
+DBUS_INTROSPECT([config/policy/${DBUS_POLICY_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.policy"]//signal[@name="Updated"]]], 0, [dnl
+    <signal name="Updated">
+        <arg name="name" type="s"></arg>
+    </signal>
+])
 
 DBUS_INTROSPECT([config/policy/${DBUS_POLICY_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.policy"]//method[@name="remove"]]], 0, [dnl
     <method name="remove">
     </method>
+])
+DBUS_INTROSPECT([config/policy/${DBUS_POLICY_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.policy"]//signal[@name="Removed"]]], 0, [dnl
+    <signal name="Removed">
+        <arg name="name" type="s"></arg>
+    </signal>
 ])
 
 DBUS_INTROSPECT([config/policy/${DBUS_POLICY_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.policy"]//method[@name="rename"]]], 0, [dnl
     <method name="rename">
         <arg direction="in" name="name" type="s"></arg>
     </method>
+])
+DBUS_INTROSPECT([config/policy/${DBUS_POLICY_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.policy"]//signal[@name="Renamed"]]], 0, [dnl
+    <signal name="Renamed">
+        <arg name="name" type="s"></arg>
+    </signal>
 ])
 
 DBUS_INTROSPECT([config/policy/${DBUS_POLICY_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.policy"]//method[@name="loadDefaults"]]], 0, [dnl
