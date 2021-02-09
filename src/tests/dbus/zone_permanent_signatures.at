@@ -64,6 +64,11 @@ DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.
         <arg direction="in" name="settings" type="(sssbsasa(ss)asba(ssss)asasasasa(ss)b)"></arg>
     </method>
 ])
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//signal[@name="Updated"]]], 0, [dnl
+    <signal name="Updated">
+        <arg name="name" type="s"></arg>
+    </signal>
+])
 
 DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="loadDefaults"]]], 0, [dnl
     <method name="loadDefaults">
@@ -74,11 +79,21 @@ DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.
     <method name="remove">
     </method>
 ])
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//signal[@name="Removed"]]], 0, [dnl
+    <signal name="Removed">
+        <arg name="name" type="s"></arg>
+    </signal>
+])
 
 DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//method[@name="rename"]]], 0, [dnl
     <method name="rename">
         <arg direction="in" name="name" type="s"></arg>
     </method>
+])
+DBUS_INTROSPECT([config/zone/${DBUS_PUBLIC_ZONE_OBJ}], [[//interface[@name="org.fedoraproject.FirewallD1.config.zone"]//signal[@name="Renamed"]]], 0, [dnl
+    <signal name="Renamed">
+        <arg name="name" type="s"></arg>
+    </signal>
 ])
 
 dnl Version
