@@ -15,6 +15,12 @@ DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.policy"]//
         <arg direction="in" name="settings" type="a{sv}"></arg>
     </method>
 ])
+DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.policy"]//signal[@name="PolicyUpdated"]]], 0, [dnl
+    <signal name="PolicyUpdated">
+        <arg name="policy" type="s"></arg>
+        <arg name="settings" type="a{sv}"></arg>
+    </signal>
+])
 
 dnl Fetching Policies
 DBUS_INTROSPECT([], [[//interface[@name="org.fedoraproject.FirewallD1.policy"]//method[@name="getPolicies"]]], 0, [dnl
