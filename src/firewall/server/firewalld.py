@@ -158,13 +158,13 @@ class FirewallD(slip.dbus.service.Object):
             return dbus.String(self.fw.get_state())
 
         elif prop == "IPv4":
-            return dbus.Boolean(self.fw.ip4tables_enabled)
+            return dbus.Boolean(self.fw.is_ipv_enabled("ipv4"))
 
         elif prop == "IPv4ICMPTypes":
             return dbus.Array(self.fw.ipv4_supported_icmp_types, "s")
 
         elif prop == "IPv6":
-            return dbus.Boolean(self.fw.ip6tables_enabled)
+            return dbus.Boolean(self.fw.is_ipv_enabled("ipv6"))
 
         elif prop == "IPv6_rpfilter":
             return dbus.Boolean(self.fw.ipv6_rpfilter_enabled)
