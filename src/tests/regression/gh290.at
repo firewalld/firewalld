@@ -1,5 +1,6 @@
 FWD_START_TEST([invalid syntax in xml files])
-AT_KEYWORDS(xml direct zone gh290)
+AT_KEYWORDS(xml direct gh290)
+CHECK_IPTABLES
 
 dnl direct.xml
 AT_CHECK([mkdir -p ./zones])
@@ -9,6 +10,14 @@ AT_CHECK([echo '<chain table="filter" chain="some_chain_name" ipv="ipv4"/>' >> .
 AT_CHECK([echo '<rule table="filter" chain="some_chain_name" ipv="ipv4" priority="1">--destination 127.0.0.1 --jump RETURN' >> ./direct.xml])
 dnl missing closing </rule>
 AT_CHECK([echo '</direct>' >> ./direct.xml])
+
+FWD_RESTART
+FWD_GREP_LOG([ERROR:.*mismatched tag])
+FWD_END_TEST([-e '/ERROR:.*mismatched tag.*/d'])
+
+
+FWD_START_TEST([invalid syntax in xml files])
+AT_KEYWORDS(xml zone gh290)
 
 dnl zone.xml
 AT_CHECK([mkdir -p ./zones])
@@ -21,7 +30,5 @@ AT_CHECK([echo '<service name="http"/>' >> ./zones/foobar.xml])
 AT_CHECK([echo '</zone>' >> ./zones/foobar.xml])
 
 FWD_RESTART
-FWD_GREP_LOG([ERROR:.*mismatched tag])
 FWD_GREP_LOG([ERROR:.*Missing attribute protocol for port])
-FWD_END_TEST([-e '/ERROR:.*mismatched tag.*/d' dnl
-              -e '/ERROR:.*Missing attribute protocol for port.*/d'])
+FWD_END_TEST([-e '/ERROR:.*Missing attribute protocol for port.*/d'])

@@ -1080,6 +1080,7 @@ FWD_END_TEST([-e '/ERROR: INVALID_MODULE:/d'])
 
 FWD_START_TEST([direct])
     AT_KEYWORDS(direct)
+    CHECK_IPTABLES
 
     FWD_CHECK([--direct --add-chain ipv4 filter mychain], 0, ignore)
     FWD_CHECK([--direct --get-chains ipv4 filter | grep mychain], 0, ignore)
@@ -1154,6 +1155,7 @@ FWD_END_TEST([-e '/ERROR: INVALID_TABLE:/d' dnl
 FWD_START_TEST([direct nat])
     AT_KEYWORDS(direct nat)
 
+    CHECK_IPTABLES
     CHECK_NAT_COEXISTENCE
 
     m4_define([direct_rule1], [ipv4 nat OUTPUT 0 -s 1.2.3.4 -d 1.2.3.4 -p tcp --dport 80 -j REDIRECT --to-ports 81])
@@ -1177,6 +1179,7 @@ FWD_END_TEST
 
 FWD_START_TEST([direct passthrough])
     AT_KEYWORDS(direct passthrough)
+    CHECK_IPTABLES
 
     FWD_CHECK([--direct --passthrough ipv4 --table mangle --append POSTROUTING --out-interface dummy0 --protocol udp --destination-port 68 --jump CHECKSUM --checksum-fill], 0, ignore)
     FWD_CHECK([--direct --passthrough ipv4 --table mangle --delete POSTROUTING --out-interface dummy0 --protocol udp --destination-port 68 --jump CHECKSUM --checksum-fill], 0, ignore)
@@ -1214,6 +1217,7 @@ FWD_END_TEST([-e '/WARNING: NOT_ENABLED: passthrough/d'])
 
 FWD_START_TEST([direct ebtables])
     AT_KEYWORDS(direct ebtables)
+    CHECK_IPTABLES
 
     FWD_CHECK([--direct --add-chain eb filter mychain], 0, ignore)
     FWD_CHECK([--direct --get-chains eb filter | grep mychain], 0, ignore)

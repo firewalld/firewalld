@@ -17,5 +17,6 @@ FWD_END_TEST([ignore])
 
 FWD_START_TEST([firewalld_direct.py])
 AT_KEYWORDS(python)
+CHECK_IPTABLES
 NS_CHECK([$PYTHON ${srcdir}/python/firewalld_direct.py], 0, [ignore], [ignore])
 FWD_END_TEST([ignore])

@@ -1,6 +1,7 @@
 m4_if(iptables, FIREWALL_BACKEND, [
 FWD_START_TEST([direct rule in zone chain])
 AT_KEYWORDS(direct rhbz1829104)
+CHECK_IPTABLES
 
 FWD_CHECK([-q --direct --add-rule ipv4 raw PRE_public 0 -s 10.10.10.0/24 ! -d 10.0.0.0/8 -j ACCEPT])
 FWD_CHECK([-q --direct --add-rule ipv4 raw PRE_public_pre 0 -s 10.10.10.0/24 ! -d 10.0.0.0/8 -j ACCEPT])

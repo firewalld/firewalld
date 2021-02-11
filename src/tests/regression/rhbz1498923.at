@@ -1,5 +1,6 @@
 FWD_START_TEST([invalid direct rule causes reload error])
 AT_KEYWORDS(direct reload rhbz1498923)
+CHECK_IPTABLES
 
 dnl Verify runtime interface to zone assignment is gone after reload
 AT_CHECK([sed -i 's/^FlushAllOnReload.*/FlushAllOnReload=yes/' ./firewalld.conf])

@@ -1,5 +1,6 @@
 FWD_START_TEST([direct and zone mutually exclusive])
 AT_KEYWORDS(direct rhbz1483921)
+CHECK_IPTABLES
 
 FWD_CHECK([--zone=public --permanent --direct --add-rule ipv4 nat OUTPUT 1 -p tcp --dport 8443 -j DNAT --to-port 9443], 2, [ignore], [ignore])
 

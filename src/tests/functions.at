@@ -141,6 +141,10 @@ m4_define([FWD_START_TEST], [
         m4_define([CURRENT_TEST_NS], [fwd-test-${at_group_normalized}])
         echo "ip netns delete CURRENT_TEST_NS" >> ./cleanup_late
         AT_CHECK([ip netns add CURRENT_TEST_NS])
+        m4_if(iptables, FIREWALL_BACKEND, [
+            CHECK_IPTABLES
+        ])
+
         AT_DATA([./dbus.conf], [
             <!DOCTYPE busconfig PUBLIC "-//freedesktop//DTD D-Bus Bus Configuration 1.0//EN"
             "http://www.freedesktop.org/standards/dbus/1.0/busconfig.dtd">
@@ -553,6 +557,12 @@ m4_define([CHECK_NFT_CT_HELPER], [
 
 m4_define([CHECK_MODULE_PROTO_GRE], [
     AT_SKIP_IF([! NS_CMD([modinfo nf_conntrack_proto_gre])])
+])
+
+m4_define([CHECK_IPTABLES], [
+    m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
+        AT_SKIP_IF([! NS_CMD([sh -c "{ $IPTABLES_RESTORE -h || $IPTABLES -h; }" >/dev/null 2>&1])])
+    ])
 ])
 
 m4_define([IF_HOST_SUPPORTS_NFT_FIB], [

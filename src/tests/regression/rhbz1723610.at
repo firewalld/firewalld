@@ -1,5 +1,6 @@
 FWD_START_TEST([direct remove-rules per family])
 AT_KEYWORDS(direct rhbz1723610 gh385)
+CHECK_IPTABLES
 
 FWD_CHECK([-q --permanent --direct --add-rule ipv4 filter OUTPUT 0 -d 127.0.0.1 -p tcp --dport 22 -j ACCEPT])
 FWD_CHECK([-q --permanent --direct --add-rule ipv4 filter INPUT 0 -d 127.0.0.1 -p tcp --dport 22 -j ACCEPT])
