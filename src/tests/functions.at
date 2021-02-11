@@ -514,6 +514,9 @@ m4_define([CHECK_IPSET], [
 
         NS_CHECK([nft delete table inet firewalld_check_ipset])
     ])
+    m4_if(iptables, FIREWALL_BACKEND, [
+        AT_SKIP_IF([! NS_CMD([$IPSET -h >/dev/null 2>&1 ])])
+    ])
 ])
 
 m4_define([CHECK_IPSET_HASH_MAC], [
