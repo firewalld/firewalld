@@ -86,7 +86,7 @@ class Firewall(object):
             self.ebtables_enabled = True
             self.ipset_backend = ipset.ipset()
             self.ipset_enabled = True
-            self.ipset_supported_types = [ ]
+            self.ipset_supported_types = IPSET_TYPES
             self.nftables_backend = nftables.nftables(self)
             self.nftables_enabled = True
 
@@ -161,9 +161,9 @@ class Firewall(object):
                 log.info1("ipset not usable, disabling ipset usage in firewall. Other set backends (nftables) remain usable.")
             else:
                 log.warning("ipset not usable, disabling ipset usage in firewall.")
-            # ipset is not usable, no supported types
+                self.ipset_supported_types = [ ]
+            # ipset is not usable
             self.ipset_enabled = False
-            self.ipset_supported_types = [ ]
         else:
             # ipset is usable, get all supported types
             self.ipset_supported_types = self.ipset_backend.set_supported_types()
@@ -433,7 +433,7 @@ class Firewall(object):
         # only needs to be split here if there are conflicting ipset types in
         # exsting ipsets and the configuration in firewalld.
         if (reload and complete_reload) or \
-           (self.ipset_enabled and self.ipset.has_ipsets()):
+           (self.ipset.backends() and self.ipset.has_ipsets()):
             transaction.execute(True)
             transaction.clear()
 
@@ -447,7 +447,7 @@ class Firewall(object):
         transaction.clear()
 
         # apply settings for loaded ipsets while reloading here
-        if self.ipset_enabled and self.ipset.has_ipsets():
+        if (self.ipset.backends()) and self.ipset.has_ipsets():
             log.debug1("Applying ipsets")
             self.ipset.apply_ipsets()
 
