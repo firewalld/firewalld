@@ -31,6 +31,12 @@ jobs:
             nftables-version: master
             keyword: nftables
             configure_args: ""
+          - python-version: 3.7
+            libnftnl-version: libnftnl-1.1.6
+            nftables-version: v0.9.4
+            keyword: nftables
+            configure_args: ""
+            no-iptables: true
 
     steps:
       - name: checkout
@@ -85,6 +91,11 @@ jobs:
           cd py
           pip install .
           sudo ldconfig
+      
+      - name: remove iptables
+        if: matrix.no-iptables
+        run: |
+          sudo apt-get -y remove iptables ebtables ipset
 
       - name: build firewalld
         run: |
