@@ -1,5 +1,6 @@
 FWD_START_TEST([ipv6 address with brackets])
-AT_KEYWORDS(rhbz1779835 ipset zone forward_port rich)
+AT_KEYWORDS(rhbz1779835 ipset)
+CHECK_IPSET
 
 IF_HOST_SUPPORTS_IPV6_RULES([], [AT_SKIP_IF([:])])
 
@@ -9,6 +10,13 @@ FWD_CHECK([[-q --permanent --ipset foobar --add-entry='[1234::4321]']])
 FWD_CHECK([-q --permanent --new-ipset=foobar2 --type=hash:net --family=inet6])
 FWD_CHECK([[-q --permanent --ipset foobar2 --add-entry='[1234::]/64']])
 FWD_RELOAD
+
+FWD_END_TEST
+
+FWD_START_TEST([ipv6 address with brackets])
+AT_KEYWORDS(rhbz1779835 zone forward_port rich)
+
+IF_HOST_SUPPORTS_IPV6_RULES([], [AT_SKIP_IF([:])])
 
 dnl zone source
 FWD_CHECK([[-q --zone internal --add-source='[::1234]']])
