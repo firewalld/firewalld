@@ -157,7 +157,10 @@ class Firewall(object):
         try:
             self.ipset_backend.set_list()
         except ValueError:
-            log.warning("ipset not usable, disabling ipset usage in firewall.")
+            if self.nftables_enabled:
+                log.info1("ipset not usable, disabling ipset usage in firewall. Other set backends (nftables) remain usable.")
+            else:
+                log.warning("ipset not usable, disabling ipset usage in firewall.")
             # ipset is not usable, no supported types
             self.ipset_enabled = False
             self.ipset_supported_types = [ ]
@@ -171,8 +174,12 @@ class Firewall(object):
                 log.warning("iptables-restore is missing, using "
                             "individual calls for IPv4 firewall.")
             else:
-                log.warning("iptables-restore and iptables are missing, "
-                            "disabling IPv4 firewall.")
+                if self.nftables_enabled:
+                    log.info1("iptables-restore and iptables are missing, "
+                              "IPv4 direct rules won't be usable.")
+                else:
+                    log.warning("iptables-restore and iptables are missing, "
+                                "disabling IPv4 firewall.")
                 self.ip4tables_enabled = False
         if self.nftables_enabled:
             self.ipv4_supported_icmp_types = self.nftables_backend.supported_icmp_types("ipv4")
@@ -187,8 +194,12 @@ class Firewall(object):
                 log.warning("ip6tables-restore is missing, using "
                             "individual calls for IPv6 firewall.")
             else:
-                log.warning("ip6tables-restore and ip6tables are missing, "
-                            "disabling IPv6 firewall.")
+                if self.nftables_enabled:
+                    log.info1("ip6tables-restore and ip6tables are missing, "
+                              "IPv6 direct rules won't be usable.")
+                else:
+                    log.warning("ip6tables-restore and ip6tables are missing, "
+                                "disabling IPv6 firewall.")
                 self.ip6tables_enabled = False
         if self.nftables_enabled:
             self.ipv6_supported_icmp_types = self.nftables_backend.supported_icmp_types("ipv6")
@@ -203,8 +214,12 @@ class Firewall(object):
                 log.warning("ebtables-restore is missing, using "
                             "individual calls for bridge firewall.")
             else:
-                log.warning("ebtables-restore and ebtables are missing, "
-                            "disabling bridge firewall.")
+                if self.nftables_enabled:
+                    log.info1("ebtables-restore and ebtables are missing, "
+                              "eb direct rules won't be usable.")
+                else:
+                    log.warning("ebtables-restore and ebtables are missing, "
+                                "disabling bridge firewall.")
                 self.ebtables_enabled = False
 
         if self.ebtables_enabled and not self._individual_calls and \
