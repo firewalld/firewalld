@@ -24,7 +24,8 @@
 __all__ = [ "FirewallIPSet" ]
 
 from firewall.core.logger import log
-from firewall.core.ipset import remove_default_create_options as rm_def_cr_opts
+from firewall.core.ipset import remove_default_create_options as rm_def_cr_opts, \
+                                normalize_ipset_entry
 from firewall.core.io.ipset import IPSet
 from firewall import errors
 from firewall.errors import FirewallError
@@ -189,6 +190,7 @@ class FirewallIPSet(object):
 
     def add_entry(self, name, entry):
         obj = self.get_ipset(name, applied=True)
+        entry = normalize_ipset_entry(entry)
 
         IPSet.check_entry(entry, obj.options, obj.type)
         if entry in obj.entries:
@@ -208,6 +210,7 @@ class FirewallIPSet(object):
 
     def remove_entry(self, name, entry):
         obj = self.get_ipset(name, applied=True)
+        entry = normalize_ipset_entry(entry)
 
         # no entry check for removal
         if entry not in obj.entries:
@@ -226,6 +229,7 @@ class FirewallIPSet(object):
 
     def query_entry(self, name, entry):
         obj = self.get_ipset(name, applied=True)
+        entry = normalize_ipset_entry(entry)
         if "timeout" in obj.options and obj.options["timeout"] != "0":
             # no entries visible for ipsets with timeout
             raise FirewallError(errors.IPSET_WITH_TIMEOUT, name)
@@ -238,6 +242,11 @@ class FirewallIPSet(object):
 
     def set_entries(self, name, entries):
         obj = self.get_ipset(name, applied=True)
+
+        _entries = set()
+        for _entry in entries:
+            _entries.add(normalize_ipset_entry(_entry))
+        entries = list(_entries)
 
         for entry in entries:
             IPSet.check_entry(entry, obj.options, obj.type)

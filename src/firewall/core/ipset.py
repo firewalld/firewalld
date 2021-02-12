@@ -24,6 +24,7 @@
 __all__ = [ "ipset", "check_ipset_name", "remove_default_create_options" ]
 
 import os.path
+import ipaddress
 
 from firewall import errors
 from firewall.errors import FirewallError
@@ -289,3 +290,15 @@ def remove_default_create_options(options):
            IPSET_DEFAULT_CREATE_OPTIONS[opt] == _options[opt]:
             del _options[opt]
     return _options
+
+def normalize_ipset_entry(entry):
+    """ Normalize IP addresses in entry """
+    _entry = []
+    for _part in entry.split(","):
+        try:
+            _part.index("/")
+            _entry.append(str(ipaddress.ip_network(_part, strict=False)))
+        except ValueError:
+            _entry.append(_part)
+
+    return ",".join(_entry)
