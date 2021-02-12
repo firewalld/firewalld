@@ -33,7 +33,7 @@ from firewall.dbus_utils import dbus_to_python, \
     dbus_introspection_prepare_properties, \
     dbus_introspection_add_properties
 from firewall.core.io.ipset import IPSet
-from firewall.core.ipset import IPSET_TYPES
+from firewall.core.ipset import IPSET_TYPES, normalize_ipset_entry
 from firewall.core.logger import log
 from firewall.server.decorators import handle_exceptions, \
     dbus_handle_exceptions, dbus_service_method
@@ -406,7 +406,10 @@ class FirewallDConfigIPSet(slip.dbus.service.Object):
                          in_signature='as')
     @dbus_handle_exceptions
     def setEntries(self, entries, sender=None):
-        entries = dbus_to_python(entries, list)
+        _entries = set()
+        for _entry in dbus_to_python(entries, list):
+            _entries.add(normalize_ipset_entry(_entry))
+        entries = list(_entries)
         log.debug1("%s.setEntries('[%s]')", self._log_prefix,
                    ",".join(entries))
         self.parent.accessCheck(sender)
@@ -421,6 +424,7 @@ class FirewallDConfigIPSet(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def addEntry(self, entry, sender=None):
         entry = dbus_to_python(entry, str)
+        entry = normalize_ipset_entry(entry)
         log.debug1("%s.addEntry('%s')", self._log_prefix, entry)
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
@@ -436,6 +440,7 @@ class FirewallDConfigIPSet(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def removeEntry(self, entry, sender=None):
         entry = dbus_to_python(entry, str)
+        entry = normalize_ipset_entry(entry)
         log.debug1("%s.removeEntry('%s')", self._log_prefix, entry)
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
@@ -451,6 +456,7 @@ class FirewallDConfigIPSet(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def queryEntry(self, entry, sender=None): # pylint: disable=W0613
         entry = dbus_to_python(entry, str)
+        entry = normalize_ipset_entry(entry)
         log.debug1("%s.queryEntry('%s')", self._log_prefix, entry)
         settings = list(self.getSettings())
         if "timeout" in settings[4] and settings[4]["timeout"] != "0":

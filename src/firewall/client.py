@@ -33,6 +33,7 @@ from firewall import config
 from firewall.core.base import DEFAULT_ZONE_TARGET, DEFAULT_POLICY_TARGET, DEFAULT_POLICY_PRIORITY
 from firewall.dbus_utils import dbus_to_python
 from firewall.core.rich import Rich_Rule
+from firewall.core.ipset import normalize_ipset_entry
 from firewall import errors
 from firewall.errors import FirewallError
 
@@ -1615,12 +1616,16 @@ class FirewallClientIPSetSettings(object):
         if "timeout" in self.settings[4] and \
            self.settings[4]["timeout"] != "0":
             raise FirewallError(errors.IPSET_WITH_TIMEOUT)
-        self.settings[5] = entries
+        _entries = set()
+        for _entry in dbus_to_python(entries, list):
+            _entries.add(normalize_ipset_entry(_entry))
+        self.settings[5] = list(_entries)
     @handle_exceptions
     def addEntry(self, entry):
         if "timeout" in self.settings[4] and \
            self.settings[4]["timeout"] != "0":
             raise FirewallError(errors.IPSET_WITH_TIMEOUT)
+        entry = normalize_ipset_entry(entry)
         if entry not in self.settings[5]:
             self.settings[5].append(entry)
         else:
@@ -1630,6 +1635,7 @@ class FirewallClientIPSetSettings(object):
         if "timeout" in self.settings[4] and \
            self.settings[4]["timeout"] != "0":
             raise FirewallError(errors.IPSET_WITH_TIMEOUT)
+        entry = normalize_ipset_entry(entry)
         if entry in self.settings[5]:
             self.settings[5].remove(entry)
         else:
@@ -1639,6 +1645,7 @@ class FirewallClientIPSetSettings(object):
         if "timeout" in self.settings[4] and \
            self.settings[4]["timeout"] != "0":
             raise FirewallError(errors.IPSET_WITH_TIMEOUT)
+        entry = normalize_ipset_entry(entry)
         return entry in self.settings[5]
 
 # ipset config

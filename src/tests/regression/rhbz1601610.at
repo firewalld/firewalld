@@ -6,11 +6,14 @@ CHECK_IPSET
 FWD_CHECK([-q --new-ipset=foobar --permanent --type=hash:net])
 FWD_RELOAD
 
-FWD_CHECK([-q --ipset=foobar --add-entry=10.1.1.0/22])
-FWD_CHECK([-q --ipset=foobar --add-entry=10.1.2.0/22], 13, ignore, ignore)
-FWD_CHECK([-q --ipset=foobar --add-entry=10.2.0.0/22])
+FWD_CHECK([--ipset=foobar --add-entry=10.1.1.0/22], 0, [ignore])
+FWD_CHECK([--ipset=foobar --query-entry 10.1.2.0/22], 0, [ignore])
+FWD_CHECK([--ipset=foobar --add-entry=10.1.2.0/22], 0, [ignore], [dnl
+Warning: ALREADY_ENABLED: '10.1.0.0/22' already is in 'foobar'
+])
+FWD_CHECK([--ipset=foobar --add-entry=10.2.0.0/22], 0, [ignore])
 FWD_CHECK([--ipset=foobar --get-entries], 0, [dnl
-10.1.1.0/22
+10.1.0.0/22
 10.2.0.0/22
 ])
 NFT_LIST_SET([foobar], 0, [dnl
@@ -31,6 +34,9 @@ Members:
 ])
 
 FWD_CHECK([-q --ipset=foobar --remove-entry=10.1.1.0/22])
+FWD_CHECK([--ipset=foobar --query-entry 10.1.1.0/22], 1, [ignore])
+FWD_CHECK([--ipset=foobar --query-entry 10.1.2.0/22], 1, [ignore])
+FWD_CHECK([--ipset=foobar --query-entry 10.2.0.0/22], 0, [ignore])
 FWD_CHECK([--ipset=foobar --get-entries], 0, [dnl
 10.2.0.0/22
 ])
@@ -52,7 +58,7 @@ Members:
 
 FWD_CHECK([-q --permanent --ipset=foobar --add-entry=10.1.1.0/22])
 FWD_CHECK([--permanent --ipset=foobar --get-entries], 0, [dnl
-10.1.1.0/22
+10.1.0.0/22
 ])
 FWD_CHECK([-q --permanent --ipset=foobar --remove-entry=10.1.1.0/22])
 FWD_CHECK([--permanent --ipset=foobar --get-entries], 0, [
@@ -101,4 +107,5 @@ Members:
 
 FWD_END_TEST([-e '/ERROR: COMMAND_FAILED:.*already added.*/d'dnl
               -e '/ERROR: COMMAND_FAILED:.*element.*exists/d'dnl
-              -e '/Kernel support protocol versions/d'])
+              -e '/Kernel support protocol versions/d'dnl
+              -e '/WARNING: ALREADY_ENABLED:/d'])
