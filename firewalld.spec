@@ -147,6 +147,8 @@ fi
 %{_datadir}/bash-completion/completions/firewall-cmd
 %dir %{_datadir}/zsh/site-functions
 %{_datadir}/zsh/site-functions/_firewalld
+%dir %{_datadir}/fish/vendor_completions.d
+%{_datadir}/fish/vendor_completions.d/firewall-cmd.fish
 %{_prefix}/lib/firewalld/icmptypes/*.xml
 %{_prefix}/lib/firewalld/ipsets/README
 %{_prefix}/lib/firewalld/policies/*.xml

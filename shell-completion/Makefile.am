@@ -6,4 +6,8 @@ zshcompletiondir=@ZSHCOMPLETIONDIR@
 dist_zshcompletion_DATA = \
 	zsh/_firewalld
 
+fishcompletiondir=@FISHCOMPLETIONDIR@
+dist_fishcompletion_DATA = \
+	fish/firewall-cmd.fish
+
 CLEANFILES = *~ *\# .\#*

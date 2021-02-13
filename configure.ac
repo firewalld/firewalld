@@ -84,6 +84,11 @@ AC_ARG_WITH([zshcompletiondir],
        [ZSHCOMPLETIONDIR=$withval], [ZSHCOMPLETIONDIR="${datadir}/zsh/site-functions"])
 AC_SUBST(ZSHCOMPLETIONDIR)
 
+AC_ARG_WITH([fishcompletiondir],
+	    AS_HELP_STRING([--with-fishcompletiondir=DIR], [Fish completions directory]),
+       [FISHCOMPLETIONDIR=$withval], [FISHCOMPLETIONDIR="${datadir}/fish/vendor_completions.d"])
+AC_SUBST(FISHCOMPLETIONDIR)
+
 AC_ARG_WITH([ifcfgdir],
        AS_HELP_STRING([--with-ifcfgdir=DIR], [The ifcfg configuration directory]),
        [IFCFGDIR=$withval], [IFCFGDIR="/etc/sysconfig/network-scripts"])
