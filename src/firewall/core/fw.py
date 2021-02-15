@@ -133,18 +133,18 @@ class Firewall(object):
     def _check_tables(self):
         # check if iptables, ip6tables and ebtables are usable, else disable
         if self.ip4tables_enabled and \
-           "filter" not in self.get_backend_by_ipv("ipv4").get_available_tables():
-            log.warning("iptables not usable, disabling IPv4 firewall.")
+           "filter" not in self.ip4tables_backend.get_available_tables():
+            log.info1("iptables is not usable.")
             self.ip4tables_enabled = False
 
         if self.ip6tables_enabled and \
-           "filter" not in self.get_backend_by_ipv("ipv6").get_available_tables():
-            log.warning("ip6tables not usable, disabling IPv6 firewall.")
+           "filter" not in self.ip6tables_backend.get_available_tables():
+            log.info1("ip6tables is not usable.")
             self.ip6tables_enabled = False
 
         if self.ebtables_enabled and \
-           "filter" not in self.get_backend_by_ipv("eb").get_available_tables():
-            log.warning("ebtables not usable, disabling ethernet bridge firewall.")
+           "filter" not in self.ebtables_backend.get_available_tables():
+            log.info1("ebtables is not usable.")
             self.ebtables_enabled = False
 
         # is there at least support for ipv4 or ipv6
