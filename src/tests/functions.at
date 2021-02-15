@@ -420,8 +420,10 @@ m4_define([IPSET_LIST_SET_NORMALIZE], [dnl
 
 m4_define([IPSET_LIST_SET], [
     m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
-        NS_CHECK([PIPESTATUS0([ipset list $1], [IPSET_LIST_SET_NORMALIZE])],
-                 [$2], [m4_strip([$3])], [m4_strip([$4])], [$5], [$6])
+        if $IPSET list >/dev/null 2>&1; then
+            NS_CHECK([PIPESTATUS0([ipset list $1], [IPSET_LIST_SET_NORMALIZE])],
+                     [$2], [m4_strip([$3])], [m4_strip([$4])], [$5], [$6])
+        fi
     ])
 ])
 
