@@ -1,0 +1,25 @@
+FWD_START_TEST([ipset netmask allowed type hash:ip])
+AT_KEYWORDS(ipset reload)
+
+FWD_CHECK([--permanent --new-ipset foobar --type hash:ip], 0, [ignore])
+FWD_RELOAD
+
+dnl ipset allows specifying a mask for hash:ip, but it will translate it into
+dnl an add for the whole range. i.e. 1.2.3.4/24  --> 1.2.3.[0.255] (256
+dnl entries).
+dnl
+dnl In nftables, we allow this by using actual intervals.
+FWD_CHECK([--permanent --ipset foobar --add-entry 1.2.3.4/24], 0, [ignore])
+FWD_CHECK([            --ipset foobar --add-entry 1.2.3.4/24], 0, [ignore])
+
+dnl check the edge case
+FWD_CHECK([--permanent --ipset foobar --add-entry 4.3.2.1/32], 0, [ignore])
+FWD_CHECK([            --ipset foobar --add-entry 4.3.2.1/32], 0, [ignore])
+
+dnl overlaps should be denied
+FWD_CHECK([--permanent --ipset foobar --add-entry 1.2.3.0/22], 136, [ignore], [ignore])
+FWD_CHECK([            --ipset foobar --add-entry 1.2.3.0/22], 136, [ignore], [ignore])
+FWD_CHECK([--permanent --ipset foobar --add-entry 1.2.3.4/30], 136, [ignore], [ignore])
+FWD_CHECK([            --ipset foobar --add-entry 1.2.3.4/30], 136, [ignore], [ignore])
+
+FWD_END_TEST([-e '/ERROR: INVALID_ENTRY:/d'])
