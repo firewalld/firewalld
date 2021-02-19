@@ -495,6 +495,7 @@ m4_define([DBUS_SET], [
 ])
 
 m4_define([CHECK_IPSET], [
+    m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
     m4_if(nftables, FIREWALL_BACKEND, [
         dnl If our nft binary has buggy flush set, then skip the test
         NS_CHECK([nft add table inet firewalld_check_ipset])
@@ -512,6 +513,7 @@ m4_define([CHECK_IPSET], [
         AT_SKIP_IF([! NS_CMD([[nft -j '{"nftables": [{"add": {"element": {"family": "inet", "table": "firewalld_check_ipset", "name": "foobar_interval_concat", "elem": [{"concat": [{"prefix": {"addr": "10.10.10.0", "len": 24}}, {"range": ["1234", "2000"]}]}]}}}]}' >/dev/null 2>&1]])])
 
         NS_CHECK([nft delete table inet firewalld_check_ipset])
+    ])
     ])
 ])
 
