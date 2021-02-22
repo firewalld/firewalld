@@ -1767,7 +1767,7 @@ class nftables(object):
 
         # Some types need the interval flag
         for t in type.split(":")[1].split(","):
-            if t in ["net", "port"]:
+            if t in ["ip", "net", "port"]:
                 set_dict["flags"] = ["interval"]
                 break
 

@@ -17,6 +17,7 @@ NFT_LIST_SET([foobar], 0, [dnl
     table inet firewalld {
         set foobar {
             type ipv4_addr
+            flags interval
             elements = { 1.2.3.4 }
         }
     }
@@ -43,6 +44,7 @@ NFT_LIST_SET([foobar], 0, [dnl
     table inet firewalld {
         set foobar {
             type ipv4_addr
+            flags interval
             elements = { 1.2.3.4, 10.10.10.10 }
         }
     }
@@ -60,6 +62,7 @@ NFT_LIST_SET([foobar], 0, [dnl
     table inet firewalld {
         set foobar {
             type ipv4_addr
+            flags interval
             elements = { 1.2.3.4, 10.10.10.10 }
         }
     }
@@ -80,6 +83,7 @@ NFT_LIST_SET([foobar], 0, [dnl
     table inet firewalld {
         set foobar {
             type ipv4_addr
+            flags interval
             elements = { 1.2.3.4, 4.3.2.1,
                          10.10.10.10 }
         }
@@ -104,6 +108,7 @@ NFT_LIST_SET([foobar], 0, [dnl
     table inet firewalld {
         set foobar {
             type ipv4_addr
+            flags interval
             elements = { 1.2.3.4, 4.3.2.1,
                          6.6.6.6, 10.10.10.10 }
         }
@@ -129,6 +134,7 @@ NFT_LIST_SET([foobar], 0, [dnl
     table inet firewalld {
         set foobar {
             type ipv4_addr
+            flags interval
             elements = { 1.2.3.4 }
         }
     }
