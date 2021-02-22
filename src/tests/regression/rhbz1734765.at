@@ -44,6 +44,7 @@ NFT_LIST_SET([ipsetv4], 0, [dnl
     table inet firewalld {
         set ipsetv4 {
             type ipv4_addr
+            flags interval
             elements = { 192.0.2.12 }
         }
     }
@@ -52,6 +53,7 @@ NFT_LIST_SET([ipsetv6], 0, [dnl
     table inet firewalld {
         set ipsetv6 {
             type ipv6_addr
+            flags interval
             elements = { ::2 }
         }
     }

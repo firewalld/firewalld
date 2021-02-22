@@ -950,6 +950,7 @@ FWD_START_TEST([ipset])
         table inet firewalld {
             set foobar {
                 type ipv4_addr . mark
+                flags interval
                 elements = { 10.10.10.10 . 0x00000100,
                              20.20.20.20 . 0x00000200 }
             }
