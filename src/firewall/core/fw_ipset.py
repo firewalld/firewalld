@@ -25,7 +25,7 @@ __all__ = [ "FirewallIPSet" ]
 
 from firewall.core.logger import log
 from firewall.core.ipset import remove_default_create_options as rm_def_cr_opts, \
-                                normalize_ipset_entry
+                                normalize_ipset_entry, check_entry_overlaps_existing
 from firewall.core.io.ipset import IPSet
 from firewall import errors
 from firewall.errors import FirewallError
@@ -196,6 +196,7 @@ class FirewallIPSet(object):
         if entry in obj.entries:
             raise FirewallError(errors.ALREADY_ENABLED,
                                 "'%s' already is in '%s'" % (entry, name))
+        check_entry_overlaps_existing(entry, obj.entries)
 
         try:
             for backend in self.backends():
@@ -245,6 +246,7 @@ class FirewallIPSet(object):
 
         _entries = set()
         for _entry in entries:
+            check_entry_overlaps_existing(_entry, _entries)
             _entries.add(normalize_ipset_entry(_entry))
         entries = list(_entries)
 
