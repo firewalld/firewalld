@@ -33,7 +33,8 @@ from firewall.dbus_utils import dbus_to_python, \
     dbus_introspection_prepare_properties, \
     dbus_introspection_add_properties
 from firewall.core.io.ipset import IPSet
-from firewall.core.ipset import IPSET_TYPES, normalize_ipset_entry
+from firewall.core.ipset import IPSET_TYPES, normalize_ipset_entry, \
+                                check_entry_overlaps_existing
 from firewall.core.logger import log
 from firewall.server.decorators import handle_exceptions, \
     dbus_handle_exceptions, dbus_service_method
@@ -408,6 +409,7 @@ class FirewallDConfigIPSet(slip.dbus.service.Object):
     def setEntries(self, entries, sender=None):
         _entries = set()
         for _entry in dbus_to_python(entries, list):
+            check_entry_overlaps_existing(_entry, _entries)
             _entries.add(normalize_ipset_entry(_entry))
         entries = list(_entries)
         log.debug1("%s.setEntries('[%s]')", self._log_prefix,
@@ -432,6 +434,7 @@ class FirewallDConfigIPSet(slip.dbus.service.Object):
             raise FirewallError(errors.IPSET_WITH_TIMEOUT)
         if entry in settings[5]:
             raise FirewallError(errors.ALREADY_ENABLED, entry)
+        check_entry_overlaps_existing(entry, settings[5])
         settings[5].append(entry)
         self.update(settings)
 

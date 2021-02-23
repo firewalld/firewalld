@@ -302,3 +302,16 @@ def normalize_ipset_entry(entry):
             _entry.append(_part)
 
     return ",".join(_entry)
+
+def check_entry_overlaps_existing(entry, entries):
+    """ Check if entry overlaps any entry in the list of entries """
+    # Only check simple types
+    if len(entry.split(",")) > 1:
+        return
+
+    for itr in entries:
+        try:
+            if ipaddress.ip_network(itr, strict=False).overlaps(ipaddress.ip_network(entry, strict=False)):
+                raise FirewallError(errors.INVALID_ENTRY, "Entry '{}' overlaps with existing entry '{}'".format(itr, entry))
+        except ValueError:
+            pass

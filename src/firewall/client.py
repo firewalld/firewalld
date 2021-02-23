@@ -33,7 +33,7 @@ from firewall import config
 from firewall.core.base import DEFAULT_ZONE_TARGET, DEFAULT_POLICY_TARGET, DEFAULT_POLICY_PRIORITY
 from firewall.dbus_utils import dbus_to_python
 from firewall.core.rich import Rich_Rule
-from firewall.core.ipset import normalize_ipset_entry
+from firewall.core.ipset import normalize_ipset_entry, check_entry_overlaps_existing
 from firewall import errors
 from firewall.errors import FirewallError
 
@@ -1618,6 +1618,7 @@ class FirewallClientIPSetSettings(object):
             raise FirewallError(errors.IPSET_WITH_TIMEOUT)
         _entries = set()
         for _entry in dbus_to_python(entries, list):
+            check_entry_overlaps_existing(_entry, _entries)
             _entries.add(normalize_ipset_entry(_entry))
         self.settings[5] = list(_entries)
     @handle_exceptions
@@ -1627,6 +1628,7 @@ class FirewallClientIPSetSettings(object):
             raise FirewallError(errors.IPSET_WITH_TIMEOUT)
         entry = normalize_ipset_entry(entry)
         if entry not in self.settings[5]:
+            check_entry_overlaps_existing(entry, self.settings[5])
             self.settings[5].append(entry)
         else:
             raise FirewallError(errors.ALREADY_ENABLED, entry)
