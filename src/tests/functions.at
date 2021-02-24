@@ -421,7 +421,7 @@ m4_define([IPSET_LIST_SET_NORMALIZE], [dnl
 m4_define([IPSET_LIST_SET], [
     m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
         if $IPSET list >/dev/null 2>&1; then
-            NS_CHECK([PIPESTATUS0([ipset list $1], [IPSET_LIST_SET_NORMALIZE])],
+            NS_CHECK([PIPESTATUS0([$IPSET list $1], [IPSET_LIST_SET_NORMALIZE])],
                      [$2], [m4_strip([$3])], [m4_strip([$4])], [$5], [$6])
         fi
     ])
@@ -526,9 +526,11 @@ m4_define([CHECK_IPSET], [
 m4_define([CHECK_IPSET_HASH_MAC], [
     dnl skip if ipset hash:mac support is there
     m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
-        AT_SKIP_IF([! ipset --help | grep "hash:mac"])
-        AT_SKIP_IF([! NS_CMD([ipset create foobar hash:mac >/dev/null 2>&1])])
-        NS_CHECK([ipset destroy foobar])
+    m4_if(iptables, FIREWALL_BACKEND, [
+        AT_SKIP_IF([! $IPSET --help | grep "hash:mac"])
+        AT_SKIP_IF([! NS_CMD([$IPSET create foobar hash:mac >/dev/null 2>&1])])
+        NS_CHECK([$IPSET destroy foobar])
+    ])
     ])
 ])
 
