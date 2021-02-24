@@ -30,6 +30,7 @@ from firewall.errors import FirewallError, UNKNOWN_ERROR, INVALID_RULE, \
 from firewall.core.rich import Rich_Accept, Rich_Reject, Rich_Drop, Rich_Mark, \
                                Rich_Masquerade, Rich_ForwardPort, Rich_IcmpBlock, \
                                Rich_Tcp_Mss_Clamp
+from firewall.core.base import DEFAULT_ZONE_TARGET
 from nftables.nftables import Nftables
 
 TABLE_NAME = "firewalld"
@@ -890,9 +891,9 @@ class nftables(object):
 
         if self._fw.get_log_denied() != "off":
             if table == "filter":
-                if target in ["REJECT", "%%REJECT%%", "DROP"]:
+                if target in [DEFAULT_ZONE_TARGET, "REJECT", "%%REJECT%%", "DROP"]:
                     log_suffix = target
-                    if target == "%%REJECT%%":
+                    if target in [DEFAULT_ZONE_TARGET, "%%REJECT%%"]:
                         log_suffix = "REJECT"
                     rules.append({add_del: {"rule": {"family": "inet",
                                                      "table": TABLE_NAME,
@@ -901,8 +902,8 @@ class nftables(object):
                                                               {"log": {"prefix": "\"filter_%s_%s: \"" % (_policy, log_suffix)}}]}}})
 
         if table == "filter" and \
-           target in ["ACCEPT", "REJECT", "%%REJECT%%", "DROP"]:
-            if target in ["%%REJECT%%", "REJECT"]:
+           target in [DEFAULT_ZONE_TARGET, "ACCEPT", "REJECT", "%%REJECT%%", "DROP"]:
+            if target in [DEFAULT_ZONE_TARGET, "%%REJECT%%", "REJECT"]:
                 target_fragment = self._reject_fragment()
             else:
                 target_fragment = {target.lower(): None}

@@ -1381,6 +1381,7 @@ FWD_START_TEST([rich rules priority])
         jump filter_IN_public_allow
         jump filter_IN_public_post
         meta l4proto { icmp, ipv6-icmp } accept
+        reject with icmpx type admin-prohibited
         }
         }
     ])
@@ -1393,6 +1394,7 @@ FWD_START_TEST([rich rules priority])
         jump filter_FWDI_public_allow
         jump filter_FWDI_public_post
         meta l4proto { icmp, ipv6-icmp } accept
+        reject with icmpx type admin-prohibited
         }
         }
     ])
@@ -1403,6 +1405,7 @@ FWD_START_TEST([rich rules priority])
         IN_public_allow all -- 0.0.0.0/0 0.0.0.0/0
         IN_public_post all -- 0.0.0.0/0 0.0.0.0/0
         ACCEPT icmp -- 0.0.0.0/0 0.0.0.0/0
+        REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
     ])
     IPTABLES_LIST_RULES([filter], [FWDI_public], 0, [dnl
         FWDI_public_pre all -- 0.0.0.0/0 0.0.0.0/0
@@ -1411,6 +1414,7 @@ FWD_START_TEST([rich rules priority])
         FWDI_public_allow all -- 0.0.0.0/0 0.0.0.0/0
         FWDI_public_post all -- 0.0.0.0/0 0.0.0.0/0
         ACCEPT icmp -- 0.0.0.0/0 0.0.0.0/0
+        REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
     ])
     IP6TABLES_LIST_RULES([filter], [IN_public], 0, [dnl
         IN_public_pre all ::/0 ::/0
@@ -1419,6 +1423,7 @@ FWD_START_TEST([rich rules priority])
         IN_public_allow all ::/0 ::/0
         IN_public_post all ::/0 ::/0
         ACCEPT icmpv6 ::/0 ::/0
+        REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
     ])
     IP6TABLES_LIST_RULES([filter], [FWDI_public], 0, [dnl
         FWDI_public_pre all ::/0 ::/0
@@ -1427,6 +1432,7 @@ FWD_START_TEST([rich rules priority])
         FWDI_public_allow all ::/0 ::/0
         FWDI_public_post all ::/0 ::/0
         ACCEPT icmpv6 ::/0 ::/0
+        REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
     ])
 
     dnl priority 0 (or not specified) is special:

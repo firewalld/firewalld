@@ -30,6 +30,7 @@ from firewall import config
 from firewall.errors import FirewallError, INVALID_PASSTHROUGH, INVALID_RULE, UNKNOWN_ERROR, INVALID_ADDR
 from firewall.core.rich import Rich_Accept, Rich_Reject, Rich_Drop, Rich_Mark, \
                                Rich_Masquerade, Rich_ForwardPort, Rich_IcmpBlock, Rich_Tcp_Mss_Clamp
+from firewall.core.base import DEFAULT_ZONE_TARGET
 import string
 
 POLICY_CHAIN_PREFIX = ""
@@ -972,7 +973,7 @@ class ip4tables(object):
 
         if self._fw.get_log_denied() != "off":
             if table == "filter":
-                if target in [ "REJECT", "%%REJECT%%" ]:
+                if target in [DEFAULT_ZONE_TARGET, "REJECT", "%%REJECT%%" ]:
                     rules.append([ add_del_rule, _policy, "-t", table, "%%LOGTYPE%%",
                                    "-j", "LOG", "--log-prefix",
                                    "\"%s_REJECT: \"" % _policy ])
@@ -982,8 +983,12 @@ class ip4tables(object):
                                    "\"%s_DROP: \"" % _policy ])
 
         if table == "filter" and \
-           target in [ "ACCEPT", "REJECT", "%%REJECT%%", "DROP" ]:
-            rules.append([ add_del_rule, _policy, "-t", table, "-j", target ])
+           target in [DEFAULT_ZONE_TARGET, "ACCEPT", "REJECT", "%%REJECT%%", "DROP" ]:
+            if target in [DEFAULT_ZONE_TARGET]:
+                _target = "REJECT"
+            else:
+                _target = target
+            rules.append([ add_del_rule, _policy, "-t", table, "-j", _target ])
 
         if not enable:
             rules.reverse()
