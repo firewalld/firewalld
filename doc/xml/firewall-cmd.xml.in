@@ -535,31 +535,7 @@
             For policies <replaceable>target</replaceable> is one of: <literal>CONTINUE</literal>, <literal>ACCEPT</literal>, <literal>DROP</literal>, <literal>REJECT</literal>
           </para>
           <para>
-            <literal>default</literal> is similar to <literal>REJECT</literal>, but has special meaning in the following scenarios:
-            <orderedlist>
-              <listitem><para>ICMP explicitly allowed</para>
-              <para>
-                At the end of the zone's ruleset ICMP packets are explicitly allowed.
-              </para>
-              </listitem>
-
-              <listitem><para>forwarded packets follow the <replaceable>target</replaceable> of the egress zone</para>
-              <para>
-                In the case of forwarded packets, if the ingress zone uses <literal>default</literal> then whether or not the packet will be allowed is determined by the egress zone.
-              </para>
-              <para>
-                For a forwarded packet that ingresses zoneA and egresses zoneB:
-              </para>
-              <itemizedlist>
-              <listitem>
-              <para>if zoneA's <replaceable>target</replaceable> is <literal>ACCEPT</literal>, <literal>DROP</literal>, or <literal>REJECT</literal> then the packet is accepted, dropped, or rejected respectively.</para>
-              </listitem>
-              <listitem>
-              <para>if zoneA's <replaceable>target</replaceable> is <literal>default</literal>, then the packet is accepted, dropped, or rejected based on zoneB's <replaceable>target</replaceable>. If zoneB's <replaceable>target</replaceable> is also <literal>default</literal>, then the packet will be rejected by firewalld's catchall reject.</para>
-              </listitem>
-              </itemizedlist>
-              </listitem>
-            </orderedlist>
+            <literal>default</literal> is similar to <literal>REJECT</literal>, but it implicitly allows ICMP packets.
           </para>
         </listitem>
       </varlistentry>
