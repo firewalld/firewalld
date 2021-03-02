@@ -1568,7 +1568,7 @@ class nftables(object):
         expr_fragments = [{"match": {"left": {"meta": {"key": "nfproto"}},
                                      "op": "==",
                                      "right": "ipv6"}},
-                          {"match": {"left": {"fib": {"flags": ["saddr", "iif"],
+                          {"match": {"left": {"fib": {"flags": ["saddr", "iif", "mark"],
                                                       "result": "oif"}},
                                      "op": "==",
                                      "right": False}}]
