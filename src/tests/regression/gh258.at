@@ -281,9 +281,6 @@ IP6TABLES_LIST_RULES([filter], [FORWARD_OUT_ZONES], 0,
     FWDO_public all ::/0 ::/0 [goto]
 ]])
 IP6TABLES_LIST_RULES([raw], [PREROUTING], 0, [dnl
-    ACCEPT icmpv6 ::/0 ::/0 ipv6-icmptype 134
-    ACCEPT icmpv6 ::/0 ::/0 ipv6-icmptype 135
-    DROP all ::/0 ::/0 rpfilter invert
     PREROUTING_direct all ::/0 ::/0
     PREROUTING_POLICIES_pre all ::/0 ::/0
     PREROUTING_ZONES all ::/0 ::/0
@@ -296,6 +293,9 @@ IP6TABLES_LIST_RULES([raw], [PREROUTING_ZONES], 0,
     PRE_public all ::/0 ::/0 [goto]
 ]])
 IP6TABLES_LIST_RULES([mangle], [PREROUTING], 0, [dnl
+    ACCEPT icmpv6 ::/0 ::/0 ipv6-icmptype 134
+    ACCEPT icmpv6 ::/0 ::/0 ipv6-icmptype 135
+    DROP all ::/0 ::/0 rpfilter invert
     PREROUTING_direct all ::/0 ::/0
     PREROUTING_POLICIES_pre all ::/0 ::/0
     PREROUTING_ZONES all ::/0 ::/0
