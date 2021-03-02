@@ -1,4 +1,6 @@
 AT_BANNER([dbus])
+dnl use the default backend for dbus tests
+m4_define([FIREWALL_BACKEND], [nftables])
 m4_include([dbus/firewalld.conf.at])
 m4_include([dbus/service.at])
 m4_include([dbus/zone_permanent_signatures.at])
