@@ -3,4 +3,5 @@
   <short>syslog</short>
   <description>Syslog is a client/server protocol: a logging application transmits a text message to the syslog receiver. The receiver is commonly called syslogd, syslog daemon or syslog server.</description>
   <port protocol="udp" port="514"/>
+  <port protocol="tcp" port="514"/>
 </service>
