@@ -1455,18 +1455,18 @@ class ip6tables(ip4tables):
 
     def build_rpfilter_rules(self, log_denied=False):
         rules = []
-        rules.append([ "-I", "PREROUTING", "-t", "raw",
+        rules.append([ "-I", "PREROUTING", "-t", "mangle",
                        "-m", "rpfilter", "--invert", "-j", "DROP" ])
         if log_denied != "off":
-            rules.append([ "-I", "PREROUTING", "-t", "raw",
+            rules.append([ "-I", "PREROUTING", "-t", "mangle",
                            "-m", "rpfilter", "--invert",
                            "-j", "LOG",
                            "--log-prefix", "rpfilter_DROP: " ])
-        rules.append([ "-I", "PREROUTING", "-t", "raw",
+        rules.append([ "-I", "PREROUTING", "-t", "mangle",
                        "-p", "ipv6-icmp",
                        "--icmpv6-type=neighbour-solicitation",
                        "-j", "ACCEPT" ]) # RHBZ#1575431, kernel bug in 4.16-4.17
-        rules.append([ "-I", "PREROUTING", "-t", "raw",
+        rules.append([ "-I", "PREROUTING", "-t", "mangle",
                        "-p", "ipv6-icmp",
                        "--icmpv6-type=router-advertisement",
                        "-j", "ACCEPT" ]) # RHBZ#1058505
