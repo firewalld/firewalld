@@ -55,7 +55,7 @@ IPTABLES_TO_NFT_HOOK = {
     #    "FORWARD": ("forward", 50 + NFT_HOOK_OFFSET),
     #},
     "raw": {
-        "PREROUTING": ("prerouting", -300 + NFT_HOOK_OFFSET),
+    #   "PREROUTING": ("prerouting", -300 + NFT_HOOK_OFFSET),
     #   "OUTPUT": ("output", -300 + NFT_HOOK_OFFSET),
     },
     "mangle": {
@@ -72,6 +72,7 @@ IPTABLES_TO_NFT_HOOK = {
     #    "OUTPUT": ("output", -100 + NFT_HOOK_OFFSET),
     },
     "filter": {
+        "PREROUTING": ("prerouting", 0 + NFT_HOOK_OFFSET),
         "INPUT": ("input", 0 + NFT_HOOK_OFFSET),
         "FORWARD": ("forward", 0 + NFT_HOOK_OFFSET),
         "OUTPUT": ("output", 0 + NFT_HOOK_OFFSET),
@@ -504,14 +505,6 @@ class nftables(object):
 
     def build_default_rules(self, log_denied="off"):
         default_rules = []
-        for chain in IPTABLES_TO_NFT_HOOK["raw"].keys():
-            default_rules.append({"add": {"chain": {"family": "inet",
-                                                    "table": TABLE_NAME,
-                                                    "name": "raw_%s" % chain,
-                                                    "type": "filter",
-                                                    "hook": "%s" % IPTABLES_TO_NFT_HOOK["raw"][chain][0],
-                                                    "prio": IPTABLES_TO_NFT_HOOK["raw"][chain][1]}}})
-
         for chain in IPTABLES_TO_NFT_HOOK["mangle"].keys():
             default_rules.append({"add": {"chain": {"family": "inet",
                                                     "table": TABLE_NAME,
@@ -719,8 +712,6 @@ class nftables(object):
             return ["PREROUTING"]
         if table == "nat":
             return ["PREROUTING", "POSTROUTING"]
-        if table == "raw":
-            return ["PREROUTING"]
 
         return []
 
@@ -1661,12 +1652,12 @@ class nftables(object):
 
         rules.append({"insert": {"rule": {"family": "inet",
                                           "table": TABLE_NAME,
-                                          "chain": "raw_PREROUTING",
+                                          "chain": "filter_PREROUTING",
                                           "expr": expr_fragments}}})
         # RHBZ#1058505, RHBZ#1575431 (bug in kernel 4.16-4.17)
         rules.append({"insert": {"rule": {"family": "inet",
                                           "table": TABLE_NAME,
-                                          "chain": "raw_PREROUTING",
+                                          "chain": "filter_PREROUTING",
                                           "expr": [{"match": {"left": {"payload": {"protocol": "icmpv6",
                                                                                    "field": "type"}},
                                                               "op": "==",
