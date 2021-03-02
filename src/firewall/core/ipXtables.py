@@ -1456,10 +1456,11 @@ class ip6tables(ip4tables):
     def build_rpfilter_rules(self, log_denied=False):
         rules = []
         rules.append([ "-I", "PREROUTING", "-t", "mangle",
-                       "-m", "rpfilter", "--invert", "-j", "DROP" ])
+                       "-m", "rpfilter", "--invert", "--validmark",
+                       "-j", "DROP" ])
         if log_denied != "off":
             rules.append([ "-I", "PREROUTING", "-t", "mangle",
-                           "-m", "rpfilter", "--invert",
+                           "-m", "rpfilter", "--invert", "--validmark",
                            "-j", "LOG",
                            "--log-prefix", "rpfilter_DROP: " ])
         rules.append([ "-I", "PREROUTING", "-t", "mangle",
