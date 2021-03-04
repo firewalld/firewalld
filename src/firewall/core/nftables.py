@@ -628,15 +628,14 @@ class nftables(object):
                                                     "table": TABLE_NAME,
                                                     "chain": "filter_%s" % "FORWARD",
                                                     "expr": [{"jump": {"target": "filter_%s_%s" % ("FORWARD", dispatch_suffix)}}]}}})
-        for direction in ["IN", "OUT"]:
-            for dispatch_suffix in ["ZONES"]:
-                default_rules.append({"add": {"chain": {"family": "inet",
-                                                        "table": TABLE_NAME,
-                                                        "name": "filter_%s_%s_%s" % ("FORWARD", direction, dispatch_suffix)}}})
-                default_rules.append({"add": {"rule":  {"family": "inet",
-                                                        "table": TABLE_NAME,
-                                                        "chain": "filter_%s" % "FORWARD",
-                                                        "expr": [{"jump": {"target": "filter_%s_%s_%s" % ("FORWARD", direction, dispatch_suffix)}}]}}})
+        for dispatch_suffix in ["ZONES"]:
+            default_rules.append({"add": {"chain": {"family": "inet",
+                                                    "table": TABLE_NAME,
+                                                    "name": "filter_%s_%s" % ("FORWARD", dispatch_suffix)}}})
+            default_rules.append({"add": {"rule":  {"family": "inet",
+                                                    "table": TABLE_NAME,
+                                                    "chain": "filter_%s" % "FORWARD",
+                                                    "expr": [{"jump": {"target": "filter_%s_%s" % ("FORWARD", dispatch_suffix)}}]}}})
         for dispatch_suffix in ["POLICIES_post"]:
             default_rules.append({"add": {"chain": {"family": "inet",
                                                     "table": TABLE_NAME,
@@ -708,7 +707,7 @@ class nftables(object):
 
     def get_zone_table_chains(self, table):
         if table == "filter":
-            return ["INPUT", "FORWARD_IN", "FORWARD_OUT"]
+            return ["INPUT", "FORWARD"]
         if table == "mangle":
             return ["PREROUTING"]
         if table == "nat":
@@ -791,8 +790,7 @@ class nftables(object):
             "PREROUTING": "iifname",
             "POSTROUTING": "oifname",
             "INPUT": "iifname",
-            "FORWARD_IN": "iifname",
-            "FORWARD_OUT": "oifname",
+            "FORWARD": "iifname",
             "OUTPUT": "oifname",
         }[chain]
 
@@ -843,8 +841,7 @@ class nftables(object):
             "PREROUTING": "saddr",
             "POSTROUTING": "daddr",
             "INPUT": "saddr",
-            "FORWARD_IN": "saddr",
-            "FORWARD_OUT": "daddr",
+            "FORWARD": "saddr",
             "OUTPUT": "daddr",
         }[chain]
 

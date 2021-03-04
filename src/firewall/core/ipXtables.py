@@ -704,11 +704,10 @@ class ip4tables(object):
             default_rules["filter"].append("-N FORWARD_%s" % (dispatch_suffix))
             default_rules["filter"].append("-A FORWARD -j FORWARD_%s" % (dispatch_suffix))
             self.our_chains["filter"].update(set("FORWARD_%s" % (dispatch_suffix)))
-        for direction in ["IN", "OUT"]:
-            for dispatch_suffix in ["ZONES"]:
-                default_rules["filter"].append("-N FORWARD_%s_%s" % (direction, dispatch_suffix))
-                default_rules["filter"].append("-A FORWARD -j FORWARD_%s_%s" % (direction, dispatch_suffix))
-                self.our_chains["filter"].update(set("FORWARD_%s_%s" % (direction, dispatch_suffix)))
+        for dispatch_suffix in ["ZONES"]:
+            default_rules["filter"].append("-N FORWARD_%s" % (dispatch_suffix))
+            default_rules["filter"].append("-A FORWARD -j FORWARD_%s" % (dispatch_suffix))
+            self.our_chains["filter"].update(set("FORWARD_%s" % (dispatch_suffix)))
         for dispatch_suffix in ["POLICIES_post"]:
             default_rules["filter"].append("-N FORWARD_%s" % (dispatch_suffix))
             default_rules["filter"].append("-A FORWARD -j FORWARD_%s" % (dispatch_suffix))
@@ -748,7 +747,7 @@ class ip4tables(object):
 
     def get_zone_table_chains(self, table):
         if table == "filter":
-            return { "INPUT", "FORWARD_IN", "FORWARD_OUT" }
+            return { "INPUT", "FORWARD" }
         if table == "mangle":
             if "mangle" in self.get_available_tables():
                 return { "PREROUTING" }
@@ -785,7 +784,7 @@ class ip4tables(object):
             if ipv in ["ipv4", "ipv6"] and not self.is_ipv_supported(ipv):
                 continue
             # iptables can not match destination MAC
-            if check_mac(addr) and chain in ["POSTROUTING", "FORWARD_OUT", "OUTPUT"]:
+            if check_mac(addr) and chain in ["POSTROUTING", "FORWARD", "OUTPUT"]:
                 continue
 
             egress_fragments.append(self._rule_addr_fragment("-d", addr))
@@ -846,8 +845,7 @@ class ip4tables(object):
             "PREROUTING": "-i",
             "POSTROUTING": "-o",
             "INPUT": "-i",
-            "FORWARD_IN": "-i",
-            "FORWARD_OUT": "-o",
+            "FORWARD": "-i",
             "OUTPUT": "-o",
         }[chain]
 
@@ -896,13 +894,12 @@ class ip4tables(object):
             "PREROUTING": "-s",
             "POSTROUTING": "-d",
             "INPUT": "-s",
-            "FORWARD_IN": "-s",
-            "FORWARD_OUT": "-d",
+            "FORWARD": "-s",
             "OUTPUT": "-d",
         }[chain]
 
         # iptables can not match destination MAC
-        if check_mac(address) and chain in ["POSTROUTING", "FORWARD_OUT", "OUTPUT"]:
+        if check_mac(address) and chain in ["POSTROUTING", "FORWARD", "OUTPUT"]:
             return []
 
         rule = [add_del, "%s_ZONES" % (chain), "%%ZONE_SOURCE%%", zone, "-t", table]

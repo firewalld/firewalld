@@ -540,7 +540,7 @@ def max_policy_name_len():
 def max_zone_name_len():
     """
     Netfilter limits length of chain to (currently) 28 chars.
-    The longest chain we create is FWDI_<zone>_allow,
+    The longest chain we create is POST_<zone>_allow,
     which leaves 28 - 11 = 17 chars for <zone>.
     """
     from firewall.core.base import SHORTCUTS

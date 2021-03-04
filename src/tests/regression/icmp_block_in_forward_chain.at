@@ -10,9 +10,9 @@ NFT_LIST_RULES([inet], [filter_IN_public_deny | sed -e 's/icmp code 10/icmp code
         }
     }
 ])
-NFT_LIST_RULES([inet], [filter_FWDI_public_deny | sed -e 's/icmp code 10/icmp code host-prohibited/'], 0, [dnl
+NFT_LIST_RULES([inet], [filter_FWD_public_deny | sed -e 's/icmp code 10/icmp code host-prohibited/'], 0, [dnl
     table inet firewalld {
-        chain filter_FWDI_public_deny {
+        chain filter_FWD_public_deny {
             icmp type destination-unreachable icmp code host-prohibited reject with icmpx type admin-prohibited
         }
     }
@@ -21,7 +21,7 @@ NFT_LIST_RULES([inet], [filter_FWDI_public_deny | sed -e 's/icmp code 10/icmp co
 IPTABLES_LIST_RULES([filter], [IN_public_deny], 0, [dnl
     REJECT icmp -- 0.0.0.0/0 0.0.0.0/0 icmptype 3 code 10 reject-with icmp-host-prohibited
 ])
-IPTABLES_LIST_RULES([filter], [FWDI_public_deny], 0, [dnl
+IPTABLES_LIST_RULES([filter], [FWD_public_deny], 0, [dnl
     REJECT icmp -- 0.0.0.0/0 0.0.0.0/0 icmptype 3 code 10 reject-with icmp-host-prohibited
 ])
 

@@ -2003,11 +2003,11 @@ class FirewallPolicy(object):
             return tc
         elif "ANY" in obj.settings["egress_zones"]:
             # zone --> any
-            return [("filter", "FORWARD_IN"), ("nat", "PREROUTING"),
+            return [("filter", "FORWARD"), ("nat", "PREROUTING"),
                     ("mangle", "PREROUTING")]
         elif "ANY" in obj.settings["ingress_zones"]:
             # any --> zone
-            return [("filter", "FORWARD_OUT"), ("nat", "POSTROUTING")]
+            return [("nat", "POSTROUTING")]
         else:
             return FirewallError("Invalid policy: %s" % (policy))
 
@@ -2036,10 +2036,7 @@ class FirewallPolicy(object):
         elif "ANY" in obj.settings["egress_zones"]:
             # zone/any --> any
             if table == "filter":
-                if obj.derived_from_zone:
-                    return "FWDI_" + suffix
-                else:
-                    return "FWD_" + suffix
+                return "FWD_" + suffix
             elif table == "nat":
                 if isSNAT:
                     return "POST_" + suffix
@@ -2050,10 +2047,7 @@ class FirewallPolicy(object):
         elif "ANY" in obj.settings["ingress_zones"]:
             # any --> zone
             if table == "filter":
-                if obj.derived_from_zone:
-                    return "FWDI_" + suffix
-                else:
-                    return "FWD_" + suffix
+                return "FWD_" + suffix
             elif table == "nat":
                 if isSNAT:
                     return "POST_" + suffix
