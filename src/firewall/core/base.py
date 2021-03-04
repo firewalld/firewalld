@@ -34,8 +34,7 @@ SHORTCUTS = {
     "PREROUTING": "PRE",
     "POSTROUTING": "POST",
     "INPUT": "IN",
-    "FORWARD_IN": "FWDI",
-    "FORWARD_OUT": "FWDO",
+    "FORWARD": "FWD",
     "OUTPUT": "OUT",
 }
 

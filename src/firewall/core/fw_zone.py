@@ -208,13 +208,13 @@ class FirewallZone(object):
 
         (zone, _chain) = x
         # derived from _get_table_chains_for_zone_dispatch()
-        if _chain in ["PREROUTING", "FORWARD_IN"]:
+        if _chain in ["PREROUTING", "FORWARD"]:
             fromZone = zone
             toZone = "ANY"
         elif _chain in ["INPUT"]:
             fromZone = zone
             toZone = "HOST"
-        elif _chain in ["POSTROUTING", "FORWARD_OUT"]:
+        elif _chain in ["POSTROUTING"]:
             fromZone = "ANY"
             toZone = zone
         else:
