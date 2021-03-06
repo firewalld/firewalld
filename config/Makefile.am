@@ -173,6 +173,7 @@ CONFIG_FILES = \
 	services/http3.xml \
 	services/https.xml \
 	services/http.xml \
+	services/ident.xml \
 	services/imaps.xml \
 	services/imap.xml \
 	services/ipp-client.xml \
