@@ -36,6 +36,9 @@ jobs:
       - name: checkout
         uses: actions/checkout@v2
 
+      - name: apt update
+        run: sudo apt update
+
       - name: apt install dependencies
         run: sudo apt install -y ${{ env.apt-dependencies }}
 
