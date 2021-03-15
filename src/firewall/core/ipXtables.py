@@ -1299,21 +1299,6 @@ class ip4tables(object):
                      + rule_fragment +
                      [ "!", "-o", "lo", "-j", "MASQUERADE" ])
 
-        rule_fragment = []
-        if rich_rule:
-            chain_suffix = self._rich_rule_chain_suffix(rich_rule)
-            rule_fragment += self._rich_rule_priority_fragment(rich_rule)
-            rule_fragment += self._rich_rule_destination_fragment(rich_rule.destination)
-            rule_fragment += self._rich_rule_source_fragment(rich_rule.source)
-        else:
-            chain_suffix = "allow"
-
-        table = "filter"
-        _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX)
-        rules.append(["-t", "filter", add_del, "%s_%s" % (_policy, chain_suffix)]
-                     + rule_fragment +
-                     ["-m", "conntrack", "--ctstate", "NEW,UNTRACKED", "-j", "ACCEPT" ])
-
         return rules
 
     def build_policy_forward_port_rules(self, enable, policy, port,
