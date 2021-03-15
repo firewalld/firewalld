@@ -1407,19 +1407,6 @@ class nftables(object):
         rule.update(self._rich_rule_priority_fragment(rich_rule))
         rules.append({add_del: {"rule": rule}})
 
-        table = "filter"
-        _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX)
-        rule = {"family": "inet",
-                "table": TABLE_NAME,
-                "chain": "filter_%s_%s" % (_policy, chain_suffix),
-                "expr": expr_fragments +
-                        [{"match": {"left": {"ct": {"key": "state"}},
-                                    "op": "in",
-                                    "right": {"set": ["new", "untracked"]}}},
-                         {"accept": None}]}
-        rule.update(self._rich_rule_priority_fragment(rich_rule))
-        rules.append({add_del: {"rule": rule}})
-
         return rules
 
     def build_policy_forward_port_rules(self, enable, policy, port,
