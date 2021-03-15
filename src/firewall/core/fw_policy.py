@@ -2051,7 +2051,7 @@ class FirewallPolicy(object):
             # any --> zone
             if table == "filter":
                 if obj.derived_from_zone:
-                    return "FWDO_" + suffix
+                    return "FWDI_" + suffix
                 else:
                     return "FWD_" + suffix
             elif table == "nat":

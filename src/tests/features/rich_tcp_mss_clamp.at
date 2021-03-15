@@ -80,21 +80,21 @@ FWD_CHECK([--add-rich-rule='rule tcp-mss-clamp value=thisdoesnotexist'],122,igno
 FWD_CHECK([--add-rich-rule='rule tcp-mss-clamp value=pmtu accept'],122,ignore, ignore)
 FWD_CHECK([--add-rich-rule='rule tcp-mss-clamp value=pmtu'],0,ignore, ignore)
 
-NFT_LIST_RULES([inet], [filter_FWDO_public_allow], 0, [dnl
+NFT_LIST_RULES([inet], [filter_FWDI_public_allow], 0, [dnl
         table inet firewalld {
-        chain filter_FWDO_public_allow {
+        chain filter_FWDI_public_allow {
         tcp flags syn tcp option maxseg size set 536
         tcp flags syn tcp option maxseg size set rt mtu
         }
         }
     ])
 
-IPTABLES_LIST_RULES([filter], [FWDO_public_allow], 0, [dnl
+IPTABLES_LIST_RULES([filter], [FWDI_public_allow], 0, [dnl
     TCPMSS tcp -- 0.0.0.0/0 0.0.0.0/0 tcp flags:0x06/0x02 TCPMSS set 536
     TCPMSS tcp -- 0.0.0.0/0 0.0.0.0/0 tcp flags:0x06/0x02 TCPMSS clamp to PMTU
     ])
 
-IP6TABLES_LIST_RULES([filter], [FWDO_public_allow], 0, [dnl
+IP6TABLES_LIST_RULES([filter], [FWDI_public_allow], 0, [dnl
     TCPMSS tcp ::/0 ::/0 tcp flags:0x06/0x02 TCPMSS set 536
     TCPMSS tcp ::/0 ::/0 tcp flags:0x06/0x02 TCPMSS clamp to PMTU
     ])

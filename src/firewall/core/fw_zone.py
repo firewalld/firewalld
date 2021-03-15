@@ -861,7 +861,7 @@ class FirewallZone(object):
         elif type(rule.element) in [Rich_Masquerade]:
             return [self.policy_name_from_zones("ANY", zone)]
         elif type(rule.element) in [Rich_Tcp_Mss_Clamp]:
-            return [self.policy_name_from_zones("ANY",zone)]
+            return [self.policy_name_from_zones(zone, "ANY")]
         elif rule.element is None:
             return [self.policy_name_from_zones(zone, "HOST")]
         else:
