@@ -984,8 +984,6 @@ class FirewallZone(object):
         p_name = self.policy_name_from_zones(zone, "HOST")
         self._fw.policy.add_icmp_block_inversion(p_name, sender)
 
-        p_name = self.policy_name_from_zones(zone, "ANY")
-        self._fw.policy.add_icmp_block_inversion(p_name, sender)
         return zone
 
     def _icmp_block_inversion(self, enable, zone, transaction):
@@ -993,24 +991,17 @@ class FirewallZone(object):
         p_name = self.policy_name_from_zones(zone, "HOST")
         self._fw.policy._icmp_block_inversion(enable, p_name, transaction)
 
-        p_name = self.policy_name_from_zones(zone, "ANY")
-        self._fw.policy._icmp_block_inversion(enable, p_name, transaction)
-
     def remove_icmp_block_inversion(self, zone):
         zone = self._fw.check_zone(zone)
         p_name = self.policy_name_from_zones(zone, "HOST")
         self._fw.policy.remove_icmp_block_inversion(p_name)
 
-        p_name = self.policy_name_from_zones(zone, "ANY")
-        self._fw.policy.remove_icmp_block_inversion(p_name)
         return zone
 
     def query_icmp_block_inversion(self, zone):
         zone = self._fw.check_zone(zone)
         p_name_host = self.policy_name_from_zones(zone, "HOST")
-        p_name_fwd = self.policy_name_from_zones(zone, "ANY")
-        return self._fw.policy.query_icmp_block_inversion(p_name_host) and \
-               self._fw.policy.query_icmp_block_inversion(p_name_fwd)
+        return self._fw.policy.query_icmp_block_inversion(p_name_host)
 
     def _forward(self, enable, zone, transaction):
         p_name = self.policy_name_from_zones(zone, "ANY")
