@@ -1725,26 +1725,18 @@ FWD_START_TEST([rich rules priority])
     NFT_LIST_RULES([inet], [filter_FWD_public_pre], 0, [dnl
         table inet firewalld {
         chain filter_FWD_public_pre {
-        icmp type destination-unreachable reject with icmpx type admin-prohibited
-        icmpv6 type destination-unreachable reject with icmpx type admin-prohibited
-        icmp type echo-request accept
-        icmpv6 type echo-request accept
         }
         }
     ])
     NFT_LIST_RULES([inet], [filter_FWD_public_deny], 0, [dnl
         table inet firewalld {
         chain filter_FWD_public_deny {
-        icmp type destination-unreachable reject with icmpx type admin-prohibited
-        icmpv6 type destination-unreachable reject with icmpx type admin-prohibited
         }
         }
     ])
     NFT_LIST_RULES([inet], [filter_FWD_public_allow], 0, [dnl
         table inet firewalld {
         chain filter_FWD_public_allow {
-        icmp type echo-request accept
-        icmpv6 type echo-request accept
         }
         }
     ])
@@ -1760,14 +1752,10 @@ FWD_START_TEST([rich rules priority])
         ACCEPT icmp -- 0.0.0.0/0 0.0.0.0/0 icmptype 8
     ])
     IPTABLES_LIST_RULES([filter], [FWD_public_pre], 0, [dnl
-        REJECT icmp -- 0.0.0.0/0 0.0.0.0/0 icmptype 3 reject-with icmp-host-prohibited
-        ACCEPT icmp -- 0.0.0.0/0 0.0.0.0/0 icmptype 8
     ])
     IPTABLES_LIST_RULES([filter], [FWD_public_deny], 0, [dnl
-        REJECT icmp -- 0.0.0.0/0 0.0.0.0/0 icmptype 3 reject-with icmp-host-prohibited
     ])
     IPTABLES_LIST_RULES([filter], [FWD_public_allow], 0, [dnl
-        ACCEPT icmp -- 0.0.0.0/0 0.0.0.0/0 icmptype 8
     ])
     IP6TABLES_LIST_RULES([filter], [IN_public_pre], 0, [dnl
         REJECT icmpv6 ::/0 ::/0 ipv6-icmptype 1 reject-with icmp6-adm-prohibited
@@ -1782,14 +1770,10 @@ FWD_START_TEST([rich rules priority])
         ACCEPT icmpv6 ::/0 ::/0 ipv6-icmptype 128
     ])
     IP6TABLES_LIST_RULES([filter], [FWD_public_pre], 0, [dnl
-        REJECT icmpv6 ::/0 ::/0 ipv6-icmptype 1 reject-with icmp6-adm-prohibited
-        ACCEPT icmpv6 ::/0 ::/0 ipv6-icmptype 128
     ])
     IP6TABLES_LIST_RULES([filter], [FWD_public_deny], 0, [dnl
-        REJECT icmpv6 ::/0 ::/0 ipv6-icmptype 1 reject-with icmp6-adm-prohibited
     ])
     IP6TABLES_LIST_RULES([filter], [FWD_public_allow], 0, [dnl
-        ACCEPT icmpv6 ::/0 ::/0 ipv6-icmptype 128
     ])
     FWD_RELOAD
 

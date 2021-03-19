@@ -110,7 +110,7 @@ class FirewallZone(object):
                 # any zone --> zone
                 setattr(p_obj, setting, copy.deepcopy(getattr(z_obj, setting)))
             elif fromZone == z_obj.name and toZone == "ANY" and \
-                 setting in ["icmp_blocks", "forward_ports"]:
+                 setting in ["forward_ports"]:
                 # zone --> any zone
                 setattr(p_obj, setting, copy.deepcopy(getattr(z_obj, setting)))
             elif setting in ["rules"]:
@@ -134,7 +134,7 @@ class FirewallZone(object):
         # Create policy objects, will need many:
         #   - (zone --> HOST) - ports, service, etc
         #   - (any zone --> zone) - masquerade
-        #   - (zone --> any zone) - ICMP block, icmp block inversion
+        #   - (zone --> any zone)
         #       - also includes forward-ports because it works on (nat,
         #       PREROUTING) and therefore applies to redirects to the local
         #       host or dnat to a different host.
@@ -851,11 +851,8 @@ class FirewallZone(object):
         if type(rule.action) == Rich_Mark:
             return [self.policy_name_from_zones(zone, "ANY")]
         elif type(rule.element) in [Rich_Service, Rich_Port, Rich_Protocol,
-                                    Rich_SourcePort]:
+                                    Rich_SourcePort, Rich_IcmpBlock, Rich_IcmpType]:
             return [self.policy_name_from_zones(zone, "HOST")]
-        elif type(rule.element) in [Rich_IcmpBlock, Rich_IcmpType]:
-            return [self.policy_name_from_zones(zone, "HOST"),
-                    self.policy_name_from_zones(zone, "ANY")]
         elif type(rule.element) in [Rich_ForwardPort]:
             return [self.policy_name_from_zones(zone, "ANY")]
         elif type(rule.element) in [Rich_Masquerade]:
@@ -963,8 +960,6 @@ class FirewallZone(object):
         p_name = self.policy_name_from_zones(zone, "HOST")
         self._fw.policy.add_icmp_block(p_name, icmp, timeout, sender)
 
-        p_name = self.policy_name_from_zones(zone, "ANY")
-        self._fw.policy.add_icmp_block(p_name, icmp, timeout, sender)
         return zone
 
     def remove_icmp_block(self, zone, icmp):
@@ -972,23 +967,17 @@ class FirewallZone(object):
         p_name = self.policy_name_from_zones(zone, "HOST")
         self._fw.policy.remove_icmp_block(p_name, icmp)
 
-        p_name = self.policy_name_from_zones(zone, "ANY")
-        self._fw.policy.remove_icmp_block(p_name, icmp)
         return zone
 
     def query_icmp_block(self, zone, icmp):
         zone = self._fw.check_zone(zone)
         p_name_host = self.policy_name_from_zones(zone, "HOST")
-        p_name_fwd = self.policy_name_from_zones(zone, "ANY")
-        return self._fw.policy.query_icmp_block(p_name_host, icmp) and \
-               self._fw.policy.query_icmp_block(p_name_fwd, icmp)
+        return self._fw.policy.query_icmp_block(p_name_host, icmp)
 
     def list_icmp_blocks(self, zone):
         zone = self._fw.check_zone(zone)
         p_name_host = self.policy_name_from_zones(zone, "HOST")
-        p_name_fwd = self.policy_name_from_zones(zone, "ANY")
-        return sorted(set(self._fw.policy.list_icmp_blocks(p_name_host) +
-                          self._fw.policy.list_icmp_blocks(p_name_fwd)))
+        return sorted(set(self._fw.policy.list_icmp_blocks(p_name_host)))
 
     def add_icmp_block_inversion(self, zone, sender=None):
         zone = self._fw.check_zone(zone)
