@@ -1393,7 +1393,6 @@ FWD_START_TEST([rich rules priority])
         jump filter_FWD_public_deny
         jump filter_FWD_public_allow
         jump filter_FWD_public_post
-        meta l4proto { icmp, ipv6-icmp } accept
         reject with icmpx type admin-prohibited
         }
         }
@@ -1413,7 +1412,6 @@ FWD_START_TEST([rich rules priority])
         FWD_public_deny all -- 0.0.0.0/0 0.0.0.0/0
         FWD_public_allow all -- 0.0.0.0/0 0.0.0.0/0
         FWD_public_post all -- 0.0.0.0/0 0.0.0.0/0
-        ACCEPT icmp -- 0.0.0.0/0 0.0.0.0/0
         REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
     ])
     IP6TABLES_LIST_RULES([filter], [IN_public], 0, [dnl
@@ -1431,7 +1429,6 @@ FWD_START_TEST([rich rules priority])
         FWD_public_deny all ::/0 ::/0
         FWD_public_allow all ::/0 ::/0
         FWD_public_post all ::/0 ::/0
-        ACCEPT icmpv6 ::/0 ::/0
         REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
     ])
 
