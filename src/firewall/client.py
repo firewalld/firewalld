@@ -27,7 +27,7 @@ sys.modules['gobject'] = GObject
 
 import dbus.mainloop.glib
 import slip.dbus
-from decorator import decorator
+import functools
 
 from firewall import config
 from firewall.core.base import DEFAULT_ZONE_TARGET, DEFAULT_POLICY_TARGET, DEFAULT_POLICY_PRIORITY
@@ -43,42 +43,44 @@ import traceback
 exception_handler = None
 not_authorized_loop = False
 
-@decorator
-def handle_exceptions(func, *args, **kwargs):
+def handle_exceptions(func):
     """Decorator to handle exceptions
     """
-    authorized = False
-    while not authorized:
-        try:
-            return func(*args, **kwargs)
-        except dbus.exceptions.DBusException as e:
-            dbus_message = e.get_dbus_message() # returns unicode
-            dbus_name = e.get_dbus_name()
-            if not exception_handler:
-                raise
-            if "NotAuthorizedException" in dbus_name:
-                exception_handler("NotAuthorizedException")
-            elif "org.freedesktop.DBus.Error" in dbus_name:
-                # dbus error, try again
-                exception_handler(dbus_message)
-            else:
-                authorized = True
-                if dbus_message:
+    @functools.wraps(func)
+    def _impl(*args, **kwargs):
+        authorized = False
+        while not authorized:
+            try:
+                return func(*args, **kwargs)
+            except dbus.exceptions.DBusException as e:
+                dbus_message = e.get_dbus_message() # returns unicode
+                dbus_name = e.get_dbus_name()
+                if not exception_handler:
+                    raise
+                if "NotAuthorizedException" in dbus_name:
+                    exception_handler("NotAuthorizedException")
+                elif "org.freedesktop.DBus.Error" in dbus_name:
+                    # dbus error, try again
                     exception_handler(dbus_message)
                 else:
+                    authorized = True
+                    if dbus_message:
+                        exception_handler(dbus_message)
+                    else:
+                        exception_handler(str(e))
+            except FirewallError as e:
+                if not exception_handler:
+                    raise
+                else:
                     exception_handler(str(e))
-        except FirewallError as e:
-            if not exception_handler:
-                raise
-            else:
-                exception_handler(str(e))
-        except Exception:
-            if not exception_handler:
-                raise
-            else:
-                exception_handler(traceback.format_exc())
-        if not not_authorized_loop:
-            break
+            except Exception:
+                if not exception_handler:
+                    raise
+                else:
+                    exception_handler(traceback.format_exc())
+            if not not_authorized_loop:
+                break
+    return _impl
 
 # zone config setings
 
