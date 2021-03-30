@@ -27,8 +27,8 @@ import dbus
 import dbus.service
 import traceback
 import functools
+import inspect
 from dbus.exceptions import DBusException
-from decorator import decorator
 
 from firewall import config
 from firewall.errors import FirewallError
@@ -45,42 +45,57 @@ class FirewallDBusException(dbus.DBusException):
     """FirewallDBusException"""
     _dbus_error_name = "%s.Exception" % config.dbus.DBUS_INTERFACE
 
-@decorator
-def handle_exceptions(func, *args, **kwargs):
+def handle_exceptions(func):
     """Decorator to handle exceptions and log them. Used if not conneced
     to D-Bus.
     """
-    try:
-        return func(*args, **kwargs)
-    except FirewallError as error:
-        log.debug1(traceback.format_exc())
-        log.error(error)
-    except Exception:  # pylint: disable=W0703
-        log.exception()
+    @functools.wraps(func)
+    def _impl(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except FirewallError as error:
+            log.debug1(traceback.format_exc())
+            log.error(error)
+        except Exception:  # pylint: disable=W0703
+            log.exception()
+    return _impl
 
-@decorator
-def dbus_handle_exceptions(func, *args, **kwargs):
+def dbus_handle_exceptions(func):
     """Decorator to handle exceptions, log and report them into D-Bus
 
     :Raises DBusException: on a firewall error code problems.
     """
-    try:
-        return func(*args, **kwargs)
-    except FirewallError as error:
-        code = FirewallError.get_code(str(error))
-        if code in [ errors.ALREADY_ENABLED, errors.NOT_ENABLED,
-                     errors.ZONE_ALREADY_SET, errors.ALREADY_SET ]:
-            log.warning(str(error))
-        else:
-            log.debug1(traceback.format_exc())
-            log.error(str(error))
-        raise FirewallDBusException(str(error))
-    except DBusException as ex:
-        # only log DBusExceptions once
-        raise ex
-    except Exception as ex:
-        log.exception()
-        raise FirewallDBusException(str(ex))
+    @functools.wraps(func)
+    def _impl(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except FirewallError as error:
+            code = FirewallError.get_code(str(error))
+            if code in [ errors.ALREADY_ENABLED, errors.NOT_ENABLED,
+                         errors.ZONE_ALREADY_SET, errors.ALREADY_SET ]:
+                log.warning(str(error))
+            else:
+                log.debug1(traceback.format_exc())
+                log.error(str(error))
+            raise FirewallDBusException(str(error))
+        except DBusException as ex:
+            # only log DBusExceptions once
+            raise ex
+        except Exception as ex:
+            log.exception()
+            raise FirewallDBusException(str(ex))
+    # HACK: functools.wraps() does not copy the function signature and
+    # dbus-python doesn't support varargs. As such we need to copy the
+    # signature from the function to the newly decorated function otherwise the
+    # decorators in dbus-python will manipulate the arg stack and fail
+    # miserably.
+    #
+    # Note: This can be removed if we ever stop using dbus-python.
+    #
+    # Ref: https://gitlab.freedesktop.org/dbus/dbus-python/-/issues/12
+    #
+    _impl.__signature__ = inspect.signature(func)
+    return _impl
 
 def dbus_service_method(*args, **kwargs):
     """Add sender argument for D-Bus"""

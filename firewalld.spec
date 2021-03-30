@@ -33,7 +33,6 @@ firewall with a D-Bus interface.
 Summary: Python3 bindings for firewalld
 Requires: python3-dbus
 Requires: python3-slip-dbus
-Requires: python3-decorator
 Requires: python3-nftables
 %if (0%{?fedora} >= 23 || 0%{?rhel} >= 8)
 Requires: python3-gobject-base
