@@ -51,8 +51,6 @@ from firewall.functions import portStr, portInPortRange, coalescePortRange, \
 ############################################################################
 
 class FirewallDConfigZone(slip.dbus.service.Object):
-    """FirewallD main class"""
-
     persistent = True
     """ Make FirewallD persistent. """
     default_polkit_auth_required = config.dbus.PK_ACTION_CONFIG
