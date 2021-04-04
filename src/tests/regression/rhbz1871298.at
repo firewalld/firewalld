@@ -13,6 +13,6 @@ NS_CHECK([echo "</zone>" >> ./zones/foobar.xml])
 if test "x${FIREWALLD_DEFAULT_CONFIG}" != x ; then
     FIREWALL_OFFLINE_CMD_ARGS+=" --default-config ${FIREWALLD_DEFAULT_CONFIG}"
 fi
-NS_CHECK([timeout 45 firewall-offline-cmd --system-config ./ $FIREWALL_OFFLINE_CMD_ARGS --check-config], 0, [ignore])
+NS_CHECK([timeout 90 firewall-offline-cmd --system-config ./ $FIREWALL_OFFLINE_CMD_ARGS --check-config], 0, [ignore])
 
 FWD_END_TEST
