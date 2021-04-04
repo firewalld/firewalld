@@ -282,6 +282,7 @@ CONFIG_FILES = \
 	services/tinc.xml \
 	services/tor-socks.xml \
 	services/transmission-client.xml \
+	services/ts3.xml \
 	services/upnp-client.xml \
 	services/vdsm.xml \
 	services/vnc-server.xml \
