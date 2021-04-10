@@ -287,6 +287,7 @@ CONFIG_FILES = \
 	services/vnc-server.xml \
 	services/wbem-http.xml \
 	services/wbem-https.xml \
+	services/wireguard.xml \
 	services/wsman.xml \
 	services/wsmans.xml \
 	services/xdmcp.xml \
