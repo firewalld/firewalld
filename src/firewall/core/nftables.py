@@ -1643,8 +1643,8 @@ class nftables(object):
             "hash:ip,mark" : [ipv_addr[ipv], "mark"],
 
             "hash:net" : ipv_addr[ipv],
+            "hash:net,net" : [ipv_addr[ipv], ipv_addr[ipv]],
             "hash:net,port" : [ipv_addr[ipv], "inet_proto", "inet_service"],
-            "hash:net,port,ip" : [ipv_addr[ipv], "inet_proto", "inet_service", ipv_addr[ipv]],
             "hash:net,port,net" : [ipv_addr[ipv], "inet_proto", "inet_service", ipv_addr[ipv]],
             "hash:net,iface" : [ipv_addr[ipv], "ifname"],
 
