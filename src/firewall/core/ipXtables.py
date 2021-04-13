@@ -201,36 +201,6 @@ class ip4tables(object):
                                                      " ".join(_args), ret))
         return ret
 
-    def split_value(self, rules, opts=None):
-        """Split values combined with commas for options in opts"""
-
-        if opts is None:
-            return rules
-
-        out_rules = [ ]
-        for rule in rules:
-            processed = False
-            for opt in opts:
-                try:
-                    i = rule.index(opt)
-                except ValueError:
-                    pass
-                else:
-                    if len(rule) > i and "," in rule[i+1]:
-                        # For all items in the comma separated list in index
-                        # i of the rule, a new rule is created with a single
-                        # item from this list
-                        processed = True
-                        items = rule[i+1].split(",")
-                        for item in items:
-                            _rule = rule[:]
-                            _rule[i+1] = item
-                            out_rules.append(_rule)
-            if not processed:
-                out_rules.append(rule)
-
-        return out_rules
-
     def _rule_replace(self, rule, pattern, replacement):
         try:
             i = rule.index(pattern)
@@ -470,8 +440,6 @@ class ip4tables(object):
 
         for table in table_rules:
             rules = table_rules[table]
-            rules = self.split_value(rules, [ "-s", "--source" ])
-            rules = self.split_value(rules, [ "-d", "--destination" ])
 
             temp_file.write("*%s\n" % table)
             for rule in rules:

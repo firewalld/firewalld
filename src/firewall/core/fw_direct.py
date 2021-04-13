@@ -298,7 +298,7 @@ class FirewallDirect(object):
                 r.append((ipv, table, chain, priority, list(args)))
         return r
 
-    def _register_rule(self, rule_id, chain_id, priority, enable):
+    def _register_rule(self, rule_id, chain_id, priority, enable, count):
         if enable:
             if chain_id not in self._rules:
                 self._rules[chain_id] = LastUpdatedOrderedDict()
@@ -307,14 +307,14 @@ class FirewallDirect(object):
                 self._rule_priority_positions[chain_id] = { }
 
             if priority in self._rule_priority_positions[chain_id]:
-                self._rule_priority_positions[chain_id][priority] += 1
+                self._rule_priority_positions[chain_id][priority] += count
             else:
-                self._rule_priority_positions[chain_id][priority] = 1
+                self._rule_priority_positions[chain_id][priority] = count
         else:
             del self._rules[chain_id][rule_id]
             if len(self._rules[chain_id]) == 0:
                 del self._rules[chain_id]
-            self._rule_priority_positions[chain_id][priority] -= 1
+            self._rule_priority_positions[chain_id][priority] -= count
 
     # DIRECT PASSTHROUGH (untracked)
 
@@ -375,6 +375,34 @@ class FirewallDirect(object):
             for args in self._passthroughs[ipv]:
                 r.append(list(args))
         return r
+
+    def split_value(self, rules, opts):
+        """Split values combined with commas for options in opts"""
+
+        out_rules = [ ]
+        for rule in rules:
+            processed = False
+            for opt in opts:
+                try:
+                    i = rule.index(opt)
+                except ValueError:
+                    pass
+                else:
+                    if len(rule) > i and "," in rule[i+1]:
+                        # For all items in the comma separated list in index
+                        # i of the rule, a new rule is created with a single
+                        # item from this list
+                        processed = True
+                        items = rule[i+1].split(",")
+                        for item in items:
+                            _rule = rule[:]
+                            _rule[i+1] = item
+                            out_rules.append(_rule)
+            if not processed:
+                out_rules.append(rule)
+
+        return out_rules
+
 
     def _rule(self, enable, ipv, table, chain, priority, args, transaction):
         self._check_ipv_table(ipv, table)
@@ -458,6 +486,7 @@ class FirewallDirect(object):
         # has index 1.
 
         index = 1
+        count = 0
         if chain_id in self._rule_priority_positions:
             positions = sorted(self._rule_priority_positions[chain_id].keys())
             j = 0
@@ -465,11 +494,21 @@ class FirewallDirect(object):
                 index += self._rule_priority_positions[chain_id][positions[j]]
                 j += 1
 
-        transaction.add_rule(backend, backend.build_rule(enable, table, _chain, index, args))
+        # split the direct rule in some cases as iptables-restore can't handle
+        # compound args.
+        #
+        args_list = [list(args)]
+        args_list = self.split_value(args_list, [ "-s", "--source" ])
+        args_list = self.split_value(args_list, [ "-d", "--destination" ])
 
-        self._register_rule(rule_id, chain_id, priority, enable)
+        for _args in args_list:
+            transaction.add_rule(backend, backend.build_rule(enable, table, _chain, index, tuple(_args)))
+            index += 1
+            count += 1
+
+        self._register_rule(rule_id, chain_id, priority, enable, count)
         transaction.add_fail(self._register_rule,
-                             rule_id, chain_id, priority, not enable)
+                             rule_id, chain_id, priority, not enable, count)
 
     def _chain(self, add, ipv, table, chain, transaction):
         self._check_ipv_table(ipv, table)
