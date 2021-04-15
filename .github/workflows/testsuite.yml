@@ -9,7 +9,7 @@ jobs:
         libgirepository1.0-dev libglib2.0-dev libxml2-utils network-manager \
         pkg-config 
       pip-dependencies: |
-        decorator dbus-python PyGObject six
+        dbus-python PyGObject six
 
     name: testsuite ${{ join(matrix.*, ' ') }}
     runs-on: ubuntu-20.04
