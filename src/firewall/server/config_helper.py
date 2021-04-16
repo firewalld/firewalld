@@ -18,15 +18,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-# force use of pygobject3 in python-slip
-from gi.repository import GObject
-import sys
-sys.modules['gobject'] = GObject
-
 import dbus
 import dbus.service
-import slip.dbus
-import slip.dbus.service
 
 from firewall import config
 from firewall.dbus_utils import dbus_to_python, \
@@ -34,8 +27,10 @@ from firewall.dbus_utils import dbus_to_python, \
     dbus_introspection_add_properties
 from firewall.core.io.helper import Helper
 from firewall.core.logger import log
+from firewall.server.dbus import DbusServiceObject
 from firewall.server.decorators import handle_exceptions, \
-    dbus_handle_exceptions, dbus_service_method
+    dbus_handle_exceptions, dbus_service_method, \
+    dbus_polkit_require_auth
 from firewall import errors
 from firewall.errors import FirewallError
 
@@ -45,7 +40,7 @@ from firewall.errors import FirewallError
 #
 ############################################################################
 
-class FirewallDConfigHelper(slip.dbus.service.Object):
+class FirewallDConfigHelper(DbusServiceObject):
     """FirewallD main class"""
 
     persistent = True
@@ -129,7 +124,7 @@ class FirewallDConfigHelper(slip.dbus.service.Object):
             ret[x] = self._get_property(x)
         return dbus.Dictionary(ret, signature="sv")
 
-    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
+    @dbus_polkit_require_auth(config.dbus.PK_ACTION_CONFIG)
     @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='ssv')
     @dbus_handle_exceptions
     def Set(self, interface_name, property_name, new_value, sender=None):
@@ -158,7 +153,7 @@ class FirewallDConfigHelper(slip.dbus.service.Object):
         log.debug1("%s.PropertiesChanged('%s', '%s', '%s')", self._log_prefix,
                    interface_name, changed_properties, invalidated_properties)
 
-    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_INFO)
+    @dbus_polkit_require_auth(config.dbus.PK_ACTION_INFO)
     @dbus_service_method(dbus.INTROSPECTABLE_IFACE, out_signature='s')
     @dbus_handle_exceptions
     def Introspect(self, sender=None): # pylint: disable=W0613
