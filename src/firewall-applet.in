@@ -854,17 +854,13 @@ class TrayApplet(QtWidgets.QSystemTrayIcon):
 
     def update_tooltip(self):
         if self.get_mode() == "error":
-            self.setToolTip("<big><b>" + \
-                            _("No connection to firewall daemon") + \
-                            "</b></big>")
+            self.setToolTip(_("No connection to firewall daemon"))
             return
 
         messages = [ ]
 
         if self.panicAction.isChecked():
-            messages.append("<big><b>" + \
-                            _("All network traffic is blocked.") + \
-                            "</b></big>")
+            messages.append(_("All network traffic is blocked."))
 
         if self.default_zone:
             messages.append(_("Default Zone: '%s'") % self.default_zone)
@@ -903,8 +899,8 @@ class TrayApplet(QtWidgets.QSystemTrayIcon):
             messages.append(_("No Active Zones."))
         messages.extend(self.tooltip_messages)
 
-        tooltip = "<nobr>"+"</nobr><br><nobr>".join(messages)+"</nobr>"
-        self.setToolTip("<font size=\"3\">"+tooltip+"</font>")
+        tooltip = "\n".join(messages)
+        self.setToolTip(tooltip)
         self.set_icon()
 
     def show(self):
