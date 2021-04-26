@@ -170,6 +170,7 @@ CONFIG_FILES = \
 	services/http.xml \
 	services/imaps.xml \
 	services/imap.xml \
+	services/ipfs.xml \
 	services/ipp-client.xml \
 	services/ipp.xml \
 	services/ipsec.xml \
