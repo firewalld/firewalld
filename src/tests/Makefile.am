@@ -71,7 +71,7 @@ check-container-fedora-rawhide-image: check-container-%-image:
 	                 iptables iptables-nft libtool libxml2 libxslt make nftables \
 	                 python3-nftables python3-slip-dbus python3-gobject-base \
 	                 diffutils procps-ng iproute which dbus-daemon \
-	                 NetworkManager" && \
+	                 NetworkManager NetworkManager-ovs" && \
 	echo "RUN alternatives --set ebtables /usr/sbin/ebtables-nft" && \
 	echo "COPY . /tmp/firewalld"; \
 	} | $(PODMAN) build -t firewalld-testsuite-$* -f - . )
@@ -86,7 +86,7 @@ check-container-centos8-stream-image: check-container-%-image:
 	                 iptables iptables-ebtables nftables libtool libxml2 \
 	                 libxslt make nftables python3-nftables python3-slip-dbus \
 	                 python3-gobject-base diffutils procps-ng iproute which dbus-daemon \
-	                 NetworkManager" && \
+	                 NetworkManager NetworkManager-ovs" && \
 	echo "COPY . /tmp/firewalld"; \
 	} | $(PODMAN) build -t firewalld-testsuite-$* -f - . )
 
