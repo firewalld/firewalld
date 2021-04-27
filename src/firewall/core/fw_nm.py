@@ -141,7 +141,9 @@ def nm_get_connections(connections, connections_name):
 
         connections_name[uuid] = name
         for dev in devices:
-            connections[dev.get_iface()] = uuid
+            ip_iface = dev.get_ip_iface()
+            if ip_iface:
+                connections[ip_iface] = uuid
 
 def nm_get_interfaces():
     """Get active interfaces from NM
@@ -169,7 +171,9 @@ def nm_get_interfaces():
                 continue
 
         for dev in active_con.get_devices():
-            active_interfaces.append(dev.get_iface())
+            ip_iface = dev.get_ip_iface()
+            if ip_iface:
+                active_interfaces.append(ip_iface)
 
     return active_interfaces
 
