@@ -1,0 +1,26 @@
+FWD_START_TEST([reload don't consider non IP capable interfaces])
+AT_KEYWORDS(reload rhbz1928860)
+
+START_NETWORKMANAGER
+
+dnl OVS bridge and port
+NMCLI_CHECK([connection add type ovs-bridge conn.interface ovs-br con-name ovs-br], 0, [ignore])
+NMCLI_CHECK([connection add type ovs-port conn.interface ovs-interface-port master ovs-br con-name ovs-interface-port], 0, [ignore])
+echo NS_CMD([nmcli connection delete ovs-br]) >> ./cleanup
+echo NS_CMD([nmcli connection delete ovs-interface-port]) >> ./cleanup
+
+dnl Up them
+NMCLI_CHECK([connection up ovs-br], 0, [ignore])
+NMCLI_CHECK([connection up ovs-interface-port], 0, [ignore])
+
+dnl Omit the actual linux interface because it requires the OVS daemon to be
+dnl running. The bug is reproducible without it.
+dnl 
+dnl NMCLI_CHECK([connection add type ovs-interface slave-type ovs-port conn.interface ovs-br master ovs-interface-port con-name ovs-interface ipv4.method disabled ipv6.method disabled], 0, [ignore])
+dnl echo NS_CMD([nmcli connection delete ovs-interface]) >> ./cleanup
+dnl NMCLI_CHECK([connection up ovs-interface], 0, [ignore])
+
+dnl just need to verify reload
+FWD_RELOAD
+
+FWD_END_TEST
