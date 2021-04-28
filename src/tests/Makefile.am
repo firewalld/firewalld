@@ -55,7 +55,7 @@ check-container-debian-sid-image: check-container-%-image:
 	echo "FROM debian:sid" && \
 	echo "RUN apt-get update" && \
 	echo "RUN apt-get install -y autoconf automake pkg-config intltool libglib2.0-dev \
-	                             xsltproc docbook-xsl docbook-xml iptables ipset ebtables \
+	                             xsltproc docbook-xsl docbook-xml iproute2 iptables ipset ebtables \
 	                             nftables libxml2-utils libdbus-1-dev libgirepository1.0-dev \
 	                             python3-dbus python3-gi python3-slip-dbus python3-nftables \
 	                             procps network-manager gir1.2-nm-1.0" && \
