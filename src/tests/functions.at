@@ -36,6 +36,7 @@ m4_define([FWD_START_FIREWALLD], [
 
 m4_define([START_NETWORKMANAGER], [
     AT_SKIP_IF([! NS_CMD([which NetworkManager >/dev/null 2>&1])])
+    AT_SKIP_IF([  NS_CMD([pgrep NetworkManager >/dev/null 2>&1])])
     AT_SKIP_IF([! NS_CMD([which nmcli >/dev/null 2>&1])])
 
     AT_DATA([./NetworkManager.conf], [dnl
