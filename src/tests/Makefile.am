@@ -101,7 +101,7 @@ $(CONTAINER_TARGETS): check-container-%: check-container-%-image
 	make && \
 	{ make -C src/tests check-local TESTSUITEFLAGS=\"$(TESTSUITEFLAGS)\" || \
 	  make -C src/tests check-local TESTSUITEFLAGS=\"--recheck --errexit --verbose\" ; } && \
-	make -C src/tests check-integration TESTSUITEFLAGS=\"$(TESTSUITEFLAGS) -j1\" "
+	make -C src/tests check-integration TESTSUITEFLAGS=\"$(TESTSUITEFLAGS)\" "
 	$(PODMAN) rmi firewalld-testsuite-$*
 
 check-container: $(CONTAINER_TARGETS)
@@ -110,12 +110,12 @@ check-container: $(CONTAINER_TARGETS)
 .PHONY: $(CONTAINER_TARGETS) $(foreach container,$(CONTAINER_TARGETS),$(container)-image)
 
 check-integration: atconfig atlocal $(TESTSUITE_INTEGRATION)
-	$(SHELL) '$(TESTSUITE_INTEGRATION)' $(TESTSUITEFLAGS) \
+	$(SHELL) '$(TESTSUITE_INTEGRATION)' $(TESTSUITEFLAGS) -j1 \
 		AUTOTEST_PATH="src" \
 		PYTHONPATH="${abs_top_srcdir}/src:${PYTHONPATH}" \
 		FIREWALLD_DEFAULT_CONFIG="${abs_top_srcdir}/config"
 
 installcheck-integration: atconfig atlocal $(TESTSUITE_INTEGRATION)
-	$(SHELL) '$(TESTSUITE_INTEGRATION)' $(TESTSUITEFLAGS)
+	$(SHELL) '$(TESTSUITE_INTEGRATION)' $(TESTSUITEFLAGS) -j1
 
 .PHONY: check-integration installcheck-integration
