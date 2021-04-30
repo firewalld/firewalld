@@ -138,6 +138,9 @@ CONFIG_FILES = \
 	services/collectd.xml \
 	services/condor-collector.xml \
 	services/ctdb.xml \
+	services/dds.xml \
+	services/dds-multicast.xml \
+	services/dds-unicast.xml \
 	services/dhcpv6-client.xml \
 	services/dhcpv6.xml \
 	services/dhcp.xml \
