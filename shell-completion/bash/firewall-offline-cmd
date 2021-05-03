@@ -1,0 +1,228 @@
+# bash completion for firewall-offline-cmd                         -*- shell-script -*-
+
+# Authors:
+# Danilo Figueiredo Rocha <drocha.figueiredo@gmail.com>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+
+# TODO: find a way how to get the following options from firewall-offline-cmd
+
+## Revisado todas as opções --DFR-- 30-07-2018
+OPTIONS_LOCKDOWN="--add-lockdown-whitelist-command= --remove-lockdown-whitelist-command= \
+       --query-lockdown-whitelist-command= --list-lockdown-whitelist-commands \
+       --add-lockdown-whitelist-context= --remove-lockdown-whitelist-context= \
+       --query-lockdown-whitelist-context= --list-lockdown-whitelist-contexts \
+       --add-lockdown-whitelist-uid= --remove-lockdown-whitelist-uid= \
+       --query-lockdown-whitelist-uid= --list-lockdown-whitelist-uids  \
+       --add-lockdown-whitelist-user= --remove-lockdown-whitelist-user= \
+       --query-lockdown-whitelist-user= --list-lockdown-whitelist-users"
+
+## Revisado todas as opções --DFR-- 30-07-2018
+OPTIONS_CONFIG="--get-zones --get-services --get-icmptypes --get-helpers \
+                ${OPTIONS_LOCKDOWN} --list-all-zones \
+                --info-zone= --info-service= --info-icmptype= \
+		            --info-ipset= --info-helper="
+
+## Revisado todas as opções --DFR-- 30-07-2018
+OPTIONS_ZONE_INTERFACES_SOURCES="\
+            --add-interface= --remove-interface= --query-interface= \
+            --list-interfaces --change-interface= --change-zone= \
+            --add-source= --remove-source= --query-source= \
+            --change-source= --list-sources"
+
+## Revisado todas as opções --DFR-- 30-07-2018
+OPTIONS_ZONE_ACTION_ACTION="--add-service= --remove-service= --query-service= \
+                       --add-port= --remove-port= --query-port= \
+                       --add-source-port= --remove-source-port= --query-source-port= \
+                       --add-protocol= --remove-protocol= --query-protocol= \
+                       --add-icmp-block= --remove-icmp-block= --query-icmp-block= \
+                       --add-forward-port= --remove-forward-port= --query-forward-port="
+
+## Revisado todas as opções --DFR-- 30-07-2018
+## OBS: icmp-block-inversion only in the new release 0.6.0.0
+OPTIONS_ZONE_ADAPT_QUERY="--add-rich-rule= --remove-rich-rule= --query-rich-rule= \
+                    --add-icmp-block-inversion --remove-icmp-block-inversion \
+                    --query-icmp-block-inversion \
+                    --add-masquerade --remove-masquerade --query-masquerade \
+                    --list-services --list-ports --list-protocols \
+                    --list-source-ports --list-icmp-blocks \
+                    --list-forward-ports --list-rich-rules --list-all"
+
+## Revisado todas as opções --DFR-- 30-07-2018
+OPTIONS_ZONE_PERMANENT_ONLY="--get-description --get-short \
+                             --set-description= --set-short="
+
+## Revisado todas as opções --DFR-- 30-07-2018
+OPTIONS_IPSET_ACTION_ACTION="--add-entry= --remove-entry= --query-entry= \
+                             --add-entries-from-file= --remove-entries-from-file"
+
+## Revisado todas as opções --DFR-- 30-07-2018
+## OBS: icmp-block-inversion only in the new release 0.6.0.0
+OPTIONS_IPSET_ADAPT_QUERY="--list-entries"
+
+## Revisado todas as opções --DFR-- 30-07-2018
+# can be used with/without preceding --zone=<zone>
+OPTIONS_ZONE="${OPTIONS_ZONE_INTERFACES_SOURCES} \
+              ${OPTIONS_ZONE_ACTION_ACTION} ${OPTIONS_ZONE_ADAPT_QUERY} \
+              ${OPTIONS_ZONE_PERMANENT_ONLY}"
+
+## Revisado todas as opções --DFR-- 30-07-2018
+OPTIONS_IPSET="${OPTIONS_IPSETACTION_ACTION} ${OPTIONS_IPSET_ADAPT_QUERY}"
+
+## Revisado todas as opções --DFR-- 30-07-2018
+OPTIONS_PERMANENT_ONLY="--new-icmptype= --new-icmptype-from-file= --delete-icmptype= \
+                        --new-service= --new-service-from-file= --delete-service= \
+                        --new-zone= --new-zone-from-file= --delete-zone= \
+                        --new-ipset= --new-ipset-from-file= --delete-ipset= \
+                        --new-helper= --new-helper-from-file= --delete-helper= \
+                        --get-target --set-target= \
+                        --path-zone= --path-service= --path-icmptype= \
+                        --path-ipset= --path-helper="
+
+## Revisado todas as opções --DFR-- 30-07-2018
+OPTIONS_NEW_IPSET="--type= --option="
+
+## Revisado todas as opções --DFR-- 30-07-2018
+OPTIONS_NEW_HELPER="--module= --family="
+
+## Revisado todas as opções --DFR-- 30-07-2018
+OPTIONS_HELPER=""
+
+## Revisado todas as opções --DFR-- 30-07-2018
+# can be used after --permanent
+OPTIONS_PERMANENT="${OPTIONS_CONFIG} --zone= ${OPTIONS_ZONE} \
+                   ${OPTIONS_PERMANENT_ONLY}"
+
+## Revisado todas as opções --DFR-- 30-07-2018
+OPTIONS_DIRECT=" --add-chain --remove-chain --query-chain --get-chains --get-all-chains \
+         --add-rule --remove-rule  --remove-rules --query-rule  --get-rules  --get-all-rules \
+         --add-passthrough --remove-passthrough \
+         --query-passthrough --get-passthroughs --get-all-passthroughs"
+
+## Revisado todas as opções --DFR-- 30-07-2018
+# these all can be used as a "first" option
+OPTIONS_GENERAL="--help --version \
+                 --get-log-denied --set-log-denied= \
+                 --lockdown-on --lockdown-off --query-lockdown \
+                 --get-default-zone --set-default-zone= \
+                 --get-zone-of-interface= \
+                 ${OPTIONS_CONFIG} \
+                 --zone= ${OPTIONS_ZONE} \
+                 --direct"
+
+_firewall_offline_cmd()
+{
+    local cur prev words cword split
+    _init_completion -s || return
+    firewall-cmd --state &> /dev/null
+    if [[ "${?}" -eq 0 ]]; then
+        echo -e "\nfirewalld is running, please use firewall-cmd."
+        return
+    fi
+
+    case $prev in
+        --*-entries-from-file|--new-*-from-file)
+            _filedir
+            return
+            ;;
+        --new-ipset*)
+            if [[ "$cur" == -* ]]; then
+                COMPREPLY=( $( compgen -W "${OPTIONS_NEW_IPSET}" -- "$cur") )
+            fi
+            ;;
+        --new-helper*)
+            if [[ "$cur" == -* ]]; then
+                COMPREPLY=( $( compgen -W "${OPTIONS_NEW_HELPER}" -- "$cur") )
+            fi
+            ;;
+        --new-*)
+            ;;
+        --zone|--set-default-zone|--info-zone|--path-zone)
+            COMPREPLY=( $( compgen -W '`firewall-offline-cmd --get-zones`' -- "$cur" ) )
+            ;;
+        --zone=*)
+            COMPREPLY=( $( compgen -W "${OPTIONS_ZONE}" -- "$cur" ) )
+            ;;
+        --ipset=*)
+            COMPREPLY=( $( compgen -W "${OPTIONS_IPSET}" -- "$cur" ) )
+            ;;
+        --*-ipset)
+            COMPREPLY=( $( compgen -W '`firewall-offline-cmd --get-ipsets`' -- "$cur" ) )
+            ;;
+        --*-service)
+            COMPREPLY=( $( compgen -W '`firewall-offline-cmd --get-services`' -- "$cur" ) )
+            ;;
+        --helper|--info-helper|--path-helper)
+            COMPREPLY=( $( compgen -W '`firewall-offline-cmd --get-helpers`' -- "$cur" ) )
+            ;;
+        --helper=*)
+            COMPREPLY=( $( compgen -W "${OPTIONS_HELPER}" -- "$cur" ) )
+            ;;
+        --*-icmp-block|--info-icmptype|--path-icmptype)
+            COMPREPLY=( $( compgen -W '`firewall-offline-cmd --get-icmptypes`' -- "$cur" ) )
+            ;;
+        --list-services|--add-service=*|--remove-service=*|--query-service=*|\
+        --list-ports|--add-port=*|--remove-port=*|--query-port=*|\
+        --list-source-ports|--add-source-port=*|--remove-source-port=*|--query-source-port=*|\
+        --list-protocols|--add-protocol=*|--remove-protocol=*|--query-protocol=*|\
+        --list-icmp-blocks|--add-icmp-block=*|--remove-icmp-block=*|--query-icmp-block=*|\
+        --list-forward-ports|--add-forward-port=*|--remove-forward-port=*|--query-forward-port=*|\
+        --list-interfaces|--add-interface=*|--remove-interface=*|--query-interface=*|\
+        --list-sources|--add-source=*|--remove-source=*|--query-source=*|\
+        --add-masquerade|--remove-masquerade|--query-masquerade|--list-all|\
+        --get-description|--get-short|--set-description=*|--set-short=*)
+            opts=""
+            # --add and --remove can be used multiple times
+            if [[ ( ${prev} == --add-* ) || ( ${prev} == --remove-* ) ]]; then
+                [[ ${prev} == *=* ]] && opts="${prev%=*}=" || opts="${prev}"
+            fi
+            [[ ! ${words[@]} == *--zone=* ]] && opts="${opts} --zone="
+            if [ -n "${opts}" ]; then
+                COMPREPLY=( $( compgen -W "${opts}" -- "$cur" ) )
+            fi
+            ;;
+        --*-interface|--change-zone)
+            _available_interfaces
+            ;;
+        --direct)
+            COMPREPLY=( $( compgen -W "${OPTIONS_DIRECT}" -- "$cur" ) )
+            ;;
+        --*-rich-rule)
+            # to not be matched with --*-rule below
+            return 0
+            ;;
+        --*-chain|--get-chains|--*-rule|--get-rules|--remove-rules)
+            COMPREPLY=( $( compgen -W 'ipv4 ipv6 eb' -- "$cur" ) )
+            ;;
+        ipv4|ipv6|eb)
+            COMPREPLY=( $( compgen -W 'nat filter mangle' -- "$cur" ) )
+            ;;
+        *)
+            if [[ "$cur" == -* ]]; then
+                if [[ ${words[@]} == *--new-ipset* ]]; then
+                    COMPREPLY=( $( compgen -W "${OPTIONS_NEW_IPSET}" -- "$cur") )
+                else
+                    COMPREPLY=( $( compgen -W "${OPTIONS_GENERAL}" -- "$cur") )
+                fi
+            fi
+            ;;
+    esac
+
+    # do not append a space to words that end with =
+    [[ $COMPREPLY == *= ]] && compopt -o nospace
+
+} &&
+complete -F _firewall_offline_cmd firewall-offline-cmd
