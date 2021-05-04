@@ -21,7 +21,7 @@
 
 __all__ = [ "getPortID", "getPortRange", "portStr", "getServiceName",
             "checkIP", "checkIP6", "checkIPnMask", "checkIP6nMask",
-            "checkProtocol", "checkInterface", "checkUINT32",
+            "checkProtocol", "checkInterface", "checkUINT16", "checkUINT32",
             "firewalld_is_active", "tempFile", "readfile", "writefile",
             "enable_ip_forwarding", "check_port", "check_address",
             "check_single_address", "check_mac", "uniqify", "ppid_of_pid",
@@ -386,6 +386,16 @@ def checkInterface(iface):
     #    # limit for iptables <= 1.4.5
     #    return False
     return True
+
+def checkUINT16(val):
+    try:
+        x = int(val, 0)
+    except ValueError:
+        return False
+    else:
+        if x >= 0 and x <= 65535:
+            return True
+    return False
 
 def checkUINT32(val):
     try:

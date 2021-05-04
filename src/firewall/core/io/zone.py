@@ -77,6 +77,7 @@ class Zone(IO_Object):
         "protocol": [ "value" ],
         "source-port": [ "port", "protocol" ],
         "log":  None,
+        "nflog":  None,
         "audit": None,
         "accept": None,
         "reject": None,
@@ -93,6 +94,7 @@ class Zone(IO_Object):
         "source": [ "address", "mac", "invert", "family", "ipset" ],
         "destination": [ "address", "invert", "ipset" ],
         "log": [ "prefix", "level" ],
+        "nflog": [ "group", "prefix", "queue-size" ],
         "reject": [ "type" ],
         "tcp-mss-clamp": [ "value" ],
         }

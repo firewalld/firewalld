@@ -22,9 +22,9 @@
 __all__ = [ "Rich_Source", "Rich_Destination", "Rich_Service", "Rich_Port",
             "Rich_Protocol", "Rich_Masquerade", "Rich_IcmpBlock",
             "Rich_IcmpType",
-            "Rich_SourcePort", "Rich_ForwardPort", "Rich_Log", "Rich_Audit",
+            "Rich_SourcePort", "Rich_ForwardPort", "Rich_Log", "Rich_NFLog",
             "Rich_Accept", "Rich_Reject", "Rich_Drop", "Rich_Mark",
-            "Rich_Limit", "Rich_Rule", "Rich_Tcp_Mss_Clamp" ]
+            "Rich_Audit", "Rich_Limit", "Rich_Rule", "Rich_Tcp_Mss_Clamp" ]
 
 from firewall import functions
 from firewall.core.ipset import check_ipset_name
@@ -170,6 +170,45 @@ class Rich_Log(object):
             (' prefix="%s"' % (self.prefix) if self.prefix else "",
              ' level="%s"' % (self.level) if self.level else "",
              " %s" % self.limit if self.limit else "")
+
+    def check(self):
+        if self.prefix and len(self.prefix) > 127:
+            raise FirewallError(errors.INVALID_LOG_PREFIX, "maximum accepted length of 'prefix' is 127.")
+
+        if self.level and \
+               self.level not in [ "emerg", "alert", "crit", "error",
+                                       "warning", "notice", "info", "debug" ]:
+            raise FirewallError(errors.INVALID_LOG_LEVEL, self.level)
+
+        if self.limit is not None:
+            self.limit.check()
+
+class Rich_NFLog(object):
+    def __init__(self, group=None, prefix=None, queue_size=None, limit=None):
+        self.group = group
+        self.prefix = prefix
+        self.threshold = queue_size
+        self.limit = limit
+
+    def __str__(self):
+        return 'nflog%s%s%s%s' % \
+            (' group="%s"' % (self.group) if self.group else "",
+             ' prefix="%s"' % (self.prefix) if self.prefix else "",
+             ' queue-size="%s"' % (self.threshold) if self.threshold else "",
+             " %s" % self.limit if self.limit else "")
+
+    def check(self):
+        if self.group and not functions.checkUINT16(self.group):
+            raise FirewallError(errors.INVALID_NFLOG_GROUP, "nflog 'group' must be an integer between 0 and 65535.")
+
+        if self.prefix and len(self.prefix) > 127:
+            raise FirewallError(errors.INVALID_LOG_PREFIX, "maximum accepted length of 'prefix' is 127.")
+
+        if self.threshold and not functions.checkUINT16(self.threshold):
+            raise FirewallError(errors.INVALID_NFLOG_QUEUE, "nflog 'queue-size' must be an integer between 0 and 65535.")
+
+        if self.limit is not None:
+            self.limit.check()
 
 class Rich_Audit(object):
     def __init__(self, limit=None):
@@ -356,13 +395,13 @@ class Rich_Rule(object):
                 if attr_name not in ['priority', 'family', 'address', 'mac', 'ipset',
                                      'invert', 'value',
                                      'port', 'protocol', 'to-port', 'to-addr',
-                                     'name', 'prefix', 'level', 'type',
+                                     'name', 'group', 'prefix', 'level', 'queue-size', 'type',
                                      'set']:
                     raise FirewallError(errors.INVALID_RULE, "bad attribute '%s'" % attr_name)
             else:             # element
                 if element in ['rule', 'source', 'destination', 'protocol',
                                'service', 'port', 'icmp-block', 'icmp-type', 'masquerade',
-                               'forward-port', 'source-port', 'log', 'audit',
+                               'forward-port', 'source-port', 'log', 'nflog', 'audit',
                                'accept', 'drop', 'reject', 'mark', 'limit', 'not', 'NOT', 'EOL', 'tcp-mss-clamp']:
                     if element == 'source' and self.source:
                         raise FirewallError(errors.INVALID_RULE, "more than one 'source' element")
@@ -373,8 +412,8 @@ class Rich_Rule(object):
                                      'masquerade', 'forward-port',
                                      'source-port'] and self.element:
                         raise FirewallError(errors.INVALID_RULE, "more than one element. There cannot be both '%s' and '%s' in one rule." % (element, self.element))
-                    elif element == 'log' and self.log:
-                        raise FirewallError(errors.INVALID_RULE, "more than one 'log' element")
+                    elif element in ['log', 'nflog'] and self.log:
+                        raise FirewallError(errors.INVALID_RULE, "more than one logging element")
                     elif element == 'audit' and self.audit:
                         raise FirewallError(errors.INVALID_RULE, "more than one 'audit' element")
                     elif element in ['accept', 'drop', 'reject', 'mark'] and self.action:
@@ -503,6 +542,16 @@ class Rich_Rule(object):
                 else:
                     self.log = Rich_Log(attrs.get('prefix'), attrs.get('level'), attrs.get('limit'))
                     in_elements.pop() # log
+                    attrs.clear()
+                    index = index -1 # return token to input
+            elif in_element == 'nflog':
+                if attr_name in ['group', 'prefix', 'queue-size']:
+                    attrs[attr_name] = attr_value
+                elif element == 'limit':
+                    in_elements.append('limit')
+                else:
+                    self.log = Rich_NFLog(attrs.get('group'), attrs.get('prefix'), attrs.get('queue-size'), attrs.get('limit'))
+                    in_elements.pop() # nflog
                     attrs.clear()
                     index = index -1 # return token to input
             elif in_element == 'audit':
@@ -716,13 +765,7 @@ class Rich_Rule(object):
 
         # log
         if self.log is not None:
-            if self.log.level and \
-               self.log.level not in [ "emerg", "alert", "crit", "error",
-                                       "warning", "notice", "info", "debug" ]:
-                raise FirewallError(errors.INVALID_LOG_LEVEL, self.log.level)
-
-            if self.log.limit is not None:
-                self.log.limit.check()
+            self.log.check()
 
         # audit
         if self.audit is not None:
