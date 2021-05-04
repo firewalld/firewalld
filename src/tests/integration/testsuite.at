@@ -9,6 +9,7 @@ m4_define([TESTING_INTEGRATION])
 m4_include([functions.at])
 
 m4_include([integration/polkit.at])
+m4_include([integration/dbus.at])
 
 m4_foreach([FIREWALL_BACKEND], [[nftables], [iptables]], [
     m4_include([integration/networkmanager.at])
