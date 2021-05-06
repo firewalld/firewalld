@@ -20,8 +20,7 @@
 
 """This module contains decorators for use with and without D-Bus"""
 
-__all__ = ["FirewallDBusException", "handle_exceptions",
-           "dbus_handle_exceptions", "dbus_service_method"]
+__all__ = ["handle_exceptions", "dbus_handle_exceptions", "dbus_service_method"]
 
 import dbus
 import dbus.service
@@ -30,20 +29,16 @@ import functools
 import inspect
 from dbus.exceptions import DBusException
 
-from firewall import config
 from firewall.errors import FirewallError
 from firewall import errors
 from firewall.core.logger import log
+from firewall.server.dbus import FirewallDBusException
 
 ############################################################################
 #
 # Exception handler decorators
 #
 ############################################################################
-
-class FirewallDBusException(dbus.DBusException):
-    """FirewallDBusException"""
-    _dbus_error_name = "%s.Exception" % config.dbus.DBUS_INTERFACE
 
 def handle_exceptions(func):
     """Decorator to handle exceptions and log them. Used if not conneced

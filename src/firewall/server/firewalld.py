@@ -37,10 +37,10 @@ from firewall.core.fw import Firewall
 from firewall.core.rich import Rich_Rule
 from firewall.core.logger import log
 from firewall.client import FirewallClientZoneSettings
+from firewall.server.dbus import FirewallDBusException
 from firewall.server.decorators import dbus_handle_exceptions, \
                                        dbus_service_method, \
                                        handle_exceptions, \
-                                       FirewallDBusException, \
                                        dbus_service_method_deprecated, \
                                        dbus_service_signal_deprecated
 from firewall.server.config import FirewallDConfig
