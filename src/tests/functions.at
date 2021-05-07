@@ -134,7 +134,9 @@ m4_define([FWD_START_TEST], [
         trap ". ./cleanup; kill_firewalld; kill_networkmanager; . ./cleanup_late" EXIT
 
         dnl create a namespace and dbus-daemon
-        m4_define([CURRENT_DBUS_ADDRESS], [unix:abstract=firewalld-testsuite-dbus-system-socket-${at_group_normalized}])
+        m4_ifdef([TESTING_INTEGRATION], [], [
+            m4_define([CURRENT_DBUS_ADDRESS], [unix:abstract=firewalld-testsuite-dbus-system-socket-${at_group_normalized}])
+        ])
         m4_define([CURRENT_TEST_NS], [fwd-test-${at_group_normalized}])
         echo "ip netns delete CURRENT_TEST_NS" >> ./cleanup_late
         AT_CHECK([ip netns add CURRENT_TEST_NS])
@@ -213,11 +215,22 @@ m4_define([FWD_START_TEST], [
             </policy>
             </busconfig>
 ])
-        DBUS_PID=`NS_CMD([dbus-daemon --address="CURRENT_DBUS_ADDRESS" --print-pid --config-file="./dbus.conf"])`
-        if test $? -ne 0; then
-            AT_FAIL_IF([:])
-        fi
-        echo "kill $DBUS_PID" >> ./cleanup_late
+        m4_ifdef([TESTING_INTEGRATION], [
+            AT_SKIP_IF([NS_CMD([pgrep firewalld >/dev/null 2>&1])])
+
+            dnl dbus has a firewalld spec
+            AT_SKIP_IF([! test -r /usr/share/dbus-1/system.d/FirewallD.conf])
+            dnl polkit is installed and can be started by dbus-daemon
+            AT_SKIP_IF([! test -r /usr/share/dbus-1/system-services/org.freedesktop.PolicyKit1.service])
+            dnl polkit has a firewalld policy (firewalld has been installed)
+            AT_SKIP_IF([! test -r /usr/share/polkit-1/actions/org.fedoraproject.FirewallD1.policy])
+        ], [
+            DBUS_PID=`NS_CMD([dbus-daemon --address="CURRENT_DBUS_ADDRESS" --print-pid --config-file="./dbus.conf"])`
+            if test $? -ne 0; then
+                AT_FAIL_IF([:])
+            fi
+            echo "kill $DBUS_PID" >> ./cleanup_late
+        ])
 
         IF_HOST_SUPPORTS_NFT_RULE_INDEX([], [
             AT_CHECK([sed -i 's/^IndividualCalls.*/IndividualCalls=yes/' ./firewalld.conf])
@@ -238,7 +251,7 @@ m4_define([FWD_END_TEST], [
             fi
             AT_FAIL_IF([[grep '^[0-9-]*[ ]\+[0-9:]*[ ]\+\(ERROR\|WARNING\)' ./firewalld.log]])
         fi
-        m4_undefine([CURRENT_DBUS_ADDRESS])
+        m4_ifdef([CURRENT_DBUS_ADDRESS], [m4_undefine([CURRENT_DBUS_ADDRESS])])
         m4_undefine([CURRENT_TEST_NS])
     ])
     AT_CLEANUP
@@ -318,7 +331,8 @@ m4_define([m4_strip],
                      [^ ?\(.*\) ?$], [\1])])
 
 m4_define([NS_CMD], [dnl
-    env DBUS_SYSTEM_BUS_ADDRESS="CURRENT_DBUS_ADDRESS" ip netns exec CURRENT_TEST_NS $1 dnl
+    m4_ifdef([TESTING_INTEGRATION], [], [env DBUS_SYSTEM_BUS_ADDRESS="CURRENT_DBUS_ADDRESS"]) dnl command continues to next line
+    ip netns exec CURRENT_TEST_NS $1 dnl
 ])
 
 m4_define([NS_CHECK], [
