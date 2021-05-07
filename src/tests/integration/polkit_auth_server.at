@@ -1,0 +1,52 @@
+FWD_START_TEST([polkit - auth server])
+AT_KEYWORDS(dbus polkit auth)
+
+AT_SKIP_IF([! NS_CMD([which sudo >/dev/null 2>&1])])
+AT_SKIP_IF([! NS_CMD([which getent >/dev/null 2>&1])])
+AT_SKIP_IF([! NS_CMD([getent passwd nobody >/dev/null 2>&1])])
+
+dnl This test verifies the different policy permissions. It does not verify
+dnl every (dbus API, policy) pair. It is only using a subset of the dbus
+dnl interfaces sufficient to verify the policy actions. It's only verifying
+dnl that policy kit auth is functional.
+dnl 
+dnl A prime example of this is that both permanent and runtime config changes
+dnl fall under the "config" polkit action.
+
+FWD_OFFLINE_CHECK([--policy-server], 0, [ignore], [ignore])
+FWD_RESTART
+
+dnl org.fedoraproject.FirewallD1.all
+dnl
+dnl implicitly covered by org.fedoraproject.FirewallD1.config because the CLI
+dnl does authorizeAll() when it has command sequences.
+
+dnl org.fedoraproject.FirewallD1.info
+NS_CHECK([sudo -E -u nobody env PATH="$PATH" firewall-cmd --query-panic], 1, [ignore], [ignore])
+NS_CHECK([firewall-cmd --query-panic], 1, [ignore], [ignore])
+
+dnl org.fedoraproject.FirewallD1.config
+NS_CHECK([sudo -E -u nobody env PATH="$PATH" firewall-cmd --add-service http], 253, [ignore], [ignore])
+NS_CHECK([firewall-cmd --add-service http], 0, [ignore], [ignore])
+
+dnl org.fedoraproject.FirewallD1.config.info
+NS_CHECK([sudo -E -u nobody env PATH="$PATH" firewall-cmd --list-all], 253, [ignore], [ignore])
+NS_CHECK([firewall-cmd --list-all], 0, [ignore], [ignore])
+
+dnl org.fedoraproject.FirewallD1.direct
+NS_CHECK([sudo -E -u nobody env PATH="$PATH" firewall-cmd --direct --add-rule ipv4 filter INPUT 0 -j ACCEPT], 253, [ignore], [ignore])
+NS_CHECK([firewall-cmd --direct --add-rule ipv4 filter INPUT 0 -j ACCEPT], 0, [ignore], [ignore])
+
+dnl org.fedoraproject.FirewallD1.direct.info
+NS_CHECK([sudo -E -u nobody env PATH="$PATH" firewall-cmd --direct --get-all-rules], 253, [ignore], [ignore])
+NS_CHECK([firewall-cmd --direct --get-all-rules], 0, [ignore], [ignore])
+
+dnl org.fedoraproject.FirewallD1.policies
+NS_CHECK([sudo -E -u nobody env PATH="$PATH" firewall-cmd --add-lockdown-whitelist-command="/usr/bin/firewall-cmd"], 253, [ignore], [ignore])
+NS_CHECK([firewall-cmd --add-lockdown-whitelist-command="/usr/bin/firewall-cmd"], 0, [ignore], [ignore])
+
+dnl org.fedoraproject.FirewallD1.policies.info
+NS_CHECK([sudo -E -u nobody env PATH="$PATH" firewall-cmd --query-lockdown], 253, [ignore], [ignore])
+NS_CHECK([firewall-cmd --query-lockdown], 1, [ignore], [ignore])
+
+FWD_END_TEST
