@@ -50,7 +50,7 @@
                 <para>
                     The name of the service to be enabled. To get a list of
                     valid service names <command>firewall-cmd
-                    --list=services</command> can be used.
+                    --get-services</command> can be used.
                 </para>
             </listitem>
         </varlistentry>
@@ -122,7 +122,7 @@
                 <para>
                     The name of the Internet Control Message Protocol (ICMP)
                     type to be blocked. To get a list of valid ICMP types
-                    <command>firewall-cmd --list=icmptypes</command> can be
+                    <command>firewall-cmd --get-icmptypes</command> can be
                     used.
                 </para>
             </listitem>
