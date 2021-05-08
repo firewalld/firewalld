@@ -18,24 +18,20 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-# force use of pygobject3 in python-slip
-from gi.repository import GObject
-import sys
-sys.modules['gobject'] = GObject
 import os
 
 import dbus
 import dbus.service
-import slip.dbus
-import slip.dbus.service
 
 from firewall import config
 from firewall.core.base import DEFAULT_ZONE_TARGET
 from firewall.core.watcher import Watcher
 from firewall.core.logger import log
+from firewall.server.dbus import DbusServiceObject
 from firewall.server.decorators import handle_exceptions, \
     dbus_handle_exceptions, dbus_service_method, \
-    dbus_service_method_deprecated, dbus_service_signal_deprecated
+    dbus_service_method_deprecated, dbus_service_signal_deprecated, \
+    dbus_polkit_require_auth
 from firewall.server.config_icmptype import FirewallDConfigIcmpType
 from firewall.server.config_service import FirewallDConfigService
 from firewall.server.config_zone import FirewallDConfigZone
@@ -61,7 +57,7 @@ from firewall.errors import FirewallError
 #
 ############################################################################
 
-class FirewallDConfig(slip.dbus.service.Object):
+class FirewallDConfig(DbusServiceObject):
     """FirewallD main class"""
 
     persistent = True
@@ -701,7 +697,7 @@ class FirewallDConfig(slip.dbus.service.Object):
 
         return dbus.Dictionary(ret, signature="sv")
 
-    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
+    @dbus_polkit_require_auth(config.dbus.PK_ACTION_CONFIG)
     @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='ssv')
     @dbus_handle_exceptions
     def Set(self, interface_name, property_name, new_value, sender=None):
@@ -773,7 +769,7 @@ class FirewallDConfig(slip.dbus.service.Object):
         log.debug1("config.PropertiesChanged('%s', '%s', '%s')",
                    interface_name, changed_properties, invalidated_properties)
 
-    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_INFO)
+    @dbus_polkit_require_auth(config.dbus.PK_ACTION_INFO)
     @dbus_service_method(dbus.INTROSPECTABLE_IFACE, out_signature='s')
     @dbus_handle_exceptions
     def Introspect(self, sender=None): # pylint: disable=W0613

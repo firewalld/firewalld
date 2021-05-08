@@ -68,6 +68,7 @@ nobase_dist_python_DATA = \
 	firewall/server/config_service.py \
 	firewall/server/config_zone.py \
 	firewall/server/config_policy.py \
+	firewall/server/dbus.py \
 	firewall/server/decorators.py \
 	firewall/server/firewalld.py \
 	firewall/server/__init__.py \

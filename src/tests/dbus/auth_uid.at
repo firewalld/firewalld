@@ -1,0 +1,21 @@
+FWD_START_TEST([dbus - UID auth, no polkit])
+AT_KEYWORDS(dbus auth)
+
+AT_SKIP_IF([! NS_CMD([which sudo >/dev/null 2>&1])])
+AT_SKIP_IF([! NS_CMD([which getent >/dev/null 2>&1])])
+AT_SKIP_IF([! NS_CMD([getent passwd nobody >/dev/null 2>&1])])
+
+dnl Verify we check the UID if polkit is not running.
+dnl
+dnl Note: must explicitly pass $PATH because sudo may scrub it.
+dnl
+NS_CHECK([sudo -E -u nobody env PATH="$PATH" firewall-cmd --add-service http], 253, [ignore], [ignore])
+NS_CHECK([sudo -E -u nobody env PATH="$PATH" firewall-cmd --list-all], 253, [ignore], [ignore])
+NS_CHECK([sudo -E -u nobody env PATH="$PATH" firewall-cmd --query-panic], 253, [ignore], [ignore])
+NS_CHECK([sudo -E -u nobody env PATH="$PATH" firewall-cmd --state], 253, [ignore], [ignore])
+NS_CHECK([firewall-cmd --add-service http], 0, [ignore], [ignore])
+NS_CHECK([firewall-cmd --list-all], 0, [ignore], [ignore])
+NS_CHECK([firewall-cmd --query-panic], 1, [ignore], [ignore])
+NS_CHECK([firewall-cmd --state], 0, [ignore], [ignore])
+
+FWD_END_TEST

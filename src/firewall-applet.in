@@ -38,7 +38,6 @@ from firewall.core.fw_nm import nm_is_imported, nm_get_zone_of_connection, \
                                 nm_get_connections
 from firewall.core.watcher import Watcher
 from firewall.client import FirewallClient
-import slip.dbus
 import dbus
 import signal
 
@@ -542,12 +541,7 @@ class TrayApplet(QtWidgets.QSystemTrayIcon):
         # connect to firewalld
 
         DBusQtMainLoop(set_as_default=True)
-        try:
-            self.bus = slip.dbus.SystemBus()
-            self.bus.default_timeout = None
-        except Exception as msg:
-            print("Not using slip", msg)
-            self.bus = dbus.SystemBus()
+        self.bus = dbus.SystemBus()
 
         if nm_is_imported():
             self.bus.add_signal_receiver(
