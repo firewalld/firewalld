@@ -204,8 +204,7 @@ class FirewallIPSet(object):
         except Exception as msg:
             raise FirewallError(errors.COMMAND_FAILED, msg)
         else:
-            if "timeout" not in obj.options or obj.options["timeout"] == "0" \
-               and entry not in obj.entries:
+            if "timeout" not in obj.options or obj.options["timeout"] == "0":
                 # no entries visible for ipsets with timeout
                 obj.entries.append(entry)
 
@@ -223,8 +222,7 @@ class FirewallIPSet(object):
         except Exception as msg:
             raise FirewallError(errors.COMMAND_FAILED, msg)
         else:
-            if "timeout" not in obj.options or obj.options["timeout"] == "0" \
-               and entry not in obj.entries:
+            if "timeout" not in obj.options or obj.options["timeout"] == "0":
                 # no entries visible for ipsets with timeout
                 obj.entries.remove(entry)
 
