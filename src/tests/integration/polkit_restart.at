@@ -1,0 +1,26 @@
+FWD_START_TEST([polkit - restart])
+AT_KEYWORDS(dbus polkit auth)
+
+AT_SKIP_IF([! NS_CMD([which sudo >/dev/null 2>&1])])
+AT_SKIP_IF([! NS_CMD([which getent >/dev/null 2>&1])])
+AT_SKIP_IF([! NS_CMD([getent passwd nobody >/dev/null 2>&1])])
+AT_SKIP_IF([! NS_CMD([systemctl >/dev/null 2>&1])])
+
+FWD_OFFLINE_CHECK([--policy-server], 0, [ignore], [ignore])
+FWD_RESTART
+
+dnl Verify auth works before and after a policy kit restart
+dnl
+NS_CHECK([sudo -E -u nobody env PATH="$PATH" firewall-cmd --query-panic], 1, [ignore], [ignore])
+NS_CHECK([sudo -E -u nobody env PATH="$PATH" firewall-cmd --add-service http], 253, [ignore], [ignore])
+NS_CHECK([firewall-cmd --add-service http], 0, [ignore], [ignore])
+NS_CHECK([firewall-cmd --remove-service http], 0, [ignore], [ignore])
+
+NS_CHECK([systemctl restart polkit], 0, [ignore], [ignore])
+
+NS_CHECK([sudo -E -u nobody env PATH="$PATH" firewall-cmd --query-panic], 1, [ignore], [ignore])
+NS_CHECK([sudo -E -u nobody env PATH="$PATH" firewall-cmd --add-service http], 253, [ignore], [ignore])
+NS_CHECK([firewall-cmd --add-service http], 0, [ignore], [ignore])
+NS_CHECK([firewall-cmd --remove-service http], 0, [ignore], [ignore])
+
+FWD_END_TEST

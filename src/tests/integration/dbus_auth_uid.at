@@ -1,0 +1,28 @@
+FWD_START_TEST([dbus - UID auth, no polkit])
+AT_KEYWORDS(dbus auth)
+
+AT_SKIP_IF([! NS_CMD([which sudo >/dev/null 2>&1])])
+AT_SKIP_IF([! NS_CMD([which getent >/dev/null 2>&1])])
+AT_SKIP_IF([! NS_CMD([getent passwd nobody >/dev/null 2>&1])])
+
+dnl polkit will automatically be started by dbus. The only way to prevent it is
+dnl to mask the service. polkit must be stopped to exercises the UID auth.
+dnl
+echo "systemctl unmask polkit" >> ./cleanup
+systemctl mask polkit
+systemctl stop polkit
+
+dnl Verify we check the UID if polkit is not running.
+dnl
+dnl Note: must explicitly pass $PATH because sudo may scrub it.
+dnl
+AT_CHECK([sudo -E -u nobody env PATH="$PATH" firewall-cmd --add-service http], 253, [ignore], [ignore])
+AT_CHECK([sudo -E -u nobody env PATH="$PATH" firewall-cmd --list-all], 253, [ignore], [ignore])
+AT_CHECK([sudo -E -u nobody env PATH="$PATH" firewall-cmd --query-panic], 253, [ignore], [ignore])
+AT_CHECK([sudo -E -u nobody env PATH="$PATH" firewall-cmd --state], 253, [ignore], [ignore])
+AT_CHECK([firewall-cmd --add-service http], 0, [ignore], [ignore])
+AT_CHECK([firewall-cmd --list-all], 0, [ignore], [ignore])
+AT_CHECK([firewall-cmd --query-panic], 1, [ignore], [ignore])
+AT_CHECK([firewall-cmd --state], 0, [ignore], [ignore])
+
+FWD_END_TEST

@@ -1,0 +1,4 @@
+AT_BANNER([polkit])
+m4_include([integration/polkit_auth_server.at])
+m4_include([integration/polkit_auth_desktop.at])
+m4_include([integration/polkit_restart.at])

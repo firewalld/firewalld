@@ -9,7 +9,7 @@ jobs:
         iptables libdbus-1-dev libgirepository1.0-dev libglib2.0-dev \
         libxml2-utils nftables pkg-config python3-nftables xsltproc
       pip-dependencies: |
-        decorator dbus-python PyGObject flake8
+        dbus-python PyGObject flake8
 
     runs-on: ubuntu-20.04
 
@@ -36,15 +36,6 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install ${{ env.pip-dependencies }}
-
-      - name: install python-slip-dbus
-        run: |
-          cd /tmp
-          wget --retry-connrefused https://github.com/nphilipp/python-slip/releases/download/python-slip-0.6.5/python-slip-0.6.5.tar.bz2
-          tar xf python-slip-0.6.5.tar.bz2
-          cd python-slip-0.6.5
-          make
-          python ./setup.py install
 
       - name: build firewalld
         run: |
