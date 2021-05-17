@@ -114,6 +114,15 @@
 	    If a reply to the packet would be sent via the same interface that the packet arrived on, the packet will match and be accepted, otherwise dropped.
             For IPv4 the rp_filter is controlled using sysctl.
 	  </para>
+      <para>
+        <emphasis role="bold">Note</emphasis>: This feature has a performance
+        impact. In most cases the impact is not enough to cause a noticeable
+        difference. It requires route lookups and its execution occurs before
+        the established connections fast path. As such it can have a
+        significant performance impact if there is a lot of traffic. It's
+        enabled by default for security, but can be disabled if performance is
+        a concern.
+      </para>
 	</listitem>
       </varlistentry>
 
