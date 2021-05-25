@@ -11,13 +11,14 @@
 # Jiri Grönroos <jiri.gronroos@iki.fi>, 2017. #zanata, 2020.
 # Toni Rantala <trantalafilo@gmail.com>, 2017. #zanata
 # Jiri Grönroos <jiri.gronroos@iki.fi>, 2018. #zanata, 2020.
+# Jan Kuparinen <copper_fin@hotmail.com>, 2021.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-25 10:54-0400\n"
-"PO-Revision-Date: 2020-03-19 09:38+0000\n"
-"Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
+"POT-Creation-Date: 2020-06-30 13:30-0400\n"
+"PO-Revision-Date: 2021-02-17 19:40+0000\n"
+"Last-Translator: Jan Kuparinen <copper_fin@hotmail.com>\n"
 "Language-Team: Finnish <https://translate.fedoraproject.org/projects/"
 "firewalld/master/fi/>\n"
 "Language: fi\n"
@@ -25,7 +26,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.11.3\n"
+"X-Generator: Weblate 4.4.2\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:408
 msgid "Firewall Applet"
@@ -78,13 +79,16 @@ msgstr "Määritä Kilvet ylös/alas -alueet"
 
 #: ../src/firewall-applet.in:212
 msgid "Here you can select the zones used for Shields Up and Shields Down."
-msgstr ""
+msgstr "Täällä voit valita millä alueilla kilvet-ylös ja kilvet-alas käytetään."
 
 #: ../src/firewall-applet.in:218
 msgid ""
 "This feature is useful for people using the default zones mostly. For users, "
 "that are changing zones of connections, it might be of limited use."
 msgstr ""
+"Tämä ominaisuus on hyödyllinen ihmisille, jotka käyttävät enimmäkseen "
+"oletusvyöhykkeitä. Käyttäjille, jotka muuttavat yhteysvyöhykkeitä, siitä voi "
+"olla vähemmän hyötyä."
 
 #: ../src/firewall-applet.in:227
 msgid "Shields Up Zone:"
@@ -239,7 +243,7 @@ msgstr "FirewallD on ladattu uudelleen."
 #: ../src/firewall-applet.in:976
 #, c-format
 msgid "Default zone changed to '%s'."
-msgstr "Oletusalueeksi asetettu  '%s'."
+msgstr "Oletusalueeksi asetettu '%s'."
 
 #: ../src/firewall-applet.in:995
 msgid "Network traffic is not blocked anymore."
@@ -347,19 +351,19 @@ msgstr "Käyttäjätunniste"
 
 #: ../src/firewall-config.in:284 ../src/firewall-config.in:318
 msgid "Table"
-msgstr ""
+msgstr "Taulu"
 
 #: ../src/firewall-config.in:286 ../src/firewall-config.in:320
 msgid "Chain"
-msgstr ""
+msgstr "Ketju"
 
 #: ../src/firewall-config.in:322 ../src/firewall-config.in:824
 msgid "Priority"
-msgstr ""
+msgstr "Prioriteetti"
 
 #: ../src/firewall-config.in:324 ../src/firewall-config.in:361
 msgid "Args"
-msgstr ""
+msgstr "Argumentit"
 
 #: ../src/firewall-config.in:401 ../src/firewall-config.in:2336
 msgid "Runtime"
@@ -433,7 +437,7 @@ msgstr "kirjaa"
 
 #: ../src/firewall-config.in:836
 msgid "Audit"
-msgstr ""
+msgstr "Auditointi"
 
 #: ../src/firewall-config.in:940 ../src/firewall-config.glade.h:221
 msgid "Interface"
@@ -517,7 +521,7 @@ msgstr "icmp-esto"
 #: ../src/firewall-config.in:3358 ../src/firewall-config.in:3673
 #: ../src/firewall-config.glade.h:288
 msgid "icmp-type"
-msgstr ""
+msgstr "icmp-type"
 
 #: ../src/firewall-config.in:2084 ../src/firewall-config.in:3192
 #: ../src/firewall-config.in:3360 ../src/firewall-config.in:3676
@@ -657,7 +661,8 @@ msgid ""
 "Do you want to masquerade this zone ?"
 msgstr ""
 "Välittäminen toiseen järjestelmään on hyödyllistä vain jos verkkoliitäntä on "
-"maskeerattu. Haluatko maskeerata tämän alueen?"
+"maskeerattu. \n"
+"Haluatko maskeerata tämän alueen?"
 
 #: ../src/firewall-config.in:5391
 msgid "Built-in service, rename not supported."
@@ -767,11 +772,11 @@ msgstr "Valitse oletusalue alapuolella olevasta listasta."
 
 #: ../src/firewall-config.glade.h:10
 msgid "Direct Chain"
-msgstr ""
+msgstr "Suora ketju"
 
 #: ../src/firewall-config.glade.h:11
 msgid "Please select ipv and table and enter the chain name."
-msgstr ""
+msgstr "Valitse ipv ja taulu ja anna ketjunimi."
 
 #: ../src/firewall-config.glade.h:12
 msgid "ipv:"
@@ -803,11 +808,11 @@ msgstr "Taulu:"
 
 #: ../src/firewall-config.glade.h:19
 msgid "Direct Passthrough Rule"
-msgstr ""
+msgstr "Suora läpikulkusääntö"
 
 #: ../src/firewall-config.glade.h:20
 msgid "Please select ipv and enter the args."
-msgstr ""
+msgstr "Valitse ipv ja anna argumentit."
 
 #: ../src/firewall-config.glade.h:21
 msgid "Args:"
@@ -856,15 +861,15 @@ msgstr "Edelleenohjaa toiseen porttiin"
 
 #: ../src/firewall-config.glade.h:32
 msgid "Base Helper Settings"
-msgstr ""
+msgstr "Perus avustaja-asetukset"
 
 #: ../src/firewall-config.glade.h:33
 msgid "Please configure base helper settings:"
-msgstr ""
+msgstr "Määrittele perusavustajan asetukset:"
 
 #: ../src/firewall-config.glade.h:34
 msgid "Bold entries are mandatory, all others are optional."
-msgstr ""
+msgstr "Lihavoidut kohdat ovat pakollisia, muut ovat vapaaehtoisia."
 
 #: ../src/firewall-config.glade.h:35
 msgid "Name:"
@@ -900,11 +905,11 @@ msgstr "Valitse apuri:"
 
 #: ../src/firewall-config.glade.h:46
 msgid "Base ICMP Type Settings"
-msgstr ""
+msgstr "Perus ICMP tyypin asetukset"
 
 #: ../src/firewall-config.glade.h:47
 msgid "Please configure base ICMP type settings:"
-msgstr ""
+msgstr "Määrittele perus ICMP tyypin asetukset:"
 
 #: ../src/firewall-config.glade.h:48
 msgid "ICMP Type"
@@ -1008,7 +1013,7 @@ msgstr "Lukitus"
 
 #: ../src/firewall-config.glade.h:72
 msgid "Make runtime configuration permanent"
-msgstr "Tee ajonaikaisista asetuksista pysyviä."
+msgstr "Tee ajonaikaisista asetuksista pysyviä"
 
 #: ../src/firewall-config.glade.h:73
 msgid "Runtime To Permanent"
@@ -1058,11 +1063,15 @@ msgstr "Vaihda sidoksen alue"
 msgid ""
 "Hide active runtime bindings of connections, interfaces and sources to zones"
 msgstr ""
+"Piilota yhteyksien, rajapintojen ja lähteiden aktiiviset ajonaikaiset "
+"sidokset vyöhykkeisiin"
 
 #: ../src/firewall-config.glade.h:85
 msgid ""
 "Show active runtime bindings of connections, interfaces and sources to zones"
 msgstr ""
+"Näytä yhteyksien, rajapintojen ja lähteiden aktiiviset ajonaikaiset sidokset "
+"vyöhykkeisiin"
 
 #: ../src/firewall-config.glade.h:86
 msgid "Configuration:"
@@ -1074,6 +1083,9 @@ msgid ""
 "configuration. Permanent configuration will be active after service or "
 "system reload or restart."
 msgstr ""
+"Tällä hetkellä näkyvät asetukset. Ajonaikaiset asetukset on todellinen "
+"aktiivinen asetus. Pysyvät asetukset tulevat voimaan huollon tai "
+"järjestelmän uudelleenlatauksen tai uudelleenkäynnistyksen jälkeen."
 
 #: ../src/firewall-config.glade.h:88
 msgid ""
@@ -1125,6 +1137,8 @@ msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks that can connect to the machine."
 msgstr ""
+"Lisää muita portteja tai porttialueita, joiden on oltava kaikkien koneeseen "
+"yhdistettävissä olevien isäntien tai verkkojen käytettävissä."
 
 #: ../src/firewall-config.glade.h:97
 msgid "Add Port"
@@ -1169,6 +1183,8 @@ msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks that can connect to the machine."
 msgstr ""
+"Lisää muita lähdeportteja tai lähdeporttialueita, joiden on oltava kaikkien "
+"koneeseen yhdistettävissä olevien isäntien tai verkkojen käytettävissä."
 
 #: ../src/firewall-config.glade.h:107
 msgid "Source Ports"
@@ -1186,13 +1202,15 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:109
 msgid "Masquerade zone"
-msgstr ""
+msgstr "Maskeerausalue"
 
 #: ../src/firewall-config.glade.h:110
 msgid ""
 "If you enable masquerading, IP forwarding will be enabled for your IPv4 "
 "networks."
 msgstr ""
+"Jos otat maskeerauksen käyttöön, IP-edelleenlähetystä on mahdollista käyttää "
+"IPv4-verkoissasi."
 
 #: ../src/firewall-config.glade.h:111
 msgid "Masquerading"
@@ -1246,10 +1264,12 @@ msgid ""
 "If Invert Filter is enabled, marked ICMP entries are accepted and the others "
 "are rejected. In a zone with the target DROP, they are dropped."
 msgstr ""
+"Jos käänteinen maskeeraus on käytössä, merkityt ICMP-merkinnät hyväksytään "
+"ja muut hylätään. Vyöhykkeellä, jolla on DROP-tavoite, ne pudotetaan."
 
 #: ../src/firewall-config.glade.h:119
 msgid "Invert Filter"
-msgstr ""
+msgstr "Käännä suodatin päinvastoin"
 
 #: ../src/firewall-config.glade.h:120
 msgid "ICMP Filter"
@@ -1257,7 +1277,7 @@ msgstr "ICMP-suodin"
 
 #: ../src/firewall-config.glade.h:121
 msgid "Here you can set rich language rules for the zone."
-msgstr ""
+msgstr "Täällä voit asettaa monipuoliset kielisäännöt vyöhykkeelle."
 
 #: ../src/firewall-config.glade.h:122
 msgid "Add Rich Rule"
@@ -1280,6 +1300,8 @@ msgid ""
 "Add entries to bind interfaces to the zone. If the interface will be used by "
 "a connection, the zone will be set to the zone specified in the connection."
 msgstr ""
+"Lisää merkinnät liittääksesi rajapinnat vyöhykkeeseen. Jos yhteys käyttää "
+"liitäntää, vyöhyke asetetaan yhteydelle määritettyyn vyöhykkeeseen."
 
 #: ../src/firewall-config.glade.h:127
 msgid "Add Interface"
@@ -1299,6 +1321,9 @@ msgid ""
 "to a MAC source address, but with limitations. Port forwarding and "
 "masquerading will not work for MAC source bindings."
 msgstr ""
+"Lisää merkinnät sitomaan lähdeosoitteet tai -alueet vyöhykkeeseen. Voit myös "
+"sitoa MAC-lähdeosoitteeseen, mutta rajoituksin. Porttien edelleenlähetys ja "
+"maskeeraus ei toimi MAC-lähdesidonnassa."
 
 #: ../src/firewall-config.glade.h:132
 msgid "Add Source"
@@ -1345,6 +1370,8 @@ msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks."
 msgstr ""
+"Lisää muita portteja tai porttialueita, joiden on oltava kaikkien isäntien "
+"tai verkkojen käytettävissä."
 
 #: ../src/firewall-config.glade.h:144
 msgid "Edit Entry"
@@ -1359,6 +1386,8 @@ msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks."
 msgstr ""
+"Lisää muita lähdeportteja tai -porttialueita, joiden on oltava kaikkien "
+"isäntien tai verkkojen käytettävissä."
 
 #: ../src/firewall-config.glade.h:147
 msgid "Source Port"
@@ -1366,7 +1395,7 @@ msgstr "Lähdeportti"
 
 #: ../src/firewall-config.glade.h:148
 msgid "Netfilter helper modules are needed for some services."
-msgstr ""
+msgstr "Netfilter-apumoduuleja tarvitaan joihinkin palveluihin."
 
 #: ../src/firewall-config.glade.h:149
 msgid "Modules"
@@ -1433,12 +1462,17 @@ msgid ""
 "added by firewalld. Entries, that have been directly added with the ipset "
 "command wil not be listed here."
 msgstr ""
+"IPSetin merkinnät. Näet vain niiden ipsetin merkinnät, jotka eivät käytä "
+"aikakatkaisua, ja vain palomuurin lisäämät merkinnät. Suoraan ipset-"
+"komennolla lisättyjä merkintöjä ei luetella tässä."
 
 #: ../src/firewall-config.glade.h:161
 msgid ""
 "This IPSet uses the timeout option, therefore no entries are visible here. "
 "The entries should be taken care directly with the ipset command."
 msgstr ""
+"Tämä IPSet käyttää aikakatkaisuvaihtoehtoa, joten tässä ei ole näkyvissä "
+"merkintöjä. Merkinnät tulisi hoitaa suoraan ipset-komennolla."
 
 #: ../src/firewall-config.glade.h:162
 msgid "Add"
@@ -1451,13 +1485,15 @@ msgstr "Tietueet"
 #: ../src/firewall-config.glade.h:165
 msgid ""
 "IPSets can only be created or deleted in the permanent configuration view."
-msgstr ""
+msgstr "IPS-setit voidaan luoda tai poistaa vain pysyvän kokoonpanon näkymässä."
 
 #: ../src/firewall-config.glade.h:166
 msgid ""
 "A firewalld icmptype provides the information for an Internet Control "
 "Message Protocol (ICMP) type for firewalld."
 msgstr ""
+"Palomuuri icmptype antaa tietoja palomuurin Internet Control Message "
+"Protocol (ICMP) -tyypistä."
 
 #: ../src/firewall-config.glade.h:167
 msgid "Add ICMP Type"
@@ -1473,17 +1509,19 @@ msgstr "Poista ICMP-tyyppi"
 
 #: ../src/firewall-config.glade.h:170
 msgid "Load ICMP Type Defaults"
-msgstr ""
+msgstr "Lataa ICMP tyypin oletusarvot"
 
 #: ../src/firewall-config.glade.h:171
 msgid "Specify whether this ICMP Type is available for IPv4 and/or IPv6."
-msgstr ""
+msgstr "Määritä, onko tämä ICMP-tyyppi käytettävissä IPv4:lle ja/tai IPv6:lle."
 
 #: ../src/firewall-config.glade.h:172
 msgid ""
 "ICMP Types can only be changed in the permanent configuration view. The "
 "runtime configuration of ICMP Types is fixed."
 msgstr ""
+"ICMP tyyppejä voi muuttaa vain pysyvän kokoonpanon asetusnäkymässä. ICMP "
+"tyyppien ajonaikaista kokoonpanoa ei voi muuttaa."
 
 #: ../src/firewall-config.glade.h:173
 msgid ""
@@ -1492,10 +1530,14 @@ msgid ""
 "are using ports that are unrelated to the signaling connection and are "
 "therefore blocked by the firewall without the helper."
 msgstr ""
+"Yhteyden seuranta-apulainen auttaa tekemään toimivia protokollia, jotka "
+"käyttävät erilaisia virtauksia signalointiin ja tiedonsiirtoon. "
+"Tiedonsiirrot käyttävät portteja, jotka eivät liity merkinantoyhteyteen ja "
+"jotka palomuuri siten estää ilman auttajaa."
 
 #: ../src/firewall-config.glade.h:174
 msgid "Define ports or port ranges, which are monitored by the helper."
-msgstr ""
+msgstr "Määritä portit tai porttialueet, joita auttaja valvoo."
 
 #: ../src/firewall-config.glade.h:175
 msgid ""
@@ -1504,6 +1546,11 @@ msgid ""
 "commands, parameters and targets. Direct configuration should be used only "
 "as a last resort when it is not possible to use other firewalld features."
 msgstr ""
+"Suora määritys antaa suoremman pääsyn palomuuriin. Nämä vaihtoehdot "
+"edellyttävät käyttäjän tuntevan iptables-peruskäsitteet, eli taulukot, "
+"ketjut, komennot, parametrit ja kohteet. Suoraa määritystä tulisi käyttää "
+"vain viimeisenä keinona, kun muita palomuuriominaisuuksia ei ole mahdollista "
+"käyttää."
 
 #: ../src/firewall-config.glade.h:176
 msgid ""
@@ -1511,31 +1558,35 @@ msgid ""
 "will be for iptables, with ipv6 for ip6tables and with eb for ethernet "
 "bridges (ebtables)."
 msgstr ""
+"Kunkin vaihtoehdon ipv-argumentin on oltava ipv4 tai ipv6 tai eb. IPv4: n "
+"kanssa se on tarkoitettu iptauluille, ipv6 ip6taululle ja eb ethernet-"
+"siltojen (ebtables) kanssa."
 
 #: ../src/firewall-config.glade.h:177
 msgid "Additional chains for use with rules."
-msgstr ""
+msgstr "Lisäketjut käytettäväksi sääntöjen kanssa."
 
 #: ../src/firewall-config.glade.h:178
 msgid "Add Chain"
-msgstr ""
+msgstr "Lisää ketju"
 
 #: ../src/firewall-config.glade.h:179
 msgid "Edit Chain"
-msgstr ""
+msgstr "Muokkaa ketju"
 
 #: ../src/firewall-config.glade.h:180
 msgid "Remove Chain"
-msgstr ""
+msgstr "Poista ketju"
 
 #: ../src/firewall-config.glade.h:181
 msgid "Chains"
-msgstr ""
+msgstr "Ketjut"
 
 #: ../src/firewall-config.glade.h:182
 msgid ""
 "Add a rule with the arguments args to a chain in a table with a priority."
 msgstr ""
+"Lisää sääntö, joka sisältää argumentit args prioriteettitaulukon ketjuun."
 
 #: ../src/firewall-config.glade.h:183
 msgid ""
@@ -1546,6 +1597,12 @@ msgid ""
 "after another one, use a low priority for the first and a higher for the "
 "following."
 msgstr ""
+"Prioriteettia käytetään sääntöjen tilaamiseen. Prioriteetti 0 tarkoittaa "
+"säännön lisäämistä ketjun päälle, korkeammalla prioriteetilla sääntö "
+"lisätään alemmas. Säännöt, joilla on sama prioriteetti, ovat samalla "
+"tasolla, eikä näiden sääntöjen järjestys ole kiinteä ja saattaa muuttua. Jos "
+"haluat varmistaa, että sääntö lisätään toisen jälkeen, käytä ensimmäiseen "
+"matalaa prioriteettia ja seuraavaan korkeampaa."
 
 #: ../src/firewall-config.glade.h:184
 msgid "Add Rule"
@@ -1569,26 +1626,29 @@ msgid ""
 "not placed in special chains. All iptables, ip6tables and ebtables options "
 "can be used."
 msgstr ""
+"Läpikulkusäännöt menevät suoraan palomuurin läpi, eikä niitä sijoiteta "
+"erityisiin ketjuihin. Kaikkia iptaulu-, ip6taulu- ja ebtaulu-asetuksia "
+"voidaan käyttää."
 
 #: ../src/firewall-config.glade.h:189
 msgid "Please be careful with passthrough rules to not damage the firewall."
-msgstr ""
+msgstr "Ole varovainen läpikulkusääntöjen kanssa, ettet vahingoita palomuuria."
 
 #: ../src/firewall-config.glade.h:190
 msgid "Add Passthrough"
-msgstr ""
+msgstr "Lisää läpikulku"
 
 #: ../src/firewall-config.glade.h:191
 msgid "Edit Passthrough"
-msgstr ""
+msgstr "Muokkaa läpikulkua"
 
 #: ../src/firewall-config.glade.h:192
 msgid "Remove Passthrough"
-msgstr ""
+msgstr "Poista läpikulku"
 
 #: ../src/firewall-config.glade.h:193
 msgid "Passthrough"
-msgstr ""
+msgstr "Läpikulku"
 
 #: ../src/firewall-config.glade.h:194
 msgid ""
@@ -1596,6 +1656,10 @@ msgid ""
 "firewalld. It limits changes to the firewall. The lockdown whitelist can "
 "contain commands, contexts, users and user ids."
 msgstr ""
+"Lukitusominaisuus on kevyt versio palomuurin käyttäjä- ja "
+"sovelluskäytännöistä. Se rajoittaa palomuuriin tehtäviä muutoksia. "
+"Lukituksen sallittujen luettelo voi sisältää komentoja, asiayhteyksiä, "
+"käyttäjiä ja käyttäjätunnuksia."
 
 #: ../src/firewall-config.glade.h:195
 msgid ""
@@ -1603,6 +1667,9 @@ msgid ""
 "service. To get the context of a running application use <tt>ps -e --"
 "context</tt>."
 msgstr ""
+"Konteksti on käynnissä olevan sovelluksen tai palvelun suojauskonteksti "
+"(SELinux). Saadaksesi käynnissä olevan sovelluksen konteksti käytä <tt> ps -"
+"e --context </tt>."
 
 #: ../src/firewall-config.glade.h:196
 msgid "Add Context"
@@ -1626,6 +1693,9 @@ msgid ""
 "command lines starting with the command will match. If the '*' is not there "
 "the absolute command inclusive arguments must match."
 msgstr ""
+"Jos sallittujen luettelon komentomerkintä päättyy tähdellä \"*\", kaikki "
+"komennolla alkavat komentorivit vastaavat. Jos \"*\" ei ole siellä, "
+"absoluuttinen komento argumentteineen on vastattava merkintää."
 
 #: ../src/firewall-config.glade.h:201
 msgid "Add Command Line"
@@ -1645,7 +1715,7 @@ msgstr "Komentorivit"
 
 #: ../src/firewall-config.glade.h:205
 msgid "User names."
-msgstr "Käyttäjänimet"
+msgstr "Käyttäjänimet."
 
 #: ../src/firewall-config.glade.h:206
 msgid "Add User Name"
@@ -1665,7 +1735,7 @@ msgstr "Käyttäjänimet"
 
 #: ../src/firewall-config.glade.h:210
 msgid "User ids."
-msgstr "Käyttäjä-ID:t"
+msgstr "Käyttäjä-ID:t."
 
 #: ../src/firewall-config.glade.h:211
 msgid "Add User Id"
@@ -1723,7 +1793,7 @@ msgstr "Perus IPSet-asetukset"
 
 #: ../src/firewall-config.glade.h:224
 msgid "Please configure base ipset settings:"
-msgstr ""
+msgstr "Määrittele perus ipsetin asetukset:"
 
 #: ../src/firewall-config.glade.h:225
 msgid "Type:"
@@ -1735,11 +1805,11 @@ msgstr "Aikakatkos:"
 
 #: ../src/firewall-config.glade.h:227
 msgid "Hashsize:"
-msgstr ""
+msgstr "Hash-koko:"
 
 #: ../src/firewall-config.glade.h:228
 msgid "Maxelem:"
-msgstr ""
+msgstr "Maxelementti:"
 
 #: ../src/firewall-config.glade.h:229
 msgid "Timeout value in seconds"
@@ -1747,11 +1817,11 @@ msgstr "Aikakatkaisun arvo sekunneissa"
 
 #: ../src/firewall-config.glade.h:230
 msgid "Initial hash size, default 1024"
-msgstr ""
+msgstr "Aloitus hash koko, oletuksena 1024"
 
 #: ../src/firewall-config.glade.h:231
 msgid "Max number of elements, default 65536"
-msgstr ""
+msgstr "Elementtien suurin määrä, oletuksena 65536"
 
 #: ../src/firewall-config.glade.h:232
 msgid "Please select an ipset:"
@@ -1759,7 +1829,7 @@ msgstr "Valitse ipset:"
 
 #: ../src/firewall-config.glade.h:234
 msgid "Please enter an ipset entry:"
-msgstr ""
+msgstr "Anna ipset-merkintä:"
 
 #: ../src/firewall-config.glade.h:235
 msgid "Log Denied"
@@ -1771,27 +1841,29 @@ msgstr "Valitse log denied -arvo:"
 
 #: ../src/firewall-config.glade.h:237
 msgid "Mark"
-msgstr ""
+msgstr "Merkitse"
 
 #: ../src/firewall-config.glade.h:238
 msgid "Please enter a mark with an optional mask."
-msgstr ""
+msgstr "Anna merkintä mahdollisen peitteen kanssa."
 
 #: ../src/firewall-config.glade.h:239
 msgid "The mark and the mask fields are both 32 bits wide unsigned numbers."
 msgstr ""
+"Merkki- ja peitekentät ovat molemmat 32 bitin levyisiä etumerkittömiä "
+"numeroita."
 
 #: ../src/firewall-config.glade.h:240
 msgid "Mark:"
-msgstr ""
+msgstr "Merkitse:"
 
 #: ../src/firewall-config.glade.h:241
 msgid "Mask:"
-msgstr ""
+msgstr "Peite:"
 
 #: ../src/firewall-config.glade.h:242
 msgid "Please select a netfilter conntrack helper:"
-msgstr ""
+msgstr "Valitse netfilter conntrack-avustaja:"
 
 #: ../src/firewall-config.glade.h:243
 msgid "- Select -"
@@ -1807,15 +1879,15 @@ msgstr "Portti ja protokolla"
 
 #: ../src/firewall-config.glade.h:246
 msgid "Please enter a port and protocol."
-msgstr "Syötä portti ja protokolla"
+msgstr "Syötä portti ja protokolla."
 
 #: ../src/firewall-config.glade.h:247
 msgid "Direct Rule"
-msgstr ""
+msgstr "Suora sääntö"
 
 #: ../src/firewall-config.glade.h:248
 msgid "Please select ipv and table, chain priority and enter the args."
-msgstr ""
+msgstr "Valitse ipv ja taulukko, ketjuprioriteetti ja anna argumentit."
 
 #: ../src/firewall-config.glade.h:249
 msgid "Priority:"
@@ -1840,6 +1912,8 @@ msgstr "Kirjoita monipuolinen sääntö."
 #: ../src/firewall-config.glade.h:255
 msgid "For host or network allow or denylisting deactivate the element."
 msgstr ""
+"Jotta isäntä tai verkko sallimis- tai estolistat toimisivat, deaktivoi "
+"elementti."
 
 #: ../src/firewall-config.glade.h:256
 msgid "Source:"
@@ -1855,7 +1929,7 @@ msgstr "Loki:"
 
 #: ../src/firewall-config.glade.h:259
 msgid "Audit:"
-msgstr ""
+msgstr "Auditointi:"
 
 #: ../src/firewall-config.glade.h:260
 msgid "ipv4 and ipv6"
@@ -1870,14 +1944,16 @@ msgid ""
 "To enable this Action has to be 'reject' and Family either 'ipv4' or "
 "'ipv6' (not both)."
 msgstr ""
+"Jotta tämä toiminto toiminnon on oltava 'hylkää' ja perheen joko 'ipv4' tai "
+"'ipv6' (ei molempia)."
 
 #: ../src/firewall-config.glade.h:267
 msgid "with Type:"
-msgstr ""
+msgstr "tyypin kanssa:"
 
 #: ../src/firewall-config.glade.h:268
 msgid "With limit:"
-msgstr ""
+msgstr "rajoituksen kanssa:"
 
 #: ../src/firewall-config.glade.h:269
 msgid "/"
@@ -1893,7 +1969,7 @@ msgstr "Taso:"
 
 #: ../src/firewall-config.glade.h:292
 msgid "Element:"
-msgstr ""
+msgstr "Elementti:"
 
 #: ../src/firewall-config.glade.h:293
 msgid "Action:"
@@ -1901,11 +1977,11 @@ msgstr "Toiminto:"
 
 #: ../src/firewall-config.glade.h:294
 msgid "Base Service Settings"
-msgstr ""
+msgstr "Perus palvelun asetukset"
 
 #: ../src/firewall-config.glade.h:295
 msgid "Please configure base service settings:"
-msgstr ""
+msgstr "Määrittele perus palvelun asetukset:"
 
 #: ../src/firewall-config.glade.h:296
 msgid "Please select a service."
@@ -1913,7 +1989,7 @@ msgstr "Valitse palvelu."
 
 #: ../src/firewall-config.glade.h:297
 msgid "Please enter a source."
-msgstr ""
+msgstr "Anna lähde."
 
 #: ../src/firewall-config.glade.h:298
 msgid "User ID"
@@ -1925,19 +2001,19 @@ msgstr "Syötä käyttäjä ID."
 
 #: ../src/firewall-config.glade.h:301
 msgid "Please enter the user name."
-msgstr "Syötä käyttäjänimi"
+msgstr "Syötä käyttäjänimi."
 
 #: ../src/firewall-config.glade.h:302
 msgid "label"
-msgstr ""
+msgstr "nimiö"
 
 #: ../src/firewall-config.glade.h:303
 msgid "Base Zone Settings"
-msgstr ""
+msgstr "Perus alue asetukset"
 
 #: ../src/firewall-config.glade.h:304
 msgid "Please configure base zone settings:"
-msgstr ""
+msgstr "Määrittele perus alue asetukset:"
 
 #: ../src/firewall-config.glade.h:305
 msgid "Default Target"
