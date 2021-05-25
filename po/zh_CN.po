@@ -21,13 +21,14 @@
 # Pany <pany@fedoraproject.org>, 2019. #zanata
 # Pany <geekpany@gmail.com>, 2020.
 # Charles Lee <lchopn@gmail.com>, 2020.
+# Tianhao Chai <cth451@gmail.com>, 2021.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-25 10:54-0400\n"
-"PO-Revision-Date: 2020-07-18 14:28+0000\n"
-"Last-Translator: Charles Lee <lchopn@gmail.com>\n"
+"POT-Creation-Date: 2020-06-30 13:30-0400\n"
+"PO-Revision-Date: 2021-03-27 23:01+0000\n"
+"Last-Translator: Tianhao Chai <cth451@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://translate.fedoraproject.org/"
 "projects/firewalld/master/zh_CN/>\n"
 "Language: zh_CN\n"
@@ -35,7 +36,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.1.1\n"
+"X-Generator: Weblate 4.5.2\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:408
 msgid "Firewall Applet"
@@ -82,7 +83,7 @@ msgstr "为来源 '%s' 选择区域"
 
 #: ../src/firewall-applet.in:199
 msgid "Configure Shields Up/Down Zones"
-msgstr "配置保护开启/关闭区域"
+msgstr "配置开启/关闭保护的区域"
 
 #: ../src/firewall-applet.in:212
 msgid "Here you can select the zones used for Shields Up and Shields Down."
@@ -98,7 +99,7 @@ msgstr ""
 
 #: ../src/firewall-applet.in:227
 msgid "Shields Up Zone:"
-msgstr "开启保护区域:"
+msgstr "开启保护的区域："
 
 #: ../src/firewall-applet.in:236 ../src/firewall-applet.in:249
 msgid "Reset To Default"
@@ -106,7 +107,7 @@ msgstr "重设为默认设置"
 
 #: ../src/firewall-applet.in:240
 msgid "Shields Down Zone:"
-msgstr "关闭保护区域:"
+msgstr "关闭保护的区域："
 
 #: ../src/firewall-applet.in:332
 #, c-format
@@ -123,7 +124,7 @@ msgstr "许可证"
 
 #: ../src/firewall-applet.in:462
 msgid "Shields Up"
-msgstr "启动保护"
+msgstr "开启保护"
 
 #: ../src/firewall-applet.in:469
 msgid "Enable Notifications"
@@ -131,7 +132,7 @@ msgstr "启用通知"
 
 #: ../src/firewall-applet.in:475
 msgid "Edit Firewall Settings..."
-msgstr "编辑防火墙设置..."
+msgstr "编辑防火墙设置……"
 
 #: ../src/firewall-applet.in:479 ../src/firewall-config.glade.h:61
 msgid "Change Zones of Connections..."
@@ -139,7 +140,7 @@ msgstr "更改连接区域……"
 
 #: ../src/firewall-applet.in:483
 msgid "Configure Shields UP/Down Zones..."
-msgstr "配置保护开启/关闭区域……"
+msgstr "配置开启/关闭保护的区域……"
 
 #: ../src/firewall-applet.in:487
 msgid "Block all network traffic"
@@ -197,7 +198,7 @@ msgstr "没有可用的 NetworkManager 导入"
 
 #: ../src/firewall-applet.in:851
 msgid "No connection to firewall daemon"
-msgstr "没有与防火墙守护进程的连接"
+msgstr "未连接至防火墙守护进程"
 
 #: ../src/firewall-applet.in:857 ../src/firewall-applet.in:994
 msgid "All network traffic is blocked."
@@ -212,13 +213,12 @@ msgstr "默认区域： '%s'"
 msgid ""
 "Default Zone '{default_zone}' active for connection '{connection}' on "
 "interface '{interface}'"
-msgstr ""
-"网卡 '{interface}' 上的连接 '{connection}' 的活动默认区 '{default_zone}'"
+msgstr "网卡 '{interface}' 上的连接 '{connection}' 正在使用默认区域 '{default_zone}'"
 
 #: ../src/firewall-applet.in:869
 msgid ""
 "Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
-msgstr "在网卡 '{interface}' 启用连接 '{connection}' 的区域 '{zone}'"
+msgstr "网卡 '{interface}' 上的连接 '{connection}' 正在使用区域 '{zone}'"
 
 #: ../src/firewall-applet.in:881
 msgid "Zone '{zone}' active for interface '{interface}'"
@@ -365,7 +365,7 @@ msgstr "优先级"
 
 #: ../src/firewall-config.in:324 ../src/firewall-config.in:361
 msgid "Args"
-msgstr "自变量"
+msgstr "参数"
 
 #: ../src/firewall-config.in:401 ../src/firewall-config.in:2336
 msgid "Runtime"
@@ -523,7 +523,7 @@ msgstr "ICMP 拦截"
 #: ../src/firewall-config.in:3358 ../src/firewall-config.in:3673
 #: ../src/firewall-config.glade.h:288
 msgid "icmp-type"
-msgstr "icmp-type"
+msgstr "ICMP 类型"
 
 #: ../src/firewall-config.in:2084 ../src/firewall-config.in:3192
 #: ../src/firewall-config.in:3360 ../src/firewall-config.in:3676
@@ -582,7 +582,7 @@ msgstr "区域 '%s': ICMP 类型 '%s' 不可用。"
 
 #: ../src/firewall-config.in:3009
 msgid "Built-in zone, rename not supported."
-msgstr "预置区域，不支持重命名。"
+msgstr "内建区域不支持重命名。"
 
 #: ../src/firewall-config.in:3124 ../src/firewall-config.in:3624
 #: ../src/firewall-config.glade.h:270
@@ -667,7 +667,7 @@ msgstr ""
 
 #: ../src/firewall-config.in:5391
 msgid "Built-in service, rename not supported."
-msgstr "预置服务，不支持重命名。"
+msgstr "内置服务不支持重命名。"
 
 #: ../src/firewall-config.in:5600
 msgid "Please enter an ipv4 address with the form address[/mask]."
@@ -699,7 +699,7 @@ msgstr ""
 
 #: ../src/firewall-config.in:5791
 msgid "Built-in ipset, rename not supported."
-msgstr "内置 ipset，不支持重命名。"
+msgstr "内置 ipset 不支持重命名。"
 
 #: ../src/firewall-config.in:5883 ../src/firewall-config.in:5965
 msgid "Please select a file"
@@ -730,11 +730,11 @@ msgstr "IPv6"
 
 #: ../src/firewall-config.in:6404
 msgid "Built-in helper, rename not supported."
-msgstr "内置帮助程序，不支持重命名。"
+msgstr "内置帮助程序不支持重命名。"
 
 #: ../src/firewall-config.in:6882
 msgid "Built-in icmp, rename not supported."
-msgstr "预置 ICMP，不支持重命名。"
+msgstr "内置 ICMP 不支持重命名。"
 
 #: ../src/firewall-config.in:7954
 #, c-format
@@ -830,7 +830,7 @@ msgstr "请根据您的需要选择来源和目的选项。"
 
 #: ../src/firewall-config.glade.h:24
 msgid "Port / Port Range:"
-msgstr "端口／端口范围："
+msgstr "端口或端口范围："
 
 #: ../src/firewall-config.glade.h:25
 msgid "IP address:"
@@ -888,7 +888,7 @@ msgstr "描述:"
 
 #: ../src/firewall-config.glade.h:39
 msgid "Family:"
-msgstr "产品线："
+msgstr "地址类型："
 
 #: ../src/firewall-config.glade.h:43
 msgid "Module:"
@@ -916,7 +916,7 @@ msgstr "ICMP 类型"
 
 #: ../src/firewall-config.glade.h:49
 msgid "Please select an ICMP type"
-msgstr "请选择ICMP类型"
+msgstr "请选择 ICMP 类型"
 
 #: ../src/firewall-config.glade.h:50
 msgid "Add Entry"
@@ -955,9 +955,7 @@ msgid ""
 "Reloads firewall rules. Current permanent configuration will become new "
 "runtime configuration. i.e. all runtime only changes done until reload are "
 "lost with reload if they have not been also in permanent configuration."
-msgstr ""
-"重载防火墙规则。当前永久配置将变成新的运行时配置。例如所有仅在运行时配置所做"
-"的变更若未在永久配置中操作，将在重载后丢失。"
+msgstr "重载防火墙规则。运行时配置将从永久配置重新加载。所有仅在运行时配置但未写入永久配置的变更将在重载后丢失。"
 
 #: ../src/firewall-config.glade.h:60
 msgid "Change which zone a network connection belongs to."
@@ -1007,15 +1005,15 @@ msgstr "锁定"
 
 #: ../src/firewall-config.glade.h:72
 msgid "Make runtime configuration permanent"
-msgstr "永久设置运行时配置"
+msgstr "将运行时配置记录到永久配置"
 
 #: ../src/firewall-config.glade.h:73
 msgid "Runtime To Permanent"
-msgstr "将 Runtime 设定为永久配置"
+msgstr "将运行时配置设定为永久配置"
 
 #: ../src/firewall-config.glade.h:74
 msgid "_View"
-msgstr "查看(V)"
+msgstr "查看 (_V)"
 
 #: ../src/firewall-config.glade.h:75
 msgid "IPSets"
@@ -1796,11 +1794,11 @@ msgstr "请输入具有可选掩码的掩码。"
 
 #: ../src/firewall-config.glade.h:239
 msgid "The mark and the mask fields are both 32 bits wide unsigned numbers."
-msgstr "掩码和掩码字段都是 32 位宽的未签名数字。"
+msgstr "掩码和掩码字段都是 32 位的无符号数字。"
 
 #: ../src/firewall-config.glade.h:240
 msgid "Mark:"
-msgstr "掩码："
+msgstr "标记："
 
 #: ../src/firewall-config.glade.h:241
 msgid "Mask:"
@@ -1856,7 +1854,7 @@ msgstr "请输入富规则（rich rule）。"
 
 #: ../src/firewall-config.glade.h:255
 msgid "For host or network allow or denylisting deactivate the element."
-msgstr "为主机或网络的允许或拒绝列表禁用此元素。"
+msgstr "配置适用于主机或网络的允许或阻止规则时，请禁用”元素“选项。"
 
 #: ../src/firewall-config.glade.h:256
 msgid "Source:"
