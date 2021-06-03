@@ -99,11 +99,23 @@ class FirewallPolicy(object):
         for args in obj.services:
             self.add_service(policy, args)
         for args in obj.ports:
-            self.add_port(policy, *args)
+            try:
+                self.add_port(policy, *args)
+            except FirewallError as error:
+                if error.code in [errors.ALREADY_ENABLED]:
+                    log.warning(error)
+                else:
+                    raise error
         for args in obj.protocols:
             self.add_protocol(policy, args)
         for args in obj.source_ports:
-            self.add_source_port(policy, *args)
+            try:
+                self.add_source_port(policy, *args)
+            except FirewallError as error:
+                if error.code in [errors.ALREADY_ENABLED]:
+                    log.warning(error)
+                else:
+                    raise error
         for args in obj.rules:
             self.add_rule(policy, args)
         if obj.masquerade:
