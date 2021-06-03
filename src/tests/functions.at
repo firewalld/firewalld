@@ -242,14 +242,11 @@ m4_define([FWD_START_TEST], [
 
 m4_define([FWD_END_TEST], [
     m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
-        IF_HOST_SUPPORTS_IP6TABLES([], [
-            sed -i "/WARNING: ip6tables not usable, disabling IPv6 firewall/d" ./firewalld.log
-        ])
         if test x"$1" != x"ignore"; then
-            if test -n "$1"; then
-                sed -i $1 ./firewalld.log
-            fi
-            AT_FAIL_IF([[grep '^[0-9-]*[ ]\+[0-9:]*[ ]\+\(ERROR\|WARNING\)' ./firewalld.log]])
+            AT_FAIL_IF([cat ./firewalld.log | dnl
+                       sed "/WARNING: ip6tables not usable, disabling IPv6 firewall/d" | dnl
+                       m4_ifnblank([$1], [sed $1 |]) dnl
+                       [grep '^[0-9-]*[ ]\+[0-9:]*[ ]\+\(ERROR\|WARNING\)']])
         fi
         m4_ifdef([CURRENT_DBUS_ADDRESS], [m4_undefine([CURRENT_DBUS_ADDRESS])])
         m4_undefine([CURRENT_TEST_NS])
