@@ -315,7 +315,7 @@ m4_define([FWD_CHECK], [
 ])
 
 m4_define([FWD_GREP_LOG], [
-    AT_CHECK([grep "$1" ./firewalld.log], 0, [ignore], [ignore])
+    AT_CHECK([grep "$1" ./firewalld.log], $2, [ignore], [ignore])
 ])
 
 m4_define([TRIM], [[sed -e 's/^[ \t]*//' -e 's/[ \t]*$//']])
