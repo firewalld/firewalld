@@ -212,6 +212,7 @@ CONFIG_FILES = \
 	services/murmur.xml \
 	services/mysql.xml \
 	services/nbd.xml \
+	services/netbios-ns.xml \
 	services/nfs.xml \
 	services/nfs3.xml \
 	services/nmea-0183.xml \

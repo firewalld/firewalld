@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>NetBIOS NS</short>
+  <description>This allows you to find Windows (Samba) servers that share files and printers.</description>
+  <port protocol="udp" port="137"/>
+  <helper name="netbios-ns"/>
+</service>
