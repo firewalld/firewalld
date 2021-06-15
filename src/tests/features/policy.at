@@ -568,7 +568,7 @@ foobar
 NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_FORWARD_POLICIES_pre {
-            iifname { "foobar0" } oifname { "foobar1" } jump filter_FWD_policy_foobar
+            iifname "foobar0" oifname "foobar1" jump filter_FWD_policy_foobar
         }
     }
 ])
@@ -631,7 +631,7 @@ NFT_LIST_RULES([inet], [filter_INPUT_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_INPUT_POLICIES_pre {
             jump filter_IN_policy_allow-host-ipv6
-            iifname { "foobar0" } jump filter_IN_policy_foobar
+            iifname "foobar0" jump filter_IN_policy_foobar
         }
     }
 ])
@@ -865,7 +865,7 @@ dnl (filter, output)
 NFT_LIST_RULES([inet], [filter_OUTPUT_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_OUTPUT_POLICIES_pre {
-            oifname { "foobar0" } jump filter_OUT_policy_foobar
+            oifname "foobar0" jump filter_OUT_policy_foobar
         }
     }
 ])
@@ -1204,7 +1204,7 @@ dnl (filter, forward)
 NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_FORWARD_POLICIES_pre {
-            oifname { "foobar0" } jump filter_FWD_policy_foobar
+            oifname "foobar0" jump filter_FWD_policy_foobar
         }
     }
 ])
@@ -1262,14 +1262,14 @@ dnl (nat, postrouting)
 NFT_LIST_RULES([ip], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
     table ip firewalld {
         chain nat_POSTROUTING_POLICIES_pre {
-            oifname { "foobar0" } jump nat_POST_policy_foobar
+            oifname "foobar0" jump nat_POST_policy_foobar
         }
     }
 ])
 NFT_LIST_RULES([ip6], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
     table ip6 firewalld {
         chain nat_POSTROUTING_POLICIES_pre {
-            oifname { "foobar0" } jump nat_POST_policy_foobar
+            oifname "foobar0" jump nat_POST_policy_foobar
         }
     }
 ])
@@ -1431,7 +1431,7 @@ dnl (filter, forward)
 NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_FORWARD_POLICIES_pre {
-            iifname { "foobar1" } jump filter_FWD_policy_foobar
+            iifname "foobar1" jump filter_FWD_policy_foobar
         }
     }
 ])
@@ -1455,7 +1455,7 @@ NFT_LIST_RULES([inet], [mangle_PREROUTING_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain mangle_PREROUTING_POLICIES_pre {
             jump mangle_PRE_policy_allow-host-ipv6
-            iifname { "foobar1" } jump mangle_PRE_policy_foobar
+            iifname "foobar1" jump mangle_PRE_policy_foobar
         }
     }
 ])
@@ -1472,7 +1472,7 @@ NFT_LIST_RULES([ip], [nat_PREROUTING_POLICIES_pre], 0, [dnl
     table ip firewalld {
         chain nat_PREROUTING_POLICIES_pre {
             jump nat_PRE_policy_allow-host-ipv6
-            iifname { "foobar1" } jump nat_PRE_policy_foobar
+            iifname "foobar1" jump nat_PRE_policy_foobar
         }
     }
 ])
@@ -1480,7 +1480,7 @@ NFT_LIST_RULES([ip6], [nat_PREROUTING_POLICIES_pre], 0, [dnl
     table ip6 firewalld {
         chain nat_PREROUTING_POLICIES_pre {
             jump nat_PRE_policy_allow-host-ipv6
-            iifname { "foobar1" } jump nat_PRE_policy_foobar
+            iifname "foobar1" jump nat_PRE_policy_foobar
         }
     }
 ])
@@ -1662,7 +1662,7 @@ dnl (filter, forward)
 NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_FORWARD_POLICIES_pre {
-            iifname { "foobar1" } oifname { "foobar0" } jump filter_FWD_policy_foobar
+            iifname "foobar1" oifname "foobar0" jump filter_FWD_policy_foobar
         }
     }
 ])
@@ -1774,7 +1774,7 @@ dnl (filter, forward)
 NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_FORWARD_POLICIES_pre {
-            iifname { "foobar1" } ip daddr 10.10.10.0/24 jump filter_FWD_policy_foobar
+            iifname "foobar1" ip daddr 10.10.10.0/24 jump filter_FWD_policy_foobar
         }
     }
 ])
@@ -1796,7 +1796,7 @@ NFT_LIST_RULES([inet], [mangle_PREROUTING_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain mangle_PREROUTING_POLICIES_pre {
             jump mangle_PRE_policy_allow-host-ipv6
-            iifname { "foobar1" } ip daddr 10.10.10.0/24 jump mangle_PRE_policy_foobar
+            iifname "foobar1" ip daddr 10.10.10.0/24 jump mangle_PRE_policy_foobar
         }
     }
 ])
@@ -1812,7 +1812,7 @@ NFT_LIST_RULES([ip], [nat_PREROUTING_POLICIES_pre], 0, [dnl
     table ip firewalld {
         chain nat_PREROUTING_POLICIES_pre {
             jump nat_PRE_policy_allow-host-ipv6
-            iifname { "foobar1" } ip daddr 10.10.10.0/24 jump nat_PRE_policy_foobar
+            iifname "foobar1" ip daddr 10.10.10.0/24 jump nat_PRE_policy_foobar
         }
     }
 ])
@@ -1888,7 +1888,7 @@ dnl (filter, forward)
 NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_FORWARD_POLICIES_pre {
-            ip saddr 10.10.10.0/24 oifname { "foobar0" } jump filter_FWD_policy_foobar
+            ip saddr 10.10.10.0/24 oifname "foobar0" jump filter_FWD_policy_foobar
         }
     }
 ])
@@ -1944,7 +1944,7 @@ dnl (nat, postrouting)
 NFT_LIST_RULES([ip], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
     table ip firewalld {
         chain nat_POSTROUTING_POLICIES_pre {
-            ip saddr 10.10.10.0/24 oifname { "foobar0" } jump nat_POST_policy_foobar
+            ip saddr 10.10.10.0/24 oifname "foobar0" jump nat_POST_policy_foobar
         }
     }
 ])
@@ -2108,7 +2108,7 @@ FWD_CHECK([--zone public --add-interface foobar1], 0, [ignore])
 NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_FORWARD_POLICIES_pre {
-            iifname { "foobar0" } oifname { "foobar1" } jump filter_FWD_policy_foobar
+            iifname "foobar0" oifname "foobar1" jump filter_FWD_policy_foobar
         }
     }
 ])
@@ -2126,7 +2126,7 @@ FWD_CHECK([--zone public --add-interface foobar2], 0, [ignore])
 NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_FORWARD_POLICIES_pre {
-            iifname { "foobar0" } oifname { "foobar1", "foobar2" } jump filter_FWD_policy_foobar
+            iifname "foobar0" oifname { "foobar1", "foobar2" } jump filter_FWD_policy_foobar
         }
     }
 ])
@@ -2146,7 +2146,7 @@ FWD_CHECK([--zone public --remove-interface foobar2], 0, [ignore])
 NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_FORWARD_POLICIES_pre {
-            iifname { "foobar0" } oifname { "foobar1" } jump filter_FWD_policy_foobar
+            iifname "foobar0" oifname "foobar1" jump filter_FWD_policy_foobar
         }
     }
 ])
@@ -2181,7 +2181,7 @@ NFT_LIST_RULES([ip], [nat_PREROUTING_POLICIES_pre], 0, [dnl
     table ip firewalld {
         chain nat_PREROUTING_POLICIES_pre {
             jump nat_PRE_policy_allow-host-ipv6
-            iifname { "foobar0" } ip daddr 10.10.10.0/24 jump nat_PRE_policy_foobar
+            iifname "foobar0" ip daddr 10.10.10.0/24 jump nat_PRE_policy_foobar
         }
     }
 ])
@@ -2209,7 +2209,7 @@ NFT_LIST_RULES([ip], [nat_PREROUTING_POLICIES_pre], 0, [dnl
     table ip firewalld {
         chain nat_PREROUTING_POLICIES_pre {
             jump nat_PRE_policy_allow-host-ipv6
-            iifname { "foobar0" } ip daddr 10.10.10.0/24 jump nat_PRE_policy_foobar
+            iifname "foobar0" ip daddr 10.10.10.0/24 jump nat_PRE_policy_foobar
         }
     }
 ])
@@ -2217,7 +2217,7 @@ NFT_LIST_RULES([ip6], [nat_PREROUTING_POLICIES_pre], 0, [dnl
     table ip6 firewalld {
         chain nat_PREROUTING_POLICIES_pre {
             jump nat_PRE_policy_allow-host-ipv6
-            iifname { "foobar0" } ip6 daddr 1234::/64 jump nat_PRE_policy_foobar
+            iifname "foobar0" ip6 daddr 1234::/64 jump nat_PRE_policy_foobar
         }
     }
 ])
@@ -2239,7 +2239,7 @@ NFT_LIST_RULES([ip], [nat_PREROUTING_POLICIES_pre], 0, [dnl
     table ip firewalld {
         chain nat_PREROUTING_POLICIES_pre {
             jump nat_PRE_policy_allow-host-ipv6
-            iifname { "foobar0" } ip daddr 10.10.10.0/24 jump nat_PRE_policy_foobar
+            iifname "foobar0" ip daddr 10.10.10.0/24 jump nat_PRE_policy_foobar
         }
     }
 ])
