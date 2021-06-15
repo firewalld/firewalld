@@ -402,9 +402,11 @@ m4_define([NFT_LIST_RULES_NORMALIZE], [dnl
     dnl instead of just "mark".
     sed -e 's/meta mark/mark/g'dnl
         -e '/type.*hook.*priority.*policy.*/d'dnl
-        dnl tranform ct state { established,related } to ct state established,related
+        dnl transform ct state { established,related } to ct state established,related
         -e '/ct \(state\|status\)/{s/\(ct \(state\|status\)\) {/\1/g; s/ }//; s/\(@<:@a-z@:>@*\), /\1,/g;}' dnl
         -e 's/reject with icmp\(x\|v6\)\? type port-unreachable/reject/' dnl
+        dnl transform iifname { "foobar0" } to iifname "foobar0"
+        -e ['s/\(iifname\|oifname\) [{] \([^, ]\+\) [}]/\1 \2/g'] dnl
 ])
 
 m4_define([NFT_LIST_RULES_ALWAYS], [
