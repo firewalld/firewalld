@@ -49,6 +49,12 @@ Summary: Firewalld directory layout and rpm macros
 This package provides directories and rpm macros which
 are required by other packages that add firewalld configuration files.
 
+%package -n firewalld-test
+Summary: Firewalld testsuite
+
+%description -n firewalld-test
+This package provides the firewalld testsuite.
+
 %package -n firewall-applet
 Summary: Firewall panel applet
 Requires: %{name} = %{version}-%{release}
@@ -205,6 +211,18 @@ fi
 %dir %{_prefix}/lib/firewalld/services
 %dir %{_prefix}/lib/firewalld/zones
 %{_rpmconfigdir}/macros.d/macros.firewalld
+
+%files -n firewalld-test
+%dir %{_datadir}/firewalld/testsuite
+%{_datadir}/firewalld/testsuite/README
+%{_datadir}/firewalld/testsuite/testsuite
+%dir %{_datadir}/firewalld/testsuite/integration
+%{_datadir}/firewalld/testsuite/integration/testsuite
+%dir %{_datadir}/firewalld/testsuite/python
+%{_datadir}/firewalld/testsuite/python/firewalld_config.py
+%{_datadir}/firewalld/testsuite/python/firewalld_direct.py
+%{_datadir}/firewalld/testsuite/python/firewalld_rich.py
+%{_datadir}/firewalld/testsuite/python/firewalld_test.py
 
 %files -n firewall-applet
 %attr(0755,root,root) %dir %{_sysconfdir}/firewall
