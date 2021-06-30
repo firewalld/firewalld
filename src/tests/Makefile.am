@@ -20,6 +20,16 @@ EXTRA_DIST = \
 
 DISTCLEANFILES = atconfig
 
+testsuitedir = $(pkgdatadir)/testsuite
+dist_testsuite_SCRIPTS = $(TESTSUITE)
+dist_testsuite_DATA = README
+
+testsuite_integrationdir = $(pkgdatadir)/testsuite/integration
+dist_testsuite_integration_SCRIPTS = $(TESTSUITE_INTEGRATION)
+
+testsuite_pythondir = $(pkgdatadir)/testsuite/python
+dist_testsuite_python_DATA = python/*.py
+
 $(srcdir)/package.m4: $(top_srcdir)/configure.ac $(top_srcdir)/firewalld.spec $(srcdir)/Makefile
 	:;{ \
 	echo 'm4_define([AT_PACKAGE_NAME],[$(PACKAGE_NAME)])' && \
