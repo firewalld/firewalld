@@ -91,6 +91,18 @@ m4_define([FWD_START_TEST], [
     AT_SETUP([$1])
     AT_KEYWORDS(FIREWALL_BACKEND)
 
+    dnl Default values for things that should be defined in atlocal. If atlocal
+    dnl can't be found it's likely because the testsuite is run "standalone" and
+    dnl atconfig/atlocal aren't available. There should be one here for every value
+    dnl in atlocal.
+    dnl
+    test -z "$PYTHON" && export PYTHON="python3"
+    test -z "$IPTABLES" && export IPTABLES="iptables"
+    test -z "$IPTABLES_RESTORE" && export IPTABLES_RESTORE="iptables-restore"
+    test -z "$IP6TABLES" && export IP6TABLES="ip6tables"
+    test -z "$IP6TABLES_RESTORE" && export IP6TABLES_RESTORE="ip6tables-restore"
+    test -z "$IPSET" && export IPSET="ipset"
+
     dnl We test some unicode strings and autotest overrides LC_ALL=C, so set it
     dnl again for every test.
     if locale -a |grep "^C.utf8" >/dev/null; then
