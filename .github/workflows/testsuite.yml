@@ -11,7 +11,13 @@ jobs:
       pip-dependencies: |
         dbus-python PyGObject
 
-    name: testsuite ${{ join(matrix.*, ' ') }}
+    name: >-
+      python-${{ matrix.python-version }}
+      nftables-${{ matrix.nftables-version }}
+      keyword=${{ matrix.keyword }}
+      no-iptables=${{ matrix.no-iptables }}
+      no-ip6tables=${{ matrix.no-ip6tables }}
+
     runs-on: ubuntu-20.04
 
     strategy:
@@ -21,22 +27,25 @@ jobs:
         libnftnl-version: [libnftnl-1.1.6]
         nftables-version: [v0.9.4]
         keyword: [offline, nftables, iptables]
-        configure_args: ["", "IP6TABLES=/bin/false IP6TABLES_RESTORE=/bin/false"]
+        no-iptables: [true, false]
+        no-ip6tables: [true, false]
         exclude:
           - keyword: offline
-            configure_args: "IP6TABLES=/bin/false IP6TABLES_RESTORE=/bin/false"
+            no-ip6tables: true
+          - keyword: offline
+            no-iptables: true
+          - keyword: iptables
+            no-iptables: true
+          - keyword: nftables
+            no-iptables: true
+            no-ip6tables: true
         include:
           - python-version: 3.7
             libnftnl-version: master
             nftables-version: master
             keyword: nftables
-            configure_args: ""
-          - python-version: 3.7
-            libnftnl-version: libnftnl-1.1.6
-            nftables-version: v0.9.4
-            keyword: nftables
-            configure_args: ""
-            no-iptables: true
+            no-iptables: false
+            no-ip6tables: false
 
     steps:
       - name: checkout
@@ -86,15 +95,23 @@ jobs:
           pip install .
           sudo ldconfig
       
-      - name: remove iptables
-        if: matrix.no-iptables
+      - name: remove iptables, et al.
+        if: ${{ matrix.no-iptables }}
         run: |
           sudo apt-get -y remove iptables ebtables ipset
 
-      - name: build firewalld
+      - name: build firewalld (no ip6tables)
+        if: ${{ matrix.no-ip6tables }}
         run: |
           ./autogen.sh
-          ./configure --disable-docs ${{ matrix.configure_args }}
+          ./configure --disable-docs IP6TABLES=/bin/false IP6TABLES_RESTORE=/bin/false
+          make -j $(nproc)
+
+      - name: build firewalld
+        if: ${{ ! matrix.no-ip6tables }}
+        run: |
+          ./autogen.sh
+          ./configure --disable-docs
           make -j $(nproc)
 
       - name: run testsuite
