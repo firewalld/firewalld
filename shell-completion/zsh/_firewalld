@@ -244,6 +244,23 @@ _arguments -C -s $args $direct \
   '*--query-lockdown-whitelist-user=[query whether the specified user is on the whitelist]:user:_users' \
   '--direct[first option for all direct options]'
 
+
+# add sub option for policy.
+if [[ ${words[@]/'--policy'/} != ${words[@]} ]]
+then
+  _arguments \
+  '--get-priority[get the priority]' \
+  '--set-priority=[set the priority]' \
+  '--list-ingress-zones[list ingress zones that are bound to a policy]' \
+  '--add-ingress-zone=[add the ingress zone to a policy]:zone:->zones' \
+  '--remove-ingress-zone=[remove the ingress zone from a policy]:zone:->zones' \
+  '--query-ingress-zone=[wuery whether the ingress zone has been adedd to a policy]:zone:->zones' \
+  '--list-egress-zones[list egress zones that are bound to a policy]' \
+  '--add-egress-zone=[add the egress zone to a policy]:zone:->zones' \
+  '--remove-egress-zone=[remove the egress zone from a policy]:zone:->zones' \
+  '--query-egress-zone=[query whether the egress zone has been adedd to a policy]:zone:->zones'
+fi
+
 [[ $state = sources ]] && compset -P 'ipset:' && state=ipsets
 case $state in
   sources)
