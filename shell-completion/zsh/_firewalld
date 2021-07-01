@@ -208,6 +208,16 @@ _arguments -C -s $args $direct \
   '--load-helper-defaults=[load helper default settings]:helper:->helpers' \
   '(--zone -q --quiet)--info-helper=[print information about an helper]:helper:->helpers' \
   '--path-helper=[print file path of an helper]:helper:->helpers' \
+  '--get-policies[print predefined policies]' \
+  '--get-active-policies[print currently active policies]' \
+  '--list-all-policies[list everything added for or enabled in all policies]' \
+  '--new-policy=[add a new empty policy]:policy:->policies' \
+  '--new-policy-from-file=[add a new policy from file with optional name override]:file:_files' \
+  '--delete-policy=[delete an existing policy]:policy:->policies' \
+  '--load-policy-defaults=[load policy default settings]:policy:->policies' \
+  '--policy=[use this policy to set or query options]:policy:->policies' \
+  '--info-policy=[print information about a policy]:policy:->policies' \
+  '--path-policy=[print file path of a policy]:policy:->policies' \
   '(--zone -q --quiet)--get-helpers[print predefined helpers]' \
   '--set-module=[set module to helper]:module' \
   '--get-module[get module from helper]' \
@@ -298,6 +308,10 @@ case $state in
   zones)
     _description zones expl 'zone'
     compadd "$expl[@]" - $(_call_program zones $words[1] --get-zones)
+  ;;
+  policies)
+    _description policies expl 'policies'
+    compadd "$expl[@]" - $(_call_program policies $words[1] --get-policies)
   ;;
 esac
 
