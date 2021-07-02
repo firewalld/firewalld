@@ -722,6 +722,23 @@
 	    <para>
 	      The service is one of the firewalld provided services. To get a list of the supported services, use <command>firewall-cmd --get-services</command>.
 	    </para>
+            <para>
+              <emphasis role="bold">Note</emphasis>: Some services define connection tracking helpers.
+              Helpers that may operate in client mode (e.g. tftp) must be added to an
+              outbound policy instead of a zone to take effect for clients. Otherwise
+              the helper will not be applied to the outbound traffic. The related
+              traffic, as defined by the connection tracking helper, on the return
+              path (ingress) will be allowed by the stateful firewall rules.
+            </para>
+            <para>
+              An example of an outbound policy for connection tracking helpers:
+              <programlisting>
+# firewall-cmd --new-policy clientConntrack
+# firewall-cmd --policy clientConntrack --add-ingress-zone HOST
+# firewall-cmd --policy clientConntrack --add-egress-zone ANY
+# firewall-cmd --policy clientConntrack --add-service tftp
+              </programlisting>
+            </para>
 	  </listitem>
 	</varlistentry>
 
