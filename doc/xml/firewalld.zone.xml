@@ -61,7 +61,7 @@
 
     <para>
       A firewalld zone configuration file contains the information for a zone.
-      These are the zone description, services, ports, protocols, icmp-blocks, masquerade, forward-ports and rich language rules in an XML file format.
+      These are the zone description, services, ports, protocols, icmp-blocks, masquerade, forward-ports, intra-zone forwarding and rich language rules in an XML file format.
       The file name has to be <replaceable>zone_name</replaceable>.xml where length of <replaceable>zone_name</replaceable> is currently limited to 17 chars.
     </para>
     <para>
@@ -73,6 +73,7 @@
     [ &lt;interface name="<replaceable>string</replaceable>"/&gt; ]
     [ &lt;source address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]"|mac="<replaceable>MAC</replaceable>"|ipset="<replaceable>ipset</replaceable>"/&gt; ]
     [ &lt;icmp-block-inversion/&gt; ]
+    [ &lt;forward/&gt; ]
 
     &policy_zone_syntax;
 
@@ -178,6 +179,13 @@
       <title>icmp-block-inversion</title>
       <para>
 	Is an optional empty-element tag and can be used only once in a zone configuration. This flag inverts the icmp block handling. Only enabled ICMP types are accepted and all others are rejected in the zone.
+      </para>
+    </refsect2>
+
+    <refsect2 id="forward">
+      <title>forward</title>
+      <para>
+	Is an optional empty-element tag and can be used only once in a zone configuration. This flag enables intra-zone forwarding. When enabled, packets will be forwarded between interfaces or sources within a zone, even if the zone's target is not set to <literal>ACCEPT</literal>.
       </para>
     </refsect2>
 
