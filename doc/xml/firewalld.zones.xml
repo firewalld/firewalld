@@ -60,6 +60,13 @@
       </para>
 
       <refsect3>
+	<title>Intra Zone Forwarding</title>
+	<para>
+	  Allows packets received by a zone to be forwarded to other interfaces or sources within the same zone, even if the zone's target is not <literal>ACCEPT</literal>.
+	</para>
+      </refsect3>
+
+      <refsect3>
 	<title>Predefined services</title>
 	<para>
 	  A service is a combination of port and/or protocol entries. Optionally netfilter helper modules can be added and also a IPv4 and IPv6 destination address.
