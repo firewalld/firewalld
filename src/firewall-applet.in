@@ -21,7 +21,7 @@
 #
 
 import sys
-from PyQt5 import QtGui, QtCore, QtWidgets
+from PySide2 import QtGui, QtCore, QtWidgets
 
 import gi
 gi.require_version('Notify', '0.7')
