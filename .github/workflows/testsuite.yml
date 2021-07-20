@@ -7,7 +7,7 @@ jobs:
       apt-dependencies: |
         autoconf automake ebtables intltool ipset iptables libdbus-1-dev \
         libgirepository1.0-dev libglib2.0-dev libxml2-utils network-manager \
-        pkg-config 
+        pkg-config python3-cap-ng
       pip-dependencies: |
         dbus-python PyGObject
 
