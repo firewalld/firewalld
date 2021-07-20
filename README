@@ -29,15 +29,21 @@ Dependencies
 ------------
 These are the runtime dependencies:
 
-  ebtables (optional)
-  ipset (optional)
-  iptables (optional)
   linux >= 5.3
   python3-dbus
   python3-gobject
   python3-nftables >= 0.9.4
 
 Note: python2 is _not_ supported.
+
+Optional Dependencies
+---------------------
+These dependencies may enhance firewalld's functionality, but they are not
+required.
+
+  ebtables
+  ipset
+  iptables
 
 Working With The Source Repository
 ----------------------------------
