@@ -24,6 +24,7 @@ Requires(preun): systemd
 Requires(postun): systemd
 Requires: firewalld-filesystem = %{version}-%{release}
 Requires: python3-firewall  = %{version}-%{release}
+Recommends: libcap-ng-python3
 
 %description
 firewalld is a firewall service daemon that provides a dynamic customizable 
