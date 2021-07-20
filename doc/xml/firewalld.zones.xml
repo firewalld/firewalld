@@ -81,6 +81,13 @@
       </refsect3>
 
       <refsect3>
+	<title>ICMP block inversion</title>
+	<para>
+	  Changes how ICMP messages are handled. When enabled, all ICMP message types are blocked, <emphasis>except</emphasis> for those in the ICMP block list.
+	</para>
+      </refsect3>
+
+      <refsect3>
 	<title>Masquerading</title>
 	<para>
 	  The addresses of a private network are mapped to and hidden behind a public IP address. This is a form of address translation.
