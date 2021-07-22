@@ -1,11 +1,10 @@
 Summary: A firewall daemon with D-Bus interface providing a dynamic firewall
 Name: firewalld
 Version: 1.0.0
-Release: 0.1.alpha%{?dist}
+Release: 1%{?dist}
 URL:     http://firewalld.org
 License: GPLv2+
-#Source0: https://github.com/firewalld/firewalld/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
-Source0: https://github.com/firewalld/firewalld/archive/v%{version}-alpha.tar.gz#/%{name}-%{version}-alpha.tar.gz
+Source0: https://github.com/firewalld/firewalld/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 BuildArch: noarch
 BuildRequires: autoconf
 BuildRequires: automake
@@ -249,5 +248,8 @@ fi
 %{_mandir}/man1/firewall-config*.1*
 
 %changelog
-* Tue May 25 2018 Eric Garver <eric@garver.life> - 1.0.0-0.1.alpha
+* Thu Jul 22 2021 Eric Garver <eric@garver.life> - 1.0.0-1
+- release v1.0.0
+
+* Tue May 25 2021 Eric Garver <eric@garver.life> - 1.0.0-0.1.alpha
 - release v1.0.0-alpha
