@@ -80,6 +80,7 @@ Requires: gtk3
 Requires: python3-gobject
 Requires: NetworkManager-libnm
 Requires: dbus-x11
+Recommends: polkit
 
 %description -n firewall-config
 The firewall configuration application provides an configuration interface for 
