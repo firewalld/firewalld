@@ -511,6 +511,7 @@ class nftables(object):
                 default_rules.append({"add": {"chain": {"family": "inet",
                                                         "table": TABLE_NAME,
                                                         "name": "mangle_%s_%s" % (chain, dispatch_suffix)}}})
+            for dispatch_suffix in ["ZONES"]:
                 default_rules.append({"add": {"rule":  {"family": "inet",
                                                         "table": TABLE_NAME,
                                                         "chain": "mangle_%s" % chain,
@@ -528,6 +529,7 @@ class nftables(object):
                 default_rules.append({"add": {"chain": {"family": "inet",
                                                         "table": TABLE_NAME,
                                                         "name": "nat_%s_%s" % (chain, dispatch_suffix)}}})
+            for dispatch_suffix in ["ZONES"]:
                 default_rules.append({"add": {"rule":  {"family": "inet",
                                                         "table": TABLE_NAME,
                                                         "chain": "nat_%s" % chain,
@@ -567,6 +569,7 @@ class nftables(object):
             default_rules.append({"add": {"chain": {"family": "inet",
                                                     "table": TABLE_NAME,
                                                     "name": "filter_%s_%s" % ("INPUT", dispatch_suffix)}}})
+        for dispatch_suffix in ["ZONES"]:
             default_rules.append({"add": {"rule":  {"family": "inet",
                                                     "table": TABLE_NAME,
                                                     "chain": "filter_%s" % "INPUT",
@@ -624,10 +627,6 @@ class nftables(object):
             default_rules.append({"add": {"chain": {"family": "inet",
                                                     "table": TABLE_NAME,
                                                     "name": "filter_%s_%s" % ("FORWARD", dispatch_suffix)}}})
-            default_rules.append({"add": {"rule":  {"family": "inet",
-                                                    "table": TABLE_NAME,
-                                                    "chain": "filter_%s" % "FORWARD",
-                                                    "expr": [{"jump": {"target": "filter_%s_%s" % ("FORWARD", dispatch_suffix)}}]}}})
         for dispatch_suffix in ["ZONES"]:
             default_rules.append({"add": {"chain": {"family": "inet",
                                                     "table": TABLE_NAME,
@@ -640,10 +639,6 @@ class nftables(object):
             default_rules.append({"add": {"chain": {"family": "inet",
                                                     "table": TABLE_NAME,
                                                     "name": "filter_%s_%s" % ("FORWARD", dispatch_suffix)}}})
-            default_rules.append({"add": {"rule":  {"family": "inet",
-                                                    "table": TABLE_NAME,
-                                                    "chain": "filter_%s" % "FORWARD",
-                                                    "expr": [{"jump": {"target": "filter_%s_%s" % ("FORWARD", dispatch_suffix)}}]}}})
         if log_denied != "off":
             default_rules.append({"add": {"rule":  {"family": "inet",
                                                     "table": TABLE_NAME,
@@ -859,6 +854,7 @@ class nftables(object):
         add_del = { True: "add", False: "delete" }[enable]
         isSNAT = True if (table == "nat" and chain == "POSTROUTING") else False
         _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX, isSNAT=isSNAT)
+        p_obj = self._fw.policy.get_policy(policy)
 
         rules = []
         rules.append({add_del: {"chain": {"family": "inet",
@@ -869,11 +865,26 @@ class nftables(object):
                                               "table": TABLE_NAME,
                                               "name": "%s_%s_%s" % (table, _policy, chain_suffix)}}})
 
+        # policy dispatch
+        if p_obj.derived_from_zone:
+            rules.append({"add": {"rule":  {"family": "inet",
+                                                      "table": TABLE_NAME,
+                                                      "chain": "%s_%s" % (table, _policy),
+                                                      "expr": [{"jump": {"target": "%s_%s_%s" % (table, chain, "POLICIES_pre")}}]}}})
+
         for chain_suffix in ["pre", "log", "deny", "allow", "post"]:
             rules.append({add_del: {"rule": {"family": "inet",
                                              "table": TABLE_NAME,
                                              "chain": "%s_%s" % (table, _policy),
                                              "expr": [{"jump": {"target": "%s_%s_%s" % (table, _policy, chain_suffix)}}]}}})
+
+        # since zones are always terminal we need to jump to the policy
+        # dispatch just before the catch-all accept/drop
+        if p_obj.derived_from_zone:
+            rules.append({"add": {"rule":  {"family": "inet",
+                                                      "table": TABLE_NAME,
+                                                      "chain": "%s_%s" % (table, _policy),
+                                                      "expr": [{"jump": {"target": "%s_%s_%s" % (table, chain, "POLICIES_post")}}]}}})
 
         target = self._fw.policy._policies[policy].target
 
@@ -1533,7 +1544,7 @@ class nftables(object):
         rules.append({add_del: {"rule": {"family": "inet",
                                          "table": TABLE_NAME,
                                          "chain": "%s_%s" % (table, _policy),
-                                         "index": 4,
+                                         "index": 6,
                                          "expr": [self._icmp_match_fragment(),
                                                   target_fragment]}}})
 
@@ -1541,7 +1552,7 @@ class nftables(object):
             rules.append({add_del: {"rule": {"family": "inet",
                                              "table": TABLE_NAME,
                                              "chain": "%s_%s" % (table, _policy),
-                                             "index": 4,
+                                             "index": 6,
                                              "expr": [self._icmp_match_fragment(),
                                                       self._pkttype_match_fragment(self._fw.get_log_denied()),
                                                       {"log": {"prefix": "%s_%s_ICMP_BLOCK: " % (table, policy)}}]}}})
