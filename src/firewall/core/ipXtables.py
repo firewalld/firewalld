@@ -646,8 +646,9 @@ class ip4tables(object):
                 if chain == "PREROUTING":
                     for dispatch_suffix in ["POLICIES_pre", "ZONES", "POLICIES_post"]:
                         default_rules["raw"].append("-N %s_%s" % (chain, dispatch_suffix))
-                        default_rules["raw"].append("-A %s -j %s_%s" % (chain, chain, dispatch_suffix))
                         self.our_chains["raw"].update(set(["%s_%s" % (chain, dispatch_suffix)]))
+                    for dispatch_suffix in ["ZONES"]:
+                        default_rules["raw"].append("-A %s -j %s_%s" % (chain, chain, dispatch_suffix))
 
         if self.get_available_tables("mangle"):
             default_rules["mangle"] = [ ]
@@ -660,8 +661,9 @@ class ip4tables(object):
                 if chain == "PREROUTING":
                     for dispatch_suffix in ["POLICIES_pre", "ZONES", "POLICIES_post"]:
                         default_rules["mangle"].append("-N %s_%s" % (chain, dispatch_suffix))
-                        default_rules["mangle"].append("-A %s -j %s_%s" % (chain, chain, dispatch_suffix))
                         self.our_chains["mangle"].update(set(["%s_%s" % (chain, dispatch_suffix)]))
+                    for dispatch_suffix in ["ZONES"]:
+                        default_rules["mangle"].append("-A %s -j %s_%s" % (chain, chain, dispatch_suffix))
 
         if self.get_available_tables("nat"):
             default_rules["nat"] = [ ]
@@ -674,8 +676,9 @@ class ip4tables(object):
                 if chain in [ "PREROUTING", "POSTROUTING" ]:
                     for dispatch_suffix in ["POLICIES_pre", "ZONES", "POLICIES_post"]:
                         default_rules["nat"].append("-N %s_%s" % (chain, dispatch_suffix))
-                        default_rules["nat"].append("-A %s -j %s_%s" % (chain, chain, dispatch_suffix))
                         self.our_chains["nat"].update(set(["%s_%s" % (chain, dispatch_suffix)]))
+                    for dispatch_suffix in ["ZONES"]:
+                        default_rules["nat"].append("-A %s -j %s_%s" % (chain, chain, dispatch_suffix))
 
         default_rules["filter"] = []
         self.our_chains["filter"] = set()
@@ -686,8 +689,9 @@ class ip4tables(object):
         self.our_chains["filter"].update(set("INPUT_direct"))
         for dispatch_suffix in ["POLICIES_pre", "ZONES", "POLICIES_post"]:
             default_rules["filter"].append("-N INPUT_%s" % (dispatch_suffix))
-            default_rules["filter"].append("-A INPUT -j INPUT_%s" % (dispatch_suffix))
             self.our_chains["filter"].update(set("INPUT_%s" % (dispatch_suffix)))
+        for dispatch_suffix in ["ZONES"]:
+            default_rules["filter"].append("-A INPUT -j INPUT_%s" % (dispatch_suffix))
         if log_denied != "off":
             default_rules["filter"].append("-A INPUT -m conntrack --ctstate INVALID %%LOGTYPE%% -j LOG --log-prefix 'STATE_INVALID_DROP: '")
         default_rules["filter"].append("-A INPUT -m conntrack --ctstate INVALID -j DROP")
@@ -702,7 +706,6 @@ class ip4tables(object):
         self.our_chains["filter"].update(set("FORWARD_direct"))
         for dispatch_suffix in ["POLICIES_pre"]:
             default_rules["filter"].append("-N FORWARD_%s" % (dispatch_suffix))
-            default_rules["filter"].append("-A FORWARD -j FORWARD_%s" % (dispatch_suffix))
             self.our_chains["filter"].update(set("FORWARD_%s" % (dispatch_suffix)))
         for dispatch_suffix in ["ZONES"]:
             default_rules["filter"].append("-N FORWARD_%s" % (dispatch_suffix))
@@ -710,7 +713,6 @@ class ip4tables(object):
             self.our_chains["filter"].update(set("FORWARD_%s" % (dispatch_suffix)))
         for dispatch_suffix in ["POLICIES_post"]:
             default_rules["filter"].append("-N FORWARD_%s" % (dispatch_suffix))
-            default_rules["filter"].append("-A FORWARD -j FORWARD_%s" % (dispatch_suffix))
             self.our_chains["filter"].update(set("FORWARD_%s" % (dispatch_suffix)))
         if log_denied != "off":
             default_rules["filter"].append("-A FORWARD -m conntrack --ctstate INVALID %%LOGTYPE%% -j LOG --log-prefix 'STATE_INVALID_DROP: '")
@@ -913,6 +915,7 @@ class ip4tables(object):
         add_del_rule = { True: "-A", False: "-D" }[enable]
         isSNAT = True if (table == "nat" and chain == "POSTROUTING") else False
         _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX, isSNAT=isSNAT)
+        p_obj = self._fw.policy.get_policy(policy)
 
         self.our_chains[table].update(set([_policy,
                                       "%s_log" % _policy,
@@ -928,11 +931,15 @@ class ip4tables(object):
         rules.append([ add_del_chain, "%s_deny" % _policy, "-t", table ])
         rules.append([ add_del_chain, "%s_allow" % _policy, "-t", table ])
         rules.append([ add_del_chain, "%s_post" % _policy, "-t", table ])
+        if p_obj.derived_from_zone:
+            rules.append([ add_del_rule, _policy, "-t", table, "-j", "%s_%s" % (chain, "POLICIES_pre") ])
         rules.append([ add_del_rule, _policy, "-t", table, "-j", "%s_pre" % _policy ])
         rules.append([ add_del_rule, _policy, "-t", table, "-j", "%s_log" % _policy ])
         rules.append([ add_del_rule, _policy, "-t", table, "-j", "%s_deny" % _policy ])
         rules.append([ add_del_rule, _policy, "-t", table, "-j", "%s_allow" % _policy ])
         rules.append([ add_del_rule, _policy, "-t", table, "-j", "%s_post" % _policy ])
+        if p_obj.derived_from_zone:
+            rules.append([ add_del_rule, _policy, "-t", table, "-j", "%s_%s" % (chain, "POLICIES_post") ])
 
         target = self._fw.policy._policies[policy].target
 
@@ -1386,7 +1393,7 @@ class ip4tables(object):
         _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX)
 
         rules = []
-        rule_idx = 6
+        rule_idx = 8
 
         if self._fw.policy.query_icmp_block_inversion(policy):
             ibi_target = "%%REJECT%%"
