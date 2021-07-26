@@ -4,4 +4,5 @@
   <description>LLMNR allows both IPv4 and IPv6 hosts to perform name resolution for hosts on the same local link.</description>
   <port protocol="tcp" port="5355"/>
   <port protocol="udp" port="5355"/>
+  <destination ipv4="224.0.0.252" ipv6="ff02::1:3"/>
 </service>
