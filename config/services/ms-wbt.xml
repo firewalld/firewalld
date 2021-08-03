@@ -2,5 +2,5 @@
 <service>
   <short>ms-wbt</short>
   <description>Microsoft Windows-based Terminal Server</description>
-  <port protocol="tcp" port="3389"/>
+  <include service="rdp"/>
 </service>
