@@ -1575,7 +1575,7 @@ FWD_START_TEST([rich rules priority])
         jump filter_INPUT_ZONES
         jump filter_INPUT_POLICIES_post
         ct state invalid drop
-        reject with icmpx type admin-prohibited
+        reject with icmpx admin-prohibited
         }
         }
     ])
@@ -1755,18 +1755,18 @@ FWD_START_TEST([rich rules priority])
     NFT_LIST_RULES([inet], [filter_IN_public_pre], 0, [dnl
         table inet firewalld {
         chain filter_IN_public_pre {
-        icmp type destination-unreachable reject with icmpx type admin-prohibited
-        icmpv6 type destination-unreachable reject with icmpx type admin-prohibited
-        icmp type echo-request accept
-        icmpv6 type echo-request accept
+        icmp destination-unreachable reject with icmpx admin-prohibited
+        icmpv6 destination-unreachable reject with icmpx admin-prohibited
+        icmp echo-request accept
+        icmpv6 echo-request accept
         }
         }
     ])
     NFT_LIST_RULES([inet], [filter_IN_public_deny], 0, [dnl
         table inet firewalld {
         chain filter_IN_public_deny {
-        icmp type destination-unreachable reject with icmpx type admin-prohibited
-        icmpv6 type destination-unreachable reject with icmpx type admin-prohibited
+        icmp destination-unreachable reject with icmpx admin-prohibited
+        icmpv6 destination-unreachable reject with icmpx admin-prohibited
         }
         }
     ])
@@ -1775,34 +1775,34 @@ FWD_START_TEST([rich rules priority])
         chain filter_IN_public_allow {
         tcp dport 22 ct state new,untracked accept
         ip6 daddr fe80::/64 udp dport 546 ct state new,untracked accept
-        icmp type echo-request accept
-        icmpv6 type echo-request accept
+        icmp echo-request accept
+        icmpv6 echo-request accept
         }
         }
     ])
     NFT_LIST_RULES([inet], [filter_FWDI_public_pre], 0, [dnl
         table inet firewalld {
         chain filter_FWDI_public_pre {
-        icmp type destination-unreachable reject with icmpx type admin-prohibited
-        icmpv6 type destination-unreachable reject with icmpx type admin-prohibited
-        icmp type echo-request accept
-        icmpv6 type echo-request accept
+        icmp destination-unreachable reject with icmpx admin-prohibited
+        icmpv6 destination-unreachable reject with icmpx admin-prohibited
+        icmp echo-request accept
+        icmpv6 echo-request accept
         }
         }
     ])
     NFT_LIST_RULES([inet], [filter_FWDI_public_deny], 0, [dnl
         table inet firewalld {
         chain filter_FWDI_public_deny {
-        icmp type destination-unreachable reject with icmpx type admin-prohibited
-        icmpv6 type destination-unreachable reject with icmpx type admin-prohibited
+        icmp destination-unreachable reject with icmpx admin-prohibited
+        icmpv6 destination-unreachable reject with icmpx admin-prohibited
         }
         }
     ])
     NFT_LIST_RULES([inet], [filter_FWDI_public_allow], 0, [dnl
         table inet firewalld {
         chain filter_FWDI_public_allow {
-        icmp type echo-request accept
-        icmpv6 type echo-request accept
+        icmp echo-request accept
+        icmpv6 echo-request accept
         }
         }
     ])
