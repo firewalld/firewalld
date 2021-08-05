@@ -99,7 +99,7 @@ NFT_LIST_RULES([inet], [filter_IN_foobar], 0, [dnl
             jump filter_IN_foobar_post
             jump filter_INPUT_POLICIES_post
             meta l4proto { icmp, ipv6-icmp } accept
-            reject with icmpx type admin-prohibited
+            reject with icmpx admin-prohibited
         }
     }
 ])
@@ -136,7 +136,7 @@ NFT_LIST_RULES([inet], [filter_FWD_foobar], 0, [dnl
             jump filter_FWD_foobar_allow
             jump filter_FWD_foobar_post
             jump filter_FORWARD_POLICIES_post
-            reject with icmpx type admin-prohibited
+            reject with icmpx admin-prohibited
         }
     }
 ])
