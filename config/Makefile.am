@@ -196,6 +196,8 @@ CONFIG_FILES = \
 	services/ldap.xml \
 	services/libvirt-tls.xml \
 	services/libvirt.xml \
+	services/llmnr-tcp.xml \
+	services/llmnr-udp.xml \
 	services/llmnr.xml \
 	services/managesieve.xml \
 	services/matrix.xml \
