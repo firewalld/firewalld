@@ -72,7 +72,7 @@ IPTABLES_LIST_RULES([filter], [IN_foobar_log], 0, [dnl
 NFT_LIST_RULES([inet], [filter_IN_policy_foobar_deny], 0, [dnl
     table inet firewalld {
         chain filter_IN_policy_foobar_deny {
-            ip saddr 10.10.10.12 reject
+            ip saddr 10.10.10.12 reject with icmp port-unreachable
             ip saddr 10.10.10.13 drop
         }
     }
@@ -144,11 +144,11 @@ NFT_LIST_RULES([inet], [filter_IN_policy_foobar_pre], 0, [dnl
             ip6 daddr 1234::4444 ip6 saddr 1234::4321 drop
             ip daddr 10.20.20.23 ip saddr 10.20.20.22 drop
             ip daddr 10.20.20.21 accept
-            icmp type echo-request accept
-            icmpv6 type echo-request accept
+            icmp echo-request accept
+            icmpv6 echo-request accept
             ip saddr 10.10.10.14 accept
             ip saddr 10.20.20.20 accept
-            icmpv6 type nd-neighbor-advert accept
+            icmpv6 nd-neighbor-advert accept
         }
     }
 ])

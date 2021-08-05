@@ -6,14 +6,14 @@ FWD_CHECK([-q --zone=public --add-icmp-block=host-prohibited])
 NFT_LIST_RULES([inet], [filter_IN_public_deny | sed -e 's/icmp code 10/icmp code host-prohibited/'], 0, [dnl
     table inet firewalld {
         chain filter_IN_public_deny {
-            icmp type destination-unreachable icmp code host-prohibited reject with icmpx type admin-prohibited
+            icmp destination-unreachable icmp code host-prohibited reject with icmpx admin-prohibited
         }
     }
 ])
 NFT_LIST_RULES([inet], [filter_FWDI_public_deny | sed -e 's/icmp code 10/icmp code host-prohibited/'], 0, [dnl
     table inet firewalld {
         chain filter_FWDI_public_deny {
-            icmp type destination-unreachable icmp code host-prohibited reject with icmpx type admin-prohibited
+            icmp destination-unreachable icmp code host-prohibited reject with icmpx admin-prohibited
         }
     }
 ])
