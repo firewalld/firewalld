@@ -419,6 +419,10 @@ m4_define([NFT_LIST_RULES_NORMALIZE], [dnl
         -e 's/reject with icmp\(x\|v6\)\? type port-unreachable/reject/' dnl
         dnl transform iifname { "foobar0" } to iifname "foobar0"
         -e ['s/\(iifname\|oifname\) [{] \([^, ]\+\) [}]/\1 \2/g'] dnl
+        dnl transform "icmp type foobar" to "icmp foobar"
+        -e ['s/\(icmp\|icmpv6\|icmpx\) type \([a-z-]\+\)/\1 \2/g'] dnl
+        dnl transform bare "reject" to "reject with icmp port-unreachable"
+        -e ['s/reject$/reject with icmp port-unreachable/g'] dnl
 ])
 
 m4_define([NFT_LIST_RULES_ALWAYS], [
