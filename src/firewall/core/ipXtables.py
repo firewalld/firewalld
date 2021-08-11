@@ -532,9 +532,11 @@ class ip4tables(object):
     def _detect_wait_option(self):
         wait_option = ""
         ret = runProg(self._command, ["-w", "-L", "-n"])  # since iptables-1.4.20
+        log.debug3("%s: %s: probe for wait option (%s): ret=%u, output=\"%s\"", self.__class__, self._command, "-w", ret[0], ret[1])
         if ret[0] == 0:
             wait_option = "-w"  # wait for xtables lock
             ret = runProg(self._command, ["-w10", "-L", "-n"])  # since iptables > 1.4.21
+            log.debug3("%s: %s: probe for wait option (%s): ret=%u, output=\"%s\"", self.__class__, self._command, "-w10", ret[0], ret[1])
             if ret[0] == 0:
                 wait_option = "-w10"  # wait max 10 seconds
             log.debug2("%s: %s will be using %s option.", self.__class__, self._command, wait_option)
@@ -549,6 +551,7 @@ class ip4tables(object):
         wait_option = ""
         for test_option in ["-w", "--wait=2"]:
             ret = runProg(self._restore_command, [test_option], stdin=temp_file.name)
+            log.debug3("%s: %s: probe for wait option (%s): ret=%u, output=\"%s\"", self.__class__, self._command, test_option, ret[0], ret[1])
             if ret[0] == 0 and "invalid option" not in ret[1] \
                            and "unrecognized option" not in ret[1]:
                 wait_option = test_option
