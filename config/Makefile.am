@@ -115,6 +115,7 @@ CONFIG_FILES = \
 	icmptypes/unknown-option.xml \
 	ipsets/README \
 	policies/allow-host-ipv6.xml \
+	services/afp.xml \
 	services/amanda-client.xml \
 	services/amanda-k5-client.xml \
 	services/amqp.xml \
