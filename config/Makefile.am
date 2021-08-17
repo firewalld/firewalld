@@ -290,6 +290,9 @@ CONFIG_FILES = \
 	services/wbem-http.xml \
 	services/wbem-https.xml \
 	services/wireguard.xml \
+	services/ws-discovery-tcp.xml \
+	services/ws-discovery-udp.xml \
+	services/ws-discovery.xml \
 	services/wsman.xml \
 	services/wsmans.xml \
 	services/xdmcp.xml \

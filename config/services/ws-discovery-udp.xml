@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>WS-Discovery (UDP)</short>
+  <description>Web Services Dynamic Discovery (WS-Discovery) is a technical specification that defines a multicast discovery protocol to locate services on a local network.</description>
+  <port protocol="udp" port="3702"/>
+  <destination ipv4="239.255.255.250" ipv6="ff02::c"/>
+</service>
