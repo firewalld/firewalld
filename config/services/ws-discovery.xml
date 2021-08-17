@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>WS-Discovery</short>
+  <description>Web Services Dynamic Discovery (WS-Discovery) is a technical specification that defines a multicast discovery protocol to locate services on a local network.</description>
+  <include service="ws-discovery-tcp"/>
+  <include service="ws-discovery-udp"/>
+</service>
