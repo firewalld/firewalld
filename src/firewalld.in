@@ -140,14 +140,16 @@ def startup(args):
         try:
             import capng
             capng.capng_clear(capng.CAPNG_SELECT_BOTH)
-            capng.capng_update(capng.CAPNG_ADD, capng.CAPNG_EFFECTIVE | capng.CAPNG_PERMITTED | capng.CAPNG_BOUNDING_SET,
-                               capng.CAP_NET_ADMIN)
-            capng.capng_update(capng.CAPNG_ADD, capng.CAPNG_EFFECTIVE | capng.CAPNG_PERMITTED | capng.CAPNG_BOUNDING_SET,
-                               capng.CAP_NET_RAW)
-            capng.capng_update(capng.CAPNG_ADD, capng.CAPNG_EFFECTIVE | capng.CAPNG_PERMITTED | capng.CAPNG_BOUNDING_SET,
-                               capng.CAP_SYS_MODULE)
-            capng.capng_apply(capng.CAPNG_SELECT_BOTH)
-            log.info(log.INFO1, "Dropped Linux capabilities to NET_ADMIN, NET_RAW, SYS_MODULE.")
+            if capng.capng_update(capng.CAPNG_ADD, capng.CAPNG_EFFECTIVE | capng.CAPNG_PERMITTED | capng.CAPNG_BOUNDING_SET,
+                                  capng.CAP_NET_ADMIN) or \
+               capng.capng_update(capng.CAPNG_ADD, capng.CAPNG_EFFECTIVE | capng.CAPNG_PERMITTED | capng.CAPNG_BOUNDING_SET,
+                                  capng.CAP_NET_RAW) or \
+               capng.capng_update(capng.CAPNG_ADD, capng.CAPNG_EFFECTIVE | capng.CAPNG_PERMITTED | capng.CAPNG_BOUNDING_SET,
+                                  capng.CAP_SYS_MODULE) or \
+               capng.capng_apply(capng.CAPNG_SELECT_BOTH):
+                log.info(log.INFO1, "libcap-ng failed to drop Linux capabilities.")
+            else:
+                log.info(log.INFO1, "Dropped Linux capabilities to NET_ADMIN, NET_RAW, SYS_MODULE.")
         except ImportError:
             pass
 
