@@ -1599,7 +1599,7 @@ class nftables(object):
                     rule.update(self._rich_rule_priority_fragment(rich_rule))
                     rules.append({add_del: {"rule": rule}})
             else:
-                if self._fw.get_log_denied() != "off" and self._fw.policy.query_icmp_block_inversion(policy):
+                if self._fw.get_log_denied() != "off" and not self._fw.policy.query_icmp_block_inversion(policy):
                     rules.append({add_del: {"rule": {"family": "inet",
                                                      "table": TABLE_NAME,
                                                      "chain": final_chain,
