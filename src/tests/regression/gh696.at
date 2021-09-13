@@ -1,0 +1,102 @@
+FWD_START_TEST([icmp-block-inversion no log blocked])
+AT_KEYWORDS(icmp gh696 rhbz1945833)
+
+FWD_CHECK([--permanent --zone public --remove-icmp-block-inversion], 0, [ignore], [ignore])
+FWD_CHECK([--permanent --zone public --add-icmp-block echo-request], 0, [ignore])
+FWD_RELOAD()
+
+NFT_LIST_RULES([inet], [filter_IN_public_deny], 0, [dnl
+    table inet firewalld {
+        chain filter_IN_public_deny {
+            icmp echo-request reject with icmpx admin-prohibited
+            icmpv6 echo-request reject with icmpx admin-prohibited
+        }
+    }
+])
+
+IPTABLES_LIST_RULES([filter], [IN_public_deny], 0, [dnl
+    REJECT icmp -- 0.0.0.0/0 0.0.0.0/0 icmptype 8 reject-with icmp-host-prohibited
+])
+IP6TABLES_LIST_RULES([filter], [IN_public_deny], 0, [dnl
+    REJECT icmpv6 ::/0 ::/0 ipv6-icmptype 128 reject-with icmp6-adm-prohibited
+])
+
+dnl since inversion is disabled we should get logs when the ICMP is blocked.
+FWD_CHECK([--set-log-denied all], 0, [ignore])
+
+NFT_LIST_RULES([inet], [filter_IN_public_deny], 0, [dnl
+    table inet firewalld {
+        chain filter_IN_public_deny {
+            icmp echo-request log prefix ""filter_zone_public_HOST_ICMP_BLOCK: ""
+            icmp echo-request reject with icmpx admin-prohibited
+            icmpv6 echo-request log prefix ""filter_zone_public_HOST_ICMP_BLOCK: ""
+            icmpv6 echo-request reject with icmpx admin-prohibited
+        }
+    }
+])
+
+IPTABLES_LIST_RULES([filter], [IN_public_deny], 0, [dnl
+    LOG icmp -- 0.0.0.0/0 0.0.0.0/0 icmptype 8 LOG flags 0 level 4 prefix "zone_public_HOST_ICMP_BLOCK: "
+    REJECT icmp -- 0.0.0.0/0 0.0.0.0/0 icmptype 8 reject-with icmp-host-prohibited
+])
+IP6TABLES_LIST_RULES([filter], [IN_public_deny], 0, [dnl
+    LOG icmpv6 ::/0 ::/0 ipv6-icmptype 128 LOG flags 0 level 4 prefix "zone_public_HOST_ICMP_BLOCK: "
+    REJECT icmpv6 ::/0 ::/0 ipv6-icmptype 128 reject-with icmp6-adm-prohibited
+])
+
+dnl ########################################
+dnl ########################################
+dnl Same as above, but with icmp block inversion.
+dnl ########################################
+dnl ########################################
+
+FWD_CHECK([--permanent --zone public --add-icmp-block-inversion], 0, [ignore])
+FWD_CHECK([--set-log-denied off], 0, [ignore])
+
+NFT_LIST_RULES([inet], [filter_IN_public_allow], 0, [dnl
+    table inet firewalld {
+        chain filter_IN_public_allow {
+            tcp dport 22 ct state new,untracked accept
+            ip6 daddr fe80::/64 udp dport 546 ct state new,untracked accept
+            icmp echo-request accept
+            icmpv6 echo-request accept
+        }
+    }
+])
+
+IPTABLES_LIST_RULES([filter], [IN_public_allow], 0, [dnl
+    ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:22 ctstate NEW,UNTRACKED
+    ACCEPT icmp -- 0.0.0.0/0 0.0.0.0/0 icmptype 8
+])
+IP6TABLES_LIST_RULES([filter], [IN_public_allow], 0, [dnl
+    ACCEPT tcp ::/0 ::/0 tcp dpt:22 ctstate NEW,UNTRACKED
+    ACCEPT udp ::/0 fe80::/64 udp dpt:546 ctstate NEW,UNTRACKED
+    ACCEPT icmpv6 ::/0 ::/0 ipv6-icmptype 128
+])
+
+dnl since inversion is enabled, it should be the same whether set-log-denied is
+dnl enabled or not.
+FWD_CHECK([--set-log-denied all], 0, [ignore])
+
+NFT_LIST_RULES([inet], [filter_IN_public_allow], 0, [dnl
+    table inet firewalld {
+        chain filter_IN_public_allow {
+            tcp dport 22 ct state new,untracked accept
+            ip6 daddr fe80::/64 udp dport 546 ct state new,untracked accept
+            icmp echo-request accept
+            icmpv6 echo-request accept
+        }
+    }
+])
+
+IPTABLES_LIST_RULES([filter], [IN_public_allow], 0, [dnl
+    ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:22 ctstate NEW,UNTRACKED
+    ACCEPT icmp -- 0.0.0.0/0 0.0.0.0/0 icmptype 8
+])
+IP6TABLES_LIST_RULES([filter], [IN_public_allow], 0, [dnl
+    ACCEPT tcp ::/0 ::/0 tcp dpt:22 ctstate NEW,UNTRACKED
+    ACCEPT udp ::/0 fe80::/64 udp dpt:546 ctstate NEW,UNTRACKED
+    ACCEPT icmpv6 ::/0 ::/0 ipv6-icmptype 128
+])
+
+FWD_END_TEST([-d '/WARNING: NOT_ENABLED: icmp-block-inversion/d'])
