@@ -62,10 +62,10 @@
 
             <para>
                 A policy's relationship to zones is defined by assigning
-                assigning a set set of ingress zones and a set of egress zones.
-                For example, if the set of ingress zones "public" and the set
-                of egress zones contains "internal" then the policy will affect
-                all traffic flowing from the "public" zone to the "internal"
+                a set of ingress zones and a set of egress zones.
+                For example, if the set of ingress zones contains "public" and
+                the set of egress zones contains "internal" then the policy will
+                affect all traffic flowing from the "public" zone to the "internal"
                 zone. However, since policies are unidirectional it will not
                 apply to traffic flowing from "internal" to "public". Note that
                 the ingress set and egress set can contain multiple zones.
