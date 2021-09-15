@@ -20,6 +20,7 @@
 #
 import copy
 import json
+import ipaddress
 
 from firewall.core.logger import log
 from firewall.functions import check_mac, getPortRange, normalizeIP6, \
@@ -1135,8 +1136,8 @@ class nftables(object):
                 family = "ip"
             elif check_address("ipv4", address):
                 family = "ip"
-                addr_len = address.split("/")
-                address = {"prefix": {"addr": addr_len[0], "len": int(addr_len[1])}}
+                normalized_address = ipaddress.IPv4Network(address, strict=False)
+                address = {"prefix": {"addr": normalized_address.network_address.compressed, "len": normalized_address.prefixlen}}
             elif check_single_address("ipv6", address):
                 family = "ip6"
                 address = normalizeIP6(address)
