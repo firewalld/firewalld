@@ -214,6 +214,7 @@ sources: $1
 
     check_zone_source([1.2.3.4])
     check_zone_source([192.168.1.0/24])
+    check_zone_source([192.168.1.1/255.255.255.0])
     IF_HOST_SUPPORTS_IPV6_RULES([
     check_zone_source([3ffe:501:ffff::/64])
     check_zone_source([dead:beef::babe])
