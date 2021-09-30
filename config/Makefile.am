@@ -178,6 +178,7 @@ CONFIG_FILES = \
 	services/irc.xml \
 	services/iscsi-target.xml \
 	services/isns.xml \
+	services/jellyfin.xml \
 	services/jenkins.xml \
 	services/kadmin.xml \
 	services/kdeconnect.xml \
