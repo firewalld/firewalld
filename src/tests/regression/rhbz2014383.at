@@ -1,0 +1,56 @@
+FWD_START_TEST([same source in two zone xml])
+AT_KEYWORDS(zone rhbz2014383)
+
+AT_CHECK([mkdir -p ./zones])
+
+AT_DATA([./zones/foobar.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+  <short>foobar</short>
+  <description>foobar</description>
+  <service name="ssh"/>
+  <source address="10.10.10.10"/>
+  <forward/>
+</zone>
+])
+
+AT_DATA([./zones/foobar2.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+  <short>foobar2</short>
+  <description>foobar2</description>
+  <service name="ssh"/>
+  <source address="10.10.10.10"/>
+  <forward/>
+</zone>
+])
+
+FWD_CHECK([--check-config], 105, [ignore], [ignore])
+
+dnl Do the same thing, but with interfaces
+
+AT_DATA([./zones/foobar.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+  <short>foobar</short>
+  <description>foobar</description>
+  <service name="ssh"/>
+  <interface name="foobar0"/>
+  <forward/>
+</zone>
+])
+
+AT_DATA([./zones/foobar2.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+  <short>foobar2</short>
+  <description>foobar2</description>
+  <service name="ssh"/>
+  <interface name="foobar0"/>
+  <forward/>
+</zone>
+])
+
+FWD_CHECK([--check-config], 104, [ignore], [ignore])
+
+FWD_END_TEST([ignore])
