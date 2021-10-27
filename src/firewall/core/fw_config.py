@@ -984,12 +984,15 @@ class FirewallConfig(object):
 
     def rename_zone(self, obj, name):
         self.check_builtin_zone(obj)
-        new_zone = self._copy_zone(obj, name)
+        obj_conf = obj.export_config_dict()
         self._remove_zone(obj)
+        try:
+            new_zone = self.new_zone_dict(name, obj_conf)
+        except:
+            # re-add original if rename failed
+            self.new_zone_dict(obj.name, obj_conf)
+            raise
         return new_zone
-
-    def _copy_zone(self, obj, name):
-        return self.new_zone_dict(name, obj.export_config_dict())
 
     # policy objects
 
