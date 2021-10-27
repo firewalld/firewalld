@@ -24,6 +24,7 @@ import os
 from firewall import config
 from firewall.errors import FirewallError
 
+from firewall.core.fw_config import FirewallConfig
 from firewall.core.io.zone import zone_reader
 from firewall.core.io.service import service_reader
 from firewall.core.io.ipset import ipset_reader
@@ -34,26 +35,46 @@ from firewall.core.io.direct import Direct
 from firewall.core.io.lockdown_whitelist import LockdownWhitelist
 from firewall.core.io.firewalld_conf import firewalld_conf
 
-def check_config(fw=None):
+def check_config(fw):
+    fw_config = FirewallConfig(fw)
     readers = {
-        "ipset" : (ipset_reader, [config.FIREWALLD_IPSETS, config.ETC_FIREWALLD_IPSETS]),
-        "helper" : (helper_reader, [config.FIREWALLD_HELPERS, config.ETC_FIREWALLD_HELPERS]),
-        "icmptype" : (icmptype_reader, [config.FIREWALLD_ICMPTYPES, config.ETC_FIREWALLD_ICMPTYPES]),
-        "service" : (service_reader, [config.FIREWALLD_SERVICES, config.ETC_FIREWALLD_SERVICES]),
-        "zone" : (zone_reader, [config.FIREWALLD_ZONES, config.ETC_FIREWALLD_ZONES]),
-        "policy" : (policy_reader, [config.FIREWALLD_POLICIES, config.ETC_FIREWALLD_POLICIES]),
+        "ipset":    {"reader": ipset_reader,
+                     "add": fw_config.add_ipset,
+                     "dirs": [config.FIREWALLD_IPSETS, config.ETC_FIREWALLD_IPSETS],
+                    },
+        "helper":   {"reader": helper_reader,
+                     "add": fw_config.add_helper,
+                     "dirs": [config.FIREWALLD_HELPERS, config.ETC_FIREWALLD_HELPERS],
+                    },
+        "icmptype": {"reader": icmptype_reader,
+                     "add": fw_config.add_icmptype,
+                     "dirs": [config.FIREWALLD_ICMPTYPES, config.ETC_FIREWALLD_ICMPTYPES],
+                    },
+        "service":  {"reader": service_reader,
+                     "add": fw_config.add_service,
+                     "dirs": [config.FIREWALLD_SERVICES, config.ETC_FIREWALLD_SERVICES],
+                    },
+        "zone":     {"reader": zone_reader,
+                     "add": fw_config.add_zone,
+                     "dirs": [config.FIREWALLD_ZONES, config.ETC_FIREWALLD_ZONES],
+                    },
+        "policy":   {"reader": policy_reader,
+                     "add": fw_config.add_policy_object,
+                     "dirs": [config.FIREWALLD_POLICIES, config.ETC_FIREWALLD_POLICIES],
+                    },
     }
     for reader in readers.keys():
-        for dir in readers[reader][1]:
-            if not os.path.isdir(dir):
+        for _dir in readers[reader]["dirs"]:
+            if not os.path.isdir(_dir):
                 continue
-            for file in sorted(os.listdir(dir)):
+            for file in sorted(os.listdir(_dir)):
                 if file.endswith(".xml"):
                     try:
-                        obj = readers[reader][0](file, dir)
-                        if fw and reader in ["zone", "policy"]:
-                            obj.fw_config = fw.config
+                        obj = readers[reader]["reader"](file, _dir)
+                        if reader in ["zone", "policy"]:
+                            obj.fw_config = fw_config
                         obj.check_config(obj.export_config())
+                        readers[reader]["add"](obj)
                     except FirewallError as error:
                         raise FirewallError(error.code, "'%s': %s" % (file, error.msg))
                     except Exception as msg:
