@@ -174,11 +174,26 @@ class Zone(IO_Object):
             for interface in config:
                 if not checkInterface(interface):
                     raise FirewallError(errors.INVALID_INTERFACE, interface)
+                if self.fw_config:
+                    for zone in self.fw_config.get_zones():
+                        if zone == self.name:
+                            continue
+                        if interface in self.fw_config.get_zone(zone).interfaces:
+                            raise FirewallError(errors.INVALID_INTERFACE,
+                                    "interface '{}' already bound to zone '{}'".format(interface, zone))
         elif item == "sources":
             for source in config:
                 if not checkIPnMask(source) and not checkIP6nMask(source) and \
                    not check_mac(source) and not source.startswith("ipset:"):
                     raise FirewallError(errors.INVALID_ADDR, source)
+                if self.fw_config:
+                    for zone in self.fw_config.get_zones():
+                        if zone == self.name:
+                            continue
+                        if source in self.fw_config.get_zone(zone).sources:
+                            raise FirewallError(errors.INVALID_ADDR,
+                                    "source '{}' already bound to zone '{}'".format(source, zone))
+
 
     def check_name(self, name):
         super(Zone, self).check_name(name)
