@@ -69,7 +69,8 @@ jobs:
 
       - name: install nftables build dependencies
         run: |
-          sudo apt install -y libmnl-dev libgmp-dev libreadline-dev libjansson-dev 
+          sudo apt install -y libmnl-dev libgmp-dev libreadline-dev \
+          libjansson-dev libedit-dev
 
       - name: install libnftnl ${{ matrix.libnftnl-version }}
         run: |
