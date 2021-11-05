@@ -49,6 +49,9 @@ plugins=
 [[logging]]
 #level=DEBUG
 #domains=ALL
+
+[[keyfile]]
+unmanaged-devices=*,except:type:dummy,except:type:ovs-bridge,except:type:ovs-port,except:type:ovs-interface
 ])
 
     NM_ARGS="--no-daemon --config ./NetworkManager.conf"
