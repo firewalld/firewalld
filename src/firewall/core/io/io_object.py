@@ -110,9 +110,10 @@ class IO_Object(object):
                 errors.INVALID_TYPE,
                 "structure size mismatch %d != %d" % \
                 (len(conf), len(self.IMPORT_EXPORT_STRUCTURE)))
-        for i,(element,value) in enumerate(self.IMPORT_EXPORT_STRUCTURE):
-            self._check_config_structure(conf[i], value)
-            self._check_config(conf[i], element, conf)
+        conf_dict = {}
+        for i,(x,y) in enumerate(self.IMPORT_EXPORT_STRUCTURE):
+            conf_dict[x] = conf[i]
+        self.check_config_dict(conf_dict)
 
     def check_config_dict(self, conf):
         type_formats = dict([(x[0], x[1]) for x in self.IMPORT_EXPORT_STRUCTURE])
