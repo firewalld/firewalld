@@ -117,6 +117,8 @@ class Firewall(object):
         self._state = "INIT"
         self._panic = False
         self._default_zone = ""
+        self._default_zone_interfaces = []
+        self._nm_assigned_interfaces = []
         self._module_refcount = { }
         self._marks = [ ]
         # fallback settings will be overloaded by firewalld.conf
@@ -1037,7 +1039,7 @@ class Firewall(object):
             # save zone interfaces
             _zone_interfaces = { }
             for zone in self.zone.get_zones():
-                _zone_interfaces[zone] = self.zone.get_settings(zone)["interfaces"]
+                _zone_interfaces[zone] = self.zone.get_zone(zone).interfaces
             # save direct config
             _direct_config = self.direct.get_runtime_config()
             _old_dz = self.get_default_zone()
@@ -1081,8 +1083,8 @@ class Firewall(object):
                     _zone_interfaces[_new_dz] = { }
                 # default zone changed. Move interfaces from old default zone to
                 # the new one.
-                for iface, settings in list(_zone_interfaces[_old_dz].items()):
-                    if settings["__default__"]:
+                for iface in _zone_interfaces[_old_dz]:
+                    if iface in self._default_zone_interfaces:
                         # move only those that were added to default zone
                         # (not those that were added to specific zone same as
                         # default)
@@ -1095,8 +1097,7 @@ class Firewall(object):
                 if zone in _zone_interfaces:
 
                     for interface_id in _zone_interfaces[zone]:
-                        self.zone.change_zone_of_interface(zone, interface_id,
-                                                           _zone_interfaces[zone][interface_id]["sender"])
+                        self.zone.change_zone_of_interface(zone, interface_id)
 
                     del _zone_interfaces[zone]
                 else:
@@ -1210,9 +1211,8 @@ class Firewall(object):
             self.zone.change_default_zone(_old_dz, _zone)
 
             # Move interfaces from old default zone to the new one.
-            _old_dz_settings = self.zone.get_settings(_old_dz)
-            for iface, settings in list(_old_dz_settings["interfaces"].items()):
-                if settings["__default__"]:
+            for iface in self.zone.get_zone(_old_dz).interfaces:
+                if iface in self._default_zone_interfaces:
                     # move only those that were added to default zone
                     # (not those that were added to specific zone same as default)
                     self.zone.change_zone_of_interface("", iface)

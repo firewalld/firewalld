@@ -1965,7 +1965,7 @@ class FirewallPolicy(object):
             if not self._fw.nftables_enabled:
                 tc.append(("raw", "PREROUTING"))
             for zone in obj.settings["ingress_zones"]:
-                if self._fw.zone.get_settings(zone)["interfaces"]:
+                if self._fw.zone.get_zone(zone).interfaces:
                     break
             else:
                 tc.append(("nat", "POSTROUTING"))
@@ -1978,7 +1978,7 @@ class FirewallPolicy(object):
             if not self._fw.nftables_enabled:
                 tc.append(("raw", "PREROUTING"))
             for zone in obj.settings["egress_zones"]:
-                if self._fw.zone.get_settings(zone)["interfaces"]:
+                if self._fw.zone.get_zone(zone).interfaces:
                     break
             else:
                 tc.append(("nat", "PREROUTING"))
@@ -1992,12 +1992,12 @@ class FirewallPolicy(object):
             if not self._fw.nftables_enabled:
                 tc.append(("raw", "PREROUTING"))
             for zone in obj.settings["ingress_zones"]:
-                if self._fw.zone.get_settings(zone)["interfaces"]:
+                if self._fw.zone.get_zone(zone).interfaces:
                     break
             else:
                 tc.append(("nat", "POSTROUTING"))
             for zone in obj.settings["egress_zones"]:
-                if self._fw.zone.get_settings(zone)["interfaces"]:
+                if self._fw.zone.get_zone(zone).interfaces:
                     break
             else:
                 tc.append(("nat", "PREROUTING"))
