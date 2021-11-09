@@ -48,7 +48,9 @@ class FirewallZone(object):
         self._zone_policies.clear()
 
     def new_transaction(self):
-        return FirewallTransaction(self._fw)
+        t = FirewallTransaction(self._fw)
+        t.add_pre(self._fw.full_check_config)
+        return t
 
     def policy_name_from_zones(self, fromZone, toZone):
         return "zone_{fromZone}_{toZone}".format(fromZone=fromZone, toZone=toZone)

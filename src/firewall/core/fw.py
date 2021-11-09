@@ -130,6 +130,54 @@ class Firewall(object):
         self._rfc3964_ipv4 = config.FALLBACK_RFC3964_IPV4
         self._allow_zone_drifting = config.FALLBACK_ALLOW_ZONE_DRIFTING
 
+    def get_all_io_objects_dict(self):
+        """
+        Returns a dict of dicts of all runtime config objects.
+        """
+        conf_dict = {}
+        conf_dict["ipsets"] = {_ipset: self.ipset.get_ipset(_ipset) for _ipset in self.ipset.get_ipsets()}
+        conf_dict["helpers"] = {helper: self.helper.get_helper(helper) for helper in self.helper.get_helpers()}
+        conf_dict["icmptypes"] = {icmptype: self.icmptype.get_icmptype(icmptype) for icmptype in self.icmptype.get_icmptypes()}
+        conf_dict["services"] = {service: self.service.get_service(service) for service in self.service.get_services()}
+        conf_dict["zones"] = {zone: self.zone.get_zone(zone) for zone in self.zone.get_zones()}
+        conf_dict["policies"] = {policy: self.policy.get_policy(policy) for policy in self.policy.get_policies_not_derived_from_zone()}
+
+        # The runtime might not actually support all the defined icmptypes.
+        # This is the case if ipv6 (ip6tables) is disabled. Unfortunately users
+        # disable IPv6 and also expect the IPv6 stuff to be silently ignored.
+        # This is problematic for defaults that include IPv6 stuff, e.g. policy
+        # 'allow-host-ipv6'. Use this to make a better decision about errors vs
+        # warnings.
+        #
+        conf_dict["icmptypes_unsupported"] = {}
+        for icmptype in (set(self.config.get_icmptypes()).difference(
+                         set(self.icmptype.get_icmptypes()))):
+            conf_dict["icmptypes_unsupported"][icmptype] = self.config.get_icmptype(icmptype)
+        # Some icmptypes support multiple families. Add those that are missing
+        # support for a subset of families.
+        for icmptype in (set(self.config.get_icmptypes()).intersection(
+                         set(self.icmptype.get_icmptypes()))):
+            if icmptype not in self.ipv4_supported_icmp_types or \
+               icmptype not in self.ipv6_supported_icmp_types:
+                conf_dict["icmptypes_unsupported"][icmptype] = copy.copy(self.config.get_icmptype(icmptype))
+                conf_dict["icmptypes_unsupported"][icmptype].destination = []
+                if icmptype not in self.ipv4_supported_icmp_types:
+                    conf_dict["icmptypes_unsupported"][icmptype].destination.append("ipv4")
+                if icmptype not in self.ipv6_supported_icmp_types:
+                    conf_dict["icmptypes_unsupported"][icmptype].destination.append("ipv6")
+
+        return conf_dict
+
+    def full_check_config(self):
+        # we need to check in a well defined order because some io_objects will
+        # cross-check others
+        order = ["ipsets", "helpers", "icmptypes", "services", "zones", "policies"]
+        all_io_objects = self.get_all_io_objects_dict()
+        for io_obj_type in order:
+            io_objs = all_io_objects[io_obj_type]
+            for (name, io_obj) in io_objs.items():
+                io_obj.check_config_dict(io_obj.export_config_dict(), all_io_objects)
+
     def _check_tables(self):
         # check if iptables, ip6tables and ebtables are usable, else disable
         if self.ip4tables_enabled and \
@@ -1154,6 +1202,9 @@ class Firewall(object):
             self._default_zone = _zone
             self._firewalld_conf.set("DefaultZone", _zone)
             self._firewalld_conf.write()
+
+            if self._offline:
+                return
 
             # remove old default zone from ZONES and add new default zone
             self.zone.change_default_zone(_old_dz, _zone)
