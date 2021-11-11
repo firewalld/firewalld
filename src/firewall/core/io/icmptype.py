@@ -65,7 +65,7 @@ class IcmpType(IO_Object):
         self.description = ""
         del self.destination[:]
 
-    def _check_config(self, config, item, all_config):
+    def _check_config(self, config, item, all_config, all_io_objects):
         if item == "destination":
             for destination in config:
                 if destination not in [ "ipv4", "ipv6" ]:

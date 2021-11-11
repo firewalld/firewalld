@@ -166,8 +166,8 @@ class Zone(IO_Object):
         del conf["UNUSED"]
         return conf
 
-    def _check_config(self, config, item, all_config):
-        common_check_config(self, config, item, all_config)
+    def _check_config(self, config, item, all_config, all_io_objects):
+        common_check_config(self, config, item, all_config, all_io_objects)
 
         if item == "target":
             if config not in ZONE_TARGETS:

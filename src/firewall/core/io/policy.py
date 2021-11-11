@@ -356,7 +356,7 @@ def common_endElement(obj, name):
     elif name in [ "accept", "reject", "drop", "mark", "log", "audit" ]:
         obj._limit_ok = None
 
-def common_check_config(obj, config, item, all_config):
+def common_check_config(obj, config, item, all_config, all_io_objects):
     if item == "services" and obj.fw_config:
         existing_services = obj.fw_config.get_services()
         for service in config:
@@ -777,8 +777,8 @@ class Policy(IO_Object):
         else:
             super(Policy, self).__setattr__(name, value)
 
-    def _check_config(self, config, item, all_config):
-        common_check_config(self, config, item, all_config)
+    def _check_config(self, config, item, all_config, all_io_objects):
+        common_check_config(self, config, item, all_config, all_io_objects)
 
         if item == "target":
             if config not in POLICY_TARGETS:

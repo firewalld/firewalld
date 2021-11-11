@@ -265,7 +265,7 @@ class IPSet(IO_Object):
                 raise FirewallError(errors.INVALID_IPSET,
                                     "ipset type '%s' not usable" % ipset_type)
 
-    def _check_config(self, config, item, all_config):
+    def _check_config(self, config, item, all_config, all_io_objects):
         if item == "type":
             if config not in IPSET_TYPES:
                 raise FirewallError(errors.INVALID_TYPE,
@@ -292,13 +292,13 @@ class IPSet(IO_Object):
                      config[key] not in [ "inet", "inet6" ]:
                     raise FirewallError(errors.INVALID_FAMILY, config[key])
 
-    def import_config(self, config):
+    def import_config(self, config, all_io_objects):
         if "timeout" in config[4] and config[4]["timeout"] != "0":
             if len(config[5]) != 0:
                 raise FirewallError(errors.IPSET_WITH_TIMEOUT)
         for entry in config[5]:
             IPSet.check_entry(entry, config[4], config[3])
-        super(IPSet, self).import_config(config)
+        super(IPSet, self).import_config(config, all_io_objects)
 
 # PARSER
 
