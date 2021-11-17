@@ -41,7 +41,17 @@ tag:
 	git push
 	git push --tags
 
-dist: clean-docs update-docs
+dist: clean-docs update-docs dist-container
+
+dist-container:
+	$(PODMAN) build --squash-all -t firewalld -f $(abs_top_srcdir)/Dockerfile $(abs_top_srcdir)
+	$(PODMAN) tag firewalld firewalld:$(PACKAGE_VERSION)
+	$(PODMAN) tag firewalld firewalld:latest
+	$(PODMAN) tag firewalld:$(PACKAGE_VERSION) quay.io/firewalld/firewalld:$(PACKAGE_VERSION)
+	$(PODMAN) tag firewalld:latest quay.io/firewalld/firewalld:latest
+	$(PODMAN) push quay.io/firewalld/firewalld:$(PACKAGE_VERSION)
+	$(PODMAN) push quay.io/firewalld/firewalld:latest
+	$(PODMAN) save --format oci-archive --output firewalld-oci-$(PACKAGE_VERSION).tar firewalld:$(PACKAGE_VERSION)
 
 dist-check:
 	@rm -f _dist_check_failed
@@ -80,6 +90,7 @@ check-container check-integration installcheck-integration:
 	$(MAKE) -C src/tests $@
 
 .PHONY: check-container check-integration installcheck-integration
+.PHONY: dist-container
 
 update-docs:
 	$(MAKE) -C doc/xml
