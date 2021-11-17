@@ -121,6 +121,39 @@ integration tests.
 
   make check-container TESTSUITEFLAGS="-j4"
 
+OCI Container Image
+-------------------
+As part of the `dist` build target an OCI container image is generated. This is
+distributed alongside the normal release tarball. It can be used to run
+firewalld from a container.
+
+To manually load the container image into your environment:
+        
+  # podman load -i .../path/to/firewalld-oci-<ver>.tar
+
+To fetch the image from quay.io:
+
+  # podman pull quay.io/firewalld/firewalld:<ver>
+
+where <ver> is optional. latest will be used if omitted.
+                  
+To start the daemon/container:
+                          
+  # podman run -d -v /run/dbus/system_bus_socket:/run/dbus/system_bus_socket \
+               --network host --privileged \
+               --name my-firewalld firewalld
+
+The volume mount is needed to access the host's running system dbus.
+The source path of the socket may vary depending on distribution.
+
+Firewalld's configuration will live inside the container. Therefore
+users may want to occasionally `podman commit` the image.
+
+Using firewalld's CLI should be done via podman exec after the
+daemon/container has been started:
+
+  # podman exec my-firewalld firewall-cmd ...
+
 RPM package
 -----------
 
