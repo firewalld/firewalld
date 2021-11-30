@@ -309,9 +309,26 @@ def check_entry_overlaps_existing(entry, entries):
     if len(entry.split(",")) > 1:
         return
 
+    try:
+        entry_network = ipaddress.ip_network(entry, strict=False)
+    except ValueError:
+        # could not parse the new IP address, maybe a MAC
+        return
+
     for itr in entries:
-        try:
-            if ipaddress.ip_network(itr, strict=False).overlaps(ipaddress.ip_network(entry, strict=False)):
-                raise FirewallError(errors.INVALID_ENTRY, "Entry '{}' overlaps with existing entry '{}'".format(itr, entry))
-        except ValueError:
-            pass
+        if entry_network.overlaps(ipaddress.ip_network(itr, strict=False)):
+            raise FirewallError(errors.INVALID_ENTRY, "Entry '{}' overlaps with existing entry '{}'".format(entry, itr))
+
+def check_for_overlapping_entries(entries):
+    """ Check if any entry overlaps any entry in the list of entries """
+    try:
+        entries = [ipaddress.ip_network(x, strict=False) for x in entries]
+    except ValueError:
+        # at least one entry can not be parsed
+        return
+
+    while entries:
+        entry = entries.pop()
+        for itr in entries:
+            if entry.overlaps(itr):
+                raise FirewallError(errors.INVALID_ENTRY, "Entry '{}' overlaps entry '{}'".format(entry, itr))
