@@ -28,7 +28,8 @@ from firewall import config
 from firewall.core.base import DEFAULT_ZONE_TARGET, DEFAULT_POLICY_TARGET, DEFAULT_POLICY_PRIORITY
 from firewall.dbus_utils import dbus_to_python
 from firewall.core.rich import Rich_Rule
-from firewall.core.ipset import normalize_ipset_entry, check_entry_overlaps_existing
+from firewall.core.ipset import normalize_ipset_entry, check_entry_overlaps_existing, \
+                                check_for_overlapping_entries
 from firewall import errors
 from firewall.errors import FirewallError
 
@@ -1517,11 +1518,8 @@ class FirewallClientIPSetSettings(object):
         if "timeout" in self.settings[4] and \
            self.settings[4]["timeout"] != "0":
             raise FirewallError(errors.IPSET_WITH_TIMEOUT)
-        _entries = set()
-        for _entry in dbus_to_python(entries, list):
-            check_entry_overlaps_existing(_entry, _entries)
-            _entries.add(normalize_ipset_entry(_entry))
-        self.settings[5] = list(_entries)
+        check_for_overlapping_entries(entries)
+        self.settings[5] = entries
     @handle_exceptions
     def addEntry(self, entry):
         if "timeout" in self.settings[4] and \
