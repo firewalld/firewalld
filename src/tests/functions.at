@@ -16,6 +16,9 @@ m4_define([FWD_START_FIREWALLD], [
         FIREWALLD_ARGS+=" --default-config ${FIREWALLD_DEFAULT_CONFIG}"
     fi
 
+    dnl limit data (and heap) to catch unexpected increases in memory usage
+    ulimit -d $(expr 1024 \* 100)
+
     NS_CMD([firewalld $FIREWALLD_ARGS &])
     if test $? -ne 0; then
         AT_FAIL_IF([:])
