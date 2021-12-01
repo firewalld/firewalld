@@ -733,14 +733,37 @@ class nftables(object):
 
         ingress_fragments = []
         egress_fragments = []
-        if ingress_interfaces:
+        ingress_interfaces_without_wildcards = []
+        egress_interfaces_without_wildcards = []
+
+        # wildcard interfaces must be handled individually because the nftables
+        # backend does not allow them inside of an anonymous set
+        for ingress_interface in ingress_interfaces:
+            if ingress_interface[len(ingress_interface)-1] == "+":
+                ingress_fragments.append({"match": {"left": {"meta": {"key": "iifname"}},
+                                                    "op": "==",
+                                                    "right": ingress_interface[:len(ingress_interface)-1] + "*"}})
+            else:
+                ingress_interfaces_without_wildcards.append(ingress_interface)
+
+        for egress_interface in egress_interfaces:
+            if egress_interface[len(egress_interface)-1] == "+":
+                egress_fragments.append({"match": {"left": {"meta": {"key": "oifname"}},
+                                                   "op": "==",
+                                                   "right": egress_interface[:len(egress_interface)-1] + "*"}})
+            else:
+                egress_interfaces_without_wildcards.append(egress_interface)
+
+        if ingress_interfaces_without_wildcards:
             ingress_fragments.append({"match": {"left": {"meta": {"key": "iifname"}},
                                                 "op": "==",
-                                                "right": {"set": list(ingress_interfaces)}}})
-        if egress_interfaces:
+                                                "right": {"set": ingress_interfaces_without_wildcards}}})
+
+        if egress_interfaces_without_wildcards:
             egress_fragments.append({"match": {"left": {"meta": {"key": "oifname"}},
                                                "op": "==",
-                                               "right": {"set": list(egress_interfaces)}}})
+                                               "right": {"set": egress_interfaces_without_wildcards}}})
+
         if ingress_sources:
             for src in ingress_sources:
                 ingress_fragments.append(self._rule_addr_fragment("saddr", src))
