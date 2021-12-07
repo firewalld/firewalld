@@ -167,6 +167,7 @@ CONFIG_FILES = \
 	services/grafana.xml \
 	services/gre.xml \
 	services/high-availability.xml \
+	services/http3.xml \
 	services/https.xml \
 	services/http.xml \
 	services/imaps.xml \
