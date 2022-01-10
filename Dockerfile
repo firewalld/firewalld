@@ -7,7 +7,8 @@ MAINTAINER Firewalld Maintainers <firewalld-users@lists.fedorahosted.org>
 #
 RUN dnf -y install automake autoconf make intltool \
                    docbook-style-xsl python3-nftables \
-                   python3-gobject-base libxslt glib2-devel
+                   python3-gobject-base libxslt glib2-devel \
+                   iptables ipset ebtables
 
 # firewalld testsuite dependencies
 #
