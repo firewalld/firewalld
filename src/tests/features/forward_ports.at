@@ -194,3 +194,83 @@ IPTABLES_LIST_RULES([nat], [PRE_foobar_allow], 0, [dnl
 ])
 
 FWD_END_TEST([-e '/ERROR: INVALID_FORWARD/d' -e '/ERROR: INVALID_ZONE/d'])
+
+
+FWD_START_TEST([forward ports [(OUTPUT)]])
+AT_KEYWORDS(policy forward_port rhbz2039542)
+
+FWD_CHECK([--permanent --new-policy=foobar], 0, [ignore])
+FWD_CHECK([--permanent --new-zone localhost], 0, [ignore])
+FWD_RELOAD
+
+dnl ingress-zone=HOST, egress-zone=ANY to DNAT outgoing packets
+dnl podman uses this to redirect from host to containers.
+dnl
+FWD_CHECK([--permanent --policy foobar --add-ingress-zone HOST], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar --add-egress-zone ANY], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-forward-port port=22:proto=tcp:toport=2222], 106, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-forward-port port=22:proto=tcp:toport=2222:toaddr=10.0.0.1], 0, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-rich-rule='rule family=ipv4 forward-port port=444 protocol=udp to-port=4444'], 106, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-rich-rule='rule family=ipv4 forward-port port=444 protocol=udp to-port=4444 to-addr=10.44.44.44'], 0, [ignore], [ignore])
+FWD_CHECK([            --policy foobar --add-ingress-zone HOST], 0, [ignore])
+FWD_CHECK([            --policy foobar --add-egress-zone ANY], 0, [ignore])
+FWD_CHECK([            --policy=foobar --add-forward-port port=22:proto=tcp:toport=2222], 106, [ignore], [ignore])
+FWD_CHECK([            --policy=foobar --add-forward-port port=22:proto=tcp:toport=2222:toaddr=10.0.0.1], 0, [ignore], [ignore])
+FWD_CHECK([            --policy=foobar --add-rich-rule='rule family=ipv4 forward-port port=444 protocol=udp to-port=4444'], 106, [ignore], [ignore])
+FWD_CHECK([            --policy=foobar --add-rich-rule='rule family=ipv4 forward-port port=444 protocol=udp to-port=4444 to-addr=10.44.44.44'], 0, [ignore], [ignore])
+NFT_LIST_RULES([inet], [nat_OUT_policy_foobar_allow], 0, [dnl
+    table inet firewalld {
+        chain nat_OUT_policy_foobar_allow {
+            meta nfproto ipv4 tcp dport 22 dnat ip to 10.0.0.1:2222
+            meta nfproto ipv4 udp dport 444 dnat ip to 10.44.44.44:4444
+        }
+    }
+])
+IPTABLES_LIST_RULES([nat], [OUT_foobar_allow], 0, [dnl
+    DNAT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:22 to:10.0.0.1:2222
+    DNAT udp -- 0.0.0.0/0 0.0.0.0/0 udp dpt:444 to:10.44.44.44:4444
+])
+
+FWD_CHECK([--permanent --policy foobar --remove-ingress-zone HOST], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar --remove-egress-zone ANY], 0, [ignore])
+FWD_CHECK([            --policy foobar --remove-ingress-zone HOST], 0, [ignore])
+FWD_CHECK([            --policy foobar --remove-egress-zone ANY], 0, [ignore])
+
+dnl ingress-zone=HOST, egress-zone=zone
+dnl podman uses this to redirect from host to containers.
+dnl
+FWD_CHECK([--permanent --zone localhost --add-source 127.0.0.0/8], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar --add-ingress-zone HOST], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar --add-egress-zone localhost], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-forward-port port=22:proto=tcp:toport=2222], 106, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-forward-port port=22:proto=tcp:toport=2222:toaddr=10.0.0.1], 0, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-rich-rule='rule family=ipv4 forward-port port=444 protocol=udp to-port=4444'], 106, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-rich-rule='rule family=ipv4 forward-port port=444 protocol=udp to-port=4444 to-addr=10.44.44.44'], 0, [ignore], [ignore])
+FWD_CHECK([            --zone localhost --add-source 127.0.0.0/8], 0, [ignore])
+FWD_CHECK([            --policy foobar --add-ingress-zone HOST], 0, [ignore])
+FWD_CHECK([            --policy foobar --add-egress-zone localhost], 0, [ignore])
+FWD_CHECK([            --policy=foobar --add-forward-port port=22:proto=tcp:toport=2222], 106, [ignore], [ignore])
+FWD_CHECK([            --policy=foobar --add-forward-port port=22:proto=tcp:toport=2222:toaddr=10.0.0.1], 0, [ignore], [ignore])
+FWD_CHECK([            --policy=foobar --add-rich-rule='rule family=ipv4 forward-port port=444 protocol=udp to-port=4444'], 106, [ignore], [ignore])
+FWD_CHECK([            --policy=foobar --add-rich-rule='rule family=ipv4 forward-port port=444 protocol=udp to-port=4444 to-addr=10.44.44.44'], 0, [ignore], [ignore])
+NFT_LIST_RULES([inet], [nat_OUT_policy_foobar_allow], 0, [dnl
+    table inet firewalld {
+        chain nat_OUT_policy_foobar_allow {
+            meta nfproto ipv4 tcp dport 22 dnat ip to 10.0.0.1:2222
+            meta nfproto ipv4 udp dport 444 dnat ip to 10.44.44.44:4444
+        }
+    }
+])
+IPTABLES_LIST_RULES([nat], [OUT_foobar_allow], 0, [dnl
+    DNAT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:22 to:10.0.0.1:2222
+    DNAT udp -- 0.0.0.0/0 0.0.0.0/0 udp dpt:444 to:10.44.44.44:4444
+])
+
+FWD_CHECK([--permanent --zone localhost --remove-source 127.0.0.0/8], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar --remove-ingress-zone HOST], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar --remove-egress-zone localhost], 0, [ignore])
+FWD_CHECK([            --zone localhost --remove-source 127.0.0.0/8], 0, [ignore])
+FWD_CHECK([            --policy foobar --remove-ingress-zone HOST], 0, [ignore])
+FWD_CHECK([            --policy foobar --remove-egress-zone localhost], 0, [ignore])
+
+FWD_END_TEST([-e '/ERROR: INVALID_FORWARD/d' -e '/ERROR: INVALID_ZONE/d'])
