@@ -856,9 +856,7 @@ class Policy(IO_Object):
                                 raise FirewallError(errors.INVALID_ZONE, "'mark' action cannot be used in a policy if an egress zone has assigned interfaces")
         elif item == "forward_ports":
             for fwd_port in config:
-                if "ingress_zones" in all_config and "HOST" in all_config["ingress_zones"]:
-                    raise FirewallError(errors.INVALID_ZONE, "'forward-port' is invalid for ingress zone 'HOST'")
-                elif "egress_zones" in all_config:
+                if "egress_zones" in all_config:
                     if "HOST" in all_config["egress_zones"]:
                         if fwd_port[3]:
                             raise FirewallError(errors.INVALID_FORWARD, "A 'forward-port' with 'to-addr' is invalid for egress zone 'HOST'")

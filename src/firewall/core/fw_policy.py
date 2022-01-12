@@ -1944,7 +1944,7 @@ class FirewallPolicy(object):
             return tc
         elif "HOST" in obj.settings["ingress_zones"]:
             # HOST --> zone/any
-            return [("filter", "OUTPUT")]
+            return [("filter", "OUTPUT"), ("nat", "OUTPUT")]
         elif "ANY" in obj.settings["ingress_zones"] and "ANY" in obj.settings["egress_zones"]:
             # any --> any
             tc = [("filter", "FORWARD"), ("nat", "PREROUTING"),
@@ -2043,7 +2043,7 @@ class FirewallPolicy(object):
         elif "HOST" in obj.settings["ingress_zones"]:
             # HOST --> zone/any
             if not obj.derived_from_zone:
-                if table == "filter":
+                if table in ["filter", "nat"]:
                     return "OUT_" + suffix
         elif "ANY" in obj.settings["egress_zones"]:
             # zone/any --> any
