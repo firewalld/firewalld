@@ -70,7 +70,7 @@ IPTABLES_TO_NFT_HOOK = {
         "PREROUTING": ("prerouting", -100 + NFT_HOOK_OFFSET),
         "POSTROUTING": ("postrouting", 100 + NFT_HOOK_OFFSET),
     #    "INPUT": ("input", 100 + NFT_HOOK_OFFSET),
-    #    "OUTPUT": ("output", -100 + NFT_HOOK_OFFSET),
+        "OUTPUT": ("output", -100 + NFT_HOOK_OFFSET),
     },
     "filter": {
         "PREROUTING": ("prerouting", 0 + NFT_HOOK_OFFSET),
@@ -526,15 +526,26 @@ class nftables(object):
                                                     "hook": "%s" % IPTABLES_TO_NFT_HOOK["nat"][chain][0],
                                                     "prio": IPTABLES_TO_NFT_HOOK["nat"][chain][1]}}})
 
-            for dispatch_suffix in ["POLICIES_pre", "ZONES", "POLICIES_post"]:
-                default_rules.append({"add": {"chain": {"family": "inet",
-                                                        "table": TABLE_NAME,
-                                                        "name": "nat_%s_%s" % (chain, dispatch_suffix)}}})
-            for dispatch_suffix in ["ZONES"]:
-                default_rules.append({"add": {"rule":  {"family": "inet",
-                                                        "table": TABLE_NAME,
-                                                        "chain": "nat_%s" % chain,
-                                                        "expr": [{"jump": {"target": "nat_%s_%s" % (chain, dispatch_suffix)}}]}}})
+            if chain in ["OUTPUT"]:
+                # nat, output does not have zone dispatch
+                for dispatch_suffix in ["POLICIES_pre", "POLICIES_post"]:
+                    default_rules.append({"add": {"chain": {"family": "inet",
+                                                            "table": TABLE_NAME,
+                                                            "name": "nat_%s_%s" % (chain, dispatch_suffix)}}})
+                    default_rules.append({"add": {"rule":  {"family": "inet",
+                                                            "table": TABLE_NAME,
+                                                            "chain": "nat_%s" % chain,
+                                                            "expr": [{"jump": {"target": "nat_%s_%s" % (chain, dispatch_suffix)}}]}}})
+            else:
+                for dispatch_suffix in ["POLICIES_pre", "ZONES", "POLICIES_post"]:
+                    default_rules.append({"add": {"chain": {"family": "inet",
+                                                            "table": TABLE_NAME,
+                                                            "name": "nat_%s_%s" % (chain, dispatch_suffix)}}})
+                for dispatch_suffix in ["ZONES"]:
+                    default_rules.append({"add": {"rule":  {"family": "inet",
+                                                            "table": TABLE_NAME,
+                                                            "chain": "nat_%s" % chain,
+                                                            "expr": [{"jump": {"target": "nat_%s_%s" % (chain, dispatch_suffix)}}]}}})
 
         for chain in IPTABLES_TO_NFT_HOOK["filter"].keys():
             default_rules.append({"add": {"chain": {"family": "inet",

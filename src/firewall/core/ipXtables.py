@@ -676,7 +676,13 @@ class ip4tables(object):
                 default_rules["nat"].append("-A %s -j %s_direct" % (chain, chain))
                 self.our_chains["nat"].add("%s_direct" % chain)
 
-                if chain in [ "PREROUTING", "POSTROUTING" ]:
+                if chain in ["OUTPUT"]:
+                    # nat, output does not have zone dispatch
+                    for dispatch_suffix in ["POLICIES_pre", "POLICIES_post"]:
+                        default_rules["nat"].append("-N %s_%s" % (chain, dispatch_suffix))
+                        self.our_chains["nat"].update(set(["%s_%s" % (chain, dispatch_suffix)]))
+                        default_rules["nat"].append("-A %s -j %s_%s" % (chain, chain, dispatch_suffix))
+                else:
                     for dispatch_suffix in ["POLICIES_pre", "ZONES", "POLICIES_post"]:
                         default_rules["nat"].append("-N %s_%s" % (chain, dispatch_suffix))
                         self.our_chains["nat"].update(set(["%s_%s" % (chain, dispatch_suffix)]))
