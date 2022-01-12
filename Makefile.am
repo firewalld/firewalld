@@ -1,5 +1,5 @@
 SUBDIRS = config doc po shell-completion src
-DIST_TARGETS = dist-gzip
+DIST_TARGETS = dist-gzip dist-container
 
 EXTRA_DIST = \
 	COPYING \
@@ -41,7 +41,7 @@ tag:
 	git push
 	git push --tags
 
-dist: clean-docs update-docs dist-container
+dist: clean-docs update-docs
 
 dist-container:
 	$(PODMAN) build --squash-all -t firewalld -f $(abs_top_srcdir)/Dockerfile $(abs_top_srcdir)
@@ -109,10 +109,10 @@ local: distclean
 	@rm -rf /tmp/${PACKAGE_NAME}-$(PACKAGE_VERSION)	
 	@echo "The archive is in ${PACKAGE_NAME}-$(PACKAGE_VERSION).tar.gz"
 
-test-rpm: dist
+test-rpm: dist-gzip
 	@rpmbuild -ta $(PACKAGE_NAME)-$(PACKAGE_VERSION).tar.gz
 
-test-srpm: dist
+test-srpm: dist-gzip
 	@rpmbuild -ts $(PACKAGE_NAME)-$(PACKAGE_VERSION).tar.gz
 
 update-po:
