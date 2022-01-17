@@ -123,7 +123,6 @@ class Zone(IO_Object):
         self.source_ports = [ ]
         self.interfaces = [ ]
         self.sources = [ ]
-        self.fw_config = None # to be able to check services and a icmp_blocks
         self.rules = [ ]
         self.rules_str = [ ]
         self.icmp_block_inversion = False
@@ -146,7 +145,6 @@ class Zone(IO_Object):
         del self.source_ports[:]
         del self.interfaces[:]
         del self.sources[:]
-        self.fw_config = None # to be able to check services and a icmp_blocks
         del self.rules[:]
         del self.rules_str[:]
         self.icmp_block_inversion = False
@@ -169,6 +167,9 @@ class Zone(IO_Object):
     def _check_config(self, config, item, all_config, all_io_objects):
         common_check_config(self, config, item, all_config, all_io_objects)
 
+        if self.name in all_io_objects["policies"]:
+            raise FirewallError(errors.NAME_CONFLICT, "Zone '{}': Can't have the same name as a policy.".format(self.name))
+
         if item == "target":
             if config not in ZONE_TARGETS:
                 raise FirewallError(errors.INVALID_TARGET, config)
@@ -176,25 +177,23 @@ class Zone(IO_Object):
             for interface in config:
                 if not checkInterface(interface):
                     raise FirewallError(errors.INVALID_INTERFACE, interface)
-                if self.fw_config:
-                    for zone in self.fw_config.get_zones():
-                        if zone == self.name:
-                            continue
-                        if interface in self.fw_config.get_zone(zone).interfaces:
-                            raise FirewallError(errors.INVALID_INTERFACE,
+                for zone in all_io_objects["zones"]:
+                    if zone == self.name:
+                        continue
+                    if interface in all_io_objects["zones"][zone].interfaces:
+                        raise FirewallError(errors.INVALID_INTERFACE,
                                     "interface '{}' already bound to zone '{}'".format(interface, zone))
         elif item == "sources":
             for source in config:
                 if not checkIPnMask(source) and not checkIP6nMask(source) and \
                    not check_mac(source) and not source.startswith("ipset:"):
                     raise FirewallError(errors.INVALID_ADDR, source)
-                if self.fw_config:
-                    for zone in self.fw_config.get_zones():
-                        if zone == self.name:
-                            continue
-                        if source in self.fw_config.get_zone(zone).sources:
-                            raise FirewallError(errors.INVALID_ADDR,
-                                    "source '{}' already bound to zone '{}'".format(source, zone))
+                for zone in all_io_objects["zones"]:
+                    if zone == self.name:
+                        continue
+                    if source in all_io_objects["zones"][zone].sources:
+                        raise FirewallError(errors.INVALID_ADDR,
+                                "source '{}' already bound to zone '{}'".format(source, zone))
 
 
     def check_name(self, name):
@@ -219,9 +218,6 @@ class Zone(IO_Object):
                                     name, len(checked_name),
                                     max_zone_name_len(),
                                     self.combined))
-            if self.fw_config:
-                if checked_name in self.fw_config.get_policy_objects():
-                    raise FirewallError(errors.NAME_CONFLICT, "Zones can't have the same name as a policy.")
 
     def combine(self, zone):
         self.combined = True

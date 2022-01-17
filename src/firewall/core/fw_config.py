@@ -818,7 +818,6 @@ class FirewallConfig(object):
 
         if obj.builtin:
             x = copy.copy(obj)
-            x.fw_config = self
             x.import_config_dict(conf_dict, self.get_all_io_objects_dict())
             x.path = config.ETC_FIREWALLD_ZONES
             x.builtin = False
@@ -828,7 +827,6 @@ class FirewallConfig(object):
             zone_writer(x)
             return x
         else:
-            obj.fw_config = self
             obj.import_config_dict(conf_dict, self.get_all_io_objects_dict())
             zone_writer(obj)
             return obj
@@ -836,7 +834,6 @@ class FirewallConfig(object):
     def set_zone_config_dict(self, obj, conf):
         if obj.builtin:
             x = copy.copy(obj)
-            x.fw_config = self
             x.import_config_dict(conf, self.get_all_io_objects_dict())
             x.path = config.ETC_FIREWALLD_ZONES
             x.builtin = False
@@ -846,7 +843,6 @@ class FirewallConfig(object):
             zone_writer(x)
             return x
         else:
-            obj.fw_config = self
             obj.import_config_dict(conf, self.get_all_io_objects_dict())
             zone_writer(obj)
             return obj
@@ -860,10 +856,9 @@ class FirewallConfig(object):
             conf_dict[Zone.IMPORT_EXPORT_STRUCTURE[i][0]] = value
 
         x = Zone()
-        x.fw_config = self
         x.check_name(name)
-        x.import_config_dict(conf_dict, self.get_all_io_objects_dict())
         x.name = name
+        x.import_config_dict(conf_dict, self.get_all_io_objects_dict())
         x.filename = "%s.xml" % name
         x.path = config.ETC_FIREWALLD_ZONES
         # It is not possible to add a new one with a name of a buitin
@@ -879,10 +874,9 @@ class FirewallConfig(object):
             raise FirewallError(errors.NAME_CONFLICT, "new_zone(): '%s'" % name)
 
         x = Zone()
-        x.fw_config = self
         x.check_name(name)
-        x.import_config_dict(conf, self.get_all_io_objects_dict())
         x.name = name
+        x.import_config_dict(conf, self.get_all_io_objects_dict())
         x.filename = "%s.xml" % name
         x.path = config.ETC_FIREWALLD_ZONES
         # It is not possible to add a new one with a name of a buitin
@@ -933,8 +927,6 @@ class FirewallConfig(object):
         except Exception as msg:
             log.error("Failed to load zone file '%s': %s", filename, msg)
             return (None, None)
-
-        obj.fw_config = self
 
         if path.startswith(config.ETC_FIREWALLD_ZONES) and \
            len(path) > len(config.ETC_FIREWALLD_ZONES):

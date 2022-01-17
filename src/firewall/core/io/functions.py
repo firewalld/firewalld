@@ -71,9 +71,13 @@ def check_config(fw):
                 if file.endswith(".xml"):
                     try:
                         obj = readers[reader]["reader"](file, _dir)
-                        if reader in ["zone", "policy"]:
+                        if reader in ["policy"]:
                             obj.fw_config = fw_config
-                        obj.check_config_dict(obj.export_config_dict())
+                            obj.check_config_dict(obj.export_config_dict())
+                        else:
+                            all_io_objects = fw_config.get_all_io_objects_dict()
+                            obj.check_config_dict(obj.export_config_dict(), all_io_objects)
+
                         readers[reader]["add"](obj)
                     except FirewallError as error:
                         raise FirewallError(error.code, "'%s': %s" % (file, error.msg))
