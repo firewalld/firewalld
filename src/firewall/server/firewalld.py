@@ -44,7 +44,7 @@ from firewall.dbus_utils import dbus_to_python, \
     dbus_introspection_prepare_properties, \
     dbus_introspection_add_properties, \
     dbus_introspection_add_deprecated
-from firewall.core.io.functions import check_config
+from firewall.core.io.functions import check_on_disk_config
 from firewall.core.io.ipset import IPSet
 from firewall.core.io.icmptype import IcmpType
 from firewall.core.io.helper import Helper
@@ -355,7 +355,7 @@ class FirewallD(DbusServiceObject):
         """Check permanent configuration
         """
         log.debug1("checkPermanentConfig()")
-        check_config(self.fw)
+        check_on_disk_config(self.fw)
 
     # runtime to permanent
 

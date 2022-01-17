@@ -35,7 +35,7 @@ from firewall.core.io.direct import Direct
 from firewall.core.io.lockdown_whitelist import LockdownWhitelist
 from firewall.core.io.firewalld_conf import firewalld_conf
 
-def check_config(fw):
+def check_on_disk_config(fw):
     fw_config = FirewallConfig(fw)
     readers = {
         "ipset":    {"reader": ipset_reader,
