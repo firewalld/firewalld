@@ -167,20 +167,10 @@ class FirewallTransaction(object):
         log.debug4("%s.pre()" % type(self))
 
         for (func, args) in self.pre_funcs:
-            try:
-                func(*args)
-            except Exception as msg:
-                log.debug1(traceback.format_exc())
-                log.error("Calling pre func %s(%s) failed: %s" % \
-                          (func, args, msg))
+            func(*args)
 
     def post(self):
         log.debug4("%s.post()" % type(self))
 
         for (func, args) in self.post_funcs:
-            try:
-                func(*args)
-            except Exception as msg:
-                log.debug1(traceback.format_exc())
-                log.error("Calling post func %s(%s) failed: %s" % \
-                          (func, args, msg))
+            func(*args)
