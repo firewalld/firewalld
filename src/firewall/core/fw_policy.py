@@ -2,7 +2,6 @@
 #
 # SPDX-License-Identifier: GPL-2.0-or-later
 
-import time
 from firewall.core.logger import log
 from firewall.functions import portStr, checkIPnMask, checkIP6nMask, \
     checkProtocol, enable_ip_forwarding, check_single_address, \
@@ -15,7 +14,6 @@ from firewall.core.rich import Rich_Rule, Rich_Accept, \
 from firewall.core.fw_transaction import FirewallTransaction
 from firewall import errors
 from firewall.errors import FirewallError
-from firewall.fw_types import LastUpdatedOrderedDict
 from firewall.core.base import SOURCE_IPSET_TYPES
 
 class FirewallPolicy(object):
@@ -54,9 +52,9 @@ class FirewallPolicy(object):
     def get_active_policies_not_derived_from_zone(self):
         active_policies = []
         for policy in self.get_policies_not_derived_from_zone():
-            settings = self.get_settings(policy)
-            if (set(settings["ingress_zones"]) & (set(self._fw.zone.get_active_zones()) | set(["HOST", "ANY"]))) and \
-               (set(settings["egress_zones"]) & (set(self._fw.zone.get_active_zones()) | set(["HOST", "ANY"]))):
+            p_obj = self.get_policy(policy)
+            if (set(p_obj.ingress_zones) & (set(self._fw.zone.get_active_zones()) | set(["HOST", "ANY"]))) and \
+               (set(p_obj.egress_zones) & (set(self._fw.zone.get_active_zones()) | set(["HOST", "ANY"]))):
                 active_policies.append(policy)
 
         return active_policies
@@ -66,62 +64,13 @@ class FirewallPolicy(object):
         return self._policies[p]
 
     def add_policy(self, obj):
-        obj.settings = { x : LastUpdatedOrderedDict()
-                         for x in [ "services", "ports",
-                                    "masquerade", "forward_ports",
-                                    "source_ports",
-                                    "icmp_blocks", "rules",
-                                    "protocols", "icmp_block_inversion",
-                                    "ingress_zones", "egress_zones" ] }
-
         self._policies[obj.name] = obj
-        self.copy_permanent_to_runtime(obj.name)
 
     def remove_policy(self, policy):
         obj = self._policies[policy]
         if obj.applied:
             self.unapply_policy_settings(policy)
-        obj.settings.clear()
         del self._policies[policy]
-
-    def copy_permanent_to_runtime(self, policy):
-        obj = self._policies[policy]
-
-        if obj.applied:
-            return
-
-        for args in obj.ingress_zones:
-            self.add_ingress_zone(policy, args, allow_apply=False)
-        for args in obj.egress_zones:
-            self.add_egress_zone(policy, args, allow_apply=False)
-        for args in obj.icmp_blocks:
-            self.add_icmp_block(policy, args)
-        for args in obj.forward_ports:
-            self.add_forward_port(policy, *args)
-        for args in obj.services:
-            self.add_service(policy, args)
-        for args in obj.ports:
-            try:
-                self.add_port(policy, *args)
-            except FirewallError as error:
-                if error.code in [errors.ALREADY_ENABLED]:
-                    log.warning(error)
-                else:
-                    raise error
-        for args in obj.protocols:
-            self.add_protocol(policy, args)
-        for args in obj.source_ports:
-            try:
-                self.add_source_port(policy, *args)
-            except FirewallError as error:
-                if error.code in [errors.ALREADY_ENABLED]:
-                    log.warning(error)
-                else:
-                    raise error
-        for args in obj.rules:
-            self.add_rule(policy, args)
-        if obj.masquerade:
-            self.add_masquerade(policy)
 
     def apply_policies(self, use_transaction=None):
         for policy in self.get_policies():
@@ -135,20 +84,6 @@ class FirewallPolicy(object):
     def set_policy_applied(self, policy, applied):
         obj = self._policies[policy]
         obj.applied = applied
-
-    # settings
-
-    # generate settings record with sender, timeout
-    def __gen_settings(self, timeout, sender):
-        ret = {
-            "date": time.time(),
-            "sender": sender,
-            "timeout": timeout,
-        }
-        return ret
-
-    def get_settings(self, policy):
-        return self.get_policy(policy).settings
 
     def _policy_settings(self, enable, policy, use_transaction=None):
         _policy = self._fw.check_policy(policy)
@@ -169,11 +104,18 @@ class FirewallPolicy(object):
                              else self._get_table_chains_for_zone_dispatch(policy):
                 self.gen_chain_rules(policy, True, table, chain, transaction)
 
-        settings = self.get_settings(policy)
         if not obj.derived_from_zone:
             self._ingress_egress_zones(enable, _policy, transaction)
-        for key in settings:
-            for args in settings[key]:
+        for key in ["services", "ports", "masquerade", "forward_ports",
+                    "source_ports", "icmp_blocks", "rules_str",
+                    "protocols", "icmp_block_inversion",
+                    "ingress_zones", "egress_zones"]:
+            args_list = getattr(self.get_policy(policy), key)
+            if isinstance(args_list, bool):
+                if not ((enable and args_list) or (not enable and args_list)):
+                    continue
+                args_list = [args_list]
+            for args in args_list:
                 if key == "icmp_blocks":
                     self._icmp_block(enable, _policy, args, transaction)
                 elif key == "icmp_block_inversion":
@@ -193,7 +135,7 @@ class FirewallPolicy(object):
                                        transaction)
                 elif key == "masquerade":
                     self._masquerade(enable, _policy, transaction)
-                elif key == "rules":
+                elif key == "rules_str":
                     self.__rule(enable, _policy, Rich_Rule(rule_str=args),
                                 transaction)
                 elif key == "ingress_zones":
@@ -301,15 +243,15 @@ class FirewallPolicy(object):
         _obj = self._policies[_policy]
 
         zone_id = self.__ingress_zone_id(zone)
-        if zone_id in _obj.settings["ingress_zones"]:
+        if zone_id in _obj.ingress_zones:
             raise FirewallError(errors.ALREADY_ENABLED,
                                 "'%s' already in '%s'" % (zone, _policy))
 
-        if "ANY" in _obj.settings["ingress_zones"] or "HOST" in _obj.settings["ingress_zones"] or \
-           zone in ["ANY", "HOST"] and _obj.settings["ingress_zones"]:
+        if "ANY" in _obj.ingress_zones or "HOST" in _obj.ingress_zones or \
+           zone in ["ANY", "HOST"] and _obj.ingress_zones:
             raise FirewallError(errors.INVALID_ZONE, "'ingress-zones' may only contain one of: many regular zones, ANY, or HOST")
 
-        if zone == "HOST" and "HOST" in _obj.settings["egress_zones"]:
+        if zone == "HOST" and "HOST" in _obj.egress_zones:
             raise FirewallError(errors.INVALID_ZONE, "'HOST' can only appear in either ingress or egress zones, but not both")
 
         if use_transaction is None:
@@ -339,7 +281,7 @@ class FirewallPolicy(object):
             transaction.execute(True)
 
     def __register_ingress_zone(self, _obj, zone_id, timeout, sender):
-        _obj.settings["ingress_zones"][zone_id] = self.__gen_settings(timeout, sender)
+        _obj.ingress_zones.append(zone_id)
 
     def remove_ingress_zone(self, policy, zone, use_transaction=None):
         _policy = self._fw.check_policy(policy)
@@ -347,7 +289,7 @@ class FirewallPolicy(object):
         _obj = self._policies[_policy]
 
         zone_id = self.__ingress_zone_id(zone)
-        if zone_id not in _obj.settings["ingress_zones"]:
+        if zone_id not in _obj.ingress_zones:
             raise FirewallError(errors.NOT_ENABLED,
                                 "'%s' not in '%s'" % (zone, _policy))
 
@@ -357,7 +299,7 @@ class FirewallPolicy(object):
             transaction = use_transaction
 
         if _obj.applied:
-            if len(_obj.settings["ingress_zones"]) == 1:
+            if len(_obj.ingress_zones) == 1:
                 self.unapply_policy_settings(_policy, transaction)
             else:
                 self._ingress_egress_zones(False, _policy, transaction)
@@ -377,14 +319,14 @@ class FirewallPolicy(object):
         return _policy
 
     def __unregister_ingress_zone(self, _obj, zone_id):
-        if zone_id in _obj.settings["ingress_zones"]:
-            del _obj.settings["ingress_zones"][zone_id]
+        if zone_id in _obj.ingress_zones:
+            _obj.ingress_zones.remove(zone_id)
 
     def query_ingress_zone(self, policy, zone):
-        return self.__ingress_zone_id(zone) in self.get_settings(policy)["ingress_zones"]
+        return self.__ingress_zone_id(zone) in self.get_policy(policy).ingress_zones
 
     def list_ingress_zones(self, policy):
-        return list(self.get_settings(policy)["ingress_zones"].keys())
+        return self.get_policy(policy).ingress_zones
 
     # egress zones
 
@@ -406,15 +348,15 @@ class FirewallPolicy(object):
         _obj = self._policies[_policy]
 
         zone_id = self.__egress_zone_id(zone)
-        if zone_id in _obj.settings["egress_zones"]:
+        if zone_id in _obj.egress_zones:
             raise FirewallError(errors.ALREADY_ENABLED,
                                 "'%s' already in '%s'" % (zone, _policy))
 
-        if "ANY" in _obj.settings["egress_zones"] or "HOST" in _obj.settings["egress_zones"] or \
-           zone in ["ANY", "HOST"] and _obj.settings["egress_zones"]:
+        if "ANY" in _obj.egress_zones or "HOST" in _obj.egress_zones or \
+           zone in ["ANY", "HOST"] and _obj.egress_zones:
             raise FirewallError(errors.INVALID_ZONE, "'egress-zones' may only contain one of: many regular zones, ANY, or HOST")
 
-        if zone == "HOST" and "HOST" in _obj.settings["ingress_zones"]:
+        if zone == "HOST" and "HOST" in _obj.ingress_zones:
             raise FirewallError(errors.INVALID_ZONE, "'HOST' can only appear in either ingress or egress zones, but not both")
 
         if use_transaction is None:
@@ -444,7 +386,7 @@ class FirewallPolicy(object):
             transaction.execute(True)
 
     def __register_egress_zone(self, _obj, zone_id, timeout, sender):
-        _obj.settings["egress_zones"][zone_id] = self.__gen_settings(timeout, sender)
+        _obj.egress_zones.append(zone_id)
 
     def remove_egress_zone(self, policy, zone, use_transaction=None):
         _policy = self._fw.check_policy(policy)
@@ -452,7 +394,7 @@ class FirewallPolicy(object):
         _obj = self._policies[_policy]
 
         zone_id = self.__egress_zone_id(zone)
-        if zone_id not in _obj.settings["egress_zones"]:
+        if zone_id not in _obj.egress_zones:
             raise FirewallError(errors.NOT_ENABLED,
                                 "'%s' not in '%s'" % (zone, _policy))
 
@@ -462,7 +404,7 @@ class FirewallPolicy(object):
             transaction = use_transaction
 
         if _obj.applied:
-            if len(_obj.settings["egress_zones"]) == 1:
+            if len(_obj.egress_zones) == 1:
                 self.unapply_policy_settings(_policy, transaction)
             else:
                 self._ingress_egress_zones(False, _policy, transaction)
@@ -482,14 +424,14 @@ class FirewallPolicy(object):
         return _policy
 
     def __unregister_egress_zone(self, _obj, zone_id):
-        if zone_id in _obj.settings["egress_zones"]:
-            del _obj.settings["egress_zones"][zone_id]
+        if zone_id in _obj.egress_zones:
+            _obj.egress_zones.remove(zone_id)
 
     def query_egress_zone(self, policy, zone):
-        return self.__egress_zone_id(zone) in self.get_settings(policy)["egress_zones"]
+        return self.__egress_zone_id(zone) in self.get_policy(policy).egress_zones
 
     def list_egress_zones(self, policy):
-        return list(self.get_settings(policy)["egress_zones"].keys())
+        return self.get_policy(policy).egress_zones
 
     # RICH LANGUAGE
 
@@ -529,36 +471,36 @@ class FirewallPolicy(object):
         _obj = self._policies[_policy]
 
         rule_id = self.__rule_id(rule)
-        if rule_id in _obj.settings["rules"]:
+        if rule_id in _obj.rules_str:
             _name = _obj.derived_from_zone if _obj.derived_from_zone else _policy
             raise FirewallError(errors.ALREADY_ENABLED,
                                 "'%s' already in '%s'" % (rule, _name))
 
         if not _obj.derived_from_zone:
             if rule.element and isinstance(rule.element, Rich_Masquerade):
-                if "HOST" in _obj.settings["egress_zones"]:
+                if "HOST" in _obj.egress_zones:
                     raise FirewallError(errors.INVALID_ZONE, "'masquerade' is invalid for egress zone 'HOST'")
-                if "HOST" in _obj.settings["ingress_zones"]:
+                if "HOST" in _obj.ingress_zones:
                     raise FirewallError(errors.INVALID_ZONE, "'masquerade' is invalid for ingress zone 'HOST'")
-                for zone in _obj.settings["ingress_zones"]:
+                for zone in _obj.ingress_zones:
                     if zone == "ANY":
                         continue
                     if self._fw.zone.list_interfaces(zone):
                         raise FirewallError(errors.INVALID_ZONE, "'masquerade' cannot be used in a policy if an ingress zone has assigned interfaces")
             if rule.element and isinstance(rule.element, Rich_ForwardPort):
-                if "HOST" in _obj.settings["egress_zones"]:
+                if "HOST" in _obj.egress_zones:
                     if rule.element.to_address:
                         raise FirewallError(errors.INVALID_FORWARD, "A 'forward-port' with 'to-addr' is invalid for egress zone 'HOST'")
-                elif _obj.settings["egress_zones"]:
+                elif _obj.egress_zones:
                     if not rule.element.to_address:
                         raise FirewallError(errors.INVALID_FORWARD, "'forward-port' requires 'to-addr' if egress zone is 'ANY' or a zone")
-                    for zone in _obj.settings["egress_zones"]:
+                    for zone in _obj.egress_zones:
                         if zone == "ANY":
                             continue
                         if self._fw.zone.list_interfaces(zone):
                             raise FirewallError(errors.INVALID_ZONE, "'forward-port' cannot be used in a policy if an egress zone has assigned interfaces")
             if rule.action and isinstance(rule.action, Rich_Mark):
-                for zone in _obj.settings["egress_zones"]:
+                for zone in _obj.egress_zones:
                     if zone in ["ANY", "HOST"]:
                         continue
                     if self._fw.zone.list_interfaces(zone):
@@ -581,8 +523,7 @@ class FirewallPolicy(object):
         return _policy
 
     def __register_rule(self, _obj, rule_id, timeout, sender):
-        _obj.settings["rules"][rule_id] = self.__gen_settings(
-            timeout, sender)
+        _obj.rules_str.append(rule_id)
 
     def remove_rule(self, policy, rule,
                     use_transaction=None):
@@ -591,7 +532,7 @@ class FirewallPolicy(object):
         _obj = self._policies[_policy]
 
         rule_id = self.__rule_id(rule)
-        if rule_id not in _obj.settings["rules"]:
+        if rule_id not in _obj.rules_str:
             _name = _obj.derived_from_zone if _obj.derived_from_zone else _policy
             raise FirewallError(errors.NOT_ENABLED,
                                 "'%s' not in '%s'" % (rule, _name))
@@ -612,14 +553,14 @@ class FirewallPolicy(object):
         return _policy
 
     def __unregister_rule(self, _obj, rule_id):
-        if rule_id in _obj.settings["rules"]:
-            del _obj.settings["rules"][rule_id]
+        if rule_id in _obj.rules_str:
+            _obj.rules_str.remove(rule_id)
 
     def query_rule(self, policy, rule):
-        return self.__rule_id(rule) in self.get_settings(policy)["rules"]
+        return self.__rule_id(rule) in self.get_policy(policy).rules_str
 
     def list_rules(self, policy):
-        return list(self.get_settings(policy)["rules"].keys())
+        return self.get_policy(policy).rules_str
 
     # SERVICES
 
@@ -638,7 +579,7 @@ class FirewallPolicy(object):
         _obj = self._policies[_policy]
 
         service_id = self.__service_id(service)
-        if service_id in _obj.settings["services"]:
+        if service_id in _obj.services:
             _name = _obj.derived_from_zone if _obj.derived_from_zone else _policy
             raise FirewallError(errors.ALREADY_ENABLED,
                                 "'%s' already in '%s'" % (service, _name))
@@ -660,8 +601,7 @@ class FirewallPolicy(object):
         return _policy
 
     def __register_service(self, _obj, service_id, timeout, sender):
-        _obj.settings["services"][service_id] = \
-            self.__gen_settings(timeout, sender)
+        _obj.services.append(service_id)
 
     def remove_service(self, policy, service,
                        use_transaction=None):
@@ -670,7 +610,7 @@ class FirewallPolicy(object):
         _obj = self._policies[_policy]
 
         service_id = self.__service_id(service)
-        if service_id not in _obj.settings["services"]:
+        if service_id not in _obj.services:
             _name = _obj.derived_from_zone if _obj.derived_from_zone else _policy
             raise FirewallError(errors.NOT_ENABLED,
                                 "'%s' not in '%s'" % (service, _name))
@@ -691,14 +631,14 @@ class FirewallPolicy(object):
         return _policy
 
     def __unregister_service(self, _obj, service_id):
-        if service_id in _obj.settings["services"]:
-            del _obj.settings["services"][service_id]
+        if service_id in _obj.services:
+            _obj.services.remove(service_id)
 
     def query_service(self, policy, service):
-        return self.__service_id(service) in self.get_settings(policy)["services"]
+        return self.__service_id(service) in self.get_policy(policy).services
 
     def list_services(self, policy):
-        return self.get_settings(policy)["services"].keys()
+        return self.get_policy(policy).services
 
     def get_helpers_for_service_helpers(self, helpers):
         _helpers = [ ]
@@ -750,7 +690,7 @@ class FirewallPolicy(object):
         self._fw.check_panic()
         _obj = self._policies[_policy]
 
-        existing_port_ids = list(filter(lambda x: x[1] == protocol, _obj.settings["ports"]))
+        existing_port_ids = list(filter(lambda x: x[1] == protocol, _obj.ports))
         for port_id in existing_port_ids:
             if portInPortRange(port, port_id[0]):
                 _name = _obj.derived_from_zone if _obj.derived_from_zone else _policy
@@ -784,8 +724,7 @@ class FirewallPolicy(object):
         return _policy
 
     def __register_port(self, _obj, port_id, timeout, sender):
-        _obj.settings["ports"][port_id] = \
-            self.__gen_settings(timeout, sender)
+        _obj.ports.append(port_id)
 
     def remove_port(self, policy, port, protocol,
                     use_transaction=None):
@@ -793,7 +732,7 @@ class FirewallPolicy(object):
         self._fw.check_panic()
         _obj = self._policies[_policy]
 
-        existing_port_ids = list(filter(lambda x: x[1] == protocol, _obj.settings["ports"]))
+        existing_port_ids = list(filter(lambda x: x[1] == protocol, _obj.ports))
         for port_id in existing_port_ids:
             if portInPortRange(port, port_id[0]):
                 break
@@ -829,18 +768,18 @@ class FirewallPolicy(object):
         return _policy
 
     def __unregister_port(self, _obj, port_id):
-        if port_id in _obj.settings["ports"]:
-            del _obj.settings["ports"][port_id]
+        if port_id in _obj.ports:
+            _obj.ports.remove(port_id)
 
     def query_port(self, policy, port, protocol):
-        for (_port, _protocol) in self.get_settings(policy)["ports"]:
+        for (_port, _protocol) in self.get_policy(policy).ports:
             if portInPortRange(port, _port) and protocol == _protocol:
                 return True
 
         return False
 
     def list_ports(self, policy):
-        return list(self.get_settings(policy)["ports"].keys())
+        return self.get_policy(policy).ports
 
     # PROTOCOLS
 
@@ -864,7 +803,7 @@ class FirewallPolicy(object):
         _obj = self._policies[_policy]
 
         protocol_id = self.__protocol_id(protocol)
-        if protocol_id in _obj.settings["protocols"]:
+        if protocol_id in _obj.protocols:
             _name = _obj.derived_from_zone if _obj.derived_from_zone else _policy
             raise FirewallError(errors.ALREADY_ENABLED,
                                 "'%s' already in '%s'" % (protocol, _name))
@@ -886,8 +825,7 @@ class FirewallPolicy(object):
         return _policy
 
     def __register_protocol(self, _obj, protocol_id, timeout, sender):
-        _obj.settings["protocols"][protocol_id] = \
-            self.__gen_settings(timeout, sender)
+        _obj.protocols.append(protocol_id)
 
     def remove_protocol(self, policy, protocol,
                         use_transaction=None):
@@ -896,7 +834,7 @@ class FirewallPolicy(object):
         _obj = self._policies[_policy]
 
         protocol_id = self.__protocol_id(protocol)
-        if protocol_id not in _obj.settings["protocols"]:
+        if protocol_id not in _obj.protocols:
             _name = _obj.derived_from_zone if _obj.derived_from_zone else _policy
             raise FirewallError(errors.NOT_ENABLED,
                                 "'%s' not in '%s'" % (protocol, _name))
@@ -918,14 +856,14 @@ class FirewallPolicy(object):
         return _policy
 
     def __unregister_protocol(self, _obj, protocol_id):
-        if protocol_id in _obj.settings["protocols"]:
-            del _obj.settings["protocols"][protocol_id]
+        if protocol_id in _obj.protocols:
+            _obj.protocols.remove(protocol_id)
 
     def query_protocol(self, policy, protocol):
-        return self.__protocol_id(protocol) in self.get_settings(policy)["protocols"]
+        return self.__protocol_id(protocol) in self.get_policy(policy).protocols
 
     def list_protocols(self, policy):
-        return list(self.get_settings(policy)["protocols"].keys())
+        return self.get_policy(policy).protocols
 
     # SOURCE PORTS
 
@@ -940,7 +878,7 @@ class FirewallPolicy(object):
         self._fw.check_panic()
         _obj = self._policies[_policy]
 
-        existing_port_ids = list(filter(lambda x: x[1] == protocol, _obj.settings["source_ports"]))
+        existing_port_ids = list(filter(lambda x: x[1] == protocol, _obj.source_ports))
         for port_id in existing_port_ids:
             if portInPortRange(port, port_id[0]):
                 _name = _obj.derived_from_zone if _obj.derived_from_zone else _policy
@@ -974,8 +912,7 @@ class FirewallPolicy(object):
         return _policy
 
     def __register_source_port(self, _obj, port_id, timeout, sender):
-        _obj.settings["source_ports"][port_id] = \
-            self.__gen_settings(timeout, sender)
+        _obj.source_ports.append(port_id)
 
     def remove_source_port(self, policy, port, protocol,
                            use_transaction=None):
@@ -983,7 +920,7 @@ class FirewallPolicy(object):
         self._fw.check_panic()
         _obj = self._policies[_policy]
 
-        existing_port_ids = list(filter(lambda x: x[1] == protocol, _obj.settings["source_ports"]))
+        existing_port_ids = list(filter(lambda x: x[1] == protocol, _obj.source_ports))
         for port_id in existing_port_ids:
             if portInPortRange(port, port_id[0]):
                 break
@@ -1019,23 +956,20 @@ class FirewallPolicy(object):
         return _policy
 
     def __unregister_source_port(self, _obj, port_id):
-        if port_id in _obj.settings["source_ports"]:
-            del _obj.settings["source_ports"][port_id]
+        if port_id in _obj.source_ports:
+            _obj.source_ports.remove(port_id)
 
     def query_source_port(self, policy, port, protocol):
-        for (_port, _protocol) in self.get_settings(policy)["source_ports"]:
+        for (_port, _protocol) in self.get_policy(policy).source_ports:
             if portInPortRange(port, _port) and protocol == _protocol:
                 return True
 
         return False
 
     def list_source_ports(self, policy):
-        return list(self.get_settings(policy)["source_ports"].keys())
+        return self.get_policy(policy).source_ports
 
     # MASQUERADE
-
-    def __masquerade_id(self):
-        return True
 
     def add_masquerade(self, policy, timeout=0, sender=None,
                        use_transaction=None):
@@ -1044,18 +978,17 @@ class FirewallPolicy(object):
         self._fw.check_panic()
         _obj = self._policies[_policy]
 
-        masquerade_id = self.__masquerade_id()
-        if masquerade_id in _obj.settings["masquerade"]:
+        if _obj.masquerade:
             _name = _obj.derived_from_zone if _obj.derived_from_zone else _policy
             raise FirewallError(errors.ALREADY_ENABLED,
                                 "masquerade already enabled in '%s'" % _name)
 
         if not _obj.derived_from_zone:
-            if "HOST" in _obj.settings["egress_zones"]:
+            if "HOST" in _obj.egress_zones:
                 raise FirewallError(errors.INVALID_ZONE, "'masquerade' is invalid for egress zone 'HOST'")
-            if "HOST" in _obj.settings["ingress_zones"]:
+            if "HOST" in _obj.ingress_zones:
                 raise FirewallError(errors.INVALID_ZONE, "'masquerade' is invalid for ingress zone 'HOST'")
-            for zone in _obj.settings["ingress_zones"]:
+            for zone in _obj.ingress_zones:
                 if zone == "ANY":
                     continue
                 if self._fw.zone.list_interfaces(zone):
@@ -1069,25 +1002,23 @@ class FirewallPolicy(object):
         if _obj.applied:
             self._masquerade(True, _policy, transaction)
 
-        self.__register_masquerade(_obj, masquerade_id, timeout, sender)
-        transaction.add_fail(self.__unregister_masquerade, _obj, masquerade_id)
+        self.__register_masquerade(_obj, timeout, sender)
+        transaction.add_fail(self.__unregister_masquerade, _obj)
 
         if use_transaction is None:
             transaction.execute(True)
 
         return _policy
 
-    def __register_masquerade(self, _obj, masquerade_id, timeout, sender):
-        _obj.settings["masquerade"][masquerade_id] = \
-            self.__gen_settings(timeout, sender)
+    def __register_masquerade(self, _obj, timeout, sender):
+        _obj.masquerade = True
 
     def remove_masquerade(self, policy, use_transaction=None):
         _policy = self._fw.check_policy(policy)
         self._fw.check_panic()
         _obj = self._policies[_policy]
 
-        masquerade_id = self.__masquerade_id()
-        if masquerade_id not in _obj.settings["masquerade"]:
+        if not _obj.masquerade:
             _name = _obj.derived_from_zone if _obj.derived_from_zone else _policy
             raise FirewallError(errors.NOT_ENABLED,
                                 "masquerade not enabled in '%s'" % _name)
@@ -1100,19 +1031,18 @@ class FirewallPolicy(object):
         if _obj.applied:
             self._masquerade(False, _policy, transaction)
 
-        transaction.add_post(self.__unregister_masquerade, _obj, masquerade_id)
+        transaction.add_post(self.__unregister_masquerade, _obj)
 
         if use_transaction is None:
             transaction.execute(True)
 
         return _policy
 
-    def __unregister_masquerade(self, _obj, masquerade_id):
-        if masquerade_id in _obj.settings["masquerade"]:
-            del _obj.settings["masquerade"][masquerade_id]
+    def __unregister_masquerade(self, _obj):
+        _obj.masquerade = False
 
     def query_masquerade(self, policy):
-        return self.__masquerade_id() in self.get_settings(policy)["masquerade"]
+        return self.get_policy(policy).masquerade
 
     # PORT FORWARDING
 
@@ -1146,20 +1076,20 @@ class FirewallPolicy(object):
         _obj = self._policies[_policy]
 
         forward_id = self.__forward_port_id(port, protocol, toport, toaddr)
-        if forward_id in _obj.settings["forward_ports"]:
+        if forward_id in _obj.forward_ports:
             _name = _obj.derived_from_zone if _obj.derived_from_zone else _policy
             raise FirewallError(errors.ALREADY_ENABLED,
                                 "'%s:%s:%s:%s' already in '%s'" % \
                                 (port, protocol, toport, toaddr, _name))
 
         if not _obj.derived_from_zone:
-            if "HOST" in _obj.settings["egress_zones"]:
+            if "HOST" in _obj.egress_zones:
                 if toaddr:
                     raise FirewallError(errors.INVALID_FORWARD, "A 'forward-port' with 'to-addr' is invalid for egress zone 'HOST'")
-            elif _obj.settings["egress_zones"]:
+            elif _obj.egress_zones:
                 if not toaddr:
                     raise FirewallError(errors.INVALID_FORWARD, "'forward-port' requires 'to-addr' if egress zone is 'ANY' or a zone")
-                for zone in _obj.settings["egress_zones"]:
+                for zone in _obj.egress_zones:
                     if zone == "ANY":
                         continue
                     if self._fw.zone.list_interfaces(zone):
@@ -1183,8 +1113,7 @@ class FirewallPolicy(object):
         return _policy
 
     def __register_forward_port(self, _obj, forward_id, timeout, sender):
-        _obj.settings["forward_ports"][forward_id] = \
-            self.__gen_settings(timeout, sender)
+        _obj.forward_ports.append(forward_id)
 
     def remove_forward_port(self, policy, port, protocol, toport=None,
                             toaddr=None, use_transaction=None):
@@ -1193,7 +1122,7 @@ class FirewallPolicy(object):
         _obj = self._policies[_policy]
 
         forward_id = self.__forward_port_id(port, protocol, toport, toaddr)
-        if forward_id not in _obj.settings["forward_ports"]:
+        if forward_id not in _obj.forward_ports:
             _name = _obj.derived_from_zone if _obj.derived_from_zone else _policy
             raise FirewallError(errors.NOT_ENABLED,
                                 "'%s:%s:%s:%s' not in '%s'" % \
@@ -1216,16 +1145,16 @@ class FirewallPolicy(object):
         return _policy
 
     def __unregister_forward_port(self, _obj, forward_id):
-        if forward_id in _obj.settings["forward_ports"]:
-            del _obj.settings["forward_ports"][forward_id]
+        if forward_id in _obj.forward_ports:
+            _obj.forward_ports.remove(forward_id)
 
     def query_forward_port(self, policy, port, protocol, toport=None,
                            toaddr=None):
         forward_id = self.__forward_port_id(port, protocol, toport, toaddr)
-        return forward_id in self.get_settings(policy)["forward_ports"]
+        return forward_id in self.get_policy(policy).forward_ports
 
     def list_forward_ports(self, policy):
-        return list(self.get_settings(policy)["forward_ports"].keys())
+        return self.get_policy(policy).forward_ports
 
     # ICMP BLOCK
 
@@ -1244,7 +1173,7 @@ class FirewallPolicy(object):
         _obj = self._policies[_policy]
 
         icmp_id = self.__icmp_block_id(icmp)
-        if icmp_id in _obj.settings["icmp_blocks"]:
+        if icmp_id in _obj.icmp_blocks:
             _name = _obj.derived_from_zone if _obj.derived_from_zone else _policy
             raise FirewallError(errors.ALREADY_ENABLED,
                                 "'%s' already in '%s'" % (icmp, _name))
@@ -1266,8 +1195,7 @@ class FirewallPolicy(object):
         return _policy
 
     def __register_icmp_block(self, _obj, icmp_id, timeout, sender):
-        _obj.settings["icmp_blocks"][icmp_id] = \
-            self.__gen_settings(timeout, sender)
+        _obj.icmp_blocks.append(icmp_id)
 
     def remove_icmp_block(self, policy, icmp, use_transaction=None):
         _policy = self._fw.check_policy(policy)
@@ -1275,7 +1203,7 @@ class FirewallPolicy(object):
         _obj = self._policies[_policy]
 
         icmp_id = self.__icmp_block_id(icmp)
-        if icmp_id not in _obj.settings["icmp_blocks"]:
+        if icmp_id not in _obj.icmp_blocks:
             _name = _obj.derived_from_zone if _obj.derived_from_zone else _policy
             raise FirewallError(errors.NOT_ENABLED,
                                 "'%s' not in '%s'" % (icmp, _name))
@@ -1296,19 +1224,16 @@ class FirewallPolicy(object):
         return _policy
 
     def __unregister_icmp_block(self, _obj, icmp_id):
-        if icmp_id in _obj.settings["icmp_blocks"]:
-            del _obj.settings["icmp_blocks"][icmp_id]
+        if icmp_id in _obj.icmp_blocks:
+            _obj.icmp_blocks.remove(icmp_id)
 
     def query_icmp_block(self, policy, icmp):
-        return self.__icmp_block_id(icmp) in self.get_settings(policy)["icmp_blocks"]
+        return self.__icmp_block_id(icmp) in self.get_policy(policy).icmp_blocks
 
     def list_icmp_blocks(self, policy):
-        return self.get_settings(policy)["icmp_blocks"].keys()
+        return self.get_policy(policy).icmp_blocks
 
     # ICMP BLOCK INVERSION
-
-    def __icmp_block_inversion_id(self):
-        return True
 
     def add_icmp_block_inversion(self, policy, sender=None,
                                  use_transaction=None):
@@ -1316,8 +1241,7 @@ class FirewallPolicy(object):
         self._fw.check_panic()
         _obj = self._policies[_policy]
 
-        icmp_block_inversion_id = self.__icmp_block_inversion_id()
-        if icmp_block_inversion_id in _obj.settings["icmp_block_inversion"]:
+        if _obj.icmp_block_inversion:
             _name = _obj.derived_from_zone if _obj.derived_from_zone else _policy
             raise FirewallError(
                 errors.ALREADY_ENABLED,
@@ -1330,19 +1254,17 @@ class FirewallPolicy(object):
 
         if _obj.applied:
             # undo icmp blocks
-            for args in self.get_settings(_policy)["icmp_blocks"]:
+            for args in _obj.icmp_blocks:
                 self._icmp_block(False, _policy, args, transaction)
 
             self._icmp_block_inversion(False, _policy, transaction)
 
-        self.__register_icmp_block_inversion(_obj, icmp_block_inversion_id,
-                                             sender)
-        transaction.add_fail(self.__undo_icmp_block_inversion, _policy, _obj,
-                             icmp_block_inversion_id)
+        self.__register_icmp_block_inversion(_obj, sender)
+        transaction.add_fail(self.__undo_icmp_block_inversion, _policy, _obj)
 
         # redo icmp blocks
         if _obj.applied:
-            for args in self.get_settings(_policy)["icmp_blocks"]:
+            for args in _obj.icmp_blocks:
                 self._icmp_block(True, _policy, args, transaction)
 
             self._icmp_block_inversion(True, _policy, transaction)
@@ -1352,25 +1274,22 @@ class FirewallPolicy(object):
 
         return _policy
 
-    def __register_icmp_block_inversion(self, _obj, icmp_block_inversion_id,
-                                        sender):
-        _obj.settings["icmp_block_inversion"][icmp_block_inversion_id] = \
-            self.__gen_settings(0, sender)
+    def __register_icmp_block_inversion(self, _obj, sender):
+        _obj.icmp_block_inversion = True
 
-    def __undo_icmp_block_inversion(self, _policy, _obj, icmp_block_inversion_id):
+    def __undo_icmp_block_inversion(self, _policy, _obj):
         transaction = self.new_transaction()
 
         # undo icmp blocks
         if _obj.applied:
-            for args in self.get_settings(_policy)["icmp_blocks"]:
+            for args in _obj.icmp_blocks:
                 self._icmp_block(False, _policy, args, transaction)
 
-        if icmp_block_inversion_id in _obj.settings["icmp_block_inversion"]:
-            del _obj.settings["icmp_block_inversion"][icmp_block_inversion_id]
+        _obj.icmp_block_inversion = False
 
         # redo icmp blocks
         if _obj.applied:
-            for args in self.get_settings(_policy)["icmp_blocks"]:
+            for args in _obj.icmp_blocks:
                 self._icmp_block(True, _policy, args, transaction)
 
         transaction.execute(True)
@@ -1380,8 +1299,7 @@ class FirewallPolicy(object):
         self._fw.check_panic()
         _obj = self._policies[_policy]
 
-        icmp_block_inversion_id = self.__icmp_block_inversion_id()
-        if icmp_block_inversion_id not in _obj.settings["icmp_block_inversion"]:
+        if not _obj.icmp_block_inversion:
             _name = _obj.derived_from_zone if _obj.derived_from_zone else _policy
             raise FirewallError(
                 errors.NOT_ENABLED,
@@ -1394,19 +1312,18 @@ class FirewallPolicy(object):
 
         if _obj.applied:
             # undo icmp blocks
-            for args in self.get_settings(_policy)["icmp_blocks"]:
+            for args in _obj.icmp_blocks:
                 self._icmp_block(False, _policy, args, transaction)
 
             self._icmp_block_inversion(False, _policy, transaction)
 
-        self.__unregister_icmp_block_inversion(_obj,
-                                               icmp_block_inversion_id)
+        self.__unregister_icmp_block_inversion(_obj)
         transaction.add_fail(self.__register_icmp_block_inversion, _obj,
-                             icmp_block_inversion_id, None)
+                             None)
 
         # redo icmp blocks
         if _obj.applied:
-            for args in self.get_settings(_policy)["icmp_blocks"]:
+            for args in _obj.icmp_blocks:
                 self._icmp_block(True, _policy, args, transaction)
 
             self._icmp_block_inversion(True, _policy, transaction)
@@ -1416,13 +1333,11 @@ class FirewallPolicy(object):
 
         return _policy
 
-    def __unregister_icmp_block_inversion(self, _obj, icmp_block_inversion_id):
-        if icmp_block_inversion_id in _obj.settings["icmp_block_inversion"]:
-            del _obj.settings["icmp_block_inversion"][icmp_block_inversion_id]
+    def __unregister_icmp_block_inversion(self, _obj):
+        _obj.icmp_block_inversion = False
 
     def query_icmp_block_inversion(self, policy):
-        return self.__icmp_block_inversion_id() in \
-            self.get_settings(policy)["icmp_block_inversion"]
+        return self.get_policy(policy).icmp_block_inversion
 
     def gen_chain_rules(self, policy, create, table, chain, transaction):
         obj = self._fw.policy.get_policy(policy)
@@ -1887,8 +1802,8 @@ class FirewallPolicy(object):
     def _ingress_egress_zones(self, enable, policy, transaction):
         obj = self._policies[policy]
 
-        ingress_zones = obj.settings["ingress_zones"]
-        egress_zones = obj.settings["egress_zones"]
+        ingress_zones = obj.ingress_zones
+        egress_zones = obj.egress_zones
 
         ingress_interfaces = set()
         egress_interfaces = set()
@@ -1927,7 +1842,7 @@ class FirewallPolicy(object):
     def _get_table_chains_for_policy_dispatch(self, policy):
         """Create a list of (table, chain) needed for policy dispatch"""
         obj = self._policies[policy]
-        if "ANY" in obj.settings["ingress_zones"] and "HOST" in obj.settings["egress_zones"]:
+        if "ANY" in obj.ingress_zones and "HOST" in obj.egress_zones:
             # any --> HOST
             tc = [("filter", "INPUT"), ("nat", "PREROUTING"),
                   ("mangle", "PREROUTING")]
@@ -1936,7 +1851,7 @@ class FirewallPolicy(object):
             if not self._fw.nftables_enabled:
                 tc.append(("raw", "PREROUTING"))
             return tc
-        elif "HOST" in obj.settings["egress_zones"]:
+        elif "HOST" in obj.egress_zones:
             # zone --> HOST
             tc = [("filter", "INPUT")]
             # iptables backend needs to put conntrack helper rules in raw
@@ -1944,10 +1859,10 @@ class FirewallPolicy(object):
             if not self._fw.nftables_enabled:
                 tc.append(("raw", "PREROUTING"))
             return tc
-        elif "HOST" in obj.settings["ingress_zones"]:
+        elif "HOST" in obj.ingress_zones:
             # HOST --> zone/any
             return [("filter", "OUTPUT"), ("nat", "OUTPUT")]
-        elif "ANY" in obj.settings["ingress_zones"] and "ANY" in obj.settings["egress_zones"]:
+        elif "ANY" in obj.ingress_zones and "ANY" in obj.egress_zones:
             # any --> any
             tc = [("filter", "FORWARD"), ("nat", "PREROUTING"),
                   ("nat", "POSTROUTING"), ("mangle", "PREROUTING")]
@@ -1956,7 +1871,7 @@ class FirewallPolicy(object):
             if not self._fw.nftables_enabled:
                 tc.append(("raw", "PREROUTING"))
             return tc
-        elif "ANY" in obj.settings["egress_zones"]:
+        elif "ANY" in obj.egress_zones:
             # zone --> any
             tc = [("filter", "FORWARD"), ("nat", "PREROUTING"),
                   ("mangle", "PREROUTING")]
@@ -1964,20 +1879,20 @@ class FirewallPolicy(object):
             # prerouting.
             if not self._fw.nftables_enabled:
                 tc.append(("raw", "PREROUTING"))
-            for zone in obj.settings["ingress_zones"]:
+            for zone in obj.ingress_zones:
                 if self._fw.zone.get_zone(zone).interfaces:
                     break
             else:
                 tc.append(("nat", "POSTROUTING"))
             return tc
-        elif "ANY" in obj.settings["ingress_zones"]:
+        elif "ANY" in obj.ingress_zones:
             # any --> zone
             tc = [("filter", "FORWARD"), ("nat", "POSTROUTING")]
             # iptables backend needs to put conntrack helper rules in raw
             # prerouting.
             if not self._fw.nftables_enabled:
                 tc.append(("raw", "PREROUTING"))
-            for zone in obj.settings["egress_zones"]:
+            for zone in obj.egress_zones:
                 if self._fw.zone.get_zone(zone).interfaces:
                     break
             else:
@@ -1991,12 +1906,12 @@ class FirewallPolicy(object):
             # prerouting.
             if not self._fw.nftables_enabled:
                 tc.append(("raw", "PREROUTING"))
-            for zone in obj.settings["ingress_zones"]:
+            for zone in obj.ingress_zones:
                 if self._fw.zone.get_zone(zone).interfaces:
                     break
             else:
                 tc.append(("nat", "POSTROUTING"))
-            for zone in obj.settings["egress_zones"]:
+            for zone in obj.egress_zones:
                 if self._fw.zone.get_zone(zone).interfaces:
                     break
             else:
@@ -2007,7 +1922,7 @@ class FirewallPolicy(object):
     def _get_table_chains_for_zone_dispatch(self, policy):
         """Create a list of (table, chain) needed for zone dispatch"""
         obj = self._policies[policy]
-        if "HOST" in obj.settings["egress_zones"]:
+        if "HOST" in obj.egress_zones:
             # zone --> Host
             tc = [("filter", "INPUT")]
             # iptables backend needs to put conntrack helper rules in raw
@@ -2015,11 +1930,11 @@ class FirewallPolicy(object):
             if not self._fw.nftables_enabled:
                 tc.append(("raw", "PREROUTING"))
             return tc
-        elif "ANY" in obj.settings["egress_zones"]:
+        elif "ANY" in obj.egress_zones:
             # zone --> any
             return [("filter", "FORWARD"), ("nat", "PREROUTING"),
                     ("mangle", "PREROUTING")]
-        elif "ANY" in obj.settings["ingress_zones"]:
+        elif "ANY" in obj.ingress_zones:
             # any --> zone
             return [("nat", "POSTROUTING")]
         else:
@@ -2032,7 +1947,7 @@ class FirewallPolicy(object):
         else:
             suffix = policy_prefix + policy
 
-        if "HOST" in obj.settings["egress_zones"]:
+        if "HOST" in obj.egress_zones:
             # zone/any --> Host
             if table == "filter":
                 return "IN_" + suffix
@@ -2042,12 +1957,12 @@ class FirewallPolicy(object):
             if not obj.derived_from_zone:
                 if table in ["mangle", "nat"]:
                     return "PRE_" + suffix
-        elif "HOST" in obj.settings["ingress_zones"]:
+        elif "HOST" in obj.ingress_zones:
             # HOST --> zone/any
             if not obj.derived_from_zone:
                 if table in ["filter", "nat"]:
                     return "OUT_" + suffix
-        elif "ANY" in obj.settings["egress_zones"]:
+        elif "ANY" in obj.egress_zones:
             # zone/any --> any
             if table == "filter":
                 return "FWD_" + suffix
@@ -2058,7 +1973,7 @@ class FirewallPolicy(object):
                     return "PRE_" + suffix
             elif table in ["mangle", "raw"]:
                 return "PRE_" + suffix
-        elif "ANY" in obj.settings["ingress_zones"]:
+        elif "ANY" in obj.ingress_zones:
             # any --> zone
             if table == "filter":
                 return "FWD_" + suffix

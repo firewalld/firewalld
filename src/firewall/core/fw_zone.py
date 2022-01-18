@@ -24,8 +24,19 @@ from firewall.core.base import SHORTCUTS, DEFAULT_ZONE_TARGET, SOURCE_IPSET_TYPE
 from firewall.core.fw_transaction import FirewallTransaction
 from firewall.core.io.policy import Policy
 from firewall.core.logger import log
-from firewall.core.rich import Rich_Service, Rich_Port, Rich_Protocol, Rich_SourcePort, Rich_ForwardPort, \
-                               Rich_IcmpBlock, Rich_IcmpType, Rich_Masquerade, Rich_Mark, Rich_Tcp_Mss_Clamp
+from firewall.core.rich import (
+    Rich_ForwardPort,
+    Rich_IcmpBlock,
+    Rich_IcmpType,
+    Rich_Mark,
+    Rich_Masquerade,
+    Rich_Port,
+    Rich_Protocol,
+    Rich_Rule,
+    Rich_Service,
+    Rich_SourcePort,
+    Rich_Tcp_Mss_Clamp
+)
 from firewall.core.fw_nm import nm_get_bus_name
 from firewall.functions import checkIPnMask, checkIP6nMask, check_mac
 from firewall import errors
@@ -101,10 +112,11 @@ class FirewallZone(object):
         for setting in ["services", "ports",
                         "masquerade", "forward_ports",
                         "source_ports",
-                        "icmp_blocks", "rules",
-                        "protocols"]:
+                        "icmp_blocks", "icmp_block_inversion",
+                        "rules_str", "protocols"]:
             if fromZone == z_obj.name and toZone == "HOST" and \
-               setting in ["services", "ports", "source_ports", "icmp_blocks", "protocols"]:
+               setting in ["services", "ports", "source_ports", "icmp_blocks",
+                           "icmp_block_inversion", "protocols"]:
                 # zone --> HOST
                 setattr(p_obj, setting, copy.deepcopy(getattr(z_obj, setting)))
             elif fromZone == "ANY" and toZone == z_obj.name and setting in ["masquerade"]:
@@ -114,13 +126,16 @@ class FirewallZone(object):
                  setting in ["forward_ports"]:
                 # zone --> any zone
                 setattr(p_obj, setting, copy.deepcopy(getattr(z_obj, setting)))
-            elif setting in ["rules"]:
+            elif setting in ["rules_str"]:
+                p_obj.rules_str = []
                 p_obj.rules = []
-                for rule in z_obj.rules:
+                for rule_str in z_obj.rules_str:
                     current_policy = self.policy_name_from_zones(fromZone, toZone)
 
+                    rule = Rich_Rule(rule_str=rule_str)
                     if current_policy in self._rich_rule_to_policies(z_obj.name, rule):
-                        p_obj.rules.append(copy.deepcopy(rule))
+                        p_obj.rules_str.append(rule_str)
+                        p_obj.rules.append(rule)
 
         return p_obj
 
@@ -142,13 +157,6 @@ class FirewallZone(object):
             p_obj = self.policy_obj_from_zone_obj(obj, fromZone, toZone)
             self._fw.policy.add_policy(p_obj)
             self._zone_policies[obj.name].append(p_obj.name)
-
-        # icmp_block_inversion needs to be copied here because it's backed by
-        # the policy io_object, but has not yet been converted to remove the
-        # settings dictionary.
-        #
-        if obj.icmp_block_inversion:
-            self.add_icmp_block_inversion(obj.name)
 
     def remove_zone(self, zone):
         obj = self._zones[zone]
@@ -334,7 +342,6 @@ class FirewallZone(object):
 
     def set_config_with_settings_dict(self, zone, settings, sender):
         # stupid wrappers to convert rich rule string to rich rule object
-        from firewall.core.rich import Rich_Rule
         def add_rule_wrapper(zone, rule_str, timeout=0, sender=None):
             self.add_rule(zone, Rich_Rule(rule_str=rule_str), timeout=0, sender=sender)
         def remove_rule_wrapper(zone, rule_str):

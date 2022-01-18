@@ -10,8 +10,16 @@ import io
 import shutil
 
 from firewall import config
-from firewall.functions import checkIP, checkIP6, checkUINT16
-from firewall.functions import uniqify, max_policy_name_len, portStr
+from firewall.functions import (
+    checkIP,
+    checkIP6,
+    checkUINT16,
+    coalescePortRange,
+    max_policy_name_len,
+    portInPortRange,
+    portStr,
+    uniqify,
+)
 from firewall.core.base import DEFAULT_POLICY_TARGET, POLICY_TARGETS, DEFAULT_POLICY_PRIORITY
 from firewall.core.io.io_object import IO_Object, \
     IO_Object_ContentHandler, IO_Object_XMLGenerator, check_port, \
@@ -55,12 +63,27 @@ def common_startElement(obj, name, attrs):
             return True
         check_port(attrs["port"])
         check_tcpudp(attrs["protocol"])
-        entry = (portStr(attrs["port"], "-"), attrs["protocol"])
-        if entry not in obj.item.ports:
-            obj.item.ports.append(entry)
+
+        # coalesce and warn about overlapping ranges
+        new_port_id = (portStr(attrs["port"], "-"), attrs["protocol"])
+        existing_port_ids = list(filter(lambda x: x[1] == attrs["protocol"], obj.item.ports))
+        for port_id in existing_port_ids:
+            if portInPortRange(new_port_id[0], port_id[0]):
+                # the range is wholly contained already, so just warn
+                _name = obj.item.derived_from_zone if isinstance(obj.item, Policy) else obj.item.name
+                log.warning(FirewallError(errors.ALREADY_ENABLED,
+                                    "'%s:%s' already in '%s'" % (new_port_id[0], attrs["protocol"], _name)))
+                break # for
         else:
-            log.warning("Port '%s/%s' already set, ignoring.",
-                        attrs["port"], attrs["protocol"])
+            # the range can be coalesced into the existing set
+            added_ranges, removed_ranges = coalescePortRange(new_port_id[0], [_port for (_port, _protocol) in existing_port_ids])
+
+            for _range in removed_ranges:
+                entry = (portStr(_range, "-"), attrs["protocol"])
+                obj.item.ports.remove(entry)
+            for _range in added_ranges:
+                entry = (portStr(_range, "-"), attrs["protocol"])
+                obj.item.ports.append(entry)
 
     elif name == "protocol":
         if obj._rule:
@@ -185,12 +208,27 @@ def common_startElement(obj, name, attrs):
             return True
         check_port(attrs["port"])
         check_tcpudp(attrs["protocol"])
-        entry = (portStr(attrs["port"], "-"), attrs["protocol"])
-        if entry not in obj.item.source_ports:
-            obj.item.source_ports.append(entry)
+
+        # coalesce and warn about overlapping ranges
+        new_port_id = (portStr(attrs["port"], "-"), attrs["protocol"])
+        existing_port_ids = list(filter(lambda x: x[1] == attrs["protocol"], obj.item.source_ports))
+        for port_id in existing_port_ids:
+            if portInPortRange(new_port_id[0], port_id[0]):
+                # the range is wholly contained already, so just warn
+                _name = obj.item.derived_from_zone if isinstance(obj.item, Policy) else obj.item.name
+                log.warning(FirewallError(errors.ALREADY_ENABLED,
+                                    "'%s:%s' already in '%s'" % (new_port_id[0], attrs["protocol"], _name)))
+                break # for
         else:
-            log.warning("Source port '%s/%s' already set, ignoring.",
-                        attrs["port"], attrs["protocol"])
+            # the range can be coalesced into the existing set
+            added_ranges, removed_ranges = coalescePortRange(new_port_id[0], [_port for (_port, _protocol) in existing_port_ids])
+
+            for _range in removed_ranges:
+                entry = (portStr(_range, "-"), attrs["protocol"])
+                obj.item.source_ports.remove(entry)
+            for _range in added_ranges:
+                entry = (portStr(_range, "-"), attrs["protocol"])
+                obj.item.source_ports.append(entry)
 
     elif name == "destination":
         if not obj._rule:
@@ -750,6 +788,7 @@ class Policy(IO_Object):
         self.ports = [ ]
         self.protocols = [ ]
         self.icmp_blocks = [ ]
+        self.icmp_block_inversion = False # for zones, not written to policy config
         self.masquerade = False
         self.forward_ports = [ ]
         self.source_ports = [ ]
@@ -770,6 +809,7 @@ class Policy(IO_Object):
         del self.ports[:]
         del self.protocols[:]
         del self.icmp_blocks[:]
+        self.icmp_block_inversion = False
         self.masquerade = False
         del self.forward_ports[:]
         del self.source_ports[:]
