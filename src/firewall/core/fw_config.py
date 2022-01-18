@@ -1037,7 +1037,6 @@ class FirewallConfig(object):
     def set_policy_object_config_dict(self, obj, conf):
         if obj.builtin:
             x = copy.copy(obj)
-            x.fw_config = self
             x.import_config_dict(conf, self.get_all_io_objects_dict())
             x.path = config.ETC_FIREWALLD_POLICIES
             x.builtin = False
@@ -1047,7 +1046,6 @@ class FirewallConfig(object):
             policy_writer(x)
             return x
         else:
-            obj.fw_config = self
             obj.import_config_dict(conf, self.get_all_io_objects_dict())
             policy_writer(obj)
             return obj
@@ -1057,10 +1055,9 @@ class FirewallConfig(object):
             raise FirewallError(errors.NAME_CONFLICT, "new_policy_object(): '%s'" % name)
 
         x = Policy()
-        x.fw_config = self
         x.check_name(name)
-        x.import_config_dict(conf, self.get_all_io_objects_dict())
         x.name = name
+        x.import_config_dict(conf, self.get_all_io_objects_dict())
         x.filename = "%s.xml" % name
         x.path = config.ETC_FIREWALLD_POLICIES
         # It is not possible to add a new one with a name of a buitin
@@ -1111,8 +1108,6 @@ class FirewallConfig(object):
         except Exception as msg:
             log.error("Failed to load policy file '%s': %s", filename, msg)
             return (None, None)
-
-        obj.fw_config = self
 
         if path.startswith(config.ETC_FIREWALLD_POLICIES) and \
            len(path) > len(config.ETC_FIREWALLD_POLICIES):
