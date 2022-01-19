@@ -73,7 +73,7 @@ def check_config(fw):
                         obj = readers[reader]["reader"](file, _dir)
                         if reader in ["zone", "policy"]:
                             obj.fw_config = fw_config
-                        obj.check_config(obj.export_config())
+                        obj.check_config_dict(obj.export_config_dict())
                         readers[reader]["add"](obj)
                     except FirewallError as error:
                         raise FirewallError(error.code, "'%s': %s" % (file, error.msg))
@@ -83,7 +83,7 @@ def check_config(fw):
         try:
             obj = Direct(config.FIREWALLD_DIRECT)
             obj.read()
-            obj.check_config(obj.export_config())
+            obj.check_config_dict(obj.export_config_dict())
         except FirewallError as error:
             raise FirewallError(error.code, "'%s': %s" % (config.FIREWALLD_DIRECT, error.msg))
         except Exception as msg:
@@ -92,7 +92,7 @@ def check_config(fw):
         try:
             obj = LockdownWhitelist(config.LOCKDOWN_WHITELIST)
             obj.read()
-            obj.check_config(obj.export_config())
+            obj.check_config_dict(obj.export_config_dict())
         except FirewallError as error:
             raise FirewallError(error.code, "'%s': %s" % (config.LOCKDOWN_WHITELIST, error.msg))
         except Exception as msg:
