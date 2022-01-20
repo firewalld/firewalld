@@ -69,16 +69,10 @@ def check_on_disk_config(fw):
                 continue
             for file in sorted(os.listdir(_dir)):
                 if file.endswith(".xml"):
-                    try:
-                        obj = readers[reader]["reader"](file, _dir)
-                        all_io_objects = fw_config.get_all_io_objects_dict()
-                        obj.check_config_dict(obj.export_config_dict(), all_io_objects)
+                    obj = readers[reader]["reader"](file, _dir)
+                    readers[reader]["add"](obj)
+    fw_config.full_check_config()
 
-                        readers[reader]["add"](obj)
-                    except FirewallError as error:
-                        raise FirewallError(error.code, "'%s': %s" % (file, error.msg))
-                    except Exception as msg:
-                        raise Exception("'%s': %s" % (file, msg))
     if os.path.isfile(config.FIREWALLD_DIRECT):
         try:
             obj = Direct(config.FIREWALLD_DIRECT)
