@@ -135,6 +135,16 @@ class FirewallConfig(object):
 
         return conf_dict
 
+    def full_check_config(self):
+        all_io_objects = self.get_all_io_objects_dict()
+        # we need to check in a well defined order because some io_objects will
+        # cross-check others
+        order = ["ipsets", "helpers", "icmptypes", "services", "zones", "policies"]
+        for io_obj_type in order:
+            io_objs = all_io_objects[io_obj_type]
+            for (name, io_obj) in io_objs.items():
+                io_obj.check_config_dict(io_obj.export_config_dict(), all_io_objects)
+
     # access check
 
     def lockdown_enabled(self):
