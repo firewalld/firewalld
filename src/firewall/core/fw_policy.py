@@ -34,7 +34,9 @@ class FirewallPolicy(object):
     # transaction
 
     def new_transaction(self):
-        return FirewallTransaction(self._fw)
+        t = FirewallTransaction(self._fw)
+        t.add_pre(self._fw.full_check_config)
+        return t
 
     # policies
 
@@ -1878,7 +1880,7 @@ class FirewallPolicy(object):
                 raise FirewallError(errors.INVALID_ZONE, "policy \"%s\" ingress-zones must include only HOST." % (policy))
 
     def _ingress_egress_zones_transaction(self, enable, policy):
-        transaction = self.new_transaction()
+        transaction = FirewallTransaction(self._fw)
         self._ingress_egress_zones(enable, policy, transaction)
         transaction.execute(True)
 
