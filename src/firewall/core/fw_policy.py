@@ -12,7 +12,7 @@ from firewall.functions import portStr, checkIPnMask, checkIP6nMask, \
 from firewall.core.rich import Rich_Rule, Rich_Accept, \
     Rich_Service, Rich_Port, Rich_Protocol, \
     Rich_Masquerade, Rich_ForwardPort, Rich_SourcePort, Rich_IcmpBlock, \
-    Rich_IcmpType, Rich_Mark, Rich_Tcp_Mss_Clamp
+    Rich_IcmpType, Rich_Tcp_Mss_Clamp
 from firewall.core.fw_transaction import FirewallTransaction
 from firewall import errors
 from firewall.errors import FirewallError
@@ -241,13 +241,6 @@ class FirewallPolicy(object):
             raise FirewallError(errors.ALREADY_ENABLED,
                                 "'%s' already in '%s'" % (zone, _policy))
 
-        if "ANY" in _obj.ingress_zones or "HOST" in _obj.ingress_zones or \
-           zone in ["ANY", "HOST"] and _obj.ingress_zones:
-            raise FirewallError(errors.INVALID_ZONE, "'ingress-zones' may only contain one of: many regular zones, ANY, or HOST")
-
-        if zone == "HOST" and "HOST" in _obj.egress_zones:
-            raise FirewallError(errors.INVALID_ZONE, "'HOST' can only appear in either ingress or egress zones, but not both")
-
         if use_transaction is None:
             transaction = self.new_transaction()
         else:
@@ -345,13 +338,6 @@ class FirewallPolicy(object):
         if zone_id in _obj.egress_zones:
             raise FirewallError(errors.ALREADY_ENABLED,
                                 "'%s' already in '%s'" % (zone, _policy))
-
-        if "ANY" in _obj.egress_zones or "HOST" in _obj.egress_zones or \
-           zone in ["ANY", "HOST"] and _obj.egress_zones:
-            raise FirewallError(errors.INVALID_ZONE, "'egress-zones' may only contain one of: many regular zones, ANY, or HOST")
-
-        if zone == "HOST" and "HOST" in _obj.ingress_zones:
-            raise FirewallError(errors.INVALID_ZONE, "'HOST' can only appear in either ingress or egress zones, but not both")
 
         if use_transaction is None:
             transaction = self.new_transaction()
@@ -469,36 +455,6 @@ class FirewallPolicy(object):
             _name = _obj.derived_from_zone if _obj.derived_from_zone else _policy
             raise FirewallError(errors.ALREADY_ENABLED,
                                 "'%s' already in '%s'" % (rule, _name))
-
-        if not _obj.derived_from_zone:
-            if rule.element and isinstance(rule.element, Rich_Masquerade):
-                if "HOST" in _obj.egress_zones:
-                    raise FirewallError(errors.INVALID_ZONE, "'masquerade' is invalid for egress zone 'HOST'")
-                if "HOST" in _obj.ingress_zones:
-                    raise FirewallError(errors.INVALID_ZONE, "'masquerade' is invalid for ingress zone 'HOST'")
-                for zone in _obj.ingress_zones:
-                    if zone == "ANY":
-                        continue
-                    if self._fw.zone.list_interfaces(zone):
-                        raise FirewallError(errors.INVALID_ZONE, "'masquerade' cannot be used in a policy if an ingress zone has assigned interfaces")
-            if rule.element and isinstance(rule.element, Rich_ForwardPort):
-                if "HOST" in _obj.egress_zones:
-                    if rule.element.to_address:
-                        raise FirewallError(errors.INVALID_FORWARD, "A 'forward-port' with 'to-addr' is invalid for egress zone 'HOST'")
-                elif _obj.egress_zones:
-                    if not rule.element.to_address:
-                        raise FirewallError(errors.INVALID_FORWARD, "'forward-port' requires 'to-addr' if egress zone is 'ANY' or a zone")
-                    for zone in _obj.egress_zones:
-                        if zone == "ANY":
-                            continue
-                        if self._fw.zone.list_interfaces(zone):
-                            raise FirewallError(errors.INVALID_ZONE, "'forward-port' cannot be used in a policy if an egress zone has assigned interfaces")
-            if rule.action and isinstance(rule.action, Rich_Mark):
-                for zone in _obj.egress_zones:
-                    if zone in ["ANY", "HOST"]:
-                        continue
-                    if self._fw.zone.list_interfaces(zone):
-                        raise FirewallError(errors.INVALID_ZONE, "'mark' action cannot be used in a policy if an egress zone has assigned interfaces")
 
         if use_transaction is None:
             transaction = self.new_transaction()
@@ -977,17 +933,6 @@ class FirewallPolicy(object):
             raise FirewallError(errors.ALREADY_ENABLED,
                                 "masquerade already enabled in '%s'" % _name)
 
-        if not _obj.derived_from_zone:
-            if "HOST" in _obj.egress_zones:
-                raise FirewallError(errors.INVALID_ZONE, "'masquerade' is invalid for egress zone 'HOST'")
-            if "HOST" in _obj.ingress_zones:
-                raise FirewallError(errors.INVALID_ZONE, "'masquerade' is invalid for ingress zone 'HOST'")
-            for zone in _obj.ingress_zones:
-                if zone == "ANY":
-                    continue
-                if self._fw.zone.list_interfaces(zone):
-                    raise FirewallError(errors.INVALID_ZONE, "'masquerade' cannot be used in a policy if an ingress zone has assigned interfaces")
-
         if use_transaction is None:
             transaction = self.new_transaction()
         else:
@@ -1075,19 +1020,6 @@ class FirewallPolicy(object):
             raise FirewallError(errors.ALREADY_ENABLED,
                                 "'%s:%s:%s:%s' already in '%s'" % \
                                 (port, protocol, toport, toaddr, _name))
-
-        if not _obj.derived_from_zone:
-            if "HOST" in _obj.egress_zones:
-                if toaddr:
-                    raise FirewallError(errors.INVALID_FORWARD, "A 'forward-port' with 'to-addr' is invalid for egress zone 'HOST'")
-            elif _obj.egress_zones:
-                if not toaddr:
-                    raise FirewallError(errors.INVALID_FORWARD, "'forward-port' requires 'to-addr' if egress zone is 'ANY' or a zone")
-                for zone in _obj.egress_zones:
-                    if zone == "ANY":
-                        continue
-                    if self._fw.zone.list_interfaces(zone):
-                        raise FirewallError(errors.INVALID_ZONE, "'forward-port' cannot be used in a policy if an egress zone has assigned interfaces")
 
         if use_transaction is None:
             transaction = self.new_transaction()
