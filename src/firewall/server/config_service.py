@@ -685,7 +685,7 @@ class FirewallDConfigService(DbusServiceObject):
         log.debug1("%s.setIncludes('%s')", self._log_prefix, includes)
         self.parent.accessCheck(sender)
         settings = {"includes": includes[:]}
-        self.config.set_service_config_dict(self.obj, settings)
+        self.obj = self.config.set_service_config_dict(self.obj, settings)
         self.Updated(self.obj.name)
 
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_SERVICE,
@@ -697,7 +697,7 @@ class FirewallDConfigService(DbusServiceObject):
         self.parent.accessCheck(sender)
         settings = self.config.get_service_config_dict(self.obj)
         settings.setdefault("includes", []).append(include)
-        self.config.set_service_config_dict(self.obj, settings)
+        self.obj = self.config.set_service_config_dict(self.obj, settings)
         self.Updated(self.obj.name)
 
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_SERVICE,
@@ -709,7 +709,7 @@ class FirewallDConfigService(DbusServiceObject):
         self.parent.accessCheck(sender)
         settings = self.config.get_service_config_dict(self.obj)
         settings["includes"].remove(include)
-        self.config.set_service_config_dict(self.obj, settings)
+        self.obj = self.config.set_service_config_dict(self.obj, settings)
         self.Updated(self.obj.name)
 
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_SERVICE,
