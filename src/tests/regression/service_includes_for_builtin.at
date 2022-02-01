@@ -1,0 +1,29 @@
+FWD_START_TEST([service include for built-in])
+AT_KEYWORDS(dbus service service_includes_for_builtin service_includes_for_built-in)
+
+dnl get a built-in (anything outside of /etc/firewalld) service
+dnl
+DBUS_CHECK([config], [config.getServiceByName], ["ssh"], 0, [stdout])
+SERVICE_OBJ=[$(sed -e "s/.*config\/service\/\([^']\+\)['].*/\1/" ./stdout)]
+export SERVICE_OBJ
+
+dnl literally copy/paste from src/tests/dbus/service.at, but this copy is
+dnl against a built-in service
+dnl
+DBUS_CHECK([config/service/${SERVICE_OBJ}], [config.service.getIncludes], [], 0, [dnl
+[(@as [],)]
+])
+DBUS_CHECK([config/service/${SERVICE_OBJ}], [config.service.setIncludes], [['["https", "http"]']], 0, [ignore])
+DBUS_CHECK([config/service/${SERVICE_OBJ}], [config.service.getIncludes], [], 0, [dnl
+[(['https', 'http'],)]
+])
+DBUS_CHECK([config/service/${SERVICE_OBJ}], [config.service.addInclude], ['"http"'], 0, [ignore])
+DBUS_CHECK([config/service/${SERVICE_OBJ}], [config.service.queryInclude], ['"http"'], 0, [dnl
+[(true,)]
+])
+DBUS_CHECK([config/service/${SERVICE_OBJ}], [config.service.removeInclude], ['"http"'], 0, [ignore])
+DBUS_CHECK([config/service/${SERVICE_OBJ}], [config.service.queryInclude], ['"http"'], 0, [dnl
+[(false,)]
+])
+
+FWD_END_TEST()
