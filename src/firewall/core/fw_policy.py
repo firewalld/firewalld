@@ -2,6 +2,8 @@
 #
 # SPDX-License-Identifier: GPL-2.0-or-later
 
+import copy
+
 from firewall.core.logger import log
 from firewall.functions import portStr, checkIPnMask, checkIP6nMask, \
     checkProtocol, enable_ip_forwarding, check_single_address, \
@@ -199,6 +201,13 @@ class FirewallPolicy(object):
             "ingress_zones": (self.add_ingress_zone, self.remove_ingress_zone),
             "egress_zones": (self.add_egress_zone, self.remove_egress_zone),
         }
+
+        # do a full config check on a temporary object before trying to make
+        # the runtime changes
+        old_obj = self.get_policy(policy)
+        check_obj = copy.copy(old_obj)
+        check_obj.import_config_dict(settings, self._fw.get_all_io_objects_dict())
+        self._fw.full_check_config({"policies": [check_obj]})
 
         old_settings = self.get_config_with_settings_dict(policy)
         (add_settings, remove_settings) = self._fw.get_added_and_removed_settings(old_settings, settings)

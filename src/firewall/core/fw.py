@@ -26,6 +26,7 @@ import sys
 import copy
 import time
 import traceback
+from typing import Dict, List
 from firewall import config
 from firewall import functions
 from firewall.core import ipXtables
@@ -45,6 +46,7 @@ from firewall.core.fw_helper import FirewallHelper
 from firewall.core.fw_policy import FirewallPolicy
 from firewall.core.fw_nm import nm_get_bus_name, nm_get_interfaces_in_zone
 from firewall.core.logger import log
+from firewall.core.io.io_object import IO_Object
 from firewall.core.io.firewalld_conf import firewalld_conf
 from firewall.core.io.direct import Direct
 from firewall.core.io.service import service_reader
@@ -54,6 +56,7 @@ from firewall.core.io.ipset import ipset_reader
 from firewall.core.ipset import IPSET_TYPES
 from firewall.core.io.helper import helper_reader
 from firewall.core.io.policy import policy_reader
+from firewall.core.rich import Rich_Rule
 from firewall import errors
 from firewall.errors import FirewallError
 
@@ -170,11 +173,16 @@ class Firewall(object):
 
         return conf_dict
 
-    def full_check_config(self):
+    def full_check_config(self, extra_io_objects: Dict[str, List[IO_Object]] = {}):
+        all_io_objects = self.get_all_io_objects_dict()
+        # mix in the extra objects
+        for type_key in extra_io_objects:
+            for obj in extra_io_objects[type_key]:
+                all_io_objects[type_key][obj.name] = obj
+
         # we need to check in a well defined order because some io_objects will
         # cross-check others
         order = ["ipsets", "helpers", "icmptypes", "services", "zones", "policies"]
-        all_io_objects = self.get_all_io_objects_dict()
         for io_obj_type in order:
             io_objs = all_io_objects[io_obj_type]
             for (name, io_obj) in io_objs.items():
@@ -1234,6 +1242,11 @@ class Firewall(object):
         return combined
 
     def get_added_and_removed_settings(self, old_settings, new_settings):
+        # normalize rich rules, zones and policies use a different key
+        for rich_key in ["rich_rules", "rules_str"]:
+            if rich_key in new_settings:
+                new_settings[rich_key] = [str(Rich_Rule(rule_str=rule_str)) for rule_str in new_settings[rich_key]]
+
         add_settings = {}
         remove_settings = {}
         for key in (set(old_settings.keys()) | set(new_settings.keys())):

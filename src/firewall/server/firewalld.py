@@ -934,7 +934,7 @@ class FirewallD(DbusServiceObject):
         zone = dbus_to_python(zone, str)
         log.debug1("setZoneSettings2(%s)", zone)
         self.accessCheck(sender)
-        self.fw.zone.set_config_with_settings_dict(zone, settings, sender)
+        self.fw.zone.set_config_with_settings_dict(zone, dbus_to_python(settings), sender)
         self.ZoneUpdated(zone, settings)
 
     @dbus.service.signal(config.dbus.DBUS_INTERFACE_ZONE, signature='sa{sv}')
@@ -958,7 +958,7 @@ class FirewallD(DbusServiceObject):
         policy = dbus_to_python(policy, str)
         log.debug1("policy.setPolicySettings(%s)", policy)
         self.accessCheck(sender)
-        self.fw.policy.set_config_with_settings_dict(policy, settings, sender)
+        self.fw.policy.set_config_with_settings_dict(policy, dbus_to_python(settings), sender)
         self.PolicyUpdated(policy, settings)
 
     @dbus.service.signal(config.dbus.DBUS_INTERFACE_POLICY, signature='sa{sv}')
