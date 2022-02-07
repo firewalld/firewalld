@@ -164,22 +164,7 @@ class FirewallPolicy(object):
         self._policy_settings(False, policy, use_transaction=use_transaction)
 
     def get_config_with_settings_dict(self, policy):
-        """
-        :return: exported config updated with runtime settings
-        """
-        permanent = self.get_policy(policy).export_config_dict()
-        runtime = { "services": self.list_services(policy),
-                    "ports": self.list_ports(policy),
-                    "icmp_blocks": self.list_icmp_blocks(policy),
-                    "masquerade": self.query_masquerade(policy),
-                    "forward_ports": self.list_forward_ports(policy),
-                    "rich_rules": self.list_rules(policy),
-                    "protocols": self.list_protocols(policy),
-                    "source_ports": self.list_source_ports(policy),
-                    "ingress_zones": self.list_ingress_zones(policy),
-                    "egress_zones": self.list_egress_zones(policy),
-                    }
-        return self._fw.combine_runtime_with_permanent_settings(permanent, runtime)
+        return self.get_policy(policy).export_config_dict()
 
     def set_config_with_settings_dict(self, policy, settings, sender):
         # stupid wrappers to convert rich rule string to rich rule object
