@@ -362,6 +362,13 @@ class FirewallZone(object):
             "forward": (self.add_forward, self.remove_forward),
         }
 
+        # do a full config check on a temporary object before trying to make
+        # the runtime changes
+        old_obj = self.get_zone(zone)
+        check_obj = copy.copy(old_obj)
+        check_obj.import_config_dict(settings, self._fw.get_all_io_objects_dict())
+        self._fw.full_check_config({"zones": [check_obj]})
+
         old_settings = self.get_config_with_settings_dict(zone)
         (add_settings, remove_settings) = self._fw.get_added_and_removed_settings(old_settings, settings)
 
