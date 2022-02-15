@@ -33,7 +33,7 @@
     [
         &lt;rule [family="<literal>ipv4</literal>|<literal>ipv6</literal>"]&gt;
             [ &lt;source address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]"|mac="<replaceable>MAC</replaceable>"|ipset="<replaceable>ipset</replaceable>" [invert="<replaceable>True</replaceable>"]/&gt; ]
-            [ &lt;destination address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]" [invert="<replaceable>True</replaceable>"]/&gt; ]
+            [ &lt;destination address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]"|ipset="<replaceable>ipset</replaceable>" [invert="<replaceable>True</replaceable>"]/&gt; ]
             [
                 &lt;service name="<replaceable>string</replaceable>"/&gt; |
                 &lt;port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>|<literal>sctp</literal>|<literal>dccp</literal>"/&gt; |
