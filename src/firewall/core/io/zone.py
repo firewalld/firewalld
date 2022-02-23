@@ -172,41 +172,46 @@ class Zone(IO_Object):
 
         if item == "target":
             if config not in ZONE_TARGETS:
-                raise FirewallError(errors.INVALID_TARGET, config)
+                raise FirewallError(errors.INVALID_TARGET, "Zone '{}': invalid target '{}'".format(
+                    self.name, config))
         elif item == "interfaces":
             for interface in config:
                 if not checkInterface(interface):
-                    raise FirewallError(errors.INVALID_INTERFACE, interface)
+                    raise FirewallError(errors.INVALID_INTERFACE, "Zone '{}': invalid interface '{}'".format(
+                        self.name, interface))
                 for zone in all_io_objects["zones"]:
                     if zone == self.name:
                         continue
                     if interface in all_io_objects["zones"][zone].interfaces:
                         raise FirewallError(errors.INVALID_INTERFACE,
-                                    "interface '{}' already bound to zone '{}'".format(interface, zone))
+                                "Zone '{}': interface '{}' already bound to zone '{}'".format(
+                                    self.name, interface, zone))
         elif item == "sources":
             for source in config:
                 if not checkIPnMask(source) and not checkIP6nMask(source) and \
                    not check_mac(source) and not source.startswith("ipset:"):
-                    raise FirewallError(errors.INVALID_ADDR, source)
+                    raise FirewallError(errors.INVALID_ADDR, "Zone '{}': invalid source '{}'".format(
+                        self.name, source))
                 for zone in all_io_objects["zones"]:
                     if zone == self.name:
                         continue
                     if source in all_io_objects["zones"][zone].sources:
                         raise FirewallError(errors.INVALID_ADDR,
-                                "source '{}' already bound to zone '{}'".format(source, zone))
+                                "Zone '{}': source '{}' already bound to zone '{}'".format(
+                                    self.name, source, zone))
 
 
     def check_name(self, name):
         super(Zone, self).check_name(name)
         if name.startswith('/'):
             raise FirewallError(errors.INVALID_NAME,
-                                "'%s' can't start with '/'" % name)
+                                "Zone '{}': name can't start with '/'".format(name))
         elif name.endswith('/'):
             raise FirewallError(errors.INVALID_NAME,
-                                "'%s' can't end with '/'" % name)
+                                "Zone '{}': name can't end with '/'".format(name))
         elif name.count('/') > 1:
             raise FirewallError(errors.INVALID_NAME,
-                                "more than one '/' in '%s'" % name)
+                                "Zone '{}': name has more than one '/'".format(name))
         else:
             if "/" in name:
                 checked_name = name[:name.find('/')]
@@ -214,10 +219,9 @@ class Zone(IO_Object):
                 checked_name = name
             if len(checked_name) > max_zone_name_len():
                 raise FirewallError(errors.INVALID_NAME,
-                                    "Zone of '%s' has %d chars, max is %d %s" % (
+                                    "Zone '{}': name has {} chars, max is {}".format(
                                     name, len(checked_name),
-                                    max_zone_name_len(),
-                                    self.combined))
+                                    max_zone_name_len()))
 
     def combine(self, zone):
         self.combined = True
