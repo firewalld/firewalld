@@ -70,8 +70,8 @@ FWD_START_TEST([user zone])
     dnl verify zone name limits (currently 17)
     FWD_CHECK([-q --permanent --new-zone=123456789abcefghi])
     FWD_CHECK([-q --permanent --new-zone=123456789abcefghij], 116, [ignore], [ignore])
-FWD_END_TEST([-e '/ERROR: INVALID_TARGET: BAD/d'dnl
-              -e '/ERROR: INVALID_NAME: Zone of/d'])
+FWD_END_TEST([-e '/ERROR: INVALID_TARGET: /d'dnl
+              -e '/ERROR: INVALID_NAME: /d'])
 
 FWD_START_TEST([zone interfaces])
     AT_KEYWORDS(zone)

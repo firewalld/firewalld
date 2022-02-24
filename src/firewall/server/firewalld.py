@@ -44,11 +44,11 @@ from firewall.dbus_utils import dbus_to_python, \
     dbus_introspection_prepare_properties, \
     dbus_introspection_add_properties, \
     dbus_introspection_add_deprecated
-from firewall.core.io.functions import check_config
+from firewall.core.io.functions import check_on_disk_config
 from firewall.core.io.ipset import IPSet
 from firewall.core.io.icmptype import IcmpType
 from firewall.core.io.helper import Helper
-from firewall.core.fw_nm import nm_get_bus_name, nm_get_connection_of_interface, \
+from firewall.core.fw_nm import nm_get_connection_of_interface, \
                                 nm_set_zone_of_connection
 from firewall.core.fw_ifcfg import ifcfg_set_zone_of_interface
 from firewall import errors
@@ -355,7 +355,7 @@ class FirewallD(DbusServiceObject):
         """Check permanent configuration
         """
         log.debug1("checkPermanentConfig()")
-        check_config(self.fw)
+        check_on_disk_config(self.fw)
 
     # runtime to permanent
 
@@ -443,30 +443,26 @@ class FirewallD(DbusServiceObject):
         # zones
 
         config_names = self.config.getZoneNames()
-        nm_bus_name = nm_get_bus_name()
         for name in self.fw.zone.get_zones():
             conf = self.getZoneSettings2(name)
             settings = FirewallClientZoneSettings(conf)
-            if nm_bus_name is not None:
-                changed = False
-                for interface in settings.getInterfaces():
-                    if self.fw.zone.interface_get_sender(name, interface) == nm_bus_name:
-                        log.debug1("Zone '%s': interface binding for '%s' has been added by NM, ignoring." % (name, interface))
+            changed = False
+            for interface in self.fw._nm_assigned_interfaces:
+                log.debug1("Zone '%s': interface binding for '%s' has been added by NM, ignoring." % (name, interface))
+                settings.removeInterface(interface)
+                changed = True
+            # For the remaining interfaces, attempt to let NM manage them
+            for interface in settings.getInterfaces():
+                try:
+                    connection = nm_get_connection_of_interface(interface)
+                    if connection and nm_set_zone_of_connection(name, connection):
                         settings.removeInterface(interface)
                         changed = True
-                # For the remaining interfaces, attempt to let NM manage them
-                for interface in settings.getInterfaces():
-                    try:
-                        connection = nm_get_connection_of_interface(interface)
-                        if connection and nm_set_zone_of_connection(name, connection):
-                            settings.removeInterface(interface)
-                            changed = True
-                    except Exception:
-                        pass
+                except Exception:
+                    pass
 
-                if changed:
-                    del conf
-                    conf = settings.getSettingsDict()
+            if changed:
+                conf = settings.getSettingsDict()
             # For the remaining try to update the ifcfg files
             for interface in settings.getInterfaces():
                 ifcfg_set_zone_of_interface(name, interface)
@@ -938,7 +934,7 @@ class FirewallD(DbusServiceObject):
         zone = dbus_to_python(zone, str)
         log.debug1("setZoneSettings2(%s)", zone)
         self.accessCheck(sender)
-        self.fw.zone.set_config_with_settings_dict(zone, settings, sender)
+        self.fw.zone.set_config_with_settings_dict(zone, dbus_to_python(settings), sender)
         self.ZoneUpdated(zone, settings)
 
     @dbus.service.signal(config.dbus.DBUS_INTERFACE_ZONE, signature='sa{sv}')
@@ -962,7 +958,7 @@ class FirewallD(DbusServiceObject):
         policy = dbus_to_python(policy, str)
         log.debug1("policy.setPolicySettings(%s)", policy)
         self.accessCheck(sender)
-        self.fw.policy.set_config_with_settings_dict(policy, settings, sender)
+        self.fw.policy.set_config_with_settings_dict(policy, dbus_to_python(settings), sender)
         self.PolicyUpdated(policy, settings)
 
     @dbus.service.signal(config.dbus.DBUS_INTERFACE_POLICY, signature='sa{sv}')

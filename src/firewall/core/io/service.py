@@ -89,7 +89,7 @@ class Service(IO_Object):
         del self.includes[:]
         del self.helpers[:]
 
-    def _check_config(self, config, item, all_config):
+    def _check_config(self, config, item, all_config, all_io_objects):
         if item == "ports":
             for port in config:
                 if port[0] != "":

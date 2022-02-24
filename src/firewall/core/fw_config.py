@@ -25,8 +25,10 @@ import copy
 import os
 import os.path
 import shutil
+from typing import Dict, List
 from firewall import config
 from firewall.core.logger import log
+from firewall.core.io.io_object import IO_Object
 from firewall.core.io.icmptype import IcmpType, icmptype_reader, icmptype_writer
 from firewall.core.io.service import Service, service_reader, service_writer
 from firewall.core.io.zone import Zone, zone_reader, zone_writer
@@ -120,6 +122,35 @@ class FirewallConfig(object):
             self._direct = None
 
         self.__init_vars()
+    
+    def get_all_io_objects_dict(self):
+        """
+        Returns a dict of dicts of all permanent config objects.
+        """
+        conf_dict = {}
+        conf_dict["ipsets"] = {ipset: self.get_ipset(ipset) for ipset in self.get_ipsets()}
+        conf_dict["helpers"] = {helper: self.get_helper(helper) for helper in self.get_helpers()}
+        conf_dict["icmptypes"] = {icmptype: self.get_icmptype(icmptype) for icmptype in self.get_icmptypes()}
+        conf_dict["services"] = {service: self.get_service(service) for service in self.get_services()}
+        conf_dict["zones"] = {zone: self.get_zone(zone) for zone in self.get_zones()}
+        conf_dict["policies"] = {policy: self.get_policy_object(policy) for policy in self.get_policy_objects()}
+
+        return conf_dict
+
+    def full_check_config(self, extra_io_objects: Dict[str, List[IO_Object]] = {}):
+        all_io_objects = self.get_all_io_objects_dict()
+        # mix in the extra objects
+        for type_key in extra_io_objects:
+            for obj in extra_io_objects[type_key]:
+                all_io_objects[type_key][obj.name] = obj
+
+        # we need to check in a well defined order because some io_objects will
+        # cross-check others
+        order = ["ipsets", "helpers", "icmptypes", "services", "zones", "policies"]
+        for io_obj_type in order:
+            io_objs = all_io_objects[io_obj_type]
+            for (name, io_obj) in io_objs.items():
+                io_obj.check_config_dict(io_obj.export_config_dict(), all_io_objects)
 
     # access check
 
@@ -206,20 +237,18 @@ class FirewallConfig(object):
         return obj.export_config()
 
     def set_ipset_config(self, obj, conf):
+        x = copy.copy(obj)
         if obj.builtin:
-            x = copy.copy(obj)
-            x.import_config(conf)
             x.path = config.ETC_FIREWALLD_IPSETS
             x.builtin = False
             if obj.path != x.path:
                 x.default = False
-            self.add_ipset(x)
-            ipset_writer(x)
-            return x
-        else:
-            obj.import_config(conf)
-            ipset_writer(obj)
-            return obj
+
+        x.import_config(conf, self.get_all_io_objects_dict())
+        self.full_check_config({"ipsets": [x]})
+        self.add_ipset(x)
+        ipset_writer(x)
+        return x
 
     def new_ipset(self, name, conf):
         if name in self._ipsets or name in self._builtin_ipsets:
@@ -228,7 +257,6 @@ class FirewallConfig(object):
 
         x = IPSet()
         x.check_name(name)
-        x.import_config(conf)
         x.name = name
         x.filename = "%s.xml" % name
         x.path = config.ETC_FIREWALLD_IPSETS
@@ -236,8 +264,10 @@ class FirewallConfig(object):
         x.builtin = False
         x.default = True
 
-        ipset_writer(x)
+        x.import_config(conf, self.get_all_io_objects_dict())
+        self.full_check_config({"ipsets": [x]})
         self.add_ipset(x)
+        ipset_writer(x)
         return x
 
     def update_ipset_from_path(self, name):
@@ -379,20 +409,18 @@ class FirewallConfig(object):
         return obj.export_config()
 
     def set_icmptype_config(self, obj, conf):
+        x = copy.copy(obj)
         if obj.builtin:
-            x = copy.copy(obj)
-            x.import_config(conf)
             x.path = config.ETC_FIREWALLD_ICMPTYPES
             x.builtin = False
             if obj.path != x.path:
                 x.default = False
-            self.add_icmptype(x)
-            icmptype_writer(x)
-            return x
-        else:
-            obj.import_config(conf)
-            icmptype_writer(obj)
-            return obj
+
+        x.import_config(conf, self.get_all_io_objects_dict())
+        self.full_check_config({"icmptypes": [x]})
+        self.add_icmptype(x)
+        icmptype_writer(x)
+        return x
 
     def new_icmptype(self, name, conf):
         if name in self._icmptypes or name in self._builtin_icmptypes:
@@ -401,7 +429,6 @@ class FirewallConfig(object):
 
         x = IcmpType()
         x.check_name(name)
-        x.import_config(conf)
         x.name = name
         x.filename = "%s.xml" % name
         x.path = config.ETC_FIREWALLD_ICMPTYPES
@@ -409,8 +436,10 @@ class FirewallConfig(object):
         x.builtin = False
         x.default = True
 
-        icmptype_writer(x)
+        x.import_config(conf, self.get_all_io_objects_dict())
+        self.full_check_config({"icmptypes": [x]})
         self.add_icmptype(x)
+        icmptype_writer(x)
         return x
 
     def update_icmptype_from_path(self, name):
@@ -568,36 +597,21 @@ class FirewallConfig(object):
         for i,value in enumerate(conf):
             conf_dict[obj.IMPORT_EXPORT_STRUCTURE[i][0]] = value
 
-        if obj.builtin:
-            x = copy.copy(obj)
-            x.import_config_dict(conf_dict)
-            x.path = config.ETC_FIREWALLD_SERVICES
-            x.builtin = False
-            if obj.path != x.path:
-                x.default = False
-            self.add_service(x)
-            service_writer(x)
-            return x
-        else:
-            obj.import_config_dict(conf_dict)
-            service_writer(obj)
-            return obj
+        return self.set_service_config_dict(obj, conf_dict)
 
     def set_service_config_dict(self, obj, conf):
+        x = copy.copy(obj)
         if obj.builtin:
-            x = copy.copy(obj)
-            x.import_config_dict(conf)
             x.path = config.ETC_FIREWALLD_SERVICES
             x.builtin = False
             if obj.path != x.path:
                 x.default = False
-            self.add_service(x)
-            service_writer(x)
-            return x
-        else:
-            obj.import_config_dict(conf)
-            service_writer(obj)
-            return obj
+
+        x.import_config_dict(conf, self.get_all_io_objects_dict())
+        self.full_check_config({"services": [x]})
+        self.add_service(x)
+        service_writer(x)
+        return x
 
     def new_service(self, name, conf):
         if name in self._services or name in self._builtin_services:
@@ -608,19 +622,7 @@ class FirewallConfig(object):
         for i,value in enumerate(conf):
             conf_dict[Service.IMPORT_EXPORT_STRUCTURE[i][0]] = value
 
-        x = Service()
-        x.check_name(name)
-        x.import_config_dict(conf_dict)
-        x.name = name
-        x.filename = "%s.xml" % name
-        x.path = config.ETC_FIREWALLD_SERVICES
-        # It is not possible to add a new one with a name of a buitin
-        x.builtin = False
-        x.default = True
-
-        service_writer(x)
-        self.add_service(x)
-        return x
+        return self.new_service_dict(name, conf_dict)
 
     def new_service_dict(self, name, conf):
         if name in self._services or name in self._builtin_services:
@@ -629,7 +631,6 @@ class FirewallConfig(object):
 
         x = Service()
         x.check_name(name)
-        x.import_config_dict(conf)
         x.name = name
         x.filename = "%s.xml" % name
         x.path = config.ETC_FIREWALLD_SERVICES
@@ -637,8 +638,10 @@ class FirewallConfig(object):
         x.builtin = False
         x.default = True
 
-        service_writer(x)
+        x.import_config_dict(conf, self.get_all_io_objects_dict())
+        self.full_check_config({"services": [x]})
         self.add_service(x)
+        service_writer(x)
         return x
 
     def update_service_from_path(self, name):
@@ -802,40 +805,21 @@ class FirewallConfig(object):
         for i,value in enumerate(conf):
             conf_dict[obj.IMPORT_EXPORT_STRUCTURE[i][0]] = value
 
-        if obj.builtin:
-            x = copy.copy(obj)
-            x.fw_config = self
-            x.import_config_dict(conf_dict)
-            x.path = config.ETC_FIREWALLD_ZONES
-            x.builtin = False
-            if obj.path != x.path:
-                x.default = False
-            self.add_zone(x)
-            zone_writer(x)
-            return x
-        else:
-            obj.fw_config = self
-            obj.import_config_dict(conf_dict)
-            zone_writer(obj)
-            return obj
+        return self.set_zone_config_dict(obj, conf_dict)
 
     def set_zone_config_dict(self, obj, conf):
+        x = copy.copy(obj)
         if obj.builtin:
-            x = copy.copy(obj)
-            x.fw_config = self
-            x.import_config_dict(conf)
             x.path = config.ETC_FIREWALLD_ZONES
             x.builtin = False
             if obj.path != x.path:
                 x.default = False
-            self.add_zone(x)
-            zone_writer(x)
-            return x
-        else:
-            obj.fw_config = self
-            obj.import_config_dict(conf)
-            zone_writer(obj)
-            return obj
+
+        x.import_config_dict(conf, self.get_all_io_objects_dict())
+        self.full_check_config({"zones": [x]})
+        self.add_zone(x)
+        zone_writer(x)
+        return x
 
     def new_zone(self, name, conf):
         if name in self._zones or name in self._builtin_zones:
@@ -845,29 +829,14 @@ class FirewallConfig(object):
         for i,value in enumerate(conf):
             conf_dict[Zone.IMPORT_EXPORT_STRUCTURE[i][0]] = value
 
-        x = Zone()
-        x.fw_config = self
-        x.check_name(name)
-        x.import_config_dict(conf_dict)
-        x.name = name
-        x.filename = "%s.xml" % name
-        x.path = config.ETC_FIREWALLD_ZONES
-        # It is not possible to add a new one with a name of a buitin
-        x.builtin = False
-        x.default = True
-
-        zone_writer(x)
-        self.add_zone(x)
-        return x
+        return self.new_zone_dict(name, conf_dict)
 
     def new_zone_dict(self, name, conf):
         if name in self._zones or name in self._builtin_zones:
             raise FirewallError(errors.NAME_CONFLICT, "new_zone(): '%s'" % name)
 
         x = Zone()
-        x.fw_config = self
         x.check_name(name)
-        x.import_config_dict(conf)
         x.name = name
         x.filename = "%s.xml" % name
         x.path = config.ETC_FIREWALLD_ZONES
@@ -875,8 +844,10 @@ class FirewallConfig(object):
         x.builtin = False
         x.default = True
 
-        zone_writer(x)
+        x.import_config_dict(conf, self.get_all_io_objects_dict())
+        self.full_check_config({"zones": [x]})
         self.add_zone(x)
+        zone_writer(x)
         return x
 
     def update_zone_from_path(self, name):
@@ -919,8 +890,6 @@ class FirewallConfig(object):
         except Exception as msg:
             log.error("Failed to load zone file '%s': %s", filename, msg)
             return (None, None)
-
-        obj.fw_config = self
 
         if path.startswith(config.ETC_FIREWALLD_ZONES) and \
            len(path) > len(config.ETC_FIREWALLD_ZONES):
@@ -1029,31 +998,25 @@ class FirewallConfig(object):
         return obj.export_config_dict()
 
     def set_policy_object_config_dict(self, obj, conf):
+        x = copy.copy(obj)
         if obj.builtin:
-            x = copy.copy(obj)
-            x.fw_config = self
-            x.import_config_dict(conf)
             x.path = config.ETC_FIREWALLD_POLICIES
             x.builtin = False
             if obj.path != x.path:
                 x.default = False
-            self.add_policy_object(x)
-            policy_writer(x)
-            return x
-        else:
-            obj.fw_config = self
-            obj.import_config_dict(conf)
-            policy_writer(obj)
-            return obj
+
+        x.import_config_dict(conf, self.get_all_io_objects_dict())
+        self.full_check_config({"policies": [x]})
+        self.add_policy_object(x)
+        policy_writer(x)
+        return x
 
     def new_policy_object_dict(self, name, conf):
         if name in self._policy_objects or name in self._builtin_policy_objects:
             raise FirewallError(errors.NAME_CONFLICT, "new_policy_object(): '%s'" % name)
 
         x = Policy()
-        x.fw_config = self
         x.check_name(name)
-        x.import_config_dict(conf)
         x.name = name
         x.filename = "%s.xml" % name
         x.path = config.ETC_FIREWALLD_POLICIES
@@ -1061,8 +1024,10 @@ class FirewallConfig(object):
         x.builtin = False
         x.default = True
 
-        policy_writer(x)
+        x.import_config_dict(conf, self.get_all_io_objects_dict())
+        self.full_check_config({"policies": [x]})
         self.add_policy_object(x)
+        policy_writer(x)
         return x
 
     def update_policy_object_from_path(self, name):
@@ -1105,8 +1070,6 @@ class FirewallConfig(object):
         except Exception as msg:
             log.error("Failed to load policy file '%s': %s", filename, msg)
             return (None, None)
-
-        obj.fw_config = self
 
         if path.startswith(config.ETC_FIREWALLD_POLICIES) and \
            len(path) > len(config.ETC_FIREWALLD_POLICIES):
@@ -1212,20 +1175,18 @@ class FirewallConfig(object):
         return obj.export_config()
 
     def set_helper_config(self, obj, conf):
+        x = copy.copy(obj)
         if obj.builtin:
-            x = copy.copy(obj)
-            x.import_config(conf)
             x.path = config.ETC_FIREWALLD_HELPERS
             x.builtin = False
             if obj.path != x.path:
                 x.default = False
-            self.add_helper(x)
-            helper_writer(x)
-            return x
-        else:
-            obj.import_config(conf)
-            helper_writer(obj)
-            return obj
+
+        x.import_config(conf, self.get_all_io_objects_dict())
+        self.full_check_config({"helpers": [x]})
+        self.add_helper(x)
+        helper_writer(x)
+        return x
 
     def new_helper(self, name, conf):
         if name in self._helpers or name in self._builtin_helpers:
@@ -1234,7 +1195,6 @@ class FirewallConfig(object):
 
         x = Helper()
         x.check_name(name)
-        x.import_config(conf)
         x.name = name
         x.filename = "%s.xml" % name
         x.path = config.ETC_FIREWALLD_HELPERS
@@ -1242,8 +1202,10 @@ class FirewallConfig(object):
         x.builtin = False
         x.default = True
 
-        helper_writer(x)
+        x.import_config(conf, self.get_all_io_objects_dict())
+        self.full_check_config({"helpers": [x]})
         self.add_helper(x)
+        helper_writer(x)
         return x
 
     def update_helper_from_path(self, name):

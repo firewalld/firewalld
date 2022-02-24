@@ -138,7 +138,7 @@ class Direct(IO_Object):
         self.rules = LastUpdatedOrderedDict()
         self.passthroughs = LastUpdatedOrderedDict()
 
-    def _check_config(self, conf, item, all_conf):
+    def _check_config(self, conf, item, all_conf, all_io_objects):
         pass
         # check arg lists
 
@@ -162,7 +162,7 @@ class Direct(IO_Object):
         ret.append(x)
         return tuple(ret)
 
-    def import_config(self, conf):
+    def import_config(self, conf, all_io_objects):
         self.cleanup()
         self.check_config(conf)
         for i,(element,dummy) in enumerate(self.IMPORT_EXPORT_STRUCTURE):

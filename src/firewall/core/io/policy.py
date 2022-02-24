@@ -10,8 +10,16 @@ import io
 import shutil
 
 from firewall import config
-from firewall.functions import checkIP, checkIP6, checkUINT16
-from firewall.functions import uniqify, max_policy_name_len, portStr
+from firewall.functions import (
+    checkIP,
+    checkIP6,
+    checkUINT16,
+    coalescePortRange,
+    max_policy_name_len,
+    portInPortRange,
+    portStr,
+    uniqify,
+)
 from firewall.core.base import DEFAULT_POLICY_TARGET, POLICY_TARGETS, DEFAULT_POLICY_PRIORITY
 from firewall.core.io.io_object import IO_Object, \
     IO_Object_ContentHandler, IO_Object_XMLGenerator, check_port, \
@@ -55,12 +63,27 @@ def common_startElement(obj, name, attrs):
             return True
         check_port(attrs["port"])
         check_tcpudp(attrs["protocol"])
-        entry = (portStr(attrs["port"], "-"), attrs["protocol"])
-        if entry not in obj.item.ports:
-            obj.item.ports.append(entry)
+
+        # coalesce and warn about overlapping ranges
+        new_port_id = (portStr(attrs["port"], "-"), attrs["protocol"])
+        existing_port_ids = list(filter(lambda x: x[1] == attrs["protocol"], obj.item.ports))
+        for port_id in existing_port_ids:
+            if portInPortRange(new_port_id[0], port_id[0]):
+                # the range is wholly contained already, so just warn
+                _name = obj.item.derived_from_zone if isinstance(obj.item, Policy) else obj.item.name
+                log.warning(FirewallError(errors.ALREADY_ENABLED,
+                                    "'%s:%s' already in '%s'" % (new_port_id[0], attrs["protocol"], _name)))
+                break # for
         else:
-            log.warning("Port '%s/%s' already set, ignoring.",
-                        attrs["port"], attrs["protocol"])
+            # the range can be coalesced into the existing set
+            added_ranges, removed_ranges = coalescePortRange(new_port_id[0], [_port for (_port, _protocol) in existing_port_ids])
+
+            for _range in removed_ranges:
+                entry = (portStr(_range, "-"), attrs["protocol"])
+                obj.item.ports.remove(entry)
+            for _range in added_ranges:
+                entry = (portStr(_range, "-"), attrs["protocol"])
+                obj.item.ports.append(entry)
 
     elif name == "protocol":
         if obj._rule:
@@ -185,12 +208,27 @@ def common_startElement(obj, name, attrs):
             return True
         check_port(attrs["port"])
         check_tcpudp(attrs["protocol"])
-        entry = (portStr(attrs["port"], "-"), attrs["protocol"])
-        if entry not in obj.item.source_ports:
-            obj.item.source_ports.append(entry)
+
+        # coalesce and warn about overlapping ranges
+        new_port_id = (portStr(attrs["port"], "-"), attrs["protocol"])
+        existing_port_ids = list(filter(lambda x: x[1] == attrs["protocol"], obj.item.source_ports))
+        for port_id in existing_port_ids:
+            if portInPortRange(new_port_id[0], port_id[0]):
+                # the range is wholly contained already, so just warn
+                _name = obj.item.derived_from_zone if isinstance(obj.item, Policy) else obj.item.name
+                log.warning(FirewallError(errors.ALREADY_ENABLED,
+                                    "'%s:%s' already in '%s'" % (new_port_id[0], attrs["protocol"], _name)))
+                break # for
         else:
-            log.warning("Source port '%s/%s' already set, ignoring.",
-                        attrs["port"], attrs["protocol"])
+            # the range can be coalesced into the existing set
+            added_ranges, removed_ranges = coalescePortRange(new_port_id[0], [_port for (_port, _protocol) in existing_port_ids])
+
+            for _range in removed_ranges:
+                entry = (portStr(_range, "-"), attrs["protocol"])
+                obj.item.source_ports.remove(entry)
+            for _range in added_ranges:
+                entry = (portStr(_range, "-"), attrs["protocol"])
+                obj.item.source_ports.append(entry)
 
     elif name == "destination":
         if not obj._rule:
@@ -356,14 +394,16 @@ def common_endElement(obj, name):
     elif name in [ "accept", "reject", "drop", "mark", "log", "audit" ]:
         obj._limit_ok = None
 
-def common_check_config(obj, config, item, all_config):
-    if item == "services" and obj.fw_config:
-        existing_services = obj.fw_config.get_services()
+def common_check_config(obj, config, item, all_config, all_io_objects):
+    obj_type = "Policy" if isinstance(obj, Policy) else "Zone"
+
+    if item == "services" and "services" in all_io_objects:
+        existing_services = all_io_objects["services"]
         for service in config:
             if service not in existing_services:
                 raise FirewallError(errors.INVALID_SERVICE,
-                                    "'%s' not among existing services" % \
-                                    service)
+                        "{} '{}': '{}' not among existing services".format(
+                            obj_type, obj.name, service))
     elif item == "ports":
         for port in config:
             check_port(port[0])
@@ -371,28 +411,33 @@ def common_check_config(obj, config, item, all_config):
     elif item == "protocols":
         for proto in config:
             check_protocol(proto)
-    elif item == "icmp_blocks" and obj.fw_config:
-        existing_icmptypes = obj.fw_config.get_icmptypes()
+    elif item == "icmp_blocks" and "icmptypes" in all_io_objects:
+        existing_icmptypes = all_io_objects["icmptypes"]
         for icmptype in config:
             if icmptype not in existing_icmptypes:
-                raise FirewallError(errors.INVALID_ICMPTYPE,
-                                    "'%s' not among existing icmp types" % \
-                                    icmptype)
+                ex = FirewallError(errors.INVALID_ICMPTYPE,
+                        "{} '{}': '{}' not among existing ICMP types".format(
+                            obj_type, obj.name, icmptype))
+                if icmptype in all_io_objects.get("icmptypes_unsupported", {}):
+                    log.debug1("{} (unsupported)".format(ex))
+                else:
+                    raise ex
+
     elif item == "forward_ports":
         for fwd_port in config:
             check_port(fwd_port[0])
             check_tcpudp(fwd_port[1])
             if not fwd_port[2] and not fwd_port[3]:
-                raise FirewallError(
-                    errors.INVALID_FORWARD,
-                    "'%s' is missing to-port AND to-addr " % fwd_port)
+                raise FirewallError(errors.INVALID_FORWARD,
+                    "{} '{}': '{}' is missing to-port AND to-addr ".format(
+                        obj_type, obj.name, fwd_port))
             if fwd_port[2]:
                 check_port(fwd_port[2])
             if fwd_port[3]:
                 if not checkIP(fwd_port[3]) and not checkIP6(fwd_port[3]):
-                    raise FirewallError(
-                        errors.INVALID_ADDR,
-                        "to-addr '%s' is not a valid address" % fwd_port[3])
+                    raise FirewallError(errors.INVALID_ADDR,
+                        "{} '{}': to-addr '{}' is not a valid address".format(
+                            obj_type, obj.name, fwd_port[3]))
     elif item == "source_ports":
         for port in config:
             check_port(port[0])
@@ -400,19 +445,30 @@ def common_check_config(obj, config, item, all_config):
     elif item in ["rules_str", "rich_rules"]:
         for rule in config:
             obj_rich = rich.Rich_Rule(rule_str=rule)
-            if obj.fw_config and obj_rich.element and (isinstance(obj_rich.element, rich.Rich_IcmpBlock) or
-                                                       isinstance(obj_rich.element, rich.Rich_IcmpType)):
-                existing_icmptypes = obj.fw_config.get_icmptypes()
+            if obj_rich.element and "icmptypes" in all_io_objects and \
+              (isinstance(obj_rich.element, rich.Rich_IcmpBlock) or
+               isinstance(obj_rich.element, rich.Rich_IcmpType)):
+                existing_icmptypes = all_io_objects["icmptypes"]
                 if obj_rich.element.name not in existing_icmptypes:
-                    raise FirewallError(errors.INVALID_ICMPTYPE,
-                                        "'%s' not among existing icmp types" % \
-                                        obj_rich.element.name)
+                    ex = FirewallError(errors.INVALID_ICMPTYPE,
+                            "{} '{}': '{}' not among existing ICMP types".format(
+                                obj_type, obj.name, obj_rich.element.name))
+                    if obj_rich.element.name in all_io_objects.get("icmptypes_unsupported", {}):
+                        log.debug1("{} (unsupported)".format(ex))
+                    else:
+                        raise ex
                 elif obj_rich.family:
-                    ict = obj.fw_config.get_icmptype(obj_rich.element.name)
+                    ict = all_io_objects["icmptypes"][obj_rich.element.name]
                     if ict.destination and obj_rich.family not in ict.destination:
-                        raise FirewallError(errors.INVALID_ICMPTYPE,
-                                            "rich rule family '%s' conflicts with icmp type '%s'" % \
-                                            (obj_rich.family, obj_rich.element.name))
+                        ex = FirewallError(errors.INVALID_ICMPTYPE,
+                                           "{} '{}': rich rule family '{}' conflicts with icmp type '{}'".format(
+                                           obj_type, obj.name, obj_rich.family, obj_rich.element.name))
+                        ict_unsupported = all_io_objects.get("icmptypes_unsupported", {}).get(obj_rich.element.name)
+                        if ict_unsupported and ict_unsupported.destination and \
+                           obj_rich.family in ict_unsupported.destination:
+                            log.debug1("{} (unsupported)".format(ex))
+                        else:
+                            raise ex
 
 def common_writer(obj, handler):
     # short
@@ -731,10 +787,10 @@ class Policy(IO_Object):
         self.ports = [ ]
         self.protocols = [ ]
         self.icmp_blocks = [ ]
+        self.icmp_block_inversion = False # for zones, not written to policy config
         self.masquerade = False
         self.forward_ports = [ ]
         self.source_ports = [ ]
-        self.fw_config = None # to be able to check services and a icmp_blocks
         self.rules = [ ]
         self.rules_str = [ ]
         self.applied = False
@@ -752,10 +808,10 @@ class Policy(IO_Object):
         del self.ports[:]
         del self.protocols[:]
         del self.icmp_blocks[:]
+        self.icmp_block_inversion = False
         self.masquerade = False
         del self.forward_ports[:]
         del self.source_ports[:]
-        self.fw_config = None # to be able to check services and a icmp_blocks
         del self.rules[:]
         del self.rules_str[:]
         self.applied = False
@@ -777,109 +833,135 @@ class Policy(IO_Object):
         else:
             super(Policy, self).__setattr__(name, value)
 
-    def _check_config(self, config, item, all_config):
-        common_check_config(self, config, item, all_config)
+    def _check_config(self, config, item, all_config, all_io_objects):
+        common_check_config(self, config, item, all_config, all_io_objects)
+
+        if self.name in all_io_objects["zones"]:
+            raise FirewallError(errors.NAME_CONFLICT, "Policy '{}': Can't have the same name as a zone.".format(self.name))
 
         if item == "target":
             if config not in POLICY_TARGETS:
-                raise FirewallError(errors.INVALID_TARGET, "'%s' is invalid target" % (config))
+                raise FirewallError(errors.INVALID_TARGET, "Policy '{}': '{}' is invalid target".format(self.name, config))
         elif item == "priority":
             if config in self.priority_reserved or \
                config > self.priority_max or \
                config < self.priority_min:
-                raise FirewallError(errors.INVALID_PRIORITY, "%d is invalid priority. Must be in range [%d, %d]. The following are reserved: %s" %
-                                                             (config, self.priority_min, self.priority_max, self.priority_reserved))
+                raise FirewallError(errors.INVALID_PRIORITY,
+                        "Policy '{}': {} is invalid priority. Must be in range [{}, {}]. The following are reserved: {}".format(
+                            self.name, config, self.priority_min, self.priority_max, self.priority_reserved))
         elif item in ["ingress_zones", "egress_zones"]:
-            existing_zones = ["ANY", "HOST"]
-            if self.fw_config:
-                existing_zones += self.fw_config.get_zones()
+            existing_zones = ["ANY", "HOST"] + list(all_io_objects["zones"].keys())
             for zone in config:
                 if zone not in existing_zones:
                     raise FirewallError(errors.INVALID_ZONE,
-                                        "'%s' not among existing zones" % (zone))
+                            "Policy '{}': '{}' not among existing zones".format(
+                                self.name, zone))
                 if ((zone not in ["ANY", "HOST"] and (set(["ANY", "HOST"]) & set(config))) or \
                    (zone in ["ANY", "HOST"] and (set(config) - set([zone])))):
                     raise FirewallError(errors.INVALID_ZONE,
-                                        "'%s' may only contain one of: many regular zones, ANY, or HOST" % (item))
+                            "Policy '{}': '{}' may only contain one of: many regular zones, ANY, or HOST".format(
+                                self.name, item))
                 if zone == "HOST" and \
                    ((item == "ingress_zones" and "egress_zones" in all_config and "HOST" in all_config["egress_zones"]) or \
                    (item == "egress_zones" and "ingress_zones" in all_config and "HOST" in all_config["ingress_zones"])):
                     raise FirewallError(errors.INVALID_ZONE,
-                                        "'HOST' can only appear in either ingress or egress zones, but not both")
+                            "Policy '{}': 'HOST' can only appear in either ingress or egress zones, but not both".format(
+                                self.name))
         elif item == "masquerade" and config:
             if "egress_zones" in all_config and "HOST" in all_config["egress_zones"]:
-                raise FirewallError(errors.INVALID_ZONE, "'masquerade' is invalid for egress zone 'HOST'")
+                raise FirewallError(errors.INVALID_ZONE,
+                    "Policy '{}': 'masquerade' is invalid for egress zone 'HOST'".format(
+                        self.name))
             elif "ingress_zones" in all_config:
                 if "HOST" in all_config["ingress_zones"]:
-                    raise FirewallError(errors.INVALID_ZONE, "'masquerade' is invalid for ingress zone 'HOST'")
+                    raise FirewallError(errors.INVALID_ZONE,
+                            "Policy '{}': 'masquerade' is invalid for ingress zone 'HOST'".format(
+                                self.name))
                 for zone in all_config["ingress_zones"]:
                     if zone == "ANY":
                         continue
-                    z_obj = self.fw_config.get_zone(zone)
-                    if self.fw_config and "interfaces" in self.fw_config.get_zone_config_dict(z_obj):
-                        raise FirewallError(errors.INVALID_ZONE, "'masquerade' cannot be used in a policy if an ingress zone has assigned interfaces")
+                    if zone not in all_io_objects["zones"]:
+                        raise FirewallError(errors.INVALID_ZONE, "Policy '{}': Zone '{}' does not exist.".format(self.name, zone))
+                    if all_io_objects["zones"][zone].interfaces:
+                        raise FirewallError(errors.INVALID_ZONE, "Policy '{}': 'masquerade' cannot be used because ingress zone '{}' has assigned interfaces. ".format(self.name, zone))
         elif item == "rich_rules":
             for rule in config:
                 obj = rich.Rich_Rule(rule_str=rule)
                 if obj.element and isinstance(obj.element, rich.Rich_Masquerade):
                     if "egress_zones" in all_config and "HOST" in all_config["egress_zones"]:
-                        raise FirewallError(errors.INVALID_ZONE, "'masquerade' is invalid for egress zone 'HOST'")
+                        raise FirewallError(errors.INVALID_ZONE,
+                                "Policy '{}': 'masquerade' is invalid for egress zone 'HOST'".format(
+                                    self.name))
                     elif "ingress_zones" in all_config:
                         if "HOST" in all_config["ingress_zones"]:
-                            raise FirewallError(errors.INVALID_ZONE, "'masquerade' is invalid for ingress zone 'HOST'")
+                            raise FirewallError(errors.INVALID_ZONE,
+                                    "Policy '{}': 'masquerade' is invalid for ingress zone 'HOST'".format(
+                                        self.name))
                         for zone in all_config["ingress_zones"]:
                             if zone == "ANY":
                                 continue
-                            z_obj = self.fw_config.get_zone(zone)
-                            if self.fw_config and "interfaces" in self.fw_config.get_zone_config_dict(z_obj):
-                                raise FirewallError(errors.INVALID_ZONE, "'masquerade' cannot be used in a policy if an ingress zone has assigned interfaces")
+                            if zone not in all_io_objects["zones"]:
+                                raise FirewallError(errors.INVALID_ZONE, "Policy '{}': Zone '{}' does not exist.".format(self.name, zone))
+                            if all_io_objects["zones"][zone].interfaces:
+                                raise FirewallError(errors.INVALID_ZONE, "Policy '{}': 'masquerade' cannot be used because ingress zone '{}' has assigned interfaces. ".format(self.name, zone))
                 elif obj.element and isinstance(obj.element, rich.Rich_ForwardPort):
                     if "egress_zones" in all_config:
                         if "HOST" in all_config["egress_zones"]:
                             if obj.element.to_address:
-                                raise FirewallError(errors.INVALID_FORWARD, "A 'forward-port' with 'to-addr' is invalid for egress zone 'HOST'")
+                                raise FirewallError(errors.INVALID_FORWARD,
+                                        "Policy '{}': A 'forward-port' with 'to-addr' is invalid for egress zone 'HOST'".format(
+                                            self.name))
                         elif all_config["egress_zones"]:
                             if not obj.element.to_address:
-                                raise FirewallError(errors.INVALID_FORWARD, "'forward-port' requires 'to-addr' if egress zone is 'ANY' or a zone")
+                                raise FirewallError(errors.INVALID_FORWARD,
+                                        "Policy '{}': 'forward-port' requires 'to-addr' if egress zone is 'ANY' or a zone".format(
+                                            self.name))
                             if "ANY" not in all_config["egress_zones"]:
                                 for zone in all_config["egress_zones"]:
-                                    z_obj = self.fw_config.get_zone(zone)
-                                    if self.fw_config and "interfaces" in self.fw_config.get_zone_config_dict(z_obj):
-                                        raise FirewallError(errors.INVALID_ZONE, "'forward-port' cannot be used in a policy if an egress zone has assigned interfaces")
+                                    if zone not in all_io_objects["zones"]:
+                                        raise FirewallError(errors.INVALID_ZONE, "Policy '{}': Zone '{}' does not exist.".format(self.name, zone))
+                                    if all_io_objects["zones"][zone].interfaces:
+                                        raise FirewallError(errors.INVALID_ZONE, "Policy '{}': 'forward-port' cannot be used because egress zone '{}' has assigned interfaces".format(self.name, zone))
                 elif obj.action and isinstance(obj.action, rich.Rich_Mark):
                     if "egress_zones" in all_config:
                         for zone in all_config["egress_zones"]:
                             if zone in ["ANY", "HOST"]:
                                 continue
-                            z_obj = self.fw_config.get_zone(zone)
-                            if self.fw_config and "interfaces" in self.fw_config.get_zone_config_dict(z_obj):
-                                raise FirewallError(errors.INVALID_ZONE, "'mark' action cannot be used in a policy if an egress zone has assigned interfaces")
+                            if zone not in all_io_objects["zones"]:
+                                raise FirewallError(errors.INVALID_ZONE, "Policy '{}': Zone '{}' does not exist.".format(self.name, zone))
+                            if all_io_objects["zones"][zone].interfaces:
+                                raise FirewallError(errors.INVALID_ZONE, "Policy '{}': 'mark' action cannot be used because egress zone '{}' has assigned interfaces".format(self.name, zone))
         elif item == "forward_ports":
             for fwd_port in config:
                 if "egress_zones" in all_config:
                     if "HOST" in all_config["egress_zones"]:
                         if fwd_port[3]:
-                            raise FirewallError(errors.INVALID_FORWARD, "A 'forward-port' with 'to-addr' is invalid for egress zone 'HOST'")
+                            raise FirewallError(errors.INVALID_FORWARD,
+                                    "Policy '{}': A 'forward-port' with 'to-addr' is invalid for egress zone 'HOST'".format(
+                                        self.name))
                     elif all_config["egress_zones"]:
                         if not fwd_port[3]:
-                            raise FirewallError(errors.INVALID_FORWARD, "'forward-port' requires 'to-addr' if egress zone is 'ANY' or a zone")
+                            raise FirewallError(errors.INVALID_FORWARD,
+                                    "Policy '{}': 'forward-port' requires 'to-addr' if egress zone is 'ANY' or a zone".format(
+                                        self.name))
                         if "ANY" not in all_config["egress_zones"]:
                             for zone in all_config["egress_zones"]:
-                                z_obj = self.fw_config.get_zone(zone)
-                                if self.fw_config and "interfaces" in self.fw_config.get_zone_config_dict(z_obj):
-                                    raise FirewallError(errors.INVALID_ZONE, "'forward-port' cannot be used in a policy if an egress zone has assigned interfaces")
+                                if zone not in all_io_objects["zones"]:
+                                    raise FirewallError(errors.INVALID_ZONE, "Policy '{}': Zone '{}' does not exist.".format(self.name, zone))
+                                if all_io_objects["zones"][zone].interfaces:
+                                    raise FirewallError(errors.INVALID_ZONE, "Policy '{}': 'forward-port' cannot be used because egress zone '{}' has assigned interfaces".format(self.name, zone))
 
     def check_name(self, name):
         super(Policy, self).check_name(name)
         if name.startswith('/'):
             raise FirewallError(errors.INVALID_NAME,
-                                "'%s' can't start with '/'" % name)
+                                "Policy '{}': name can't start with '/'".format(name))
         elif name.endswith('/'):
             raise FirewallError(errors.INVALID_NAME,
-                                "'%s' can't end with '/'" % name)
+                                "Policy '{}': name can't end with '/'".format(name))
         elif name.count('/') > 1:
             raise FirewallError(errors.INVALID_NAME,
-                                "more than one '/' in '%s'" % name)
+                                "Policy '{}': name has more than one '/'".format(name))
         else:
             if "/" in name:
                 checked_name = name[:name.find('/')]
@@ -887,12 +969,9 @@ class Policy(IO_Object):
                 checked_name = name
             if len(checked_name) > max_policy_name_len():
                 raise FirewallError(errors.INVALID_NAME,
-                                    "Policy of '%s' has %d chars, max is %d" % (
+                                    "Policy '{}': name has {} chars, max is {}".format(
                                     name, len(checked_name),
                                     max_policy_name_len()))
-            if self.fw_config:
-                if checked_name in self.fw_config.get_zones():
-                    raise FirewallError(errors.NAME_CONFLICT, "Policies can't have the same name as a zone.")
 
 # PARSER
 

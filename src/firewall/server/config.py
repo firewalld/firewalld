@@ -805,7 +805,7 @@ class FirewallDConfig(DbusServiceObject):
     def setLockdownWhitelist(self, settings, sender=None): # pylint: disable=W0613
         log.debug1("config.policies.setLockdownWhitelist(...)")
         settings = dbus_to_python(settings)
-        self.config.get_policies().lockdown_whitelist.import_config(settings)
+        self.config.get_policies().lockdown_whitelist.import_config(settings, {})
         self.config.get_policies().lockdown_whitelist.write()
         self.LockdownWhitelistUpdated()
 
@@ -1417,7 +1417,7 @@ class FirewallDConfig(DbusServiceObject):
         # returns list ipv, table, list of chains
         log.debug1("config.direct.update()")
         settings = dbus_to_python(settings)
-        self.config.get_direct().import_config(settings)
+        self.config.get_direct().import_config(settings, {})
         self.config.get_direct().write()
         self.Updated()
 

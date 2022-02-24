@@ -63,8 +63,8 @@ class IO_Object(object):
                 conf[key] = copy.deepcopy(getattr(self, key))
         return conf
 
-    def import_config(self, conf):
-        self.check_config(conf)
+    def import_config(self, conf, all_io_objects):
+        self.check_config(conf, all_io_objects)
         for i,(element,dummy) in enumerate(self.IMPORT_EXPORT_STRUCTURE):
             if isinstance(conf[i], list):
                 # remove duplicates without changing the order
@@ -79,8 +79,8 @@ class IO_Object(object):
             else:
                 setattr(self, element, copy.deepcopy(conf[i]))
 
-    def import_config_dict(self, conf):
-        self.check_config_dict(conf)
+    def import_config_dict(self, conf, all_io_objects):
+        self.check_config_dict(conf, all_io_objects)
 
         for key in conf:
             if not hasattr(self, key):
@@ -104,7 +104,7 @@ class IO_Object(object):
                     errors.INVALID_NAME,
                     "'%s' is not allowed in '%s'" % ((char, name)))
 
-    def check_config(self, conf):
+    def check_config(self, conf, all_io_objects={}):
         if len(conf) != len(self.IMPORT_EXPORT_STRUCTURE):
             raise FirewallError(
                 errors.INVALID_TYPE,
@@ -113,17 +113,17 @@ class IO_Object(object):
         conf_dict = {}
         for i,(x,y) in enumerate(self.IMPORT_EXPORT_STRUCTURE):
             conf_dict[x] = conf[i]
-        self.check_config_dict(conf_dict)
+        self.check_config_dict(conf_dict, all_io_objects)
 
-    def check_config_dict(self, conf):
+    def check_config_dict(self, conf, all_io_objects):
         type_formats = dict([(x[0], x[1]) for x in self.IMPORT_EXPORT_STRUCTURE])
         for key in conf:
             if key not in [x for (x,y) in self.IMPORT_EXPORT_STRUCTURE]:
                 raise FirewallError(errors.INVALID_OPTION, "option '{}' is not valid".format(key))
             self._check_config_structure(conf[key], type_formats[key])
-            self._check_config(conf[key], key, conf)
+            self._check_config(conf[key], key, conf, all_io_objects)
 
-    def _check_config(self, dummy1, dummy2, dummy3):
+    def _check_config(self, dummy1, dummy2, dummy3, dummy4):
         # to be overloaded by sub classes
         return
 

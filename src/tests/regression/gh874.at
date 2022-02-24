@@ -12,12 +12,14 @@ dnl It's invalid to use masquerade when a zone in the ingress_zones list has
 dnl assigned interfaces. This is due to the underlying firewalls (nftables,
 dnl iptables) not supporting matching iifname in postrouting hooks.
 dnl
-dnl Unfortunately the config checks aren't detecting this when adding the
-dnl interface. --check-config should be implicitly run during configuration
-dnl changes to catch interdependencies. Until then, this next command doesn't
-dnl error like it should. Hence the explicit --check-config.
+FWD_CHECK([--permanent --zone foobar_zone --add-interface foobar0], 112, [ignore], [ignore])
+
+dnl make sure the on-disk config check also fails
 dnl
-FWD_CHECK([--permanent --zone foobar_zone --add-interface foobar0], 0, [ignore])
+NS_CHECK([sed -i '2a \
+<interface name="foobar" />
+' ./zones/foobar_zone.xml
+])
 FWD_CHECK([--check-config], 112, [ignore], [ignore])
 
 FWD_END_TEST([ignore])

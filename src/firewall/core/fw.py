@@ -26,6 +26,7 @@ import sys
 import copy
 import time
 import traceback
+from typing import Dict, List
 from firewall import config
 from firewall import functions
 from firewall.core import ipXtables
@@ -45,6 +46,7 @@ from firewall.core.fw_helper import FirewallHelper
 from firewall.core.fw_policy import FirewallPolicy
 from firewall.core.fw_nm import nm_get_bus_name, nm_get_interfaces_in_zone
 from firewall.core.logger import log
+from firewall.core.io.io_object import IO_Object
 from firewall.core.io.firewalld_conf import firewalld_conf
 from firewall.core.io.direct import Direct
 from firewall.core.io.service import service_reader
@@ -54,6 +56,7 @@ from firewall.core.io.ipset import ipset_reader
 from firewall.core.ipset import IPSET_TYPES
 from firewall.core.io.helper import helper_reader
 from firewall.core.io.policy import policy_reader
+from firewall.core.rich import Rich_Rule
 from firewall import errors
 from firewall.errors import FirewallError
 
@@ -117,6 +120,8 @@ class Firewall(object):
         self._state = "INIT"
         self._panic = False
         self._default_zone = ""
+        self._default_zone_interfaces = []
+        self._nm_assigned_interfaces = []
         self._module_refcount = { }
         self._marks = [ ]
         # fallback settings will be overloaded by firewalld.conf
@@ -129,6 +134,59 @@ class Firewall(object):
         self._flush_all_on_reload = config.FALLBACK_FLUSH_ALL_ON_RELOAD
         self._rfc3964_ipv4 = config.FALLBACK_RFC3964_IPV4
         self._allow_zone_drifting = config.FALLBACK_ALLOW_ZONE_DRIFTING
+
+    def get_all_io_objects_dict(self):
+        """
+        Returns a dict of dicts of all runtime config objects.
+        """
+        conf_dict = {}
+        conf_dict["ipsets"] = {_ipset: self.ipset.get_ipset(_ipset) for _ipset in self.ipset.get_ipsets()}
+        conf_dict["helpers"] = {helper: self.helper.get_helper(helper) for helper in self.helper.get_helpers()}
+        conf_dict["icmptypes"] = {icmptype: self.icmptype.get_icmptype(icmptype) for icmptype in self.icmptype.get_icmptypes()}
+        conf_dict["services"] = {service: self.service.get_service(service) for service in self.service.get_services()}
+        conf_dict["zones"] = {zone: self.zone.get_zone(zone) for zone in self.zone.get_zones()}
+        conf_dict["policies"] = {policy: self.policy.get_policy(policy) for policy in self.policy.get_policies_not_derived_from_zone()}
+
+        # The runtime might not actually support all the defined icmptypes.
+        # This is the case if ipv6 (ip6tables) is disabled. Unfortunately users
+        # disable IPv6 and also expect the IPv6 stuff to be silently ignored.
+        # This is problematic for defaults that include IPv6 stuff, e.g. policy
+        # 'allow-host-ipv6'. Use this to make a better decision about errors vs
+        # warnings.
+        #
+        conf_dict["icmptypes_unsupported"] = {}
+        for icmptype in (set(self.config.get_icmptypes()).difference(
+                         set(self.icmptype.get_icmptypes()))):
+            conf_dict["icmptypes_unsupported"][icmptype] = self.config.get_icmptype(icmptype)
+        # Some icmptypes support multiple families. Add those that are missing
+        # support for a subset of families.
+        for icmptype in (set(self.config.get_icmptypes()).intersection(
+                         set(self.icmptype.get_icmptypes()))):
+            if icmptype not in self.ipv4_supported_icmp_types or \
+               icmptype not in self.ipv6_supported_icmp_types:
+                conf_dict["icmptypes_unsupported"][icmptype] = copy.copy(self.config.get_icmptype(icmptype))
+                conf_dict["icmptypes_unsupported"][icmptype].destination = []
+                if icmptype not in self.ipv4_supported_icmp_types:
+                    conf_dict["icmptypes_unsupported"][icmptype].destination.append("ipv4")
+                if icmptype not in self.ipv6_supported_icmp_types:
+                    conf_dict["icmptypes_unsupported"][icmptype].destination.append("ipv6")
+
+        return conf_dict
+
+    def full_check_config(self, extra_io_objects: Dict[str, List[IO_Object]] = {}):
+        all_io_objects = self.get_all_io_objects_dict()
+        # mix in the extra objects
+        for type_key in extra_io_objects:
+            for obj in extra_io_objects[type_key]:
+                all_io_objects[type_key][obj.name] = obj
+
+        # we need to check in a well defined order because some io_objects will
+        # cross-check others
+        order = ["ipsets", "helpers", "icmptypes", "services", "zones", "policies"]
+        for io_obj_type in order:
+            io_objs = all_io_objects[io_obj_type]
+            for (name, io_obj) in io_objs.items():
+                io_obj.check_config_dict(io_obj.export_config_dict(), all_io_objects)
 
     def _check_tables(self):
         # check if iptables, ip6tables and ebtables are usable, else disable
@@ -989,7 +1047,7 @@ class Firewall(object):
             # save zone interfaces
             _zone_interfaces = { }
             for zone in self.zone.get_zones():
-                _zone_interfaces[zone] = self.zone.get_settings(zone)["interfaces"]
+                _zone_interfaces[zone] = self.zone.get_zone(zone).interfaces
             # save direct config
             _direct_config = self.direct.get_runtime_config()
             _old_dz = self.get_default_zone()
@@ -1033,8 +1091,8 @@ class Firewall(object):
                     _zone_interfaces[_new_dz] = { }
                 # default zone changed. Move interfaces from old default zone to
                 # the new one.
-                for iface, settings in list(_zone_interfaces[_old_dz].items()):
-                    if settings["__default__"]:
+                for iface in _zone_interfaces[_old_dz]:
+                    if iface in self._default_zone_interfaces:
                         # move only those that were added to default zone
                         # (not those that were added to specific zone same as
                         # default)
@@ -1047,8 +1105,7 @@ class Firewall(object):
                 if zone in _zone_interfaces:
 
                     for interface_id in _zone_interfaces[zone]:
-                        self.zone.change_zone_of_interface(zone, interface_id,
-                                                           _zone_interfaces[zone][interface_id]["sender"])
+                        self.zone.change_zone_of_interface(zone, interface_id)
 
                     del _zone_interfaces[zone]
                 else:
@@ -1155,13 +1212,15 @@ class Firewall(object):
             self._firewalld_conf.set("DefaultZone", _zone)
             self._firewalld_conf.write()
 
+            if self._offline:
+                return
+
             # remove old default zone from ZONES and add new default zone
             self.zone.change_default_zone(_old_dz, _zone)
 
             # Move interfaces from old default zone to the new one.
-            _old_dz_settings = self.zone.get_settings(_old_dz)
-            for iface, settings in list(_old_dz_settings["interfaces"].items()):
-                if settings["__default__"]:
+            for iface in self.zone.get_zone(_old_dz).interfaces:
+                if iface in self._default_zone_interfaces:
                     # move only those that were added to default zone
                     # (not those that were added to specific zone same as default)
                     self.zone.change_zone_of_interface("", iface)
@@ -1183,6 +1242,11 @@ class Firewall(object):
         return combined
 
     def get_added_and_removed_settings(self, old_settings, new_settings):
+        # normalize rich rules, zones and policies use a different key
+        for rich_key in ["rich_rules", "rules_str"]:
+            if rich_key in new_settings:
+                new_settings[rich_key] = [str(Rich_Rule(rule_str=rule_str)) for rule_str in new_settings[rich_key]]
+
         add_settings = {}
         remove_settings = {}
         for key in (set(old_settings.keys()) | set(new_settings.keys())):
