@@ -404,6 +404,20 @@ class Firewall(object):
         self._loader(config.ETC_FIREWALLD_ZONES, "zone")
         self._loader(config.ETC_FIREWALLD_POLICIES, "policy")
 
+    def _start_load_direct_rules(self):
+        # load direct rules
+        obj = Direct(config.FIREWALLD_DIRECT)
+        if os.path.exists(config.FIREWALLD_DIRECT):
+            log.debug1("Loading direct rules file '%s'" % \
+                       config.FIREWALLD_DIRECT)
+            try:
+                obj.read()
+            except Exception as msg:
+                log.error("Failed to load direct rules file '%s': %s",
+                          config.FIREWALLD_DIRECT, msg)
+        self.direct.set_permanent_config(obj)
+        self.config.set_direct(copy.deepcopy(obj))
+
     def _start(self, reload=False, complete_reload=False):
         # initialize firewall
         default_zone = config.FALLBACK_ZONE
@@ -443,18 +457,7 @@ class Firewall(object):
         else:
             log.debug1("Using default zone '%s'", default_zone)
 
-        # load direct rules
-        obj = Direct(config.FIREWALLD_DIRECT)
-        if os.path.exists(config.FIREWALLD_DIRECT):
-            log.debug1("Loading direct rules file '%s'" % \
-                       config.FIREWALLD_DIRECT)
-            try:
-                obj.read()
-            except Exception as msg:
-                log.error("Failed to load direct rules file '%s': %s",
-                          config.FIREWALLD_DIRECT, msg)
-        self.direct.set_permanent_config(obj)
-        self.config.set_direct(copy.deepcopy(obj))
+        self._start_load_direct_rules()
 
         self._default_zone = self.check_zone(default_zone)
 
