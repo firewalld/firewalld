@@ -463,6 +463,27 @@ class Firewall(object):
         transaction.execute(True)
         transaction.clear()
 
+    def _start_apply_direct_rules(self):
+        transaction = FirewallTransaction(self)
+
+        # apply direct chains, rules and passthrough rules
+        if self.direct.has_configuration():
+            log.debug1("Applying direct chains rules and passthrough rules")
+            self.direct.apply_direct(transaction)
+
+            # since direct rules are easy to make syntax errors lets highlight
+            # the cause if the transaction fails.
+            try:
+                transaction.execute(True)
+                transaction.clear()
+            except FirewallError as e:
+                raise FirewallError(e.code, "Direct: %s" % (e.msg if e.msg else ""))
+            except Exception:
+                raise
+
+        transaction.execute(True)
+        transaction.clear()
+
     def _start(self, reload=False, complete_reload=False):
         # initialize firewall
         default_zone = config.FALLBACK_ZONE
@@ -517,23 +538,7 @@ class Firewall(object):
             tm1 = time.time()
 
         self._start_apply_objects(reload=reload, complete_reload=complete_reload)
-
-        # apply direct chains, rules and passthrough rules
-        if self.direct.has_configuration():
-            log.debug1("Applying direct chains rules and passthrough rules")
-            self.direct.apply_direct(transaction)
-
-            # since direct rules are easy to make syntax errors lets highlight
-            # the cause if the transaction fails.
-            try:
-                transaction.execute(True)
-                transaction.clear()
-            except FirewallError as e:
-                raise FirewallError(e.code, "Direct: %s" % (e.msg if e.msg else ""))
-            except Exception:
-                raise
-
-        del transaction
+        self._start_apply_direct_rules()
 
         if log.getDebugLogLevel() > 1:
             # get time after flushing and applying
