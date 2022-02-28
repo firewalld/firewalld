@@ -372,17 +372,7 @@ class Firewall(object):
 
         self.config.set_firewalld_conf(copy.deepcopy(self._firewalld_conf))
 
-    def _start(self, reload=False, complete_reload=False):
-        # initialize firewall
-        default_zone = config.FALLBACK_ZONE
-
-        self._start_load_firewalld_conf()
-
-        self._select_firewall_backend(self._firewall_backend)
-
-        if not self._offline:
-            self._start_check()
-
+    def _start_load_lockdown_whitelist(self):
         # load lockdown whitelist
         log.debug1("Loading lockdown whitelist")
         try:
@@ -397,6 +387,18 @@ class Firewall(object):
 
         # copy policies to config interface
         self.config.set_policies(copy.deepcopy(self.policies))
+
+    def _start(self, reload=False, complete_reload=False):
+        # initialize firewall
+        default_zone = config.FALLBACK_ZONE
+
+        self._start_load_firewalld_conf()
+        self._start_load_lockdown_whitelist()
+
+        self._select_firewall_backend(self._firewall_backend)
+
+        if not self._offline:
+            self._start_check()
 
         # load ipset files
         self._loader(config.FIREWALLD_IPSETS, "ipset")
