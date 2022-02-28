@@ -418,6 +418,51 @@ class Firewall(object):
         self.direct.set_permanent_config(obj)
         self.config.set_direct(copy.deepcopy(obj))
 
+    def _start_apply_objects(self, reload=False, complete_reload=False):
+        transaction = FirewallTransaction(self)
+
+        self.flush(use_transaction=transaction)
+
+        # If modules need to be unloaded in complete reload or if there are
+        # ipsets to get applied, limit the transaction to flush.
+        #
+        # Future optimization for the ipset case in reload: The transaction
+        # only needs to be split here if there are conflicting ipset types in
+        # exsting ipsets and the configuration in firewalld.
+        if (reload and complete_reload) or \
+           (self.ipset.backends() and self.ipset.has_ipsets()):
+            transaction.execute(True)
+            transaction.clear()
+
+        # complete reload: unload modules also
+        if reload and complete_reload:
+            log.debug1("Unloading firewall modules")
+            self.modules_backend.unload_firewall_modules()
+
+        self.apply_default_tables(use_transaction=transaction)
+        transaction.execute(True)
+        transaction.clear()
+
+        # apply settings for loaded ipsets while reloading here
+        if (self.ipset.backends()) and self.ipset.has_ipsets():
+            log.debug1("Applying ipsets")
+            self.ipset.apply_ipsets()
+
+        log.debug1("Applying default rule set")
+        self.apply_default_rules(use_transaction=transaction)
+
+        log.debug1("Applying used zones")
+        self.zone.apply_zones(use_transaction=transaction)
+
+        self.zone.change_default_zone(None, self._default_zone,
+                                      use_transaction=transaction)
+
+        log.debug1("Applying used policies")
+        self.policy.apply_policies(use_transaction=transaction)
+
+        transaction.execute(True)
+        transaction.clear()
+
     def _start(self, reload=False, complete_reload=False):
         # initialize firewall
         default_zone = config.FALLBACK_ZONE
@@ -471,59 +516,7 @@ class Firewall(object):
             # get time before flushing and applying
             tm1 = time.time()
 
-        # Start transaction
-        transaction = FirewallTransaction(self)
-
-        # flush rules
-        self.flush(use_transaction=transaction)
-
-        # If modules need to be unloaded in complete reload or if there are
-        # ipsets to get applied, limit the transaction to flush.
-        #
-        # Future optimization for the ipset case in reload: The transaction
-        # only needs to be split here if there are conflicting ipset types in
-        # exsting ipsets and the configuration in firewalld.
-        if (reload and complete_reload) or \
-           (self.ipset.backends() and self.ipset.has_ipsets()):
-            transaction.execute(True)
-            transaction.clear()
-
-        # complete reload: unload modules also
-        if reload and complete_reload:
-            log.debug1("Unloading firewall modules")
-            self.modules_backend.unload_firewall_modules()
-
-        self.apply_default_tables(use_transaction=transaction)
-        transaction.execute(True)
-        transaction.clear()
-
-        # apply settings for loaded ipsets while reloading here
-        if (self.ipset.backends()) and self.ipset.has_ipsets():
-            log.debug1("Applying ipsets")
-            self.ipset.apply_ipsets()
-
-        # Start or continue with transaction
-
-        # apply default rules
-        log.debug1("Applying default rule set")
-        self.apply_default_rules(use_transaction=transaction)
-
-        # apply settings for loaded zones
-        log.debug1("Applying used zones")
-        self.zone.apply_zones(use_transaction=transaction)
-
-        self.zone.change_default_zone(None, self._default_zone,
-                                      use_transaction=transaction)
-
-        # apply policies
-        log.debug1("Applying used policies")
-        self.policy.apply_policies(use_transaction=transaction)
-
-        # Execute transaction
-        transaction.execute(True)
-
-        # Start new transaction for direct rules
-        transaction.clear()
+        self._start_apply_objects(reload=reload, complete_reload=complete_reload)
 
         # apply direct chains, rules and passthrough rules
         if self.direct.has_configuration():
