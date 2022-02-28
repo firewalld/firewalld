@@ -388,6 +388,22 @@ class Firewall(object):
         # copy policies to config interface
         self.config.set_policies(copy.deepcopy(self.policies))
 
+    def _start_load_stock_config(self):
+        self._loader(config.FIREWALLD_IPSETS, "ipset")
+        self._loader(config.FIREWALLD_ICMPTYPES, "icmptype")
+        self._loader(config.FIREWALLD_HELPERS, "helper")
+        self._loader(config.FIREWALLD_SERVICES, "service")
+        self._loader(config.FIREWALLD_ZONES, "zone")
+        self._loader(config.FIREWALLD_POLICIES, "policy")
+
+    def _start_load_user_config(self):
+        self._loader(config.ETC_FIREWALLD_IPSETS, "ipset")
+        self._loader(config.ETC_FIREWALLD_ICMPTYPES, "icmptype")
+        self._loader(config.ETC_FIREWALLD_HELPERS, "helper")
+        self._loader(config.ETC_FIREWALLD_SERVICES, "service")
+        self._loader(config.ETC_FIREWALLD_ZONES, "zone")
+        self._loader(config.ETC_FIREWALLD_POLICIES, "policy")
+
     def _start(self, reload=False, complete_reload=False):
         # initialize firewall
         default_zone = config.FALLBACK_ZONE
@@ -400,39 +416,8 @@ class Firewall(object):
         if not self._offline:
             self._start_check()
 
-        # load ipset files
-        self._loader(config.FIREWALLD_IPSETS, "ipset")
-        self._loader(config.ETC_FIREWALLD_IPSETS, "ipset")
-
-        # load icmptype files
-        self._loader(config.FIREWALLD_ICMPTYPES, "icmptype")
-        self._loader(config.ETC_FIREWALLD_ICMPTYPES, "icmptype")
-
-        if len(self.icmptype.get_icmptypes()) == 0:
-            log.error("No icmptypes found.")
-
-        # load helper files
-        self._loader(config.FIREWALLD_HELPERS, "helper")
-        self._loader(config.ETC_FIREWALLD_HELPERS, "helper")
-
-        # load service files
-        self._loader(config.FIREWALLD_SERVICES, "service")
-        self._loader(config.ETC_FIREWALLD_SERVICES, "service")
-
-        if len(self.service.get_services()) == 0:
-            log.error("No services found.")
-
-        # load zone files
-        self._loader(config.FIREWALLD_ZONES, "zone")
-        self._loader(config.ETC_FIREWALLD_ZONES, "zone")
-
-        if len(self.zone.get_zones()) == 0:
-            log.fatal("No zones found.")
-            sys.exit(1)
-
-        # load policy files
-        self._loader(config.FIREWALLD_POLICIES, "policy")
-        self._loader(config.ETC_FIREWALLD_POLICIES, "policy")
+        self._start_load_stock_config()
+        self._start_load_user_config()
 
         # check minimum required zones
         error = False
