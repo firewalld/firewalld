@@ -119,7 +119,7 @@ class Firewall(object):
     def __init_vars(self):
         self._state = "INIT"
         self._panic = False
-        self._default_zone = ""
+        self._default_zone = config.FALLBACK_ZONE
         self._default_zone_interfaces = []
         self._nm_assigned_interfaces = []
         self._module_refcount = { }
@@ -285,10 +285,7 @@ class Firewall(object):
             log.debug1("ebtables-restore is not supporting the --noflush "
                        "option, will therefore not be used")
 
-    def _start(self, reload=False, complete_reload=False):
-        # initialize firewall
-        default_zone = config.FALLBACK_ZONE
-
+    def _start_load_firewalld_conf(self):
         # load firewalld config
         log.debug1("Loading firewalld config file '%s'", config.FIREWALLD_CONF)
         try:
@@ -298,7 +295,7 @@ class Firewall(object):
             log.warning("Using fallback firewalld configuration settings.")
         else:
             if self._firewalld_conf.get("DefaultZone"):
-                default_zone = self._firewalld_conf.get("DefaultZone")
+                self._default_zone = self._firewalld_conf.get("DefaultZone")
 
             if self._firewalld_conf.get("CleanupOnExit"):
                 value = self._firewalld_conf.get("CleanupOnExit")
@@ -374,6 +371,12 @@ class Firewall(object):
                            self._rfc3964_ipv4)
 
         self.config.set_firewalld_conf(copy.deepcopy(self._firewalld_conf))
+
+    def _start(self, reload=False, complete_reload=False):
+        # initialize firewall
+        default_zone = config.FALLBACK_ZONE
+
+        self._start_load_firewalld_conf()
 
         self._select_firewall_backend(self._firewall_backend)
 
