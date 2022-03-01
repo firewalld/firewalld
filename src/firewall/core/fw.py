@@ -211,7 +211,7 @@ class Firewall(object):
             log.fatal("No IPv4 and IPv6 firewall.")
             sys.exit(1)
 
-    def _start_check(self):
+    def _start_probe_backends(self):
         try:
             self.ipset_backend.set_list()
         except ValueError:
@@ -494,7 +494,7 @@ class Firewall(object):
         self._select_firewall_backend(self._firewall_backend)
 
         if not self._offline:
-            self._start_check()
+            self._start_probe_backends()
 
         self._start_load_stock_config()
         self._start_load_user_config()
