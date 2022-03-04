@@ -30,4 +30,6 @@ RUN dnf -y remove automake autoconf make intltool \
     && dnf -y autoremove \
     && dnf clean all
 
-CMD ["firewalld", "--nofork", "--nopid"]
+COPY ./config/FirewallD.conf /usr/share/dbus-1/system.d/
+COPY ./docker_start.sh /root/
+CMD ["bash", "/root/docker_start.sh"]
