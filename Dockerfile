@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8/ubi
+FROM quay.io/centos/centos:stream8
 
 LABEL description="Firewalld daemon and command line interface"
 MAINTAINER Firewalld Maintainers <firewalld-users@lists.fedorahosted.org>
