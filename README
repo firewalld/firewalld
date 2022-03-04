@@ -139,12 +139,8 @@ where <ver> is optional. latest will be used if omitted.
                   
 To start the daemon/container:
                           
-  # podman run -d -v /run/dbus/system_bus_socket:/run/dbus/system_bus_socket \
-               --network host --privileged \
-               --name my-firewalld firewalld
-
-The volume mount is needed to access the host's running system dbus.
-The source path of the socket may vary depending on distribution.
+  # podman run -d --network host --privileged \
+                  --name my-firewalld firewalld
 
 Firewalld's configuration will live inside the container. Therefore
 users may want to occasionally `podman commit` the image.
