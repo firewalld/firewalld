@@ -125,7 +125,8 @@ OCI Container Image
 -------------------
 As part of the `dist` build target an OCI container image is generated. This is
 distributed alongside the normal release tarball. It can be used to run
-firewalld from a container.
+firewalld from a container. The containerized firewalld will _not_ integrate
+with the host (e.g. podman, libvirt, NetworkManager).
 
 To manually load the container image into your environment:
         
@@ -149,6 +150,35 @@ Using firewalld's CLI should be done via podman exec after the
 daemon/container has been started:
 
   # podman exec my-firewalld firewall-cmd ...
+
+### Container Integration with Host
+
+The same container image can be used to integrate with the host's running
+NetworkManager, podman, libvirt, etc. This requires the host to have a dbus
+policy for firewalld.
+
+A dbus policy can be obtained from the firewalld source code tree at location
+`config/FirewallD.conf`.
+
+  # cp config/FirewallD.conf /usr/share/dbus-1/system.d/FirewallD.conf
+
+Once the dbus policy is in place the container could be started as such:
+
+  # podman run -d -v /run/dbus/system_bus_socket:/run/dbus/system_bus_socket \
+                  --network host --privileged \
+                  --name my-firewalld firewalld \
+                  firewalld --nofork --nopid
+
+The only addition are: volume mount, explicit CMD.
+
+The some approach can be use to store firewalld's configuration files on the
+host.
+
+  # podman run -d -v /run/dbus/system_bus_socket:/run/dbus/system_bus_socket \
+                  -v /etc/firewalld:/etc/firewalld \
+                  --network host --privileged \
+                  --name my-firewalld firewalld \
+                  firewalld --nofork --nopid
 
 RPM package
 -----------
