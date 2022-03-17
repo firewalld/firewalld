@@ -484,10 +484,28 @@ class Firewall(object):
         transaction.execute(True)
         transaction.clear()
 
-    def _start(self, reload=False, complete_reload=False):
-        # initialize firewall
-        default_zone = config.FALLBACK_ZONE
+    def _start_check(self):
+        # check minimum required zones
+        for z in [ "block", "drop", "trusted" ]:
+            if z not in self.zone.get_zones():
+                raise FirewallError(errors.INVALID_ZONE, "Zone '{}' is not available.".format(z))
 
+        # check if default_zone is a valid zone
+        if self._default_zone not in self.zone.get_zones():
+            if "public" in self.zone.get_zones():
+                zone = "public"
+            elif "external" in self.zone.get_zones():
+                zone = "external"
+            else:
+                zone = "block" # block is a base zone, therefore it has to exist
+
+            log.error("Default zone '%s' is not valid. Using '%s'.",
+                      self._default_zone, zone)
+            self._default_zone = zone
+        else:
+            log.debug1("Using default zone '%s'", self._default_zone)
+
+    def _start(self, reload=False, complete_reload=False):
         self._start_load_firewalld_conf()
         self._start_load_lockdown_whitelist()
 
@@ -498,34 +516,9 @@ class Firewall(object):
 
         self._start_load_stock_config()
         self._start_load_user_config()
-
-        # check minimum required zones
-        error = False
-        for z in [ "block", "drop", "trusted" ]:
-            if z not in self.zone.get_zones():
-                log.fatal("Zone '%s' is not available.", z)
-                error = True
-        if error:
-            sys.exit(1)
-
-        # check if default_zone is a valid zone
-        if default_zone not in self.zone.get_zones():
-            if "public" in self.zone.get_zones():
-                zone = "public"
-            elif "external" in self.zone.get_zones():
-                zone = "external"
-            else:
-                zone = "block" # block is a base zone, therefore it has to exist
-
-            log.error("Default zone '%s' is not valid. Using '%s'.",
-                      default_zone, zone)
-            default_zone = zone
-        else:
-            log.debug1("Using default zone '%s'", default_zone)
-
         self._start_load_direct_rules()
 
-        self._default_zone = self.check_zone(default_zone)
+        self._start_check()
 
         if self._offline:
             return
