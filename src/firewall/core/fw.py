@@ -22,7 +22,6 @@
 __all__ = [ "Firewall" ]
 
 import os.path
-import sys
 import copy
 import time
 import traceback
@@ -188,7 +187,7 @@ class Firewall(object):
             for (name, io_obj) in io_objs.items():
                 io_obj.check_config_dict(io_obj.export_config_dict(), all_io_objects)
 
-    def _check_tables(self):
+    def _start_check_tables(self):
         # check if iptables, ip6tables and ebtables are usable, else disable
         if self.ip4tables_enabled and \
            "filter" not in self.ip4tables_backend.get_available_tables():
@@ -208,8 +207,7 @@ class Firewall(object):
         # is there at least support for ipv4 or ipv6
         if not self.ip4tables_enabled and not self.ip6tables_enabled \
            and not self.nftables_enabled:
-            log.fatal("No IPv4 and IPv6 firewall.")
-            sys.exit(1)
+            raise FirewallError(errors.UNKNOWN_ERROR, "No IPv4 and IPv6 firewall.")
 
     def _start_probe_backends(self):
         try:
@@ -507,6 +505,7 @@ class Firewall(object):
 
         if not self._offline:
             self.full_check_config()
+            self._start_check_tables()
 
     def _start(self, reload=False, complete_reload=False):
         self._start_load_firewalld_conf()
@@ -525,9 +524,6 @@ class Firewall(object):
 
         if self._offline:
             return
-
-        # check if needed tables are there
-        self._check_tables()
 
         if log.getDebugLogLevel() > 0:
             # get time before flushing and applying
