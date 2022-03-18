@@ -65,6 +65,21 @@ class firewalld_conf(object):
             s += '%s=%s' % (key, value)
         return s
 
+    def set_defaults(self):
+        self.set("DefaultZone", config.FALLBACK_ZONE)
+        self.set("MinimalMark", str(config.FALLBACK_MINIMAL_MARK))
+        self.set("CleanupOnExit", "yes" if config.FALLBACK_CLEANUP_ON_EXIT else "no")
+        self.set("CleanupModulesOnExit", "yes" if config.FALLBACK_CLEANUP_MODULES_ON_EXIT else "no")
+        self.set("Lockdown", "yes" if config.FALLBACK_LOCKDOWN else "no")
+        self.set("IPv6_rpfilter","yes" if config.FALLBACK_IPV6_RPFILTER else "no")
+        self.set("IndividualCalls", "yes" if config.FALLBACK_INDIVIDUAL_CALLS else "no")
+        self.set("LogDenied", config.FALLBACK_LOG_DENIED)
+        self.set("AutomaticHelpers", config.FALLBACK_AUTOMATIC_HELPERS)
+        self.set("FirewallBackend", config.FALLBACK_FIREWALL_BACKEND)
+        self.set("FlushAllOnReload", "yes" if config.FALLBACK_FLUSH_ALL_ON_RELOAD else "no")
+        self.set("RFC3964_IPv4", "yes" if config.FALLBACK_RFC3964_IPV4 else "no")
+        self.set("AllowZoneDrifting", "yes" if config.FALLBACK_ALLOW_ZONE_DRIFTING else "no")
+
     # load self.filename
     def read(self):
         self.clear()
@@ -72,19 +87,7 @@ class firewalld_conf(object):
             f = open(self.filename, "r")
         except Exception as msg:
             log.error("Failed to load '%s': %s", self.filename, msg)
-            self.set("DefaultZone", config.FALLBACK_ZONE)
-            self.set("MinimalMark", str(config.FALLBACK_MINIMAL_MARK))
-            self.set("CleanupOnExit", "yes" if config.FALLBACK_CLEANUP_ON_EXIT else "no")
-            self.set("CleanupModulesOnExit", "yes" if config.FALLBACK_CLEANUP_MODULES_ON_EXIT else "no")
-            self.set("Lockdown", "yes" if config.FALLBACK_LOCKDOWN else "no")
-            self.set("IPv6_rpfilter","yes" if config.FALLBACK_IPV6_RPFILTER else "no")
-            self.set("IndividualCalls", "yes" if config.FALLBACK_INDIVIDUAL_CALLS else "no")
-            self.set("LogDenied", config.FALLBACK_LOG_DENIED)
-            self.set("AutomaticHelpers", config.FALLBACK_AUTOMATIC_HELPERS)
-            self.set("FirewallBackend", config.FALLBACK_FIREWALL_BACKEND)
-            self.set("FlushAllOnReload", "yes" if config.FALLBACK_FLUSH_ALL_ON_RELOAD else "no")
-            self.set("RFC3964_IPv4", "yes" if config.FALLBACK_RFC3964_IPV4 else "no")
-            self.set("AllowZoneDrifting", "yes" if config.FALLBACK_ALLOW_ZONE_DRIFTING else "no")
+            self.set_defaults()
             raise
 
         for line in f:
