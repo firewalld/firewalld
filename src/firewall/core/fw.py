@@ -505,6 +505,9 @@ class Firewall(object):
         else:
             log.debug1("Using default zone '%s'", self._default_zone)
 
+        if not self._offline:
+            self.full_check_config()
+
     def _start(self, reload=False, complete_reload=False):
         self._start_load_firewalld_conf()
         self._start_load_lockdown_whitelist()
