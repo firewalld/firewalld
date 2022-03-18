@@ -22,6 +22,7 @@
 __all__ = [ "Firewall" ]
 
 import os
+import sys
 import copy
 import time
 import traceback
@@ -585,13 +586,56 @@ class Firewall(object):
             tm2 = time.time()
             log.debug2("Flushing and applying took %f seconds" % (tm2 - tm1))
 
+    def _start_failsafe(self, reload=False, complete_reload=False):
+        """
+        This is basically _start() with at least the following differences:
+            - built-in defaults for firewalld.conf
+            - no lockdown list
+            - no user config (/etc/firewalld)
+            - no direct rules
+        """
+        self.cleanup()
+        self._firewalld_conf.set_defaults()
+        self.config.set_firewalld_conf(copy.deepcopy(self._firewalld_conf))
+
+        self._select_firewall_backend(self._firewall_backend)
+
+        if not self._offline:
+            self._start_probe_backends()
+
+        self._start_load_stock_config()
+        self._start_copy_config_to_runtime()
+        self._start_check()
+
+        if self._offline:
+            return
+
+        self._start_apply_objects(reload=reload, complete_reload=complete_reload)
+
     def start(self):
         try:
             self._start()
-        except Exception:
-            self._state = "FAILED"
-            self.set_policy("ACCEPT")
-            raise
+        except Exception as original_ex:
+            log.error("Failed to load user configuration. Falling back to "
+                      "full stock configuration.")
+            try:
+                self._start_failsafe()
+                self._state = "FAILED"
+                self.set_policy("ACCEPT")
+            except Exception:
+                log.error(original_ex)
+                log.error("Failed to load full stock configuration. This likely "
+                          "indicates a system level issue, e.g. the firewall "
+                          "backend (nftables, iptables) is broken. "
+                          "All hope is lost. Exiting.")
+                try:
+                    self.flush()
+                except Exception:
+                    pass
+                sys.exit(errors.UNKNOWN_ERROR)
+            # propagate the original exception that caused us to enter failed
+            # state.
+            raise original_ex
         else:
             self._state = "RUNNING"
             self.set_policy("ACCEPT")

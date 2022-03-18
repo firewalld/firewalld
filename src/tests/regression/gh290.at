@@ -31,4 +31,4 @@ AT_CHECK([echo '</zone>' >> ./zones/foobar.xml])
 
 FWD_RESTART
 FWD_GREP_LOG([ERROR:.*Missing attribute protocol for port])
-FWD_END_TEST([-e '/ERROR:.*Missing attribute protocol for port.*/d'])
+FWD_END_TEST([ignore])
