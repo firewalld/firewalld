@@ -26,9 +26,13 @@ m4_define([FWD_START_FIREWALLD], [
     echo "$!" > firewalld.pid
 
     dnl Give it some time for the dbus interface to come up
+    WANTED_CODE="$1"
     up=0
     for I in 1 2 3 4 5 6 7 8 9 0; do
-        if NS_CMD([firewall-cmd --state]); then
+        NS_CMD([firewall-cmd --state])
+        RC=$?
+        echo "exit code = ${RC}"
+        if test ${RC} -eq ${WANTED_CODE:-0}; then
             up=1
             break
         fi
@@ -89,8 +93,8 @@ m4_define([FWD_RELOAD], [
 ])
 
 m4_define([FWD_RESTART], [
-    FWD_STOP_FIREWALLD
-    FWD_START_FIREWALLD
+    FWD_STOP_FIREWALLD()
+    FWD_START_FIREWALLD([$1])
 ])
 
 m4_define([FWD_START_TEST], [
