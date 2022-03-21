@@ -575,122 +575,116 @@ class Firewall(object):
 
             name = "%s/%s" % (path, filename)
             log.debug1("Loading %s file '%s'", reader_type, name)
-            try:
-                if reader_type == "icmptype":
-                    obj = icmptype_reader(filename, path)
-                    if obj.name in self.icmptype.get_icmptypes():
-                        orig_obj = self.icmptype.get_icmptype(obj.name)
-                        log.debug1("  Overloads %s '%s' ('%s/%s')", reader_type,
-                                   orig_obj.name, orig_obj.path,
-                                   orig_obj.filename)
-                        self.icmptype.remove_icmptype(orig_obj.name)
-                    elif obj.path.startswith(config.ETC_FIREWALLD):
-                        obj.default = True
-                    try:
-                        self.icmptype.add_icmptype(obj)
-                    except FirewallError as error:
-                        log.info1("%s: %s, ignoring for run-time." % \
-                                    (obj.name, str(error)))
-                    # add a deep copy to the configuration interface
-                    self.config.add_icmptype(copy.deepcopy(obj))
-                elif reader_type == "service":
-                    obj = service_reader(filename, path)
-                    if obj.name in self.service.get_services():
-                        orig_obj = self.service.get_service(obj.name)
-                        log.debug1("  Overloads %s '%s' ('%s/%s')", reader_type,
-                                   orig_obj.name, orig_obj.path,
-                                   orig_obj.filename)
-                        self.service.remove_service(orig_obj.name)
-                    elif obj.path.startswith(config.ETC_FIREWALLD):
-                        obj.default = True
-                    self.service.add_service(obj)
-                    # add a deep copy to the configuration interface
-                    self.config.add_service(copy.deepcopy(obj))
-                elif reader_type == "zone":
-                    obj = zone_reader(filename, path, no_check_name=combine)
-                    if combine:
-                        # Change name for permanent configuration
-                        obj.name = "%s/%s" % (
-                            os.path.basename(path),
-                            os.path.basename(filename)[0:-4])
-                        obj.check_name(obj.name)
-                    # Copy object before combine
-                    config_obj = copy.deepcopy(obj)
-                    if obj.name in self.zone.get_zones():
-                        orig_obj = self.zone.get_zone(obj.name)
-                        self.zone.remove_zone(orig_obj.name)
-                        if orig_obj.combined:
-                            log.debug1("  Combining %s '%s' ('%s/%s')",
-                                        reader_type, obj.name,
-                                        path, filename)
-                            obj.combine(orig_obj)
-                        else:
-                            log.debug1("  Overloads %s '%s' ('%s/%s')",
-                                       reader_type,
-                                       orig_obj.name, orig_obj.path,
-                                       orig_obj.filename)
-                    elif obj.path.startswith(config.ETC_FIREWALLD):
-                        obj.default = True
-                        config_obj.default = True
-                    self.config.add_zone(config_obj)
-                    if combine:
+
+            if reader_type == "icmptype":
+                obj = icmptype_reader(filename, path)
+                if obj.name in self.icmptype.get_icmptypes():
+                    orig_obj = self.icmptype.get_icmptype(obj.name)
+                    log.debug1("  Overloads %s '%s' ('%s/%s')", reader_type,
+                               orig_obj.name, orig_obj.path,
+                               orig_obj.filename)
+                    self.icmptype.remove_icmptype(orig_obj.name)
+                elif obj.path.startswith(config.ETC_FIREWALLD):
+                    obj.default = True
+                try:
+                    self.icmptype.add_icmptype(obj)
+                except FirewallError as error:
+                    log.info1("%s: %s, ignoring for run-time." % \
+                                (obj.name, str(error)))
+                # add a deep copy to the configuration interface
+                self.config.add_icmptype(copy.deepcopy(obj))
+            elif reader_type == "service":
+                obj = service_reader(filename, path)
+                if obj.name in self.service.get_services():
+                    orig_obj = self.service.get_service(obj.name)
+                    log.debug1("  Overloads %s '%s' ('%s/%s')", reader_type,
+                               orig_obj.name, orig_obj.path,
+                               orig_obj.filename)
+                    self.service.remove_service(orig_obj.name)
+                elif obj.path.startswith(config.ETC_FIREWALLD):
+                    obj.default = True
+                self.service.add_service(obj)
+                # add a deep copy to the configuration interface
+                self.config.add_service(copy.deepcopy(obj))
+            elif reader_type == "zone":
+                obj = zone_reader(filename, path, no_check_name=combine)
+                if combine:
+                    # Change name for permanent configuration
+                    obj.name = "%s/%s" % (
+                        os.path.basename(path),
+                        os.path.basename(filename)[0:-4])
+                    obj.check_name(obj.name)
+                # Copy object before combine
+                config_obj = copy.deepcopy(obj)
+                if obj.name in self.zone.get_zones():
+                    orig_obj = self.zone.get_zone(obj.name)
+                    self.zone.remove_zone(orig_obj.name)
+                    if orig_obj.combined:
                         log.debug1("  Combining %s '%s' ('%s/%s')",
-                                   reader_type, combined_zone.name,
-                                   path, filename)
-                        combined_zone.combine(obj)
+                                    reader_type, obj.name,
+                                    path, filename)
+                        obj.combine(orig_obj)
                     else:
-                        self.zone.add_zone(obj)
-                elif reader_type == "ipset":
-                    obj = ipset_reader(filename, path)
-                    if obj.name in self.ipset.get_ipsets():
-                        orig_obj = self.ipset.get_ipset(obj.name)
-                        log.debug1("  Overloads %s '%s' ('%s/%s')", reader_type,
+                        log.debug1("  Overloads %s '%s' ('%s/%s')",
+                                   reader_type,
                                    orig_obj.name, orig_obj.path,
                                    orig_obj.filename)
-                        self.ipset.remove_ipset(orig_obj.name)
-                    elif obj.path.startswith(config.ETC_FIREWALLD):
-                        obj.default = True
-                    try:
-                        self.ipset.add_ipset(obj)
-                    except FirewallError as error:
-                        log.warning("%s: %s, ignoring for run-time." % \
-                                    (obj.name, str(error)))
-                    # add a deep copy to the configuration interface
-                    self.config.add_ipset(copy.deepcopy(obj))
-                elif reader_type == "helper":
-                    obj = helper_reader(filename, path)
-                    if obj.name in self.helper.get_helpers():
-                        orig_obj = self.helper.get_helper(obj.name)
-                        log.debug1("  Overloads %s '%s' ('%s/%s')", reader_type,
-                                   orig_obj.name, orig_obj.path,
-                                   orig_obj.filename)
-                        self.helper.remove_helper(orig_obj.name)
-                    elif obj.path.startswith(config.ETC_FIREWALLD):
-                        obj.default = True
-                    self.helper.add_helper(obj)
-                    # add a deep copy to the configuration interface
-                    self.config.add_helper(copy.deepcopy(obj))
-                elif reader_type == "policy":
-                    obj = policy_reader(filename, path)
-                    if obj.name in self.policy.get_policies():
-                        orig_obj = self.policy.get_policy(obj.name)
-                        log.debug1("  Overloads %s '%s' ('%s/%s')", reader_type,
-                                   orig_obj.name, orig_obj.path,
-                                   orig_obj.filename)
-                        self.policy.remove_policy(orig_obj.name)
-                    elif obj.path.startswith(config.ETC_FIREWALLD):
-                        obj.default = True
-                    self.policy.add_policy(obj)
-                    # add a deep copy to the configuration interface
-                    self.config.add_policy_object(copy.deepcopy(obj))
+                elif obj.path.startswith(config.ETC_FIREWALLD):
+                    obj.default = True
+                    config_obj.default = True
+                self.config.add_zone(config_obj)
+                if combine:
+                    log.debug1("  Combining %s '%s' ('%s/%s')",
+                               reader_type, combined_zone.name,
+                               path, filename)
+                    combined_zone.combine(obj)
                 else:
-                    log.fatal("Unknown reader type %s", reader_type)
-            except FirewallError as msg:
-                log.error("Failed to load %s file '%s': %s", reader_type,
-                          name, msg)
-            except Exception:
-                log.error("Failed to load %s file '%s':", reader_type, name)
-                log.exception()
+                    self.zone.add_zone(obj)
+            elif reader_type == "ipset":
+                obj = ipset_reader(filename, path)
+                if obj.name in self.ipset.get_ipsets():
+                    orig_obj = self.ipset.get_ipset(obj.name)
+                    log.debug1("  Overloads %s '%s' ('%s/%s')", reader_type,
+                               orig_obj.name, orig_obj.path,
+                               orig_obj.filename)
+                    self.ipset.remove_ipset(orig_obj.name)
+                elif obj.path.startswith(config.ETC_FIREWALLD):
+                    obj.default = True
+                try:
+                    self.ipset.add_ipset(obj)
+                except FirewallError as error:
+                    log.warning("%s: %s, ignoring for run-time." % \
+                                (obj.name, str(error)))
+                # add a deep copy to the configuration interface
+                self.config.add_ipset(copy.deepcopy(obj))
+            elif reader_type == "helper":
+                obj = helper_reader(filename, path)
+                if obj.name in self.helper.get_helpers():
+                    orig_obj = self.helper.get_helper(obj.name)
+                    log.debug1("  Overloads %s '%s' ('%s/%s')", reader_type,
+                               orig_obj.name, orig_obj.path,
+                               orig_obj.filename)
+                    self.helper.remove_helper(orig_obj.name)
+                elif obj.path.startswith(config.ETC_FIREWALLD):
+                    obj.default = True
+                self.helper.add_helper(obj)
+                # add a deep copy to the configuration interface
+                self.config.add_helper(copy.deepcopy(obj))
+            elif reader_type == "policy":
+                obj = policy_reader(filename, path)
+                if obj.name in self.policy.get_policies():
+                    orig_obj = self.policy.get_policy(obj.name)
+                    log.debug1("  Overloads %s '%s' ('%s/%s')", reader_type,
+                               orig_obj.name, orig_obj.path,
+                               orig_obj.filename)
+                    self.policy.remove_policy(orig_obj.name)
+                elif obj.path.startswith(config.ETC_FIREWALLD):
+                    obj.default = True
+                self.policy.add_policy(obj)
+                # add a deep copy to the configuration interface
+                self.config.add_policy_object(copy.deepcopy(obj))
+            else:
+                log.fatal("Unknown reader type %s", reader_type)
 
         if combine and combined_zone.combined:
             if combined_zone.name in self.zone.get_zones():
