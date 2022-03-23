@@ -56,6 +56,7 @@ from firewall.core.io.ipset import ipset_reader
 from firewall.core.ipset import IPSET_TYPES
 from firewall.core.io.helper import helper_reader
 from firewall.core.io.policy import policy_reader
+from firewall.core.io.functions import check_on_disk_config
 from firewall.core.rich import Rich_Rule
 from firewall import errors
 from firewall.errors import FirewallError
@@ -1070,6 +1071,9 @@ class Firewall(object):
     # RELOAD
 
     def reload(self, stop=False):
+        # we're about to load the on-disk config, so verify it's sane.
+        check_on_disk_config(self)
+
         _panic = self._panic
 
         # must stash this. The value may change after _start()
