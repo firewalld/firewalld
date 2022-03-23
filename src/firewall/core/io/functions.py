@@ -83,7 +83,7 @@ def check_config(fw):
         try:
             obj = Direct(config.FIREWALLD_DIRECT)
             obj.read()
-            obj.check_config_dict(obj.export_config_dict())
+            obj.check_config(obj.export_config())
         except FirewallError as error:
             raise FirewallError(error.code, "'%s': %s" % (config.FIREWALLD_DIRECT, error.msg))
         except Exception as msg:
@@ -92,7 +92,7 @@ def check_config(fw):
         try:
             obj = LockdownWhitelist(config.LOCKDOWN_WHITELIST)
             obj.read()
-            obj.check_config_dict(obj.export_config_dict())
+            obj.check_config(obj.export_config())
         except FirewallError as error:
             raise FirewallError(error.code, "'%s': %s" % (config.LOCKDOWN_WHITELIST, error.msg))
         except Exception as msg:
