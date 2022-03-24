@@ -1980,6 +1980,25 @@ FWD_START_TEST([config validation])
     dnl default config
     FWD_CHECK([--check-config], 0, ignore)
 
+    dnl Add some valid optional files/config to verify their checks work too
+    AT_DATA([./direct.xml], [m4_strip([dnl
+        <?xml version="1.0" encoding="utf-8"?>
+        <direct>
+          <rule ipv="ipv4" table="filter" chain="INPUT" priority="1">-j LOG</rule>
+        </direct>
+    ])])
+    AT_DATA([./lockdown-whitelist.xml], [m4_strip([dnl
+        <?xml version="1.0" encoding="utf-8"?>
+        <whitelist>
+          <command name="/home/egarver/bin/python /usr/bin/firewall-config"/>
+          <selinux context="system_u:system_r:NetworkManager_t:s0"/>
+          <selinux context="system_u:system_r:virtd_t:s0-s0:c0.c1023"/>
+          <user id="0"/>
+        </whitelist>
+    ])])
+    FWD_RELOAD()
+    FWD_CHECK([--check-config], 0, ignore)
+
     dnl The rest of these are negative test cases.
 
     dnl firewalld.conf
