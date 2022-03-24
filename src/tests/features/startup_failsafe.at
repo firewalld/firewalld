@@ -25,6 +25,9 @@ NFT_LIST_RULES([inet], [filter_IN_public_allow], 0, [dnl
     }
 ])
 
+dnl --runtime-to-permanent is disallowed while operating in FAILED state.
+FWD_CHECK([--runtime-to-permanent], 251, [ignore], [ignore])
+
 FWD_END_TEST([ignore])
 
 dnl invalid port
