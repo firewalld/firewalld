@@ -692,3 +692,7 @@ m4_define([CHECK_NM_CAPABILITY_OVS], [
               || exit 77 # 77 skips, see AT_CHECK
     ])
 ])
+
+m4_define([IF_BACKEND_IS_DEFAULT], [
+    m4_if(nftables, FIREWALL_BACKEND, [$1], [])
+])
