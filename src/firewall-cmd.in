@@ -45,6 +45,7 @@ from firewall.core.io.ipset import ipset_reader
 from firewall.core.io.icmptype import icmptype_reader
 from firewall.core.io.helper import helper_reader
 from firewall.command import FirewallCommand
+from firewall.command import RichardFormatter
 
 def __usage():
     sys.stdout.write("""
@@ -310,6 +311,8 @@ Options to Adapt and Query Zones and Policies
   --remove-masquerade  Disable IPv4 masquerade [P] [Z] [O]
   --query-masquerade   Return whether IPv4 masquerading has been enabled [P] [Z] [O]
   --list-rich-rules    List rich language rules added [P] [Z] [O]
+  --add-richard-rule=<rule>
+                        For fancier folk (Alias for rich rule) [P] [Z] [O] [T]
   --add-rich-rule=<rule>
                        Add rich language rule 'rule' [P] [Z] [O] [T]
   --remove-rich-rule=<rule>
@@ -670,6 +673,7 @@ parser_group_zone_or_policy.add_argument("--add-egress-zone", metavar="<zone>", 
 parser_group_zone_or_policy.add_argument("--remove-egress-zone", metavar="<zone>", action='append')
 parser_group_zone_or_policy.add_argument("--query-egress-zone", metavar="<zone>", action='append')
 parser_group_zone_or_policy.add_argument("--list-egress-zones", action="store_true")
+parser_group_zone_or_policy.add_argument("--add-richard-rule", metavar="<rule>", action='append')
 parser_group_zone_or_policy.add_argument("--add-rich-rule", metavar="<rule>", action='append')
 parser_group_zone_or_policy.add_argument("--remove-rich-rule", metavar="<rule>", action='append')
 parser_group_zone_or_policy.add_argument("--query-rich-rule", metavar="<rule>", action='append')
@@ -890,7 +894,7 @@ options_zone_and_policy_adapt_query = \
     a.add_source_port or a.remove_source_port or a.query_source_port or \
     a.add_icmp_block or a.remove_icmp_block or a.query_icmp_block or \
     a.add_forward_port or a.remove_forward_port or a.query_forward_port or \
-    a.add_rich_rule or a.remove_rich_rule or a.query_rich_rule or \
+    or a.add_richard_rule or a.add_rich_rule or a.remove_rich_rule or a.query_rich_rule or \
     a.add_masquerade or a.remove_masquerade or a.query_masquerade or \
     a.list_services or a.list_ports or a.list_protocols or \
     a.list_source_ports or \
@@ -1107,7 +1111,7 @@ else:
 if a.timeout and not (a.add_service or a.add_port or a.add_protocol or \
                       a.add_icmp_block or a.add_forward_port or \
                       a.add_source_port or a.add_forward or \
-                      a.add_masquerade or a.add_rich_rule):
+                      a.add_masquerade or a.add_rich_rule or a.add_richard_rule):
     cmd.fail(parser.format_usage() + "Wrong --timeout usage")
 
 if a.permanent:
@@ -2046,6 +2050,10 @@ if a.permanent:
         elif a.list_rich_rules:
             l = settings.getRichRules()
             cmd.print_and_exit("\n".join(l))
+        elif a.add_richard_rule:
+            RichardFormatter.activate()
+            cmd.add_sequence(a.add_rich_rule, settings.addRichRule,
+                             settings.queryRichRule, None, "'%s'")
         elif a.add_rich_rule:
             cmd.add_sequence(a.add_rich_rule, settings.addRichRule,
                              settings.queryRichRule, None, "'%s'")

@@ -21,7 +21,7 @@
 
 """FirewallCommand class for command line client simplification"""
 
-__all__ = [ "FirewallCommand" ]
+__all__ = ["FirewallCommand", "RichardFormatter"]
 
 import sys
 
@@ -575,3 +575,23 @@ class FirewallCommand(object):
                 entries_set.add(line)
         f.close()
         return entries
+
+
+class RichardFormatter(object):
+    GD_DAY = r"""
+        _,--*dSS|''I$$$SS%cccc,_
+      <$$$b |$$$l  j$$$$$$$$$$$$$Sbp
+       ?$$$b|$$$$  d$$$$$$$$$$$$$$P
+        ?$$$$$$$$; $$$$$$$$$$$$$$P
+         ?$$$$$$$| $$$$$$$$$$$$$P
+          )$$$$$$$_$SSSSS$$$$$$(
+          Y''               '''P
+          (                    )
+  _.,cccccd%S$$$$$$$$$$$$$$$SS%dcccc,._
+($$$$$$$$$$SSSSSSSSSSSSSSS$$$$$$$$$$$$$$$)
+  `'''''Y''                  `'$$$$$$$P''
+    """
+
+    def activate():
+        print(RichardFormatter.GD_DAY)
+        print("A fine day to you sir or madam 🎩")
