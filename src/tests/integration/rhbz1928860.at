@@ -2,6 +2,7 @@ FWD_START_TEST([reload don't consider non IP capable interfaces])
 AT_KEYWORDS(reload rhbz1928860)
 
 START_NETWORKMANAGER
+CHECK_NM_CAPABILITY_OVS()
 
 dnl OVS bridge and port
 NMCLI_CHECK([connection add type ovs-bridge conn.interface ovs-br con-name ovs-br], 0, [ignore])
