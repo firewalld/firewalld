@@ -7,14 +7,20 @@ NMCLI_CHECK([connection add type dummy con-name dummy0 ifname dummy0 ip4 10.0.0.
 echo NS_CMD([nmcli connection delete dummy0]) >> ./cleanup
 NMCLI_CHECK([connection show dummy0], 0, [ignore])
 NMCLI_CHECK([connection up dummy0], 0, [ignore])
+NMCLI_CHECK([-f connection.zone connection show dummy0], 0, [dnl
+connection.zone:                        --
+])
 
 dnl Use firewall-offline-cmd otherwise the request will be forwarded to
 dnl NetworkManager.
-FWD_OFFLINE_CHECK([-q --zone internal --add-interface dummy0])
+FWD_OFFLINE_CHECK([--zone internal --add-interface dummy0], 0, [ignore])
 FWD_RELOAD
+NMCLI_CHECK([-f connection.zone connection show dummy0], 0, [dnl
+connection.zone:                        --
+])
 
 dnl firewall-cmd should forward the request to NetworkManager.
-FWD_CHECK([-q --permanent --zone trusted --change-interface dummy0])
+FWD_CHECK([--permanent --zone trusted --change-interface dummy0], 0, [ignore], [ignore])
 NMCLI_CHECK([-f connection.zone connection show dummy0], 0, [dnl
 connection.zone:                        trusted
 ])
