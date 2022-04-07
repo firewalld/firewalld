@@ -71,29 +71,13 @@ class Firewall(object):
     def __init__(self, offline=False):
         self._firewalld_conf = firewalld_conf(config.FIREWALLD_CONF)
         self._offline = offline
-
-        if self._offline:
-            self.ip4tables_enabled = False
-            self.ip6tables_enabled = False
-            self.ebtables_enabled = False
-            self.ipset_enabled = False
-            self.ipset_supported_types = IPSET_TYPES
-            self.nftables_enabled = False
-        else:
+        
+        if not offline:
             self.ip4tables_backend = ipXtables.ip4tables(self)
-            self.ip4tables_enabled = True
-            self.ipv4_supported_icmp_types = [ ]
             self.ip6tables_backend = ipXtables.ip6tables(self)
-            self.ip6tables_enabled = True
-            self.ipv6_supported_icmp_types = [ ]
             self.ebtables_backend = ebtables.ebtables()
-            self.ebtables_enabled = True
             self.ipset_backend = ipset.ipset()
-            self.ipset_enabled = True
-            self.ipset_supported_types = IPSET_TYPES
             self.nftables_backend = nftables.nftables(self)
-            self.nftables_enabled = True
-
             self.modules_backend = modules.modules()
 
         self.icmptype = FirewallIcmpType(self)
@@ -135,6 +119,23 @@ class Firewall(object):
         self._flush_all_on_reload = config.FALLBACK_FLUSH_ALL_ON_RELOAD
         self._rfc3964_ipv4 = config.FALLBACK_RFC3964_IPV4
         self._allow_zone_drifting = config.FALLBACK_ALLOW_ZONE_DRIFTING
+
+        if self._offline:
+            self.ip4tables_enabled = False
+            self.ip6tables_enabled = False
+            self.ebtables_enabled = False
+            self.ipset_enabled = False
+            self.ipset_supported_types = IPSET_TYPES
+            self.nftables_enabled = False
+        else:
+            self.ip4tables_enabled = True
+            self.ipv4_supported_icmp_types = [ ]
+            self.ip6tables_enabled = True
+            self.ipv6_supported_icmp_types = [ ]
+            self.ebtables_enabled = True
+            self.ipset_enabled = True
+            self.ipset_supported_types = IPSET_TYPES
+            self.nftables_enabled = True
 
     def get_all_io_objects_dict(self):
         """
