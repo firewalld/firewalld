@@ -556,6 +556,16 @@ class Firewall(object):
             self.full_check_config()
             self._start_check_tables()
 
+            # check our desired backend is actually available
+            if self._firewall_backend == "iptables":
+                backend_to_check = "ip4tables" # ip6tables is always optional
+            else:
+                backend_to_check = self._firewall_backend
+            if not self.is_backend_enabled(backend_to_check):
+                raise FirewallError(errors.UNKNOWN_ERROR,
+                        "Firewall backend '{}' is not available.".format(
+                            self._firewall_backend))
+
     def _start(self, reload=False, complete_reload=False):
         self._start_load_firewalld_conf()
         self._start_load_lockdown_whitelist()
