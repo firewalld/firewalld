@@ -387,7 +387,7 @@ class Firewall(object):
         self.config.set_policies(copy.deepcopy(self.policies))
 
     def _start_load_stock_config(self):
-        self._loader(config.FIREWALLD_IPSETS, "ipset")
+        self._loader_ipsets(config.FIREWALLD_IPSETS)
         self._loader(config.FIREWALLD_ICMPTYPES, "icmptype")
         self._loader(config.FIREWALLD_HELPERS, "helper")
         self._loader_services(config.FIREWALLD_SERVICES)
@@ -395,7 +395,7 @@ class Firewall(object):
         self._loader(config.FIREWALLD_POLICIES, "policy")
 
     def _start_load_user_config(self):
-        self._loader(config.ETC_FIREWALLD_IPSETS, "ipset")
+        self._loader_ipsets(config.ETC_FIREWALLD_IPSETS)
         self._loader(config.ETC_FIREWALLD_ICMPTYPES, "icmptype")
         self._loader(config.ETC_FIREWALLD_HELPERS, "helper")
         self._loader_services(config.ETC_FIREWALLD_SERVICES)
@@ -573,6 +573,26 @@ class Firewall(object):
             # add a deep copy to the configuration interface
             self.config.add_service(copy.deepcopy(obj))
 
+    def _loader_ipsets(self, path):
+        for filename in self._loader_config_file_generator(path):
+            log.debug1("Loading ipset file '%s%s%s'", path, os.sep, filename)
+
+            obj = ipset_reader(filename, path)
+            if obj.name in self.ipset.get_ipsets():
+                orig_obj = self.ipset.get_ipset(obj.name)
+                log.debug1("Overrides '%s%s%s'",
+                           orig_obj.path, os.sep, orig_obj.filename)
+                self.ipset.remove_ipset(orig_obj.name)
+            elif obj.path.startswith(config.ETC_FIREWALLD):
+                obj.default = True
+            try:
+                self.ipset.add_ipset(obj)
+            except FirewallError as error:
+                log.warning("%s: %s, ignoring for run-time." % \
+                            (obj.name, str(error)))
+            # add a deep copy to the configuration interface
+            self.config.add_ipset(copy.deepcopy(obj))
+
     def _loader(self, path, reader_type, combine=False):
         # combine: several zone files are getting combined into one obj
         if not os.path.isdir(path):
@@ -652,23 +672,6 @@ class Firewall(object):
                     combined_zone.combine(obj)
                 else:
                     self.zone.add_zone(obj)
-            elif reader_type == "ipset":
-                obj = ipset_reader(filename, path)
-                if obj.name in self.ipset.get_ipsets():
-                    orig_obj = self.ipset.get_ipset(obj.name)
-                    log.debug1("  Overloads %s '%s' ('%s/%s')", reader_type,
-                               orig_obj.name, orig_obj.path,
-                               orig_obj.filename)
-                    self.ipset.remove_ipset(orig_obj.name)
-                elif obj.path.startswith(config.ETC_FIREWALLD):
-                    obj.default = True
-                try:
-                    self.ipset.add_ipset(obj)
-                except FirewallError as error:
-                    log.warning("%s: %s, ignoring for run-time." % \
-                                (obj.name, str(error)))
-                # add a deep copy to the configuration interface
-                self.config.add_ipset(copy.deepcopy(obj))
             elif reader_type == "helper":
                 obj = helper_reader(filename, path)
                 if obj.name in self.helper.get_helpers():
