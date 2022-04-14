@@ -391,7 +391,7 @@ class Firewall(object):
         self._loader_icmptypes(config.FIREWALLD_ICMPTYPES)
         self._loader_helpers(config.FIREWALLD_HELPERS)
         self._loader_services(config.FIREWALLD_SERVICES)
-        self._loader(config.FIREWALLD_ZONES, "zone")
+        self._loader_zones(config.FIREWALLD_ZONES)
         self._loader_policies(config.FIREWALLD_POLICIES)
 
     def _start_load_user_config(self):
@@ -399,7 +399,7 @@ class Firewall(object):
         self._loader_icmptypes(config.ETC_FIREWALLD_ICMPTYPES)
         self._loader_helpers(config.ETC_FIREWALLD_HELPERS)
         self._loader_services(config.ETC_FIREWALLD_SERVICES)
-        self._loader(config.ETC_FIREWALLD_ZONES, "zone")
+        self._loader_zones(config.ETC_FIREWALLD_ZONES)
         self._loader_policies(config.ETC_FIREWALLD_POLICIES)
 
     def _start_load_direct_rules(self):
@@ -641,13 +641,13 @@ class Firewall(object):
             # add a deep copy to the configuration interface
             self.config.add_icmptype(copy.deepcopy(obj))
 
-    def _loader(self, path, reader_type, combine=False):
+    def _loader_zones(self, path, combine=False):
         # combine: several zone files are getting combined into one obj
         if not os.path.isdir(path):
             return
 
         if combine:
-            if path.startswith(config.ETC_FIREWALLD) and reader_type == "zone":
+            if path.startswith(config.ETC_FIREWALLD):
                 combined_zone = Zone()
                 combined_zone.name = os.path.basename(path)
                 combined_zone.check_name(combined_zone.name)
@@ -660,58 +660,49 @@ class Firewall(object):
         for filename in sorted(os.listdir(path)):
             if not filename.endswith(".xml"):
                 if path.startswith(config.ETC_FIREWALLD) and \
-                        reader_type == "zone" and \
                         os.path.isdir("%s/%s" % (path, filename)):
-                    self._loader("%s/%s" % (path, filename), reader_type,
+                    self._loader_zones("%s/%s" % (path, filename),
                                  combine=True)
                 continue
 
             name = "%s/%s" % (path, filename)
-            log.debug1("Loading %s file '%s'", reader_type, name)
+            log.debug1("Loading zone file '%s'", name)
 
-            if reader_type == "zone":
-                obj = zone_reader(filename, path, no_check_name=combine)
-                if combine:
-                    # Change name for permanent configuration
-                    obj.name = "%s/%s" % (
-                        os.path.basename(path),
-                        os.path.basename(filename)[0:-4])
-                    obj.check_name(obj.name)
-                # Copy object before combine
-                config_obj = copy.deepcopy(obj)
-                if obj.name in self.zone.get_zones():
-                    orig_obj = self.zone.get_zone(obj.name)
-                    self.zone.remove_zone(orig_obj.name)
-                    if orig_obj.combined:
-                        log.debug1("  Combining %s '%s' ('%s/%s')",
-                                    reader_type, obj.name,
-                                    path, filename)
-                        obj.combine(orig_obj)
-                    else:
-                        log.debug1("  Overloads %s '%s' ('%s/%s')",
-                                   reader_type,
-                                   orig_obj.name, orig_obj.path,
-                                   orig_obj.filename)
-                elif obj.path.startswith(config.ETC_FIREWALLD):
-                    obj.default = True
-                    config_obj.default = True
-                self.config.add_zone(config_obj)
-                if combine:
-                    log.debug1("  Combining %s '%s' ('%s/%s')",
-                               reader_type, combined_zone.name,
-                               path, filename)
-                    combined_zone.combine(obj)
+            obj = zone_reader(filename, path, no_check_name=combine)
+            if combine:
+                # Change name for permanent configuration
+                obj.name = "%s/%s" % (
+                    os.path.basename(path),
+                    os.path.basename(filename)[0:-4])
+                obj.check_name(obj.name)
+            # Copy object before combine
+            config_obj = copy.deepcopy(obj)
+            if obj.name in self.zone.get_zones():
+                orig_obj = self.zone.get_zone(obj.name)
+                self.zone.remove_zone(orig_obj.name)
+                if orig_obj.combined:
+                    log.debug1("Combining '%s%s%s'",
+                               orig_obj.path, os.sep, orig_obj.filename)
+                    obj.combine(orig_obj)
                 else:
-                    self.zone.add_zone(obj)
+                    log.debug1("Overrides '%s%s%s'",
+                               orig_obj.path, os.sep, orig_obj.filename)
+            elif obj.path.startswith(config.ETC_FIREWALLD):
+                obj.default = True
+                config_obj.default = True
+            self.config.add_zone(config_obj)
+            if combine:
+                log.debug1("Combining '%s%s%s'",
+                           path, os.sep, filename)
+                combined_zone.combine(obj)
             else:
-                log.fatal("Unknown reader type %s", reader_type)
+                self.zone.add_zone(obj)
 
         if combine and combined_zone.combined:
             if combined_zone.name in self.zone.get_zones():
                 orig_obj = self.zone.get_zone(combined_zone.name)
-                log.debug1("  Overloading and deactivating %s '%s' ('%s/%s')",
-                           reader_type, orig_obj.name, orig_obj.path,
-                           orig_obj.filename)
+                log.debug1("Overrides '%s%s%s'",
+                           orig_obj.path, os.sep, orig_obj.filename)
                 try:
                     self.zone.remove_zone(combined_zone.name)
                 except Exception:
