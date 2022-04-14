@@ -21,7 +21,7 @@
 
 __all__ = [ "Firewall" ]
 
-import os.path
+import os
 import copy
 import time
 import traceback
@@ -390,7 +390,7 @@ class Firewall(object):
         self._loader(config.FIREWALLD_IPSETS, "ipset")
         self._loader(config.FIREWALLD_ICMPTYPES, "icmptype")
         self._loader(config.FIREWALLD_HELPERS, "helper")
-        self._loader(config.FIREWALLD_SERVICES, "service")
+        self._loader_services(config.FIREWALLD_SERVICES)
         self._loader(config.FIREWALLD_ZONES, "zone")
         self._loader(config.FIREWALLD_POLICIES, "policy")
 
@@ -398,7 +398,7 @@ class Firewall(object):
         self._loader(config.ETC_FIREWALLD_IPSETS, "ipset")
         self._loader(config.ETC_FIREWALLD_ICMPTYPES, "icmptype")
         self._loader(config.ETC_FIREWALLD_HELPERS, "helper")
-        self._loader(config.ETC_FIREWALLD_SERVICES, "service")
+        self._loader_services(config.ETC_FIREWALLD_SERVICES)
         self._loader(config.ETC_FIREWALLD_ZONES, "zone")
         self._loader(config.ETC_FIREWALLD_POLICIES, "policy")
 
@@ -557,6 +557,22 @@ class Firewall(object):
                 continue
             yield filename
 
+    def _loader_services(self, path):
+        for filename in self._loader_config_file_generator(path):
+            log.debug1("Loading service file '%s%s%s'", path, os.sep, filename)
+
+            obj = service_reader(filename, path)
+            if obj.name in self.service.get_services():
+                orig_obj = self.service.get_service(obj.name)
+                log.debug1("Overrides '%s%s%s'",
+                           orig_obj.path, os.sep, orig_obj.filename)
+                self.service.remove_service(orig_obj.name)
+            elif obj.path.startswith(config.ETC_FIREWALLD):
+                obj.default = True
+            self.service.add_service(obj)
+            # add a deep copy to the configuration interface
+            self.config.add_service(copy.deepcopy(obj))
+
     def _loader(self, path, reader_type, combine=False):
         # combine: several zone files are getting combined into one obj
         if not os.path.isdir(path):
@@ -602,19 +618,6 @@ class Firewall(object):
                                 (obj.name, str(error)))
                 # add a deep copy to the configuration interface
                 self.config.add_icmptype(copy.deepcopy(obj))
-            elif reader_type == "service":
-                obj = service_reader(filename, path)
-                if obj.name in self.service.get_services():
-                    orig_obj = self.service.get_service(obj.name)
-                    log.debug1("  Overloads %s '%s' ('%s/%s')", reader_type,
-                               orig_obj.name, orig_obj.path,
-                               orig_obj.filename)
-                    self.service.remove_service(orig_obj.name)
-                elif obj.path.startswith(config.ETC_FIREWALLD):
-                    obj.default = True
-                self.service.add_service(obj)
-                # add a deep copy to the configuration interface
-                self.config.add_service(copy.deepcopy(obj))
             elif reader_type == "zone":
                 obj = zone_reader(filename, path, no_check_name=combine)
                 if combine:
