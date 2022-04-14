@@ -389,7 +389,7 @@ class Firewall(object):
     def _start_load_stock_config(self):
         self._loader_ipsets(config.FIREWALLD_IPSETS)
         self._loader(config.FIREWALLD_ICMPTYPES, "icmptype")
-        self._loader(config.FIREWALLD_HELPERS, "helper")
+        self._loader_helpers(config.FIREWALLD_HELPERS)
         self._loader_services(config.FIREWALLD_SERVICES)
         self._loader(config.FIREWALLD_ZONES, "zone")
         self._loader(config.FIREWALLD_POLICIES, "policy")
@@ -397,7 +397,7 @@ class Firewall(object):
     def _start_load_user_config(self):
         self._loader_ipsets(config.ETC_FIREWALLD_IPSETS)
         self._loader(config.ETC_FIREWALLD_ICMPTYPES, "icmptype")
-        self._loader(config.ETC_FIREWALLD_HELPERS, "helper")
+        self._loader_helpers(config.ETC_FIREWALLD_HELPERS)
         self._loader_services(config.ETC_FIREWALLD_SERVICES)
         self._loader(config.ETC_FIREWALLD_ZONES, "zone")
         self._loader(config.ETC_FIREWALLD_POLICIES, "policy")
@@ -593,6 +593,22 @@ class Firewall(object):
             # add a deep copy to the configuration interface
             self.config.add_ipset(copy.deepcopy(obj))
 
+    def _loader_helpers(self, path):
+        for filename in self._loader_config_file_generator(path):
+            log.debug1("Loading helper file '%s%s%s'", path, os.sep, filename)
+
+            obj = helper_reader(filename, path)
+            if obj.name in self.helper.get_helpers():
+                orig_obj = self.helper.get_helper(obj.name)
+                log.debug1("Overrides '%s%s%s'",
+                           orig_obj.path, os.sep, orig_obj.filename)
+                self.helper.remove_helper(orig_obj.name)
+            elif obj.path.startswith(config.ETC_FIREWALLD):
+                obj.default = True
+            self.helper.add_helper(obj)
+            # add a deep copy to the configuration interface
+            self.config.add_helper(copy.deepcopy(obj))
+
     def _loader(self, path, reader_type, combine=False):
         # combine: several zone files are getting combined into one obj
         if not os.path.isdir(path):
@@ -672,19 +688,6 @@ class Firewall(object):
                     combined_zone.combine(obj)
                 else:
                     self.zone.add_zone(obj)
-            elif reader_type == "helper":
-                obj = helper_reader(filename, path)
-                if obj.name in self.helper.get_helpers():
-                    orig_obj = self.helper.get_helper(obj.name)
-                    log.debug1("  Overloads %s '%s' ('%s/%s')", reader_type,
-                               orig_obj.name, orig_obj.path,
-                               orig_obj.filename)
-                    self.helper.remove_helper(orig_obj.name)
-                elif obj.path.startswith(config.ETC_FIREWALLD):
-                    obj.default = True
-                self.helper.add_helper(obj)
-                # add a deep copy to the configuration interface
-                self.config.add_helper(copy.deepcopy(obj))
             elif reader_type == "policy":
                 obj = policy_reader(filename, path)
                 if obj.name in self.policy.get_policies():
