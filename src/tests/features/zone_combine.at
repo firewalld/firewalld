@@ -1,0 +1,173 @@
+FWD_START_TEST([zone - combine])
+AT_KEYWORDS(zone)
+
+dnl Zone combining is pretty weird. All the XML files in the directory will be
+dnl combined for the runtime config, but in the permanent config they'll be
+dnl present individually.
+
+AT_CHECK([mkdir -p ./zones/combined])
+AT_DATA([./zones/combined/zone1.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+<service name="ssh" />
+</zone>
+])
+AT_DATA([./zones/combined/zone2.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+<service name="https" />
+</zone>
+])
+AT_DATA([./zones/combined/zone3.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+<port port="12345" protocol="tcp" />
+</zone>
+])
+FWD_RELOAD()
+
+FWD_CHECK([--get-zones], 0, [dnl
+block combined dmz drop external home internal public trusted work
+])
+FWD_CHECK([--zone combined --list-all | TRIM_WHITESPACE], 0, [dnl
+combined
+target: default
+icmp-block-inversion: no
+interfaces:
+sources:
+services: https ssh
+ports: 12345/tcp
+protocols:
+forward: no
+masquerade: no
+forward-ports:
+source-ports:
+icmp-blocks:
+rich rules:
+])
+
+FWD_CHECK([--permanent --get-zones], 0, [dnl
+block combined/zone1 combined/zone2 combined/zone3 dmz drop external home internal public trusted work
+])
+FWD_CHECK([--permanent --zone combined/zone1 --list-all | TRIM_WHITESPACE], 0, [dnl
+combined/zone1
+target: default
+icmp-block-inversion: no
+interfaces:
+sources:
+services: ssh
+ports:
+protocols:
+forward: no
+masquerade: no
+forward-ports:
+source-ports:
+icmp-blocks:
+rich rules:
+])
+FWD_CHECK([--permanent --zone combined/zone2 --list-all | TRIM_WHITESPACE], 0, [dnl
+combined/zone2
+target: default
+icmp-block-inversion: no
+interfaces:
+sources:
+services: https
+ports:
+protocols:
+forward: no
+masquerade: no
+forward-ports:
+source-ports:
+icmp-blocks:
+rich rules:
+])
+FWD_CHECK([--permanent --zone combined/zone3 --list-all | TRIM_WHITESPACE], 0, [dnl
+combined/zone3
+target: default
+icmp-block-inversion: no
+interfaces:
+sources:
+services:
+ports: 12345/tcp
+protocols:
+forward: no
+masquerade: no
+forward-ports:
+source-ports:
+icmp-blocks:
+rich rules:
+])
+
+dnl verify we can modify the combined runtime config
+dnl
+FWD_CHECK([--zone combined --add-protocol icmp], 0, [ignore])
+FWD_CHECK([--zone combined --list-all | TRIM_WHITESPACE], 0, [dnl
+combined
+target: default
+icmp-block-inversion: no
+interfaces:
+sources:
+services: https ssh
+ports: 12345/tcp
+protocols: icmp
+forward: no
+masquerade: no
+forward-ports:
+source-ports:
+icmp-blocks:
+rich rules:
+])
+
+dnl verify we can modify the individual zones in the permanent config
+dnl
+FWD_CHECK([--permanent --zone combined/zone2 --add-protocol icmp], 0, [ignore])
+FWD_CHECK([--permanent --zone combined/zone1 --list-all | TRIM_WHITESPACE], 0, [dnl
+combined/zone1
+target: default
+icmp-block-inversion: no
+interfaces:
+sources:
+services: ssh
+ports:
+protocols:
+forward: no
+masquerade: no
+forward-ports:
+source-ports:
+icmp-blocks:
+rich rules:
+])
+FWD_CHECK([--permanent --zone combined/zone2 --list-all | TRIM_WHITESPACE], 0, [dnl
+combined/zone2
+target: default
+icmp-block-inversion: no
+interfaces:
+sources:
+services: https
+ports:
+protocols: icmp
+forward: no
+masquerade: no
+forward-ports:
+source-ports:
+icmp-blocks:
+rich rules:
+])
+FWD_CHECK([--permanent --zone combined/zone3 --list-all | TRIM_WHITESPACE], 0, [dnl
+combined/zone3
+target: default
+icmp-block-inversion: no
+interfaces:
+sources:
+services:
+ports: 12345/tcp
+protocols:
+forward: no
+masquerade: no
+forward-ports:
+source-ports:
+icmp-blocks:
+rich rules:
+])
+
+FWD_END_TEST()
