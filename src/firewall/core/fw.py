@@ -577,6 +577,7 @@ class Firewall(object):
                 combined_zone.check_name(combined_zone.name)
                 combined_zone.path = path
                 combined_zone.default = False
+                combined_zone.forward = False # see note in zone_reader()
             else:
                 combine = False
 
