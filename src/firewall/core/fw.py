@@ -392,7 +392,7 @@ class Firewall(object):
         self._loader_helpers(config.FIREWALLD_HELPERS)
         self._loader_services(config.FIREWALLD_SERVICES)
         self._loader(config.FIREWALLD_ZONES, "zone")
-        self._loader(config.FIREWALLD_POLICIES, "policy")
+        self._loader_policies(config.FIREWALLD_POLICIES)
 
     def _start_load_user_config(self):
         self._loader_ipsets(config.ETC_FIREWALLD_IPSETS)
@@ -400,7 +400,7 @@ class Firewall(object):
         self._loader_helpers(config.ETC_FIREWALLD_HELPERS)
         self._loader_services(config.ETC_FIREWALLD_SERVICES)
         self._loader(config.ETC_FIREWALLD_ZONES, "zone")
-        self._loader(config.ETC_FIREWALLD_POLICIES, "policy")
+        self._loader_policies(config.ETC_FIREWALLD_POLICIES)
 
     def _start_load_direct_rules(self):
         # load direct rules
@@ -609,6 +609,22 @@ class Firewall(object):
             # add a deep copy to the configuration interface
             self.config.add_helper(copy.deepcopy(obj))
 
+    def _loader_policies(self, path):
+        for filename in self._loader_config_file_generator(path):
+            log.debug1("Loading policy file '%s%s%s'", path, os.sep, filename)
+
+            obj = policy_reader(filename, path)
+            if obj.name in self.policy.get_policies():
+                orig_obj = self.policy.get_policy(obj.name)
+                log.debug1("Overrides '%s%s%s'",
+                           orig_obj.path, os.sep, orig_obj.filename)
+                self.policy.remove_policy(orig_obj.name)
+            elif obj.path.startswith(config.ETC_FIREWALLD):
+                obj.default = True
+            self.policy.add_policy(obj)
+            # add a deep copy to the configuration interface
+            self.config.add_policy_object(copy.deepcopy(obj))
+
     def _loader(self, path, reader_type, combine=False):
         # combine: several zone files are getting combined into one obj
         if not os.path.isdir(path):
@@ -688,19 +704,6 @@ class Firewall(object):
                     combined_zone.combine(obj)
                 else:
                     self.zone.add_zone(obj)
-            elif reader_type == "policy":
-                obj = policy_reader(filename, path)
-                if obj.name in self.policy.get_policies():
-                    orig_obj = self.policy.get_policy(obj.name)
-                    log.debug1("  Overloads %s '%s' ('%s/%s')", reader_type,
-                               orig_obj.name, orig_obj.path,
-                               orig_obj.filename)
-                    self.policy.remove_policy(orig_obj.name)
-                elif obj.path.startswith(config.ETC_FIREWALLD):
-                    obj.default = True
-                self.policy.add_policy(obj)
-                # add a deep copy to the configuration interface
-                self.config.add_policy_object(copy.deepcopy(obj))
             else:
                 log.fatal("Unknown reader type %s", reader_type)
 
