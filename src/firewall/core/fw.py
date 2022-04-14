@@ -548,6 +548,15 @@ class Firewall(object):
             self._state = "RUNNING"
             self.set_policy("ACCEPT")
 
+    def _loader_config_file_generator(self, path):
+        if not os.path.isdir(path):
+            return
+
+        for filename in sorted(os.listdir(path)):
+            if not filename.endswith(".xml"):
+                continue
+            yield filename
+
     def _loader(self, path, reader_type, combine=False):
         # combine: several zone files are getting combined into one obj
         if not os.path.isdir(path):
