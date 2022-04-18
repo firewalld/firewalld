@@ -607,16 +607,15 @@ class Firewall(object):
             log.debug1("Loading policy file '%s%s%s'", path, os.sep, filename)
 
             obj = policy_reader(filename, path)
-            if obj.name in self.policy.get_policies():
-                orig_obj = self.policy.get_policy(obj.name)
+            if obj.name in self.config.get_policy_objects():
+                orig_obj = self.config.get_policy_object(obj.name)
                 log.debug1("Overrides '%s%s%s'",
                            orig_obj.path, os.sep, orig_obj.filename)
-                self.policy.remove_policy(orig_obj.name)
             elif obj.path.startswith(config.ETC_FIREWALLD):
                 obj.default = True
-            self.policy.add_policy(obj)
-            # add a deep copy to the configuration interface
-            self.config.add_policy_object(copy.deepcopy(obj))
+
+            self.config.add_policy_object(obj)
+            self.policy.add_policy(copy.deepcopy(obj))
 
     def _loader_icmptypes(self, path):
         for filename in self._loader_config_file_generator(path):
