@@ -562,16 +562,15 @@ class Firewall(object):
             log.debug1("Loading service file '%s%s%s'", path, os.sep, filename)
 
             obj = service_reader(filename, path)
-            if obj.name in self.service.get_services():
-                orig_obj = self.service.get_service(obj.name)
+            if obj.name in self.config.get_services():
+                orig_obj = self.config.get_service(obj.name)
                 log.debug1("Overrides '%s%s%s'",
                            orig_obj.path, os.sep, orig_obj.filename)
-                self.service.remove_service(orig_obj.name)
             elif obj.path.startswith(config.ETC_FIREWALLD):
                 obj.default = True
-            self.service.add_service(obj)
-            # add a deep copy to the configuration interface
-            self.config.add_service(copy.deepcopy(obj))
+
+            self.config.add_service(obj)
+            self.service.add_service(copy.deepcopy(obj))
 
     def _loader_ipsets(self, path):
         for filename in self._loader_config_file_generator(path):
