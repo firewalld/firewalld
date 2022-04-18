@@ -220,6 +220,7 @@ CONFIG_FILES = \
 	services/mysql.xml \
 	services/nbd.xml \
 	services/netbios-ns.xml \
+	services/netdata-dashboard.xml \
 	services/nfs.xml \
 	services/nfs3.xml \
 	services/nmea-0183.xml \
