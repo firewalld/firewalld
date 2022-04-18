@@ -402,6 +402,54 @@ class Firewall(object):
         self._loader_zones(config.ETC_FIREWALLD_ZONES)
         self._loader_policies(config.ETC_FIREWALLD_POLICIES)
 
+    def _start_copy_config_to_runtime(self):
+        for _ipset in self.config.get_ipsets():
+            self.ipset.add_ipset(
+                    copy.deepcopy(self.config.get_ipset(_ipset)))
+        for icmptype in self.config.get_icmptypes():
+            self.icmptype.add_icmptype(
+                    copy.deepcopy(self.config.get_icmptype(icmptype)))
+        for helper in self.config.get_helpers():
+            self.helper.add_helper(
+                    copy.deepcopy(self.config.get_helper(helper)))
+        for service in self.config.get_services():
+            self.service.add_service(
+                    copy.deepcopy(self.config.get_service(service)))
+        for policy in self.config.get_policy_objects():
+            self.policy.add_policy(
+                    copy.deepcopy(self.config.get_policy_object(policy)))
+
+        self.direct.set_permanent_config(
+                copy.deepcopy(self.config.get_direct()))
+
+        # copy combined permanent zones to runtime
+        # zones with a '/' in the name will be combined into one runtime zone
+        combined_zones = {}
+        for zone in self.config.get_zones():
+            z_obj = self.config.get_zone(zone)
+            if '/' not in z_obj.name:
+                self.zone.add_zone(
+                        copy.deepcopy(self.config.get_zone(zone)))
+                continue
+
+            combined_name = os.path.basename(z_obj.path)
+            if combined_name not in combined_zones:
+                combined_zone = Zone()
+                combined_zone.name = combined_name
+                combined_zone.check_name(combined_zone.name)
+                combined_zone.path = z_obj.path
+                combined_zone.default = False
+                combined_zone.forward = False # see note in zone_reader()
+
+                combined_zones[combined_name] = combined_zone
+
+            log.debug1("Combining zone '%s' using '%s%s%s'",
+                       combined_name, z_obj.path, os.sep, z_obj.filename)
+            combined_zones[combined_name].combine(z_obj)
+
+        for zone in combined_zones:
+            self.zone.add_zone(combined_zones[zone])
+
     def _start_load_direct_rules(self):
         # load direct rules
         obj = Direct(config.FIREWALLD_DIRECT)
@@ -413,8 +461,7 @@ class Firewall(object):
             except Exception as msg:
                 log.error("Failed to load direct rules file '%s': %s",
                           config.FIREWALLD_DIRECT, msg)
-        self.direct.set_permanent_config(obj)
-        self.config.set_direct(copy.deepcopy(obj))
+        self.config.set_direct(obj)
 
     def _start_apply_objects(self, reload=False, complete_reload=False):
         transaction = FirewallTransaction(self)
@@ -519,6 +566,7 @@ class Firewall(object):
         self._start_load_stock_config()
         self._start_load_user_config()
         self._start_load_direct_rules()
+        self._start_copy_config_to_runtime()
 
         self._start_check()
 
@@ -570,7 +618,6 @@ class Firewall(object):
                 obj.default = True
 
             self.config.add_service(obj)
-            self.service.add_service(copy.deepcopy(obj))
 
     def _loader_ipsets(self, path):
         for filename in self._loader_config_file_generator(path):
@@ -585,7 +632,6 @@ class Firewall(object):
                 obj.default = True
 
             self.config.add_ipset(obj)
-            self.ipset.add_ipset(copy.deepcopy(obj))
 
     def _loader_helpers(self, path):
         for filename in self._loader_config_file_generator(path):
@@ -600,7 +646,6 @@ class Firewall(object):
                 obj.default = True
 
             self.config.add_helper(obj)
-            self.helper.add_helper(copy.deepcopy(obj))
 
     def _loader_policies(self, path):
         for filename in self._loader_config_file_generator(path):
@@ -615,7 +660,6 @@ class Firewall(object):
                 obj.default = True
 
             self.config.add_policy_object(obj)
-            self.policy.add_policy(copy.deepcopy(obj))
 
     def _loader_icmptypes(self, path):
         for filename in self._loader_config_file_generator(path):
@@ -630,7 +674,6 @@ class Firewall(object):
                 obj.default = True
 
             self.config.add_icmptype(obj)
-            self.icmptype.add_icmptype(copy.deepcopy(obj))
 
     def _loader_zones(self, path, combine=False):
         if not os.path.isdir(path):
@@ -665,34 +708,6 @@ class Firewall(object):
                 obj.default = True
 
             self.config.add_zone(obj)
-            if not combine:
-                self.zone.add_zone(copy.deepcopy(obj))
-
-        # copy combined permanent zones to runtime
-        # zones with a '/' in the name will be combined into one runtime zone
-        combined_zones = {}
-        for zone in self.config.get_zones():
-            z_obj = self.config.get_zone(zone)
-            if '/' not in z_obj.name:
-                continue
-
-            combined_name = os.path.basename(z_obj.path)
-            if combined_name not in combined_zones:
-                combined_zone = Zone()
-                combined_zone.name = combined_name
-                combined_zone.check_name(combined_zone.name)
-                combined_zone.path = z_obj.path
-                combined_zone.default = False
-                combined_zone.forward = False # see note in zone_reader()
-
-                combined_zones[combined_name] = combined_zone
-
-            log.debug1("Combining zone '%s' using '%s%s%s'",
-                       combined_name, z_obj.path, os.sep, z_obj.filename)
-            combined_zones[combined_name].combine(z_obj)
-
-        for zone in combined_zones:
-            self.zone.add_zone(combined_zones[zone])
 
     def cleanup(self):
         self.icmptype.cleanup()
