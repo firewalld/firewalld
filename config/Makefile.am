@@ -135,6 +135,7 @@ CONFIG_FILES = \
 	services/ceph-mon.xml \
 	services/ceph.xml \
 	services/cfengine.xml \
+	services/checkmk-agent.xml \
 	services/cockpit.xml \
 	services/collectd.xml \
 	services/condor-collector.xml \
