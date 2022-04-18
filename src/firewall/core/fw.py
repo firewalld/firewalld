@@ -625,16 +625,15 @@ class Firewall(object):
             log.debug1("Loading icmptype file '%s%s%s'", path, os.sep, filename)
 
             obj = icmptype_reader(filename, path)
-            if obj.name in self.icmptype.get_icmptypes():
-                orig_obj = self.icmptype.get_icmptype(obj.name)
+            if obj.name in self.config.get_icmptypes():
+                orig_obj = self.config.get_icmptype(obj.name)
                 log.debug1("Overrides '%s%s%s'",
                            orig_obj.path, os.sep, orig_obj.filename)
-                self.icmptype.remove_icmptype(orig_obj.name)
             elif obj.path.startswith(config.ETC_FIREWALLD):
                 obj.default = True
-            self.icmptype.add_icmptype(obj)
-            # add a deep copy to the configuration interface
-            self.config.add_icmptype(copy.deepcopy(obj))
+
+            self.config.add_icmptype(obj)
+            self.icmptype.add_icmptype(copy.deepcopy(obj))
 
     def _loader_zones(self, path, combine=False):
         # combine: several zone files are getting combined into one obj
