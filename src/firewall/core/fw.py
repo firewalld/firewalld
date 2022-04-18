@@ -578,20 +578,15 @@ class Firewall(object):
             log.debug1("Loading ipset file '%s%s%s'", path, os.sep, filename)
 
             obj = ipset_reader(filename, path)
-            if obj.name in self.ipset.get_ipsets():
-                orig_obj = self.ipset.get_ipset(obj.name)
+            if obj.name in self.config.get_ipsets():
+                orig_obj = self.config.get_ipset(obj.name)
                 log.debug1("Overrides '%s%s%s'",
                            orig_obj.path, os.sep, orig_obj.filename)
-                self.ipset.remove_ipset(orig_obj.name)
             elif obj.path.startswith(config.ETC_FIREWALLD):
                 obj.default = True
-            try:
-                self.ipset.add_ipset(obj)
-            except FirewallError as error:
-                log.warning("%s: %s, ignoring for run-time." % \
-                            (obj.name, str(error)))
-            # add a deep copy to the configuration interface
-            self.config.add_ipset(copy.deepcopy(obj))
+
+            self.config.add_ipset(obj)
+            self.ipset.add_ipset(copy.deepcopy(obj))
 
     def _loader_helpers(self, path):
         for filename in self._loader_config_file_generator(path):
