@@ -633,27 +633,17 @@ class Firewall(object):
             self.icmptype.add_icmptype(copy.deepcopy(obj))
 
     def _loader_zones(self, path, combine=False):
-        # combine: several zone files are getting combined into one obj
         if not os.path.isdir(path):
             return
-
-        if combine:
-            if path.startswith(config.ETC_FIREWALLD):
-                combined_zone = Zone()
-                combined_zone.name = os.path.basename(path)
-                combined_zone.check_name(combined_zone.name)
-                combined_zone.path = path
-                combined_zone.default = False
-                combined_zone.forward = False # see note in zone_reader()
-            else:
-                combine = False
 
         for filename in sorted(os.listdir(path)):
             if not filename.endswith(".xml"):
                 if path.startswith(config.ETC_FIREWALLD) and \
                         os.path.isdir("%s/%s" % (path, filename)):
-                    self._loader_zones("%s/%s" % (path, filename),
-                                 combine=True)
+                    # Combined zones are added to permanent config
+                    # individually. They're coalesced into one object when
+                    # added to the runtime
+                    self._loader_zones("%s/%s" % (path, filename), combine=True)
                 continue
 
             name = "%s/%s" % (path, filename)
@@ -666,40 +656,43 @@ class Firewall(object):
                     os.path.basename(path),
                     os.path.basename(filename)[0:-4])
                 obj.check_name(obj.name)
-            # Copy object before combine
-            config_obj = copy.deepcopy(obj)
-            if obj.name in self.zone.get_zones():
-                orig_obj = self.zone.get_zone(obj.name)
-                self.zone.remove_zone(orig_obj.name)
-                if orig_obj.combined:
-                    log.debug1("Combining '%s%s%s'",
-                               orig_obj.path, os.sep, orig_obj.filename)
-                    obj.combine(orig_obj)
-                else:
-                    log.debug1("Overrides '%s%s%s'",
-                               orig_obj.path, os.sep, orig_obj.filename)
-            elif obj.path.startswith(config.ETC_FIREWALLD):
-                obj.default = True
-                config_obj.default = True
-            self.config.add_zone(config_obj)
-            if combine:
-                log.debug1("Combining '%s%s%s'",
-                           path, os.sep, filename)
-                combined_zone.combine(obj)
-            else:
-                self.zone.add_zone(obj)
 
-        if combine and combined_zone.combined:
-            if combined_zone.name in self.zone.get_zones():
-                orig_obj = self.zone.get_zone(combined_zone.name)
+            if obj.name in self.config.get_zones():
+                orig_obj = self.config.get_zone(obj.name)
                 log.debug1("Overrides '%s%s%s'",
                            orig_obj.path, os.sep, orig_obj.filename)
-                try:
-                    self.zone.remove_zone(combined_zone.name)
-                except Exception:
-                    pass
-                self.config.forget_zone(combined_zone.name)
-            self.zone.add_zone(combined_zone)
+            elif obj.path.startswith(config.ETC_FIREWALLD):
+                obj.default = True
+
+            self.config.add_zone(obj)
+            if not combine:
+                self.zone.add_zone(copy.deepcopy(obj))
+
+        # copy combined permanent zones to runtime
+        # zones with a '/' in the name will be combined into one runtime zone
+        combined_zones = {}
+        for zone in self.config.get_zones():
+            z_obj = self.config.get_zone(zone)
+            if '/' not in z_obj.name:
+                continue
+
+            combined_name = os.path.basename(z_obj.path)
+            if combined_name not in combined_zones:
+                combined_zone = Zone()
+                combined_zone.name = combined_name
+                combined_zone.check_name(combined_zone.name)
+                combined_zone.path = z_obj.path
+                combined_zone.default = False
+                combined_zone.forward = False # see note in zone_reader()
+
+                combined_zones[combined_name] = combined_zone
+
+            log.debug1("Combining zone '%s' using '%s%s%s'",
+                       combined_name, z_obj.path, os.sep, z_obj.filename)
+            combined_zones[combined_name].combine(z_obj)
+
+        for zone in combined_zones:
+            self.zone.add_zone(combined_zones[zone])
 
     def cleanup(self):
         self.icmptype.cleanup()
