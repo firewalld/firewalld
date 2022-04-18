@@ -593,16 +593,15 @@ class Firewall(object):
             log.debug1("Loading helper file '%s%s%s'", path, os.sep, filename)
 
             obj = helper_reader(filename, path)
-            if obj.name in self.helper.get_helpers():
-                orig_obj = self.helper.get_helper(obj.name)
+            if obj.name in self.config.get_helpers():
+                orig_obj = self.config.get_helper(obj.name)
                 log.debug1("Overrides '%s%s%s'",
                            orig_obj.path, os.sep, orig_obj.filename)
-                self.helper.remove_helper(orig_obj.name)
             elif obj.path.startswith(config.ETC_FIREWALLD):
                 obj.default = True
-            self.helper.add_helper(obj)
-            # add a deep copy to the configuration interface
-            self.config.add_helper(copy.deepcopy(obj))
+
+            self.config.add_helper(obj)
+            self.helper.add_helper(copy.deepcopy(obj))
 
     def _loader_policies(self, path):
         for filename in self._loader_config_file_generator(path):
