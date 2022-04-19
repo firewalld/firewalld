@@ -125,6 +125,13 @@ class Service(IO_Object):
                 if len(module) < 2:
                     raise FirewallError(errors.INVALID_MODULE, module)
 
+        elif item == "includes":
+            for include in config:
+                if include not in all_io_objects["services"]:
+                    raise FirewallError(errors.INVALID_SERVICE,
+                            "Service '{}': Included service '{}' not found.".format(
+                                self.name, include))
+
 # PARSER
 
 class service_ContentHandler(IO_Object_ContentHandler):
