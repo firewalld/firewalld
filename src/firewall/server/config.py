@@ -527,6 +527,13 @@ class FirewallDConfig(DbusServiceObject):
 
     @dbus_handle_exceptions
     def accessCheck(self, sender):
+        if self.config._fw._state == "FAILED":
+            raise FirewallError(errors.RUNNING_BUT_FAILED,
+                    "Changing permanent configuration is not allowed while "
+                    "firewalld is in FAILED state. The permanent "
+                    "configuration must be fixed and then firewalld "
+                    "restarted. Try `firewall-offline-cmd --check-config`.")
+
         if self.config.lockdown_enabled():
             if sender is None:
                 log.error("Lockdown not possible, sender not set.")

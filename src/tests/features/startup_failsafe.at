@@ -28,6 +28,14 @@ NFT_LIST_RULES([inet], [filter_IN_public_allow], 0, [dnl
 dnl --runtime-to-permanent is disallowed while operating in FAILED state.
 FWD_CHECK([--runtime-to-permanent], 251, [ignore], [ignore])
 
+dnl --permanent is disallowed while operating in FAILED state.
+FWD_CHECK([--permanent --add-service https], 251, [ignore], [ignore])
+FWD_CHECK([--permanent --policy allow-host-ipv6 --add-service https], 251, [ignore], [ignore])
+FWD_CHECK([--permanent --service ssh --add-port=666/tcp], 251, [ignore], [ignore])
+FWD_CHECK([--permanent --icmptype redirect --remove-destination=ipv4], 251, [ignore], [ignore])
+FWD_CHECK([--permanent --helper tftp --add-port=44/tcp], 251, [ignore], [ignore])
+FWD_CHECK([--permanent --new-ipset foobar --type=hash:ip], 251, [ignore], [ignore])
+
 FWD_END_TEST([ignore])
 
 dnl invalid port
