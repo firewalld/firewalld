@@ -29,6 +29,6 @@ AT_CHECK([echo '<port port="22" />' >> ./zones/foobar.xml])
 AT_CHECK([echo '<service name="http"/>' >> ./zones/foobar.xml])
 AT_CHECK([echo '</zone>' >> ./zones/foobar.xml])
 
-FWD_RESTART
+FWD_RESTART([251])
 FWD_GREP_LOG([ERROR:.*Missing attribute protocol for port])
-FWD_END_TEST([-e '/ERROR:.*Missing attribute protocol for port.*/d'])
+FWD_END_TEST([ignore])

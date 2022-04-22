@@ -1,0 +1,122 @@
+IF_BACKEND_IS_DEFAULT([
+
+FWD_START_TEST([startup failsafe - invalid xml])
+AT_KEYWORDS(failsafe)
+dnl invalid XML
+AT_CHECK([mkdir -p ./zones])
+AT_DATA([./zones/broken.xml], [
+<zone>
+<service name="ssh" />
+<boguselement foo="bar" />
+</zone>
+])
+FWD_RESTART([251])
+FWD_CHECK([--state], 251, [ignore], [ignore])
+
+dnl we should be able to make runtime changes
+FWD_CHECK([--zone public --add-service https], 0, [ignore])
+NFT_LIST_RULES([inet], [filter_IN_public_allow], 0, [dnl
+    table inet firewalld {
+        chain filter_IN_public_allow {
+            tcp dport 22 ct state new,untracked accept
+            ip6 daddr fe80::/64 udp dport 546 ct state new,untracked accept
+            tcp dport 443 ct state new,untracked accept
+        }
+    }
+])
+
+dnl --runtime-to-permanent is disallowed while operating in FAILED state.
+FWD_CHECK([--runtime-to-permanent], 251, [ignore], [ignore])
+
+dnl --permanent is disallowed while operating in FAILED state.
+FWD_CHECK([--permanent --add-service https], 251, [ignore], [ignore])
+FWD_CHECK([--permanent --policy allow-host-ipv6 --add-service https], 251, [ignore], [ignore])
+FWD_CHECK([--permanent --service ssh --add-port=666/tcp], 251, [ignore], [ignore])
+FWD_CHECK([--permanent --icmptype redirect --remove-destination=ipv4], 251, [ignore], [ignore])
+FWD_CHECK([--permanent --helper tftp --add-port=44/tcp], 251, [ignore], [ignore])
+FWD_CHECK([--permanent --new-ipset foobar --type=hash:ip], 251, [ignore], [ignore])
+
+FWD_END_TEST([ignore])
+
+dnl invalid port
+FWD_START_TEST([startup failsafe - bad zone])
+AT_KEYWORDS(failsafe)
+AT_CHECK([mkdir -p ./zones])
+AT_DATA([./zones/broken.xml], [
+<zone>
+<port port="1234" />
+</zone>
+])
+FWD_RESTART([251])
+FWD_CHECK([--state], 251, [ignore], [ignore])
+FWD_END_TEST([ignore])
+
+dnl invalid source
+FWD_START_TEST([startup failsafe - bad policy])
+AT_KEYWORDS(failsafe)
+AT_CHECK([mkdir -p ./policies])
+AT_DATA([./policies/broken.xml], [
+<policy>
+<source ipset="doesnotexist" />
+</policy>
+])
+FWD_RESTART([251])
+FWD_CHECK([--state], 251, [ignore], [ignore])
+FWD_END_TEST([ignore])
+
+dnl non-existent service
+FWD_START_TEST([startup failsafe - non-existent service])
+AT_KEYWORDS(failsafe)
+AT_CHECK([mkdir -p ./zones])
+AT_DATA([./zones/broken.xml], [
+<zone>
+<service name="doesnotexist" />
+</zone>
+])
+FWD_RESTART([251])
+FWD_CHECK([--state], 251, [ignore], [ignore])
+FWD_END_TEST([ignore])
+
+dnl non-existent icmptype
+FWD_START_TEST([startup failsafe - non-existent icmptype])
+AT_KEYWORDS(failsafe)
+AT_CHECK([mkdir -p ./zones])
+AT_DATA([./zones/broken.xml], [
+<zone>
+<icmp-block name="doesnotexist" />
+</zone>
+])
+FWD_RESTART([251])
+FWD_CHECK([--state], 251, [ignore], [ignore])
+FWD_END_TEST([ignore])
+
+dnl broken direct rule (runtime backend failure)
+FWD_START_TEST([startup failsafe - bad direct])
+AT_KEYWORDS(failsafe)
+CHECK_IPTABLES()
+AT_DATA([./direct.xml], [
+<direct>
+<rule ipv="ipv4" table="filter" chain="INPUT" priority="1">-s 192.168.1.0/24 -j doesnotexist</rule>
+</direct>
+])
+FWD_RESTART([251])
+FWD_CHECK([--state], 251, [ignore], [ignore])
+FWD_END_TEST([ignore])
+
+dnl broken stock config
+dnl results in a full shutdown
+FWD_START_TEST([startup failsafe - broken stock config])
+FWD_STOP_FIREWALLD()
+AT_CHECK([mkdir -p ./default_config/zones])
+AT_DATA([./default_config/zones/broken.xml], [
+<zone>
+<icmp-block name="doesnotexist" />
+</zone>
+])
+export FIREWALLD_DEFAULT_CONFIG="./default_config"
+FWD_START_FIREWALLD([252])
+sleep 5 dnl wait on it to be fully shut down
+FWD_CHECK([--state], 252, [ignore], [ignore])
+FWD_END_TEST([ignore])
+
+]) # IF_BACKEND_IS_DEFAULT

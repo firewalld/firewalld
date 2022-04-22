@@ -368,6 +368,13 @@ class FirewallD(DbusServiceObject):
         """
         log.debug1("copyRuntimeToPermanent()")
 
+        if self.fw._state == "FAILED":
+            raise FirewallError(errors.RUNNING_BUT_FAILED,
+                    "Saving runtime to permanent is not allowed while "
+                    "firewalld is in FAILED state. The permanent "
+                    "configuration must be fixed and then firewalld "
+                    "restarted. Try `firewall-offline-cmd --check-config`.")
+
         error = False
 
         # Services or icmptypes can not be modified in runtime, but they can
