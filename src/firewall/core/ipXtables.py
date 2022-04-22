@@ -957,11 +957,11 @@ class ip4tables(object):
                 if target in [DEFAULT_ZONE_TARGET, "REJECT", "%%REJECT%%" ]:
                     rules.append([ add_del_rule, _policy, "-t", table, "%%LOGTYPE%%",
                                    "-j", "LOG", "--log-prefix",
-                                   "\"%s_REJECT: \"" % _policy ])
+                                   "%s_REJECT: " % _policy ])
                 if target == "DROP":
                     rules.append([ add_del_rule, _policy, "-t", table, "%%LOGTYPE%%",
                                    "-j", "LOG", "--log-prefix",
-                                   "\"%s_DROP: \"" % _policy ])
+                                   "%s_DROP: " % _policy ])
 
         if table == "filter" and \
            target in [DEFAULT_ZONE_TARGET, "ACCEPT", "REJECT", "%%REJECT%%", "DROP" ]:
@@ -1041,7 +1041,7 @@ class ip4tables(object):
         else:
             rule += rule_fragment + [ "-j", "LOG" ]
             if rich_rule.log.prefix:
-                rule += [ "--log-prefix", "'%s'" % rich_rule.log.prefix ]
+                rule += [ "--log-prefix", "%s" % rich_rule.log.prefix ]
             if rich_rule.log.level:
                 rule += [ "--log-level", "%s" % rich_rule.log.level ]
         rule += self._rule_limit(rich_rule.log.limit)
@@ -1399,7 +1399,7 @@ class ip4tables(object):
                 rules.append([ add_del, final_chain, "-t", table ]
                              + rule_fragment +
                              [ "%%LOGTYPE%%", "-j", "LOG",
-                               "--log-prefix", "\"%s_ICMP_BLOCK: \"" % policy ])
+                               "--log-prefix", "%s_ICMP_BLOCK: " % policy ])
             rules.append([ add_del, final_chain, "-t", table ]
                          + rule_fragment +
                          [ "-j", final_target ])
@@ -1425,7 +1425,7 @@ class ip4tables(object):
                 rule = rule + [ "-t", table, "-p", "%%ICMP%%",
                               "%%LOGTYPE%%",
                               "-j", "LOG", "--log-prefix",
-                              "\"%s_ICMP_BLOCK: \"" % _policy ]
+                              "%s_ICMP_BLOCK: " % _policy ]
                 rules.append(rule)
                 rule_idx += 1
         else:
@@ -1506,7 +1506,7 @@ class ip6tables(ip4tables):
             if self._fw._log_denied in ["unicast", "all"]:
                 rules.append(["-t", "filter", "-I", chain_name,
                               "-d", daddr, "-j", "LOG",
-                              "--log-prefix", "\"RFC3964_IPv4_REJECT: \""])
+                              "--log-prefix", "RFC3964_IPv4_REJECT: "])
 
         # Inject into FORWARD and OUTPUT chains
         rules.append(["-t", "filter", "-I", "OUTPUT", "4",

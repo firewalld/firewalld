@@ -910,7 +910,7 @@ class nftables(object):
                                                      "table": TABLE_NAME,
                                                      "chain": "%s_%s" % (table, _policy),
                                                      "expr": [self._pkttype_match_fragment(self._fw.get_log_denied()),
-                                                              {"log": {"prefix": "\"filter_%s_%s: \"" % (_policy, log_suffix)}}]}}})
+                                                              {"log": {"prefix": "filter_%s_%s: " % (_policy, log_suffix)}}]}}})
 
         if table == "filter" and \
            target in [DEFAULT_ZONE_TARGET, "ACCEPT", "REJECT", "%%REJECT%%", "DROP"]:
@@ -1537,7 +1537,7 @@ class nftables(object):
                                                      "chain": final_chain,
                                                      "expr": (expr_fragments +
                                                               [self._pkttype_match_fragment(self._fw.get_log_denied()),
-                                                               {"log": {"prefix": "\"%s_%s_ICMP_BLOCK: \"" % (table, policy)}}])}}})
+                                                               {"log": {"prefix": "%s_%s_ICMP_BLOCK: " % (table, policy)}}])}}})
                 rules.append({add_del: {"rule": {"family": "inet",
                                                  "table": TABLE_NAME,
                                                  "chain": final_chain,
