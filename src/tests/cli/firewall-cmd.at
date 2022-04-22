@@ -1874,7 +1874,7 @@ FWD_START_TEST([rich rules priority])
         ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:22 ctstate NEW,UNTRACKED
         ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:443 ctstate NEW,UNTRACKED
         ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:143 ctstate NEW,UNTRACKED
-        LOG all -- 0.0.0.0/0 0.0.0.0/0 LOG flags 0 level 4 prefix "'DROPPED: '"
+        LOG all -- 0.0.0.0/0 0.0.0.0/0 LOG flags 0 level 4 prefix "DROPPED: "
         DROP all -- 0.0.0.0/0 0.0.0.0/0
     ])
     IP6TABLES_LIST_RULES([filter], [IN_public_pre], 0, [dnl
@@ -1894,7 +1894,7 @@ FWD_START_TEST([rich rules priority])
         ACCEPT tcp ::/0 ::/0 tcp dpt:22 ctstate NEW,UNTRACKED
         ACCEPT tcp ::/0 ::/0 tcp dpt:443 ctstate NEW,UNTRACKED
         ACCEPT tcp ::/0 ::/0 tcp dpt:143 ctstate NEW,UNTRACKED
-        LOG all ::/0 ::/0 LOG flags 0 level 4 prefix "'DROPPED: '"
+        LOG all ::/0 ::/0 LOG flags 0 level 4 prefix "DROPPED: "
         DROP all ::/0 ::/0
     ])
     FWD_CHECK([-q --runtime-to-permanent])

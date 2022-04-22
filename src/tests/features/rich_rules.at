@@ -279,12 +279,12 @@ NFT_LIST_RULES([inet], [filter_IN_policy_foobar_post], 0, [dnl
 ])
 IPTABLES_LIST_RULES([filter], [IN_foobar_post], 0, [dnl
     ACCEPT all -- 10.10.10.15 0.0.0.0/0
-    LOG all -- 0.0.0.0/0 0.0.0.0/0 LOG flags 0 level 4 prefix "'LOG: '"
+    LOG all -- 0.0.0.0/0 0.0.0.0/0 LOG flags 0 level 4 prefix "LOG: "
     AUDIT all -- 0.0.0.0/0 0.0.0.0/0 AUDIT accept
     ACCEPT all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [IN_foobar_post], 0, [dnl
-    LOG all ::/0 ::/0 LOG flags 0 level 4 prefix "'LOG: '"
+    LOG all ::/0 ::/0 LOG flags 0 level 4 prefix "LOG: "
     AUDIT all ::/0 ::/0 AUDIT accept
     ACCEPT all ::/0 ::/0
 ])
