@@ -27,9 +27,9 @@ FWD_CHECK([--set-log-denied all], 0, [ignore])
 NFT_LIST_RULES([inet], [filter_IN_public_deny], 0, [dnl
     table inet firewalld {
         chain filter_IN_public_deny {
-            icmp echo-request log prefix ""filter_zone_public_HOST_ICMP_BLOCK: ""
+            icmp echo-request log prefix "filter_zone_public_HOST_ICMP_BLOCK: "
             icmp echo-request reject with icmpx admin-prohibited
-            icmpv6 echo-request log prefix ""filter_zone_public_HOST_ICMP_BLOCK: ""
+            icmpv6 echo-request log prefix "filter_zone_public_HOST_ICMP_BLOCK: "
             icmpv6 echo-request reject with icmpx admin-prohibited
         }
     }
