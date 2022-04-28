@@ -191,12 +191,17 @@ CONFIG_FILES = \
 	services/kpasswd.xml \
 	services/kprop.xml \
 	services/kshell.xml \
-	services/kube-api.xml \
+	services/kubelet.xml \
+	services/kubelet-readonly.xml \
 	services/kube-apiserver.xml \
 	services/kube-control-plane.xml \
+	services/kube-control-plane-secure.xml \
 	services/kube-controller-manager.xml \
+	services/kube-controller-manager-secure.xml \
+	services/kube-nodeport-services.xml \
 	services/kube-scheduler.xml \
-	services/kubelet-worker.xml \
+	services/kube-scheduler-secure.xml \
+	services/kube-worker.xml \
 	services/ldaps.xml \
 	services/ldap.xml \
 	services/libvirt-tls.xml \
