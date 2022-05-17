@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>Secure SNMP (TLS)</short>
+  <description>Simple Network Management Protocol over TLS/DTLS is an "Internet-standard protocol for managing devices on IP networks" protected by TLS. Enable this service if you run SNMP agent (server).</description>
+  <port port="10161" protocol="tcp"/>
+  <port port="10161" protocol="udp"/>
+</service>
