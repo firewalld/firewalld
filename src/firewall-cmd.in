@@ -540,7 +540,7 @@ def try_nm_get_interfaces_in_zone(zone):
             pass
     return []
 
-parser = argparse.ArgumentParser(usage="see firewall-cmd man page",
+parser = argparse.ArgumentParser(usage="'firewall-cmd --help' for usage information or see firewall-cmd(1) man page",
                                  add_help=False)
 
 parser_group_output = parser.add_mutually_exclusive_group()
@@ -1020,12 +1020,6 @@ sys.excepthook = myexcepthook
 
 # Check various impossible combinations of options
 
-if not (options_standalone or options_ipset or \
-        options_icmptype or options_service or options_helper or \
-        options_config or options_zone_ops or options_policy or \
-        options_direct or options_permanent_only):
-    cmd.fail(parser.format_usage() + "No option specified.")
-
 if options_standalone and (options_zone or options_permanent or \
                            options_direct or options_permanent_only or \
                            options_ipset or options_policy):
@@ -1152,6 +1146,20 @@ except FirewallError as msg:
     cmd.print_and_exit("Error: %s" % msg, code)
 
 fw.setExceptionHandler(cmd.exception_handler)
+
+if not (options_standalone or options_ipset or \
+        options_icmptype or options_service or options_helper or \
+        options_config or options_zone_ops or options_policy or \
+        options_direct or options_permanent_only):
+    state = fw.get_property("state")
+    if state == "RUNNING":
+        state = "State: running\n\n"
+    elif state == "FAILED":
+        state = "State: failed\n\n"
+    else:
+        state = "State: not running\n\n"
+    cmd.fail(state + "No options specified\n" + parser.format_usage()[:-1])
+
 if not fw.connected:
     if a.state:
         cmd.print_and_exit ("not running", errors.NOT_RUNNING)
