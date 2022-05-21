@@ -230,7 +230,7 @@
             <term><methodname>getLogDenied</methodname>() &rarr; s</term>
             <listitem>
               <para>
-		Retruns the LogDenied value.
+		Returns the LogDenied value.
 		If LogDenied is enabled, then logging rules are added right before reject and drop rules in the INPUT, FORWARD and OUTPUT chains for the default rules and also final reject and drop rules in zones.
 		Possible values are: <literal>all</literal>, <literal>unicast</literal>, <literal>broadcast</literal>, <literal>multicast</literal> and <literal>off</literal>.
 		The default value is <literal>off</literal>
@@ -252,7 +252,7 @@
               <para>
                 Return runtime settings of given <replaceable>service</replaceable>.
                 For getting permanent settings see <link linkend="FirewallD1.config.service.Methods.getSettings2">org.fedoraproject.FirewallD1.config.service.Methods.getSettings2</link>.
-                Settings are a dictionary indexed by keywords. For the type of each value see below. If the value is empty it may be ommitted.
+                Settings are a dictionary indexed by keywords. For the type of each value see below. If the value is empty it may be omitted.
               </para>
               <para>
                 <variablelist>
@@ -3510,7 +3510,7 @@
             <term><methodname>getSettings</methodname>() &rarr; (ssssa{ss}as)</term>
             <listitem>
               <para>
-                Return permament settings of the ipset.
+                Return permanent settings of the ipset.
 		For getting runtime settings see <link linkend="FirewallD1.ipset.Methods.getIPSetSettings">org.fedoraproject.FirewallD1.ipset.Methods.getIPSetSettings</link>.
                 Settings are in format: <parameter>version</parameter>, <parameter>name</parameter>, <parameter>description</parameter>, <parameter>type</parameter>, dictionary of <parameter>options</parameter> and array of <parameter>entries</parameter>.
               </para>
@@ -4934,7 +4934,7 @@
               <para>
                 Return runtime settings of given <replaceable>service</replaceable>.
                 For getting runtime settings see <link linkend="FirewallD1.Methods.getServiceSettings2">org.fedoraproject.FirewallD1.Methods.getServiceSettings2</link>.
-                Settings are a dictionary indexed by keywords. For the type of each value see below. If the value is empty it may be ommitted.
+                Settings are a dictionary indexed by keywords. For the type of each value see below. If the value is empty it may be omitted.
               </para>
               <para>
                 <variablelist>
