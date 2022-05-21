@@ -106,7 +106,7 @@ rule [family="ipv4|ipv6"] [priority="priority"]
       If the rule family is provided, it can be either "ipv4" or "ipv6", which limits the rule to IPv4 or IPv6. If the rule family is not provided, the rule will be added for IPv4 and IPv6. If source or destination addresses are used in a rule, then the rule family need to be provided. This is also the case for port/packet forwarding.
       </para>
       <para>
-      If the rule priority is provided, it can be in the range of -32768 to 32767 where lower values have higher precendence. Rich rules are sorted by priority. Ordering for rules with the same priority value is undefined. A negative priority value will be executed before other firewalld primitives. A positive priority value will be executed after other firewalld primitives. A priority value of 0 will place the rule in a chain based on the action as per the "Information about logging and actions" below.
+      If the rule priority is provided, it can be in the range of -32768 to 32767 where lower values have higher precedence. Rich rules are sorted by priority. Ordering for rules with the same priority value is undefined. A negative priority value will be executed before other firewalld primitives. A positive priority value will be executed after other firewalld primitives. A priority value of 0 will place the rule in a chain based on the action as per the "Information about logging and actions" below.
       </para>
     </refsect2>
 
