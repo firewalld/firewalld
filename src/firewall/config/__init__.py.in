@@ -93,6 +93,8 @@ set_default_config_paths('/usr/lib/firewalld')
 
 FIREWALLD_LOGFILE = '/var/log/firewalld'
 
+FIREWALLD_LOGTARGET = '@DEFAULT_LOG_TARGET@'
+
 FIREWALLD_PIDFILE = "/var/run/firewalld.pid"
 
 FIREWALLD_TEMPDIR = '/run/firewalld'
