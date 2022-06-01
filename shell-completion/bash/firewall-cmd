@@ -76,6 +76,7 @@ OPTIONS_IPSET="${OPTIONS_IPSETACTION_ACTION} ${OPTIONS_IPSET_ADAPT_QUERY}"
 OPTIONS_PERMANENT_ONLY="--new-icmptype= --new-icmptype-from-file= --delete-icmptype= \
                         --new-service= --new-service-from-file= --delete-service= \
                         --new-zone= --new-zone-from-file= --delete-zone= \
+                        --load-zone-defaults= \
                         --new-ipset= --new-helper-from-file= --delete-ipset= \
                         --new-helper= --new-helper-from-file= --delete-helper= \
                         --get-target --set-target= \
@@ -133,7 +134,7 @@ _firewall_cmd()
         ;;
     --new-*)
         ;;
-    --zone|--set-default-zone|--info-zone|--path-zone)
+    --zone|--set-default-zone|--info-zone|--path-zone|--load-zone-defaults|--delete-zone)
         if [[ ${words[@]} == *--permanent* ]]; then
           COMPREPLY=( $( compgen -W '`firewall-cmd --permanent --get-zones`' -- "$cur" ) )
         else
