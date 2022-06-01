@@ -39,7 +39,7 @@ OPTIONS_CONFIG="--get-zones --get-services --get-icmptypes --get-helpers \
 
 OPTIONS_ZONE_INTERFACES_SOURCES="\
             --add-interface= --remove-interface= --query-interface= \
-            --list-interfaces --change-interface= --change-zone= \
+            --list-interfaces --change-interface= \
             --add-source= --remove-source= --query-source= \
             --change-source= --list-sources"
 
@@ -203,7 +203,7 @@ _firewall_cmd()
         fi
 
         ;;
-    --*-interface|--change-zone)
+    --*-interface)
         _available_interfaces
         ;;
     --permanent)
