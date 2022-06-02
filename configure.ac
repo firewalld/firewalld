@@ -141,6 +141,12 @@ AC_ARG_WITH([ipset],
        [AC_PATH_PROG([IPSET], [ipset], [/bin/false], [$FW_TOOLS_PATH])])
 AC_SUBST(IPSET)
 
+DEFAULT_LOG_TARGET=${DEFAULT_LOG_TARGET:-mixed}
+AC_ARG_VAR([DEFAULT_LOG_TARGET], m4_flatten([
+            Select the default logging backend. One of: mixed, syslog, file, console.
+            Mixed means both syslog and file targets. Mixed is the default.
+           ]))
+
 #############################################################
 
 AC_SUBST([GETTEXT_PACKAGE], '[PKG_NAME]')
