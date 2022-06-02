@@ -176,6 +176,7 @@ CONFIG_FILES = \
 	services/ident.xml \
 	services/imaps.xml \
 	services/imap.xml \
+	services/ipfs.xml \
 	services/ipp-client.xml \
 	services/ipp.xml \
 	services/ipsec.xml \
