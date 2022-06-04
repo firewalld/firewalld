@@ -193,6 +193,8 @@ CONFIG_FILES = \
 	services/kshell.xml \
 	services/kubelet.xml \
 	services/kubelet-readonly.xml \
+	services/kubelet-worker.xml \
+	services/kube-api.xml \
 	services/kube-apiserver.xml \
 	services/kube-control-plane.xml \
 	services/kube-control-plane-secure.xml \

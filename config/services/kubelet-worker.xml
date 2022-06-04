@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>Kubernetes Worker Node</short>
+  <description>Backwards compatibility after service renaming</description>
+  <include service="kube-worker" />
+</service>
