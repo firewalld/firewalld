@@ -77,4 +77,3 @@ class FirewallPolicies(object):
 
     def query_lockdown(self):
         return self._lockdown
-

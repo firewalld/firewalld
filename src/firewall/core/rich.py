@@ -760,7 +760,7 @@ class Rich_Rule(object):
 
         # other element and not empty?
         elif self.element is not None:
-            raise FirewallError(errors.INVALID_RULE, "Unknown element %s" % 
+            raise FirewallError(errors.INVALID_RULE, "Unknown element %s" %
                                 type(self.element))
 
         # log

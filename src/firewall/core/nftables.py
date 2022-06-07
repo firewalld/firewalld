@@ -1282,7 +1282,7 @@ class nftables(object):
 
         return rules
 
-    def build_policy_tcp_mss_clamp_rules(self, enable, policy, tcp_mss_clamp_value, 
+    def build_policy_tcp_mss_clamp_rules(self, enable, policy, tcp_mss_clamp_value,
                                       destination=None, rich_rule=None):
         table = "filter"
         _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX)

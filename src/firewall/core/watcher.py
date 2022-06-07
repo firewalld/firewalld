@@ -45,7 +45,7 @@ class Watcher(object):
 
     def get_watches(self):
         return self._monitors.keys()
-        
+
     def has_watch(self, filename):
         return filename in self._monitors
 

@@ -71,7 +71,7 @@ class Firewall(object):
     def __init__(self, offline=False):
         self._firewalld_conf = firewalld_conf(config.FIREWALLD_CONF)
         self._offline = offline
-        
+
         if not offline:
             self.ip4tables_backend = ipXtables.ip4tables(self)
             self.ip6tables_backend = ipXtables.ip6tables(self)

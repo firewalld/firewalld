@@ -41,7 +41,7 @@ def command_of_pid(pid):
     return cmd
 
 def pid_of_sender(bus, sender):
-    """ Get pid from sender string using 
+    """ Get pid from sender string using
     org.freedesktop.DBus.GetConnectionUnixProcessID """
 
     dbus_obj = bus.get_object('org.freedesktop.DBus', '/org/freedesktop/DBus')
@@ -54,7 +54,7 @@ def pid_of_sender(bus, sender):
     return pid
 
 def uid_of_sender(bus, sender):
-    """ Get user id from sender string using 
+    """ Get user id from sender string using
     org.freedesktop.DBus.GetConnectionUnixUser """
 
     dbus_obj = bus.get_object('org.freedesktop.DBus', '/org/freedesktop/DBus')
@@ -76,7 +76,7 @@ def user_of_uid(uid):
     return pws[0]
 
 def context_of_sender(bus, sender):
-    """ Get SELinux context from sender string using 
+    """ Get SELinux context from sender string using
     org.freedesktop.DBus.GetConnectionSELinuxSecurityContext """
 
     dbus_obj = bus.get_object('org.freedesktop.DBus', '/org/freedesktop/DBus')
