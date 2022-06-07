@@ -100,10 +100,10 @@ def common_startElement(obj, name, attrs):
             else:
                 log.warning("Protocol '%s' already set, ignoring.",
                             attrs["value"])
-    
+
     elif name == "tcp-mss-clamp":
         if obj._rule:
-            if obj._rule.element:            
+            if obj._rule.element:
                 log.warning("Invalid rule: More than one element in rule '%s', ignoring.",
                             str(obj._rule))
                 obj._rule_error = True

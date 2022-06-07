@@ -27,7 +27,7 @@ __all__ = [ "getPortID", "getPortRange", "portStr", "getServiceName",
             "check_single_address", "check_mac", "uniqify", "ppid_of_pid",
             "max_zone_name_len", "checkUser", "checkUid", "checkCommand",
             "checkContext", "joinArgs", "splitArgs",
-            "max_policy_name_len", "checkTcpMssClamp", 
+            "max_policy_name_len", "checkTcpMssClamp",
             "stripNonPrintableCharacters"]
 
 import socket
@@ -263,7 +263,7 @@ def getServiceName(port, proto):
 
 def checkIP(ip):
     """ Check IPv4 address.
-    
+
     @param ip address string
     @return True if address is valid, else False
     """
@@ -284,7 +284,7 @@ def normalizeIP6(ip):
 
 def checkIP6(ip):
     """ Check IPv6 address.
-    
+
     @param ip address string
     @return True if address is valid, else False
     """

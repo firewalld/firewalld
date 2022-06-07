@@ -157,7 +157,7 @@ class TestFirewallDInterfaceConfig(unittest.TestCase):
             listServices()
             getServiceByName(String name)
             addService(String name, Dict of {String, Variant} settings)
-            
+
         /org/fedoraproject/FirewallD1/config/service/<id>
            getSettings()
            loadDefaults()
@@ -242,7 +242,7 @@ class TestFirewallDInterfaceConfig(unittest.TestCase):
             listIcmpTypes()
             getIcmpTypeByName(String name)
             addIcmpType(String name, Dict of {String, Variant} settings)
-            
+
         /org/fedoraproject/FirewallD1/config/icmptype/<id>
            getSettings()
            loadDefaults()

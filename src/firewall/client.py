@@ -482,7 +482,7 @@ class FirewallClientConfigZone(object):
             dbus_interface=config.dbus.DBUS_INTERFACE_CONFIG_ZONE)
         self.fw_properties = dbus.Interface(
             self.dbus_obj, dbus_interface='org.freedesktop.DBus.Properties')
-        #TODO: check interface version and revision (need to match client 
+        #TODO: check interface version and revision (need to match client
         # version)
 
     @handle_exceptions
@@ -3155,7 +3155,7 @@ class FirewallClient(object):
     @handle_exceptions
     def enablePanicMode(self):
         self.fw.enablePanicMode()
-    
+
     @handle_exceptions
     def disablePanicMode(self):
         self.fw.disablePanicMode()

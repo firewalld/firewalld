@@ -138,7 +138,7 @@ Zone Options
 Policy Options
   --get-policies       Print predefined policies
   --list-all-policies  List everything added for or enabled in all policies
-  --new-policy=<policy> 
+  --new-policy=<policy>
                        Add a new empty policy
   --new-policy-from-file=<filename> [--name=<policy>]
                        Add a new policy from file with optional name override [P only]
@@ -1720,7 +1720,7 @@ try:
 
         if a.type=='hash:mac' and a.family:
             cmd.fail(parser.format_usage() + "--family is not compatible with the hash:mac type")
-        
+
         settings = FirewallClientIPSetSettings()
         settings.setType(a.type)
         if a.option:

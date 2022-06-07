@@ -63,7 +63,7 @@ class lockdown_whitelist_ContentHandler(IO_Object_ContentHandler):
                 try:
                     uid = int(attrs["id"])
                 except ValueError:
-                    log.error("Parse Error: %s is not a valid uid" % 
+                    log.error("Parse Error: %s is not a valid uid" %
                               attrs["id"])
                     return
                 self.item.add_uid(uid)
@@ -78,7 +78,6 @@ class lockdown_whitelist_ContentHandler(IO_Object_ContentHandler):
                 log.error("Parse Error: no context")
                 return
             self.item.add_context(attrs["context"])
-            
 
         else:
             log.error('Unknown XML element %s' % name)

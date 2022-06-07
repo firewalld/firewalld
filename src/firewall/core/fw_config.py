@@ -122,7 +122,7 @@ class FirewallConfig(object):
             self._direct = None
 
         self.__init_vars()
-    
+
     def get_all_io_objects_dict(self):
         """
         Returns a dict of dicts of all permanent config objects.
@@ -507,7 +507,7 @@ class FirewallConfig(object):
                 else:
                     # builtin hidden, no update needed
                     return (None, None)
-            
+
         # icmptype not known to firewalld, yet (timeout, ..)
         return (None, None)
 
@@ -709,7 +709,7 @@ class FirewallConfig(object):
                 else:
                     # builtin hidden, no update needed
                     return (None, None)
-            
+
         # service not known to firewalld, yet (timeout, ..)
         return (None, None)
 
@@ -921,7 +921,7 @@ class FirewallConfig(object):
                 else:
                     # builtin hidden, no update needed
                     return (None, None)
-            
+
         # zone not known to firewalld, yet (timeout, ..)
         return (None, None)
 

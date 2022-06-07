@@ -87,7 +87,7 @@ class ChooserButton(object):
             hbox = self.button.get_child()
             hbox.pack_start(self._icon, True, True, 0)
             hbox.reorder_child(self._icon, 0)
-            
+
         self._icon.set_from_stock(name, size)
 
     def reset(self):
@@ -137,9 +137,9 @@ class ChooserButton(object):
 
 
 class ToolChooserButton(object):
-    
+
     def __init__(self, button, default_label=''):
-        
+
         self.button = button
         self.default_label = default_label
 

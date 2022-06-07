@@ -289,4 +289,3 @@ def check_address(ipv, addr):
     if not functions.check_address(ipv, addr):
         raise FirewallError(errors.INVALID_ADDR,
                             "'%s' is not valid %s address" % (addr, ipv))
-

@@ -333,7 +333,7 @@ class FirewallD(DbusServiceObject):
     def completeReload(self, sender=None): # pylint: disable=W0613
         """Completely reload the firewall.
 
-        Completely reload the firewall: Stops firewall, unloads modules and 
+        Completely reload the firewall: Stops firewall, unloads modules and
         starts the firewall again.
         """
         log.debug1("completeReload()")
@@ -869,7 +869,7 @@ class FirewallD(DbusServiceObject):
     @dbus_handle_exceptions
     def enablePanicMode(self, sender=None):
         """Enable panic mode.
-        
+
         All ingoing and outgoing connections and packets will be blocked.
         """
         log.debug1("enablePanicMode()")
@@ -884,7 +884,7 @@ class FirewallD(DbusServiceObject):
     def disablePanicMode(self, sender=None):
         """Disable panic mode.
 
-        Enables normal mode: Allowed ingoing and outgoing connections 
+        Enables normal mode: Allowed ingoing and outgoing connections
         will not be blocked anymore
         """
         log.debug1("disablePanicMode()")
@@ -1897,7 +1897,7 @@ class FirewallD(DbusServiceObject):
         log.debug1("zone.addMasquerade('%s')" % (zone))
         self.accessCheck(sender)
         _zone = self.fw.zone.add_masquerade(zone, timeout, sender)
-        
+
         if timeout > 0:
             tag = GLib.timeout_add_seconds(timeout, self.disableTimedMasquerade,
                                            _zone)
@@ -2140,7 +2140,7 @@ class FirewallD(DbusServiceObject):
         log.debug1("zone.addIcmpBlockInversion('%s')" % (zone))
         self.accessCheck(sender)
         _zone = self.fw.zone.add_icmp_block_inversion(zone, sender)
-        
+
         self.IcmpBlockInversionAdded(_zone)
         return _zone
 
@@ -2213,7 +2213,7 @@ class FirewallD(DbusServiceObject):
         self.accessCheck(sender)
         self.fw.direct.remove_chain(ipv, table, chain)
         self.ChainRemoved(ipv, table, chain)
-    
+
     @dbus_polkit_require_auth(config.dbus.PK_ACTION_DIRECT_INFO)
     @dbus_service_method_deprecated(config.dbus.DBUS_INTERFACE_DIRECT)
     @dbus_service_method(config.dbus.DBUS_INTERFACE_DIRECT, in_signature='sss',
@@ -2301,7 +2301,7 @@ class FirewallD(DbusServiceObject):
         self.accessCheck(sender)
         self.fw.direct.remove_rule(ipv, table, chain, priority, args)
         self.RuleRemoved(ipv, table, chain, priority, args)
-    
+
     @dbus_polkit_require_auth(config.dbus.PK_ACTION_DIRECT)
     @dbus_service_method_deprecated(config.dbus.DBUS_INTERFACE_DIRECT)
     @dbus_service_method(config.dbus.DBUS_INTERFACE_DIRECT, in_signature='sss',
@@ -2641,4 +2641,3 @@ class FirewallD(DbusServiceObject):
         helper = dbus_to_python(helper, str)
         log.debug1("getHelperSettings(%s)", helper)
         return self.fw.helper.get_helper(helper).export_config()
-
