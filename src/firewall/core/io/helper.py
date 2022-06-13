@@ -42,18 +42,18 @@ class Helper(IO_Object):
         ( "family", "", ),                    # s
         ( "module", "", ),                    # s
         ( "ports", [ ( "", "" ), ], ),        # a(ss)
-        )
+    )
     DBUS_SIGNATURE = '(sssssa(ss))'
     ADDITIONAL_ALNUM_CHARS = [ "-", "." ]
     PARSER_REQUIRED_ELEMENT_ATTRS = {
         "short": None,
         "description": None,
         "helper": [ "module" ],
-        }
+    }
     PARSER_OPTIONAL_ELEMENT_ATTRS = {
         "helper": [ "name", "version", "family" ],
         "port": [ "port", "protocol" ],
-        }
+    }
 
     def __init__(self):
         super(Helper, self).__init__()

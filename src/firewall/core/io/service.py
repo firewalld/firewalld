@@ -46,13 +46,13 @@ class Service(IO_Object):
         ( "source_ports", [ ( "", "" ), ], ),
         ( "includes", [ "" ], ),
         ( "helpers", [ "", ], ),
-        )
+    )
     ADDITIONAL_ALNUM_CHARS = [ "_", "-" ]
     PARSER_REQUIRED_ELEMENT_ATTRS = {
         "short": None,
         "description": None,
         "service": None,
-        }
+    }
     PARSER_OPTIONAL_ELEMENT_ATTRS = {
         "service": [ "name", "version" ],
         "port": [ "port", "protocol" ],
@@ -62,7 +62,7 @@ class Service(IO_Object):
         "source-port": [ "port", "protocol" ],
         "include": [ "service" ],
         "helper": [ "name" ],
-        }
+    }
 
     def __init__(self):
         super(Service, self).__init__()

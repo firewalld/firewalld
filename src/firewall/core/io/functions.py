@@ -38,30 +38,36 @@ from firewall.core.io.firewalld_conf import firewalld_conf
 def check_on_disk_config(fw):
     fw_config = FirewallConfig(fw)
     readers = {
-        "ipset":    {"reader": ipset_reader,
-                     "add": fw_config.add_ipset,
-                     "dirs": [config.FIREWALLD_IPSETS, config.ETC_FIREWALLD_IPSETS],
-                    },
-        "helper":   {"reader": helper_reader,
-                     "add": fw_config.add_helper,
-                     "dirs": [config.FIREWALLD_HELPERS, config.ETC_FIREWALLD_HELPERS],
-                    },
-        "icmptype": {"reader": icmptype_reader,
-                     "add": fw_config.add_icmptype,
-                     "dirs": [config.FIREWALLD_ICMPTYPES, config.ETC_FIREWALLD_ICMPTYPES],
-                    },
-        "service":  {"reader": service_reader,
-                     "add": fw_config.add_service,
-                     "dirs": [config.FIREWALLD_SERVICES, config.ETC_FIREWALLD_SERVICES],
-                    },
-        "zone":     {"reader": zone_reader,
-                     "add": fw_config.add_zone,
-                     "dirs": [config.FIREWALLD_ZONES, config.ETC_FIREWALLD_ZONES],
-                    },
-        "policy":   {"reader": policy_reader,
-                     "add": fw_config.add_policy_object,
-                     "dirs": [config.FIREWALLD_POLICIES, config.ETC_FIREWALLD_POLICIES],
-                    },
+        "ipset": {
+            "reader": ipset_reader,
+            "add": fw_config.add_ipset,
+            "dirs": [config.FIREWALLD_IPSETS, config.ETC_FIREWALLD_IPSETS],
+        },
+        "helper": {
+            "reader": helper_reader,
+            "add": fw_config.add_helper,
+            "dirs": [config.FIREWALLD_HELPERS, config.ETC_FIREWALLD_HELPERS],
+        },
+        "icmptype": {
+            "reader": icmptype_reader,
+            "add": fw_config.add_icmptype,
+            "dirs": [config.FIREWALLD_ICMPTYPES, config.ETC_FIREWALLD_ICMPTYPES],
+        },
+        "service": {
+            "reader": service_reader,
+            "add": fw_config.add_service,
+            "dirs": [config.FIREWALLD_SERVICES, config.ETC_FIREWALLD_SERVICES],
+        },
+        "zone": {
+            "reader": zone_reader,
+            "add": fw_config.add_zone,
+            "dirs": [config.FIREWALLD_ZONES, config.ETC_FIREWALLD_ZONES],
+        },
+        "policy": {
+            "reader": policy_reader,
+            "add": fw_config.add_policy_object,
+            "dirs": [config.FIREWALLD_POLICIES, config.ETC_FIREWALLD_POLICIES],
+        },
     }
     for reader in readers.keys():
         for _dir in readers[reader]["dirs"]:

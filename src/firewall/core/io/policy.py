@@ -462,7 +462,7 @@ def common_check_config(obj, config, item, all_config, all_io_objects):
                     if ict.destination and obj_rich.family not in ict.destination:
                         ex = FirewallError(errors.INVALID_ICMPTYPE,
                                            "{} '{}': rich rule family '{}' conflicts with icmp type '{}'".format(
-                                           obj_type, obj.name, obj_rich.family, obj_rich.element.name))
+                                                obj_type, obj.name, obj_rich.family, obj_rich.element.name))
                         ict_unsupported = all_io_objects.get("icmptypes_unsupported", {}).get(obj_rich.element.name)
                         if ict_unsupported and ict_unsupported.destination and \
                            obj_rich.family in ict_unsupported.destination:
@@ -737,7 +737,7 @@ class Policy(IO_Object):
         ( "priority", 0 ),                             # i
         ( "ingress_zones", [ "" ] ),                   # as
         ( "egress_zones", [ "" ] ),                    # as
-        )
+    )
     ADDITIONAL_ALNUM_CHARS = [ "_", "-", "/" ]
     PARSER_REQUIRED_ELEMENT_ATTRS = {
         "short": None,
@@ -764,7 +764,7 @@ class Policy(IO_Object):
         "limit": [ "value" ],
         "ingress-zone": [ "name" ],
         "egress-zone": [ "name" ],
-        }
+    }
     PARSER_OPTIONAL_ELEMENT_ATTRS = {
         "policy": [ "version", "priority" ],
         "forward-port": [ "to-port", "to-addr" ],
@@ -775,7 +775,7 @@ class Policy(IO_Object):
         "nflog": [ "group", "prefix", "queue-size" ],
         "reject": [ "type" ],
         "tcp-mss-clamp": [ "value" ],
-        }
+    }
 
     def __init__(self):
         super(Policy, self).__init__()
@@ -970,8 +970,7 @@ class Policy(IO_Object):
             if len(checked_name) > max_policy_name_len():
                 raise FirewallError(errors.INVALID_NAME,
                                     "Policy '{}': name has {} chars, max is {}".format(
-                                    name, len(checked_name),
-                                    max_policy_name_len()))
+                                        name, len(checked_name), max_policy_name_len()))
 
 # PARSER
 

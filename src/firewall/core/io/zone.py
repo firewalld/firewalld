@@ -58,7 +58,7 @@ class Zone(IO_Object):
         ( "source_ports", [ ( "", "" ), ], ),          # a(ss)
         ( "icmp_block_inversion", False ),             # b
         ( "forward", True ),                           # b
-        )
+    )
     ADDITIONAL_ALNUM_CHARS = [ "_", "-", "/" ]
     PARSER_REQUIRED_ELEMENT_ATTRS = {
         "short": None,
@@ -85,7 +85,7 @@ class Zone(IO_Object):
         "mark": [ "set" ],
         "limit": [ "value" ],
         "icmp-block-inversion": None,
-        }
+    }
     PARSER_OPTIONAL_ELEMENT_ATTRS = {
         "zone": [ "name", "immutable", "target", "version" ],
         "masquerade": [ "enabled" ],
@@ -97,7 +97,7 @@ class Zone(IO_Object):
         "nflog": [ "group", "prefix", "queue-size" ],
         "reject": [ "type" ],
         "tcp-mss-clamp": [ "value" ],
-        }
+    }
 
     @staticmethod
     def index_of(element):
@@ -220,8 +220,7 @@ class Zone(IO_Object):
             if len(checked_name) > max_zone_name_len():
                 raise FirewallError(errors.INVALID_NAME,
                                     "Zone '{}': name has {} chars, max is {}".format(
-                                    name, len(checked_name),
-                                    max_zone_name_len()))
+                                        name, len(checked_name), max_zone_name_len()))
 
     def combine(self, zone):
         self.combined = True

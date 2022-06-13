@@ -91,20 +91,20 @@ class LockdownWhitelist(IO_Object):
         ( "contexts", [ "" ] ),   # as
         ( "users", [ "" ] ),      # as
         ( "uids", [ 0 ] )         # ai
-        )
+    )
     DBUS_SIGNATURE = '(asasasai)'
     ADDITIONAL_ALNUM_CHARS = [ "_" ]
     PARSER_REQUIRED_ELEMENT_ATTRS = {
         "whitelist": None,
         "command": [ "name" ],
         "user": None,
-#        "group": None,
+        # "group": None,
         "selinux": [ "context" ],
-        }
+    }
     PARSER_OPTIONAL_ELEMENT_ATTRS = {
         "user": [ "id", "name" ],
-#        "group": [ "id", "name" ],
-        }
+        # "group": [ "id", "name" ],
+    }
 
     def __init__(self, filename):
         super(LockdownWhitelist, self).__init__()

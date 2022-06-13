@@ -39,18 +39,18 @@ class IcmpType(IO_Object):
         ( "short", "" ),             # s
         ( "description", "" ),       # s
         ( "destination", [ "", ], ), # as
-        )
+    )
     DBUS_SIGNATURE = '(sssas)'
     ADDITIONAL_ALNUM_CHARS = [ "_", "-" ]
     PARSER_REQUIRED_ELEMENT_ATTRS = {
         "short": None,
         "description": None,
         "icmptype": None,
-        }
+    }
     PARSER_OPTIONAL_ELEMENT_ATTRS = {
         "icmptype": [ "name", "version" ],
         "destination": [ "ipv4", "ipv6" ],
-        }
+    }
 
     def __init__(self):
         super(IcmpType, self).__init__()
