@@ -2960,7 +2960,7 @@ class FirewallClient(object):
             "config:helper-updated": "config:HelperUpdated",
             "config:helper-removed": "config:HelperRemoved",
             "config:helper-renamed": "config:HelperRenamed",
-            }
+        }
 
         # initialize variables used for connection
         self._init_vars()

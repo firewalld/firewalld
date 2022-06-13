@@ -120,16 +120,16 @@ class Direct(IO_Object):
         ( "rules", [ ( "", "", "", 0, [ "" ] ), ], ),         # a(sssias)
         # passthrough: [ ipv, [ [ arg ] ] ]
         ( "passthroughs", [ ( "", [ "" ]), ], ),              # a(sas)
-        )
+    )
     DBUS_SIGNATURE = '(a(sss)a(sssias)a(sas))'
     PARSER_REQUIRED_ELEMENT_ATTRS = {
         "direct": None,
         "chain": [ "ipv", "table", "chain" ],
         "rule": [ "ipv", "table", "chain", "priority" ],
         "passthrough": [ "ipv" ]
-        }
+    }
     PARSER_OPTIONAL_ELEMENT_ATTRS = {
-        }
+    }
 
     def __init__(self, filename):
         super(Direct, self).__init__()

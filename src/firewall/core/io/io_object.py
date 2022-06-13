@@ -153,11 +153,11 @@ class IO_Object(object):
                 if not isinstance(key, type(skey)):
                     raise FirewallError(errors.INVALID_TYPE,
                                         "'%s' not of type %s, but %s" % (\
-                            key, type(skey), type(key)))
+                                            key, type(skey), type(key)))
                 if not isinstance(value, type(svalue)):
                     raise FirewallError(errors.INVALID_TYPE,
                                         "'%s' not of type %s, but %s" % (\
-                            value, type(svalue), type(value)))
+                                            value, type(svalue), type(value)))
 
     # check required elements and attributes and also optional attributes
     def parser_check_element_attrs(self, name, attrs):

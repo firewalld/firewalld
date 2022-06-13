@@ -56,20 +56,20 @@ IPTABLES_TO_NFT_HOOK = {
     #    "FORWARD": ("forward", 50 + NFT_HOOK_OFFSET),
     #},
     "raw": {
-    #   "PREROUTING": ("prerouting", -300 + NFT_HOOK_OFFSET),
-    #   "OUTPUT": ("output", -300 + NFT_HOOK_OFFSET),
+        # "PREROUTING": ("prerouting", -300 + NFT_HOOK_OFFSET),
+        # "OUTPUT": ("output", -300 + NFT_HOOK_OFFSET),
     },
     "mangle": {
         "PREROUTING": ("prerouting", -150 + NFT_HOOK_OFFSET),
-    #    "POSTROUTING": ("postrouting", -150 + NFT_HOOK_OFFSET),
-    #    "INPUT": ("input", -150 + NFT_HOOK_OFFSET),
-    #    "OUTPUT": ("output", -150 + NFT_HOOK_OFFSET),
-    #    "FORWARD": ("forward", -150 + NFT_HOOK_OFFSET),
+        # "POSTROUTING": ("postrouting", -150 + NFT_HOOK_OFFSET),
+        # "INPUT": ("input", -150 + NFT_HOOK_OFFSET),
+        # "OUTPUT": ("output", -150 + NFT_HOOK_OFFSET),
+        # "FORWARD": ("forward", -150 + NFT_HOOK_OFFSET),
     },
     "nat": {
         "PREROUTING": ("prerouting", -100 + NFT_HOOK_OFFSET),
         "POSTROUTING": ("postrouting", 100 + NFT_HOOK_OFFSET),
-    #    "INPUT": ("input", 100 + NFT_HOOK_OFFSET),
+        # "INPUT": ("input", 100 + NFT_HOOK_OFFSET),
         "OUTPUT": ("output", -100 + NFT_HOOK_OFFSET),
     },
     "filter": {

@@ -95,21 +95,22 @@ class FirewallDConfig(DbusServiceObject):
         self.watcher.add_watch_file(config.FIREWALLD_DIRECT)
         self.watcher.add_watch_file(config.FIREWALLD_CONF)
 
-        dbus_introspection_prepare_properties(self,
-                                              config.dbus.DBUS_INTERFACE_CONFIG,
-                                              { "CleanupOnExit": "readwrite",
-                                                "CleanupModulesOnExit": "readwrite",
-                                                "IPv6_rpfilter": "readwrite",
-                                                "Lockdown": "readwrite",
-                                                "MinimalMark": "readwrite",
-                                                "IndividualCalls": "readwrite",
-                                                "LogDenied": "readwrite",
-                                                "AutomaticHelpers": "readwrite",
-                                                "FirewallBackend": "readwrite",
-                                                "FlushAllOnReload": "readwrite",
-                                                "RFC3964_IPv4": "readwrite",
-                                                "AllowZoneDrifting": "readwrite",
-                                              })
+        dbus_introspection_prepare_properties(self, config.dbus.DBUS_INTERFACE_CONFIG,
+            {
+                "CleanupOnExit": "readwrite",
+                "CleanupModulesOnExit": "readwrite",
+                "IPv6_rpfilter": "readwrite",
+                "Lockdown": "readwrite",
+                "MinimalMark": "readwrite",
+                "IndividualCalls": "readwrite",
+                "LogDenied": "readwrite",
+                "AutomaticHelpers": "readwrite",
+                "FirewallBackend": "readwrite",
+                "FlushAllOnReload": "readwrite",
+                "RFC3964_IPv4": "readwrite",
+                "AllowZoneDrifting": "readwrite",
+            }
+        )
 
     @handle_exceptions
     def _init_vars(self):

@@ -1483,16 +1483,16 @@ class ip6tables(ip4tables):
 
     def build_rfc3964_ipv4_rules(self):
         daddr_list = [
-                     "::0.0.0.0/96", # IPv4 compatible
-                     "::ffff:0.0.0.0/96", # IPv4 mapped
-                     "2002:0000::/24", # 0.0.0.0/8 (the system has no address assigned yet)
-                     "2002:0a00::/24", # 10.0.0.0/8 (private)
-                     "2002:7f00::/24", # 127.0.0.0/8 (loopback)
-                     "2002:ac10::/28", # 172.16.0.0/12 (private)
-                     "2002:c0a8::/32", # 192.168.0.0/16 (private)
-                     "2002:a9fe::/32", # 169.254.0.0/16 (IANA Assigned DHCP link-local)
-                     "2002:e000::/19", # 224.0.0.0/4 (multicast), 240.0.0.0/4 (reserved and broadcast)
-                     ]
+            "::0.0.0.0/96", # IPv4 compatible
+            "::ffff:0.0.0.0/96", # IPv4 mapped
+            "2002:0000::/24", # 0.0.0.0/8 (the system has no address assigned yet)
+            "2002:0a00::/24", # 10.0.0.0/8 (private)
+            "2002:7f00::/24", # 127.0.0.0/8 (loopback)
+            "2002:ac10::/28", # 172.16.0.0/12 (private)
+            "2002:c0a8::/32", # 192.168.0.0/16 (private)
+            "2002:a9fe::/32", # 169.254.0.0/16 (IANA Assigned DHCP link-local)
+            "2002:e000::/19", # 224.0.0.0/4 (multicast), 240.0.0.0/4 (reserved and broadcast)
+        ]
 
         chain_name = "RFC3964_IPv4"
         self.our_chains["filter"].add(chain_name)
