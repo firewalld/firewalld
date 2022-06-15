@@ -112,15 +112,7 @@ my-service-with-include
 ])])
 
 dnl negative test for including service that doesn't exist
-FWD_CHECK([-q --permanent --zone=drop --add-interface=foobar0])
-FWD_CHECK([-q --permanent --zone=drop --add-service=my-service-with-include])
-FWD_CHECK([-q --permanent --service=my-service-with-include --add-include=does-not-exist])
-FWD_RELOAD(101, [ignore], [ignore], 251)
+FWD_CHECK([--permanent --service=my-service-with-include --add-include=does-not-exist], 101, [ignore], [ignore])
+FWD_OFFLINE_CHECK([--service=my-service-with-include --add-include=does-not-exist], 101, [ignore], [ignore])
 
-FWD_CHECK([--zone=public --list-services], 0, [dnl
-dhcpv6-client ssh
-])
-FWD_CHECK([-q --permanent --service=my-service-with-include --remove-include=does-not-exist])
-FWD_RELOAD
-
-FWD_END_TEST([-e '/ERROR: INVALID_SERVICE: does-not-exist/d'])
+FWD_END_TEST([-e '/ERROR: INVALID_SERVICE:/d'])

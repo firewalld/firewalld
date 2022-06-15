@@ -36,7 +36,7 @@ from firewall.errors import FirewallError
 from firewall import config
 from firewall.core.fw import Firewall
 from firewall.functions import joinArgs, splitArgs, getPortRange
-from firewall.core.io.functions import check_config
+from firewall.core.io.functions import check_on_disk_config
 from firewall.core.io.zone import zone_reader
 from firewall.core.io.policy import policy_reader
 from firewall.core.io.service import service_reader
@@ -1152,7 +1152,7 @@ if a.check_config:
     try:
         fw = Firewall(offline=True)
         fw.start()
-        check_config(fw)
+        check_on_disk_config(fw)
     except FirewallError as error:
         cmd.print_and_exit("Configuration error: %s" % error, error.code)
     except Exception as msg:

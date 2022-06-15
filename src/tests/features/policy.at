@@ -50,6 +50,12 @@ AT_DATA([./policies/foobar.xml], [dnl
     <source-port port="1234" protocol="udp" />
     <log prefix="LOG: " level="warning" />
 </rule>
+<rule>
+    <source-port port="1234" protocol="tcp" />
+    <nflog group="1" prefix="NFLOG: " queue-size="10">
+        <limit value="5/m" />
+    </nflog>
+</rule>
 <rule family="ipv6">
     <protocol value="ipv6-icmp" />
     <audit />
@@ -614,6 +620,179 @@ allow-host-ipv6
   egress-zones: HOST
 ])
 
+dnl Verify basic layout for dispatch. These are common amongst all policy types
+dnl and exist even if zero policies are active.
+dnl
+dnl (raw, output): only iptables uses raw for conntrack helpers
+IPTABLES_LIST_RULES([raw], [PREROUTING], 0, [dnl
+PREROUTING_direct all -- 0.0.0.0/0 0.0.0.0/0
+PREROUTING_ZONES all -- 0.0.0.0/0 0.0.0.0/0
+])
+IP6TABLES_LIST_RULES([raw], [PREROUTING], 0, [dnl
+PREROUTING_direct all ::/0 ::/0
+PREROUTING_ZONES all ::/0 ::/0
+])
+dnl (nat, prerouting)
+NFT_LIST_RULES([inet], [nat_PREROUTING], 0, [dnl
+    table inet firewalld {
+        chain nat_PREROUTING {
+            jump nat_PREROUTING_ZONES
+        }
+    }
+])
+IPTABLES_LIST_RULES([nat], [PREROUTING], 0, [dnl
+PREROUTING_direct all -- 0.0.0.0/0 0.0.0.0/0
+PREROUTING_ZONES all -- 0.0.0.0/0 0.0.0.0/0
+])
+IP6TABLES_LIST_RULES([nat], [PREROUTING], 0, [dnl
+PREROUTING_direct all ::/0 ::/0
+PREROUTING_ZONES all ::/0 ::/0
+])
+dnl (nat, output)
+dnl No zones dispatch, so directly dispatch policies
+NFT_LIST_RULES([inet], [nat_OUTPUT], 0, [dnl
+    table inet firewalld {
+        chain nat_OUTPUT {
+            jump nat_OUTPUT_POLICIES_pre
+            jump nat_OUTPUT_POLICIES_post
+        }
+    }
+])
+IPTABLES_LIST_RULES([nat], [OUTPUT], 0, [dnl
+OUTPUT_direct all -- 0.0.0.0/0 0.0.0.0/0
+OUTPUT_POLICIES_pre all -- 0.0.0.0/0 0.0.0.0/0
+OUTPUT_POLICIES_post all -- 0.0.0.0/0 0.0.0.0/0
+])
+IP6TABLES_LIST_RULES([nat], [OUTPUT], 0, [dnl
+OUTPUT_direct all ::/0 ::/0
+OUTPUT_POLICIES_pre all ::/0 ::/0
+OUTPUT_POLICIES_post all ::/0 ::/0
+])
+dnl (nat, postrouting)
+NFT_LIST_RULES([inet], [nat_POSTROUTING], 0, [dnl
+    table inet firewalld {
+        chain nat_POSTROUTING {
+            jump nat_POSTROUTING_ZONES
+        }
+    }
+])
+IPTABLES_LIST_RULES([nat], [POSTROUTING], 0, [dnl
+POSTROUTING_direct all -- 0.0.0.0/0 0.0.0.0/0
+POSTROUTING_ZONES all -- 0.0.0.0/0 0.0.0.0/0
+])
+IP6TABLES_LIST_RULES([nat], [POSTROUTING], 0, [dnl
+POSTROUTING_direct all ::/0 ::/0
+POSTROUTING_ZONES all ::/0 ::/0
+])
+dnl (mangle, prerouting)
+NFT_LIST_RULES([inet], [mangle_PREROUTING], 0, [dnl
+    table inet firewalld {
+        chain mangle_PREROUTING {
+            jump mangle_PREROUTING_ZONES
+        }
+    }
+])
+IPTABLES_LIST_RULES([mangle], [PREROUTING], 0, [dnl
+PREROUTING_direct all -- 0.0.0.0/0 0.0.0.0/0
+PREROUTING_ZONES all -- 0.0.0.0/0 0.0.0.0/0
+])
+dnl IPv6_rpfilter is in mangle for iptables, nftables is in (filter,
+dnl prerouting)
+IP6TABLES_LIST_RULES([mangle], [PREROUTING], 0, [dnl
+ACCEPT icmpv6 ::/0 ::/0 ipv6-icmptype 134
+ACCEPT icmpv6 ::/0 ::/0 ipv6-icmptype 135
+DROP all ::/0 ::/0 rpfilter validmark invert
+PREROUTING_direct all ::/0 ::/0
+PREROUTING_ZONES all ::/0 ::/0
+])
+dnl (filter, input)
+NFT_LIST_RULES([inet], [filter_INPUT], 0, [dnl
+    table inet firewalld {
+        chain filter_INPUT {
+            ct state established,related accept
+            ct status dnat accept
+            iifname "lo" accept
+            jump filter_INPUT_ZONES
+            ct state invalid drop
+            reject with icmpx admin-prohibited
+        }
+    }
+])
+IPTABLES_LIST_RULES([filter], [INPUT], 0, [dnl
+ACCEPT all -- 0.0.0.0/0 0.0.0.0/0 ctstate RELATED,ESTABLISHED,DNAT
+ACCEPT all -- 0.0.0.0/0 0.0.0.0/0
+INPUT_direct all -- 0.0.0.0/0 0.0.0.0/0
+INPUT_ZONES all -- 0.0.0.0/0 0.0.0.0/0
+DROP all -- 0.0.0.0/0 0.0.0.0/0 ctstate INVALID
+REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-host-prohibited
+])
+IP6TABLES_LIST_RULES([filter], [INPUT], 0, [dnl
+ACCEPT all ::/0 ::/0 ctstate RELATED,ESTABLISHED,DNAT
+ACCEPT all ::/0 ::/0
+INPUT_direct all ::/0 ::/0
+INPUT_ZONES all ::/0 ::/0
+DROP all ::/0 ::/0 ctstate INVALID
+REJECT all ::/0 ::/0 reject-with icmp6-adm-prohibited
+])
+dnl (filter, forward)
+NFT_LIST_RULES([inet], [filter_FORWARD], 0, [dnl
+    table inet firewalld {
+        chain filter_FORWARD {
+            ct state established,related accept
+            ct status dnat accept
+            iifname "lo" accept
+            ip6 daddr { ::/96, ::ffff:0.0.0.0/96, 2002::/24, 2002:a00::/24, 2002:7f00::/24, 2002:a9fe::/32, 2002:ac10::/28, 2002:c0a8::/32, 2002:e000::/19 } reject with icmpv6 addr-unreachable
+            jump filter_FORWARD_ZONES
+            ct state invalid drop
+            reject with icmpx admin-prohibited
+        }
+    }
+])
+IPTABLES_LIST_RULES([filter], [FORWARD], 0, [dnl
+ACCEPT all -- 0.0.0.0/0 0.0.0.0/0 ctstate RELATED,ESTABLISHED,DNAT
+ACCEPT all -- 0.0.0.0/0 0.0.0.0/0                                 
+FORWARD_direct all -- 0.0.0.0/0 0.0.0.0/0
+FORWARD_ZONES all -- 0.0.0.0/0 0.0.0.0/0
+DROP all -- 0.0.0.0/0 0.0.0.0/0 ctstate INVALID
+REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-host-prohibited
+])
+IP6TABLES_LIST_RULES([filter], [FORWARD], 0, [dnl
+ACCEPT all ::/0 ::/0 ctstate RELATED,ESTABLISHED,DNAT
+ACCEPT all ::/0 ::/0
+FORWARD_direct all ::/0 ::/0
+RFC3964_IPv4 all ::/0 ::/0
+FORWARD_ZONES all ::/0 ::/0
+DROP all ::/0 ::/0 ctstate INVALID
+REJECT all ::/0 ::/0 reject-with icmp6-adm-prohibited
+])
+dnl (filter, output)
+NFT_LIST_RULES([inet], [filter_OUTPUT], 0, [dnl
+    table inet firewalld {
+        chain filter_OUTPUT {
+            ct state established,related accept
+            oifname "lo" accept
+            ip6 daddr { ::/96, ::ffff:0.0.0.0/96, 2002::/24, 2002:a00::/24, 2002:7f00::/24, 2002:a9fe::/32, 2002:ac10::/28, 2002:c0a8::/32, 2002:e000::/19 } reject with icmpv6 addr-unreachable
+            jump filter_OUTPUT_POLICIES_pre
+            jump filter_OUTPUT_POLICIES_post
+        }
+    }
+])
+IPTABLES_LIST_RULES([filter], [OUTPUT], 0, [dnl
+ACCEPT all -- 0.0.0.0/0 0.0.0.0/0 ctstate RELATED,ESTABLISHED
+ACCEPT all -- 0.0.0.0/0 0.0.0.0/0
+OUTPUT_direct all -- 0.0.0.0/0 0.0.0.0/0
+OUTPUT_POLICIES_pre all -- 0.0.0.0/0 0.0.0.0/0
+OUTPUT_POLICIES_post all -- 0.0.0.0/0 0.0.0.0/0
+])
+IP6TABLES_LIST_RULES([filter], [OUTPUT], 0, [dnl
+ACCEPT all ::/0 ::/0 ctstate RELATED,ESTABLISHED
+ACCEPT all ::/0 ::/0
+OUTPUT_direct all ::/0 ::/0
+RFC3964_IPv4 all ::/0 ::/0
+OUTPUT_POLICIES_pre all ::/0 ::/0
+OUTPUT_POLICIES_post all ::/0 ::/0
+])
+
 dnl Verify zone --> HOST is dispatched correctly (INPUT).
 dnl
 FWD_CHECK([--policy=foobar --add-ingress-zone="public"], 0, [ignore])
@@ -712,6 +891,17 @@ NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
 IPTABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
 ])
 IP6TABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
+])
+dnl (nat, output)
+NFT_LIST_RULES([inet], [nat_OUTPUT_POLICIES_pre], 0, [dnl
+    table inet firewalld {
+        chain nat_OUTPUT_POLICIES_pre {
+        }
+    }
+])
+IPTABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
+])
+IP6TABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
 ])
 FWD_CHECK([--policy=foobar --remove-ingress-zone="public"], 0, [ignore])
 FWD_CHECK([--policy=foobar --remove-egress-zone="HOST"], 0, [ignore])
@@ -813,6 +1003,17 @@ IPTABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
 ])
 IP6TABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
 ])
+dnl (nat, output)
+NFT_LIST_RULES([inet], [nat_OUTPUT_POLICIES_pre], 0, [dnl
+    table inet firewalld {
+        chain nat_OUTPUT_POLICIES_pre {
+        }
+    }
+])
+IPTABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
+])
+IP6TABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
+])
 FWD_CHECK([--policy=foobar --remove-ingress-zone="ANY"], 0, [ignore])
 FWD_CHECK([--policy=foobar --remove-egress-zone="HOST"], 0, [ignore])
 
@@ -905,6 +1106,20 @@ IPTABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
 ])
 IP6TABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
 ])
+dnl (nat, output)
+NFT_LIST_RULES([inet], [nat_OUTPUT_POLICIES_pre], 0, [dnl
+    table inet firewalld {
+        chain nat_OUTPUT_POLICIES_pre {
+            oifname "foobar0" jump nat_OUT_policy_foobar
+        }
+    }
+])
+IPTABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
+    OUT_foobar all -- 0.0.0.0/0 0.0.0.0/0
+])
+IP6TABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
+    OUT_foobar all ::/0 ::/0
+])
 FWD_CHECK([--policy=foobar --remove-ingress-zone="HOST"], 0, [ignore])
 FWD_CHECK([--policy=foobar --remove-egress-zone="public"], 0, [ignore])
 
@@ -996,6 +1211,20 @@ NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
 IPTABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
 ])
 IP6TABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
+])
+dnl (nat, output)
+NFT_LIST_RULES([inet], [nat_OUTPUT_POLICIES_pre], 0, [dnl
+    table inet firewalld {
+        chain nat_OUTPUT_POLICIES_pre {
+            jump nat_OUT_policy_foobar
+        }
+    }
+])
+IPTABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
+    OUT_foobar all -- 0.0.0.0/0 0.0.0.0/0
+])
+IP6TABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
+    OUT_foobar all ::/0 ::/0
 ])
 FWD_CHECK([--policy=foobar --remove-ingress-zone="HOST"], 0, [ignore])
 FWD_CHECK([--policy=foobar --remove-egress-zone="ANY"], 0, [ignore])
@@ -1100,6 +1329,17 @@ IPTABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
 IP6TABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
     POST_foobar all ::/0 ::/0
 ])
+dnl (nat, output)
+NFT_LIST_RULES([inet], [nat_OUTPUT_POLICIES_pre], 0, [dnl
+    table inet firewalld {
+        chain nat_OUTPUT_POLICIES_pre {
+        }
+    }
+])
+IPTABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
+])
+IP6TABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
+])
 FWD_CHECK([--policy=foobar --remove-ingress-zone="ANY"], 0, [ignore])
 FWD_CHECK([--policy=foobar --remove-egress-zone="ANY"], 0, [ignore])
 
@@ -1196,6 +1436,17 @@ IPTABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
 ])
 IP6TABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
     POST_foobar all ::/0 ::/0
+])
+dnl (nat, output)
+NFT_LIST_RULES([inet], [nat_OUTPUT_POLICIES_pre], 0, [dnl
+    table inet firewalld {
+        chain nat_OUTPUT_POLICIES_pre {
+        }
+    }
+])
+IPTABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
+])
+IP6TABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
 ])
 FWD_CHECK([--policy=foobar --remove-ingress-zone="ANY"], 0, [ignore])
 FWD_CHECK([--policy=foobar --remove-egress-zone="public"], 0, [ignore])
@@ -1297,6 +1548,17 @@ IPTABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
     POST_foobar all -- 0.0.0.0/0 10.10.10.0/24
 ])
 IP6TABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
+])
+dnl (nat, output)
+NFT_LIST_RULES([inet], [nat_OUTPUT_POLICIES_pre], 0, [dnl
+    table inet firewalld {
+        chain nat_OUTPUT_POLICIES_pre {
+        }
+    }
+])
+IPTABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
+])
+IP6TABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
 ])
 FWD_CHECK([--policy=foobar --remove-ingress-zone="ANY"], 0, [ignore])
 FWD_CHECK([--policy=foobar --remove-egress-zone="internal"], 0, [ignore])
@@ -1400,6 +1662,17 @@ IPTABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
 ])
 IP6TABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
 ])
+dnl (nat, output)
+NFT_LIST_RULES([inet], [nat_OUTPUT_POLICIES_pre], 0, [dnl
+    table inet firewalld {
+        chain nat_OUTPUT_POLICIES_pre {
+        }
+    }
+])
+IPTABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
+])
+IP6TABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
+])
 FWD_CHECK([--policy=foobar --remove-ingress-zone="internal"], 0, [ignore])
 FWD_CHECK([--policy=foobar --remove-egress-zone="ANY"], 0, [ignore])
 FWD_CHECK([--zone=internal --remove-interface=foobar1], 0, [ignore])
@@ -1500,6 +1773,17 @@ IPTABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
 ])
 IP6TABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
 ])
+dnl (nat, output)
+NFT_LIST_RULES([inet], [nat_OUTPUT_POLICIES_pre], 0, [dnl
+    table inet firewalld {
+        chain nat_OUTPUT_POLICIES_pre {
+        }
+    }
+])
+IPTABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
+])
+IP6TABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
+])
 FWD_CHECK([--policy=foobar --remove-ingress-zone="internal"], 0, [ignore])
 FWD_CHECK([--policy=foobar --remove-egress-zone="ANY"], 0, [ignore])
 FWD_CHECK([--zone=internal --remove-source=10.10.10.0/24], 0, [ignore])
@@ -1597,6 +1881,17 @@ NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
 IPTABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
 ])
 IP6TABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
+])
+dnl (nat, output)
+NFT_LIST_RULES([inet], [nat_OUTPUT_POLICIES_pre], 0, [dnl
+    table inet firewalld {
+        chain nat_OUTPUT_POLICIES_pre {
+        }
+    }
+])
+IPTABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
+])
+IP6TABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
 ])
 FWD_CHECK([--policy=foobar --remove-ingress-zone="internal"], 0, [ignore])
 FWD_CHECK([--policy=foobar --remove-egress-zone="public"], 0, [ignore])
@@ -1699,6 +1994,17 @@ IPTABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
 ])
 IP6TABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
 ])
+dnl (nat, output)
+NFT_LIST_RULES([inet], [nat_OUTPUT_POLICIES_pre], 0, [dnl
+    table inet firewalld {
+        chain nat_OUTPUT_POLICIES_pre {
+        }
+    }
+])
+IPTABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
+])
+IP6TABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
+])
 FWD_CHECK([--policy=foobar --remove-ingress-zone="internal"], 0, [ignore])
 FWD_CHECK([--policy=foobar --remove-egress-zone="public"], 0, [ignore])
 FWD_CHECK([--zone=internal --remove-interface=foobar1], 0, [ignore])
@@ -1797,6 +2103,17 @@ IPTABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
     POST_foobar all -- 10.10.10.0/24 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
+])
+dnl (nat, output)
+NFT_LIST_RULES([inet], [nat_OUTPUT_POLICIES_pre], 0, [dnl
+    table inet firewalld {
+        chain nat_OUTPUT_POLICIES_pre {
+        }
+    }
+])
+IPTABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
+])
+IP6TABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
 ])
 FWD_CHECK([--policy=foobar --remove-ingress-zone="internal"], 0, [ignore])
 FWD_CHECK([--policy=foobar --remove-egress-zone="public"], 0, [ignore])
@@ -1900,6 +2217,17 @@ IPTABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
     POST_foobar all -- 10.10.10.0/24 10.20.20.0/24
 ])
 IP6TABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
+])
+dnl (nat, output)
+NFT_LIST_RULES([inet], [nat_OUTPUT_POLICIES_pre], 0, [dnl
+    table inet firewalld {
+        chain nat_OUTPUT_POLICIES_pre {
+        }
+    }
+])
+IPTABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
+])
+IP6TABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
 ])
 FWD_CHECK([--policy=foobar --remove-ingress-zone="internal"], 0, [ignore])
 FWD_CHECK([--policy=foobar --remove-egress-zone="public"], 0, [ignore])

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+	<short>Secure SNMPTRAP (TLS)</short>
+	<description>Secure SNMP traps enable an agent to notify the management station of significant events by way of an unsolicited SNMP message. This port is protected by TLS.</description>
+	<port protocol="tcp" port="10162"/>
+	<port protocol="udp" port="10162"/>
+</service>

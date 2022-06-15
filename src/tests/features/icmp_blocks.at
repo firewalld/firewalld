@@ -34,13 +34,13 @@ NFT_LIST_RULES([inet], [filter_IN_policy_foobar_allow], 0, [dnl
 NFT_LIST_RULES([inet], [filter_IN_policy_foobar_deny], 0, [dnl
     table inet firewalld {
         chain filter_IN_policy_foobar_deny {
-            icmp type echo-request reject with icmpx type admin-prohibited
-            icmpv6 type echo-request reject with icmpx type admin-prohibited
-            icmp type echo-reply reject with icmpx type admin-prohibited
-            icmpv6 type echo-reply reject with icmpx type admin-prohibited
-            icmp type redirect reject with icmpx type admin-prohibited
-            icmpv6 type nd-redirect reject with icmpx type admin-prohibited
-            ip6 saddr 1234:5678::/64 icmpv6 type nd-redirect reject with icmpx type admin-prohibited
+            icmp echo-request reject with icmpx admin-prohibited
+            icmpv6 echo-request reject with icmpx admin-prohibited
+            icmp echo-reply reject with icmpx admin-prohibited
+            icmpv6 echo-reply reject with icmpx admin-prohibited
+            icmp redirect reject with icmpx admin-prohibited
+            icmpv6 nd-redirect reject with icmpx admin-prohibited
+            ip6 saddr 1234:5678::/64 icmpv6 nd-redirect reject with icmpx admin-prohibited
         }
     }
 ])
@@ -102,9 +102,9 @@ NFT_LIST_RULES([inet], [filter_IN_policy_foobar_allow], 0, [dnl
 NFT_LIST_RULES([inet], [filter_IN_policy_foobar_deny], 0, [dnl
     table inet firewalld {
         chain filter_IN_policy_foobar_deny {
-            icmp type echo-request reject with icmpx type admin-prohibited
-            icmpv6 type echo-request reject with icmpx type admin-prohibited
-            ip6 saddr 1234:5678::/64 icmpv6 type nd-redirect reject with icmpx type admin-prohibited
+            icmp echo-request reject with icmpx admin-prohibited
+            icmpv6 echo-request reject with icmpx admin-prohibited
+            ip6 saddr 1234:5678::/64 icmpv6 nd-redirect reject with icmpx admin-prohibited
         }
     }
 ])

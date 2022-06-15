@@ -1,0 +1,25 @@
+FWD_START_TEST([policy masquerade w/ ingress interface])
+AT_KEYWORDS(policy zone masquerade gh874)
+
+FWD_CHECK([--permanent --new-zone foobar_zone], 0, [ignore])
+FWD_CHECK([--permanent --new-policy foobar_policy], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar_policy --add-masquerade], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar_policy --add-ingress-zone foobar_zone], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar_policy --add-egress-zone ANY], 0, [ignore])
+FWD_RELOAD()
+
+dnl It's invalid to use masquerade when a zone in the ingress_zones list has
+dnl assigned interfaces. This is due to the underlying firewalls (nftables,
+dnl iptables) not supporting matching iifname in postrouting hooks.
+dnl
+FWD_CHECK([--permanent --zone foobar_zone --add-interface foobar0], 112, [ignore], [ignore])
+
+dnl make sure the on-disk config check also fails
+dnl
+NS_CHECK([sed -i '2a \
+<interface name="foobar" />
+' ./zones/foobar_zone.xml
+])
+FWD_CHECK([--check-config], 112, [ignore], [ignore])
+
+FWD_END_TEST([ignore])

@@ -28,7 +28,7 @@ from firewall.functions import tempFile, readfile, splitArgs, check_mac, portStr
                                check_single_address, check_address, normalizeIP6
 from firewall import config
 from firewall.errors import FirewallError, INVALID_PASSTHROUGH, INVALID_RULE, UNKNOWN_ERROR, INVALID_ADDR
-from firewall.core.rich import Rich_Accept, Rich_Reject, Rich_Drop, Rich_Mark, \
+from firewall.core.rich import Rich_Accept, Rich_Reject, Rich_Drop, Rich_Mark, Rich_NFLog, \
                                Rich_Masquerade, Rich_ForwardPort, Rich_IcmpBlock, Rich_Tcp_Mss_Clamp
 from firewall.core.base import DEFAULT_ZONE_TARGET
 import string
@@ -532,9 +532,11 @@ class ip4tables(object):
     def _detect_wait_option(self):
         wait_option = ""
         ret = runProg(self._command, ["-w", "-L", "-n"])  # since iptables-1.4.20
+        log.debug3("%s: %s: probe for wait option (%s): ret=%u, output=\"%s\"", self.__class__, self._command, "-w", ret[0], ret[1])
         if ret[0] == 0:
             wait_option = "-w"  # wait for xtables lock
             ret = runProg(self._command, ["-w10", "-L", "-n"])  # since iptables > 1.4.21
+            log.debug3("%s: %s: probe for wait option (%s): ret=%u, output=\"%s\"", self.__class__, self._command, "-w10", ret[0], ret[1])
             if ret[0] == 0:
                 wait_option = "-w10"  # wait max 10 seconds
             log.debug2("%s: %s will be using %s option.", self.__class__, self._command, wait_option)
@@ -549,6 +551,7 @@ class ip4tables(object):
         wait_option = ""
         for test_option in ["-w", "--wait=2"]:
             ret = runProg(self._restore_command, [test_option], stdin=temp_file.name)
+            log.debug3("%s: %s: probe for wait option (%s): ret=%u, output=\"%s\"", self.__class__, self._command, test_option, ret[0], ret[1])
             if ret[0] == 0 and "invalid option" not in ret[1] \
                            and "unrecognized option" not in ret[1]:
                 wait_option = test_option
@@ -673,7 +676,13 @@ class ip4tables(object):
                 default_rules["nat"].append("-A %s -j %s_direct" % (chain, chain))
                 self.our_chains["nat"].add("%s_direct" % chain)
 
-                if chain in [ "PREROUTING", "POSTROUTING" ]:
+                if chain in ["OUTPUT"]:
+                    # nat, output does not have zone dispatch
+                    for dispatch_suffix in ["POLICIES_pre", "POLICIES_post"]:
+                        default_rules["nat"].append("-N %s_%s" % (chain, dispatch_suffix))
+                        self.our_chains["nat"].update(set(["%s_%s" % (chain, dispatch_suffix)]))
+                        default_rules["nat"].append("-A %s -j %s_%s" % (chain, chain, dispatch_suffix))
+                else:
                     for dispatch_suffix in ["POLICIES_pre", "ZONES", "POLICIES_post"]:
                         default_rules["nat"].append("-N %s_%s" % (chain, dispatch_suffix))
                         self.our_chains["nat"].update(set(["%s_%s" % (chain, dispatch_suffix)]))
@@ -948,11 +957,11 @@ class ip4tables(object):
                 if target in [DEFAULT_ZONE_TARGET, "REJECT", "%%REJECT%%" ]:
                     rules.append([ add_del_rule, _policy, "-t", table, "%%LOGTYPE%%",
                                    "-j", "LOG", "--log-prefix",
-                                   "\"%s_REJECT: \"" % _policy ])
+                                   "%s_REJECT: " % _policy ])
                 if target == "DROP":
                     rules.append([ add_del_rule, _policy, "-t", table, "%%LOGTYPE%%",
                                    "-j", "LOG", "--log-prefix",
-                                   "\"%s_DROP: \"" % _policy ])
+                                   "%s_DROP: " % _policy ])
 
         if table == "filter" and \
            target in [DEFAULT_ZONE_TARGET, "ACCEPT", "REJECT", "%%REJECT%%", "DROP" ]:
@@ -1021,11 +1030,20 @@ class ip4tables(object):
         chain_suffix = self._rich_rule_chain_suffix_from_log(rich_rule)
         rule = ["-t", table, add_del, "%s_%s" % (_policy, chain_suffix)]
         rule += self._rich_rule_priority_fragment(rich_rule)
-        rule += rule_fragment + [ "-j", "LOG" ]
-        if rich_rule.log.prefix:
-            rule += [ "--log-prefix", "'%s'" % rich_rule.log.prefix ]
-        if rich_rule.log.level:
-            rule += [ "--log-level", "%s" % rich_rule.log.level ]
+        if type(rich_rule.log) == Rich_NFLog:
+            rule += rule_fragment + [ "-j", "NFLOG" ]
+            if rich_rule.log.group:
+                rule += [ "--nflog-group", rich_rule.log.group ]
+            if rich_rule.log.prefix:
+                rule += [ "--nflog-prefix", "%s" % rich_rule.log.prefix ]
+            if rich_rule.log.threshold:
+                rule += [ "--nflog-threshold", rich_rule.log.threshold ]
+        else:
+            rule += rule_fragment + [ "-j", "LOG" ]
+            if rich_rule.log.prefix:
+                rule += [ "--log-prefix", "%s" % rich_rule.log.prefix ]
+            if rich_rule.log.level:
+                rule += [ "--log-level", "%s" % rich_rule.log.level ]
         rule += self._rule_limit(rich_rule.log.limit)
 
         return rule
@@ -1381,7 +1399,7 @@ class ip4tables(object):
                 rules.append([ add_del, final_chain, "-t", table ]
                              + rule_fragment +
                              [ "%%LOGTYPE%%", "-j", "LOG",
-                               "--log-prefix", "\"%s_ICMP_BLOCK: \"" % policy ])
+                               "--log-prefix", "%s_ICMP_BLOCK: " % policy ])
             rules.append([ add_del, final_chain, "-t", table ]
                          + rule_fragment +
                          [ "-j", final_target ])
@@ -1407,7 +1425,7 @@ class ip4tables(object):
                 rule = rule + [ "-t", table, "-p", "%%ICMP%%",
                               "%%LOGTYPE%%",
                               "-j", "LOG", "--log-prefix",
-                              "\"%s_ICMP_BLOCK: \"" % _policy ]
+                              "%s_ICMP_BLOCK: " % _policy ]
                 rules.append(rule)
                 rule_idx += 1
         else:
@@ -1488,7 +1506,7 @@ class ip6tables(ip4tables):
             if self._fw._log_denied in ["unicast", "all"]:
                 rules.append(["-t", "filter", "-I", chain_name,
                               "-d", daddr, "-j", "LOG",
-                              "--log-prefix", "\"RFC3964_IPv4_REJECT: \""])
+                              "--log-prefix", "RFC3964_IPv4_REJECT: "])
 
         # Inject into FORWARD and OUTPUT chains
         rules.append(["-t", "filter", "-I", "OUTPUT", "4",

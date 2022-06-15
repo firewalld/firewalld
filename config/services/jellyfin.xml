@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>Jellyfin</short>
+  <description>Jellyfin is a Free Software Media System that puts you in control of managing and streaming your media.</description>
+  <port protocol="tcp" port="8096"/> <!-- HTTP traffic -->
+  <port protocol="tcp" port="8920"/> <!-- HTTPS traffic -->
+  <include service="ssdp"/> <!-- Auto-discovery -->
+  <port protocol="udp" port="7359"/> <!-- Auto-discovery -->
+</service>

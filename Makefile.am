@@ -1,5 +1,5 @@
 SUBDIRS = config doc po shell-completion src
-DIST_TARGETS = dist-gzip
+DIST_TARGETS = dist-gzip dist-container
 
 EXTRA_DIST = \
 	COPYING \
@@ -43,6 +43,16 @@ tag:
 
 dist: clean-docs update-docs
 
+dist-container:
+	$(PODMAN) build --squash-all -t firewalld -f $(abs_top_srcdir)/Dockerfile $(abs_top_srcdir)
+	$(PODMAN) tag firewalld firewalld:$(PACKAGE_VERSION)
+	$(PODMAN) tag firewalld firewalld:latest
+	$(PODMAN) tag firewalld:$(PACKAGE_VERSION) quay.io/firewalld/firewalld:$(PACKAGE_VERSION)
+	$(PODMAN) tag firewalld:latest quay.io/firewalld/firewalld:latest
+	$(PODMAN) push quay.io/firewalld/firewalld:$(PACKAGE_VERSION)
+	$(PODMAN) push quay.io/firewalld/firewalld:latest
+	$(PODMAN) save --format oci-archive --output firewalld-oci-$(PACKAGE_VERSION).tar firewalld:$(PACKAGE_VERSION)
+
 dist-check:
 	@rm -f _dist_check_failed
 	@(cat config/Makefile.am | sed -n '/^CONFIG_FILES/,/^$$/p' | head -n-1 | tail -n+2) > _config
@@ -80,6 +90,7 @@ check-container check-integration installcheck-integration:
 	$(MAKE) -C src/tests $@
 
 .PHONY: check-container check-integration installcheck-integration
+.PHONY: dist-container
 
 update-docs:
 	$(MAKE) -C doc/xml
@@ -98,10 +109,10 @@ local: distclean
 	@rm -rf /tmp/${PACKAGE_NAME}-$(PACKAGE_VERSION)	
 	@echo "The archive is in ${PACKAGE_NAME}-$(PACKAGE_VERSION).tar.gz"
 
-test-rpm: dist
+test-rpm: dist-gzip
 	@rpmbuild -ta $(PACKAGE_NAME)-$(PACKAGE_VERSION).tar.gz
 
-test-srpm: dist
+test-srpm: dist-gzip
 	@rpmbuild -ts $(PACKAGE_NAME)-$(PACKAGE_VERSION).tar.gz
 
 update-po:

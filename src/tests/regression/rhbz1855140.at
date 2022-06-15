@@ -9,7 +9,7 @@ FWD_RELOAD
 NFT_LIST_RULES([inet], [mangle_PRE_public_allow], 0, [dnl
     table inet firewalld {
         chain mangle_PRE_public_allow {
-            icmpv6 type parameter-problem icmpv6 code no-route mark set mark & 0x00000086 ^ 0x00000086
+            icmpv6 parameter-problem icmpv6 code no-route mark set mark & 0x00000086 ^ 0x00000086
         }
     }
 ])
@@ -18,10 +18,10 @@ NFT_LIST_RULES([inet], [filter_IN_public_allow], 0, [dnl
         chain filter_IN_public_allow {
             tcp dport 22 ct state new,untracked accept
             ip6 daddr fe80::/64 udp dport 546 ct state new,untracked accept
-            icmp type echo-request accept
-            icmpv6 type echo-request accept
-            icmpv6 type nd-neighbor-advert accept
-            icmp type timestamp-request accept
+            icmp echo-request accept
+            icmpv6 echo-request accept
+            icmpv6 nd-neighbor-advert accept
+            icmp timestamp-request accept
         }
     }
 ])

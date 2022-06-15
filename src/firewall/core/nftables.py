@@ -20,6 +20,7 @@
 #
 import copy
 import json
+import ipaddress
 
 from firewall.core.logger import log
 from firewall.functions import check_mac, getPortRange, normalizeIP6, \
@@ -29,7 +30,7 @@ from firewall.errors import FirewallError, UNKNOWN_ERROR, INVALID_RULE, \
                             INVALID_PORT
 from firewall.core.rich import Rich_Accept, Rich_Reject, Rich_Drop, Rich_Mark, \
                                Rich_Masquerade, Rich_ForwardPort, Rich_IcmpBlock, \
-                               Rich_Tcp_Mss_Clamp
+                               Rich_Tcp_Mss_Clamp, Rich_NFLog
 from firewall.core.base import DEFAULT_ZONE_TARGET
 from nftables.nftables import Nftables
 
@@ -69,7 +70,7 @@ IPTABLES_TO_NFT_HOOK = {
         "PREROUTING": ("prerouting", -100 + NFT_HOOK_OFFSET),
         "POSTROUTING": ("postrouting", 100 + NFT_HOOK_OFFSET),
     #    "INPUT": ("input", 100 + NFT_HOOK_OFFSET),
-    #    "OUTPUT": ("output", -100 + NFT_HOOK_OFFSET),
+        "OUTPUT": ("output", -100 + NFT_HOOK_OFFSET),
     },
     "filter": {
         "PREROUTING": ("prerouting", 0 + NFT_HOOK_OFFSET),
@@ -525,15 +526,26 @@ class nftables(object):
                                                     "hook": "%s" % IPTABLES_TO_NFT_HOOK["nat"][chain][0],
                                                     "prio": IPTABLES_TO_NFT_HOOK["nat"][chain][1]}}})
 
-            for dispatch_suffix in ["POLICIES_pre", "ZONES", "POLICIES_post"]:
-                default_rules.append({"add": {"chain": {"family": "inet",
-                                                        "table": TABLE_NAME,
-                                                        "name": "nat_%s_%s" % (chain, dispatch_suffix)}}})
-            for dispatch_suffix in ["ZONES"]:
-                default_rules.append({"add": {"rule":  {"family": "inet",
-                                                        "table": TABLE_NAME,
-                                                        "chain": "nat_%s" % chain,
-                                                        "expr": [{"jump": {"target": "nat_%s_%s" % (chain, dispatch_suffix)}}]}}})
+            if chain in ["OUTPUT"]:
+                # nat, output does not have zone dispatch
+                for dispatch_suffix in ["POLICIES_pre", "POLICIES_post"]:
+                    default_rules.append({"add": {"chain": {"family": "inet",
+                                                            "table": TABLE_NAME,
+                                                            "name": "nat_%s_%s" % (chain, dispatch_suffix)}}})
+                    default_rules.append({"add": {"rule":  {"family": "inet",
+                                                            "table": TABLE_NAME,
+                                                            "chain": "nat_%s" % chain,
+                                                            "expr": [{"jump": {"target": "nat_%s_%s" % (chain, dispatch_suffix)}}]}}})
+            else:
+                for dispatch_suffix in ["POLICIES_pre", "ZONES", "POLICIES_post"]:
+                    default_rules.append({"add": {"chain": {"family": "inet",
+                                                            "table": TABLE_NAME,
+                                                            "name": "nat_%s_%s" % (chain, dispatch_suffix)}}})
+                for dispatch_suffix in ["ZONES"]:
+                    default_rules.append({"add": {"rule":  {"family": "inet",
+                                                            "table": TABLE_NAME,
+                                                            "chain": "nat_%s" % chain,
+                                                            "expr": [{"jump": {"target": "nat_%s_%s" % (chain, dispatch_suffix)}}]}}})
 
         for chain in IPTABLES_TO_NFT_HOOK["filter"].keys():
             default_rules.append({"add": {"chain": {"family": "inet",
@@ -898,7 +910,7 @@ class nftables(object):
                                                      "table": TABLE_NAME,
                                                      "chain": "%s_%s" % (table, _policy),
                                                      "expr": [self._pkttype_match_fragment(self._fw.get_log_denied()),
-                                                              {"log": {"prefix": "\"filter_%s_%s: \"" % (_policy, log_suffix)}}]}}})
+                                                              {"log": {"prefix": "filter_%s_%s: " % (_policy, log_suffix)}}]}}})
 
         if table == "filter" and \
            target in [DEFAULT_ZONE_TARGET, "ACCEPT", "REJECT", "%%REJECT%%", "DROP"]:
@@ -1049,11 +1061,17 @@ class nftables(object):
         chain_suffix = self._rich_rule_chain_suffix_from_log(rich_rule)
 
         log_options = {}
+        if type(rich_rule.log) == Rich_NFLog:
+            log_options["group"] = int(rich_rule.log.group) if rich_rule.log.group else 0
+            if rich_rule.log.threshold:
+                log_options["queue-threshold"] = int(rich_rule.log.threshold)
+        else:
+            if rich_rule.log.level:
+                level = "warn" if "warning" == rich_rule.log.level else rich_rule.log.level
+                log_options["level"] = "%s" % level
+
         if rich_rule.log.prefix:
             log_options["prefix"] = "%s" % rich_rule.log.prefix
-        if rich_rule.log.level:
-            level = "warn" if "warning" == rich_rule.log.level else rich_rule.log.level
-            log_options["level"] = "%s" % level
 
         rule = {"family": "inet",
                 "table": TABLE_NAME,
@@ -1135,8 +1153,8 @@ class nftables(object):
                 family = "ip"
             elif check_address("ipv4", address):
                 family = "ip"
-                addr_len = address.split("/")
-                address = {"prefix": {"addr": addr_len[0], "len": int(addr_len[1])}}
+                normalized_address = ipaddress.IPv4Network(address, strict=False)
+                address = {"prefix": {"addr": normalized_address.network_address.compressed, "len": normalized_address.prefixlen}}
             elif check_single_address("ipv6", address):
                 family = "ip6"
                 address = normalizeIP6(address)
@@ -1513,13 +1531,13 @@ class nftables(object):
                     rule.update(self._rich_rule_priority_fragment(rich_rule))
                     rules.append({add_del: {"rule": rule}})
             else:
-                if self._fw.get_log_denied() != "off" and self._fw.policy.query_icmp_block_inversion(policy):
+                if self._fw.get_log_denied() != "off" and not self._fw.policy.query_icmp_block_inversion(policy):
                     rules.append({add_del: {"rule": {"family": "inet",
                                                      "table": TABLE_NAME,
                                                      "chain": final_chain,
                                                      "expr": (expr_fragments +
                                                               [self._pkttype_match_fragment(self._fw.get_log_denied()),
-                                                               {"log": {"prefix": "\"%s_%s_ICMP_BLOCK: \"" % (table, policy)}}])}}})
+                                                               {"log": {"prefix": "%s_%s_ICMP_BLOCK: " % (table, policy)}}])}}})
                 rules.append({add_del: {"rule": {"family": "inet",
                                                  "table": TABLE_NAME,
                                                  "chain": final_chain,

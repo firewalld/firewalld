@@ -1,0 +1,59 @@
+FWD_START_TEST([ipset entry overlap detect perf])
+AT_KEYWORDS(ipset gh881)
+
+dnl build a large ipset
+dnl
+AT_DATA([./deny_cidr], [])
+NS_CHECK([sh -c '
+for I in $(seq 250); do
+  for J in $(seq 250); do
+    echo "10.${I}.${J}.0/24" >> ./deny_cidr
+  done
+done
+'])
+NS_CHECK([echo "10.254.0.0/16" >> ./deny_cidr])
+
+dnl verify non-overlapping does not error
+dnl
+FWD_CHECK([--permanent --new-ipset=deny_set --type=hash:net --option=family=inet --option=hashsize=16384 --option=maxelem=20000], 0, [ignore])
+NS_CHECK([time firewall-cmd --permanent --ipset=deny_set --add-entries-from-file=./deny_cidr], 0, [ignore], [ignore])
+
+dnl still no overlap
+dnl
+AT_DATA([./deny_cidr], [
+9.0.0.0/8
+11.1.0.0/16
+])
+NS_CHECK([time firewall-cmd --permanent --ipset=deny_set --add-entries-from-file=./deny_cidr], 0, [ignore], [ignore])
+
+dnl verify overlap detection actually detects an overlap
+dnl
+AT_DATA([./deny_cidr], [
+10.1.0.0/16
+10.2.0.0/16
+10.250.0.0/16
+])
+NS_CHECK([time firewall-cmd --permanent --ipset=deny_set --add-entries-from-file=./deny_cidr], 136, [ignore], [ignore])
+
+AT_DATA([./deny_cidr], [
+10.253.0.0/16
+10.253.128.0/17
+])
+NS_CHECK([time firewall-cmd --permanent --ipset=deny_set --add-entries-from-file=./deny_cidr], 136, [ignore], [ignore])
+
+AT_DATA([./deny_cidr], [
+10.1.1.1/32
+])
+NS_CHECK([time firewall-cmd --permanent --ipset=deny_set --add-entries-from-file=./deny_cidr], 136, [ignore], [ignore])
+
+AT_DATA([./deny_cidr], [
+10.0.0.0/8
+10.0.0.0/25
+])
+NS_CHECK([time firewall-cmd --permanent --ipset=deny_set --add-entries-from-file=./deny_cidr], 136, [ignore], [ignore])
+
+dnl empty file, no additions, but previous ones will remain
+AT_DATA([./deny_cidr], [])
+FWD_CHECK([--permanent --ipset=deny_set --add-entries-from-file=./deny_cidr], 0, [ignore], [ignore])
+
+FWD_END_TEST()

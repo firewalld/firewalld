@@ -33,7 +33,7 @@
     [
         &lt;rule [family="<literal>ipv4</literal>|<literal>ipv6</literal>"]&gt;
             [ &lt;source address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]"|mac="<replaceable>MAC</replaceable>"|ipset="<replaceable>ipset</replaceable>" [invert="<replaceable>True</replaceable>"]/&gt; ]
-            [ &lt;destination address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]" [invert="<replaceable>True</replaceable>"]/&gt; ]
+            [ &lt;destination address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]"|ipset="<replaceable>ipset</replaceable>" [invert="<replaceable>True</replaceable>"]/&gt; ]
             [
                 &lt;service name="<replaceable>string</replaceable>"/&gt; |
                 &lt;port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>|<literal>sctp</literal>|<literal>dccp</literal>"/&gt; |
@@ -43,7 +43,10 @@
                 &lt;masquerade/&gt; |
                 &lt;forward-port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>|<literal>sctp</literal>|<literal>dccp</literal>" [to-port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]"] [to-addr="<replaceable>address</replaceable>"]/&gt;
             ]
-            [ &lt;log [prefix="<replaceable>prefixtext</replaceable>"] [level="<literal>emerg</literal>|<literal>alert</literal>|<literal>crit</literal>|<literal>err</literal>|<literal>warn</literal>|<literal>notice</literal>|<literal>info</literal>|<literal>debug</literal>"]&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/log&gt; ]
+            [
+                &lt;log [prefix="<replaceable>prefix text</replaceable>"] [level="<literal>emerg</literal>|<literal>alert</literal>|<literal>crit</literal>|<literal>err</literal>|<literal>warn</literal>|<literal>notice</literal>|<literal>info</literal>|<literal>debug</literal>"]&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/log&gt; |
+                &lt;nflog [group="<replaceable>group id</replaceable>"] [prefix="<replaceable>prefix text</replaceable>"] [queue-size="<replaceable>threshold</replaceable>"]&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/nflog&gt;
+            ]
             [ &lt;audit&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/audit&gt; ]
             [
                 &lt;accept&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/accept&gt; |

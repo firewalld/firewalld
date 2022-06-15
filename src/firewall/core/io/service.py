@@ -89,7 +89,7 @@ class Service(IO_Object):
         del self.includes[:]
         del self.helpers[:]
 
-    def _check_config(self, config, item, all_config):
+    def _check_config(self, config, item, all_config, all_io_objects):
         if item == "ports":
             for port in config:
                 if port[0] != "":
@@ -124,6 +124,13 @@ class Service(IO_Object):
                         module = module.replace("_", "-")
                 if len(module) < 2:
                     raise FirewallError(errors.INVALID_MODULE, module)
+
+        elif item == "includes":
+            for include in config:
+                if include not in all_io_objects["services"]:
+                    raise FirewallError(errors.INVALID_SERVICE,
+                            "Service '{}': Included service '{}' not found.".format(
+                                self.name, include))
 
 # PARSER
 

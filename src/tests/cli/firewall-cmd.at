@@ -3,8 +3,14 @@ m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
 ])
 
 FWD_START_TEST([basic options])
-    AT_KEYWORDS(panic reload)
+    AT_KEYWORDS(panic reload gh808)
+    
+    FWD_CHECK([], 2, ignore, [dnl
+State: running
 
+No options specified
+usage: 'firewall-cmd --help' for usage information or see firewall-cmd(1) man page
+])
     FWD_CHECK([-h], 0, ignore)
     FWD_CHECK([--help], 0, ignore)
     FWD_CHECK([-V], 0, ignore)
@@ -70,8 +76,8 @@ FWD_START_TEST([user zone])
     dnl verify zone name limits (currently 17)
     FWD_CHECK([-q --permanent --new-zone=123456789abcefghi])
     FWD_CHECK([-q --permanent --new-zone=123456789abcefghij], 116, [ignore], [ignore])
-FWD_END_TEST([-e '/ERROR: INVALID_TARGET: BAD/d'dnl
-              -e '/ERROR: INVALID_NAME: Zone of/d'])
+FWD_END_TEST([-e '/ERROR: INVALID_TARGET: /d'dnl
+              -e '/ERROR: INVALID_NAME: /d'])
 
 FWD_START_TEST([zone interfaces])
     AT_KEYWORDS(zone)
@@ -214,6 +220,7 @@ sources: $1
 
     check_zone_source([1.2.3.4])
     check_zone_source([192.168.1.0/24])
+    check_zone_source([192.168.1.1/255.255.255.0])
     IF_HOST_SUPPORTS_IPV6_RULES([
     check_zone_source([3ffe:501:ffff::/64])
     check_zone_source([dead:beef::babe])
@@ -1335,8 +1342,13 @@ FWD_START_TEST([rich rules good])
     rich_rule_test([rule protocol value="ah" reject])
     rich_rule_test([rule protocol value="esp" accept])
     rich_rule_test([rule protocol value="sctp" log])
+    rich_rule_test([rule protocol value="igmp" log])
     rich_rule_test([rule family="ipv4" source address="192.168.0.0/24" service name="tftp" log prefix="tftp: " level="info" limit value="1/m" accept])
     rich_rule_test([rule family="ipv4" source not address="192.168.0.0/24" service name="dns" log prefix="dns: " level="info" limit value="2/m" drop])
+    rich_rule_test([rule family="ipv4" source address="192.168.0.0/24" service name="irc" nflog prefix="irc: " group=1000 queue-size=10 limit value="1/m" accept])
+    rich_rule_test([rule family="ipv4" source not address="192.168.0.0/24" service name="mysql" nflog prefix="mysql: " queue-size=100 limit value="2/m" drop])
+    rich_rule_test([rule family="ipv4" port port="2222" protocol="tcp" nflog prefix="port-2222: " queue-size=0 drop])
+    rich_rule_test([rule family="ipv4" port port="3333" protocol="udp" nflog prefix="port-3333: " queue-size=65535 accept])
     IF_HOST_SUPPORTS_IPV6_RULES([
     rich_rule_test([rule family="ipv6" source address="1:2:3:4:6::" service name="radius" log prefix="dns -- " level="info" limit value="3/m" reject type="icmp6-addr-unreachable" limit value="20/m"])
     rich_rule_test([rule family="ipv6" source address="1:2:3:4:6::" port port="4011" protocol="tcp" log prefix="port 4011: " level="info" limit value="4/m" drop])
@@ -1383,7 +1395,7 @@ FWD_START_TEST([rich rules priority])
         jump filter_IN_public_post
         jump filter_INPUT_POLICIES_post
         meta l4proto { icmp, ipv6-icmp } accept
-        reject with icmpx type admin-prohibited
+        reject with icmpx admin-prohibited
         }
         }
     ])
@@ -1397,7 +1409,7 @@ FWD_START_TEST([rich rules priority])
         jump filter_FWD_public_allow
         jump filter_FWD_public_post
         jump filter_FORWARD_POLICIES_post
-        reject with icmpx type admin-prohibited
+        reject with icmpx admin-prohibited
         }
         }
     ])
@@ -1568,7 +1580,7 @@ FWD_START_TEST([rich rules priority])
         iifname "lo" accept
         jump filter_INPUT_ZONES
         ct state invalid drop
-        reject with icmpx type admin-prohibited
+        reject with icmpx admin-prohibited
         }
         }
     ])
@@ -1704,18 +1716,18 @@ FWD_START_TEST([rich rules priority])
     NFT_LIST_RULES([inet], [filter_IN_public_pre], 0, [dnl
         table inet firewalld {
         chain filter_IN_public_pre {
-        icmp type destination-unreachable reject with icmpx type admin-prohibited
-        icmpv6 type destination-unreachable reject with icmpx type admin-prohibited
-        icmp type echo-request accept
-        icmpv6 type echo-request accept
+        icmp destination-unreachable reject with icmpx admin-prohibited
+        icmpv6 destination-unreachable reject with icmpx admin-prohibited
+        icmp echo-request accept
+        icmpv6 echo-request accept
         }
         }
     ])
     NFT_LIST_RULES([inet], [filter_IN_public_deny], 0, [dnl
         table inet firewalld {
         chain filter_IN_public_deny {
-        icmp type destination-unreachable reject with icmpx type admin-prohibited
-        icmpv6 type destination-unreachable reject with icmpx type admin-prohibited
+        icmp destination-unreachable reject with icmpx admin-prohibited
+        icmpv6 destination-unreachable reject with icmpx admin-prohibited
         }
         }
     ])
@@ -1724,8 +1736,8 @@ FWD_START_TEST([rich rules priority])
         chain filter_IN_public_allow {
         tcp dport 22 ct state new,untracked accept
         ip6 daddr fe80::/64 udp dport 546 ct state new,untracked accept
-        icmp type echo-request accept
-        icmpv6 type echo-request accept
+        icmp echo-request accept
+        icmpv6 echo-request accept
         }
         }
     ])
@@ -1873,7 +1885,7 @@ FWD_START_TEST([rich rules priority])
         ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:22 ctstate NEW,UNTRACKED
         ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:443 ctstate NEW,UNTRACKED
         ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:143 ctstate NEW,UNTRACKED
-        LOG all -- 0.0.0.0/0 0.0.0.0/0 LOG flags 0 level 4 prefix "'DROPPED: '"
+        LOG all -- 0.0.0.0/0 0.0.0.0/0 LOG flags 0 level 4 prefix "DROPPED: "
         DROP all -- 0.0.0.0/0 0.0.0.0/0
     ])
     IP6TABLES_LIST_RULES([filter], [IN_public_pre], 0, [dnl
@@ -1893,7 +1905,7 @@ FWD_START_TEST([rich rules priority])
         ACCEPT tcp ::/0 ::/0 tcp dpt:22 ctstate NEW,UNTRACKED
         ACCEPT tcp ::/0 ::/0 tcp dpt:443 ctstate NEW,UNTRACKED
         ACCEPT tcp ::/0 ::/0 tcp dpt:143 ctstate NEW,UNTRACKED
-        LOG all ::/0 ::/0 LOG flags 0 level 4 prefix "'DROPPED: '"
+        LOG all ::/0 ::/0 LOG flags 0 level 4 prefix "DROPPED: "
         DROP all ::/0 ::/0
     ])
     FWD_CHECK([-q --runtime-to-permanent])
@@ -1967,16 +1979,42 @@ FWD_START_TEST([rich rules bad])
     rich_rule_test([rule family="ipv4" masquerade drop], 122) dnl masquerade & action
     rich_rule_test([rule family="ipv4" icmp-block name="redirect" accept], 122) dnl icmp-block & action
     rich_rule_test([rule forward-port port="2222" to-port="22" protocol="tcp" family="ipv4" accept], 122) dnl forward-port & action
+    rich_rule_test([rule service name="ssh" log prefix="RRClag4hrBx9XZXk+46c6QavQehyRGdy3tjs7gzc+xfSzsd2smjoQ2NCPami6zVyjHtPGziBuqSWT0KII7QbHkwjNMr9pzbcbPue9PMTb5zXlMPphDjeuDdC3QTCH9rGQHooa9LiDWr+DqNPkBs+vb8r50eb+yEQIyhQaiDrQ0sc" drop], 141) dnl bad log prefix length
+    rich_rule_test([rule protocol value="sctp" nflog group=-1 drop], 142) dnl bad nflog group
+    rich_rule_test([rule family="ipv4" service name="https" nflog queue-size=-1 drop], 143) dnl bad nflog queue-size
+    rich_rule_test([rule family="ipv6" service name="https" nflog queue-size=65536 drop], 143) dnl threshold too high for nflog queue-size
     m4_undefine([rich_rule_test])
 FWD_END_TEST([-e '/ERROR: INVALID_RULE:/d' dnl
               -e '/ERROR: INVALID_LOG_LEVEL: eror/d' dnl
               -e '/ERROR: MISSING_FAMILY/d' dnl
-              -e '/ERROR: INVALID_LIMIT: 1\/2m/d'])
+              -e '/ERROR: INVALID_LIMIT: 1\/2m/d' dnl
+              -e '/ERROR: INVALID_LOG_PREFIX:/d' dnl
+              -e '/ERROR: INVALID_NFLOG_GROUP:/d' dnl
+              -e '/ERROR: INVALID_NFLOG_QUEUE:/d'])
 
 FWD_START_TEST([config validation])
     AT_KEYWORDS(check_config)
 
     dnl default config
+    FWD_CHECK([--check-config], 0, ignore)
+
+    dnl Add some valid optional files/config to verify their checks work too
+    AT_DATA([./direct.xml], [m4_strip([dnl
+        <?xml version="1.0" encoding="utf-8"?>
+        <direct>
+          <rule ipv="ipv4" table="filter" chain="INPUT" priority="1">-j LOG</rule>
+        </direct>
+    ])])
+    AT_DATA([./lockdown-whitelist.xml], [m4_strip([dnl
+        <?xml version="1.0" encoding="utf-8"?>
+        <whitelist>
+          <command name="/home/egarver/bin/python /usr/bin/firewall-config"/>
+          <selinux context="system_u:system_r:NetworkManager_t:s0"/>
+          <selinux context="system_u:system_r:virtd_t:s0-s0:c0.c1023"/>
+          <user id="0"/>
+        </whitelist>
+    ])])
+    FWD_RELOAD()
     FWD_CHECK([--check-config], 0, ignore)
 
     dnl The rest of these are negative test cases.
@@ -2310,6 +2348,21 @@ WARNING: INVALID_LIMIT: none: rule family="ipv4" source address="10.0.0.1/24" ac
 <?xml version="1.0" encoding="utf-8"?>
 <zone>
 <rule>
+<service name="bitcoin" />
+<log prefix="WtsDMDAMJvd24wejRBsImI2VSkBaAlo1h2TVgEmH5CpL1YjdCTnjO8mizyp4cBDNq9NXS6QAuRnq/vF5xsid1orzY4jKzaWhm5qrktZLi38jinLFixX97d5JcM9o5tSx9XwQyaHUJMmxcjKYrDQ2Pvo1KMgf4f7yDAcKJaoJiNYp" />
+</rule>
+</zone>
+])
+    FWD_CHECK([--check-config], 0, ignore, [dnl
+m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [dnl
+WARNING: Invalid rule: Invalid log prefix
+WARNING: Invalid rule: Invalid log prefix
+])])
+
+    AT_DATA([./zones/foobar.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+<rule>
 <source address="10.0.0.1/24" />
 <log level="super_critical" />
 </rule>
@@ -2319,6 +2372,36 @@ WARNING: INVALID_LIMIT: none: rule family="ipv4" source address="10.0.0.1/24" ac
 m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [dnl
 WARNING: Invalid rule: Invalid log level
 WARNING: Invalid rule: Invalid log level
+])])
+
+    AT_DATA([./zones/foobar.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+<rule family="ipv4">
+<forward-port port="1234" protocol="tcp" to-port="4321" to-addr="10.0.0.1" />
+<nflog group="65536" />
+</rule>
+</zone>
+])
+    FWD_CHECK([--check-config], 0, ignore, [dnl
+m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [dnl
+WARNING: Invalid rule: Invalid nflog group value
+WARNING: Invalid rule: Invalid nflog group value
+])])
+
+    AT_DATA([./zones/foobar.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+<rule>
+<port port="1234" protocol="tcp" />
+<nflog queue-size="-1" />
+</rule>
+</zone>
+])
+    FWD_CHECK([--check-config], 0, ignore, [dnl
+m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [dnl
+WARNING: Invalid rule: Invalid nflog queue-size
+WARNING: Invalid rule: Invalid nflog queue-size
 ])])
 
     AT_DATA([./zones/foobar.xml], [dnl

@@ -16,6 +16,9 @@ m4_define([FWD_START_FIREWALLD], [
         FIREWALLD_ARGS+=" --default-config ${FIREWALLD_DEFAULT_CONFIG}"
     fi
 
+    dnl limit data (and heap) to catch unexpected increases in memory usage
+    ulimit -d $(expr 1024 \* 100)
+
     NS_CMD([firewalld $FIREWALLD_ARGS &])
     if test $? -ne 0; then
         AT_FAIL_IF([:])
@@ -23,9 +26,13 @@ m4_define([FWD_START_FIREWALLD], [
     echo "$!" > firewalld.pid
 
     dnl Give it some time for the dbus interface to come up
+    WANTED_CODE="$1"
     up=0
     for I in 1 2 3 4 5 6 7 8 9 0; do
-        if NS_CMD([firewall-cmd --state]); then
+        NS_CMD([firewall-cmd --state])
+        RC=$?
+        echo "exit code = ${RC}"
+        if test ${RC} -eq ${WANTED_CODE:-0}; then
             up=1
             break
         fi
@@ -46,6 +53,9 @@ plugins=
 [[logging]]
 #level=DEBUG
 #domains=ALL
+
+[[keyfile]]
+unmanaged-devices=*,except:type:dummy,except:type:ovs-bridge,except:type:ovs-port,except:type:ovs-interface
 ])
 
     NM_ARGS="--no-daemon --config ./NetworkManager.conf"
@@ -83,8 +93,8 @@ m4_define([FWD_RELOAD], [
 ])
 
 m4_define([FWD_RESTART], [
-    FWD_STOP_FIREWALLD
-    FWD_START_FIREWALLD
+    FWD_STOP_FIREWALLD()
+    FWD_START_FIREWALLD([$1])
 ])
 
 m4_define([FWD_START_TEST], [
@@ -419,6 +429,10 @@ m4_define([NFT_LIST_RULES_NORMALIZE], [dnl
         -e 's/reject with icmp\(x\|v6\)\? type port-unreachable/reject/' dnl
         dnl transform iifname { "foobar0" } to iifname "foobar0"
         -e ['s/\(iifname\|oifname\) [{] \([^, ]\+\) [}]/\1 \2/g'] dnl
+        dnl transform "icmp type foobar" to "icmp foobar"
+        -e ['s/\(icmp\|icmpv6\|icmpx\) type \([a-z-]\+\)/\1 \2/g'] dnl
+        dnl transform bare "reject" to "reject with icmp port-unreachable"
+        -e ['s/reject$/reject with icmp port-unreachable/g'] dnl
 ])
 
 m4_define([NFT_LIST_RULES_ALWAYS], [
@@ -663,4 +677,22 @@ m4_define([IF_HOST_SUPPORTS_NFT_RULE_INDEX], [
         NS_CHECK([rm ./nft_rule_index.nft])
         NS_CHECK([nft delete table inet firewalld_check_rule_index])
     ], [$1])
+])
+
+dnl check for NetworkManager's OVS support
+dnl skip the test if it's not present
+m4_define([CHECK_NM_CAPABILITY_OVS], [
+    AT_SKIP_IF([! NS_CMD([which busctl >/dev/null 2>&1])])
+    NS_CHECK([busctl get-property \
+                     org.freedesktop.NetworkManager \
+                     /org/freedesktop/NetworkManager \
+                     org.freedesktop.NetworkManager \
+                     Capabilities | \
+              grep -q ['^au [0-9 ]*\<2\>'] \
+              || exit 77 # 77 skips, see AT_CHECK
+    ])
+])
+
+m4_define([IF_BACKEND_IS_DEFAULT], [
+    m4_if(nftables, FIREWALL_BACKEND, [$1], [])
 ])

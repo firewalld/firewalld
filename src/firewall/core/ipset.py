@@ -309,9 +309,75 @@ def check_entry_overlaps_existing(entry, entries):
     if len(entry.split(",")) > 1:
         return
 
+    try:
+        entry_network = ipaddress.ip_network(entry, strict=False)
+    except ValueError:
+        # could not parse the new IP address, maybe a MAC
+        return
+
     for itr in entries:
-        try:
-            if ipaddress.ip_network(itr, strict=False).overlaps(ipaddress.ip_network(entry, strict=False)):
-                raise FirewallError(errors.INVALID_ENTRY, "Entry '{}' overlaps with existing entry '{}'".format(itr, entry))
-        except ValueError:
-            pass
+        if entry_network.overlaps(ipaddress.ip_network(itr, strict=False)):
+            raise FirewallError(errors.INVALID_ENTRY, "Entry '{}' overlaps with existing entry '{}'".format(entry, itr))
+
+def check_for_overlapping_entries(entries):
+    """ Check if any entry overlaps any entry in the list of entries """
+    try:
+        entries = [ipaddress.ip_network(x, strict=False) for x in entries]
+    except ValueError:
+        # at least one entry can not be parsed
+        return
+
+    # We can take advantage of some facts of IPv4Network/IPv6Network and
+    # how Python sorts the networks to quickly detect overlaps.
+    #
+    # Facts:
+    #
+    #   1. IPv{4,6}Network are normalized to remove host bits, e.g.
+    #     10.1.1.0/16 will become 10.1.0.0/16.
+    #
+    #   2. IPv{4,6}Network objects are sorted by:
+    #     a. IP address (network bits)
+    #   then
+    #     b. netmask (significant bits count)
+    #
+    # Because of the above we have these properties:
+    #
+    #   1. big networks (netA) are sorted before smaller networks (netB)
+    #      that overlap the big network (netA)
+    #     - e.g. 10.1.128.0/17 (netA) sorts before 10.1.129.0/24 (netB)
+    #   2. same value addresses (network bits) are grouped together even
+    #      if the number of network bits vary. e.g. /16 vs /24
+    #     - recall that address are normalized to remove host bits
+    #     - e.g. 10.1.128.0/17 (netA) sorts before 10.1.128.0/24 (netC)
+    #   3. non-overlapping networks (netD, netE) are always sorted before or
+    #      after networks that overlap (netB, netC) the current one (netA)
+    #     - e.g. 10.1.128.0/17 (netA) sorts before 10.2.128.0/16 (netD)
+    #     - e.g. 10.1.128.0/17 (netA) sorts after 9.1.128.0/17 (netE)
+    #     - e.g. 9.1.128.0/17 (netE) sorts before 10.1.129.0/24 (netB)
+    #
+    # With this we know the sorted list looks like:
+    #
+    #   list: [ netE, netA, netB, netC, netD ]
+    #
+    #   netE = non-overlapping network
+    #   netA = big network
+    #   netB = smaller network that overlaps netA (subnet)
+    #   netC = smaller network that overlaps netA (subnet)
+    #   netD = non-overlapping network
+    #
+    #   If networks netB and netC exist in the list, they overlap and are
+    #   adjacent to netA.
+    #
+    # Checking for overlaps on a sorted list is thus:
+    #
+    #   1. compare adjacent elements in the list for overlaps
+    #
+    # Recall that we only need to detect a single overlap. We do not need to
+    # detect them all.
+    #
+    entries.sort()
+    prev_network = entries.pop(0)
+    for current_network in entries:
+        if prev_network.overlaps(current_network):
+            raise FirewallError(errors.INVALID_ENTRY, "Entry '{}' overlaps entry '{}'".format(prev_network, current_network))
+        prev_network = current_network

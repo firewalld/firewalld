@@ -115,6 +115,7 @@ CONFIG_FILES = \
 	icmptypes/unknown-option.xml \
 	ipsets/README \
 	policies/allow-host-ipv6.xml \
+	services/afp.xml \
 	services/amanda-client.xml \
 	services/amanda-k5-client.xml \
 	services/amqp.xml \
@@ -134,6 +135,7 @@ CONFIG_FILES = \
 	services/ceph-mon.xml \
 	services/ceph.xml \
 	services/cfengine.xml \
+	services/checkmk-agent.xml \
 	services/cockpit.xml \
 	services/collectd.xml \
 	services/condor-collector.xml \
@@ -163,9 +165,11 @@ CONFIG_FILES = \
 	services/ganglia-client.xml \
 	services/ganglia-master.xml \
 	services/git.xml \
+	services/gpsd.xml \
 	services/grafana.xml \
 	services/gre.xml \
 	services/high-availability.xml \
+	services/http3.xml \
 	services/https.xml \
 	services/http.xml \
 	services/imaps.xml \
@@ -177,6 +181,7 @@ CONFIG_FILES = \
 	services/irc.xml \
 	services/iscsi-target.xml \
 	services/isns.xml \
+	services/jellyfin.xml \
 	services/jenkins.xml \
 	services/kadmin.xml \
 	services/kdeconnect.xml \
@@ -215,6 +220,7 @@ CONFIG_FILES = \
 	services/mysql.xml \
 	services/nbd.xml \
 	services/netbios-ns.xml \
+	services/netdata-dashboard.xml \
 	services/nfs.xml \
 	services/nfs3.xml \
 	services/nmea-0183.xml \
@@ -264,6 +270,8 @@ CONFIG_FILES = \
 	services/smtp.xml \
 	services/snmptrap.xml \
 	services/snmp.xml \
+	services/snmptls-trap.xml \
+	services/snmptls.xml \
 	services/spideroak-lansync.xml \
 	services/spotify-sync.xml \
 	services/squid.xml \
@@ -290,6 +298,10 @@ CONFIG_FILES = \
 	services/wbem-http.xml \
 	services/wbem-https.xml \
 	services/wireguard.xml \
+	services/ws-discovery-client.xml \
+	services/ws-discovery-tcp.xml \
+	services/ws-discovery-udp.xml \
+	services/ws-discovery.xml \
 	services/wsman.xml \
 	services/wsmans.xml \
 	services/xdmcp.xml \
@@ -299,6 +311,7 @@ CONFIG_FILES = \
 	services/xmpp-server.xml \
 	services/zabbix-agent.xml \
 	services/zabbix-server.xml \
+	services/zerotier.xml \
 	zones/block.xml \
 	zones/dmz.xml \
 	zones/drop.xml \

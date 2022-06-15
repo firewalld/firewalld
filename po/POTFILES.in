@@ -48,6 +48,7 @@ config/icmptypes/unknown-option.xml
 config/org.fedoraproject.FirewallD1.desktop.policy.in
 config/org.fedoraproject.FirewallD1.server.policy.in
 config/policies/allow-host-ipv6.xml
+config/services/afp.xml
 config/services/amanda-client.xml
 config/services/amanda-k5-client.xml
 config/services/amqps.xml
@@ -66,6 +67,7 @@ config/services/bittorrent-lsd.xml
 config/services/ceph-mon.xml
 config/services/ceph.xml
 config/services/cfengine.xml
+config/services/checkmk-agent.xml
 config/services/cockpit.xml
 config/services/condor-collector.xml
 config/services/collectd.xml
@@ -95,9 +97,11 @@ config/services/galera.xml
 config/services/ganglia-client.xml
 config/services/ganglia-master.xml
 config/services/git.xml
+config/services/gpsd.xml
 config/services/grafana.xml
 config/services/gre.xml
 config/services/high-availability.xml
+config/services/http3.xml
 config/services/https.xml
 config/services/http.xml
 config/services/imaps.xml
@@ -109,6 +113,7 @@ config/services/ircs.xml
 config/services/irc.xml
 config/services/iscsi-target.xml
 config/services/isns.xml
+config/services/jellyfin.xml
 config/services/jenkins.xml
 config/services/kadmin.xml
 config/services/kdeconnect.xml
@@ -148,6 +153,7 @@ config/services/murmur.xml
 config/services/mysql.xml
 config/services/nbd.xml
 config/services/netbios-ns.xml
+config/services/netdata-dashboard.xml
 config/services/nfs3.xml
 config/services/nfs.xml
 config/services/nmea-0183.xml
@@ -197,6 +203,8 @@ config/services/smtps.xml
 config/services/smtp.xml
 config/services/snmptrap.xml
 config/services/snmp.xml
+config/services/snmptls-trap.xml
+config/services/snmptls.xml
 config/services/spideroak-lansync.xml
 config/services/spotify-sync.xml
 config/services/squid.xml
@@ -223,6 +231,10 @@ config/services/vnc-server.xml
 config/services/wbem-https.xml
 config/services/wbem-http.xml
 config/services/wireguard.xml
+config/services/ws-discovery-client.xml
+config/services/ws-discovery-tcp.xml
+config/services/ws-discovery-udp.xml
+config/services/ws-discovery.xml
 config/services/wsmans.xml
 config/services/wsman.xml
 config/services/xdmcp.xml
@@ -232,6 +244,7 @@ config/services/xmpp-local.xml
 config/services/xmpp-server.xml
 config/services/zabbix-agent.xml
 config/services/zabbix-server.xml
+config/services/zerotier.xml
 config/zones/block.xml
 config/zones/dmz.xml
 config/zones/drop.xml
