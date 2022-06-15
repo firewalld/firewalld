@@ -252,6 +252,7 @@ CONFIG_FILES = \
 	services/pop3.xml \
 	services/postgresql.xml \
 	services/privoxy.xml \
+	services/prometheus-node-exporter.xml \
 	services/prometheus.xml \
 	services/proxy-dhcp.xml \
 	services/ps3netsrv.xml \
