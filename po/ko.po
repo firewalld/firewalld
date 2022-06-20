@@ -15,13 +15,14 @@
 # Terry Chuang <tchuang@redhat.com>, 2016. #zanata
 # Eric Garver <e@erig.me>, 2018. #zanata
 # simmon <simmon@nplob.com>, 2021.
+# 김인수 <simmon@nplob.com>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-05-25 10:54-0400\n"
-"PO-Revision-Date: 2021-06-22 10:04+0000\n"
-"Last-Translator: simmon <simmon@nplob.com>\n"
+"PO-Revision-Date: 2022-06-06 06:18+0000\n"
+"Last-Translator: 김인수 <simmon@nplob.com>\n"
 "Language-Team: Korean <https://translate.fedoraproject.org/projects/"
 "firewalld/master/ko/>\n"
 "Language: ko\n"
@@ -29,7 +30,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.7\n"
+"X-Generator: Weblate 4.12.2\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:408
 msgid "Firewall Applet"
@@ -1003,9 +1004,8 @@ msgstr "패닉 모드"
 msgid ""
 "Lockdown locks firewall configuration so that only applications on lockdown "
 "whitelist are able to change it."
-msgstr ""
-"잠금 기능은 방화벽 설정을 잠금하여 잠금 화이트리스트에 있는 애플리케이션만 변"
-"경할 수 있게 합니다."
+msgstr "잠금 기능은 방화벽 설정을 잠금하여 잠금 화이트 리스트에 있는 응용프로그램만 "
+"변경 할 수 있게 합니다."
 
 #: ../src/firewall-config.glade.h:71
 msgid "Lockdown"
@@ -1205,7 +1205,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:111
 msgid "Masquerading"
-msgstr "마스커레이딩 (Masquerading)"
+msgstr "매스쿼레이딩"
 
 #: ../src/firewall-config.glade.h:112
 msgid ""
@@ -1638,9 +1638,9 @@ msgid ""
 "firewalld. It limits changes to the firewall. The lockdown whitelist can "
 "contain commands, contexts, users and user ids."
 msgstr ""
-"잠금 기능은 firewalld의 사용자 및 애플리케이션 정책에 대한 경량 버전입니다. "
-"이는 방화벽 변경을 제한합니다. 잠금 화이트리스트에는 명령, 내용, 사용자 및 사"
-"용자 ID가 포함되어 있습니다."
+"잠금 기능은 firewalld의 사용자와 응용프로그램 정책에 대한 경량 버전입니다. "
+"이는 방화벽 변경을 제한합니다. 잠금 화이트 리스트에는 명령, 내용, 사용자 및 "
+"사용자 ID가 포함되어 있습니다."
 
 #: ../src/firewall-config.glade.h:195
 msgid ""
@@ -1648,9 +1648,9 @@ msgid ""
 "service. To get the context of a running application use <tt>ps -e --"
 "context</tt>."
 msgstr ""
-"컨텍스트는 실행 중인 애플리케이션이나 서비스의 보안 (SELinux) 컨텍스트입니"
-"다. 실행 중인 애플리케이션의 컨텍스트를 얻으려면 <tt>ps -e --context</tt>를 "
-"사용합니다."
+"컨텍스트는 실행 중인 응용프로그램이나 서비스의 보안 (SELinux) "
+"컨텍스트입니다. 실행 중인 응용프로그램의 컨텍스트를 얻으려면 <tt>ps -e "
+"--context</tt>를 사용합니다."
 
 #: ../src/firewall-config.glade.h:196
 msgid "Add Context"
