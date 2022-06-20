@@ -18,22 +18,23 @@
 # Thomas Woerner <twoerner@redhat.com>, 2017. #zanata
 # Eric Garver <e@erig.me>, 2018. #zanata
 # Igor Gorbounov <igor.gorbounov@gmail.com>, 2018. #zanata
+# Sergey A. <sw@atrus.ru>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-05-25 10:54-0400\n"
-"PO-Revision-Date: 2018-11-16 08:27+0000\n"
-"Last-Translator: Copied by Zanata <copied-by-zanata@zanata.org>\n"
-"Language-Team: Russian (http://www.transifex.com/projects/p/firewalld/"
-"language/ru/)\n"
+"PO-Revision-Date: 2022-06-20 00:37+0000\n"
+"Last-Translator: Sergey A. <sw@atrus.ru>\n"
+"Language-Team: Russian <https://translate.fedoraproject.org/projects/"
+"firewalld/master/ru/>\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Zanata 4.6.2\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 4.13\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:408
 msgid "Firewall Applet"
@@ -80,7 +81,7 @@ msgstr "Выберите зону для источника «%s»"
 
 #: ../src/firewall-applet.in:199
 msgid "Configure Shields Up/Down Zones"
-msgstr "Настроить зоны включения/выключения защиты…"
+msgstr "Настроить зоны включения/выключения защиты"
 
 #: ../src/firewall-applet.in:212
 msgid "Here you can select the zones used for Shields Up and Shields Down."
@@ -978,7 +979,7 @@ msgstr "Изменить зону по умолчанию"
 
 #: ../src/firewall-config.glade.h:63
 msgid "Change default zone for connections or interfaces."
-msgstr "Изменить стандартную зону для соединений и интерфейсов"
+msgstr "Изменить стандартную зону для соединений и интерфейсов."
 
 #: ../src/firewall-config.glade.h:64
 msgid "Change Log Denied"
@@ -986,7 +987,7 @@ msgstr "Изменить значение LogDenied"
 
 #: ../src/firewall-config.glade.h:65
 msgid "Change LogDenied value."
-msgstr "Изменить правила ограничения журналирования"
+msgstr "Изменить правила ведения журнала (LogDenied)."
 
 #: ../src/firewall-config.glade.h:66
 msgid "Configure Automatic Helper Assigment"
@@ -1102,7 +1103,7 @@ msgid ""
 "filters and rich rules. The zone can be bound to interfaces and source "
 "addresses."
 msgstr ""
-"Зона firewalld  определяет уровень доверия для сетевых соединений, "
+"Зона firewalld определяет уровень доверия для сетевых соединений, "
 "интерфейсов и адресов. Зона объединяет службы, порты, протоколы, "
 "маскирование, переадресацию портов и пакетов, фильтры icmp и расширенные "
 "правила. Зоны могут быть привязаны к интерфейсам и адресам."
@@ -1399,7 +1400,7 @@ msgstr "Порт источника"
 
 #: ../src/firewall-config.glade.h:148
 msgid "Netfilter helper modules are needed for some services."
-msgstr "Для некоторых служб требуются модули поддержки Netfilter"
+msgstr "Для некоторых служб требуются модули поддержки Netfilter."
 
 #: ../src/firewall-config.glade.h:149
 msgid "Modules"
@@ -1517,7 +1518,7 @@ msgstr "Загрузить типы ICMP по умолчанию"
 
 #: ../src/firewall-config.glade.h:171
 msgid "Specify whether this ICMP Type is available for IPv4 and/or IPv6."
-msgstr "Укажите, доступен ли этот тип ICMP для  IPv4 и IPv6."
+msgstr "Укажите, доступен ли этот тип ICMP для IPv4 и/или IPv6."
 
 #: ../src/firewall-config.glade.h:172
 msgid ""
@@ -1566,7 +1567,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:177
 msgid "Additional chains for use with rules."
-msgstr "Дополнительные цепочки для правил"
+msgstr "Дополнительные цепочки для правил."
 
 #: ../src/firewall-config.glade.h:178
 msgid "Add Chain"
@@ -1693,7 +1694,7 @@ msgid ""
 "command lines starting with the command will match. If the '*' is not there "
 "the absolute command inclusive arguments must match."
 msgstr ""
-"Команды в белом списке могут содержать символ подстановки «*».  Если он не "
+"Команды в белом списке могут содержать символ подстановки «*». Если он не "
 "указан, будут обработаны лишь точные соответствия."
 
 #: ../src/firewall-config.glade.h:201
@@ -1907,7 +1908,6 @@ msgid "Please enter a rich rule."
 msgstr "Введите правило."
 
 #: ../src/firewall-config.glade.h:255
-#, fuzzy
 msgid "For host or network allow or denylisting deactivate the element."
 msgstr ""
 "Отключите элемент, чтобы получить возможность управления черными и белыми "
@@ -1942,8 +1942,8 @@ msgid ""
 "To enable this Action has to be 'reject' and Family either 'ipv4' or "
 "'ipv6' (not both)."
 msgstr ""
-"Чтобы разрешить, поле «Действие» должно иметь значение «отказать», а "
-"«Семейство протоколов» —  «ipv4» или «ipv6»."
+"Чтобы разрешить, поле «Действие» должно иметь значение «отказать», а «"
+"Семейство протоколов» — «ipv4» или «ipv6»."
 
 #: ../src/firewall-config.glade.h:267
 msgid "with Type:"
