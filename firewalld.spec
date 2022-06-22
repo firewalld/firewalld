@@ -145,7 +145,7 @@ fi
 /usr/bin/glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 
 %files -f %{name}.lang
-%doc COPYING README
+%doc COPYING README.md
 %{_sbindir}/firewalld
 %{_bindir}/firewall-cmd
 %{_bindir}/firewall-offline-cmd
@@ -154,7 +154,7 @@ fi
 %dir %{_datadir}/zsh/site-functions
 %{_datadir}/zsh/site-functions/_firewalld
 %{_prefix}/lib/firewalld/icmptypes/*.xml
-%{_prefix}/lib/firewalld/ipsets/README
+%{_prefix}/lib/firewalld/ipsets/README.md
 %{_prefix}/lib/firewalld/policies/*.xml
 %{_prefix}/lib/firewalld/services/*.xml
 %{_prefix}/lib/firewalld/zones/*.xml
@@ -216,7 +216,7 @@ fi
 
 %files -n firewalld-test
 %dir %{_datadir}/firewalld/testsuite
-%{_datadir}/firewalld/testsuite/README
+%{_datadir}/firewalld/testsuite/README.md
 %{_datadir}/firewalld/testsuite/testsuite
 %dir %{_datadir}/firewalld/testsuite/integration
 %{_datadir}/firewalld/testsuite/integration/testsuite

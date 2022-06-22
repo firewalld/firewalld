@@ -3,7 +3,7 @@ DIST_TARGETS = dist-gzip dist-container
 
 EXTRA_DIST = \
 	COPYING \
-	README \
+	README.md \
 	autogen.sh \
 	${PACKAGE_NAME}.spec
 

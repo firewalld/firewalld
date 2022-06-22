@@ -113,7 +113,7 @@ CONFIG_FILES = \
 	icmptypes/ttl-zero-during-transit.xml \
 	icmptypes/unknown-header-type.xml \
 	icmptypes/unknown-option.xml \
-	ipsets/README \
+	ipsets/README.md \
 	policies/allow-host-ipv6.xml \
 	services/afp.xml \
 	services/amanda-client.xml \
@@ -482,7 +482,7 @@ install-data-hook:
 
 # make sure CONFIG_FILES are also in POTFILES
 check-local:
-	@for file in $(filter-out helpers/% %/README,$(CONFIG_FILES)); do \
+	@for file in $(filter-out helpers/% %/README.md,$(CONFIG_FILES)); do \
 		if ! grep "$${file}" ${top_srcdir}/po/POTFILES.in > /dev/null; then \
 			echo "$${file} should be in ${abs_top_srcdir}/po/POTFILES.in"; \
 			exit 1; \
