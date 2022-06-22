@@ -22,7 +22,7 @@ DISTCLEANFILES = atconfig
 
 testsuitedir = $(pkgdatadir)/testsuite
 dist_testsuite_SCRIPTS = $(TESTSUITE)
-dist_testsuite_DATA = README
+dist_testsuite_DATA = README.md
 
 testsuite_integrationdir = $(pkgdatadir)/testsuite/integration
 dist_testsuite_integration_SCRIPTS = $(TESTSUITE_INTEGRATION)

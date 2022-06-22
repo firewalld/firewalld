@@ -13,24 +13,31 @@ they're non-destructive to the host and may be run while firewalld is running
 on the host.
 
 To run the tests serially:
-
-    # cd /tmp
-    # /usr/share/firewalld/testsuite/testsuite
-
+```sh
+cd /tmp
+```
+```sh
+/usr/share/firewalld/testsuite/testsuite
+```
 To run the tests in parallel:
-
-    # /usr/share/firewalld/testsuite/testsuite -j4
-
+```sh
+/usr/share/firewalld/testsuite/testsuite -j4
+```
 To run a test for a specific bug use a keyword:
-
-    # /usr/share/firewalld/testsuite/testsuite -k rhbz1404076
-    # /usr/share/firewalld/testsuite/testsuite -k gh366
-
+```sh
+/usr/share/firewalld/testsuite/testsuite -k rhbz1404076
+```
+```sh
+/usr/share/firewalld/testsuite/testsuite -k gh366
+```
 ## Integration tests
 The integration tests are destructive and require that at least firewalld and
 NetworkManager are _not_ running on the host.
 
 These tests _must_ be run serially:
-
-    # cd /tmp
-    # /usr/share/firewalld/testsuite/integration/testsuite
+```sh
+cd /tmp
+```
+```sh
+/usr/share/firewalld/testsuite/integration/testsuite
+```
