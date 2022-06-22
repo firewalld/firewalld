@@ -2,6 +2,7 @@ SUBDIRS = config doc po shell-completion src
 DIST_TARGETS = dist-gzip dist-container
 
 EXTRA_DIST = \
+	CODE_OF_CONDUCT.md \
 	COPYING \
 	README.md \
 	autogen.sh \

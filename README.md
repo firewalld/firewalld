@@ -22,6 +22,8 @@ git clone https://github.com/firewalld/firewalld.git
 ```
 This will create a local copy of the repository.
 
+The contributor code of conduct can be found in [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
+
 Language Translations
 ---------------------
 Firewalld uses GNU gettext for localization support. Translations can be done
