@@ -541,6 +541,12 @@ FWD_CHECK([--permanent --policy=foobar --add-egress-zone="does_not_exist"], 112,
 FWD_CHECK([            --policy=foobar --add-ingress-zone="does_not_exist"], 112, [ignore], [ignore])
 FWD_CHECK([            --policy=foobar --add-egress-zone="does_not_exist"], 112, [ignore], [ignore])
 
+dnl negative test protocol
+FWD_CHECK([            --policy=foobar --add-protocol="tcp"], 0, [ignore])
+FWD_CHECK([            --policy=foobar --query-protocol="tcp"], 0, [ignore])
+FWD_CHECK([            --policy=foobar --list-protocols], 0, [ignore])
+FWD_CHECK([            --policy=foobar --remove-protocol="tcp"], 0, [ignore])
+
 dnl verify we allow policies with missing ingress and/or egress zones.  This
 dnl allows them to exist, but be un-applied. Useful for shipping "stock"
 dnl policies.
