@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>Kubernetes Worker Node</short>
+  <description>The Kubernetes Worker Node runs some (or sometimes all) of the workloads of the Kubernetes cluster. There might be NodoPort services associated with these workloads.</description>
+  <include service="kubelet" />
+  <include service="kube-nodeport-services" />
+</service>

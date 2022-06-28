@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>Kubernetes Kubelet</short>
+  <description>Services of type NodePort expose a port on each worker</description>
+  <port protocol="tcp" port="30000-32767"/>
+</service>
