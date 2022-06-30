@@ -1,6 +1,6 @@
-[![Build status](https://github.com/firewalld/firewalld/workflows/testsuite/badge.svg)](https://github.com/firewalld/firewalld/actions?query=event%3Apush+workflow%3Atestsuite%27)
-[![Integration status](https://github.com/firewalld/firewalld/workflows/integration%20testsuite/badge.svg)](https://github.com/firewalld/firewalld/actions?query=event%3Apush+branch%3Amaster+workflow%3A%27integration-testsuite%27)
-[![Source status](https://github.com/firewalld/firewalld/workflows/source%20code%20and%20build%20checks/badge.svg)](https://github.com/firewalld/firewalld/actions?query=event%3Apush+branch%3Amaster+workflow%3A%27source-checks%27)
+[![Build status](https://github.com/firewalld/firewalld/workflows/testsuite/badge.svg)](https://github.com/firewalld/firewalld/actions/workflows/testsuite.yml?query=event%3Apush+workflow%3Atestsuite)
+[![Integration status](https://github.com/firewalld/firewalld/workflows/integration%20testsuite/badge.svg)](https://github.com/firewalld/firewalld/actions?query=event%3Apush+branch%3Amaster+workflow%3Aintegration-testsuite)
+[![Source status](https://github.com/firewalld/firewalld/workflows/source%20code%20and%20build%20checks/badge.svg)](https://github.com/firewalld/firewalld/actions?query=event%3Apush+branch%3Amaster+workflow%3Asource-checks)
 
 
 FirewallD - A firewall daemon with D-Bus interface providing a dynamic firewall
@@ -58,14 +58,14 @@ Working With The Source Repository
 ----------------------------------
 In addition to the runtime dependencies some others are needed to build from
 source:
-
+```
   desktop-file-utils: /usr/bin/desktop-file-install
   gettext
   intltool
   glib2: /usr/bin/glib-compile-schemas
   glib2-devel: /usr/share/aclocal/gsettings.m4
   systemd-units
-
+```
 To be able to create man pages and documentation from docbook files:
 ```
   docbook-style-xsl
