@@ -1,5 +1,5 @@
 SUBDIRS = config doc po shell-completion src
-DIST_TARGETS = dist-gzip dist-container
+DIST_TARGETS = dist-gzip
 
 EXTRA_DIST = \
 	COPYING \
