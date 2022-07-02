@@ -137,10 +137,10 @@ m4_define([FWD_START_TEST], [
         ])
 
         dnl dummy wrapper for trap syntax
-        function kill_firewalld() {
+        kill_firewalld() {
             FWD_STOP_FIREWALLD
         }
-        function kill_networkmanager() {
+        kill_networkmanager() {
             if test -f networkmanager.pid; then
                 STOP_NETWORKMANAGER
             fi
