@@ -150,7 +150,7 @@ To fetch the image from quay.io:
 ```sh
 podman pull quay.io/firewalld/firewalld:<ver>
 ```
-where <ver> is optional. latest will be used if omitted.
+where `<ver>` is optional, the latest version will be used if omitted.
                   
 To start the daemon/container:
 ```sh
