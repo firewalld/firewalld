@@ -351,7 +351,10 @@ m4_define([EBTABLES_LIST_RULES], [
 
 m4_define([IPXTABLES_LIST_RULES_NORMALIZE], [dnl
     TRIM_WHITESPACE | dnl
-    tail -n +3 dnl
+    tail -n +3 | dnl
+    dnl iptables-1.8.8 changed output of some protocols
+    dnl commit b6196c7504d4 ("xshared: Prefer xtables_chain_protos lookup over getprotoent")
+    sed -e ['s/[ ]ipv6-icmp\([ -]\)/ icmpv6\1/g'] dnl
 ])
 
 m4_define([IPTABLES_LIST_RULES_NORMALIZE], [dnl
