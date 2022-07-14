@@ -349,6 +349,17 @@ class FirewallD(DbusServiceObject):
 
     @dbus_polkit_require_auth(config.dbus.PK_ACTION_CONFIG)
     @dbus_service_method(config.dbus.DBUS_INTERFACE, in_signature='',
+                             out_signature= '')
+    def resetToDefaults(self, sender=None):
+        """reset to firewall's builtin defaults.
+        Reloads firewalld to apply changes properly
+        """
+        log.debug1("firewalld.reset_to_defaults()")
+        self.fw.config.reset_defaults()
+        self.reload()
+
+    @dbus_polkit_require_auth(config.dbus.PK_ACTION_CONFIG)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE, in_signature='',
                          out_signature='')
     @dbus_handle_exceptions
     def checkPermanentConfig(self, sender=None): # pylint: disable=W0613

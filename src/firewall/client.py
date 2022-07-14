@@ -3125,6 +3125,10 @@ class FirewallClient(object):
         self.fw.reload()
 
     @handle_exceptions
+    def resetToDefaults(self):
+        self.fw.resetToDefaults()
+
+    @handle_exceptions
     def complete_reload(self):
         self.fw.completeReload()
 

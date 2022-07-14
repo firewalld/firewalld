@@ -315,6 +315,9 @@ m4_define([FWD_CHECK], [
                     m4_define([FWD_CHECK_RUN_FIREWALL_OFFLINE_CMD])
                 ], [])
             ])
+            m4_if(-1, m4_index([$1], [--reset-to-defaults]), [], [
+                m4_define([FWD_CHECK_RUN_FIREWALL_OFFLINE_CMD])
+            ])
         ])
 
         m4_ifdef([FWD_CHECK_RUN_FIREWALL_OFFLINE_CMD], [

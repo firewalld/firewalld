@@ -1,0 +1,53 @@
+FWD_START_TEST([reset defaults])
+AT_KEYWORDS(reset)
+
+FWD_CHECK([--reset-to-defaults], 0, ignore, ignore)
+
+FWD_CHECK([--reset-to-defaults], 0, ignore, ignore)
+
+FWD_CHECK([--permanent --new-service zzzzzzzzzzzz], 0, ignore, ignore)
+FWD_CHECK([--permanent --service ftp --add-port 22/udp], 0, ignore, ignore)
+
+FWD_CHECK([--permanent --add-service zzzzzzzzzzzz], 0, ignore, ignore)
+FWD_CHECK([--permanent --zone internal --add-service ftp], 0, ignore, ignore)
+FWD_CHECK([--permanent --helper ftp --set-short "FTP HELPER"], 0, ignore, ignore)
+FWD_CHECK([--permanent --policy allow-host-ipv6 --set-short test_short], 0, ignore, ignore)
+FWD_CHECK([--permanent --new-ipset test-ipset --type hash:ip], 0, ignore, ignore)
+FWD_CHECK([--permanent --new-icmptype test-icmptype], 0, ignore, ignore)
+
+FWD_CHECK([--permanent --query-service zzzzzzzzzzzz], 0, ignore, ignore)
+FWD_CHECK([--permanent --zone internal --query-service ftp], 0, ignore, ignore)
+FWD_CHECK([--permanent --helper ftp --get-short], 0, [FTP HELPER
+], ignore)
+FWD_CHECK([--permanent --policy allow-host-ipv6 --get-short], 0, [test_short
+], ignore)
+FWD_CHECK([--permanent --info-ipset test-ipset], 0, ignore, ignore)
+FWD_CHECK([--permanent --info-icmptype test-icmptype], 0, ignore, ignore)
+
+dnl apply to runtime configuration
+FWD_RELOAD
+
+FWD_CHECK([--query-service zzzzzzzzzzzz], 0, ignore, ignore)
+FWD_CHECK([--zone internal --query-service ftp], 0, ignore, ignore)
+FWD_CHECK([--info-ipset test-ipset], 0, ignore, ignore)
+FWD_CHECK([--info-icmptype test-icmptype], 0, ignore, ignore)
+
+FWD_CHECK([--reset-to-defaults], 0, ignore, ignore)
+
+FWD_CHECK([--permanent --query-service zzzzzzzzzzzz], 1, ignore, ignore)
+FWD_CHECK([--permanent --zone internal --query-service ftp], 1, ignore, ignore)
+FWD_CHECK([--permanent --helper ftp --get-short], 0, [
+], ignore)
+FWD_CHECK([--permanent --policy allow-host-ipv6 --get-short], 0, [Allow host IPv6
+], ignore)
+FWD_CHECK([--permanent --info-ipset test-ipset], 135, ignore, ignore)
+FWD_CHECK([--permanent --info-icmptype test-icmptype], 107, ignore, ignore)
+
+FWD_CHECK([--query-service zzzzzzzzzzzz], 101, ignore, ignore)
+FWD_CHECK([--zone internal --query-service ftp], 1, ignore, ignore)
+FWD_CHECK([--info-ipset test-ipset], 135, ignore, ignore)
+FWD_CHECK([--info-icmptype test-icmptype], 107, ignore, ignore)
+
+FWD_END_TEST([ignore])
+
+

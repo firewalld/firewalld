@@ -61,6 +61,8 @@ Status Options
   --complete-reload    Reload firewall and lose state information
   --runtime-to-permanent
                        Create permanent from runtime configuration
+  --reset-to-defaults
+                       Reset configuration to firewalld's default configuration
   --check-config       Check permanent configuration for errors
 
 Log Denied Options
@@ -556,6 +558,7 @@ parser_group_standalone.add_argument("--reload", action="store_true")
 parser_group_standalone.add_argument("--complete-reload", action="store_true")
 parser_group_standalone.add_argument("--runtime-to-permanent",
                                      action="store_true")
+parser_group_standalone.add_argument("--reset-to-defaults", action="store_true")
 parser_group_standalone.add_argument("--check-config", action="store_true")
 parser_group_standalone.add_argument("--get-ipset-types", action="store_true")
 parser_group_standalone.add_argument("--get-log-denied", action="store_true")
@@ -851,7 +854,7 @@ a = parser.parse_args(args)
 
 options_standalone = a.help or a.version or \
     a.state or a.reload or a.complete_reload or a.runtime_to_permanent or \
-    a.panic_on or a.panic_off or a.query_panic or \
+    a.reset_to_defaults or a.panic_on or a.panic_off or a.query_panic or \
     a.lockdown_on or a.lockdown_off or a.query_lockdown or \
     a.get_default_zone or a.set_default_zone or \
     a.get_active_zones or a.get_ipset_types or \
@@ -2482,6 +2485,8 @@ elif a.complete_reload:
     fw.complete_reload()
 elif a.runtime_to_permanent:
     fw.runtimeToPermanent()
+elif a.reset_to_defaults:
+    fw.resetToDefaults()
 elif a.check_config:
     fw.checkPermanentConfig()
 elif a.direct:
