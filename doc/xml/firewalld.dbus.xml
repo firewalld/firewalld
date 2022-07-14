@@ -135,6 +135,15 @@
             </listitem>
           </varlistentry>
           <varlistentry>
+          <varlistentry>
+            <term><methodname>resetToDefaults</methodname>() &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Reset firewall to its default configuration, then reload firewall.
+    This effects both runtime and permanent configuration.
+              </para>
+            </listitem>
+          </varlistentry>
             <term><methodname>disablePanicMode</methodname>() &rarr; Nothing</term>
             <listitem>
               <para>

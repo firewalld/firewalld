@@ -177,6 +177,25 @@ class FirewallConfig(object):
         else:
             self._firewalld_conf.read()
 
+    def reset_defaults(self):
+        order = [
+                    self._zones, self._policy_objects, self._ipsets,
+                    self._services, self._helpers, self._icmptypes
+                ]
+        for io_obj_dict in order:
+            dict_copy = copy.copy(io_obj_dict)
+            for obj_name in dict_copy:
+                obj = dict_copy[obj_name]
+                name = os.path.join(obj.path, obj.filename)
+                try:
+                    shutil.move(name, "%s.old" % name)
+                except Exception as msg:
+                    log.error("Backup of file '%s' failed: %s", name, msg)
+                    os.remove(name)
+                del io_obj_dict[obj_name]
+        self._firewalld_conf.set_defaults()
+        self._firewalld_conf.write()
+
     # policies
 
     def set_policies(self, policies):

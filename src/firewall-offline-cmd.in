@@ -66,6 +66,8 @@ General Options
       --system-config  Path to firewalld system configuration
       --default-config Path to firewalld default configuration
       --check-config   Check system and default configuration
+      --reset-to-defaults
+                       Reset configuration to firewalld's default configuration
 
 Lokkit Compatibility Options
   --migrate-system-config-firewall=<file>
@@ -595,6 +597,7 @@ parser_group_standalone.add_argument("--policy-desktop", action="store_true")
 parser_group_standalone.add_argument("--lockdown-on", action="store_true")
 parser_group_standalone.add_argument("--lockdown-off", action="store_true")
 parser_group_standalone.add_argument("--query-lockdown", action="store_true")
+parser_group_standalone.add_argument("--reset-to-defaults", action="store_true")
 
 parser_group_standalone.add_argument("--get-default-zone", action="store_true")
 parser_group_standalone.add_argument("--set-default-zone", metavar="<zone>")
@@ -915,7 +918,7 @@ options_lokkit = a.enabled or a.disabled or a.addmodule or a.removemodule or \
 options_standalone = a.help or a.version or \
     a.policy_server or a.policy_desktop or \
     a.lockdown_on or a.lockdown_off or a.query_lockdown or \
-    a.get_default_zone or a.set_default_zone or \
+    a.reset_to_defaults or a.get_default_zone or a.set_default_zone or \
     a.get_log_denied or a.set_log_denied or \
     a.get_automatic_helpers or a.set_automatic_helpers
 
@@ -1285,6 +1288,10 @@ try:
         fw.disable_lockdown()
     elif a.query_lockdown:
         cmd.print_query_result(fw.policies.query_lockdown())
+
+    # reset defaults
+    elif a.reset_to_defaults:
+        fw.config.reset_defaults()
 
     # zones
     elif a.get_zones:
