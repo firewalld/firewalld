@@ -1,0 +1,83 @@
+name: Bug Report
+description: Report a bug encountered while using Firewalld
+labels: ['triage']
+
+body:
+  - type: markdown
+    attributes:
+      value: '# Issue'
+
+  - type: textarea
+    id: behaviour
+    attributes:
+      label: What happened
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected to happen
+    validations:
+      required: false
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: How to reproduce it (as minimally and precisely as possible)
+    validations:
+      required: false
+
+  - type: textarea
+    id: other
+    attributes:
+      label: Anything else we need to know?
+    validations:
+      required: false
+
+  - type: markdown
+    attributes:
+      value: '# Environment'
+
+  - type: input
+    id: version
+    attributes:
+      label: Firewalld Version
+      description: 'Firewalld Version (if Fedora based dnf info firewalld or commit hash if developing from git git log -n1 --format=format:"%H")'
+      placeholder: '1.0.5'
+    validations:
+      required: false
+
+  - type: input
+    id: backend
+    attributes:
+      label: Firewalld Backend
+      description: The results of running `cat /etc/firewalld/firewalld.conf | grep FirewallBackend`
+      placeholder: nftables
+    validations:
+      required: false
+
+  - type: input
+    id: distro
+    attributes:
+      label: Linux distribution
+      description: 'OS (e.g: `cat /etc/os-release`)'
+      placeholder: Fedora Linux 36 (Thirty Six)
+    validations:
+      required: false
+
+  - type: input
+    id: kernel
+    attributes:
+      label: Linux kernel version
+      description: 'The result of running `uname -r`'
+      placeholder: 5.18.19-200.fc36.aarch64
+    validations:
+      required: false
+
+  - type: textarea
+    id: other-environment
+    attributes:
+      label: Other information
+    validations:
+      required: false
