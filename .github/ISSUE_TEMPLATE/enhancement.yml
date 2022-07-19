@@ -1,0 +1,22 @@
+name: Enhancement Request
+description: Suggest an enhancement to Firewalld
+labels: ['feature']
+
+body:
+  - type: markdown
+    attributes:
+      value: '# Enhancement'
+
+  - type: textarea
+    id: feature
+    attributes:
+      label: What would you like to be added
+    validations:
+      required: true
+
+  - type: textarea
+    id: reason
+    attributes:
+      label: Why is this needed
+    validations:
+      required: false
