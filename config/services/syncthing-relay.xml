@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>Syncthing Relay</short>
+  <description>Syncthing is a peer-to-peer file synchronization service. Only enable this option if you run a Syncthing relay server. This separate program (syncthing-relaysrv or relaysrv) is not needed for normal Syncthing usage.</description>
+  <port protocol="tcp" port="22067"/>
+  <port protocol="tcp" port="22070"/>
+</service>
