@@ -299,6 +299,7 @@ CONFIG_FILES = \
 	services/svn.xml \
 	services/syncthing.xml \
 	services/syncthing-gui.xml \
+	services/syncthing-relay.xml \
 	services/synergy.xml \
 	services/syslog-tls.xml \
 	services/syslog.xml \
