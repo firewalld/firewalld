@@ -40,17 +40,20 @@ class modules(object):
         """ get all loaded kernel modules and their dependencies """
         mods = [ ]
         deps = { }
-        with open("/proc/modules", "r") as f:
-            for line in f:
-                if not line:
-                    break
-                line = line.strip()
-                splits = line.split()
-                mods.append(splits[0])
-                if splits[3] != "-":
-                    deps[splits[0]] = splits[3].split(",")[:-1]
-                else:
-                    deps[splits[0]] = [ ]
+        try:
+            with open("/proc/modules", "r") as f:
+                for line in f:
+                    if not line:
+                        break
+                    line = line.strip()
+                    splits = line.split()
+                    mods.append(splits[0])
+                    if splits[3] != "-":
+                        deps[splits[0]] = splits[3].split(",")[:-1]
+                    else:
+                        deps[splits[0]] = [ ]
+        except FileNotFoundError:
+            pass
 
         return mods, deps # [loaded modules], {module:[dependants]}
 
