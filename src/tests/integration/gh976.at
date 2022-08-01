@@ -1,0 +1,14 @@
+FWD_START_TEST([interfaces during runtime to permanent])
+AT_KEYWORDS(gh976 rhbz2112982)
+
+START_NETWORKMANAGER()
+
+NMCLI_CHECK([connection add type dummy con-name dummy0 ifname dummy0 ip4 10.0.0.2 gw4 10.0.0.1], 0, [ignore])
+echo NS_CMD([nmcli connection delete dummy0]) >> ./cleanup
+NMCLI_CHECK([connection show dummy0], 0, [ignore])
+NMCLI_CHECK([connection up dummy0], 0, [ignore])
+
+FWD_CHECK([--add-service smtp], 0, [ignore])
+FWD_CHECK([--runtime-to-permanent], 0, [ignore])
+
+FWD_END_TEST()
