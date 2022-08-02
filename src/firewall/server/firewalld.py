@@ -454,10 +454,11 @@ class FirewallD(DbusServiceObject):
             conf = self.getZoneSettings2(name)
             settings = FirewallClientZoneSettings(conf)
             changed = False
-            for interface in self.fw._nm_assigned_interfaces:
-                log.debug1("Zone '%s': interface binding for '%s' has been added by NM, ignoring." % (name, interface))
-                settings.removeInterface(interface)
-                changed = True
+            for interface in settings.getInterfaces():
+                if interface in self.fw._nm_assigned_interfaces:
+                    log.debug1("Zone '%s': interface binding for '%s' has been added by NM, ignoring." % (name, interface))
+                    settings.removeInterface(interface)
+                    changed = True
             # For the remaining interfaces, attempt to let NM manage them
             for interface in settings.getInterfaces():
                 try:
