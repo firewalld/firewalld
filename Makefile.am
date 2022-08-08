@@ -14,34 +14,6 @@ DISTCLEANFILES = config.log intltool-*
 
 DISTCLEANDIRS = autom4te.cache ${PACKAGE_NAME}-*
 
-tag:
-	@spec_ver=`awk '/Version:/ { print $$2}' ${PACKAGE_NAME}.spec`; \
-	if test "$$spec_ver" != "${PACKAGE_VERSION}"; then \
-		echo "Spec file and package versions differ: $$spec_ver != ${PACKAGE_VERSION}"; \
-		secs=10; \
-		echo -n "Using ./autogen.sh in $$secs seconds: "; \
-		for i in `seq $$secs -1 1`; do echo -n "."; sleep 1; done; echo; \
-		./autogen.sh; \
-		echo; \
-		echo "Please run make again to apply version changes."; \
-		exit 1; \
-	fi
-	@if ! git diff --quiet --exit-code; then \
-		clear; \
-		echo -n "========================================"; \
-		echo "========================================"; \
-		PAGER= git diff; \
-		echo -n "========================================"; \
-		echo "========================================"; \
-		echo "Do you want to commit these changes? (y/N)"; \
-		read answer; \
-		[ "$$answer" == "Y" -o "$$answer" == "y" ] || exit 1; \
-		git commit -a -m "$(PACKAGE_TAG)"; \
-	fi
-	git tag -f $(PACKAGE_TAG)
-	git push
-	git push --tags
-
 dist: clean-docs update-docs
 
 dist-container:
@@ -54,39 +26,6 @@ dist-container:
 	$(PODMAN) push quay.io/firewalld/firewalld:latest
 	$(PODMAN) save --format oci-archive --output firewalld-oci-$(PACKAGE_VERSION).tar firewalld:$(PACKAGE_VERSION)
 
-dist-check:
-	@rm -f _dist_check_failed
-	@(cat config/Makefile.am | sed -n '/^CONFIG_FILES/,/^$$/p' | head -n-1 | tail -n+2) > _config
-	@(cd config; git ls-files icmptypes helpers ipsets services zones | sort | sed -e 's/^/\t/' | sed ':a;N;$$!ba;s/\n/ \\\n/g') > _provided_config
-	@diff -u1B _config _provided_config > _missing_config; \
-	if [ $$? -ne 0 ]; then \
-		echo; \
-		echo "============================================================================="; \
-		echo "    Fix config/Makefile.am:"; \
-		echo "============================================================================="; \
-		touch _dist_check_failed; \
-		cat _missing_config | tail -n +3; \
-		echo; \
-	fi
-	@rm -f _config _provided_config _missing_config
-	@(cat src/Makefile.am | sed -n '/^nobase_dist_python_DATA/,/^$$/p' | head -n-1 | tail -n+2) > _config
-	@(cd src; git ls-files firewall | sort | sed -e 's/^/\t/' -e "s/.py.in/.py/" | sed ':a;N;$$!ba;s/\n/ \\\n/g') > _provided_config
-	@diff -u1B _config _provided_config > _missing_config; \
-	if [ $$? -ne 0 ]; then \
-		echo; \
-		echo "============================================================================="; \
-		echo "    Fix src/Makefile.am:"; \
-		echo "============================================================================="; \
-		touch _dist_check_failed; \
-		cat _missing_config | tail -n +3; \
-		echo; \
-	fi
-	@rm -f _config _provided_config _missing_config
-	@if [ -f "_dist_check_failed" ]; then \
-		rm -f _dist_check_failed; \
-		exit 1; \
-	fi
-
 check-container check-integration installcheck-integration:
 	$(MAKE) -C src/tests $@
 
@@ -98,17 +37,6 @@ update-docs:
 
 clean-docs:
 	$(MAKE) -C doc/xml clean
-
-archive: dist-check $(desktop_DATA) tag dist
-
-local: distclean
-	@rm -rf ${PACKAGE_NAME}-$(PACKAGE_VERSION).tar.gz
-	@rm -rf /tmp/${PACKAGE_NAME}-$(PACKAGE_VERSION) /tmp/${PACKAGE_NAME}
-	@dir=$$PWD; cd /tmp; cp -a $$dir ${PACKAGE_NAME}
-	@mv /tmp/${PACKAGE_NAME} /tmp/${PACKAGE_NAME}-$(PACKAGE_VERSION)
-	@dir=$$PWD; cd /tmp; tar --gzip -cSpf $$dir/${PACKAGE_NAME}-$(PACKAGE_VERSION).tar.gz ${PACKAGE_NAME}-$(PACKAGE_VERSION)
-	@rm -rf /tmp/${PACKAGE_NAME}-$(PACKAGE_VERSION)	
-	@echo "The archive is in ${PACKAGE_NAME}-$(PACKAGE_VERSION).tar.gz"
 
 test-rpm: dist-gzip
 	@rpmbuild -ta $(PACKAGE_NAME)-$(PACKAGE_VERSION).tar.gz
