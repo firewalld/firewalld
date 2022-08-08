@@ -1,0 +1,71 @@
+name: release
+
+on: 
+  push:
+    tags:
+    - 'v*'
+
+jobs:
+
+  build:
+    env:
+      apt-dependencies: |
+        autoconf automake docbook-xml docbook-xsl ebtables intltool ipset \
+        iptables libdbus-1-dev libgirepository1.0-dev libglib2.0-dev \
+        libxml2-utils nftables pkg-config python3-nftables xsltproc
+
+    runs-on: ubuntu-20.04
+    permissions:
+      contents: write
+
+    strategy:
+      matrix:
+        python-version: [3.7]
+
+    steps:
+      - name: checkout (full)
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: apt update
+        run: sudo apt update
+
+      - name: apt install dependencies
+        run: sudo apt install -y ${{ env.apt-dependencies }}
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: dist firewalld
+        run: |
+          ./autogen.sh
+          ./configure
+          make dist
+      
+      - name: make release notes
+        run: |
+          set -- $(grep "^Version:" firewalld.spec |cut -f2 -d ' ' |tr '.' ' ')
+          test ${{ github.ref_name }} = v${1}.${2}.${3} || { echo "pushed tag doesn't match rpm spec file"; exit 1; }
+          if test 0 -eq ${2} && test 0 -eq ${3}; then
+            echo "This is a major release. It includes breaking changes."
+            echo
+            git shortlog --format="%s (%h)" --no-merges --grep "BREAKING" v$(expr ${1} - 1).0.0..HEAD
+          elif test 0 -eq ${3}; then
+            echo "This is a feature release. It also includes all bug fixes since v${1}.$(expr ${2} - 1).0."
+            echo
+            git shortlog --format="%s (%h)" --no-merges --grep "^feat" v${1}.$(expr ${2} - 1).0..HEAD
+          else
+            echo "This is a bug fix only release."
+            echo
+            git shortlog --format="%s (%h)" --grep "^\(fix\|doc\)" v${1}.${2}.$(expr ${3} - 1)..HEAD
+          fi | sed -e 's/^[ ]\+/- /' > body.md
+
+      - uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          artifacts: "firewalld-*.tar.gz"
+          bodyFile: "body.md"
+          token: ${{ secrets.GITHUB_TOKEN }}
