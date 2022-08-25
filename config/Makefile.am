@@ -125,6 +125,9 @@ CONFIG_FILES = \
 	services/ausweisapp2.xml \
 	services/bacula-client.xml \
 	services/bacula.xml \
+	services/bareos-director.xml \
+	services/bareos-filedaemon.xml \
+	services/bareos-storage.xml \
 	services/bb.xml \
 	services/bgp.xml \
 	services/bitcoin-rpc.xml \
