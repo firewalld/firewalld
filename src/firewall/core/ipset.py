@@ -327,6 +327,9 @@ def check_for_overlapping_entries(entries):
         # at least one entry can not be parsed
         return
 
+    if len(entries) == 0:
+        return
+
     # We can take advantage of some facts of IPv4Network/IPv6Network and
     # how Python sorts the networks to quickly detect overlaps.
     #
