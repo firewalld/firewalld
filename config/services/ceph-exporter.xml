@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>ceph-exporter</short>
+  <description>The Prometheus module running on Ceph manager to expose metrics.</description>
+  <port protocol="tcp" port="9283"/>
+</service>

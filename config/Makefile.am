@@ -136,6 +136,7 @@ CONFIG_FILES = \
 	services/bitcoin.xml \
 	services/bittorrent-lsd.xml \
 	services/lightning-network.xml \
+	services/ceph-exporter.xml \
 	services/ceph-mon.xml \
 	services/ceph.xml \
 	services/cfengine.xml \
