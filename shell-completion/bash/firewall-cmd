@@ -71,7 +71,7 @@ OPTIONS_ZONE="${OPTIONS_ZONE_INTERFACES_SOURCES} \
               ${OPTIONS_ZONE_ACTION_ACTION} ${OPTIONS_ZONE_ADAPT_QUERY}
               ${OPTIONS_ZONE_PERMANENT_ONLY}"
 
-OPTIONS_IPSET="${OPTIONS_IPSETACTION_ACTION} ${OPTIONS_IPSET_ADAPT_QUERY}"
+OPTIONS_IPSET="${OPTIONS_IPSET_ACTION_ACTION} ${OPTIONS_IPSET_ADAPT_QUERY}"
 
 OPTIONS_PERMANENT_ONLY="--new-icmptype= --new-icmptype-from-file= --delete-icmptype= \
                         --new-service= --new-service-from-file= --delete-service= \
