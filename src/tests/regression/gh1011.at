@@ -1,0 +1,15 @@
+FWD_START_TEST([remove entries results in empty])
+AT_KEYWORDS(ipset gh1011 rhbz2121985)
+
+FWD_CHECK([--permanent --new-ipset foobar --type hash:net], 0, [ignore])
+AT_DATA([./empty], [dnl
+10.10.10.0/24
+])
+FWD_CHECK([--permanent --ipset foobar --add-entry 10.10.10.0/24], 0, [ignore])
+FWD_CHECK([--permanent --ipset foobar --remove-entries-from-file ./empty], 0, [ignore])
+
+FWD_RELOAD()
+FWD_CHECK([--ipset foobar --add-entry 10.10.10.0/24], 0, [ignore])
+FWD_CHECK([--ipset foobar --remove-entries-from-file ./empty], 0, [ignore])
+
+FWD_END_TEST()
