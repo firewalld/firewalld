@@ -598,7 +598,7 @@ class FirewallD(DbusServiceObject):
                          out_signature='b')
     @dbus_handle_exceptions
     def queryLockdown(self, sender=None): # pylint: disable=W0613
-        """Retuns True if lockdown is enabled
+        """Returns True if lockdown is enabled
         """
         log.debug1("policies.queryLockdown()")
         # no access check here
