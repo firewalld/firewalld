@@ -78,7 +78,7 @@ def handle_exceptions(func):
                 break
     return _impl
 
-# zone config setings
+# zone config settings
 
 class FirewallClientZoneSettings(object):
     @handle_exceptions
