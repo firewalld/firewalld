@@ -293,6 +293,6 @@ Directory Structure
 | po/               | Translations                                          |
 | shell-completion/ | Base directory for auto completion scripts            |
 | src/              | Source tree                                           |
-| src/firewall/     | Import tree for the sevice and all applications       |
+| src/firewall/     | Import tree for the service and all applications      |
 | src/icons/        | Icons in the sizes: 16, 22, 24, 32, 48 and scalable   |
 | src/tests/        | Testsuite                                             |
