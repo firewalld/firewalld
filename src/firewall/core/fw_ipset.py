@@ -64,11 +64,19 @@ class FirewallIPSet(object):
             self.check_applied_obj(obj)
         return obj
 
+    def omit_native_ipset(self):
+        # if using nftables, we can avoid creating ipsets in the native ipset
+        # backend. But only if there aren't any direct rules.
+        if not self._fw.nftables_enabled or self._fw.direct.has_runtime_configuration():
+            return False
+
+        return True
+
     def backends(self):
         backends = []
         if self._fw.nftables_enabled:
             backends.append(self._fw.nftables_backend)
-        if self._fw.ipset_enabled:
+        if self._fw.ipset_enabled and not self.omit_native_ipset():
             backends.append(self._fw.ipset_backend)
         return backends
 
@@ -90,10 +98,10 @@ class FirewallIPSet(object):
             log.debug1("Keeping ipset '%s' because of timeout option", name)
         del self._ipsets[name]
 
-    def apply_ipset(self, name):
+    def apply_ipset(self, name, backends=None):
         obj = self._ipsets[name]
 
-        for backend in self.backends():
+        for backend in backends if backends else self.backends():
             if backend.name == "ipset":
                 active = backend.set_get_active_terse()
 
@@ -139,13 +147,13 @@ class FirewallIPSet(object):
                 else:
                     obj.applied = True
 
-    def apply_ipsets(self):
+    def apply_ipsets(self, backends=None):
         for name in self.get_ipsets():
             obj = self._ipsets[name]
             obj.applied = False
 
             log.debug1("Applying ipset '%s'" % name)
-            self.apply_ipset(name)
+            self.apply_ipset(name, backends)
 
     def flush(self):
         for backend in self.backends():
