@@ -1088,6 +1088,7 @@ class Firewall(object):
         check_on_disk_config(self)
 
         _panic = self._panic
+        _omit_native_ipset = self.ipset.omit_native_ipset()
 
         # must stash this. The value may change after _start()
         flush_all = self._flush_all_on_reload
@@ -1123,11 +1124,10 @@ class Firewall(object):
         if flush_all:
             for obj in _ipset_objs:
                 if not self.ipset.query_ipset(obj.name):
-                    for backend in self.ipset.backends():
-                        # nftables sets are part of the normal firewall ruleset.
-                        if backend.name == "nftables":
-                            continue
-                        backend.set_destroy(obj.name)
+                    # nftables sets are part of the normal firewall ruleset and
+                    # thus do not need flushed here.
+                    if self.ipset_enabled and not _omit_native_ipset:
+                        self.ipset_backend.set_destroy(obj.name)
 
         if not flush_all:
             # handle interfaces in the default zone and move them to the new
