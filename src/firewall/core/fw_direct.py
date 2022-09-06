@@ -64,8 +64,13 @@ class FirewallDirect(object):
     def set_permanent_config(self, obj):
         self._obj = obj
 
-    def has_configuration(self):
+    def has_runtime_configuration(self):
         if len(self._chains) + len(self._rules) + len(self._passthroughs) > 0:
+            return True
+        return False
+
+    def has_configuration(self):
+        if self.has_runtime_configuration():
             return True
         if len(self._obj.get_all_chains()) + \
            len(self._obj.get_all_rules()) + \
@@ -214,6 +219,9 @@ class FirewallDirect(object):
         else:
             transaction = use_transaction
 
+        if self._fw.ipset_enabled and self._fw.ipset.omit_native_ipset():
+            transaction.add_pre(self._fw.ipset.apply_ipsets, [self._fw.ipset_backend])
+
         #TODO: policy="ACCEPT"
         self._chain(True, ipv, table, chain, transaction)
 
@@ -259,6 +267,9 @@ class FirewallDirect(object):
             transaction = self.new_transaction()
         else:
             transaction = use_transaction
+
+        if self._fw.ipset_enabled and self._fw.ipset.omit_native_ipset():
+            transaction.add_pre(self._fw.ipset.apply_ipsets, [self._fw.ipset_backend])
 
         self._rule(True, ipv, table, chain, priority, args, transaction)
 
@@ -341,6 +352,9 @@ class FirewallDirect(object):
             transaction = self.new_transaction()
         else:
             transaction = use_transaction
+
+        if self._fw.ipset_enabled and self._fw.ipset.omit_native_ipset():
+            transaction.add_pre(self._fw.ipset.apply_ipsets, [self._fw.ipset_backend])
 
         self._passthrough(True, ipv, list(args), transaction)
 
