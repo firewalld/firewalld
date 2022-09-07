@@ -456,12 +456,18 @@ m4_define([IPSET_LIST_SET_NORMALIZE], [dnl
     awk 'NR <= 3; NR > 3 {print | "sort"}' dnl
 ])
 
-m4_define([IPSET_LIST_SET], [
+m4_define([IPSET_LIST_SET_ALWAYS], [
     m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
         if $IPSET list >/dev/null 2>&1; then
             NS_CHECK([PIPESTATUS0([$IPSET list $1], [IPSET_LIST_SET_NORMALIZE])],
                      [$2], [m4_strip([$3])], [m4_strip([$4])], [$5], [$6])
         fi
+    ])
+])
+
+m4_define([IPSET_LIST_SET], [
+    m4_if(iptables, FIREWALL_BACKEND, [
+        IPSET_LIST_SET_ALWAYS([$1], [$2], [$3], [$4], [$5], [$6])
     ])
 ])
 
