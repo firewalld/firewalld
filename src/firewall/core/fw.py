@@ -634,8 +634,10 @@ class Firewall(object):
                 self._start_failsafe()
                 self._state = "FAILED"
                 self.set_policy("ACCEPT")
-            except Exception:
+            except Exception as new_ex:
                 log.error(original_ex)
+                log.exception()
+                log.error(new_ex)
                 log.error("Failed to load full stock configuration. This likely "
                           "indicates a system level issue, e.g. the firewall "
                           "backend (nftables, iptables) is broken. "
