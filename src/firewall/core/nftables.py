@@ -570,22 +570,6 @@ class nftables(object):
                                                                     "op": "in",
                                                                     "right": "dnat"}},
                                                          {"accept": None}]}}})
-        default_rules.append({"add": {"rule":  {"family": "inet",
-                                                "table": TABLE_NAME,
-                                                "chain": "filter_%s" % "INPUT",
-                                                "expr": [{"match": {"left": {"meta": {"key": "iifname"}},
-                                                                    "op": "==",
-                                                                    "right": "lo"}},
-                                                         {"accept": None}]}}})
-        for dispatch_suffix in ["POLICIES_pre", "ZONES", "POLICIES_post"]:
-            default_rules.append({"add": {"chain": {"family": "inet",
-                                                    "table": TABLE_NAME,
-                                                    "name": "filter_%s_%s" % ("INPUT", dispatch_suffix)}}})
-        for dispatch_suffix in ["ZONES"]:
-            default_rules.append({"add": {"rule":  {"family": "inet",
-                                                    "table": TABLE_NAME,
-                                                    "chain": "filter_%s" % "INPUT",
-                                                    "expr": [{"jump": {"target": "filter_%s_%s" % ("INPUT", dispatch_suffix)}}]}}})
         if log_denied != "off":
             default_rules.append({"add": {"rule":  {"family": "inet",
                                                     "table": TABLE_NAME,
@@ -602,6 +586,22 @@ class nftables(object):
                                                                     "op": "in",
                                                                     "right": {"set": ["invalid"]}}},
                                                          {"drop": None}]}}})
+        default_rules.append({"add": {"rule":  {"family": "inet",
+                                                "table": TABLE_NAME,
+                                                "chain": "filter_%s" % "INPUT",
+                                                "expr": [{"match": {"left": {"meta": {"key": "iifname"}},
+                                                                    "op": "==",
+                                                                    "right": "lo"}},
+                                                         {"accept": None}]}}})
+        for dispatch_suffix in ["POLICIES_pre", "ZONES", "POLICIES_post"]:
+            default_rules.append({"add": {"chain": {"family": "inet",
+                                                    "table": TABLE_NAME,
+                                                    "name": "filter_%s_%s" % ("INPUT", dispatch_suffix)}}})
+        for dispatch_suffix in ["ZONES"]:
+            default_rules.append({"add": {"rule":  {"family": "inet",
+                                                    "table": TABLE_NAME,
+                                                    "chain": "filter_%s" % "INPUT",
+                                                    "expr": [{"jump": {"target": "filter_%s_%s" % ("INPUT", dispatch_suffix)}}]}}})
         if log_denied != "off":
             default_rules.append({"add": {"rule":  {"family": "inet",
                                                     "table": TABLE_NAME,
@@ -628,6 +628,22 @@ class nftables(object):
                                                                     "op": "in",
                                                                     "right": "dnat"}},
                                                          {"accept": None}]}}})
+        if log_denied != "off":
+            default_rules.append({"add": {"rule":  {"family": "inet",
+                                                    "table": TABLE_NAME,
+                                                    "chain": "filter_%s" % "FORWARD",
+                                                    "expr": [{"match": {"left": {"ct": {"key": "state"}},
+                                                                        "op": "in",
+                                                                        "right": {"set": ["invalid"]}}},
+                                                             self._pkttype_match_fragment(log_denied),
+                                                             {"log": {"prefix": "STATE_INVALID_DROP: "}}]}}})
+        default_rules.append({"add": {"rule":  {"family": "inet",
+                                                "table": TABLE_NAME,
+                                                "chain": "filter_%s" % "FORWARD",
+                                                "expr": [{"match": {"left": {"ct": {"key": "state"}},
+                                                                    "op": "in",
+                                                                    "right": {"set": ["invalid"]}}},
+                                                         {"drop": None}]}}})
         default_rules.append({"add": {"rule":  {"family": "inet",
                                                 "table": TABLE_NAME,
                                                 "chain": "filter_%s" % "FORWARD",
@@ -651,22 +667,6 @@ class nftables(object):
             default_rules.append({"add": {"chain": {"family": "inet",
                                                     "table": TABLE_NAME,
                                                     "name": "filter_%s_%s" % ("FORWARD", dispatch_suffix)}}})
-        if log_denied != "off":
-            default_rules.append({"add": {"rule":  {"family": "inet",
-                                                    "table": TABLE_NAME,
-                                                    "chain": "filter_%s" % "FORWARD",
-                                                    "expr": [{"match": {"left": {"ct": {"key": "state"}},
-                                                                        "op": "in",
-                                                                        "right": {"set": ["invalid"]}}},
-                                                             self._pkttype_match_fragment(log_denied),
-                                                             {"log": {"prefix": "STATE_INVALID_DROP: "}}]}}})
-        default_rules.append({"add": {"rule":  {"family": "inet",
-                                                "table": TABLE_NAME,
-                                                "chain": "filter_%s" % "FORWARD",
-                                                "expr": [{"match": {"left": {"ct": {"key": "state"}},
-                                                                    "op": "in",
-                                                                    "right": {"set": ["invalid"]}}},
-                                                         {"drop": None}]}}})
         if log_denied != "off":
             default_rules.append({"add": {"rule":  {"family": "inet",
                                                     "table": TABLE_NAME,
@@ -1655,10 +1655,11 @@ class nftables(object):
                                        "chain": "filter_OUTPUT",
                                        "index": 1,
                                        "expr": expr_fragments}}})
+        forward_index = 4 if self._fw.get_log_denied() != "off" else 3
         rules.append({"add": {"rule": {"family": "inet",
                                        "table": TABLE_NAME,
                                        "chain": "filter_FORWARD",
-                                       "index": 2,
+                                       "index": forward_index,
                                        "expr": expr_fragments}}})
         return rules
 
