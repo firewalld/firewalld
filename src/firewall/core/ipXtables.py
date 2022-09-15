@@ -692,6 +692,9 @@ class ip4tables(object):
         default_rules["filter"] = []
         self.our_chains["filter"] = set()
         default_rules["filter"].append("-A INPUT -m conntrack --ctstate RELATED,ESTABLISHED,DNAT -j ACCEPT")
+        if log_denied != "off":
+            default_rules["filter"].append("-A INPUT -m conntrack --ctstate INVALID %%LOGTYPE%% -j LOG --log-prefix 'STATE_INVALID_DROP: '")
+        default_rules["filter"].append("-A INPUT -m conntrack --ctstate INVALID -j DROP")
         default_rules["filter"].append("-A INPUT -i lo -j ACCEPT")
         default_rules["filter"].append("-N INPUT_direct")
         default_rules["filter"].append("-A INPUT -j INPUT_direct")
@@ -702,13 +705,13 @@ class ip4tables(object):
         for dispatch_suffix in ["ZONES"]:
             default_rules["filter"].append("-A INPUT -j INPUT_%s" % (dispatch_suffix))
         if log_denied != "off":
-            default_rules["filter"].append("-A INPUT -m conntrack --ctstate INVALID %%LOGTYPE%% -j LOG --log-prefix 'STATE_INVALID_DROP: '")
-        default_rules["filter"].append("-A INPUT -m conntrack --ctstate INVALID -j DROP")
-        if log_denied != "off":
             default_rules["filter"].append("-A INPUT %%LOGTYPE%% -j LOG --log-prefix 'FINAL_REJECT: '")
         default_rules["filter"].append("-A INPUT -j %%REJECT%%")
 
         default_rules["filter"].append("-A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED,DNAT -j ACCEPT")
+        if log_denied != "off":
+            default_rules["filter"].append("-A FORWARD -m conntrack --ctstate INVALID %%LOGTYPE%% -j LOG --log-prefix 'STATE_INVALID_DROP: '")
+        default_rules["filter"].append("-A FORWARD -m conntrack --ctstate INVALID -j DROP")
         default_rules["filter"].append("-A FORWARD -i lo -j ACCEPT")
         default_rules["filter"].append("-N FORWARD_direct")
         default_rules["filter"].append("-A FORWARD -j FORWARD_direct")
@@ -723,9 +726,6 @@ class ip4tables(object):
         for dispatch_suffix in ["POLICIES_post"]:
             default_rules["filter"].append("-N FORWARD_%s" % (dispatch_suffix))
             self.our_chains["filter"].update(set("FORWARD_%s" % (dispatch_suffix)))
-        if log_denied != "off":
-            default_rules["filter"].append("-A FORWARD -m conntrack --ctstate INVALID %%LOGTYPE%% -j LOG --log-prefix 'STATE_INVALID_DROP: '")
-        default_rules["filter"].append("-A FORWARD -m conntrack --ctstate INVALID -j DROP")
         if log_denied != "off":
             default_rules["filter"].append("-A FORWARD %%LOGTYPE%% -j LOG --log-prefix 'FINAL_REJECT: '")
         default_rules["filter"].append("-A FORWARD -j %%REJECT%%")
@@ -1511,6 +1511,7 @@ class ip6tables(ip4tables):
         # Inject into FORWARD and OUTPUT chains
         rules.append(["-t", "filter", "-I", "OUTPUT", "4",
                       "-j", chain_name])
-        rules.append(["-t", "filter", "-I", "FORWARD", "4",
+        rules.append(["-t", "filter", "-I", "FORWARD",
+                      "6" if self._fw.get_log_denied() != "off" else "5",
                       "-j", chain_name])
         return rules
