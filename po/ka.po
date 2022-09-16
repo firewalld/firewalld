@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-05-25 10:54-0400\n"
-"PO-Revision-Date: 2022-04-13 13:17+0000\n"
+"PO-Revision-Date: 2022-07-31 08:19+0000\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <https://translate.fedoraproject.org/projects/"
 "firewalld/master/ka/>\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.11.2\n"
+"X-Generator: Weblate 4.13\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:408
 msgid "Firewall Applet"
@@ -183,7 +183,7 @@ msgstr "NetworkManager-დან შემოტანა მიუწვდო�
 
 #: ../src/firewall-applet.in:851
 msgid "No connection to firewall daemon"
-msgstr "firewalld-სთან დაკავშირება შეუძლებელია"
+msgstr "Firewalld-სთან დაკავშირება შეუძლებელია"
 
 #: ../src/firewall-applet.in:857 ../src/firewall-applet.in:994
 msgid "All network traffic is blocked."
@@ -286,18 +286,18 @@ msgstr "ზონა '%s' აქტიურია წყაროსთვი�
 
 #: ../src/firewall-config.in:89
 msgid "Connection to firewalld established."
-msgstr "firewalld-სთან კავშირი დამყარებულია."
+msgstr "Firewalld-სთან კავშირი დამყარებულია."
 
 #: ../src/firewall-config.in:91
 msgid "Trying to connect to firewalld, waiting..."
-msgstr "firewalld-სთან დაკავშირების მოლოდინი..."
+msgstr "Firewalld-სთან დაკავშირების მოლოდინი..."
 
 #: ../src/firewall-config.in:93
 msgid ""
 "Failed to connect to firewalld. Please make sure that the service has been "
 "started correctly and try again."
 msgstr ""
-"firewalld-სთან დაკავშირება შეუძლებელია. შეამოწმეთ, გაშვებულია თუ არა სერვისი "
+"Firewalld-სთან დაკავშირება შეუძლებელია. შეამოწმეთ, გაშვებულია თუ არა სერვისი "
 "და კიდევ სცადეთ."
 
 #: ../src/firewall-config.in:95
@@ -514,7 +514,7 @@ msgstr "icmp-ის ბლოკირება"
 #: ../src/firewall-config.in:3358 ../src/firewall-config.in:3673
 #: ../src/firewall-config.glade.h:288
 msgid "icmp-type"
-msgstr "ICMP-ის ტიპი"
+msgstr "icmp-ის ტიპი"
 
 #: ../src/firewall-config.in:2084 ../src/firewall-config.in:3192
 #: ../src/firewall-config.in:3360 ../src/firewall-config.in:3676
@@ -638,14 +638,12 @@ msgstr "გამართვა"
 #: ../src/firewall-config.in:3335 ../src/firewall-config.in:3560
 #: ../src/firewall-config.in:3584 ../src/firewall-config.in:3639
 #: ../src/firewall-config.in:3774 ../src/firewall-config.in:3821
-#, fuzzy
 msgid "ipv4"
 msgstr "ipv4"
 
 #: ../src/firewall-config.in:3337 ../src/firewall-config.in:3562
 #: ../src/firewall-config.in:3586 ../src/firewall-config.in:3641
 #: ../src/firewall-config.in:3776 ../src/firewall-config.in:3823
-#, fuzzy
 msgid "ipv6"
 msgstr "ipv6"
 
@@ -777,7 +775,6 @@ msgid "ipv:"
 msgstr "ipv :"
 
 #: ../src/firewall-config.glade.h:13
-#, fuzzy
 msgid "eb"
 msgstr "eb"
 
@@ -786,13 +783,12 @@ msgid "Chain:"
 msgstr "ჯაჭვი:"
 
 #: ../src/firewall-config.glade.h:15
-#, fuzzy
 msgid "nat"
 msgstr "nat"
 
 #: ../src/firewall-config.glade.h:16
 msgid "raw"
-msgstr "RAW"
+msgstr "raw"
 
 #: ../src/firewall-config.glade.h:17
 msgid "security"
@@ -953,6 +949,10 @@ msgid ""
 "runtime configuration. i.e. all runtime only changes done until reload are "
 "lost with reload if they have not been also in permanent configuration."
 msgstr ""
+"ბრანდმაუერის წესების თავიდან ჩატვირთვა. მიმდინარე მუდმივი კონფიგურაცია "
+"გახდება ახალი გაშვებული კონფიგურაცია ანუ ნებისმიერი მხოლოდ გაშვებულ "
+"კონფიგურაციაზე შესრულებული ცვლილებები დაიკარგება, თუ ისინი მუდმივ "
+"კონფიგურაციაშიც არაა გაწერილი."
 
 #: ../src/firewall-config.glade.h:60
 msgid "Change which zone a network connection belongs to."
@@ -985,6 +985,8 @@ msgstr "მოირგეთ დამხმარის ავტომატ�
 #: ../src/firewall-config.glade.h:68
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
 msgstr ""
+"პანიკური რეჟიმი ნიშნავს, რომ ყველა შემომავალი და გამავალი პაკეტები "
+"დაიგნორება."
 
 #: ../src/firewall-config.glade.h:69
 msgid "Panic Mode"
@@ -995,6 +997,8 @@ msgid ""
 "Lockdown locks firewall configuration so that only applications on lockdown "
 "whitelist are able to change it."
 msgstr ""
+"დაბლოკვის რეჟიმი დაბლოკავს ბრანდმაუერის კონფიგურაციას ისე, რომ მხოლოდ "
+"აპლიკაციებს ექნებათ ცვლილებების შეტანის უფლება, რომლებიც ხელითაა განბლოკილი."
 
 #: ../src/firewall-config.glade.h:71
 msgid "Lockdown"
@@ -1130,6 +1134,8 @@ msgstr "პორტები"
 #: ../src/firewall-config.glade.h:101
 msgid "Add protocols, which need to be accessible for all hosts or networks."
 msgstr ""
+"დაამატეთ პროტოკოლები, რომლებიც ხელმისაწვდომი უნდა იყოს ყველა ჰოსტისთვის ან "
+"ქსელისთვის."
 
 #: ../src/firewall-config.glade.h:102
 msgid "Add Protocol"
@@ -1173,6 +1179,8 @@ msgid ""
 "If you enable masquerading, IP forwarding will be enabled for your IPv4 "
 "networks."
 msgstr ""
+"თუ ჩართავთ მასკარადს, IP გადამისამართება ჩართული იქნება თქვენი IPv4 "
+"ქსელებისთვის."
 
 #: ../src/firewall-config.glade.h:111
 msgid "Masquerading"
@@ -1227,7 +1235,7 @@ msgstr "ICMP ფილტრი"
 
 #: ../src/firewall-config.glade.h:121
 msgid "Here you can set rich language rules for the zone."
-msgstr ""
+msgstr "აქ შეგიძლიათ დააყენოთ მდიდარი ენის წესები ზონისთვის."
 
 #: ../src/firewall-config.glade.h:122
 msgid "Add Rich Rule"
@@ -1291,6 +1299,8 @@ msgid ""
 "A firewalld service is a combination of ports, protocols, modules and "
 "destination addresses."
 msgstr ""
+"Firewall სერვისი არის პორტების, პროტოკოლების, მოდულების და დანიშნულების "
+"მისამართების კომბინაცია."
 
 #: ../src/firewall-config.glade.h:139
 msgid "Add Service"
@@ -1313,6 +1323,8 @@ msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks."
 msgstr ""
+"დაამატეთ დამატებითი პორტები ან პორტის დიაპაზონები, რომლებიც ხელმისაწვდომი "
+"უნდა იყოს ყველა ჰოსტისთვის ან ქსელისთვის."
 
 #: ../src/firewall-config.glade.h:144
 msgid "Edit Entry"
@@ -1327,6 +1339,8 @@ msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks."
 msgstr ""
+"დაამატეთ დამატებითი წყაროს პორტები ან პორტის დიაპაზონები, რომლებიც "
+"ხელმისაწვდომი უნდა იყოს ყველა ჰოსტისთვის ან ქსელისთვის."
 
 #: ../src/firewall-config.glade.h:147
 msgid "Source Port"
@@ -1334,7 +1348,7 @@ msgstr "საწყისი პორტი"
 
 #: ../src/firewall-config.glade.h:148
 msgid "Netfilter helper modules are needed for some services."
-msgstr ""
+msgstr "ზოგიერთი სერვისისთვის Netfilter დამხმარე მოდულებია საჭირო."
 
 #: ../src/firewall-config.glade.h:149
 msgid "Modules"
@@ -1413,6 +1427,7 @@ msgstr "ჩანაწერები"
 msgid ""
 "IPSets can only be created or deleted in the permanent configuration view."
 msgstr ""
+"IPSet-ების შექმნა და წაშლა მხოლოდ მუდმივი კონფიგურაციის ხედში შეგიძლიათ."
 
 #: ../src/firewall-config.glade.h:166
 msgid ""
@@ -1439,6 +1454,7 @@ msgstr "ICMP-ის ტიპის ნაგულისხმები მნ�
 #: ../src/firewall-config.glade.h:171
 msgid "Specify whether this ICMP Type is available for IPv4 and/or IPv6."
 msgstr ""
+"მიუთითეთ, არის თუ არა ICMP-ის ეს ტიპი ხელმისაწვდომი IPv4 ან/და IPv6-სთვის."
 
 #: ../src/firewall-config.glade.h:172
 msgid ""
@@ -1457,6 +1473,8 @@ msgstr ""
 #: ../src/firewall-config.glade.h:174
 msgid "Define ports or port ranges, which are monitored by the helper."
 msgstr ""
+"აღწერეთ პორტები ან პორტების დიაპაზონი, რომელსაც ეს დამხმარე გაუწევს "
+"მონიტორინგს."
 
 #: ../src/firewall-config.glade.h:175
 msgid ""
@@ -1465,6 +1483,11 @@ msgid ""
 "commands, parameters and targets. Direct configuration should be used only "
 "as a last resort when it is not possible to use other firewalld features."
 msgstr ""
+"პირდაპირი კონფიგურაცია იძლევა უფრო პირდაპირ წვდომას firewall-ზე. ეს "
+"პარამეტრები მოითხოვს მომხმარებლის იცოდეს ძირითადი iptables ცნებები, ანუ "
+"ცხრილები, ჯაჭვები, ბრძანებები, პარამეტრები და სამიზნეები. პირდაპირი "
+"კონფიგურაცია უნდა იქნას გამოყენებული მხოლოდ როგორც უკიდურესი საშუალება, "
+"როდესაც შეუძლებელია firewall-ის სხვა მახასიათებლების გამოყენება."
 
 #: ../src/firewall-config.glade.h:176
 msgid ""
@@ -1736,11 +1759,11 @@ msgstr "დანიშვნა"
 
 #: ../src/firewall-config.glade.h:238
 msgid "Please enter a mark with an optional mask."
-msgstr ""
+msgstr "შეიყვანეთ ნიღაბი არასავალდებულო ნიღბით."
 
 #: ../src/firewall-config.glade.h:239
 msgid "The mark and the mask fields are both 32 bits wide unsigned numbers."
-msgstr ""
+msgstr "ნიშნის და ნიღბის ველები ორივე 32-ბიტიანი ფართო უნიშნო რიცხვებია."
 
 #: ../src/firewall-config.glade.h:240
 msgid "Mark:"
@@ -1776,7 +1799,7 @@ msgstr "პირდაპირი წესი"
 
 #: ../src/firewall-config.glade.h:248
 msgid "Please select ipv and table, chain priority and enter the args."
-msgstr ""
+msgstr "აირჩიეთ ipv და ცხრილი, ჯაჭვის პრიორიტეტი და შეიყვანეთ არგუმენტები."
 
 #: ../src/firewall-config.glade.h:249
 msgid "Priority:"
