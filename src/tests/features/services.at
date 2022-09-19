@@ -23,11 +23,11 @@ NFT_LIST_RULES([inet], [filter_IN_policy_foobar_allow], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([filter], [IN_foobar_allow], 0, [dnl
-    ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:22 ctstate NEW,UNTRACKED
-    ACCEPT tcp -- 10.10.10.0/24 0.0.0.0/0 tcp dpt:22 ctstate NEW,UNTRACKED
+    ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:22 
+    ACCEPT tcp -- 10.10.10.0/24 0.0.0.0/0 tcp dpt:22 
 ])
 IP6TABLES_LIST_RULES([filter], [IN_foobar_allow], 0, [dnl
-    ACCEPT tcp ::/0 ::/0 tcp dpt:22 ctstate NEW,UNTRACKED
+    ACCEPT tcp ::/0 ::/0 tcp dpt:22 
 ])
 m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [
     FWD_CHECK([--permanent --policy=foobar --remove-service-from-policy ssh], 0, [ignore])
@@ -62,11 +62,11 @@ NFT_LIST_RULES([inet], [filter_IN_policy_foobar_allow], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([filter], [IN_foobar_allow], 0, [dnl
-    ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:21 ctstate NEW,UNTRACKED
-    ACCEPT tcp -- 10.10.10.0/24 0.0.0.0/0 tcp dpt:21 ctstate NEW,UNTRACKED
+    ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:21 
+    ACCEPT tcp -- 10.10.10.0/24 0.0.0.0/0 tcp dpt:21 
 ])
 IP6TABLES_LIST_RULES([filter], [IN_foobar_allow], 0, [dnl
-    ACCEPT tcp ::/0 ::/0 tcp dpt:21 ctstate NEW,UNTRACKED
+    ACCEPT tcp ::/0 ::/0 tcp dpt:21 
 ])
 dnl iptables needs the helper rules in the raw table
 IPTABLES_LIST_RULES([raw], [PRE_foobar_allow], 0, [dnl

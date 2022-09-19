@@ -21,7 +21,7 @@ NFT_LIST_RULES([inet], [filter_IN_public_allow], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([filter], [IN_public_allow], 0, [dnl
-    ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:22 ctstate NEW,UNTRACKED
+    ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:22 
     ACCEPT all -- 0.0.0.0/0 0.0.0.0/0 match-set foobar dst
 ])
 
