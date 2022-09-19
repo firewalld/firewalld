@@ -1252,10 +1252,6 @@ class nftables(object):
                                                               "field": "dport"}},
                                          "op": "==",
                                          "right": self._port_fragment(port)}})
-        if not rich_rule or type(rich_rule.action) != Rich_Mark:
-            expr_fragments.append({"match": {"left": {"ct": {"key": "state"}},
-                                             "op": "in",
-                                             "right": {"set": ["new", "untracked"]}}})
 
         rules = []
         if rich_rule:
@@ -1287,10 +1283,6 @@ class nftables(object):
         expr_fragments.append({"match": {"left": {"meta": {"key": "l4proto"}},
                                          "op": "==",
                                          "right": protocol}})
-        if not rich_rule or type(rich_rule.action) != Rich_Mark:
-            expr_fragments.append({"match": {"left": {"ct": {"key": "state"}},
-                                             "op": "in",
-                                             "right": {"set": ["new", "untracked"]}}})
 
         rules = []
         if rich_rule:
@@ -1354,10 +1346,6 @@ class nftables(object):
                                                               "field": "sport"}},
                                          "op": "==",
                                          "right": self._port_fragment(port)}})
-        if not rich_rule or type(rich_rule.action) != Rich_Mark:
-            expr_fragments.append({"match": {"left": {"ct": {"key": "state"}},
-                                             "op": "in",
-                                             "right": {"set": ["new", "untracked"]}}})
 
         rules = []
         if rich_rule:

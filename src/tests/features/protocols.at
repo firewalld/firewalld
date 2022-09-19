@@ -22,10 +22,10 @@ FWD_CHECK([--policy=foobar --query-rich-rule='rule protocol value="sctp" accept'
 NFT_LIST_RULES([inet], [filter_IN_policy_foobar_allow], 0, [dnl
     table inet firewalld {
         chain filter_IN_policy_foobar_allow {
-            meta l4proto sctp ct state new,untracked accept
-            meta l4proto ipv6-icmp ct state new,untracked accept
-            meta l4proto dccp ct state new,untracked accept
-            meta l4proto gre ct state new,untracked accept
+            meta l4proto sctp accept
+            meta l4proto ipv6-icmp accept
+            meta l4proto dccp accept
+            meta l4proto gre accept
         }
     }
 ])
@@ -66,8 +66,8 @@ FWD_CHECK([--permanent --policy=foobar --query-rich-rule='rule protocol value="s
 NFT_LIST_RULES([inet], [filter_IN_policy_foobar_allow], 0, [dnl
     table inet firewalld {
         chain filter_IN_policy_foobar_allow {
-            meta l4proto ipv6-icmp ct state new,untracked accept
-            meta l4proto sctp ct state new,untracked accept
+            meta l4proto ipv6-icmp accept
+            meta l4proto sctp accept
         }
     }
 ])

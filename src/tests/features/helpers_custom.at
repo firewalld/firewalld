@@ -35,10 +35,10 @@ FWD_CHECK([-q --add-service=ftptest])
 NFT_LIST_RULES([inet], [filter_IN_public_allow], 0, [dnl
     table inet firewalld {
         chain filter_IN_public_allow {
-            tcp dport 22 ct state new,untracked accept
-            ip6 daddr fe80::/64 udp dport 546 ct state new,untracked accept
+            tcp dport 22 accept
+            ip6 daddr fe80::/64 udp dport 546 accept
             tcp dport 2121 ct helper set "helper-ftptest-tcp"
-            tcp dport 2121 ct state new,untracked accept
+            tcp dport 2121 accept
         }
     }
 ])
@@ -89,10 +89,10 @@ FWD_CHECK([-q --add-service=ftptest])
 NFT_LIST_RULES([inet], [filter_IN_public_allow], 0, [dnl
     table inet firewalld {
         chain filter_IN_public_allow {
-            tcp dport 22 ct state new,untracked accept
-            ip6 daddr fe80::/64 udp dport 546 ct state new,untracked accept
+            tcp dport 22 accept
+            ip6 daddr fe80::/64 udp dport 546 accept
             tcp dport 2121 ct helper set "helper-ftptest-tcp"
-            tcp dport 2121 ct state new,untracked accept
+            tcp dport 2121 accept
         }
     }
 ])
@@ -124,12 +124,12 @@ FWD_CHECK([-q --add-service=ftptest])
 NFT_LIST_RULES([inet], [filter_IN_public_allow], 0, [dnl
     table inet firewalld {
         chain filter_IN_public_allow {
-            tcp dport 22 ct state new,untracked accept
-            ip6 daddr fe80::/64 udp dport 546 ct state new,untracked accept
+            tcp dport 22 accept
+            ip6 daddr fe80::/64 udp dport 546 accept
             tcp dport 21 ct helper set "helper-ftp-tcp"
             tcp dport 2121 ct helper set "helper-ftptest-tcp"
-            tcp dport 2121 ct state new,untracked accept
-            tcp dport 21 ct state new,untracked accept
+            tcp dport 2121 accept
+            tcp dport 21 accept
         }
     }
 ])

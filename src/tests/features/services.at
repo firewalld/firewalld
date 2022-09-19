@@ -17,8 +17,8 @@ FWD_CHECK([--policy=foobar --query-rich-rule='rule family=ipv4 source address="1
 NFT_LIST_RULES([inet], [filter_IN_policy_foobar_allow], 0, [dnl
     table inet firewalld {
         chain filter_IN_policy_foobar_allow {
-            tcp dport 22 ct state new,untracked accept
-            ip saddr 10.10.10.0/24 tcp dport 22 ct state new,untracked accept
+            tcp dport 22 accept
+            ip saddr 10.10.10.0/24 tcp dport 22 accept
         }
     }
 ])
@@ -56,8 +56,8 @@ NFT_LIST_RULES([inet], [filter_IN_policy_foobar_allow], 0, [dnl
     table inet firewalld {
         chain filter_IN_policy_foobar_allow {
             tcp dport 21 ct helper set "helper-ftp-tcp"
-            tcp dport 21 ct state new,untracked accept
-            ip saddr 10.10.10.0/24 tcp dport 21 ct state new,untracked accept
+            tcp dport 21 accept
+            ip saddr 10.10.10.0/24 tcp dport 21 accept
         }
     }
 ])

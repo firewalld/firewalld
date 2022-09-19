@@ -1469,26 +1469,26 @@ FWD_START_TEST([rich rules priority])
     NFT_LIST_RULES([inet], [filter_IN_public_log], 0, [dnl
         table inet firewalld {
         chain filter_IN_public_log {
-        tcp dport 1111 ct state new,untracked log
-        tcp dport 1122 ct state new,untracked log level audit
+        tcp dport 1111 log
+        tcp dport 1122 log level audit
         }
         }
     ])
     NFT_LIST_RULES([inet], [filter_IN_public_deny], 0, [dnl
         table inet firewalld {
         chain filter_IN_public_deny {
-        tcp dport 2222 ct state new,untracked drop
+        tcp dport 2222 drop
         }
         }
     ])
     NFT_LIST_RULES([inet], [filter_IN_public_allow], 0, [dnl
         table inet firewalld {
         chain filter_IN_public_allow {
-        tcp dport 22 ct state new,untracked accept
-        ip6 daddr fe80::/64 udp dport 546 ct state new,untracked accept
-        tcp dport 1122 ct state new,untracked accept
-        tcp dport 3333 ct state new,untracked accept
-        tcp dport 4444 ct state new,untracked accept
+        tcp dport 22 accept
+        ip6 daddr fe80::/64 udp dport 546 accept
+        tcp dport 1122 accept
+        tcp dport 3333 accept
+        tcp dport 4444 accept
         }
         }
     ])
@@ -1594,8 +1594,8 @@ FWD_START_TEST([rich rules priority])
     NFT_LIST_RULES([inet], [filter_IN_public_allow], 0, [dnl
         table inet firewalld {
         chain filter_IN_public_allow {
-        tcp dport 22 ct state new,untracked accept
-        ip6 daddr fe80::/64 udp dport 546 ct state new,untracked accept
+        tcp dport 22 accept
+        ip6 daddr fe80::/64 udp dport 546 accept
         }
         }
     ])
@@ -1734,8 +1734,8 @@ FWD_START_TEST([rich rules priority])
     NFT_LIST_RULES([inet], [filter_IN_public_allow], 0, [dnl
         table inet firewalld {
         chain filter_IN_public_allow {
-        tcp dport 22 ct state new,untracked accept
-        ip6 daddr fe80::/64 udp dport 546 ct state new,untracked accept
+        tcp dport 22 accept
+        ip6 daddr fe80::/64 udp dport 546 accept
         icmp echo-request accept
         icmpv6 echo-request accept
         }
@@ -1825,8 +1825,8 @@ FWD_START_TEST([rich rules priority])
         table inet firewalld {
         chain filter_IN_public_pre {
         ip saddr 10.0.0.0/8 log
-        tcp dport 1111 ct state new,untracked log
-        tcp dport 1111 ct state new,untracked drop
+        tcp dport 1111 log
+        tcp dport 1111 drop
         ip saddr 10.10.10.0/24 accept
         ip saddr 10.0.0.0/8 log
         ip saddr 10.0.0.0/8 drop
@@ -1836,8 +1836,8 @@ FWD_START_TEST([rich rules priority])
     NFT_LIST_RULES([inet], [filter_IN_public_allow], 0, [dnl
         table inet firewalld {
         chain filter_IN_public_allow {
-        tcp dport 22 ct state new,untracked accept
-        ip6 daddr fe80::/64 udp dport 546 ct state new,untracked accept
+        tcp dport 22 accept
+        ip6 daddr fe80::/64 udp dport 546 accept
         }
         }
     ])
@@ -1856,10 +1856,10 @@ FWD_START_TEST([rich rules priority])
     NFT_LIST_RULES([inet], [filter_IN_public_post], 0, [dnl
         table inet firewalld {
         chain filter_IN_public_post {
-        tcp dport 80 ct state new,untracked accept
-        tcp dport 22 ct state new,untracked accept
-        tcp dport 443 ct state new,untracked accept
-        tcp dport 143 ct state new,untracked accept
+        tcp dport 80 accept
+        tcp dport 22 accept
+        tcp dport 443 accept
+        tcp dport 143 accept
         log prefix "DROPPED: "
         drop
         }

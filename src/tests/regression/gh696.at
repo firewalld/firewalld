@@ -56,8 +56,8 @@ FWD_CHECK([--set-log-denied off], 0, [ignore])
 NFT_LIST_RULES([inet], [filter_IN_public_allow], 0, [dnl
     table inet firewalld {
         chain filter_IN_public_allow {
-            tcp dport 22 ct state new,untracked accept
-            ip6 daddr fe80::/64 udp dport 546 ct state new,untracked accept
+            tcp dport 22 accept
+            ip6 daddr fe80::/64 udp dport 546 accept
             icmp echo-request accept
             icmpv6 echo-request accept
         }
@@ -81,8 +81,8 @@ FWD_CHECK([--set-log-denied all], 0, [ignore])
 NFT_LIST_RULES([inet], [filter_IN_public_allow], 0, [dnl
     table inet firewalld {
         chain filter_IN_public_allow {
-            tcp dport 22 ct state new,untracked accept
-            ip6 daddr fe80::/64 udp dport 546 ct state new,untracked accept
+            tcp dport 22 accept
+            ip6 daddr fe80::/64 udp dport 546 accept
             icmp echo-request accept
             icmpv6 echo-request accept
         }

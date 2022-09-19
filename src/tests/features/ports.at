@@ -22,10 +22,10 @@ FWD_CHECK([--policy=foobar --query-rich-rule='rule port port=4444 protocol=udp a
 NFT_LIST_RULES([inet], [filter_IN_policy_foobar_allow], 0, [dnl
     table inet firewalld {
         chain filter_IN_policy_foobar_allow {
-            tcp dport 1234 ct state new,untracked accept
-            udp dport 1234 ct state new,untracked accept
-            udp dport 4321 ct state new,untracked accept
-            udp dport 4444 ct state new,untracked accept
+            tcp dport 1234 accept
+            udp dport 1234 accept
+            udp dport 4321 accept
+            udp dport 4444 accept
         }
     }
 ])
@@ -66,8 +66,8 @@ FWD_CHECK([--permanent --policy=foobar --query-rich-rule='rule port port=4444 pr
 NFT_LIST_RULES([inet], [filter_IN_policy_foobar_allow], 0, [dnl
     table inet firewalld {
         chain filter_IN_policy_foobar_allow {
-            udp dport 1234 ct state new,untracked accept
-            sctp dport 4444 ct state new,untracked accept
+            udp dport 1234 accept
+            sctp dport 4444 accept
         }
     }
 ])
