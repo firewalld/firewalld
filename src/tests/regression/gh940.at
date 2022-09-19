@@ -72,12 +72,12 @@ NFT_LIST_RULES([inet], [filter_IN_policy_log-denied_deny], 0, [dnl
 IPTABLES_LIST_RULES([filter], [IN_log-denied_deny], 0, [dnl
     LOG icmp -- 0.0.0.0/0 0.0.0.0/0 icmptype 8 LOG flags 0 level 4 prefix "log-denied_ICMP_BLOCK: "
     REJECT icmp -- 0.0.0.0/0 0.0.0.0/0 icmptype 8 reject-with icmp-host-prohibited
-    DROP tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:6667 ctstate NEW,UNTRACKED
+    DROP tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:6667 
 ])
 IP6TABLES_LIST_RULES([filter], [IN_log-denied_deny], 0, [dnl
     LOG icmpv6 ::/0 ::/0 ipv6-icmptype 128 LOG flags 0 level 4 prefix "log-denied_ICMP_BLOCK: "
     REJECT icmpv6 ::/0 ::/0 ipv6-icmptype 128 reject-with icmp6-adm-prohibited
-    DROP tcp ::/0 ::/0 tcp dpt:6667 ctstate NEW,UNTRACKED
+    DROP tcp ::/0 ::/0 tcp dpt:6667 
 ])
 
 NFT_LIST_RULES([inet], [filter_IN_policy_log-denied_log], 0, [dnl
@@ -89,10 +89,10 @@ NFT_LIST_RULES([inet], [filter_IN_policy_log-denied_log], 0, [dnl
 ])
 
 IPTABLES_LIST_RULES([filter], [IN_log-denied_log], 0, [dnl
-    LOG tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:6667 ctstate NEW,UNTRACKED LOG flags 0 level 4 prefix "Dropped IRC Packet: "
+    LOG tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:6667 LOG flags 0 level 4 prefix "Dropped IRC Packet: "
 ])
 IP6TABLES_LIST_RULES([filter], [IN_log-denied_log], 0, [dnl
-    LOG tcp ::/0 ::/0 tcp dpt:6667 ctstate NEW,UNTRACKED LOG flags 0 level 4 prefix "Dropped IRC Packet: "
+    LOG tcp ::/0 ::/0 tcp dpt:6667 LOG flags 0 level 4 prefix "Dropped IRC Packet: "
 ])
 
 FWD_END_TEST
