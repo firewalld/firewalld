@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>Warpinator</short>
+  <description>Warpinator is a file sharing app developed by Linux Mint. Warpinator allows you to send and receive files between computers that are on the same network without the need for any servers or special configuration.</description>
+  <port protocol="tcp" port="42000"/>
+  <port protocol="udp" port="42000"/>
+  <port protocol="tcp" port="42001"/>
+</service>
