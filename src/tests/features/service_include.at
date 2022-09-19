@@ -38,11 +38,11 @@ FWD_CHECK([-q --zone=drop --remove-service=recursive-service])
 NFT_LIST_RULES([inet], [filter_IN_drop_allow], 0, [dnl
     table inet firewalld {
     chain filter_IN_drop_allow {
-    ip daddr 239.255.255.250 udp dport 1900 ct state new,untracked accept
-    ip6 daddr ff02::c udp dport 1900 ct state new,untracked accept
-    ip daddr 224.0.0.251 udp dport 5353 ct state new,untracked accept
-    ip6 daddr ff02::fb udp dport 5353 ct state new,untracked accept
-    tcp dport 12345 ct state new,untracked accept
+    ip daddr 239.255.255.250 udp dport 1900 accept
+    ip6 daddr ff02::c udp dport 1900 accept
+    ip daddr 224.0.0.251 udp dport 5353 accept
+    ip6 daddr ff02::fb udp dport 5353 accept
+    tcp dport 12345 accept
     }
     }
 ])

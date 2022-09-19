@@ -7,14 +7,14 @@ FWD_RELOAD
 NFT_LIST_RULES([inet], [filter_IN_internal_allow], 0, [dnl
     table inet firewalld {
         chain filter_IN_internal_allow {
-            tcp dport 22 ct state new,untracked accept
-            ip daddr 224.0.0.251 udp dport 5353 ct state new,untracked accept
-            ip6 daddr ff02::fb udp dport 5353 ct state new,untracked accept
+            tcp dport 22 accept
+            ip daddr 224.0.0.251 udp dport 5353 accept
+            ip6 daddr ff02::fb udp dport 5353 accept
             udp dport 137 ct helper set "helper-netbios-ns-udp"
-            udp dport 137 ct state new,untracked accept
-            udp dport 138 ct state new,untracked accept
-            ip6 daddr fe80::/64 udp dport 546 ct state new,untracked accept
-            ip daddr 192.168.122.235 tcp dport 22 ct state new,untracked accept
+            udp dport 137 accept
+            udp dport 138 accept
+            ip6 daddr fe80::/64 udp dport 546 accept
+            ip daddr 192.168.122.235 tcp dport 22 accept
         }
     }
 ])
@@ -37,15 +37,15 @@ FWD_CHECK([-q --zone=internal --add-rich-rule='rule family=ipv4 destination addr
 NFT_LIST_RULES([inet], [filter_IN_internal_allow], 0, [dnl
     table inet firewalld {
         chain filter_IN_internal_allow {
-            tcp dport 22 ct state new,untracked accept
-            ip daddr 224.0.0.251 udp dport 5353 ct state new,untracked accept
-            ip6 daddr ff02::fb udp dport 5353 ct state new,untracked accept
+            tcp dport 22 accept
+            ip daddr 224.0.0.251 udp dport 5353 accept
+            ip6 daddr ff02::fb udp dport 5353 accept
             udp dport 137 ct helper set "helper-netbios-ns-udp"
-            udp dport 137 ct state new,untracked accept
-            udp dport 138 ct state new,untracked accept
-            ip6 daddr fe80::/64 udp dport 546 ct state new,untracked accept
-            ip daddr 192.168.122.235 tcp dport 22 ct state new,untracked accept
-            ip daddr 192.168.111.222 ip saddr 10.10.10.0/24 tcp dport 22 ct state new,untracked accept
+            udp dport 137 accept
+            udp dport 138 accept
+            ip6 daddr fe80::/64 udp dport 546 accept
+            ip daddr 192.168.122.235 tcp dport 22 accept
+            ip daddr 192.168.111.222 ip saddr 10.10.10.0/24 tcp dport 22 accept
         }
     }
 ])
@@ -69,16 +69,16 @@ FWD_CHECK([-q --zone=internal --add-rich-rule='rule family=ipv4 service name="ss
 NFT_LIST_RULES([inet], [filter_IN_internal_allow], 0, [dnl
     table inet firewalld {
         chain filter_IN_internal_allow {
-            tcp dport 22 ct state new,untracked accept
-            ip daddr 224.0.0.251 udp dport 5353 ct state new,untracked accept
-            ip6 daddr ff02::fb udp dport 5353 ct state new,untracked accept
+            tcp dport 22 accept
+            ip daddr 224.0.0.251 udp dport 5353 accept
+            ip6 daddr ff02::fb udp dport 5353 accept
             udp dport 137 ct helper set "helper-netbios-ns-udp"
-            udp dport 137 ct state new,untracked accept
-            udp dport 138 ct state new,untracked accept
-            ip6 daddr fe80::/64 udp dport 546 ct state new,untracked accept
-            ip daddr 192.168.122.235 tcp dport 22 ct state new,untracked accept
-            ip daddr 192.168.111.222 ip saddr 10.10.10.0/24 tcp dport 22 ct state new,untracked accept
-            ip daddr 239.255.255.250 udp dport 1900 ct state new,untracked accept
+            udp dport 137 accept
+            udp dport 138 accept
+            ip6 daddr fe80::/64 udp dport 546 accept
+            ip daddr 192.168.122.235 tcp dport 22 accept
+            ip daddr 192.168.111.222 ip saddr 10.10.10.0/24 tcp dport 22 accept
+            ip daddr 239.255.255.250 udp dport 1900 accept
         }
     }
 ])

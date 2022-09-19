@@ -7,21 +7,21 @@ FWD_CHECK([--zone trusted --add-service RH-Satellite-6], 0, [ignore])
 NFT_LIST_RULES([inet], [filter_IN_trusted_allow], 0, [dnl
     table inet firewalld {
         chain filter_IN_trusted_allow {
-            tcp dport 53 ct state new,untracked accept
-            udp dport 53 ct state new,untracked accept
-            tcp dport 80 ct state new,untracked accept
-            tcp dport 443 ct state new,untracked accept
-            udp dport 67 ct state new,untracked accept
+            tcp dport 53 accept
+            udp dport 53 accept
+            tcp dport 80 accept
+            tcp dport 443 accept
+            udp dport 67 accept
             udp dport 69 ct helper set "helper-tftp-udp"
-            udp dport 69 ct state new,untracked accept
-            udp dport 68 ct state new,untracked accept
-            tcp dport 8140 ct state new,untracked accept
-            tcp dport 5000 ct state new,untracked accept
-            tcp dport 5646-5647 ct state new,untracked accept
-            tcp dport 5671 ct state new,untracked accept
-            tcp dport 8000 ct state new,untracked accept
-            tcp dport 8080 ct state new,untracked accept
-            tcp dport 9090 ct state new,untracked accept
+            udp dport 69 accept
+            udp dport 68 accept
+            tcp dport 8140 accept
+            tcp dport 5000 accept
+            tcp dport 5646-5647 accept
+            tcp dport 5671 accept
+            tcp dport 8000 accept
+            tcp dport 8080 accept
+            tcp dport 9090 accept
         }
     }
 ])
@@ -65,22 +65,22 @@ FWD_CHECK([--zone trusted --add-service RH-Satellite-6-capsule], 0, [ignore])
 NFT_LIST_RULES([inet], [filter_IN_trusted_allow], 0, [dnl
     table inet firewalld {
         chain filter_IN_trusted_allow {
-            tcp dport 53 ct state new,untracked accept
-            udp dport 53 ct state new,untracked accept
-            tcp dport 80 ct state new,untracked accept
-            tcp dport 443 ct state new,untracked accept
-            udp dport 67 ct state new,untracked accept
+            tcp dport 53 accept
+            udp dport 53 accept
+            tcp dport 80 accept
+            tcp dport 443 accept
+            udp dport 67 accept
             udp dport 69 ct helper set "helper-tftp-udp"
-            udp dport 69 ct state new,untracked accept
-            udp dport 68 ct state new,untracked accept
-            tcp dport 8140 ct state new,untracked accept
-            tcp dport 5000 ct state new,untracked accept
-            tcp dport 5646-5647 ct state new,untracked accept
-            tcp dport 5671 ct state new,untracked accept
-            tcp dport 8000 ct state new,untracked accept
-            tcp dport 8080 ct state new,untracked accept
-            tcp dport 9090 ct state new,untracked accept
-            tcp dport 8443 ct state new,untracked accept
+            udp dport 69 accept
+            udp dport 68 accept
+            tcp dport 8140 accept
+            tcp dport 5000 accept
+            tcp dport 5646-5647 accept
+            tcp dport 5671 accept
+            tcp dport 8000 accept
+            tcp dport 8080 accept
+            tcp dport 9090 accept
+            tcp dport 8443 accept
         }
     }
 ])

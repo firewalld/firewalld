@@ -16,10 +16,10 @@ NS_CHECK([nft list ruleset | TRIM_WHITESPACE |grep -A3 "ct helper helper-ftp-tcp
 NFT_LIST_RULES([inet], [filter_IN_public_allow], 0, [dnl
     table inet firewalld {
     chain filter_IN_public_allow {
-    tcp dport 22 ct state new,untracked accept
-    ip6 daddr fe80::/64 udp dport 546 ct state new,untracked accept
+    tcp dport 22 accept
+    ip6 daddr fe80::/64 udp dport 546 accept
     tcp dport 21 ct helper set "helper-ftp-tcp"
-    tcp dport 21 ct state new,untracked accept
+    tcp dport 21 accept
     }
     }
 ])
@@ -40,14 +40,14 @@ NS_CHECK([nft list ruleset | TRIM_WHITESPACE |grep -A3 "ct helper helper-sip-udp
 NFT_LIST_RULES([inet], [filter_IN_public_allow], 0, [dnl
     table inet firewalld {
     chain filter_IN_public_allow {
-    tcp dport 22 ct state new,untracked accept
-    ip6 daddr fe80::/64 udp dport 546 ct state new,untracked accept
+    tcp dport 22 accept
+    ip6 daddr fe80::/64 udp dport 546 accept
     tcp dport 21 ct helper set "helper-ftp-tcp"
-    tcp dport 21 ct state new,untracked accept
+    tcp dport 21 accept
     tcp dport 5060 ct helper set "helper-sip-tcp"
     udp dport 5060 ct helper set "helper-sip-udp"
-    tcp dport 5060 ct state new,untracked accept
-    udp dport 5060 ct state new,untracked accept
+    tcp dport 5060 accept
+    udp dport 5060 accept
     }
     }
 ])
