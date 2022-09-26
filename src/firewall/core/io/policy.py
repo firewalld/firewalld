@@ -418,7 +418,7 @@ def common_check_config(obj, config, item, all_config, all_io_objects):
                 ex = FirewallError(errors.INVALID_ICMPTYPE,
                         "{} '{}': '{}' not among existing ICMP types".format(
                             obj_type, obj.name, icmptype))
-                if icmptype in all_io_objects.get("icmptypes_unsupported", {}):
+                if icmptype in all_io_objects.get("runtime", {}).get("icmptypes_unsupported", {}):
                     log.debug1("{} (unsupported)".format(ex))
                 else:
                     raise ex
@@ -453,7 +453,7 @@ def common_check_config(obj, config, item, all_config, all_io_objects):
                     ex = FirewallError(errors.INVALID_ICMPTYPE,
                             "{} '{}': '{}' not among existing ICMP types".format(
                                 obj_type, obj.name, obj_rich.element.name))
-                    if obj_rich.element.name in all_io_objects.get("icmptypes_unsupported", {}):
+                    if obj_rich.element.name in all_io_objects.get("runtime", {}).get("icmptypes_unsupported", {}):
                         log.debug1("{} (unsupported)".format(ex))
                     else:
                         raise ex
@@ -463,7 +463,7 @@ def common_check_config(obj, config, item, all_config, all_io_objects):
                         ex = FirewallError(errors.INVALID_ICMPTYPE,
                                            "{} '{}': rich rule family '{}' conflicts with icmp type '{}'".format(
                                                 obj_type, obj.name, obj_rich.family, obj_rich.element.name))
-                        ict_unsupported = all_io_objects.get("icmptypes_unsupported", {}).get(obj_rich.element.name)
+                        ict_unsupported = all_io_objects.get("runtime", {}).get("icmptypes_unsupported", {}).get(obj_rich.element.name)
                         if ict_unsupported and ict_unsupported.destination and \
                            obj_rich.family in ict_unsupported.destination:
                             log.debug1("{} (unsupported)".format(ex))
