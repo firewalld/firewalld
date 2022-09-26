@@ -1,5 +1,5 @@
 FWD_START_TEST([masquerade])
-AT_KEYWORDS(policy masquerade)
+AT_KEYWORDS(policy masquerade gh926)
 
 FWD_CHECK([--permanent --zone=public --add-interface foobar0], 0, [ignore])
 
@@ -79,6 +79,7 @@ FWD_CHECK([--policy=foobar_host --add-rich-rule='rule family=ipv4 source address
 FWD_CHECK([--permanent --policy=foobar_host --remove-ingress-zone internal], 0, [ignore])
 FWD_CHECK([--permanent --policy=foobar_host --remove-egress-zone HOST], 0, [ignore])
 
+m4_if(iptables, FIREWALL_BACKEND, [
 dnl invalid for zone --> zone if ingress zone has interfaces
 dnl
 FWD_CHECK([--permanent --new-policy=foobar_int_to_pub], 0, [ignore])
@@ -91,6 +92,20 @@ FWD_CHECK([--permanent --policy=foobar_int_to_pub --add-rich-rule='rule family=i
 FWD_CHECK([--policy=foobar_int_to_pub --add-masquerade], 112, [ignore], [ignore])
 FWD_CHECK([--policy=foobar_int_to_pub --add-rich-rule='rule family=ipv4 source address=10.10.10.0/24 masquerade'], 112, [ignore], [ignore])
 FWD_CHECK([--permanent --zone=internal --remove-interface foobar1], 0, [ignore])
+], [ dnl nftables or offline
+dnl valid for zone --> zone if ingress zone has only interfaces
+dnl
+FWD_CHECK([--permanent --new-policy=foobar_int_to_pub], 0, [ignore])
+FWD_CHECK([--permanent --zone=internal --add-interface foobar1], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar_int_to_pub --add-ingress-zone internal], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar_int_to_pub --add-egress-zone public], 0, [ignore])
+FWD_RELOAD
+FWD_CHECK([--permanent --policy=foobar_int_to_pub --add-masquerade], 0, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar_int_to_pub --add-rich-rule='rule family=ipv4 source address=10.10.10.0/24 masquerade'], 0, [ignore], [ignore])
+FWD_CHECK([--policy=foobar_int_to_pub --add-masquerade], 0, [ignore], [ignore])
+FWD_CHECK([--policy=foobar_int_to_pub --add-rich-rule='rule family=ipv4 source address=10.10.10.0/24 masquerade'], 0, [ignore], [ignore])
+FWD_CHECK([--permanent --zone=internal --remove-interface foobar1], 0, [ignore])
+])
 
 dnl valid for zone --> zone if ingress zone has only sources
 dnl
@@ -99,5 +114,19 @@ FWD_RELOAD
 FWD_CHECK([--permanent --policy=foobar_int_to_pub --add-masquerade], 0, [ignore], [ignore])
 FWD_CHECK([--permanent --policy=foobar_int_to_pub --add-rich-rule='rule family=ipv4 source address=10.10.10.0/24 masquerade'], 0, [ignore], [ignore])
 FWD_CHECK([--permanent --zone=internal --remove-source 10.10.10.0/24], 0, [ignore])
+
+m4_if(iptables, FIREWALL_BACKEND, [], [ dnl nftables or offline
+dnl valid for zone --> zone if ingress zone has sources and interfaces
+dnl
+FWD_CHECK([--permanent --zone=internal --add-source 10.10.10.0/24], 0, [ignore])
+FWD_CHECK([--permanent --zone=internal --add-interface foobar1], 0, [ignore])
+FWD_RELOAD
+FWD_CHECK([--permanent --policy=foobar_int_to_pub --add-masquerade], 0, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar_int_to_pub --add-rich-rule='rule family=ipv4 source address=10.10.10.0/24 masquerade'], 0, [ignore], [ignore])
+FWD_CHECK([            --policy=foobar_int_to_pub --add-masquerade], 0, [ignore], [ignore])
+FWD_CHECK([            --policy=foobar_int_to_pub --add-rich-rule='rule family=ipv4 source address=10.10.10.0/24 masquerade'], 0, [ignore], [ignore])
+FWD_CHECK([--permanent --zone=internal --remove-source 10.10.10.0/24], 0, [ignore])
+FWD_CHECK([--permanent --zone=internal --remove-interface foobar1], 0, [ignore])
+])
 
 FWD_END_TEST([-e '/ERROR: INVALID_ZONE:/d'])

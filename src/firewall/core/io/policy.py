@@ -882,7 +882,8 @@ class Policy(IO_Object):
                         continue
                     if zone not in all_io_objects["zones"]:
                         raise FirewallError(errors.INVALID_ZONE, "Policy '{}': Zone '{}' does not exist.".format(self.name, zone))
-                    if all_io_objects["zones"][zone].interfaces:
+                    if all_io_objects["conf"].get("FirewallBackend") != "nftables" \
+                       and all_io_objects["zones"][zone].interfaces:
                         raise FirewallError(errors.INVALID_ZONE, "Policy '{}': 'masquerade' cannot be used because ingress zone '{}' has assigned interfaces. ".format(self.name, zone))
         elif item == "rich_rules":
             for rule in config:
@@ -902,7 +903,8 @@ class Policy(IO_Object):
                                 continue
                             if zone not in all_io_objects["zones"]:
                                 raise FirewallError(errors.INVALID_ZONE, "Policy '{}': Zone '{}' does not exist.".format(self.name, zone))
-                            if all_io_objects["zones"][zone].interfaces:
+                            if all_io_objects["conf"].get("FirewallBackend") != "nftables" \
+                               and all_io_objects["zones"][zone].interfaces:
                                 raise FirewallError(errors.INVALID_ZONE, "Policy '{}': 'masquerade' cannot be used because ingress zone '{}' has assigned interfaces. ".format(self.name, zone))
                 elif obj.element and isinstance(obj.element, rich.Rich_ForwardPort):
                     if "egress_zones" in all_config:

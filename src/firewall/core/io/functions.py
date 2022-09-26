@@ -20,6 +20,7 @@
 #
 
 import os
+import copy
 
 from firewall import config
 from firewall.errors import FirewallError
@@ -77,6 +78,7 @@ def check_on_disk_config(fw):
                 if file.endswith(".xml"):
                     obj = readers[reader]["reader"](file, _dir)
                     readers[reader]["add"](obj)
+    fw_config.set_firewalld_conf(copy.deepcopy(fw._firewalld_conf))
     fw_config.full_check_config()
 
     if os.path.isfile(config.FIREWALLD_DIRECT):

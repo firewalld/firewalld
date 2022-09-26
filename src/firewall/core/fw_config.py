@@ -135,6 +135,9 @@ class FirewallConfig(object):
         conf_dict["zones"] = {zone: self.get_zone(zone) for zone in self.get_zones()}
         conf_dict["policies"] = {policy: self.get_policy_object(policy) for policy in self.get_policy_objects()}
 
+        conf_dict["conf"] = {}
+        conf_dict["conf"]["FirewallBackend"] = self._firewalld_conf.get("FirewallBackend")
+
         return conf_dict
 
     def full_check_config(self, extra_io_objects: Dict[str, List[IO_Object]] = {}):
