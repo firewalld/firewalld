@@ -149,6 +149,9 @@ class Firewall(object):
         conf_dict["zones"] = {zone: self.zone.get_zone(zone) for zone in self.zone.get_zones()}
         conf_dict["policies"] = {policy: self.policy.get_policy(policy) for policy in self.policy.get_policies_not_derived_from_zone()}
 
+        conf_dict["conf"] = {}
+        conf_dict["conf"]["FirewallBackend"] = self._firewalld_conf.get("FirewallBackend")
+
         # The runtime might not actually support all the defined icmptypes.
         # This is the case if ipv6 (ip6tables) is disabled. Unfortunately users
         # disable IPv6 and also expect the IPv6 stuff to be silently ignored.

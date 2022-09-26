@@ -1655,6 +1655,7 @@ dnl (nat, postrouting)
 NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain nat_POSTROUTING_POLICIES_pre {
+            iifname "foobar1" jump nat_POST_policy_foobar
         }
     }
 ])
@@ -1875,6 +1876,7 @@ dnl (nat, postrouting)
 NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain nat_POSTROUTING_POLICIES_pre {
+            iifname "foobar1" oifname "foobar0" jump nat_POST_policy_foobar
         }
     }
 ])
@@ -1987,6 +1989,7 @@ dnl (nat, postrouting)
 NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain nat_POSTROUTING_POLICIES_pre {
+            iifname "foobar1" ip daddr 10.10.10.0/24 jump nat_POST_policy_foobar
         }
     }
 ])

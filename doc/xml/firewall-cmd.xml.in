@@ -898,6 +898,13 @@
 	    <para>
 	      <emphasis>Note:</emphasis> IP forwarding will be implicitly enabled.
 	    </para>
+            <para>
+              <emphasis>Note (Linux &lt; 5.5):</emphasis>
+                For the iptables backend, a policy may not enable masquerade if
+                an ingress zone has assigned interfaces. This restriction does
+                not exist for the nftables backend, but does require Linux v5.5+
+                to function properly; otherwise it will silently fail.
+            </para>
 	  </listitem>
 	</varlistentry>
 
