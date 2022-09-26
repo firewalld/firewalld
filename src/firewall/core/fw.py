@@ -156,22 +156,23 @@ class Firewall(object):
         # 'allow-host-ipv6'. Use this to make a better decision about errors vs
         # warnings.
         #
-        conf_dict["icmptypes_unsupported"] = {}
+        conf_dict["runtime"] = {}
+        conf_dict["runtime"]["icmptypes_unsupported"] = {}
         for icmptype in (set(self.config.get_icmptypes()).difference(
                          set(self.icmptype.get_icmptypes()))):
-            conf_dict["icmptypes_unsupported"][icmptype] = self.config.get_icmptype(icmptype)
+            conf_dict["runtime"]["icmptypes_unsupported"][icmptype] = self.config.get_icmptype(icmptype)
         # Some icmptypes support multiple families. Add those that are missing
         # support for a subset of families.
         for icmptype in (set(self.config.get_icmptypes()).intersection(
                          set(self.icmptype.get_icmptypes()))):
             if icmptype not in self.ipv4_supported_icmp_types or \
                icmptype not in self.ipv6_supported_icmp_types:
-                conf_dict["icmptypes_unsupported"][icmptype] = copy.copy(self.config.get_icmptype(icmptype))
-                conf_dict["icmptypes_unsupported"][icmptype].destination = []
+                conf_dict["runtime"]["icmptypes_unsupported"][icmptype] = copy.copy(self.config.get_icmptype(icmptype))
+                conf_dict["runtime"]["icmptypes_unsupported"][icmptype].destination = []
                 if icmptype not in self.ipv4_supported_icmp_types:
-                    conf_dict["icmptypes_unsupported"][icmptype].destination.append("ipv4")
+                    conf_dict["runtime"]["icmptypes_unsupported"][icmptype].destination.append("ipv4")
                 if icmptype not in self.ipv6_supported_icmp_types:
-                    conf_dict["icmptypes_unsupported"][icmptype].destination.append("ipv6")
+                    conf_dict["runtime"]["icmptypes_unsupported"][icmptype].destination.append("ipv6")
 
         return conf_dict
 
