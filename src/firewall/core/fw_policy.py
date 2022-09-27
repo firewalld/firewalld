@@ -1665,61 +1665,6 @@ class FirewallPolicy(object):
             rules = backend.build_policy_icmp_block_inversion_rules(enable, policy)
             transaction.add_rules(backend, rules)
 
-    def check_ingress_egress(self, policy, ingress_zones, egress_zones,
-                                           ingress_interfaces, egress_interfaces,
-                                           ingress_sources, egress_sources):
-        for zone in ingress_zones:
-            self.check_ingress_zone(zone)
-        for zone in egress_zones:
-            self.check_egress_zone(zone)
-
-        if ("ANY" in ingress_zones or "HOST" in ingress_zones) and \
-           len(ingress_zones) > 1:
-            raise FirewallError(errors.INVALID_ZONE, "'ingress-zones' may only contain one of: many regular zones, ANY, or HOST")
-
-        if ("ANY" in egress_zones or "HOST" in egress_zones) and \
-           len(egress_zones) > 1:
-            raise FirewallError(errors.INVALID_ZONE, "'egress-zones' may only contain one of: many regular zones, ANY, or HOST")
-
-        if (egress_interfaces or egress_sources) and \
-           not ingress_interfaces and not ingress_sources and \
-           "HOST" not in ingress_zones and "ANY" not in ingress_zones:
-            raise FirewallError(errors.INVALID_ZONE, "policy \"%s\" has no ingress" % (policy))
-
-        if (ingress_interfaces or ingress_sources) and \
-           not egress_interfaces and not egress_sources and \
-           "HOST" not in egress_zones and "ANY" not in egress_zones:
-            raise FirewallError(errors.INVALID_ZONE, "policy \"%s\" has no egress" % (policy))
-
-    def check_ingress_egress_chain(self, policy, table, chain,
-                                   ingress_zones, egress_zones,
-                                   ingress_interfaces, egress_interfaces,
-                                   ingress_sources, egress_sources):
-        if chain == "PREROUTING":
-            # raw,prerouting is used for conntrack helpers (services), so we
-            # need to allow it if egress-zones contains an actual zone
-            if table != "raw":
-                if egress_interfaces:
-                    raise FirewallError(errors.INVALID_ZONE, "policy \"%s\" egress-zones may not include a zone with added interfaces." % (policy))
-        elif chain == "POSTROUTING":
-            if "HOST" in ingress_zones:
-                raise FirewallError(errors.INVALID_ZONE, "policy \"%s\" ingress-zones may not include HOST." % (policy))
-            if "HOST" in egress_zones:
-                raise FirewallError(errors.INVALID_ZONE, "policy \"%s\" egress-zones may not include HOST." % (policy))
-            if ingress_interfaces:
-                raise FirewallError(errors.INVALID_ZONE, "policy \"%s\" ingress-zones may not include a zone with added interfaces." % (policy))
-        elif chain == "FORWARD":
-            if "HOST" in ingress_zones:
-                raise FirewallError(errors.INVALID_ZONE, "policy \"%s\" ingress-zones may not include HOST." % (policy))
-            if "HOST" in egress_zones:
-                raise FirewallError(errors.INVALID_ZONE, "policy \"%s\" egress-zones may not include HOST." % (policy))
-        elif chain == "INPUT":
-            if "HOST" not in egress_zones:
-                raise FirewallError(errors.INVALID_ZONE, "policy \"%s\" egress-zones must include only HOST." % (policy))
-        elif chain == "OUTPUT":
-            if "HOST" not in ingress_zones:
-                raise FirewallError(errors.INVALID_ZONE, "policy \"%s\" ingress-zones must include only HOST." % (policy))
-
     def _ingress_egress_zones_transaction(self, enable, policy):
         transaction = FirewallTransaction(self._fw)
         self._ingress_egress_zones(enable, policy, transaction)
@@ -1747,19 +1692,11 @@ class FirewallPolicy(object):
             egress_interfaces |= set(self._fw.zone.list_interfaces(zone))
             egress_sources |= set(self._fw.zone.list_sources(zone))
 
-        self.check_ingress_egress(policy, ingress_zones, egress_zones,
-                                          ingress_interfaces, egress_interfaces,
-                                          ingress_sources, egress_sources)
-
         for backend in self._fw.enabled_backends():
             if not backend.policies_supported:
                 continue
 
             for (table, chain) in self._get_table_chains_for_policy_dispatch(policy):
-                self.check_ingress_egress_chain(policy, table, chain,
-                                                ingress_zones, egress_zones,
-                                                ingress_interfaces, egress_interfaces,
-                                                ingress_sources, egress_sources)
                 rules = backend.build_policy_ingress_egress_rules(enable, policy, table, chain,
                                                                   ingress_interfaces, egress_interfaces,
                                                                   ingress_sources, egress_sources)
