@@ -337,6 +337,7 @@ CONFIG_FILES = \
 	services/zabbix-java-gateway.xml \
 	services/zabbix-server.xml \
 	services/zabbix-trapper.xml \
+	services/zabbix-web-service.xml \
 	services/zerotier.xml \
 	zones/block.xml \
 	zones/dmz.xml \
