@@ -8,15 +8,15 @@
 # Onuralp SEZER <thunderbirdtr@gmail.com>, 2012
 # Serdar Sağlam <teknomobil@msn.com>, 2019. #zanata
 # Oğuz Ersen <oguzersen@protonmail.com>, 2020.
-# Burak Yavuz <hitowerdigit@hotmail.com>, 2020.
+# Burak Yavuz <hitowerdigit@hotmail.com>, 2020, 2022.
 # Oğuz Ersen <oguz@ersen.moe>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-05-25 10:54-0400\n"
-"PO-Revision-Date: 2022-04-25 05:26+0000\n"
-"Last-Translator: Oğuz Ersen <oguz@ersen.moe>\n"
+"PO-Revision-Date: 2022-07-07 20:19+0000\n"
+"Last-Translator: Burak Yavuz <hitowerdigit@hotmail.com>\n"
 "Language-Team: Turkish <https://translate.fedoraproject.org/projects/"
 "firewalld/master/tr/>\n"
 "Language: tr\n"
@@ -24,7 +24,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n>1);\n"
-"X-Generator: Weblate 4.12\n"
+"X-Generator: Weblate 4.13\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:408
 msgid "Firewall Applet"
@@ -921,7 +921,7 @@ msgstr "Lütfen bir ICMP türü seçin"
 
 #: ../src/firewall-config.glade.h:50
 msgid "Add Entry"
-msgstr "Girdi Ekle"
+msgstr "Giriş Ekle"
 
 #: ../src/firewall-config.glade.h:51
 msgid "Add Entries From File"
@@ -929,7 +929,7 @@ msgstr "Dosyadan Girdi Ekle"
 
 #: ../src/firewall-config.glade.h:52
 msgid "Remove Selected Entry"
-msgstr "Seçilen Girdiyi Kaldır"
+msgstr "Seçilen Girişi Kaldır"
 
 #: ../src/firewall-config.glade.h:53
 msgid "Remove All Entries"
@@ -1288,11 +1288,11 @@ msgstr "Geliştirilmiş Kural Ekle"
 
 #: ../src/firewall-config.glade.h:123
 msgid "Edit Rich Rule"
-msgstr "Geliştirilmiş Kural Düzenle"
+msgstr "Geliştirilmiş Kuralı Düzenle"
 
 #: ../src/firewall-config.glade.h:124
 msgid "Remove Rich Rule"
-msgstr "Geliştirilmiş Kural Kaldır"
+msgstr "Geliştirilmiş Kuralı Kaldır"
 
 #: ../src/firewall-config.glade.h:125
 msgid "Rich Rules"
@@ -1313,11 +1313,11 @@ msgstr "Arayüz Ekle"
 
 #: ../src/firewall-config.glade.h:128
 msgid "Edit Interface"
-msgstr "Arayüz Düzenle"
+msgstr "Arayüzü Düzenle"
 
 #: ../src/firewall-config.glade.h:129
 msgid "Remove Interface"
-msgstr "Arayüz Kaldır"
+msgstr "Arayüzü Kaldır"
 
 #: ../src/firewall-config.glade.h:131
 msgid ""
@@ -1336,11 +1336,11 @@ msgstr "Kaynak Ekle"
 
 #: ../src/firewall-config.glade.h:133
 msgid "Edit Source"
-msgstr "Kaynak Düzenle"
+msgstr "Kaynağı Düzenle"
 
 #: ../src/firewall-config.glade.h:134
 msgid "Remove Source"
-msgstr "Kaynak Kaldır"
+msgstr "Kaynağı Kaldır"
 
 #: ../src/firewall-config.glade.h:136
 msgid "Zones"
@@ -1380,11 +1380,11 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:144
 msgid "Edit Entry"
-msgstr "Girdi Düzenle"
+msgstr "Girişi Düzenle"
 
 #: ../src/firewall-config.glade.h:145
 msgid "Remove Entry"
-msgstr "Girdi Kaldır"
+msgstr "Girişi Kaldır"
 
 #: ../src/firewall-config.glade.h:146
 msgid ""
@@ -1708,9 +1708,9 @@ msgid ""
 "command lines starting with the command will match. If the '*' is not there "
 "the absolute command inclusive arguments must match."
 msgstr ""
-"Beyaz listedeki bir komut girdisi yıldız işareti '*' ile bitiyorsa, o "
-"komutla başlayan tüm komut satırları eşleşecektir. '*' yok ise, argümanlar "
-"dahil komut tamamen eşleşmelidir."
+"Eğer beyaz listedeki bir komut girişi, yıldız işareti '*' ile bitiyorsa, "
+"sonrasında komutla başlayan tüm komut satırları eşleşecektir. Eğer '*' yok "
+"ise, bağımsız değişkenler dahil komut tamamen eşleşmek zorundadır."
 
 #: ../src/firewall-config.glade.h:201
 msgid "Add Command Line"
@@ -1844,7 +1844,7 @@ msgstr "Lütfen bir ipset seçin:"
 
 #: ../src/firewall-config.glade.h:234
 msgid "Please enter an ipset entry:"
-msgstr "Lütfen bir ipset girdisi girin:"
+msgstr "Lütfen bir ip kümesi girişi girin:"
 
 #: ../src/firewall-config.glade.h:235
 msgid "Log Denied"
