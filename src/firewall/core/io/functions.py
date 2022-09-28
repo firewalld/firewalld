@@ -20,7 +20,6 @@
 #
 
 import os
-import copy
 
 from firewall import config
 from firewall.errors import FirewallError
@@ -38,6 +37,19 @@ from firewall.core.io.firewalld_conf import firewalld_conf
 
 def check_on_disk_config(fw):
     fw_config = FirewallConfig(fw)
+
+    try:
+        _firewalld_conf = firewalld_conf(config.FIREWALLD_CONF)
+        _firewalld_conf.read()
+    except FirewallError as error:
+        raise FirewallError(error.code, "'%s': %s" % (config.FIREWALLD_CONF, error.msg))
+    except IOError:
+        # defaults will be filled
+        pass
+    except Exception as msg:
+        raise Exception("'%s': %s" % (config.FIREWALLD_CONF, msg))
+    fw_config.set_firewalld_conf(_firewalld_conf)
+
     readers = {
         "ipset": {
             "reader": ipset_reader,
@@ -78,7 +90,6 @@ def check_on_disk_config(fw):
                 if file.endswith(".xml"):
                     obj = readers[reader]["reader"](file, _dir)
                     readers[reader]["add"](obj)
-    fw_config.set_firewalld_conf(copy.deepcopy(fw._firewalld_conf))
     fw_config.full_check_config()
 
     if os.path.isfile(config.FIREWALLD_DIRECT):
@@ -99,11 +110,3 @@ def check_on_disk_config(fw):
             raise FirewallError(error.code, "'%s': %s" % (config.LOCKDOWN_WHITELIST, error.msg))
         except Exception as msg:
             raise Exception("'%s': %s" % (config.LOCKDOWN_WHITELIST, msg))
-    if os.path.isfile(config.FIREWALLD_CONF):
-        try:
-            obj = firewalld_conf(config.FIREWALLD_CONF)
-            obj.read()
-        except FirewallError as error:
-            raise FirewallError(error.code, "'%s': %s" % (config.FIREWALLD_CONF, error.msg))
-        except Exception as msg:
-            raise Exception("'%s': %s" % (config.FIREWALLD_CONF, msg))
