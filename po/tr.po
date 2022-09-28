@@ -8,13 +8,14 @@
 # Onuralp SEZER <thunderbirdtr@gmail.com>, 2012
 # Serdar Sağlam <teknomobil@msn.com>, 2019. #zanata
 # Oğuz Ersen <oguzersen@protonmail.com>, 2020.
-# Burak Yavuz <hitowerdigit@hotmail.com>, 2020.
+# Burak Yavuz <hitowerdigit@hotmail.com>, 2020, 2022.
+# Oğuz Ersen <oguz@ersen.moe>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-05-25 10:54-0400\n"
-"PO-Revision-Date: 2020-11-07 16:35+0000\n"
+"PO-Revision-Date: 2022-07-07 20:19+0000\n"
 "Last-Translator: Burak Yavuz <hitowerdigit@hotmail.com>\n"
 "Language-Team: Turkish <https://translate.fedoraproject.org/projects/"
 "firewalld/master/tr/>\n"
@@ -23,7 +24,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n>1);\n"
-"X-Generator: Weblate 4.3.2\n"
+"X-Generator: Weblate 4.13\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:408
 msgid "Firewall Applet"
@@ -165,11 +166,11 @@ msgstr "Yetkilendirme başarısız oldu."
 
 #: ../src/firewall-applet.in:581 ../src/firewall-config.in:2290
 msgid "Invalid name"
-msgstr "Argumento inválido %s"
+msgstr "Geçersiz ad"
 
 #: ../src/firewall-applet.in:585 ../src/firewall-config.in:2293
 msgid "Name already exists"
-msgstr "Bu isim zaten kullanılıyor"
+msgstr "Bu ad zaten var"
 
 #: ../src/firewall-applet.in:677
 msgid "{entry} (Zone: {zone})"
@@ -330,7 +331,7 @@ msgstr "devre dışı"
 
 #: ../src/firewall-config.in:125
 msgid "Failed to load icons."
-msgstr "Ikonların yüklenmesi başarısız."
+msgstr "Simgeler yüklenemedi."
 
 #: ../src/firewall-config.in:187 ../src/firewall-config.glade.h:6
 msgid "Context"
@@ -388,7 +389,7 @@ msgstr "Bağlantı noktası"
 #: ../src/firewall-config.in:1013 ../src/firewall-config.in:1032
 #: ../src/firewall-config.glade.h:250
 msgid "Protocol"
-msgstr "Protocolo"
+msgstr "Protokol"
 
 #: ../src/firewall-config.in:564
 msgid "To Port"
@@ -731,7 +732,7 @@ msgstr "Yerleşik yardımcı, yeniden adlandırma desteklenmiyor."
 
 #: ../src/firewall-config.in:6882
 msgid "Built-in icmp, rename not supported."
-msgstr "Dahili icmp, Yeniden isimlendirme desteklenmiyor."
+msgstr "Dahili icmp, yeniden adlandırma desteklenmiyor."
 
 #: ../src/firewall-config.in:7954
 #, c-format
@@ -823,9 +824,7 @@ msgstr "Bağlantı Noktası Yönlendirme"
 #: ../src/firewall-config.glade.h:23
 msgid ""
 "Please select the source and destination options according to your needs."
-msgstr ""
-"Por favor, seleccione as opções de origem e destino de acordo com as suas "
-"necessidades."
+msgstr "Lütfen ihtiyaçlarınıza göre kaynak ve hedef seçeneklerini seçin."
 
 #: ../src/firewall-config.glade.h:24
 msgid "Port / Port Range:"
@@ -833,7 +832,7 @@ msgstr "Bağlantı Noktası / Bağlantı Noktası Aralığı:"
 
 #: ../src/firewall-config.glade.h:25
 msgid "IP address:"
-msgstr "Endereço IP:"
+msgstr "IP adresi:"
 
 #: ../src/firewall-config.glade.h:26
 msgid "Protocol:"
@@ -874,7 +873,7 @@ msgstr "Kalın girişlerin hepsi zorunludur. Diğer tüm girişler isteğe bağl
 
 #: ../src/firewall-config.glade.h:35
 msgid "Name:"
-msgstr "İsim:"
+msgstr "Ad:"
 
 #: ../src/firewall-config.glade.h:36
 msgid "Version:"
@@ -922,7 +921,7 @@ msgstr "Lütfen bir ICMP türü seçin"
 
 #: ../src/firewall-config.glade.h:50
 msgid "Add Entry"
-msgstr "Adicionar Entrada"
+msgstr "Giriş Ekle"
 
 #: ../src/firewall-config.glade.h:51
 msgid "Add Entries From File"
@@ -930,7 +929,7 @@ msgstr "Dosyadan Girdi Ekle"
 
 #: ../src/firewall-config.glade.h:52
 msgid "Remove Selected Entry"
-msgstr "Seçilen Girdiyi Kaldır"
+msgstr "Seçilen Girişi Kaldır"
 
 #: ../src/firewall-config.glade.h:53
 msgid "Remove All Entries"
@@ -1289,11 +1288,11 @@ msgstr "Geliştirilmiş Kural Ekle"
 
 #: ../src/firewall-config.glade.h:123
 msgid "Edit Rich Rule"
-msgstr "Geliştirilmiş Kural Düzenle"
+msgstr "Geliştirilmiş Kuralı Düzenle"
 
 #: ../src/firewall-config.glade.h:124
 msgid "Remove Rich Rule"
-msgstr "Geliştirilmiş Kural Kaldır"
+msgstr "Geliştirilmiş Kuralı Kaldır"
 
 #: ../src/firewall-config.glade.h:125
 msgid "Rich Rules"
@@ -1314,11 +1313,11 @@ msgstr "Arayüz Ekle"
 
 #: ../src/firewall-config.glade.h:128
 msgid "Edit Interface"
-msgstr "Arayüz Düzenle"
+msgstr "Arayüzü Düzenle"
 
 #: ../src/firewall-config.glade.h:129
 msgid "Remove Interface"
-msgstr "Arayüz Kaldır"
+msgstr "Arayüzü Kaldır"
 
 #: ../src/firewall-config.glade.h:131
 msgid ""
@@ -1337,11 +1336,11 @@ msgstr "Kaynak Ekle"
 
 #: ../src/firewall-config.glade.h:133
 msgid "Edit Source"
-msgstr "Kaynak Düzenle"
+msgstr "Kaynağı Düzenle"
 
 #: ../src/firewall-config.glade.h:134
 msgid "Remove Source"
-msgstr "Kaynak Kaldır"
+msgstr "Kaynağı Kaldır"
 
 #: ../src/firewall-config.glade.h:136
 msgid "Zones"
@@ -1381,11 +1380,11 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:144
 msgid "Edit Entry"
-msgstr "Editar Entrada"
+msgstr "Girişi Düzenle"
 
 #: ../src/firewall-config.glade.h:145
 msgid "Remove Entry"
-msgstr "Girişi sil"
+msgstr "Girişi Kaldır"
 
 #: ../src/firewall-config.glade.h:146
 msgid ""
@@ -1709,9 +1708,9 @@ msgid ""
 "command lines starting with the command will match. If the '*' is not there "
 "the absolute command inclusive arguments must match."
 msgstr ""
-"Beyaz listedeki bir komut girdisi yıldız işareti '*' ile bitiyorsa, o "
-"komutla başlayan tüm komut satırları eşleşecektir. '*' yok ise, argümanlar "
-"dahil komut tamamen eşleşmelidir."
+"Eğer beyaz listedeki bir komut girişi, yıldız işareti '*' ile bitiyorsa, "
+"sonrasında komutla başlayan tüm komut satırları eşleşecektir. Eğer '*' yok "
+"ise, bağımsız değişkenler dahil komut tamamen eşleşmek zorundadır."
 
 #: ../src/firewall-config.glade.h:201
 msgid "Add Command Line"
@@ -1747,7 +1746,7 @@ msgstr "Kullanıcı Adı Kaldır"
 
 #: ../src/firewall-config.glade.h:209
 msgid "User names"
-msgstr "Kullanıcı isimleri"
+msgstr "Kullanıcı adları"
 
 #: ../src/firewall-config.glade.h:210
 msgid "User ids."
@@ -1825,7 +1824,7 @@ msgstr "Hash boyutu:"
 
 #: ../src/firewall-config.glade.h:228
 msgid "Maxelem:"
-msgstr "Maks. eleman:"
+msgstr "Azami eleman:"
 
 #: ../src/firewall-config.glade.h:229
 msgid "Timeout value in seconds"
@@ -1845,7 +1844,7 @@ msgstr "Lütfen bir ipset seçin:"
 
 #: ../src/firewall-config.glade.h:234
 msgid "Please enter an ipset entry:"
-msgstr "Lütfen bir ipset girdisi girin:"
+msgstr "Lütfen bir ip kümesi girişi girin:"
 
 #: ../src/firewall-config.glade.h:235
 msgid "Log Denied"
