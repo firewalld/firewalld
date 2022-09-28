@@ -335,6 +335,7 @@ CONFIG_FILES = \
 	services/xmpp-server.xml \
 	services/zabbix-agent.xml \
 	services/zabbix-server.xml \
+	services/zabbix-trapper.xml \
 	services/zerotier.xml \
 	zones/block.xml \
 	zones/dmz.xml \
