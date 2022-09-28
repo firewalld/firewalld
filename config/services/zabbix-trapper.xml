@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>Zabbix Trapper</short>
+  <description>Trapper port to receive monitoring data used by the Zabbix server and Zabbix proxy.</description>
+  <port protocol="tcp" port="10051"/>
+</service>
