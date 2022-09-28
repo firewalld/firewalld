@@ -334,6 +334,7 @@ CONFIG_FILES = \
 	services/xmpp-local.xml \
 	services/xmpp-server.xml \
 	services/zabbix-agent.xml \
+	services/zabbix-java-gateway.xml \
 	services/zabbix-server.xml \
 	services/zabbix-trapper.xml \
 	services/zerotier.xml \
