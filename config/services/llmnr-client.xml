@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>LLMNR Client</short>
+  <description>
+    Link-Local Multicast Name Resolution (LLMNR) allows both IPv4 and IPv6
+    hosts to perform name resolution for hosts on the same local network. This
+    service allows incoming LLMNR responses. Due to protocol details the
+    service matches by source port and thus allows unsolicited responses.
+  </description>
+  <source-port port="5355" protocol="udp"/>
+</service>
