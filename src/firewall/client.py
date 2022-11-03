@@ -308,13 +308,13 @@ class FirewallClientZoneSettings(object):
         if not self.settings[15]:
             self.settings[15] = True
         else:
-            FirewallError(errors.ALREADY_ENABLED, "icmp-block-inversion")
+            raise FirewallError(errors.ALREADY_ENABLED, "icmp-block-inversion")
     @handle_exceptions
     def removeIcmpBlockInversion(self):
         if self.settings[15]:
             self.settings[15] = False
         else:
-            FirewallError(errors.NOT_ENABLED, "icmp-block-inversion")
+            raise FirewallError(errors.NOT_ENABLED, "icmp-block-inversion")
     @handle_exceptions
     def queryIcmpBlockInversion(self):
         return self.settings[15]
@@ -330,13 +330,13 @@ class FirewallClientZoneSettings(object):
         if not self.settings[16]:
             self.settings[16] = True
         else:
-            FirewallError(errors.ALREADY_ENABLED, "forward")
+            raise FirewallError(errors.ALREADY_ENABLED, "forward")
     @handle_exceptions
     def removeForward(self):
         if self.settings[16]:
             self.settings[16] = False
         else:
-            FirewallError(errors.NOT_ENABLED, "forward")
+            raise FirewallError(errors.NOT_ENABLED, "forward")
     @handle_exceptions
     def queryForward(self):
         return self.settings[16]
@@ -352,13 +352,13 @@ class FirewallClientZoneSettings(object):
         if not self.settings[8]:
             self.settings[8] = True
         else:
-            FirewallError(errors.ALREADY_ENABLED, "masquerade")
+            raise FirewallError(errors.ALREADY_ENABLED, "masquerade")
     @handle_exceptions
     def removeMasquerade(self):
         if self.settings[8]:
             self.settings[8] = False
         else:
-            FirewallError(errors.NOT_ENABLED, "masquerade")
+            raise FirewallError(errors.NOT_ENABLED, "masquerade")
     @handle_exceptions
     def queryMasquerade(self):
         return self.settings[8]
@@ -1045,13 +1045,13 @@ class FirewallClientPolicySettings(object):
         if not self.settings["masquerade"]:
             self.settings["masquerade"] = True
         else:
-            FirewallError(errors.ALREADY_ENABLED, "masquerade")
+            raise FirewallError(errors.ALREADY_ENABLED, "masquerade")
     @handle_exceptions
     def removeMasquerade(self):
         if self.settings["masquerade"]:
             self.settings["masquerade"] = False
         else:
-            FirewallError(errors.NOT_ENABLED, "masquerade")
+            raise FirewallError(errors.NOT_ENABLED, "masquerade")
     @handle_exceptions
     def queryMasquerade(self):
         return self.settings["masquerade"]
