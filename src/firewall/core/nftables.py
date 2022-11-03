@@ -450,7 +450,7 @@ class nftables(object):
                                                 "hook": hook,
                                                 "prio": -300 + NFT_HOOK_OFFSET - 1,
                                                 "policy": "drop"}}})
-        if policy == "DROP":
+        elif policy == "DROP":
             rules.append({"add": {"table": {"family": "inet",
                                             "name": TABLE_NAME_POLICY}}})
             self.created_tables["inet"].append(TABLE_NAME_POLICY)
