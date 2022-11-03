@@ -1011,9 +1011,9 @@ class Firewall(object):
                 except Exception as msg:
                     log.debug1(traceback.format_exc())
                     log.error(msg)
-                    for rule in reversed(_rules[:i]):
+                    for rrule in reversed(_rules[:i]):
                         try:
-                            backend.set_rule(backend.reverse_rule(rule), self._log_denied)
+                            backend.set_rule(backend.reverse_rule(rrule), self._log_denied)
                         except Exception:
                             # ignore errors here
                             pass

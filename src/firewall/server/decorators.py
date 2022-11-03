@@ -146,7 +146,6 @@ class dbus_polkit_require_auth:
         cls._bus.remove_signal_receiver(cls._bus_signal_receiver)
         cls._bus_signal_receiver = None
         cls._interface_polkit = None
-        pass
 
     def __call__(self, func):
         @functools.wraps(func)

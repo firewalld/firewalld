@@ -112,13 +112,6 @@ import sys
 class FirewallError(Exception):
     def __init__(self, code, msg=None):
         self.code = code
-        if msg is not None:
-            # escape msg if needed
-            if sys.version < '3':
-                try:
-                    x = str(msg) # noqa: F841
-                except UnicodeEncodeError:
-                    msg = unicode(msg).encode("unicode_escape") # noqa: F821
         self.msg = msg
 
     def __repr__(self):
@@ -130,7 +123,7 @@ class FirewallError(Exception):
         return self.errors[self.code]
 
     def get_code(msg):
-        if ":" in msg:
+        if msg is not None and ":" in msg:
             idx = msg.index(":")
             ecode = msg[:idx]
         else:
