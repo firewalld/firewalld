@@ -446,7 +446,6 @@ def tempFile():
     except Exception as msg:
         log.error("Failed to create temporary file: %s" % msg)
         raise
-    return None
 
 def readfile(filename):
     try:

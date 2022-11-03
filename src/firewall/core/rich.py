@@ -58,9 +58,8 @@ class Rich_Source(object):
             return ret + 'mac="%s"' % self.mac
         elif self.ipset is not None:
             return ret + 'ipset="%s"' % self.ipset
-        else:
-            raise FirewallError(errors.INVALID_RULE,
-                                "no address, mac and ipset")
+        raise FirewallError(errors.INVALID_RULE,
+                            "no address, mac and ipset")
 
 class Rich_Destination(object):
     def __init__(self, addr, ipset, invert=False):
@@ -81,9 +80,8 @@ class Rich_Destination(object):
             return ret + 'address="%s"' % self.addr
         elif self.ipset is not None:
             return ret + 'ipset="%s"' % self.ipset
-        else:
-            raise FirewallError(errors.INVALID_RULE,
-                                "no address and ipset")
+        raise FirewallError(errors.INVALID_RULE,
+                            "no address and ipset")
 
 class Rich_Service(object):
     def __init__(self, name):
