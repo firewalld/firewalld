@@ -478,7 +478,7 @@ class nftables(object):
                                                    "name": TABLE_NAME_POLICY}}})
                 self.created_tables["inet"].remove(TABLE_NAME_POLICY)
         else:
-            FirewallError(UNKNOWN_ERROR, "not implemented")
+            raise FirewallError(UNKNOWN_ERROR, "not implemented")
 
         return rules
 
