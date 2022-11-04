@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <service>
   <short>LLMNR</short>
-  <description>Link-Local Multicast Name Resolution (LLMNR) allows both IPv4 and IPv6 hosts to perform name resolution for hosts on the same local link.</description>
+  <description>
+    Link-Local Multicast Name Resolution (LLMNR) allows both IPv4 and IPv6
+    hosts to perform name resolution for hosts on the same local network. This
+    service matches incoming queries; it will allow this host to be resolved
+    by other hosts. In order to allow this host to resolve other hosts, use
+    the llmnr-client service.
+  </description>
   <include service="llmnr-tcp"/>
   <include service="llmnr-udp"/>
 </service>
