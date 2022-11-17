@@ -11,7 +11,7 @@ NS_CHECK([sh -c 'for I in $(seq 10000); do echo "<rule family=\"ipv4\"><port pro
 NS_CHECK([echo "</zone>" >> ./zones/foobar.xml])
 
 if test "x${FIREWALLD_DEFAULT_CONFIG}" != x ; then
-    FIREWALL_OFFLINE_CMD_ARGS+=" --default-config ${FIREWALLD_DEFAULT_CONFIG}"
+    FIREWALL_OFFLINE_CMD_ARGS="${FIREWALL_OFFLINE_CMD_ARGS} --default-config ${FIREWALLD_DEFAULT_CONFIG}"
 fi
 NS_CHECK([timeout 120 firewall-offline-cmd --system-config ./ $FIREWALL_OFFLINE_CMD_ARGS --check-config], 0, [ignore])
 
