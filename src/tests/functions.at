@@ -13,7 +13,7 @@ m4_define([FWD_START_FIREWALLD], [
     dnl if testsuite ran with debug flag, add debug output
     ${at_debug_p} && FIREWALLD_ARGS="--debug=9 ${FIREWALLD_ARGS}"
     if test "x${FIREWALLD_DEFAULT_CONFIG}" != x ; then
-        FIREWALLD_ARGS+=" --default-config ${FIREWALLD_DEFAULT_CONFIG}"
+        FIREWALLD_ARGS="${FIREWALLD_ARGS} --default-config ${FIREWALLD_DEFAULT_CONFIG}"
     fi
 
     dnl limit data (and heap) to catch unexpected increases in memory usage
@@ -279,7 +279,7 @@ m4_define([FWD_END_TEST], [
 m4_define([FWD_OFFLINE_CHECK], [
     FIREWALL_OFFLINE_CMD_ARGS="--system-config ./"
     if test "x${FIREWALLD_DEFAULT_CONFIG}" != x ; then
-        FIREWALL_OFFLINE_CMD_ARGS+=" --default-config ${FIREWALLD_DEFAULT_CONFIG}"
+        FIREWALL_OFFLINE_CMD_ARGS="${FIREWALL_OFFLINE_CMD_ARGS} --default-config ${FIREWALLD_DEFAULT_CONFIG}"
     fi
 
     AT_CHECK([firewall-offline-cmd $FIREWALL_OFFLINE_CMD_ARGS $1], [$2], [$3], [$4], [$5], [$6])
