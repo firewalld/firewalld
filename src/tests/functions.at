@@ -1,5 +1,5 @@
 m4_define([FWD_STOP_FIREWALLD], [
-    pid=$(< firewalld.pid)
+    pid=$(cat firewalld.pid)
     kill $pid
     for I in 1 2 3 4 5 6 7 8 9 0; do
         ps --pid $pid >/dev/null || { pid=0; break; }
@@ -78,7 +78,7 @@ unmanaged-devices=*,except:type:dummy,except:type:ovs-bridge,except:type:ovs-por
 ])
 
 m4_define([STOP_NETWORKMANAGER], [
-    pid=$(< networkmanager.pid)
+    pid=$(cat networkmanager.pid)
     kill $pid
     for I in 1 2 3 4 5 6 7 8 9 0; do
         ps --pid $pid >/dev/null || { pid=0; break; }
