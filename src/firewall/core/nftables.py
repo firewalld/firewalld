@@ -1299,6 +1299,7 @@ class nftables(object):
 
     def build_policy_tcp_mss_clamp_rules(self, enable, policy, tcp_mss_clamp_value,
                                       destination=None, rich_rule=None):
+        chain_suffix = "allow"
         table = "filter"
         _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX)
         add_del = { True: "add", False: "delete" }[enable]
@@ -1319,13 +1320,11 @@ class nftables(object):
         else:
             expr_fragments.append({"mangle": {"key": {"tcp option": {"name": "maxseg","field": "size"}},
                                               "value": tcp_mss_clamp_value}})
-        rules = []
-        rules.append({add_del: {"rule": {"family": "inet",
-                                "table": TABLE_NAME,
-                                "chain": "filter_%s_%s" % (_policy, chain_suffix),
-                                "expr": expr_fragments}}})
 
-        return rules
+        return [{add_del: {"rule": {"family": "inet",
+                           "table": TABLE_NAME,
+                           "chain": "filter_%s_%s" % (_policy, chain_suffix),
+                           "expr": expr_fragments}}}]
 
     def build_policy_source_ports_rules(self, enable, policy, proto, port,
                                       destination=None, rich_rule=None):
