@@ -120,20 +120,7 @@ class FirewallTransaction(object):
                 if status:
                     log.debug1(msg)
 
-        # error case: revert rules
         if error:
-            undo_rules = { }
-            for backend_name in done:
-                undo_rules[backend_name] = [ ]
-                for rule in reversed(rules[backend_name]):
-                    undo_rules[backend_name].append(
-                        self.fw.get_backend_by_name(backend_name).reverse_rule(rule))
-            for backend_name in undo_rules:
-                try:
-                    self.fw.rules(backend_name, undo_rules[backend_name])
-                except Exception as msg:
-                    log.debug1(traceback.format_exc())
-                    log.error(msg)
             # call failure functions
             for (func, args) in self.fail_funcs:
                 try:

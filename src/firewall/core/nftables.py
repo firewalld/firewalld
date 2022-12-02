@@ -221,14 +221,6 @@ class nftables(object):
                 rule["add"] = _verb_snippet
                 rule["add"]["rule"]["index"] = index
 
-    def reverse_rule(self, dict):
-        if "insert" in dict:
-            return {"delete": copy.deepcopy(dict["insert"])}
-        elif "add" in dict:
-            return {"delete": copy.deepcopy(dict["add"])}
-        else:
-            raise FirewallError(UNKNOWN_ERROR, "Failed to reverse rule")
-
     def _set_rule_replace_priority(self, rule, priority_counts, token):
         for verb in ["add", "insert", "delete"]:
             if verb in rule:
