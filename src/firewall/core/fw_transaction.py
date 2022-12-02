@@ -83,26 +83,11 @@ class FirewallTransaction(object):
         for module in modules:
             self.remove_module(module)
 
-    def prepare(self, enable):
-        log.debug4("%s.prepare(%s, %s)" % (type(self), enable, "..."))
-
-        rules = { }
-        if not enable:
-            # reverse rule order for cleanup
-            for backend_name in self.rules:
-                for rule in reversed(self.rules[backend_name]):
-                    rules.setdefault(backend_name, [ ]).append(
-                        self.fw.get_backend_by_name(backend_name).reverse_rule(rule))
-        else:
-            for backend_name in self.rules:
-                rules.setdefault(backend_name, [ ]).extend(self.rules[backend_name])
-
-        return rules, self.modules
-
     def execute(self, enable):
         log.debug4("%s.execute(%s)" % (type(self), enable))
 
-        rules, modules = self.prepare(enable)
+        rules = self.rules
+        modules = self.modules
 
         # pre
         self.pre()
