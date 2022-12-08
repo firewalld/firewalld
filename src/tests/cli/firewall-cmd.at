@@ -1571,8 +1571,8 @@ FWD_START_TEST([rich rules priority])
         chain filter_INPUT {
         ct state established,related accept
         ct status dnat accept
-        ct state invalid drop
         iifname "lo" accept
+        ct state invalid drop
         jump filter_INPUT_ZONES
         reject with icmpx admin-prohibited
         }
