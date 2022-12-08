@@ -570,6 +570,13 @@ class nftables(object):
                                                                     "op": "in",
                                                                     "right": "dnat"}},
                                                          {"accept": None}]}}})
+        default_rules.append({"add": {"rule":  {"family": "inet",
+                                                "table": TABLE_NAME,
+                                                "chain": "filter_%s" % "INPUT",
+                                                "expr": [{"match": {"left": {"meta": {"key": "iifname"}},
+                                                                    "op": "==",
+                                                                    "right": "lo"}},
+                                                         {"accept": None}]}}})
         if log_denied != "off":
             default_rules.append({"add": {"rule":  {"family": "inet",
                                                     "table": TABLE_NAME,
@@ -586,13 +593,6 @@ class nftables(object):
                                                                     "op": "in",
                                                                     "right": {"set": ["invalid"]}}},
                                                          {"drop": None}]}}})
-        default_rules.append({"add": {"rule":  {"family": "inet",
-                                                "table": TABLE_NAME,
-                                                "chain": "filter_%s" % "INPUT",
-                                                "expr": [{"match": {"left": {"meta": {"key": "iifname"}},
-                                                                    "op": "==",
-                                                                    "right": "lo"}},
-                                                         {"accept": None}]}}})
         for dispatch_suffix in ["POLICIES_pre", "ZONES", "POLICIES_post"]:
             default_rules.append({"add": {"chain": {"family": "inet",
                                                     "table": TABLE_NAME,
@@ -628,6 +628,13 @@ class nftables(object):
                                                                     "op": "in",
                                                                     "right": "dnat"}},
                                                          {"accept": None}]}}})
+        default_rules.append({"add": {"rule":  {"family": "inet",
+                                                "table": TABLE_NAME,
+                                                "chain": "filter_%s" % "FORWARD",
+                                                "expr": [{"match": {"left": {"meta": {"key": "iifname"}},
+                                                                    "op": "==",
+                                                                    "right": "lo"}},
+                                                         {"accept": None}]}}})
         if log_denied != "off":
             default_rules.append({"add": {"rule":  {"family": "inet",
                                                     "table": TABLE_NAME,
@@ -644,13 +651,6 @@ class nftables(object):
                                                                     "op": "in",
                                                                     "right": {"set": ["invalid"]}}},
                                                          {"drop": None}]}}})
-        default_rules.append({"add": {"rule":  {"family": "inet",
-                                                "table": TABLE_NAME,
-                                                "chain": "filter_%s" % "FORWARD",
-                                                "expr": [{"match": {"left": {"meta": {"key": "iifname"}},
-                                                                    "op": "==",
-                                                                    "right": "lo"}},
-                                                         {"accept": None}]}}})
         for dispatch_suffix in ["POLICIES_pre"]:
             default_rules.append({"add": {"chain": {"family": "inet",
                                                     "table": TABLE_NAME,
