@@ -296,10 +296,11 @@ def checkIP6(ip):
     return True
 
 def checkIPnMask(ip):
-    if "/" in ip:
-        addr = ip[:ip.index("/")]
-        mask = ip[ip.index("/")+1:]
-        if len(addr) < 1 or len(mask) < 1:
+    index = ip.find("/")
+    if index != -1:
+        addr = ip[:index]
+        mask = ip[index + 1:]
+        if not addr or not mask:
             return False
     else:
         addr = ip
@@ -322,10 +323,11 @@ def stripNonPrintableCharacters(rule_str):
     return rule_str.translate(NOPRINT_TRANS_TABLE)
 
 def checkIP6nMask(ip):
-    if "/" in ip:
-        addr = ip[:ip.index("/")]
-        mask = ip[ip.index("/")+1:]
-        if len(addr) < 1 or len(mask) < 1:
+    index = ip.find("/")
+    if index != -1:
+        addr = ip[:index]
+        mask = ip[index + 1:]
+        if not addr or not mask:
             return False
     else:
         addr = ip
