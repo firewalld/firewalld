@@ -1214,18 +1214,17 @@ class ip4tables(object):
         _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX)
         add_del = { True: "-A", False: "-D" }[enable]
 
-        rule_fragment = []
+        rule_fragment = ["-p", "tcp", "--tcp-flags", "SYN,RST", "SYN"]
         if rich_rule:
             chain_suffix = self._rich_rule_chain_suffix(rich_rule)
             rule_fragment += self._rich_rule_priority_fragment(rich_rule)
             rule_fragment += self._rich_rule_destination_fragment(rich_rule.destination)
             rule_fragment += self._rich_rule_source_fragment(rich_rule.source)
 
-        rule_fragment += ["-p", "tcp"]
         if tcp_mss_clamp_value == "pmtu" or tcp_mss_clamp_value is None:
-            rule_fragment += ["--tcp-flags", "SYN,RST", "SYN","-j", "TCPMSS", "--clamp-mss-to-pmtu"]
+            rule_fragment += ["-j", "TCPMSS", "--clamp-mss-to-pmtu"]
         else:
-            rule_fragment += ["--tcp-flags", "SYN,RST", "SYN", "-j", "TCPMSS", "--set-mss", tcp_mss_clamp_value]
+            rule_fragment += ["-j", "TCPMSS", "--set-mss", tcp_mss_clamp_value]
 
         return [["-t", "filter", add_del, "%s_%s" % (_policy, chain_suffix)] + rule_fragment]
 
