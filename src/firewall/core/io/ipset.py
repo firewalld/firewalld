@@ -102,8 +102,7 @@ class IPSet(IO_Object):
                 "entry '%s' does not match ipset type '%s'" % \
                 (entry, ipset_type))
 
-        for i in range(len(flags)):
-            flag = flags[i]
+        for i, flag in enumerate(flags):
             item = items[i]
 
             if flag == "ip":
