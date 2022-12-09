@@ -1735,20 +1735,20 @@ class nftables(object):
         type_format = self._fw.ipset.get_ipset(name).type.split(":")[1].split(",")
 
         fragments = []
-        for i in range(len(type_format)):
-            if type_format[i] == "port":
+        for format in type_format:
+            if format == "port":
                 fragments.append({"meta": {"key": "l4proto"}})
                 fragments.append({"payload": {"protocol": "th",
                                               "field": "dport" if match_dest else "sport"}})
-            elif type_format[i] in ["ip", "net", "mac"]:
+            elif format in ["ip", "net", "mac"]:
                 fragments.append({"payload": {"protocol": self._set_get_family(name),
                                               "field": "daddr" if match_dest else "saddr"}})
-            elif type_format[i] == "iface":
+            elif format == "iface":
                 fragments.append({"meta": {"key": "iifname" if match_dest else "oifname"}})
-            elif type_format[i] == "mark":
+            elif format == "mark":
                 fragments.append({"meta": {"key": "mark"}})
             else:
-                raise FirewallError("Unsupported ipset type for match fragment: %s" % (type_format[i]))
+                raise FirewallError("Unsupported ipset type for match fragment: %s" % (format))
 
         return {"match": {"left": {"concat": fragments} if len(type_format) > 1 else fragments[0],
                           "op": "!=" if invert else "==",
@@ -1766,8 +1766,8 @@ class nftables(object):
             raise FirewallError(INVALID_ENTRY,
                                 "Number of values does not match ipset type.")
         fragment = []
-        for i in range(len(type_format)):
-            if type_format[i] == "port":
+        for i, format in enumerate(type_format):
+            if format == "port":
                 try:
                     index = entry_tokens[i].index(":")
                 except ValueError:
@@ -1785,7 +1785,7 @@ class nftables(object):
                 else:
                     fragment.append({"range": [port_str[:index], port_str[index+1:]]})
 
-            elif type_format[i] in ["ip", "net"]:
+            elif format in ["ip", "net"]:
                 try:
                     index = entry_tokens[i].index("/")
                 except ValueError:

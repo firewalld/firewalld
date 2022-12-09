@@ -430,11 +430,11 @@ class ip4tables(object):
             # we can not use joinArgs here, because it would use "'" instead
             # of '"' for the start and end of the string, this breaks
             # iptables-restore
-            for i in range(len(rule)):
+            for i, element in enumerate(rule):
                 for c in string.whitespace:
-                    if c in rule[i] and not (rule[i].startswith('"') and
-                                             rule[i].endswith('"')):
-                        rule[i] = '"%s"' % rule[i]
+                    if c in element and not (element.startswith('"') and
+                                             element.endswith('"')):
+                        rule[i] = '"%s"' % element
 
             table_rules.setdefault(table, []).append(rule)
 
