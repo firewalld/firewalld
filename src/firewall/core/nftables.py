@@ -372,7 +372,7 @@ class nftables(object):
             for verb in _valid_add_verbs:
                 if verb in output["nftables"][index]:
                     break
-            if verb not in output["nftables"][index]:
+            else:
                 continue
 
             self.rule_to_handle[rule_key] = output["nftables"][index][verb]["rule"]["handle"]
