@@ -2387,7 +2387,8 @@ class FirewallConfig(object):
         item = Gtk.MenuItem.new()
         label = Gtk.Label()
         label.set_markup(escape(_("Connections")))
-        label.set_alignment(0, 0.5)
+        label.set_xalign(0)
+        label.set_yalign(0.5)
         item.add(label)
         item.connect("select", self.no_select)
         self.left_menu.append(item)
@@ -2450,8 +2451,10 @@ class FirewallConfig(object):
                 label.set_markup("%s (%s)\n<small>%s: %s</small>" % \
                                  (connection_name, ",".join(_interfaces),
                                   escape(_("Zone")), zone))
-            label.set_alignment(0, 0.5)
-            label.set_padding(12, 0)
+            label.set_xalign(0)
+            label.set_yalign(0.5)
+            label.set_margin_start(12)
+            label.set_margin_end(12)
             hbox.pack_start(label, True, True, 0)
             item.add(hbox)
             item.connect("activate", self.change_zone_connection_editor, connection, connection_name, zone)
@@ -2475,7 +2478,8 @@ class FirewallConfig(object):
         item = Gtk.MenuItem.new()
         label = Gtk.Label()
         label.set_markup(escape(_("Interfaces")))
-        label.set_alignment(0, 0.5)
+        label.set_xalign(0)
+        label.set_yalign(0.5)
         item.add(label)
         item.connect("select", self.no_select)
         self.left_menu.append(item)
@@ -2490,8 +2494,10 @@ class FirewallConfig(object):
                 label = Gtk.Label()
                 label.set_markup("%s\n<small>%s: %s</small>" % \
                                      (interface, escape(_("Zone")), zone))
-                label.set_alignment(0, 0.5)
-                label.set_padding(12, 0)
+                label.set_xalign(0)
+                label.set_yalign(0.5)
+                label.set_margin_start(12)
+                label.set_margin_end(12)
                 hbox.pack_start(label, True, True, 0)
                 item.add(hbox)
                 item.connect("activate", self.change_zone_interface_editor, interface, zone)
@@ -2506,7 +2512,8 @@ class FirewallConfig(object):
         item = Gtk.MenuItem.new()
         label = Gtk.Label()
         label.set_markup(escape(_("Sources")))
-        label.set_alignment(0, 0.5)
+        label.set_xalign(0)
+        label.set_yalign(0.5)
         item.add(label)
         item.connect("select", self.no_select)
         self.left_menu.append(item)
@@ -2521,8 +2528,10 @@ class FirewallConfig(object):
                 label.set_markup("%s\n<small>%s: %s</small>" % \
                                      (source, escape(_("Zone")),
                                       zone))
-                label.set_alignment(0, 0.5)
-                label.set_padding(12, 0)
+                label.set_xalign(0)
+                label.set_yalign(0.5)
+                label.set_margin_start(12)
+                label.set_margin_end(12)
                 hbox.pack_start(label, True, True, 0)
                 item.add(hbox)
                 item.connect("activate", self.change_zone_source_editor, source, zone)
@@ -7992,7 +8001,7 @@ class ZoneInterfaceEditor(Gtk.Dialog):
 
     def create_ui(self, zone):
         self.set_property("width-request", 100)
-        self.resize_to_geometry(100, 50)
+        self.resize(100, 50)
         self.set_resizable(True)
 
         self.add_button("gtk-close", 1)
@@ -8007,7 +8016,8 @@ class ZoneInterfaceEditor(Gtk.Dialog):
         label.set_text(self.title)
         label.set_line_wrap(True)
         label.set_justify(Gtk.Justification.LEFT)
-        label.set_alignment(0, 0.5)
+        label.set_xalign(0)
+        label.set_yalign(0.5)
         vbox.pack_start(label, True, True, 0)
 
         self.combo = Gtk.ComboBoxText()
