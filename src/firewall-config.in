@@ -2176,6 +2176,7 @@ class FirewallConfig(object):
             if self.interfaceStore.get_value(iter, 0) == interface:
                 # it is here, remove it
                 self.interfaceStore.remove(iter)
+                break
             iter = self.interfaceStore.iter_next(iter)
         # add if zone is active_zone
         if zone == self.get_selected_zone():
@@ -2214,6 +2215,7 @@ class FirewallConfig(object):
             if self.sourceStore.get_value(iter, 0) == source:
                 # it is here, remove it
                 self.sourceStore.remove(iter)
+                break
             iter = self.sourceStore.iter_next(iter)
         # add if zone is active_zone
         if zone == self.get_selected_zone():
