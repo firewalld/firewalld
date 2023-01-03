@@ -193,7 +193,7 @@ def nm_get_connection_of_interface(interface):
     """
     check_nm_imported()
 
-    device = nm_get_client().get_device_by_iface(interface)
+    device = nm_get_client().get_device_by_ip_iface(interface)
     if device is None:
         return None
 
