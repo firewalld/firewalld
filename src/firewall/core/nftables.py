@@ -1740,7 +1740,7 @@ class nftables(object):
             elif format == "mark":
                 fragments.append({"meta": {"key": "mark"}})
             else:
-                raise FirewallError("Unsupported ipset type for match fragment: %s" % (format))
+                raise FirewallError(INVALID_TYPE, "Unsupported ipset type for match fragment: %s" % (format))
 
         return {"match": {"left": {"concat": fragments} if len(type_format) > 1 else fragments[0],
                           "op": "!=" if invert else "==",

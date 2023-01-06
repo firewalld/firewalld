@@ -1820,7 +1820,7 @@ class FirewallPolicy(object):
         elif "ANY" in obj.ingress_zones:
             # any --> zone
             return [("nat", "POSTROUTING")]
-        raise FirewallError("Invalid policy: %s" % (policy))
+        raise FirewallError(errors.INVALID_POLICY, "Invalid policy: %s" % (policy))
 
     def policy_base_chain_name(self, policy, table, policy_prefix, isSNAT=False):
         obj = self._fw.policy.get_policy(policy)
@@ -1878,4 +1878,4 @@ class FirewallPolicy(object):
                     return "PRE_" + suffix
             elif table in ["mangle", "raw"]:
                 return "PRE_" + suffix
-        raise FirewallError("Can't convert policy to chain name: %s, %s, %s" % (policy, table, isSNAT))
+        raise FirewallError(errors.INVALID_POLICY, "Can't convert policy to chain name: %s, %s, %s" % (policy, table, isSNAT))

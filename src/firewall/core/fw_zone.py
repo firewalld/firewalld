@@ -845,7 +845,7 @@ class FirewallZone(object):
         elif rule.element is None:
             return [self.policy_name_from_zones(zone, "HOST")]
         else:
-            raise FirewallError("Rich rule type (%s) not handled." % (type(rule.element)))
+            raise FirewallError(errors.INVALID_RULE, "Rich rule type (%s) not handled." % (type(rule.element)))
 
     def add_rule(self, zone, rule, timeout=0, sender=None):
         for p_name in self._rich_rule_to_policies(zone, rule):
