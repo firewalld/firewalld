@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
 import time
+import copy
 from firewall.core.logger import log
 from firewall.functions import portStr, checkIPnMask, checkIP6nMask, \
     checkProtocol, enable_ip_forwarding, check_single_address, \
@@ -1479,7 +1480,21 @@ class FirewallPolicy(object):
                 "ipset '%s' with type '%s' not usable as source" % \
                 (name, _type))
 
-    def _rule_prepare(self, enable, policy, rule, transaction):
+    def _rule_prepare(self, enable, policy, rule, transaction, included_services=None):
+        # First apply any services this service may include
+        if type(rule.element) == Rich_Service:
+            svc = self._fw.service.get_service(rule.element.name)
+            if included_services is None:
+                included_services = [rule.element.name]
+            for include in svc.includes:
+                if include in included_services:
+                    continue
+                self.check_service(include)
+                included_services.append(include)
+                _rule = copy.deepcopy(rule)
+                _rule.element.name = include
+                self._rule_prepare(enable, policy, _rule, transaction, included_services=included_services)
+
         ipvs = []
         if rule.family:
             ipvs = [ rule.family ]
