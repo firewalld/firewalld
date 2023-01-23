@@ -1327,6 +1327,19 @@ class FirewallPolicy(object):
                 "ipset '%s' with type '%s' not usable as source" % \
                 (name, _type))
 
+    def _rule_services_with_includes(self, svc):
+        """ returns a service with aggregated elements used by service
+            (ports, protocols, ...) including elements from services in includes """
+        new_svc = copy.deepcopy(svc)
+        included_services = new_svc.includes
+        while included_services:
+            svc = self._fw.service.get_service(included_services.pop())
+            new_svc.ports.extend(svc.ports)
+            new_svc.protocols.extend(svc.protocols)
+            new_svc.source_ports.extend(svc.source_ports)
+            included_services.extend(svc.includes)
+        return new_svc
+
     def _rule_prepare(self, enable, policy, rule, transaction):
         ipvs = []
         if rule.family:
@@ -1360,6 +1373,9 @@ class FirewallPolicy(object):
             # SERVICE
             if type(rule.element) == Rich_Service:
                 svc = self._fw.service.get_service(rule.element.name)
+
+                # Create a service with elements from included services
+                svc = self._rule_services_with_includes(svc)
 
                 destinations = []
                 if len(svc.destination) > 0:
@@ -1407,6 +1423,7 @@ class FirewallPolicy(object):
                                     enable, policy, proto, port, destination, rule)
                         transaction.add_rules(backend, rules)
 
+                    # create rules
                     for proto in svc.protocols:
                         rules = backend.build_policy_protocol_rules(
                                     enable, policy, proto, destination, rule)
