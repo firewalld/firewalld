@@ -219,6 +219,9 @@ class FirewallDirect(object):
         else:
             transaction = use_transaction
 
+        if self._fw.may_skip_flush_direct_backends():
+            transaction.add_pre(self._fw.flush_direct_backends)
+
         if self._fw.ipset_enabled and self._fw.ipset.omit_native_ipset():
             transaction.add_pre(self._fw.ipset.apply_ipsets, [self._fw.ipset_backend])
 
@@ -267,6 +270,9 @@ class FirewallDirect(object):
             transaction = self.new_transaction()
         else:
             transaction = use_transaction
+
+        if self._fw.may_skip_flush_direct_backends():
+            transaction.add_pre(self._fw.flush_direct_backends)
 
         if self._fw.ipset_enabled and self._fw.ipset.omit_native_ipset():
             transaction.add_pre(self._fw.ipset.apply_ipsets, [self._fw.ipset_backend])
@@ -352,6 +358,9 @@ class FirewallDirect(object):
             transaction = self.new_transaction()
         else:
             transaction = use_transaction
+
+        if self._fw.may_skip_flush_direct_backends():
+            transaction.add_pre(self._fw.flush_direct_backends)
 
         if self._fw.ipset_enabled and self._fw.ipset.omit_native_ipset():
             transaction.add_pre(self._fw.ipset.apply_ipsets, [self._fw.ipset_backend])
