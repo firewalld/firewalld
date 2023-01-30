@@ -1,0 +1,144 @@
+m4_if(nftables, FIREWALL_BACKEND, [
+
+dnl If FirewallBackend=nftables, and there are no --direct rules, then we can
+dnl avoid flushing iptables on shutdown. We can also avoid a flush on startup
+dnl if there are no permanent direct rules. But we will have to flush on the
+dnl first direct rule added.
+FWD_START_TEST([avoid iptables flush if using nftables])
+AT_KEYWORDS(direct gh863)
+CHECK_IPTABLES()
+
+dnl no flush on reload if no direct rules
+NS_CHECK([$IPTABLES -t filter -N firewalld_testsuite])
+NS_CHECK([$IPTABLES -t filter -I firewalld_testsuite -j ACCEPT])
+IF_HOST_SUPPORTS_IP6TABLES([
+NS_CHECK([$IP6TABLES -t filter -N firewalld_testsuite])
+NS_CHECK([$IP6TABLES -t filter -I firewalld_testsuite -j ACCEPT])
+])
+NS_CHECK([$EBTABLES -t filter -N firewalld_testsuite])
+NS_CHECK([$EBTABLES -t filter -I firewalld_testsuite -j ACCEPT])
+IPTABLES_LIST_RULES_ALWAYS([filter], [firewalld_testsuite], 0, [dnl
+    ACCEPT all -- 0.0.0.0/0 0.0.0.0/0
+])
+IP6TABLES_LIST_RULES_ALWAYS([filter], [firewalld_testsuite], 0, [dnl
+    ACCEPT all ::/0 ::/0
+])
+EBTABLES_LIST_RULES([filter], [firewalld_testsuite], 0, [dnl
+    -j ACCEPT
+])
+FWD_RELOAD()
+IPTABLES_LIST_RULES_ALWAYS([filter], [firewalld_testsuite], 0, [dnl
+    ACCEPT all -- 0.0.0.0/0 0.0.0.0/0
+])
+IP6TABLES_LIST_RULES_ALWAYS([filter], [firewalld_testsuite], 0, [dnl
+    ACCEPT all ::/0 ::/0
+])
+EBTABLES_LIST_RULES([filter], [firewalld_testsuite], 0, [dnl
+    -j ACCEPT
+])
+
+dnl no flush on restart (or stop) if no direct rules
+FWD_RESTART()
+IPTABLES_LIST_RULES_ALWAYS([filter], [firewalld_testsuite], 0, [dnl
+    ACCEPT all -- 0.0.0.0/0 0.0.0.0/0
+])
+IP6TABLES_LIST_RULES_ALWAYS([filter], [firewalld_testsuite], 0, [dnl
+    ACCEPT all ::/0 ::/0
+])
+EBTABLES_LIST_RULES([filter], [firewalld_testsuite], 0, [dnl
+    -j ACCEPT
+])
+
+dnl the first runtime direct rule should trigger an iptables flush
+FWD_CHECK([--direct --add-rule ipv4 filter INPUT 1 -j ACCEPT], 0, [ignore])
+IPTABLES_LIST_RULES_ALWAYS([filter], [firewalld_testsuite], 1, [ignore], [ignore])
+IP6TABLES_LIST_RULES_ALWAYS([filter], [firewalld_testsuite], 1, [ignore], [ignore])
+EBTABLES_LIST_RULES([filter], [firewalld_testsuite], 1, [ignore], [ignore])
+IPTABLES_LIST_RULES_ALWAYS([filter], [INPUT], 0, [dnl
+    ACCEPT all -- 0.0.0.0/0 0.0.0.0/0
+])
+NS_CHECK([$IPTABLES -t filter -N firewalld_testsuite])
+NS_CHECK([$IPTABLES -t filter -I firewalld_testsuite -j ACCEPT])
+IF_HOST_SUPPORTS_IP6TABLES([
+NS_CHECK([$IP6TABLES -t filter -N firewalld_testsuite])
+NS_CHECK([$IP6TABLES -t filter -I firewalld_testsuite -j ACCEPT])
+])
+NS_CHECK([$EBTABLES -t filter -N firewalld_testsuite])
+NS_CHECK([$EBTABLES -t filter -I firewalld_testsuite -j ACCEPT])
+IPTABLES_LIST_RULES_ALWAYS([filter], [firewalld_testsuite], 0, [dnl
+    ACCEPT all -- 0.0.0.0/0 0.0.0.0/0
+])
+IP6TABLES_LIST_RULES_ALWAYS([filter], [firewalld_testsuite], 0, [dnl
+    ACCEPT all ::/0 ::/0
+])
+EBTABLES_LIST_RULES([filter], [firewalld_testsuite], 0, [dnl
+    -j ACCEPT
+])
+FWD_RELOAD()
+IPTABLES_LIST_RULES_ALWAYS([filter], [firewalld_testsuite], 1, [ignore], [ignore])
+IPTABLES_LIST_RULES_ALWAYS([filter], [INPUT], 0, [dnl
+])
+IP6TABLES_LIST_RULES_ALWAYS([filter], [firewalld_testsuite], 1, [ignore], [ignore])
+IP6TABLES_LIST_RULES_ALWAYS([filter], [INPUT], 0, [dnl
+])
+EBTABLES_LIST_RULES([filter], [firewalld_testsuite], 1, [ignore], [ignore])
+EBTABLES_LIST_RULES([filter], [INPUT], 0, [dnl
+])
+
+dnl permanent direct rules should trigger a flush at start
+FWD_CHECK([--permanent --direct --add-rule ipv4 filter INPUT 1 -j ACCEPT], 0, [ignore])
+NS_CHECK([$IPTABLES -t filter -N firewalld_testsuite])
+NS_CHECK([$IPTABLES -t filter -I firewalld_testsuite -j ACCEPT])
+IF_HOST_SUPPORTS_IP6TABLES([
+NS_CHECK([$IP6TABLES -t filter -N firewalld_testsuite])
+NS_CHECK([$IP6TABLES -t filter -I firewalld_testsuite -j ACCEPT])
+])
+NS_CHECK([$EBTABLES -t filter -N firewalld_testsuite])
+NS_CHECK([$EBTABLES -t filter -I firewalld_testsuite -j ACCEPT])
+FWD_RELOAD()
+IPTABLES_LIST_RULES_ALWAYS([filter], [firewalld_testsuite], 1, [ignore], [ignore])
+IPTABLES_LIST_RULES_ALWAYS([filter], [INPUT], 0, [dnl
+    ACCEPT all -- 0.0.0.0/0 0.0.0.0/0
+])
+IP6TABLES_LIST_RULES_ALWAYS([filter], [firewalld_testsuite], 1, [ignore], [ignore])
+IP6TABLES_LIST_RULES_ALWAYS([filter], [INPUT], 0, [dnl
+])
+EBTABLES_LIST_RULES([filter], [firewalld_testsuite], 1, [ignore], [ignore])
+EBTABLES_LIST_RULES([filter], [INPUT], 0, [dnl
+])
+
+FWD_CHECK([--permanent --direct --remove-rule ipv4 filter INPUT 1 -j ACCEPT], 0, [ignore])
+FWD_RELOAD()
+
+dnl adding a chain should trigger a flush
+NS_CHECK([$IPTABLES -t filter -N firewalld_testsuite])
+NS_CHECK([$IPTABLES -t filter -I firewalld_testsuite -j ACCEPT])
+IF_HOST_SUPPORTS_IP6TABLES([
+NS_CHECK([$IP6TABLES -t filter -N firewalld_testsuite])
+NS_CHECK([$IP6TABLES -t filter -I firewalld_testsuite -j ACCEPT])
+])
+NS_CHECK([$EBTABLES -t filter -N firewalld_testsuite])
+NS_CHECK([$EBTABLES -t filter -I firewalld_testsuite -j ACCEPT])
+FWD_CHECK([--direct --add-chain ipv4 filter firewalld_foobar], 0, [ignore])
+IPTABLES_LIST_RULES_ALWAYS([filter], [firewalld_testsuite], 1, [ignore], [ignore])
+IP6TABLES_LIST_RULES_ALWAYS([filter], [firewalld_testsuite], 1, [ignore], [ignore])
+EBTABLES_LIST_RULES([filter], [firewalld_testsuite], 1, [ignore], [ignore])
+FWD_RELOAD()
+
+dnl adding a chain should trigger a flush
+NS_CHECK([$IPTABLES -t filter -N firewalld_testsuite])
+NS_CHECK([$IPTABLES -t filter -I firewalld_testsuite -j ACCEPT])
+IF_HOST_SUPPORTS_IP6TABLES([
+NS_CHECK([$IP6TABLES -t filter -N firewalld_testsuite])
+NS_CHECK([$IP6TABLES -t filter -I firewalld_testsuite -j ACCEPT])
+])
+NS_CHECK([$EBTABLES -t filter -N firewalld_testsuite])
+NS_CHECK([$EBTABLES -t filter -I firewalld_testsuite -j ACCEPT])
+FWD_CHECK([--direct --add-passthrough ipv4 -t filter -I INPUT -j ACCEPT], 0, [ignore])
+IPTABLES_LIST_RULES_ALWAYS([filter], [firewalld_testsuite], 1, [ignore], [ignore])
+IP6TABLES_LIST_RULES_ALWAYS([filter], [firewalld_testsuite], 1, [ignore], [ignore])
+EBTABLES_LIST_RULES([filter], [firewalld_testsuite], 1, [ignore], [ignore])
+
+FWD_END_TEST()
+
+])
