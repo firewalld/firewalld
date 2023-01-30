@@ -473,7 +473,8 @@ class Firewall(object):
     def _start_apply_objects(self, reload=False, complete_reload=False):
         transaction = FirewallTransaction(self)
 
-        self.flush(use_transaction=transaction)
+        if not reload:
+            self.flush(use_transaction=transaction)
 
         # If modules need to be unloaded in complete reload or if there are
         # ipsets to get applied, limit the transaction to flush.
@@ -943,7 +944,26 @@ class Firewall(object):
         if use_transaction is None:
             transaction.execute(True)
 
-    # flush and policy
+    def may_skip_flush_direct_backends(self):
+        if self.nftables_enabled and not self.direct.has_runtime_configuration():
+            return True
+
+        return False
+
+    def flush_direct_backends(self, use_transaction=None):
+        if use_transaction is None:
+            transaction = FirewallTransaction(self)
+        else:
+            transaction = use_transaction
+
+        for backend in self.all_backends():
+            if backend in self.enabled_backends():
+                continue
+            rules = backend.build_flush_rules()
+            transaction.add_rules(backend, rules)
+
+        if use_transaction is None:
+            transaction.execute(True)
 
     def flush(self, use_transaction=None):
         if use_transaction is None:
@@ -953,7 +973,10 @@ class Firewall(object):
 
         log.debug1("Flushing rule set")
 
-        for backend in self.all_backends():
+        if not self.may_skip_flush_direct_backends():
+            self.flush_direct_backends(use_transaction=transaction)
+
+        for backend in self.enabled_backends():
             rules = backend.build_flush_rules()
             transaction.add_rules(backend, rules)
 
@@ -1113,7 +1136,7 @@ class Firewall(object):
         if not _panic:
             self.set_policy("DROP")
 
-        # stop
+        self.flush()
         self.cleanup()
 
         start_exception = None
