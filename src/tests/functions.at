@@ -107,6 +107,7 @@ m4_define([FWD_START_TEST], [
     dnl in atlocal.
     dnl
     test -z "$PYTHON" && export PYTHON="python3"
+    test -z "$EBTABLES" && export EBTABLES="ebtables"
     test -z "$IPTABLES" && export IPTABLES="iptables"
     test -z "$IPTABLES_RESTORE" && export IPTABLES_RESTORE="iptables-restore"
     test -z "$IP6TABLES" && export IP6TABLES="ip6tables"
@@ -378,7 +379,7 @@ m4_define([EBTABLES_LIST_RULES_NORMALIZE], [dnl
 m4_define([EBTABLES_LIST_RULES], [
     dnl ebtables commit 5f508b76a0ce change list output for inversion.
     m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
-        NS_CHECK([PIPESTATUS0([ebtables --concurrent -t $1 -L $2], [EBTABLES_LIST_RULES_NORMALIZE])],
+        NS_CHECK([PIPESTATUS0([$EBTABLES --concurrent -t $1 -L $2], [EBTABLES_LIST_RULES_NORMALIZE])],
                  [$3], [m4_strip([$4])], [m4_strip([$5])], [$6], [$7])
     ])
 ])
