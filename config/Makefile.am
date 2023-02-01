@@ -247,6 +247,7 @@ CONFIG_FILES = \
 	services/ntp.xml \
 	services/nut.xml \
 	services/openvpn.xml \
+	services/opentelemetry.xml \
 	services/ovirt-imageio.xml \
 	services/ovirt-storageconsole.xml \
 	services/ovirt-vmconsole.xml \
