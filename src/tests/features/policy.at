@@ -3810,3 +3810,149 @@ allow-host-ipv6 my-allow-host-ipv6
 ])
 
 FWD_END_TEST
+
+FWD_START_TEST([policy - zone drifting not allowed])
+AT_KEYWORDS(policy gh797)
+
+FWD_CHECK([--permanent --zone external --add-interface dummy0], 0, [ignore])
+FWD_CHECK([--permanent --zone internal --add-source 10.0.0.0/8], 0, [ignore])
+FWD_CHECK([--permanent --zone public --add-source 10.10.0.0/16], 0, [ignore])
+FWD_CHECK([--permanent --zone trusted --add-source 10.10.10.0/24], 0, [ignore])
+
+dnl To check drifting between zones in the same policy
+FWD_CHECK([--permanent --new-policy policy-1], 0, [ignore])
+FWD_CHECK([--permanent --policy policy-1 --add-ingress-zone internal], 0, [ignore])
+FWD_CHECK([--permanent --policy policy-1 --add-ingress-zone trusted], 0, [ignore])
+FWD_CHECK([--permanent --policy policy-1 --add-egress-zone external], 0, [ignore])
+
+dnl To check drifting between zones in different policies, both in _pre chain
+FWD_CHECK([--permanent --new-policy policy-2], 0, [ignore])
+FWD_CHECK([--permanent --policy policy-2 --add-ingress-zone public], 0, [ignore])
+FWD_CHECK([--permanent --policy policy-2 --add-egress-zone external], 0, [ignore])
+
+dnl To check drifting between zones in different policies, one in _pre and one in _post chain
+FWD_CHECK([--permanent --new-policy policy-3], 0, [ignore])
+FWD_CHECK([--permanent --policy policy-3 --set-priority 10], 0, [ignore])
+FWD_CHECK([--permanent --policy policy-3 --add-ingress-zone trusted], 0, [ignore])
+FWD_CHECK([--permanent --policy policy-3 --add-egress-zone external], 0, [ignore])
+
+FWD_RELOAD()
+
+dnl Even though 10.0.0.0/8 and 10.10.10.0/24 overlap we should only enter the
+dnl policy once. Otherwise we're "drifting" between zones.
+dnl
+dnl Even though 10.0.0.0/16 and 10.10.10.0/24 overlap we should only enter the
+dnl policies for 10.0.0.0/16. Otherwise we're "drifting" between zones.
+NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
+    table inet firewalld {
+        chain filter_FORWARD_POLICIES_pre {
+            ip saddr 10.0.0.0/8 ip daddr 10.0.0.0/8 return
+            ip saddr 10.0.0.0/8 ip daddr 10.10.0.0/16 return
+            ip saddr 10.0.0.0/8 ip daddr 10.10.10.0/24 return
+            oifname "dummy0" ip saddr 10.0.0.0/8 jump filter_FWD_policy_policy-1
+            oifname "dummy0" ip saddr 10.0.0.0/8 return
+            ip saddr 10.10.0.0/16 ip daddr 10.0.0.0/8 return
+            ip saddr 10.10.0.0/16 ip daddr 10.10.0.0/16 return
+            ip saddr 10.10.0.0/16 ip daddr 10.10.10.0/24 return
+            oifname "dummy0" ip saddr 10.10.0.0/16 jump filter_FWD_policy_policy-2
+            oifname "dummy0" ip saddr 10.10.0.0/16 return
+            ip saddr 10.10.10.0/24 ip daddr 10.0.0.0/8 return
+            ip saddr 10.10.10.0/24 ip daddr 10.10.0.0/16 return
+            ip saddr 10.10.10.0/24 ip daddr 10.10.10.0/24 return
+            oifname "dummy0" ip saddr 10.10.10.0/24 jump filter_FWD_policy_policy-1
+            oifname "dummy0" ip saddr 10.10.10.0/24 return
+            iifname "dummy0" ip daddr 10.0.0.0/8 return
+            iifname "dummy0" ip daddr 10.10.0.0/16 return
+            iifname "dummy0" ip daddr 10.10.10.0/24 return
+            iifname "dummy0" oifname "dummy0" return
+        }
+    }
+])
+IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
+    RETURN all -- 10.0.0.0/8 10.0.0.0/8
+    RETURN all -- 10.0.0.0/8 10.10.0.0/16
+    RETURN all -- 10.0.0.0/8 10.10.10.0/24
+    FWD_policy-1 all -- 10.0.0.0/8 0.0.0.0/0
+    RETURN all -- 10.0.0.0/8 0.0.0.0/0
+    RETURN all -- 10.10.0.0/16 10.0.0.0/8
+    RETURN all -- 10.10.0.0/16 10.10.0.0/16
+    RETURN all -- 10.10.0.0/16 10.10.10.0/24
+    FWD_policy-2 all -- 10.10.0.0/16 0.0.0.0/0
+    RETURN all -- 10.10.0.0/16 0.0.0.0/0
+    RETURN all -- 10.10.10.0/24 10.0.0.0/8
+    RETURN all -- 10.10.10.0/24 10.10.0.0/16
+    RETURN all -- 10.10.10.0/24 10.10.10.0/24
+    FWD_policy-1 all -- 10.10.10.0/24 0.0.0.0/0
+    RETURN all -- 10.10.10.0/24 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 10.0.0.0/8
+    RETURN all -- 0.0.0.0/0 10.10.0.0/16
+    RETURN all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+])
+IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
+])
+
+dnl Verify that in the _post chains we don't drift into a zone that we did not
+dnl enter in the _pre chains. i.e. internal and trusted overlap
+dnl
+dnl e.g.
+dnl above we had this rule for policies where priority < 0
+dnl
+dnl     oifname "dummy0" ip saddr 10.0.0.0/8 jump filter_FWD_policy_policy-1
+dnl     oifname "dummy0" ip saddr 10.0.0.0/8 return
+dnl
+dnl The second rule (return) avoids zone drifting.
+dnl
+dnl Now in the _post chain (i.e. priority > 0) that same ingress + egress pair
+dnl has only a return. Thus avoiding zone drifting in the _post chain.
+dnl
+dnl     oifname "dummy0" ip saddr 10.0.0.0/8 return
+dnl
+NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_post], 0, [dnl
+    table inet firewalld {
+        chain filter_FORWARD_POLICIES_post {
+            ip saddr 10.0.0.0/8 ip daddr 10.0.0.0/8 return
+            ip saddr 10.0.0.0/8 ip daddr 10.10.0.0/16 return
+            ip saddr 10.0.0.0/8 ip daddr 10.10.10.0/24 return
+            oifname "dummy0" ip saddr 10.0.0.0/8 return
+            ip saddr 10.10.0.0/16 ip daddr 10.0.0.0/8 return
+            ip saddr 10.10.0.0/16 ip daddr 10.10.0.0/16 return
+            ip saddr 10.10.0.0/16 ip daddr 10.10.10.0/24 return
+            oifname "dummy0" ip saddr 10.10.0.0/16 return
+            ip saddr 10.10.10.0/24 ip daddr 10.0.0.0/8 return
+            ip saddr 10.10.10.0/24 ip daddr 10.10.0.0/16 return
+            ip saddr 10.10.10.0/24 ip daddr 10.10.10.0/24 return
+            oifname "dummy0" ip saddr 10.10.10.0/24 jump filter_FWD_policy_policy-3
+            oifname "dummy0" ip saddr 10.10.10.0/24 return
+            iifname "dummy0" ip daddr 10.0.0.0/8 return
+            iifname "dummy0" ip daddr 10.10.0.0/16 return
+            iifname "dummy0" ip daddr 10.10.10.0/24 return
+            iifname "dummy0" oifname "dummy0" return
+        }
+    }
+])
+IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES_post], 0, [dnl
+    RETURN all -- 10.0.0.0/8 10.0.0.0/8
+    RETURN all -- 10.0.0.0/8 10.10.0.0/16
+    RETURN all -- 10.0.0.0/8 10.10.10.0/24
+    RETURN all -- 10.0.0.0/8 0.0.0.0/0
+    RETURN all -- 10.10.0.0/16 10.0.0.0/8
+    RETURN all -- 10.10.0.0/16 10.10.0.0/16
+    RETURN all -- 10.10.0.0/16 10.10.10.0/24
+    RETURN all -- 10.10.0.0/16 0.0.0.0/0
+    RETURN all -- 10.10.10.0/24 10.0.0.0/8
+    RETURN all -- 10.10.10.0/24 10.10.0.0/16
+    RETURN all -- 10.10.10.0/24 10.10.10.0/24
+    FWD_policy-3 all -- 10.10.10.0/24 0.0.0.0/0
+    RETURN all -- 10.10.10.0/24 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 10.0.0.0/8
+    RETURN all -- 0.0.0.0/0 10.10.0.0/16
+    RETURN all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+])
+IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES_post], 0, [dnl
+    RETURN all ::/0 ::/0
+])
+
+FWD_END_TEST()
