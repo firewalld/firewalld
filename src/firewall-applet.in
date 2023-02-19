@@ -58,7 +58,9 @@ def search_app(app):
     return None
 
 NM_CONNECTION_EDITOR = ""
-for binary in [ "/usr/bin/nm-connection-editor",
+for binary in [ "/usr/bin/systemsettings",
+                    "/bin/systemsettings",
+                "/usr/bin/nm-connection-editor",
                     "/bin/nm-connection-editor",
                 "/usr/bin/kde5-nm-connection-editor",
                     "/bin/kde5-nm-connection-editor",
@@ -920,12 +922,17 @@ class TrayApplet(QtWidgets.QSystemTrayIcon):
             return
 
         if uuid:
-            if "kde-" in NM_CONNECTION_EDITOR:
+            if "systemsettings" in NM_CONNECTION_EDITOR:
+                os.system("%s kcm_networkmanagement --args Uuid=%s &" % (NM_CONNECTION_EDITOR, uuid))
+            elif "kde-" in NM_CONNECTION_EDITOR:
                 os.system("%s %s &" % (NM_CONNECTION_EDITOR, uuid))
             else:
                 os.system("%s --edit=%s &" % (NM_CONNECTION_EDITOR, uuid))
         else:
-            os.system("%s &" % NM_CONNECTION_EDITOR)
+            if "systemsettings" in NM_CONNECTION_EDITOR:
+                os.system("%s kcm_networkmanagement &" % NM_CONNECTION_EDITOR)
+            else:
+                os.system("%s &" % NM_CONNECTION_EDITOR)
 
     def warning(self, text):
         QtWidgets.QMessageBox.warning(None, escape(self.name), text)
