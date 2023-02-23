@@ -290,6 +290,8 @@ FWD_END_TEST
 FWD_START_TEST([policy - priority])
 AT_KEYWORDS(policy)
 
+FWD_CHECK([--permanent --zone public --add-interface dummy0], 0, [ignore])
+
 dnl priority < 0 goes into _pre (before zones)
 FWD_CHECK([--permanent --new-policy worldToHost], 0, [ignore])
 FWD_CHECK([--permanent --policy worldToHost --add-ingress-zone ANY], 0, [ignore])
@@ -302,28 +304,34 @@ FWD_RELOAD
 NFT_LIST_RULES([inet], [filter_INPUT_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_INPUT_POLICIES_pre {
-            jump filter_IN_policy_allow-host-ipv6
-            jump filter_IN_policy_worldToHost
+            iifname "dummy0" jump filter_IN_policy_allow-host-ipv6
+            iifname "dummy0" jump filter_IN_policy_worldToHost
+            iifname "dummy0" return
         }
     }
 ])
 NFT_LIST_RULES([inet], [filter_INPUT_POLICIES_post], 0, [dnl
     table inet firewalld {
         chain filter_INPUT_POLICIES_post {
+            iifname "dummy0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
     IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
     IN_worldToHost all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IPTABLES_LIST_RULES([filter], [INPUT_POLICIES_post], 0, [dnl
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
     IN_allow-host-ipv6 all ::/0 ::/0
     IN_worldToHost all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 IP6TABLES_LIST_RULES([filter], [INPUT_POLICIES_post], 0, [dnl
+    RETURN all ::/0 ::/0
 ])
 
 dnl priority > 0 goes into _post (after zones)
@@ -332,28 +340,34 @@ FWD_RELOAD
 NFT_LIST_RULES([inet], [filter_INPUT_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_INPUT_POLICIES_pre {
-            jump filter_IN_policy_allow-host-ipv6
+            iifname "dummy0" jump filter_IN_policy_allow-host-ipv6
+            iifname "dummy0" return
         }
     }
 ])
 NFT_LIST_RULES([inet], [filter_INPUT_POLICIES_post], 0, [dnl
     table inet firewalld {
         chain filter_INPUT_POLICIES_post {
-            jump filter_IN_policy_worldToHost
+            iifname "dummy0" jump filter_IN_policy_worldToHost
+            iifname "dummy0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
     IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IPTABLES_LIST_RULES([filter], [INPUT_POLICIES_post], 0, [dnl
     IN_worldToHost all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
     IN_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 IP6TABLES_LIST_RULES([filter], [INPUT_POLICIES_post], 0, [dnl
     IN_worldToHost all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 
 dnl verify sorting by priority
@@ -382,12 +396,13 @@ FWD_RELOAD
 NFT_LIST_RULES([inet], [filter_INPUT_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_INPUT_POLICIES_pre {
-            jump filter_IN_policy_allow-host-ipv6
-            jump filter_IN_policy_first
-            jump filter_IN_policy_second
-            jump filter_IN_policy_third
-            jump filter_IN_policy_fourth
-            jump filter_IN_policy_fifth
+            iifname "dummy0" jump filter_IN_policy_allow-host-ipv6
+            iifname "dummy0" jump filter_IN_policy_first
+            iifname "dummy0" jump filter_IN_policy_second
+            iifname "dummy0" jump filter_IN_policy_third
+            iifname "dummy0" jump filter_IN_policy_fourth
+            iifname "dummy0" jump filter_IN_policy_fifth
+            iifname "dummy0" return
         }
     }
 ])
@@ -398,6 +413,7 @@ IPTABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
     IN_third all -- 0.0.0.0/0 0.0.0.0/0
     IN_fourth all -- 0.0.0.0/0 0.0.0.0/0
     IN_fifth all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
     IN_allow-host-ipv6 all ::/0 ::/0
@@ -406,6 +422,7 @@ IP6TABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
     IN_third all ::/0 ::/0
     IN_fourth all ::/0 ::/0
     IN_fifth all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 
 dnl verify priority bounds
@@ -554,12 +571,24 @@ allow-host-ipv6
 NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_FORWARD_POLICIES_pre {
+            iifname "foobar1" oifname "foobar1" return
+            iifname "foobar1" oifname "foobar0" return
+            iifname "foobar0" oifname "foobar1" return
+            iifname "foobar0" oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 FWD_CHECK([--permanent --policy=foobar --add-egress-zone="internal"], 0, [ignore])
 FWD_RELOAD
@@ -574,15 +603,27 @@ foobar
 NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_FORWARD_POLICIES_pre {
+            iifname "foobar1" oifname "foobar1" return
+            iifname "foobar1" oifname "foobar0" return
             iifname "foobar0" oifname "foobar1" jump filter_FWD_policy_foobar
+            iifname "foobar0" oifname "foobar1" return
+            iifname "foobar0" oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
     FWD_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
     FWD_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 FWD_CHECK([--permanent --policy=foobar --remove-ingress-zone="public"], 0, [ignore])
 FWD_RELOAD
@@ -594,12 +635,24 @@ allow-host-ipv6
 NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_FORWARD_POLICIES_pre {
+            iifname "foobar1" oifname "foobar1" return
+            iifname "foobar1" oifname "foobar0" return
+            iifname "foobar0" oifname "foobar1" return
+            iifname "foobar0" oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 
 FWD_END_TEST([-e '/ERROR: INVALID_ZONE:/d'])
@@ -750,7 +803,7 @@ NFT_LIST_RULES([inet], [filter_FORWARD], 0, [dnl
 ])
 IPTABLES_LIST_RULES([filter], [FORWARD], 0, [dnl
 ACCEPT all -- 0.0.0.0/0 0.0.0.0/0 ctstate RELATED,ESTABLISHED,DNAT
-ACCEPT all -- 0.0.0.0/0 0.0.0.0/0                                 
+ACCEPT all -- 0.0.0.0/0 0.0.0.0/0
 DROP all -- 0.0.0.0/0 0.0.0.0/0 ctstate INVALID
 FORWARD_direct all -- 0.0.0.0/0 0.0.0.0/0
 FORWARD_ZONES all -- 0.0.0.0/0 0.0.0.0/0
@@ -809,99 +862,184 @@ dnl (filter, input)
 NFT_LIST_RULES([inet], [filter_INPUT_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_INPUT_POLICIES_pre {
-            jump filter_IN_policy_allow-host-ipv6
+            iifname "foobar1" jump filter_IN_policy_allow-host-ipv6
+            iifname "foobar1" return
+            iifname "foobar0" jump filter_IN_policy_allow-host-ipv6
             iifname "foobar0" jump filter_IN_policy_foobar
+            iifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
     IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
     IN_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
     IN_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    IN_allow-host-ipv6 all ::/0 ::/0
     IN_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (filter, output)
 NFT_LIST_RULES([inet], [filter_OUTPUT_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_OUTPUT_POLICIES_pre {
+            oifname "foobar1" return
+            oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [OUTPUT_POLICIES_pre], 0, [dnl
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [OUTPUT_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (filter, forward)
 NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_FORWARD_POLICIES_pre {
+            iifname "foobar1" oifname "foobar1" return
+            iifname "foobar1" oifname "foobar0" return
+            iifname "foobar0" oifname "foobar1" return
+            iifname "foobar0" oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (raw, prerouting) (helpers, iptables only)
 IPTABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
     PRE_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    PRE_allow-host-ipv6 all ::/0 ::/0
     PRE_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (mangle, prerouting)
 NFT_LIST_RULES([inet], [mangle_PREROUTING_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain mangle_PREROUTING_POLICIES_pre {
-            jump mangle_PRE_policy_allow-host-ipv6
+            iifname "foobar1" jump mangle_PRE_policy_allow-host-ipv6
+            iifname "foobar1" return
+            iifname "foobar0" jump mangle_PRE_policy_allow-host-ipv6
+            iifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (nat, prerouting)
 NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain nat_PREROUTING_POLICIES_pre {
-            jump nat_PRE_policy_allow-host-ipv6
+            iifname "foobar1" jump nat_PRE_policy_allow-host-ipv6
+            iifname "foobar1" return
+            iifname "foobar0" jump nat_PRE_policy_allow-host-ipv6
+            iifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (nat, postrouting)
 NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain nat_POSTROUTING_POLICIES_pre {
+            iifname "foobar1" oifname "foobar1" return
+            iifname "foobar1" oifname "foobar0" return
+            iifname "foobar0" oifname "foobar1" return
+            iifname "foobar0" oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (nat, output)
 NFT_LIST_RULES([inet], [nat_OUTPUT_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain nat_OUTPUT_POLICIES_pre {
+            oifname "foobar1" return
+            oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 FWD_CHECK([--policy=foobar --remove-ingress-zone="public"], 0, [ignore])
 FWD_CHECK([--policy=foobar --remove-egress-zone="HOST"], 0, [ignore])
@@ -914,105 +1052,201 @@ dnl (filter, input)
 NFT_LIST_RULES([inet], [filter_INPUT_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_INPUT_POLICIES_pre {
-            jump filter_IN_policy_allow-host-ipv6
-            jump filter_IN_policy_foobar
+            iifname "foobar1" jump filter_IN_policy_allow-host-ipv6
+            iifname "foobar1" jump filter_IN_policy_foobar
+            iifname "foobar1" return
+            iifname "foobar0" jump filter_IN_policy_allow-host-ipv6
+            iifname "foobar0" jump filter_IN_policy_foobar
+            iifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
     IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
     IN_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    IN_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
     IN_allow-host-ipv6 all ::/0 ::/0
     IN_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    IN_allow-host-ipv6 all ::/0 ::/0
+    IN_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (filter, output)
 NFT_LIST_RULES([inet], [filter_OUTPUT_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_OUTPUT_POLICIES_pre {
+            oifname "foobar1" return
+            oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [OUTPUT_POLICIES_pre], 0, [dnl
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [OUTPUT_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (filter, forward)
 NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_FORWARD_POLICIES_pre {
+          iifname "foobar1" oifname "foobar1" return
+          iifname "foobar1" oifname "foobar0" return
+          iifname "foobar0" oifname "foobar1" return
+          iifname "foobar0" oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (raw, prerouting) (helpers, iptables only)
 IPTABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
     PRE_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
     PRE_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    PRE_allow-host-ipv6 all ::/0 ::/0
+    PRE_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (mangle, prerouting)
 NFT_LIST_RULES([inet], [mangle_PREROUTING_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain mangle_PREROUTING_POLICIES_pre {
-            jump mangle_PRE_policy_allow-host-ipv6
-            jump mangle_PRE_policy_foobar
+            iifname "foobar1" jump mangle_PRE_policy_allow-host-ipv6
+            iifname "foobar1" jump mangle_PRE_policy_foobar
+            iifname "foobar1" return
+            iifname "foobar0" jump mangle_PRE_policy_allow-host-ipv6
+            iifname "foobar0" jump mangle_PRE_policy_foobar
+            iifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
     PRE_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
     PRE_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    PRE_allow-host-ipv6 all ::/0 ::/0
+    PRE_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (nat, prerouting)
 NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain nat_PREROUTING_POLICIES_pre {
-            jump nat_PRE_policy_allow-host-ipv6
-            jump nat_PRE_policy_foobar
+            iifname "foobar1" jump nat_PRE_policy_allow-host-ipv6
+            iifname "foobar1" jump nat_PRE_policy_foobar
+            iifname "foobar1" return
+            iifname "foobar0" jump nat_PRE_policy_allow-host-ipv6
+            iifname "foobar0" jump nat_PRE_policy_foobar
+            iifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
     PRE_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
     PRE_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    PRE_allow-host-ipv6 all ::/0 ::/0
+    PRE_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (nat, postrouting)
 NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain nat_POSTROUTING_POLICIES_pre {
+            iifname "foobar1" oifname "foobar1" return
+            iifname "foobar1" oifname "foobar0" return
+            iifname "foobar0" oifname "foobar1" return
+            iifname "foobar0" oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (nat, output)
 NFT_LIST_RULES([inet], [nat_OUTPUT_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain nat_OUTPUT_POLICIES_pre {
+            oifname "foobar1" return
+            oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 FWD_CHECK([--policy=foobar --remove-ingress-zone="ANY"], 0, [ignore])
 FWD_CHECK([--policy=foobar --remove-egress-zone="HOST"], 0, [ignore])
@@ -1025,100 +1259,185 @@ dnl (filter, input)
 NFT_LIST_RULES([inet], [filter_INPUT_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_INPUT_POLICIES_pre {
-            jump filter_IN_policy_allow-host-ipv6
+            iifname "foobar1" jump filter_IN_policy_allow-host-ipv6
+            iifname "foobar1" return
+            iifname "foobar0" jump filter_IN_policy_allow-host-ipv6
+            iifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
     IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
     IN_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    IN_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (filter, output)
 NFT_LIST_RULES([inet], [filter_OUTPUT_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_OUTPUT_POLICIES_pre {
+            oifname "foobar1" return
             oifname "foobar0" jump filter_OUT_policy_foobar
+            oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [OUTPUT_POLICIES_pre], 0, [dnl
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
     OUT_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [OUTPUT_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
     OUT_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (filter, forward)
 NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_FORWARD_POLICIES_pre {
+            iifname "foobar1" oifname "foobar1" return
+            iifname "foobar1" oifname "foobar0" return
+            iifname "foobar0" oifname "foobar1" return
+            iifname "foobar0" oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (raw, prerouting) (helpers, iptables only)
 IPTABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (mangle, prerouting)
 NFT_LIST_RULES([inet], [mangle_PREROUTING_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain mangle_PREROUTING_POLICIES_pre {
-            jump mangle_PRE_policy_allow-host-ipv6
+            iifname "foobar1" jump mangle_PRE_policy_allow-host-ipv6
+            iifname "foobar1" return
+            iifname "foobar0" jump mangle_PRE_policy_allow-host-ipv6
+            iifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (nat, prerouting)
 NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain nat_PREROUTING_POLICIES_pre {
-            jump nat_PRE_policy_allow-host-ipv6
+            iifname "foobar1" jump nat_PRE_policy_allow-host-ipv6
+            iifname "foobar1" return
+            iifname "foobar0" jump nat_PRE_policy_allow-host-ipv6
+            iifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (nat, postrouting)
 NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain nat_POSTROUTING_POLICIES_pre {
+            iifname "foobar1" oifname "foobar1" return
+            iifname "foobar1" oifname "foobar0" return
+            iifname "foobar0" oifname "foobar1" return
+            iifname "foobar0" oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (nat, output)
 NFT_LIST_RULES([inet], [nat_OUTPUT_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain nat_OUTPUT_POLICIES_pre {
+            oifname "foobar1" return
             oifname "foobar0" jump nat_OUT_policy_foobar
+            oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
     OUT_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
     OUT_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 FWD_CHECK([--policy=foobar --remove-ingress-zone="HOST"], 0, [ignore])
 FWD_CHECK([--policy=foobar --remove-egress-zone="public"], 0, [ignore])
@@ -1131,100 +1450,191 @@ dnl (filter, input)
 NFT_LIST_RULES([inet], [filter_INPUT_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_INPUT_POLICIES_pre {
-            jump filter_IN_policy_allow-host-ipv6
+            iifname "foobar1" jump filter_IN_policy_allow-host-ipv6
+            iifname "foobar1" return
+            iifname "foobar0" jump filter_IN_policy_allow-host-ipv6
+            iifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
     IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
     IN_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    IN_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (filter, output)
 NFT_LIST_RULES([inet], [filter_OUTPUT_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_OUTPUT_POLICIES_pre {
-            jump filter_OUT_policy_foobar
+            oifname "foobar1" jump filter_OUT_policy_foobar
+            oifname "foobar1" return
+            oifname "foobar0" jump filter_OUT_policy_foobar
+            oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [OUTPUT_POLICIES_pre], 0, [dnl
     OUT_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    OUT_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [OUTPUT_POLICIES_pre], 0, [dnl
     OUT_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    OUT_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (filter, forward)
 NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_FORWARD_POLICIES_pre {
+            iifname "foobar1" oifname "foobar1" return
+            iifname "foobar1" oifname "foobar0" return
+            iifname "foobar0" oifname "foobar1" return
+            iifname "foobar0" oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (raw, prerouting) (helpers, iptables only)
 IPTABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (mangle, prerouting)
 NFT_LIST_RULES([inet], [mangle_PREROUTING_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain mangle_PREROUTING_POLICIES_pre {
-            jump mangle_PRE_policy_allow-host-ipv6
+            iifname "foobar1" jump mangle_PRE_policy_allow-host-ipv6
+            iifname "foobar1" return
+            iifname "foobar0" jump mangle_PRE_policy_allow-host-ipv6
+            iifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (nat, prerouting)
 NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain nat_PREROUTING_POLICIES_pre {
-            jump nat_PRE_policy_allow-host-ipv6
+            iifname "foobar1" jump nat_PRE_policy_allow-host-ipv6
+            iifname "foobar1" return
+            iifname "foobar0" jump nat_PRE_policy_allow-host-ipv6
+            iifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (nat, postrouting)
 NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain nat_POSTROUTING_POLICIES_pre {
+            iifname "foobar1" oifname "foobar1" return
+            iifname "foobar1" oifname "foobar0" return
+            iifname "foobar0" oifname "foobar1" return
+            iifname "foobar0" oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (nat, output)
 NFT_LIST_RULES([inet], [nat_OUTPUT_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain nat_OUTPUT_POLICIES_pre {
-            jump nat_OUT_policy_foobar
+            oifname "foobar1" jump nat_OUT_policy_foobar
+            oifname "foobar1" return
+            oifname "foobar0" jump nat_OUT_policy_foobar
+            oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
     OUT_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    OUT_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
     OUT_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    OUT_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 FWD_CHECK([--policy=foobar --remove-ingress-zone="HOST"], 0, [ignore])
 FWD_CHECK([--policy=foobar --remove-egress-zone="ANY"], 0, [ignore])
@@ -1237,108 +1647,231 @@ dnl (filter, input)
 NFT_LIST_RULES([inet], [filter_INPUT_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_INPUT_POLICIES_pre {
-            jump filter_IN_policy_allow-host-ipv6
+            iifname "foobar1" jump filter_IN_policy_allow-host-ipv6
+            iifname "foobar1" return
+            iifname "foobar0" jump filter_IN_policy_allow-host-ipv6
+            iifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
     IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
     IN_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    IN_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (filter, output)
 NFT_LIST_RULES([inet], [filter_OUTPUT_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_OUTPUT_POLICIES_pre {
+            oifname "foobar1" return
+            oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [OUTPUT_POLICIES_pre], 0, [dnl
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [OUTPUT_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (filter, forward)
 NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_FORWARD_POLICIES_pre {
-            jump filter_FWD_policy_foobar
+            iifname "foobar1" oifname "foobar1" jump filter_FWD_policy_foobar
+            iifname "foobar1" oifname "foobar1" return
+            iifname "foobar1" oifname "foobar0" jump filter_FWD_policy_foobar
+            iifname "foobar1" oifname "foobar0" return
+            iifname "foobar0" oifname "foobar1" jump filter_FWD_policy_foobar
+            iifname "foobar0" oifname "foobar1" return
+            iifname "foobar0" oifname "foobar0" jump filter_FWD_policy_foobar
+            iifname "foobar0" oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
     FWD_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    FWD_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    FWD_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    FWD_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
     FWD_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    FWD_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    FWD_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    FWD_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (raw, prerouting) (helpers, iptables only)
 IPTABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
     PRE_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
     PRE_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    PRE_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    PRE_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    PRE_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (mangle, prerouting)
 NFT_LIST_RULES([inet], [mangle_PREROUTING_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain mangle_PREROUTING_POLICIES_pre {
-            jump mangle_PRE_policy_allow-host-ipv6
-            jump mangle_PRE_policy_foobar
+            iifname "foobar1" jump mangle_PRE_policy_allow-host-ipv6
+            iifname "foobar1" jump mangle_PRE_policy_foobar
+            iifname "foobar1" return
+            iifname "foobar0" jump mangle_PRE_policy_allow-host-ipv6
+            iifname "foobar0" jump mangle_PRE_policy_foobar
+            iifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
     PRE_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
     PRE_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    PRE_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    PRE_allow-host-ipv6 all ::/0 ::/0
+    PRE_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    PRE_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (nat, prerouting)
 NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain nat_PREROUTING_POLICIES_pre {
-            jump nat_PRE_policy_allow-host-ipv6
-            jump nat_PRE_policy_foobar
+            iifname "foobar1" jump nat_PRE_policy_allow-host-ipv6
+            iifname "foobar1" jump nat_PRE_policy_foobar
+            iifname "foobar1" return
+            iifname "foobar0" jump nat_PRE_policy_allow-host-ipv6
+            iifname "foobar0" jump nat_PRE_policy_foobar
+            iifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
     PRE_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
     PRE_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    PRE_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    PRE_allow-host-ipv6 all ::/0 ::/0
+    PRE_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    PRE_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (nat, postrouting)
 NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain nat_POSTROUTING_POLICIES_pre {
-            jump nat_POST_policy_foobar
+            iifname "foobar1" oifname "foobar1" jump nat_POST_policy_foobar
+            iifname "foobar1" oifname "foobar1" return
+            iifname "foobar1" oifname "foobar0" jump nat_POST_policy_foobar
+            iifname "foobar1" oifname "foobar0" return
+            iifname "foobar0" oifname "foobar1" jump nat_POST_policy_foobar
+            iifname "foobar0" oifname "foobar1" return
+            iifname "foobar0" oifname "foobar0" jump nat_POST_policy_foobar
+            iifname "foobar0" oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
     POST_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    POST_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    POST_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    POST_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
     POST_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    POST_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    POST_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    POST_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (nat, output)
 NFT_LIST_RULES([inet], [nat_OUTPUT_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain nat_OUTPUT_POLICIES_pre {
+            oifname "foobar1" return
+            oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 FWD_CHECK([--policy=foobar --remove-ingress-zone="ANY"], 0, [ignore])
 FWD_CHECK([--policy=foobar --remove-egress-zone="ANY"], 0, [ignore])
@@ -1351,107 +1884,199 @@ dnl (filter, input)
 NFT_LIST_RULES([inet], [filter_INPUT_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_INPUT_POLICIES_pre {
-            jump filter_IN_policy_allow-host-ipv6
+            iifname "foobar1" jump filter_IN_policy_allow-host-ipv6
+            iifname "foobar1" return
+            iifname "foobar0" jump filter_IN_policy_allow-host-ipv6
+            iifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
     IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
     IN_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    IN_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (filter, output)
 NFT_LIST_RULES([inet], [filter_OUTPUT_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_OUTPUT_POLICIES_pre {
+            oifname "foobar1" return
+            oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [OUTPUT_POLICIES_pre], 0, [dnl
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [OUTPUT_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (filter, forward)
 NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_FORWARD_POLICIES_pre {
-            oifname "foobar0" jump filter_FWD_policy_foobar
+            iifname "foobar1" oifname "foobar1" return
+            iifname "foobar1" oifname "foobar0" jump filter_FWD_policy_foobar
+            iifname "foobar1" oifname "foobar0" return
+            iifname "foobar0" oifname "foobar1" return
+            iifname "foobar0" oifname "foobar0" jump filter_FWD_policy_foobar
+            iifname "foobar0" oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
     FWD_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    FWD_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
     FWD_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    FWD_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (raw, prerouting) (helpers, iptables only)
 IPTABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
     PRE_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
     PRE_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    PRE_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (mangle, prerouting)
 NFT_LIST_RULES([inet], [mangle_PREROUTING_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain mangle_PREROUTING_POLICIES_pre {
-            jump mangle_PRE_policy_allow-host-ipv6
+            iifname "foobar1" jump mangle_PRE_policy_allow-host-ipv6
+            iifname "foobar1" return
+            iifname "foobar0" jump mangle_PRE_policy_allow-host-ipv6
+            iifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (nat, prerouting)
 NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain nat_PREROUTING_POLICIES_pre {
-            jump nat_PRE_policy_allow-host-ipv6
+            iifname "foobar1" jump nat_PRE_policy_allow-host-ipv6
+            iifname "foobar1" return
+            iifname "foobar0" jump nat_PRE_policy_allow-host-ipv6
+            iifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (nat, postrouting)
 NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain nat_POSTROUTING_POLICIES_pre {
-            oifname "foobar0" jump nat_POST_policy_foobar
+            iifname "foobar1" oifname "foobar1" return
+            iifname "foobar1" oifname "foobar0" jump nat_POST_policy_foobar
+            iifname "foobar1" oifname "foobar0" return
+            iifname "foobar0" oifname "foobar1" return
+            iifname "foobar0" oifname "foobar0" jump nat_POST_policy_foobar
+            iifname "foobar0" oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
     POST_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    POST_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
     POST_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    POST_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (nat, output)
 NFT_LIST_RULES([inet], [nat_OUTPUT_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain nat_OUTPUT_POLICIES_pre {
+            oifname "foobar1" return
+            oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 FWD_CHECK([--policy=foobar --remove-ingress-zone="ANY"], 0, [ignore])
 FWD_CHECK([--policy=foobar --remove-egress-zone="public"], 0, [ignore])
 FWD_CHECK([--zone=internal --remove-interface=foobar1], 0, [ignore])
-FWD_CHECK([--zone=public --remove-interface=foobar0], 0, [ignore])
 
 dnl Verify ANY --> zone is dispatched correctly (FORWARD).
 dnl egress-zone (internal) has only sources.
@@ -1462,103 +2087,178 @@ dnl (filter, input)
 NFT_LIST_RULES([inet], [filter_INPUT_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_INPUT_POLICIES_pre {
-            jump filter_IN_policy_allow-host-ipv6
+            ip saddr 10.10.10.0/24 jump filter_IN_policy_allow-host-ipv6
+            ip saddr 10.10.10.0/24 return
+            iifname "foobar0" jump filter_IN_policy_allow-host-ipv6
+            iifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
+    IN_allow-host-ipv6 all -- 10.10.10.0/24 0.0.0.0/0
+    RETURN all -- 10.10.10.0/24 0.0.0.0/0
     IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
     IN_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (filter, output)
 NFT_LIST_RULES([inet], [filter_OUTPUT_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_OUTPUT_POLICIES_pre {
+            ip daddr 10.10.10.0/24 return
+            oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [OUTPUT_POLICIES_pre], 0, [dnl
+    RETURN all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [OUTPUT_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
 ])
 dnl (filter, forward)
 NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_FORWARD_POLICIES_pre {
-            ip daddr 10.10.10.0/24 jump filter_FWD_policy_foobar
+            ip saddr 10.10.10.0/24 ip daddr 10.10.10.0/24 jump filter_FWD_policy_foobar
+            ip saddr 10.10.10.0/24 ip daddr 10.10.10.0/24 return
+            oifname "foobar0" ip saddr 10.10.10.0/24 return
+            iifname "foobar0" ip daddr 10.10.10.0/24 jump filter_FWD_policy_foobar
+            iifname "foobar0" ip daddr 10.10.10.0/24 return
+            iifname "foobar0" oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
+    FWD_foobar all -- 10.10.10.0/24 10.10.10.0/24
+    RETURN all -- 10.10.10.0/24 10.10.10.0/24
+    RETURN all -- 10.10.10.0/24 0.0.0.0/0
     FWD_foobar all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
 ])
 dnl (raw, prerouting) (helpers, iptables only)
 IPTABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
+    PRE_allow-host-ipv6 all -- 10.10.10.0/24 0.0.0.0/0
+    RETURN all -- 10.10.10.0/24 0.0.0.0/0
+    PRE_foobar all -- 10.10.10.0/24 10.10.10.0/24
+    RETURN all -- 10.10.10.0/24 10.10.10.0/24
+    RETURN all -- 10.10.10.0/24 0.0.0.0/0
     PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
     PRE_foobar all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (mangle, prerouting)
 NFT_LIST_RULES([inet], [mangle_PREROUTING_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain mangle_PREROUTING_POLICIES_pre {
-            jump mangle_PRE_policy_allow-host-ipv6
-            ip daddr 10.10.10.0/24 jump mangle_PRE_policy_foobar
+            ip saddr 10.10.10.0/24 jump mangle_PRE_policy_allow-host-ipv6
+            ip saddr 10.10.10.0/24 ip daddr 10.10.10.0/24 jump mangle_PRE_policy_foobar
+            ip saddr 10.10.10.0/24 ip daddr 10.10.10.0/24 return
+            ip saddr 10.10.10.0/24 return
+            iifname "foobar0" jump mangle_PRE_policy_allow-host-ipv6
+            iifname "foobar0" ip daddr 10.10.10.0/24 jump mangle_PRE_policy_foobar
+            iifname "foobar0" ip daddr 10.10.10.0/24 return
+            iifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
+    PRE_allow-host-ipv6 all -- 10.10.10.0/24 0.0.0.0/0
+    PRE_foobar all -- 10.10.10.0/24 10.10.10.0/24
+    RETURN all -- 10.10.10.0/24 10.10.10.0/24
+    RETURN all -- 10.10.10.0/24 0.0.0.0/0
     PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
     PRE_foobar all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (nat, prerouting)
 NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain nat_PREROUTING_POLICIES_pre {
-            jump nat_PRE_policy_allow-host-ipv6
-            ip daddr 10.10.10.0/24 jump nat_PRE_policy_foobar
+            ip saddr 10.10.10.0/24 jump nat_PRE_policy_allow-host-ipv6
+            ip saddr 10.10.10.0/24 ip daddr 10.10.10.0/24 jump nat_PRE_policy_foobar
+            ip saddr 10.10.10.0/24 ip daddr 10.10.10.0/24 return
+            ip saddr 10.10.10.0/24 return
+            iifname "foobar0" jump nat_PRE_policy_allow-host-ipv6
+            iifname "foobar0" ip daddr 10.10.10.0/24 jump nat_PRE_policy_foobar
+            iifname "foobar0" ip daddr 10.10.10.0/24 return
+            iifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
+    PRE_allow-host-ipv6 all -- 10.10.10.0/24 0.0.0.0/0
+    PRE_foobar all -- 10.10.10.0/24 10.10.10.0/24
+    RETURN all -- 10.10.10.0/24 10.10.10.0/24
+    RETURN all -- 10.10.10.0/24 0.0.0.0/0
     PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
     PRE_foobar all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (nat, postrouting)
 NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain nat_POSTROUTING_POLICIES_pre {
-            ip daddr 10.10.10.0/24 jump nat_POST_policy_foobar
+            ip saddr 10.10.10.0/24 ip daddr 10.10.10.0/24 jump nat_POST_policy_foobar
+            ip saddr 10.10.10.0/24 ip daddr 10.10.10.0/24 return
+            oifname "foobar0" ip saddr 10.10.10.0/24 return
+            iifname "foobar0" ip daddr 10.10.10.0/24 jump nat_POST_policy_foobar
+            iifname "foobar0" ip daddr 10.10.10.0/24 return
+            iifname "foobar0" oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
+    POST_foobar all -- 10.10.10.0/24 10.10.10.0/24
+    RETURN all -- 10.10.10.0/24 10.10.10.0/24
+    RETURN all -- 10.10.10.0/24 0.0.0.0/0
     POST_foobar all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
 ])
 dnl (nat, output)
 NFT_LIST_RULES([inet], [nat_OUTPUT_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain nat_OUTPUT_POLICIES_pre {
+            ip daddr 10.10.10.0/24 return
+            oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
+    RETURN all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
 ])
 FWD_CHECK([--policy=foobar --remove-ingress-zone="ANY"], 0, [ignore])
 FWD_CHECK([--policy=foobar --remove-egress-zone="internal"], 0, [ignore])
@@ -1573,106 +2273,201 @@ dnl (filter, input)
 NFT_LIST_RULES([inet], [filter_INPUT_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_INPUT_POLICIES_pre {
-            jump filter_IN_policy_allow-host-ipv6
+            iifname "foobar1" jump filter_IN_policy_allow-host-ipv6
+            iifname "foobar1" return
+            iifname "foobar0" jump filter_IN_policy_allow-host-ipv6
+            iifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
     IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
     IN_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    IN_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (filter, output)
 NFT_LIST_RULES([inet], [filter_OUTPUT_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_OUTPUT_POLICIES_pre {
+            oifname "foobar1" return
+            oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [OUTPUT_POLICIES_pre], 0, [dnl
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [OUTPUT_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (filter, forward)
 NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_FORWARD_POLICIES_pre {
-            iifname "foobar1" jump filter_FWD_policy_foobar
+            iifname "foobar1" oifname "foobar1" jump filter_FWD_policy_foobar
+            iifname "foobar1" oifname "foobar1" return
+            iifname "foobar1" oifname "foobar0" jump filter_FWD_policy_foobar
+            iifname "foobar1" oifname "foobar0" return
+            iifname "foobar0" oifname "foobar1" return
+            iifname "foobar0" oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
     FWD_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    FWD_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
     FWD_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    FWD_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (raw, prerouting) (helpers, iptables only)
 IPTABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
     PRE_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
     PRE_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    PRE_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (mangle, prerouting)
 NFT_LIST_RULES([inet], [mangle_PREROUTING_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain mangle_PREROUTING_POLICIES_pre {
-            jump mangle_PRE_policy_allow-host-ipv6
+            iifname "foobar1" jump mangle_PRE_policy_allow-host-ipv6
             iifname "foobar1" jump mangle_PRE_policy_foobar
+            iifname "foobar1" return
+            iifname "foobar0" jump mangle_PRE_policy_allow-host-ipv6
+            iifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
     PRE_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
     PRE_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    PRE_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (nat, prerouting)
 NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain nat_PREROUTING_POLICIES_pre {
-            jump nat_PRE_policy_allow-host-ipv6
+            iifname "foobar1" jump nat_PRE_policy_allow-host-ipv6
             iifname "foobar1" jump nat_PRE_policy_foobar
+            iifname "foobar1" return
+            iifname "foobar0" jump nat_PRE_policy_allow-host-ipv6
+            iifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
     PRE_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
     PRE_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    PRE_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (nat, postrouting)
 NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain nat_POSTROUTING_POLICIES_pre {
-            iifname "foobar1" jump nat_POST_policy_foobar
+            iifname "foobar1" oifname "foobar1" jump nat_POST_policy_foobar
+            iifname "foobar1" oifname "foobar1" return
+            iifname "foobar1" oifname "foobar0" jump nat_POST_policy_foobar
+            iifname "foobar1" oifname "foobar0" return
+            iifname "foobar0" oifname "foobar1" return
+            iifname "foobar0" oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (nat, output)
 NFT_LIST_RULES([inet], [nat_OUTPUT_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain nat_OUTPUT_POLICIES_pre {
+            oifname "foobar1" return
+            oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 FWD_CHECK([--policy=foobar --remove-ingress-zone="internal"], 0, [ignore])
 FWD_CHECK([--policy=foobar --remove-egress-zone="ANY"], 0, [ignore])
@@ -1687,103 +2482,178 @@ dnl (filter, input)
 NFT_LIST_RULES([inet], [filter_INPUT_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_INPUT_POLICIES_pre {
-            jump filter_IN_policy_allow-host-ipv6
+            ip saddr 10.10.10.0/24 jump filter_IN_policy_allow-host-ipv6
+            ip saddr 10.10.10.0/24 return
+            iifname "foobar0" jump filter_IN_policy_allow-host-ipv6
+            iifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
+    IN_allow-host-ipv6 all -- 10.10.10.0/24 0.0.0.0/0
+    RETURN all -- 10.10.10.0/24 0.0.0.0/0
     IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
     IN_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (filter, output)
 NFT_LIST_RULES([inet], [filter_OUTPUT_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_OUTPUT_POLICIES_pre {
+            ip daddr 10.10.10.0/24 return
+            oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [OUTPUT_POLICIES_pre], 0, [dnl
+    RETURN all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [OUTPUT_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
 ])
 dnl (filter, forward)
 NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_FORWARD_POLICIES_pre {
-            ip saddr 10.10.10.0/24 jump filter_FWD_policy_foobar
+            ip saddr 10.10.10.0/24 ip daddr 10.10.10.0/24 jump filter_FWD_policy_foobar
+            ip saddr 10.10.10.0/24 ip daddr 10.10.10.0/24 return
+            oifname "foobar0" ip saddr 10.10.10.0/24 jump filter_FWD_policy_foobar
+            oifname "foobar0" ip saddr 10.10.10.0/24 return
+            iifname "foobar0" ip daddr 10.10.10.0/24 return
+            iifname "foobar0" oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
+    FWD_foobar all -- 10.10.10.0/24 10.10.10.0/24
+    RETURN all -- 10.10.10.0/24 10.10.10.0/24
     FWD_foobar all -- 10.10.10.0/24 0.0.0.0/0
+    RETURN all -- 10.10.10.0/24 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
 ])
 dnl (raw, prerouting) (helpers, iptables only)
 IPTABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 all -- 10.10.10.0/24 0.0.0.0/0
+    RETURN all -- 10.10.10.0/24 0.0.0.0/0
+    PRE_foobar all -- 10.10.10.0/24 10.10.10.0/24
+    RETURN all -- 10.10.10.0/24 10.10.10.0/24
     PRE_foobar all -- 10.10.10.0/24 0.0.0.0/0
+    RETURN all -- 10.10.10.0/24 0.0.0.0/0
+    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (mangle, prerouting)
 NFT_LIST_RULES([inet], [mangle_PREROUTING_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain mangle_PREROUTING_POLICIES_pre {
-            jump mangle_PRE_policy_allow-host-ipv6
+            ip saddr 10.10.10.0/24 jump mangle_PRE_policy_allow-host-ipv6
+            ip saddr 10.10.10.0/24 ip daddr 10.10.10.0/24 jump mangle_PRE_policy_foobar
+            ip saddr 10.10.10.0/24 ip daddr 10.10.10.0/24 return
             ip saddr 10.10.10.0/24 jump mangle_PRE_policy_foobar
+            ip saddr 10.10.10.0/24 return
+            iifname "foobar0" jump mangle_PRE_policy_allow-host-ipv6
+            iifname "foobar0" ip daddr 10.10.10.0/24 return
+            iifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 all -- 10.10.10.0/24 0.0.0.0/0
+    PRE_foobar all -- 10.10.10.0/24 10.10.10.0/24
+    RETURN all -- 10.10.10.0/24 10.10.10.0/24
     PRE_foobar all -- 10.10.10.0/24 0.0.0.0/0
+    RETURN all -- 10.10.10.0/24 0.0.0.0/0
+    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (nat, prerouting)
 NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain nat_PREROUTING_POLICIES_pre {
-            jump nat_PRE_policy_allow-host-ipv6
+            ip saddr 10.10.10.0/24 jump nat_PRE_policy_allow-host-ipv6
+            ip saddr 10.10.10.0/24 ip daddr 10.10.10.0/24 jump nat_PRE_policy_foobar
+            ip saddr 10.10.10.0/24 ip daddr 10.10.10.0/24 return
             ip saddr 10.10.10.0/24 jump nat_PRE_policy_foobar
+            ip saddr 10.10.10.0/24 return
+            iifname "foobar0" jump nat_PRE_policy_allow-host-ipv6
+            iifname "foobar0" ip daddr 10.10.10.0/24 return
+            iifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 all -- 10.10.10.0/24 0.0.0.0/0
+    PRE_foobar all -- 10.10.10.0/24 10.10.10.0/24
+    RETURN all -- 10.10.10.0/24 10.10.10.0/24
     PRE_foobar all -- 10.10.10.0/24 0.0.0.0/0
+    RETURN all -- 10.10.10.0/24 0.0.0.0/0
+    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (nat, postrouting)
 NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain nat_POSTROUTING_POLICIES_pre {
-            ip saddr 10.10.10.0/24 jump nat_POST_policy_foobar
+            ip saddr 10.10.10.0/24 ip daddr 10.10.10.0/24 jump nat_POST_policy_foobar
+            ip saddr 10.10.10.0/24 ip daddr 10.10.10.0/24 return
+            oifname "foobar0" ip saddr 10.10.10.0/24 jump nat_POST_policy_foobar
+            oifname "foobar0" ip saddr 10.10.10.0/24 return
+            iifname "foobar0" ip daddr 10.10.10.0/24 return
+            iifname "foobar0" oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
+    POST_foobar all -- 10.10.10.0/24 10.10.10.0/24
+    RETURN all -- 10.10.10.0/24 10.10.10.0/24
     POST_foobar all -- 10.10.10.0/24 0.0.0.0/0
+    RETURN all -- 10.10.10.0/24 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
 ])
 dnl (nat, output)
 NFT_LIST_RULES([inet], [nat_OUTPUT_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain nat_OUTPUT_POLICIES_pre {
+            ip daddr 10.10.10.0/24 return
+            oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
+    RETURN all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
 ])
 FWD_CHECK([--policy=foobar --remove-ingress-zone="internal"], 0, [ignore])
 FWD_CHECK([--policy=foobar --remove-egress-zone="ANY"], 0, [ignore])
@@ -1792,7 +2662,6 @@ FWD_CHECK([--zone=internal --remove-source=10.10.10.0/24], 0, [ignore])
 dnl Verify zone --> zone is dispatched correctly (FORWARD).
 dnl ingress-zone (internal) has interfaces.
 dnl egress-zone (public) has interfaces.
-FWD_CHECK([--zone=public --add-interface=foobar0], 0, [ignore])
 FWD_CHECK([--zone=internal --add-interface=foobar1], 0, [ignore])
 FWD_CHECK([--policy=foobar --add-ingress-zone="internal"], 0, [ignore])
 FWD_CHECK([--policy=foobar --add-egress-zone="public"], 0, [ignore])
@@ -1800,100 +2669,185 @@ dnl (filter, input)
 NFT_LIST_RULES([inet], [filter_INPUT_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_INPUT_POLICIES_pre {
-            jump filter_IN_policy_allow-host-ipv6
+            iifname "foobar1" jump filter_IN_policy_allow-host-ipv6
+            iifname "foobar1" return
+            iifname "foobar0" jump filter_IN_policy_allow-host-ipv6
+            iifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
     IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
     IN_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    IN_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (filter, output)
 NFT_LIST_RULES([inet], [filter_OUTPUT_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_OUTPUT_POLICIES_pre {
+            oifname "foobar1" return
+            oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [OUTPUT_POLICIES_pre], 0, [dnl
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [OUTPUT_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (filter, forward)
 NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_FORWARD_POLICIES_pre {
+            iifname "foobar1" oifname "foobar1" return
             iifname "foobar1" oifname "foobar0" jump filter_FWD_policy_foobar
+            iifname "foobar1" oifname "foobar0" return
+            iifname "foobar0" oifname "foobar1" return
+            iifname "foobar0" oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
     FWD_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
     FWD_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (raw, prerouting) (helpers, iptables only)
 IPTABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
     PRE_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
     PRE_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (mangle, prerouting)
 NFT_LIST_RULES([inet], [mangle_PREROUTING_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain mangle_PREROUTING_POLICIES_pre {
-            jump mangle_PRE_policy_allow-host-ipv6
+            iifname "foobar1" jump mangle_PRE_policy_allow-host-ipv6
+            iifname "foobar1" return
+            iifname "foobar0" jump mangle_PRE_policy_allow-host-ipv6
+            iifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (nat, prerouting)
 NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain nat_PREROUTING_POLICIES_pre {
-            jump nat_PRE_policy_allow-host-ipv6
+            iifname "foobar1" jump nat_PRE_policy_allow-host-ipv6
+            iifname "foobar1" return
+            iifname "foobar0" jump nat_PRE_policy_allow-host-ipv6
+            iifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (nat, postrouting)
 NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain nat_POSTROUTING_POLICIES_pre {
+            iifname "foobar1" oifname "foobar1" return
             iifname "foobar1" oifname "foobar0" jump nat_POST_policy_foobar
+            iifname "foobar1" oifname "foobar0" return
+            iifname "foobar0" oifname "foobar1" return
+            iifname "foobar0" oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (nat, output)
 NFT_LIST_RULES([inet], [nat_OUTPUT_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain nat_OUTPUT_POLICIES_pre {
+            oifname "foobar1" return
+            oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 FWD_CHECK([--policy=foobar --remove-ingress-zone="internal"], 0, [ignore])
 FWD_CHECK([--policy=foobar --remove-egress-zone="public"], 0, [ignore])
@@ -1911,102 +2865,168 @@ dnl (filter, input)
 NFT_LIST_RULES([inet], [filter_INPUT_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_INPUT_POLICIES_pre {
-            jump filter_IN_policy_allow-host-ipv6
+            ip saddr 10.10.10.0/24 jump filter_IN_policy_allow-host-ipv6
+            ip saddr 10.10.10.0/24 return
+            iifname "foobar1" jump filter_IN_policy_allow-host-ipv6
+            iifname "foobar1" return
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
+    IN_allow-host-ipv6 all -- 10.10.10.0/24 0.0.0.0/0
+    RETURN all -- 10.10.10.0/24 0.0.0.0/0
     IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
     IN_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (filter, output)
 NFT_LIST_RULES([inet], [filter_OUTPUT_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_OUTPUT_POLICIES_pre {
+            ip daddr 10.10.10.0/24 return
+            oifname "foobar1" return
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [OUTPUT_POLICIES_pre], 0, [dnl
+    RETURN all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [OUTPUT_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
 ])
 dnl (filter, forward)
 NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_FORWARD_POLICIES_pre {
+            ip saddr 10.10.10.0/24 ip daddr 10.10.10.0/24 return
+            oifname "foobar1" ip saddr 10.10.10.0/24 return
             iifname "foobar1" ip daddr 10.10.10.0/24 jump filter_FWD_policy_foobar
+            iifname "foobar1" ip daddr 10.10.10.0/24 return
+            iifname "foobar1" oifname "foobar1" return
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
+    RETURN all -- 10.10.10.0/24 10.10.10.0/24
+    RETURN all -- 10.10.10.0/24 0.0.0.0/0
     FWD_foobar all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
 ])
 dnl (raw, prerouting) (helpers, iptables only)
 IPTABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
+    PRE_allow-host-ipv6 all -- 10.10.10.0/24 0.0.0.0/0
+    RETURN all -- 10.10.10.0/24 0.0.0.0/0
+    RETURN all -- 10.10.10.0/24 10.10.10.0/24
+    RETURN all -- 10.10.10.0/24 0.0.0.0/0
     PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
     PRE_foobar all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (mangle, prerouting)
 NFT_LIST_RULES([inet], [mangle_PREROUTING_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain mangle_PREROUTING_POLICIES_pre {
-            jump mangle_PRE_policy_allow-host-ipv6
+            ip saddr 10.10.10.0/24 jump mangle_PRE_policy_allow-host-ipv6
+            ip saddr 10.10.10.0/24 ip daddr 10.10.10.0/24 return
+            ip saddr 10.10.10.0/24 return
+            iifname "foobar1" jump mangle_PRE_policy_allow-host-ipv6
             iifname "foobar1" ip daddr 10.10.10.0/24 jump mangle_PRE_policy_foobar
+            iifname "foobar1" ip daddr 10.10.10.0/24 return
+            iifname "foobar1" return
         }
     }
 ])
 IPTABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
+    PRE_allow-host-ipv6 all -- 10.10.10.0/24 0.0.0.0/0
+    RETURN all -- 10.10.10.0/24 10.10.10.0/24
+    RETURN all -- 10.10.10.0/24 0.0.0.0/0
     PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
     PRE_foobar all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (nat, prerouting)
 NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain nat_PREROUTING_POLICIES_pre {
-            jump nat_PRE_policy_allow-host-ipv6
+            ip saddr 10.10.10.0/24 jump nat_PRE_policy_allow-host-ipv6
+            ip saddr 10.10.10.0/24 ip daddr 10.10.10.0/24 return
+            ip saddr 10.10.10.0/24 return
+            iifname "foobar1" jump nat_PRE_policy_allow-host-ipv6
             iifname "foobar1" ip daddr 10.10.10.0/24 jump nat_PRE_policy_foobar
+            iifname "foobar1" ip daddr 10.10.10.0/24 return
+            iifname "foobar1" return
         }
     }
 ])
 IPTABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
+    PRE_allow-host-ipv6 all -- 10.10.10.0/24 0.0.0.0/0
+    RETURN all -- 10.10.10.0/24 10.10.10.0/24
+    RETURN all -- 10.10.10.0/24 0.0.0.0/0
     PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
     PRE_foobar all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (nat, postrouting)
 NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain nat_POSTROUTING_POLICIES_pre {
+            ip saddr 10.10.10.0/24 ip daddr 10.10.10.0/24 return
+            oifname "foobar1" ip saddr 10.10.10.0/24 return
             iifname "foobar1" ip daddr 10.10.10.0/24 jump nat_POST_policy_foobar
+            iifname "foobar1" ip daddr 10.10.10.0/24 return
+            iifname "foobar1" oifname "foobar1" return
         }
     }
 ])
 IPTABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
+    RETURN all -- 10.10.10.0/24 10.10.10.0/24
+    RETURN all -- 10.10.10.0/24 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
 ])
 dnl (nat, output)
 NFT_LIST_RULES([inet], [nat_OUTPUT_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain nat_OUTPUT_POLICIES_pre {
+            ip daddr 10.10.10.0/24 return
+            oifname "foobar1" return
         }
     }
 ])
 IPTABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
+    RETURN all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
 ])
 FWD_CHECK([--policy=foobar --remove-ingress-zone="internal"], 0, [ignore])
 FWD_CHECK([--policy=foobar --remove-egress-zone="public"], 0, [ignore])
@@ -2024,99 +3044,165 @@ dnl (filter, input)
 NFT_LIST_RULES([inet], [filter_INPUT_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_INPUT_POLICIES_pre {
-            jump filter_IN_policy_allow-host-ipv6
+            ip saddr 10.10.10.0/24 jump filter_IN_policy_allow-host-ipv6
+            ip saddr 10.10.10.0/24 return
+            iifname "foobar0" jump filter_IN_policy_allow-host-ipv6
+            iifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
+    IN_allow-host-ipv6 all -- 10.10.10.0/24 0.0.0.0/0
+    RETURN all -- 10.10.10.0/24 0.0.0.0/0
     IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
     IN_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (filter, output)
 NFT_LIST_RULES([inet], [filter_OUTPUT_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_OUTPUT_POLICIES_pre {
+            ip daddr 10.10.10.0/24 return
+            oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [OUTPUT_POLICIES_pre], 0, [dnl
+    RETURN all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [OUTPUT_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
 ])
 dnl (filter, forward)
 NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_FORWARD_POLICIES_pre {
-            ip saddr 10.10.10.0/24 oifname "foobar0" jump filter_FWD_policy_foobar
+            ip saddr 10.10.10.0/24 ip daddr 10.10.10.0/24 return
+            oifname "foobar0" ip saddr 10.10.10.0/24 jump filter_FWD_policy_foobar
+            oifname "foobar0" ip saddr 10.10.10.0/24 return
+            iifname "foobar0" ip daddr 10.10.10.0/24 return
+            iifname "foobar0" oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
+    RETURN all -- 10.10.10.0/24 10.10.10.0/24
     FWD_foobar all -- 10.10.10.0/24 0.0.0.0/0
+    RETURN all -- 10.10.10.0/24 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
 ])
 dnl (raw, prerouting) (helpers, iptables only)
 IPTABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 all -- 10.10.10.0/24 0.0.0.0/0
+    RETURN all -- 10.10.10.0/24 0.0.0.0/0
+    RETURN all -- 10.10.10.0/24 10.10.10.0/24
     PRE_foobar all -- 10.10.10.0/24 0.0.0.0/0
+    RETURN all -- 10.10.10.0/24 0.0.0.0/0
+    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (mangle, prerouting)
 NFT_LIST_RULES([inet], [mangle_PREROUTING_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain mangle_PREROUTING_POLICIES_pre {
-            jump mangle_PRE_policy_allow-host-ipv6
+            ip saddr 10.10.10.0/24 jump mangle_PRE_policy_allow-host-ipv6
+            ip saddr 10.10.10.0/24 ip daddr 10.10.10.0/24 return
+            ip saddr 10.10.10.0/24 return
+            iifname "foobar0" jump mangle_PRE_policy_allow-host-ipv6
+            iifname "foobar0" ip daddr 10.10.10.0/24 return
+            iifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
+    PRE_allow-host-ipv6 all -- 10.10.10.0/24 0.0.0.0/0
+    RETURN all -- 10.10.10.0/24 10.10.10.0/24
+    RETURN all -- 10.10.10.0/24 0.0.0.0/0
     PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (nat, prerouting)
 NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain nat_PREROUTING_POLICIES_pre {
-            jump nat_PRE_policy_allow-host-ipv6
+            ip saddr 10.10.10.0/24 jump nat_PRE_policy_allow-host-ipv6
+            ip saddr 10.10.10.0/24 ip daddr 10.10.10.0/24 return
+            ip saddr 10.10.10.0/24 return
+            iifname "foobar0" jump nat_PRE_policy_allow-host-ipv6
+            iifname "foobar0" ip daddr 10.10.10.0/24 return
+            iifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
+    PRE_allow-host-ipv6 all -- 10.10.10.0/24 0.0.0.0/0
+    RETURN all -- 10.10.10.0/24 10.10.10.0/24
+    RETURN all -- 10.10.10.0/24 0.0.0.0/0
     PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 dnl (nat, postrouting)
 NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain nat_POSTROUTING_POLICIES_pre {
-            ip saddr 10.10.10.0/24 oifname "foobar0" jump nat_POST_policy_foobar
+            ip saddr 10.10.10.0/24 ip daddr 10.10.10.0/24 return
+            oifname "foobar0" ip saddr 10.10.10.0/24 jump nat_POST_policy_foobar
+            oifname "foobar0" ip saddr 10.10.10.0/24 return
+            iifname "foobar0" ip daddr 10.10.10.0/24 return
+            iifname "foobar0" oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
+    RETURN all -- 10.10.10.0/24 10.10.10.0/24
     POST_foobar all -- 10.10.10.0/24 0.0.0.0/0
+    RETURN all -- 10.10.10.0/24 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
 ])
 dnl (nat, output)
 NFT_LIST_RULES([inet], [nat_OUTPUT_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain nat_OUTPUT_POLICIES_pre {
+            ip daddr 10.10.10.0/24 return
+            oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
+    RETURN all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
 ])
 FWD_CHECK([--policy=foobar --remove-ingress-zone="internal"], 0, [ignore])
 FWD_CHECK([--policy=foobar --remove-egress-zone="public"], 0, [ignore])
@@ -2134,24 +3220,33 @@ dnl (filter, input)
 NFT_LIST_RULES([inet], [filter_INPUT_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_INPUT_POLICIES_pre {
-            jump filter_IN_policy_allow-host-ipv6
+            ip saddr 10.10.10.0/24 jump filter_IN_policy_allow-host-ipv6
+            ip saddr 10.10.10.0/24 return
+            ip saddr 10.20.20.0/24 jump filter_IN_policy_allow-host-ipv6
+            ip saddr 10.20.20.0/24 return
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
-    IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    IN_allow-host-ipv6 all -- 10.10.10.0/24 0.0.0.0/0
+    RETURN all -- 10.10.10.0/24 0.0.0.0/0
+    IN_allow-host-ipv6 all -- 10.20.20.0/24 0.0.0.0/0
+    RETURN all -- 10.20.20.0/24 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
-    IN_allow-host-ipv6 all ::/0 ::/0
 ])
 dnl (filter, output)
 NFT_LIST_RULES([inet], [filter_OUTPUT_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_OUTPUT_POLICIES_pre {
+            ip daddr 10.10.10.0/24 return
+            ip daddr 10.20.20.0/24 return
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [OUTPUT_POLICIES_pre], 0, [dnl
+    RETURN all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 10.20.20.0/24
 ])
 IP6TABLES_LIST_RULES([filter], [OUTPUT_POLICIES_pre], 0, [dnl
 ])
@@ -2159,65 +3254,105 @@ dnl (filter, forward)
 NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_FORWARD_POLICIES_pre {
+            ip saddr 10.10.10.0/24 ip daddr 10.10.10.0/24 return
             ip saddr 10.10.10.0/24 ip daddr 10.20.20.0/24 jump filter_FWD_policy_foobar
+            ip saddr 10.10.10.0/24 ip daddr 10.20.20.0/24 return
+            ip saddr 10.20.20.0/24 ip daddr 10.10.10.0/24 return
+            ip saddr 10.20.20.0/24 ip daddr 10.20.20.0/24 return
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
+    RETURN all -- 10.10.10.0/24 10.10.10.0/24
     FWD_foobar all -- 10.10.10.0/24 10.20.20.0/24
+    RETURN all -- 10.10.10.0/24 10.20.20.0/24
+    RETURN all -- 10.20.20.0/24 10.10.10.0/24
+    RETURN all -- 10.20.20.0/24 10.20.20.0/24
 ])
 IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
 ])
 dnl (raw, prerouting) (helpers, iptables only)
 IPTABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 all -- 10.10.10.0/24 0.0.0.0/0
+    RETURN all -- 10.10.10.0/24 0.0.0.0/0
+    RETURN all -- 10.10.10.0/24 10.10.10.0/24
     PRE_foobar all -- 10.10.10.0/24 10.20.20.0/24
+    RETURN all -- 10.10.10.0/24 10.20.20.0/24
+    PRE_allow-host-ipv6 all -- 10.20.20.0/24 0.0.0.0/0
+    RETURN all -- 10.20.20.0/24 0.0.0.0/0
+    RETURN all -- 10.20.20.0/24 10.10.10.0/24
+    RETURN all -- 10.20.20.0/24 10.20.20.0/24
 ])
 IP6TABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all ::/0 ::/0
 ])
 dnl (mangle, prerouting)
 NFT_LIST_RULES([inet], [mangle_PREROUTING_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain mangle_PREROUTING_POLICIES_pre {
-            jump mangle_PRE_policy_allow-host-ipv6
+            ip saddr 10.10.10.0/24 jump mangle_PRE_policy_allow-host-ipv6
+            ip saddr 10.10.10.0/24 ip daddr 10.10.10.0/24 return
             ip saddr 10.10.10.0/24 ip daddr 10.20.20.0/24 jump mangle_PRE_policy_foobar
+            ip saddr 10.10.10.0/24 ip daddr 10.20.20.0/24 return
+            ip saddr 10.20.20.0/24 jump mangle_PRE_policy_allow-host-ipv6
+            ip saddr 10.20.20.0/24 ip daddr 10.10.10.0/24 return
+            ip saddr 10.20.20.0/24 ip daddr 10.20.20.0/24 return
         }
     }
 ])
 IPTABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 all -- 10.10.10.0/24 0.0.0.0/0
+    RETURN all -- 10.10.10.0/24 10.10.10.0/24
     PRE_foobar all -- 10.10.10.0/24 10.20.20.0/24
+    RETURN all -- 10.10.10.0/24 10.20.20.0/24
+    PRE_allow-host-ipv6 all -- 10.20.20.0/24 0.0.0.0/0
+    RETURN all -- 10.20.20.0/24 10.10.10.0/24
+    RETURN all -- 10.20.20.0/24 10.20.20.0/24
 ])
 IP6TABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all ::/0 ::/0
 ])
 dnl (nat, prerouting)
 NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain nat_PREROUTING_POLICIES_pre {
-            jump nat_PRE_policy_allow-host-ipv6
+            ip saddr 10.10.10.0/24 jump nat_PRE_policy_allow-host-ipv6
+            ip saddr 10.10.10.0/24 ip daddr 10.10.10.0/24 return
             ip saddr 10.10.10.0/24 ip daddr 10.20.20.0/24 jump nat_PRE_policy_foobar
+            ip saddr 10.10.10.0/24 ip daddr 10.20.20.0/24 return
+            ip saddr 10.20.20.0/24 jump nat_PRE_policy_allow-host-ipv6
+            ip saddr 10.20.20.0/24 ip daddr 10.10.10.0/24 return
+            ip saddr 10.20.20.0/24 ip daddr 10.20.20.0/24 return
         }
     }
 ])
 IPTABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 all -- 10.10.10.0/24 0.0.0.0/0
+    RETURN all -- 10.10.10.0/24 10.10.10.0/24
     PRE_foobar all -- 10.10.10.0/24 10.20.20.0/24
+    RETURN all -- 10.10.10.0/24 10.20.20.0/24
+    PRE_allow-host-ipv6 all -- 10.20.20.0/24 0.0.0.0/0
+    RETURN all -- 10.20.20.0/24 10.10.10.0/24
+    RETURN all -- 10.20.20.0/24 10.20.20.0/24
 ])
 IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all ::/0 ::/0
 ])
 dnl (nat, postrouting)
 NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain nat_POSTROUTING_POLICIES_pre {
+            ip saddr 10.10.10.0/24 ip daddr 10.10.10.0/24 return
             ip saddr 10.10.10.0/24 ip daddr 10.20.20.0/24 jump nat_POST_policy_foobar
+            ip saddr 10.10.10.0/24 ip daddr 10.20.20.0/24 return
+            ip saddr 10.20.20.0/24 ip daddr 10.10.10.0/24 return
+            ip saddr 10.20.20.0/24 ip daddr 10.20.20.0/24 return
         }
     }
 ])
 IPTABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
+    RETURN all -- 10.10.10.0/24 10.10.10.0/24
     POST_foobar all -- 10.10.10.0/24 10.20.20.0/24
+    RETURN all -- 10.10.10.0/24 10.20.20.0/24
+    RETURN all -- 10.20.20.0/24 10.10.10.0/24
+    RETURN all -- 10.20.20.0/24 10.20.20.0/24
 ])
 IP6TABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
 ])
@@ -2225,10 +3360,14 @@ dnl (nat, output)
 NFT_LIST_RULES([inet], [nat_OUTPUT_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain nat_OUTPUT_POLICIES_pre {
+            ip daddr 10.10.10.0/24 return
+            ip daddr 10.20.20.0/24 return
         }
     }
 ])
 IPTABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
+    RETURN all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 10.20.20.0/24
 ])
 IP6TABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
 ])
@@ -2250,104 +3389,280 @@ FWD_RELOAD
 NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_FORWARD_POLICIES_pre {
+            iifname "foobar0" oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
 ])
 
 dnl verify adding new interfaces updates the dispatch
 dnl catch edge cases (i.e. first interface)
 dnl
 FWD_CHECK([--zone public --add-interface foobar1], 0, [ignore])
+NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
+    table inet firewalld {
+        chain nat_PREROUTING_POLICIES_pre {
+            iifname "foobar0" jump nat_PRE_policy_allow-host-ipv6
+            iifname "foobar0" return
+            iifname "foobar1" jump nat_PRE_policy_allow-host-ipv6
+            iifname "foobar1" return
+        }
+    }
+])
+IPTABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
+    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+])
+IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
+    PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+])
 NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_FORWARD_POLICIES_pre {
+            iifname "foobar0" oifname "foobar0" return
             iifname "foobar0" oifname "foobar1" jump filter_FWD_policy_foobar
+            iifname "foobar0" oifname "foobar1" return
+            iifname "foobar1" oifname "foobar0" return
+            iifname "foobar1" oifname "foobar1" return
         }
     }
 ])
 dnl Note: iptables has an extra rule because it can't use anonymous sets of interfaces like nftables.
 IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
     FWD_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
     FWD_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 
 dnl verify adding new interfaces updates the dispatch
 dnl
 FWD_CHECK([--zone public --add-interface foobar2], 0, [ignore])
-NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
+NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
     table inet firewalld {
-        chain filter_FORWARD_POLICIES_pre {
-            iifname "foobar0" oifname { "foobar1", "foobar2" } jump filter_FWD_policy_foobar
+        chain nat_PREROUTING_POLICIES_pre {
+            iifname "foobar0" jump nat_PRE_policy_allow-host-ipv6
+            iifname "foobar0" return
+            iifname "foobar1" jump nat_PRE_policy_allow-host-ipv6
+            iifname "foobar1" return
+            iifname "foobar2" jump nat_PRE_policy_allow-host-ipv6
+            iifname "foobar2" return
         }
     }
 ])
-dnl Note: iptables has an extra rule because it can't use anonymous sets of interfaces like nftables.
+IPTABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
+    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+])
+IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
+    PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+])
+NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
+    table inet firewalld {
+        chain filter_FORWARD_POLICIES_pre {
+            iifname "foobar0" oifname "foobar0" return
+            iifname "foobar0" oifname "foobar1" jump filter_FWD_policy_foobar
+            iifname "foobar0" oifname "foobar1" return
+            iifname "foobar0" oifname "foobar2" jump filter_FWD_policy_foobar
+            iifname "foobar0" oifname "foobar2" return
+            iifname "foobar1" oifname "foobar0" return
+            iifname "foobar1" oifname "foobar1" return
+            iifname "foobar1" oifname "foobar2" return
+            iifname "foobar2" oifname "foobar0" return
+            iifname "foobar2" oifname "foobar1" return
+            iifname "foobar2" oifname "foobar2" return
+        }
+    }
+])
 IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
     FWD_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
     FWD_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
     FWD_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
     FWD_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 
 dnl verify adding removing interfaces updates the dispatch
 dnl
 FWD_CHECK([--zone public --remove-interface foobar2], 0, [ignore])
+NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
+    table inet firewalld {
+        chain nat_PREROUTING_POLICIES_pre {
+            iifname "foobar0" jump nat_PRE_policy_allow-host-ipv6
+            iifname "foobar0" return
+            iifname "foobar1" jump nat_PRE_policy_allow-host-ipv6
+            iifname "foobar1" return
+        }
+    }
+])
+IPTABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
+    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+])
+IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
+    PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+])
 NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_FORWARD_POLICIES_pre {
+            iifname "foobar0" oifname "foobar0" return
             iifname "foobar0" oifname "foobar1" jump filter_FWD_policy_foobar
+            iifname "foobar0" oifname "foobar1" return
+            iifname "foobar1" oifname "foobar0" return
+            iifname "foobar1" oifname "foobar1" return
         }
     }
 ])
 dnl Note: iptables has an extra rule because it can't use anonymous sets of interfaces like nftables.
 IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
     FWD_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
     FWD_foobar all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 
 dnl verify adding removing interfaces updates the dispatch
 dnl catch edge cases (i.e. removed last)
 dnl
 FWD_CHECK([--zone public --remove-interface foobar1], 0, [ignore])
-NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
-    table inet firewalld {
-        chain filter_FORWARD_POLICIES_pre {
-        }
-    }
-])
-IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
-])
-IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
-])
-
-dnl verify adding new sources updates the dispatch
-dnl catch edge cases (i.e. first interface)
-dnl
-FWD_CHECK([--zone public --add-source 10.10.10.0/24], 0, [ignore])
 NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain nat_PREROUTING_POLICIES_pre {
-            jump nat_PRE_policy_allow-host-ipv6
-            iifname "foobar0" ip daddr 10.10.10.0/24 jump nat_PRE_policy_foobar
+            iifname "foobar0" jump nat_PRE_policy_allow-host-ipv6
+            iifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
-    PRE_foobar all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
+])
+NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
+    table inet firewalld {
+        chain filter_FORWARD_POLICIES_pre {
+            iifname "foobar0" oifname "foobar0" return
+        }
+    }
+])
+IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+])
+IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
+])
+
+dnl verify adding new sources updates the dispatch
+dnl catch edge cases (i.e. first source)
+dnl
+FWD_CHECK([--zone public --add-source 10.10.10.0/24], 0, [ignore])
+NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
+    table inet firewalld {
+        chain nat_PREROUTING_POLICIES_pre {
+            ip saddr 10.10.10.0/24 jump nat_PRE_policy_allow-host-ipv6
+            ip saddr 10.10.10.0/24 ip daddr 10.10.10.0/24 return
+            ip saddr 10.10.10.0/24 return
+            iifname "foobar0" jump nat_PRE_policy_allow-host-ipv6
+            iifname "foobar0" ip daddr 10.10.10.0/24 jump nat_PRE_policy_foobar
+            iifname "foobar0" ip daddr 10.10.10.0/24 return
+            iifname "foobar0" return
+        }
+    }
+])
+IPTABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
+    PRE_allow-host-ipv6 all -- 10.10.10.0/24 0.0.0.0/0
+    RETURN all -- 10.10.10.0/24 10.10.10.0/24
+    RETURN all -- 10.10.10.0/24 0.0.0.0/0
+    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
+])
+IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
+    PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 
 dnl verify adding new sources updates the dispatch
@@ -2360,12 +3675,22 @@ m4_if(nftables, FIREWALL_BACKEND, [
 AT_CHECK([grep 'iifname "foobar0" ip6 daddr 1234::/64 jump nat_PRE_policy_foobar' ./stdout], 0, [ignore])
 ])
 IPTABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
+    PRE_allow-host-ipv6 all -- 10.10.10.0/24 0.0.0.0/0
+    RETURN all -- 10.10.10.0/24 10.10.10.0/24
+    RETURN all -- 10.10.10.0/24 0.0.0.0/0
     PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
     PRE_foobar all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
+    PRE_allow-host-ipv6 all 1234::/64 ::/0
+    RETURN all 1234::/64 1234::/64
+    RETURN all 1234::/64 ::/0
     PRE_allow-host-ipv6 all ::/0 ::/0
     PRE_foobar all ::/0 1234::/64
+    RETURN all ::/0 1234::/64
+    RETURN all ::/0 ::/0
 ])
 
 dnl verify adding removing sources updates the dispatch
@@ -2376,17 +3701,28 @@ FWD_CHECK([--zone public --remove-source 1234::/64], 0, [ignore])
 NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain nat_PREROUTING_POLICIES_pre {
-            jump nat_PRE_policy_allow-host-ipv6
+            ip saddr 10.10.10.0/24 jump nat_PRE_policy_allow-host-ipv6
+            ip saddr 10.10.10.0/24 ip daddr 10.10.10.0/24 return
+            ip saddr 10.10.10.0/24 return
+            iifname "foobar0" jump nat_PRE_policy_allow-host-ipv6
             iifname "foobar0" ip daddr 10.10.10.0/24 jump nat_PRE_policy_foobar
+            iifname "foobar0" ip daddr 10.10.10.0/24 return
+            iifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
+    PRE_allow-host-ipv6 all -- 10.10.10.0/24 0.0.0.0/0
+    RETURN all -- 10.10.10.0/24 10.10.10.0/24
+    RETURN all -- 10.10.10.0/24 0.0.0.0/0
     PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
     PRE_foobar all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 10.10.10.0/24
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
     PRE_allow-host-ipv6 all ::/0 ::/0
+    RETURN all ::/0 ::/0
 ])
 
 dnl verify adding removing sources updates the dispatch
@@ -2396,12 +3732,15 @@ FWD_CHECK([--zone public --remove-source 10.10.10.0/24], 0, [ignore])
 NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_FORWARD_POLICIES_pre {
+            iifname "foobar0" oifname "foobar0" return
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
+    RETURN all -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
+    RETURN all ::/0 ::/0
 ])
 
 FWD_END_TEST

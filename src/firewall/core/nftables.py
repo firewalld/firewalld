@@ -169,7 +169,7 @@ class nftables(object):
         self.rule_to_handle = {}
         self.rule_ref_count = {}
         self.rich_rule_priority_counts = {}
-        self.policy_priority_counts = {}
+        self.policy_dispatch_index_cache = {}
         self.zone_source_index_cache = {}
         self.created_tables = {"inet": []}
 
@@ -211,6 +211,45 @@ class nftables(object):
                 index = zone_source_index_cache[family].index(zone_source)
             else:
                 index = len(zone_source_index_cache[family])
+
+            _verb_snippet = rule[verb]
+            del rule[verb]
+            if index == 0:
+                rule["insert"] = _verb_snippet
+            else:
+                index -= 1 # point to the rule before insertion point
+                rule["add"] = _verb_snippet
+                rule["add"]["rule"]["index"] = index
+
+    def _set_rule_sort_policy_dispatch(self, rule, policy_dispatch_index_cache):
+        for verb in ["add", "insert", "delete"]:
+            if verb in rule:
+                break
+
+        try:
+            sort_tuple = rule[verb]["rule"].pop("%%POLICY_SORT_KEY%%")
+        except KeyError:
+            return
+
+        chain = (rule[verb]["rule"]["family"], rule[verb]["rule"]["chain"])
+
+        if verb == "delete":
+            if chain in policy_dispatch_index_cache and sort_tuple in policy_dispatch_index_cache[chain]:
+                policy_dispatch_index_cache[chain].remove(sort_tuple)
+        else:
+            if chain not in policy_dispatch_index_cache:
+                policy_dispatch_index_cache[chain] = []
+
+            # We only have to track the sort key as it's unique. The actual
+            # rule/json is not necessary.
+            #
+            # We only insert the tuple if it's not present. This is because we
+            # do rule de-duplication in set_rules().
+            if sort_tuple not in policy_dispatch_index_cache[chain]:
+                policy_dispatch_index_cache[chain].append(sort_tuple)
+                policy_dispatch_index_cache[chain].sort()
+
+            index = policy_dispatch_index_cache[chain].index(sort_tuple)
 
             _verb_snippet = rule[verb]
             del rule[verb]
@@ -287,7 +326,7 @@ class nftables(object):
         _deduplicated_rules = []
         _executed_rules = []
         rich_rule_priority_counts = copy.deepcopy(self.rich_rule_priority_counts)
-        policy_priority_counts = copy.deepcopy(self.policy_priority_counts)
+        policy_dispatch_index_cache = copy.deepcopy(self.policy_dispatch_index_cache)
         zone_source_index_cache = copy.deepcopy(self.zone_source_index_cache)
         rule_ref_count = self.rule_ref_count.copy()
         for rule in rules:
@@ -304,8 +343,8 @@ class nftables(object):
 
             # rule deduplication
             if rule_key in rule_ref_count:
-                log.debug2("%s: prev rule ref cnt %d, %s", self.__class__,
-                           rule_ref_count[rule_key], rule_key)
+                log.debug2("%s: prev rule ref cnt %d, verb %s %s", self.__class__,
+                           rule_ref_count[rule_key], verb, rule_key)
                 if verb != "delete":
                     rule_ref_count[rule_key] += 1
                     continue
@@ -319,6 +358,8 @@ class nftables(object):
                                                        % (rule_key, rule_ref_count[rule_key]))
             elif rule_key and verb != "delete":
                 rule_ref_count[rule_key] = 1
+            elif rule_key:
+                raise FirewallError(UNKNOWN_ERROR, f"rule ref count bug, missing ref count: rule_key '{rule_key}'")
 
             _deduplicated_rules.append(rule)
 
@@ -330,7 +371,7 @@ class nftables(object):
                 _rule[verb]["rule"]["expr"] = list(filter(None, _rule[verb]["rule"]["expr"]))
 
                 self._set_rule_replace_priority(_rule, rich_rule_priority_counts, "%%RICH_RULE_PRIORITY%%")
-                self._set_rule_replace_priority(_rule, policy_priority_counts, "%%POLICY_PRIORITY%%")
+                self._set_rule_sort_policy_dispatch(_rule, policy_dispatch_index_cache)
                 self._run_replace_zone_source(_rule, zone_source_index_cache)
 
                 # delete using rule handle
@@ -352,7 +393,7 @@ class nftables(object):
             raise ValueError("'%s' failed: %s\nJSON blob:\n%s" % ("python-nftables", error, json.dumps(json_blob)))
 
         self.rich_rule_priority_counts = rich_rule_priority_counts
-        self.policy_priority_counts = policy_priority_counts
+        self.policy_dispatch_index_cache = policy_dispatch_index_cache
         self.zone_source_index_cache = zone_source_index_cache
         self.rule_ref_count = rule_ref_count
 
@@ -364,7 +405,7 @@ class nftables(object):
             if not rule_key:
                 continue
 
-            if "delete" in rule:
+            if "delete" in rule and self.rule_ref_count[rule_key] <= 0:
                 del self.rule_to_handle[rule_key]
                 del self.rule_ref_count[rule_key]
                 continue
@@ -399,7 +440,7 @@ class nftables(object):
         self.rule_to_handle = saved_rule_to_handle
         self.rule_ref_count = saved_rule_ref_count
         self.rich_rule_priority_counts = {}
-        self.policy_priority_counts = {}
+        self.policy_dispatch_index_cache = {}
         self.zone_source_index_cache = {}
 
         rules = []
@@ -714,92 +755,103 @@ class nftables(object):
 
         return []
 
-    def build_policy_ingress_egress_rules(self, enable, policy, table, chain,
-                                          ingress_interfaces, egress_interfaces,
-                                          ingress_sources, egress_sources):
+    def _policy_dispatch_sort_key(self, policy, ingress_zone, egress_zone,
+                                  ingress_interface, ingress_source, egress_interface, egress_source,
+                                  priority, last=False, prerouting=False, log_denied=False):
+        ingress_sort_order = 0 # 0 means output chain
+        if ingress_source:
+            ingress_sort_order = 1
+        elif ingress_interface:
+            ingress_sort_order = 2
 
+        egress_sort_order = 0 # 0 means input chain
+        if egress_source:
+            egress_sort_order = 1
+        elif egress_interface:
+            egress_sort_order = 2
+            if prerouting:
+                # To avoid rule duplication, we also clear egress. This allows
+                # the rule de-duplication in set_rules() to handle it. The
+                # duplication occurs because egress_zone/egress_interface is
+                # used in the sort key, but the generated rule never includes
+                # it.
+                #
+                egress_zone = ""
+                egress_interface = ""
+
+        last_sort_order = 0
+        if last:
+            if log_denied:
+                last_sort_order = 1
+            else:
+                last_sort_order = 2
+
+        # sort key explanation:
+        # 1. place holder for future zone priority support (ingress zone)
+        # 2. source dispatch occurs before interface dispatch (ingress zone)
+        # 3. zone name (ingress zone)
+        # 4. sources (ingress zone)
+        # 5. interfaces (ingress zone)
+        # 6. place holder for future zone priority support (egress zone)
+        # 7. source dispatch occurs before interface dispatch (egress zone)
+        # 8. zone name (egress zone)
+        # 9. sources (ingress zone)
+        # 10. interfaces (ingress zone)
+        # 11. forces rule to be last for (ingress source/interface, egress source/interface) pair
+        # 12. policy priority
+        #
+        return {"%%POLICY_SORT_KEY%%": (0, ingress_sort_order, ingress_zone, ingress_source, ingress_interface,
+                                        0, egress_sort_order,  egress_zone,  egress_source,  egress_interface,
+                                           last_sort_order,  priority)}
+
+    def build_policy_ingress_egress_pair_rules(self, enable, policy, table, chain, ingress_zone, egress_zone,
+                                               ingress_interface, ingress_source, egress_interface, egress_source,
+                                               last=False):
+        add_del = { True: "add", False: "delete" }[enable]
         p_obj = self._fw.policy.get_policy(policy)
-        chain_suffix = "pre" if p_obj.priority < 0 else "post"
+        _chain_suffixes = ["pre", "post"] if last else ["pre"] if p_obj.priority < 0 else ["post"]
         isSNAT = True if (table == "nat" and chain == "POSTROUTING") else False
         _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX, isSNAT)
+        prerouting = True if chain == "PREROUTING" else False
 
-        ingress_fragments = []
-        egress_fragments = []
-        ingress_interfaces_without_wildcards = []
-        egress_interfaces_without_wildcards = []
+        if ingress_interface and ingress_interface[len(ingress_interface)-1] == "+":
+            ingress_interface = ingress_interface[:len(ingress_interface)-1] + "*"
+        if egress_interface and egress_interface[len(egress_interface)-1] == "+":
+            egress_interface = egress_interface[:len(egress_interface)-1] + "*"
 
-        # wildcard interfaces must be handled individually because the nftables
-        # backend does not allow them inside of an anonymous set
-        for ingress_interface in ingress_interfaces:
-            if ingress_interface[len(ingress_interface)-1] == "+":
-                ingress_fragments.append({"match": {"left": {"meta": {"key": "iifname"}},
-                                                    "op": "==",
-                                                    "right": ingress_interface[:len(ingress_interface)-1] + "*"}})
-            else:
-                ingress_interfaces_without_wildcards.append(ingress_interface)
-
-        for egress_interface in egress_interfaces:
-            if egress_interface[len(egress_interface)-1] == "+":
-                egress_fragments.append({"match": {"left": {"meta": {"key": "oifname"}},
-                                                   "op": "==",
-                                                   "right": egress_interface[:len(egress_interface)-1] + "*"}})
-            else:
-                egress_interfaces_without_wildcards.append(egress_interface)
-
-        if ingress_interfaces_without_wildcards:
-            ingress_fragments.append({"match": {"left": {"meta": {"key": "iifname"}},
-                                                "op": "==",
-                                                "right": {"set": ingress_interfaces_without_wildcards}}})
-
-        if egress_interfaces_without_wildcards:
-            egress_fragments.append({"match": {"left": {"meta": {"key": "oifname"}},
-                                               "op": "==",
-                                               "right": {"set": egress_interfaces_without_wildcards}}})
-
-        if ingress_sources:
-            for src in ingress_sources:
-                ingress_fragments.append(self._rule_addr_fragment("saddr", src))
-        if egress_sources:
-            for dst in egress_sources:
-                egress_fragments.append(self._rule_addr_fragment("daddr", dst))
-
-        def _generate_policy_dispatch_rule(ingress_fragment, egress_fragment):
+        rules = []
+        for _chain_suffix in _chain_suffixes:
             expr_fragments = []
-            if ingress_fragment:
-                expr_fragments.append(ingress_fragment)
-            if egress_fragment:
-                expr_fragments.append(egress_fragment)
-            expr_fragments.append({"jump": {"target": "%s_%s" % (table, _policy)}})
+            if ingress_interface:
+                expr_fragments.append({"match": {"left": {"meta": {"key": "iifname"}},
+                                                 "op": "==",
+                                                 "right": ingress_interface}})
+            if egress_interface and not prerouting:
+                expr_fragments.append({"match": {"left": {"meta": {"key": "oifname"}},
+                                                 "op": "==",
+                                                 "right": egress_interface}})
+            if ingress_source:
+                expr_fragments.append(self._rule_addr_fragment("saddr", ingress_source))
+            if egress_source:
+                expr_fragments.append(self._rule_addr_fragment("daddr", egress_source))
+
+            if last:
+                expr_fragments.append({"return": None})
+            else:
+                expr_fragments.append({"jump": {"target": "%s_%s" % (table, _policy)}})
 
             rule = {"family": "inet",
                     "table": TABLE_NAME,
-                    "chain": "%s_%s_POLICIES_%s" % (table, chain, chain_suffix),
+                    "chain": "%s_%s_POLICIES_%s" % (table, chain, _chain_suffix),
                     "expr": expr_fragments}
-            rule.update(self._policy_priority_fragment(p_obj))
+            rule.update(self._policy_dispatch_sort_key(policy, ingress_zone, egress_zone,
+                                                       ingress_interface, ingress_source,
+                                                       egress_interface, egress_source,
+                                                       p_obj.priority,
+                                                       last=last,
+                                                       prerouting=prerouting))
 
-            if enable:
-                return {"add": {"rule": rule}}
-            else:
-                return {"delete": {"rule": rule}}
-
-        rules = []
-        if ingress_fragments: # zone --> [zone, ANY, HOST]
-            for ingress_fragment in ingress_fragments:
-                if egress_fragments:
-                    # zone --> zone
-                    for egress_fragment in egress_fragments:
-                        rules.append(_generate_policy_dispatch_rule(ingress_fragment, egress_fragment))
-                else:
-                    # zone --> [ANY, HOST]
-                    rules.append(_generate_policy_dispatch_rule(ingress_fragment, None))
-        else: # [ANY, HOST] --> [zone, ANY, HOST]
-            if egress_fragments:
-                # [ANY, HOST] --> zone
-                for egress_fragment in egress_fragments:
-                    rules.append(_generate_policy_dispatch_rule(None, egress_fragment))
-            else:
-                # [ANY, HOST] --> [ANY, HOST]
-                rules.append(_generate_policy_dispatch_rule(None, None))
+            rules.append({add_del: {"rule": rule}})
 
         return rules
 
@@ -1056,9 +1108,6 @@ class nftables(object):
             addr_split = address.split("/")
             address = normalizeIP6(addr_split[0]) + "/" + addr_split[1]
         return {"%%ZONE_SOURCE%%": {"zone": zone, "address": address}}
-
-    def _policy_priority_fragment(self, policy):
-        return {"%%POLICY_PRIORITY%%": policy.priority}
 
     def _rich_rule_priority_fragment(self, rich_rule):
         if not rich_rule or rich_rule.priority == 0:

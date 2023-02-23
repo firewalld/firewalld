@@ -19,8 +19,37 @@ FWD_CHECK([--zone internal --add-interface tun+], 0, [ignore])
 NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_FORWARD_POLICIES_pre {
-            iifname "tun*" oifname { "foobar2", "foobar3" } jump filter_FWD_policy_foobar
-            iifname { "foobar0", "foobar1" } oifname { "foobar2", "foobar3" } jump filter_FWD_policy_foobar
+            iifname "foobar0" oifname "foobar0" return
+            iifname "foobar0" oifname "foobar1" return
+            iifname "foobar0" oifname "tun*" return
+            iifname "foobar0" oifname "foobar2" jump filter_FWD_policy_foobar
+            iifname "foobar0" oifname "foobar2" return
+            iifname "foobar0" oifname "foobar3" jump filter_FWD_policy_foobar
+            iifname "foobar0" oifname "foobar3" return
+            iifname "foobar1" oifname "foobar0" return
+            iifname "foobar1" oifname "foobar1" return
+            iifname "foobar1" oifname "tun*" return
+            iifname "foobar1" oifname "foobar2" jump filter_FWD_policy_foobar
+            iifname "foobar1" oifname "foobar2" return
+            iifname "foobar1" oifname "foobar3" jump filter_FWD_policy_foobar
+            iifname "foobar1" oifname "foobar3" return
+            iifname "tun*" oifname "foobar0" return
+            iifname "tun*" oifname "foobar1" return
+            iifname "tun*" oifname "tun*" return
+            iifname "tun*" oifname "foobar2" jump filter_FWD_policy_foobar
+            iifname "tun*" oifname "foobar2" return
+            iifname "tun*" oifname "foobar3" jump filter_FWD_policy_foobar
+            iifname "tun*" oifname "foobar3" return
+            iifname "foobar2" oifname "foobar0" return
+            iifname "foobar2" oifname "foobar1" return
+            iifname "foobar2" oifname "tun*" return
+            iifname "foobar2" oifname "foobar2" return
+            iifname "foobar2" oifname "foobar3" return
+            iifname "foobar3" oifname "foobar0" return
+            iifname "foobar3" oifname "foobar1" return
+            iifname "foobar3" oifname "tun*" return
+            iifname "foobar3" oifname "foobar2" return
+            iifname "foobar3" oifname "foobar3" return
         }
     }
 ])
@@ -33,8 +62,37 @@ FWD_CHECK([--zone public --add-interface tun+], 0, [ignore])
 NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_FORWARD_POLICIES_pre {
-            iifname { "foobar0", "foobar1" } oifname "tun*" jump filter_FWD_policy_foobar
-            iifname { "foobar0", "foobar1" } oifname { "foobar2", "foobar3" } jump filter_FWD_policy_foobar
+            iifname "foobar0" oifname "foobar0" return
+            iifname "foobar0" oifname "foobar1" return
+            iifname "foobar0" oifname "foobar2" jump filter_FWD_policy_foobar
+            iifname "foobar0" oifname "foobar2" return
+            iifname "foobar0" oifname "foobar3" jump filter_FWD_policy_foobar
+            iifname "foobar0" oifname "foobar3" return
+            iifname "foobar0" oifname "tun*" jump filter_FWD_policy_foobar
+            iifname "foobar0" oifname "tun*" return
+            iifname "foobar1" oifname "foobar0" return
+            iifname "foobar1" oifname "foobar1" return
+            iifname "foobar1" oifname "foobar2" jump filter_FWD_policy_foobar
+            iifname "foobar1" oifname "foobar2" return
+            iifname "foobar1" oifname "foobar3" jump filter_FWD_policy_foobar
+            iifname "foobar1" oifname "foobar3" return
+            iifname "foobar1" oifname "tun*" jump filter_FWD_policy_foobar
+            iifname "foobar1" oifname "tun*" return
+            iifname "foobar2" oifname "foobar0" return
+            iifname "foobar2" oifname "foobar1" return
+            iifname "foobar2" oifname "foobar2" return
+            iifname "foobar2" oifname "foobar3" return
+            iifname "foobar2" oifname "tun*" return
+            iifname "foobar3" oifname "foobar0" return
+            iifname "foobar3" oifname "foobar1" return
+            iifname "foobar3" oifname "foobar2" return
+            iifname "foobar3" oifname "foobar3" return
+            iifname "foobar3" oifname "tun*" return
+            iifname "tun*" oifname "foobar0" return
+            iifname "tun*" oifname "foobar1" return
+            iifname "tun*" oifname "foobar2" return
+            iifname "tun*" oifname "foobar3" return
+            iifname "tun*" oifname "tun*" return
         }
     }
 ])
@@ -45,10 +103,51 @@ FWD_CHECK([--zone internal --add-interface net+], 0, [ignore])
 NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
     table inet firewalld {
         chain filter_FORWARD_POLICIES_pre {
+            iifname "foobar0" oifname "foobar0" return
+            iifname "foobar0" oifname "foobar1" return
+            iifname "foobar0" oifname "net*" return
+            iifname "foobar0" oifname "foobar2" jump filter_FWD_policy_foobar
+            iifname "foobar0" oifname "foobar2" return
+            iifname "foobar0" oifname "foobar3" jump filter_FWD_policy_foobar
+            iifname "foobar0" oifname "foobar3" return
+            iifname "foobar0" oifname "tun*" jump filter_FWD_policy_foobar
+            iifname "foobar0" oifname "tun*" return
+            iifname "foobar1" oifname "foobar0" return
+            iifname "foobar1" oifname "foobar1" return
+            iifname "foobar1" oifname "net*" return
+            iifname "foobar1" oifname "foobar2" jump filter_FWD_policy_foobar
+            iifname "foobar1" oifname "foobar2" return
+            iifname "foobar1" oifname "foobar3" jump filter_FWD_policy_foobar
+            iifname "foobar1" oifname "foobar3" return
+            iifname "foobar1" oifname "tun*" jump filter_FWD_policy_foobar
+            iifname "foobar1" oifname "tun*" return
+            iifname "net*" oifname "foobar0" return
+            iifname "net*" oifname "foobar1" return
+            iifname "net*" oifname "net*" return
+            iifname "net*" oifname "foobar2" jump filter_FWD_policy_foobar
+            iifname "net*" oifname "foobar2" return
+            iifname "net*" oifname "foobar3" jump filter_FWD_policy_foobar
+            iifname "net*" oifname "foobar3" return
             iifname "net*" oifname "tun*" jump filter_FWD_policy_foobar
-            iifname "net*" oifname { "foobar2", "foobar3" } jump filter_FWD_policy_foobar
-            iifname { "foobar0", "foobar1" } oifname "tun*" jump filter_FWD_policy_foobar
-            iifname { "foobar0", "foobar1" } oifname { "foobar2", "foobar3" } jump filter_FWD_policy_foobar
+            iifname "net*" oifname "tun*" return
+            iifname "foobar2" oifname "foobar0" return
+            iifname "foobar2" oifname "foobar1" return
+            iifname "foobar2" oifname "net*" return
+            iifname "foobar2" oifname "foobar2" return
+            iifname "foobar2" oifname "foobar3" return
+            iifname "foobar2" oifname "tun*" return
+            iifname "foobar3" oifname "foobar0" return
+            iifname "foobar3" oifname "foobar1" return
+            iifname "foobar3" oifname "net*" return
+            iifname "foobar3" oifname "foobar2" return
+            iifname "foobar3" oifname "foobar3" return
+            iifname "foobar3" oifname "tun*" return
+            iifname "tun*" oifname "foobar0" return
+            iifname "tun*" oifname "foobar1" return
+            iifname "tun*" oifname "net*" return
+            iifname "tun*" oifname "foobar2" return
+            iifname "tun*" oifname "foobar3" return
+            iifname "tun*" oifname "tun*" return
         }
     }
 ])
