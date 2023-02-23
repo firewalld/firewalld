@@ -4,10 +4,12 @@ AT_KEYWORDS(policy gh940)
 AT_CHECK([sed -i 's/^IndividualCalls.*/IndividualCalls=yes/' ./firewalld.conf])
 AT_CHECK([sed -i 's/^LogDenied.*/LogDenied=all/' ./firewalld.conf])
 
+FWD_CHECK([--permanent --zone public --add-interface foobar0], 0, [ignore])
+
 AT_CHECK([mkdir -p ./policies])
 AT_DATA([./policies/log-denied.xml], [dnl
 <?xml version="1.0" encoding="utf-8"?>
-<policy target="DROP" priority="0">
+<policy target="DROP" priority="1">
 <short>log-denied</short>
 <description>log denied policy</description>
 <ingress-zone name="ANY" />
@@ -34,6 +36,22 @@ NFT_LIST_RULES([inet], [filter_IN_policy_log-denied], 0, [dnl
             jump filter_IN_policy_log-denied_post
             log prefix "filter_IN_policy_log-denied_DROP: "
             drop
+        }
+    }
+])
+NFT_LIST_RULES([inet], [filter_INPUT_POLICIES], 0, [dnl
+    table inet firewalld {
+        chain filter_INPUT_POLICIES {
+            iifname "foobar0" jump filter_IN_policy_allow-host-ipv6
+            iifname "foobar0" jump filter_IN_public
+            iifname "foobar0" jump filter_IN_policy_log-denied
+            iifname "foobar0" log prefix "filter_IN_public_REJECT: "
+            iifname "foobar0" reject with icmpx admin-prohibited
+            jump filter_IN_policy_allow-host-ipv6
+            jump filter_IN_public
+            jump filter_IN_policy_log-denied
+            log prefix "filter_IN_public_REJECT: "
+            reject with icmpx admin-prohibited
         }
     }
 ])

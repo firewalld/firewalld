@@ -140,36 +140,26 @@ FWD_START_TEST([zone interfaces])
     FWD_CHECK([--permanent --zone=trusted --remove-interface=perm_dummy2], 0, ignore)
     FWD_RELOAD
 
-    FWD_CHECK([--add-interface=foo], 0, ignore)
-    FWD_CHECK([--add-interface=bar --zone=public], 0, ignore)
-    FWD_CHECK([--set-default-zone=trusted], 0, ignore)
-    FWD_CHECK([--get-default-zone], 0, [trusted
-])
-    dnl check that changing default zone moves interfaces in that zone
-    FWD_CHECK([--query-interface foo --zone=trusted], 0, ignore)
-    dnl check that *only* iface1 was moved to new default zone
-    FWD_CHECK([--query-interface bar --zone=public], 0, ignore)
-    FWD_CHECK([--set-default-zone=public], 0, ignore)
-    FWD_CHECK([--remove-interface=foo], 0, ignore)
-    FWD_CHECK([--remove-interface=bar], 0, ignore)
-
     dnl exercise wildcards, rhbz 1644025
     dnl Note: This feature is undocumented, because it's a possible security
     dnl risk.
-    FWD_CHECK([--zone=trusted --add-interface=+], 0, ignore)
     FWD_CHECK([--add-interface=foobar+++], 0, ignore)
     FWD_CHECK([--add-interface=foobar+], 0, ignore)
-    NFT_LIST_RULES([inet], [filter_INPUT_ZONES], 0, [dnl
+    NFT_LIST_RULES([inet], [filter_INPUT_POLICIES], 0, [dnl
         table inet firewalld {
-            chain filter_INPUT_ZONES {
-                iifname "foobar*" goto filter_IN_public
-                iifname "foobar++*" goto filter_IN_public
-                goto filter_IN_trusted
-                goto filter_IN_public
+            chain filter_INPUT_POLICIES {
+                iifname "foobar*" jump filter_IN_policy_allow-host-ipv6
+                iifname "foobar*" jump filter_IN_public
+                iifname "foobar*" reject with icmpx admin-prohibited
+                iifname "foobar++*" jump filter_IN_policy_allow-host-ipv6
+                iifname "foobar++*" jump filter_IN_public
+                iifname "foobar++*" reject with icmpx admin-prohibited
+                jump filter_IN_policy_allow-host-ipv6
+                jump filter_IN_public
+                reject with icmpx admin-prohibited
             }
         }
     ])
-    FWD_CHECK([--zone=trusted --remove-interface=+], 0, ignore)
     FWD_CHECK([--remove-interface=foobar+++], 0, ignore)
     FWD_CHECK([--remove-interface=foobar+], 0, ignore)
     FWD_CHECK([--permanent --add-interface=foobar+], 0, ignore)
@@ -925,11 +915,15 @@ FWD_START_TEST([ipset])
             }
         }
     ])
-    NFT_LIST_RULES([inet], [filter_INPUT_ZONES], 0, [dnl
+    NFT_LIST_RULES([inet], [filter_INPUT_POLICIES], 0, [dnl
         table inet firewalld {
-            chain filter_INPUT_ZONES {
-                ip saddr . meta l4proto . th sport @foobar goto filter_IN_internal
-                goto filter_IN_public
+            chain filter_INPUT_POLICIES {
+                ip saddr . meta l4proto . th sport @foobar jump filter_IN_policy_allow-host-ipv6
+                ip saddr . meta l4proto . th sport @foobar jump filter_IN_internal
+                ip saddr . meta l4proto . th sport @foobar reject with icmpx admin-prohibited
+                jump filter_IN_policy_allow-host-ipv6
+                jump filter_IN_public
+                reject with icmpx admin-prohibited
             }
         }
     ])
@@ -963,11 +957,15 @@ FWD_START_TEST([ipset])
             }
         }
     ])
-    NFT_LIST_RULES([inet], [filter_INPUT_ZONES], 0, [dnl
+    NFT_LIST_RULES([inet], [filter_INPUT_POLICIES], 0, [dnl
         table inet firewalld {
-            chain filter_INPUT_ZONES {
-                ip saddr . mark @foobar goto filter_IN_internal
-                goto filter_IN_public
+            chain filter_INPUT_POLICIES {
+                ip saddr . mark @foobar jump filter_IN_policy_allow-host-ipv6
+                ip saddr . mark @foobar jump filter_IN_internal
+                ip saddr . mark @foobar reject with icmpx admin-prohibited
+                jump filter_IN_policy_allow-host-ipv6
+                jump filter_IN_public
+                reject with icmpx admin-prohibited
             }
         }
     ])
@@ -1030,11 +1028,15 @@ FWD_START_TEST([ipset])
             }
         }
     ])
-    NFT_LIST_RULES([inet], [filter_INPUT_ZONES], 0, [dnl
+    NFT_LIST_RULES([inet], [filter_INPUT_POLICIES], 0, [dnl
         table inet firewalld {
-            chain filter_INPUT_ZONES {
-                ip saddr . oifname @foobar goto filter_IN_internal
-                goto filter_IN_public
+            chain filter_INPUT_POLICIES {
+                ip saddr . oifname @foobar jump filter_IN_policy_allow-host-ipv6
+                ip saddr . oifname @foobar jump filter_IN_internal
+                ip saddr . oifname @foobar reject with icmpx admin-prohibited
+                jump filter_IN_policy_allow-host-ipv6
+                jump filter_IN_public
+                reject with icmpx admin-prohibited
             }
         }
     ])
@@ -1387,73 +1389,55 @@ FWD_START_TEST([rich rules priority])
     NFT_LIST_RULES([inet], [filter_IN_public], 0, [dnl
         table inet firewalld {
         chain filter_IN_public {
-        jump filter_INPUT_POLICIES_pre
         jump filter_IN_public_pre
         jump filter_IN_public_log
         jump filter_IN_public_deny
         jump filter_IN_public_allow
         jump filter_IN_public_post
-        jump filter_INPUT_POLICIES_post
         meta l4proto { icmp, ipv6-icmp } accept
-        reject with icmpx admin-prohibited
         }
         }
     ])
     NFT_LIST_RULES([inet], [filter_FWD_public], 0, [dnl
         table inet firewalld {
         chain filter_FWD_public {
-        jump filter_FORWARD_POLICIES_pre
         jump filter_FWD_public_pre
         jump filter_FWD_public_log
         jump filter_FWD_public_deny
         jump filter_FWD_public_allow
         jump filter_FWD_public_post
-        jump filter_FORWARD_POLICIES_post
-        reject with icmpx admin-prohibited
         }
         }
     ])
     IPTABLES_LIST_RULES([filter], [IN_public], 0, [dnl
-        INPUT_POLICIES_pre all -- 0.0.0.0/0 0.0.0.0/0
         IN_public_pre all -- 0.0.0.0/0 0.0.0.0/0
         IN_public_log all -- 0.0.0.0/0 0.0.0.0/0
         IN_public_deny all -- 0.0.0.0/0 0.0.0.0/0
         IN_public_allow all -- 0.0.0.0/0 0.0.0.0/0
         IN_public_post all -- 0.0.0.0/0 0.0.0.0/0
-        INPUT_POLICIES_post all -- 0.0.0.0/0 0.0.0.0/0
         ACCEPT icmp -- 0.0.0.0/0 0.0.0.0/0
-        REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
     ])
     IPTABLES_LIST_RULES([filter], [FWD_public], 0, [dnl
-        FORWARD_POLICIES_pre all -- 0.0.0.0/0 0.0.0.0/0
         FWD_public_pre all -- 0.0.0.0/0 0.0.0.0/0
         FWD_public_log all -- 0.0.0.0/0 0.0.0.0/0
         FWD_public_deny all -- 0.0.0.0/0 0.0.0.0/0
         FWD_public_allow all -- 0.0.0.0/0 0.0.0.0/0
         FWD_public_post all -- 0.0.0.0/0 0.0.0.0/0
-        FORWARD_POLICIES_post all -- 0.0.0.0/0 0.0.0.0/0
-        REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
     ])
     IP6TABLES_LIST_RULES([filter], [IN_public], 0, [dnl
-        INPUT_POLICIES_pre all ::/0 ::/0
         IN_public_pre all ::/0 ::/0
         IN_public_log all ::/0 ::/0
         IN_public_deny all ::/0 ::/0
         IN_public_allow all ::/0 ::/0
         IN_public_post all ::/0 ::/0
-        INPUT_POLICIES_post all ::/0 ::/0
         ACCEPT icmpv6 ::/0 ::/0
-        REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
     ])
     IP6TABLES_LIST_RULES([filter], [FWD_public], 0, [dnl
-        FORWARD_POLICIES_pre all ::/0 ::/0
         FWD_public_pre all ::/0 ::/0
         FWD_public_log all ::/0 ::/0
         FWD_public_deny all ::/0 ::/0
         FWD_public_allow all ::/0 ::/0
         FWD_public_post all ::/0 ::/0
-        FORWARD_POLICIES_post all ::/0 ::/0
-        REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
     ])
 
     dnl priority 0 (or not specified) is special:
@@ -1579,7 +1563,7 @@ FWD_START_TEST([rich rules priority])
         ct status dnat accept
         iifname "lo" accept
         ct state invalid drop
-        jump filter_INPUT_ZONES
+        jump filter_INPUT_POLICIES
         reject with icmpx admin-prohibited
         }
         }

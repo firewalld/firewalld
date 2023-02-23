@@ -52,27 +52,6 @@ class TestFirewallD(unittest.TestCase):
         self.config_properties.Set(DBUS_INTERFACE_CONFIG, "FlushAllOnReload", "no")
         self.fw.reload()
 
-    def test_get_setDefaultZone(self):
-        old_zone = dbus_to_python(self.fw.getDefaultZone())
-        print ("\nCurrent default zone is '%s'" % old_zone)
-
-        self.fw_zone.addInterface("", "foo")
-        self.fw_zone.addInterface(old_zone, "bar")
-
-        print ("Setting default zone to 'external'")
-        self.fw.setDefaultZone("external")
-
-        # make sure the default zone was properly set
-        self.assertEqual(self.fw.getDefaultZone(), "external")
-        # check that *only* foo interface was moved to new default zone
-        self.assertTrue(self.fw_zone.queryInterface("external", "foo"))
-        self.assertTrue(self.fw_zone.queryInterface(old_zone, "bar"))
-
-        print ("Re-setting default zone back to '%s'" % old_zone)
-        self.fw.setDefaultZone(old_zone)
-        self.fw_zone.removeInterface("", "foo")
-        self.fw_zone.removeInterface("", "bar")
-
     def test_zone_getActiveZones(self):
         interface = "baz"
         zone = "home"

@@ -68,122 +68,810 @@ FWD_CHECK([-q --zone=foobar_012 --add-source ipset:ipsetv6])
 ])
 FWD_CHECK([-q --zone=foobar_010 --add-interface=foobar2])
 
-NFT_LIST_RULES([inet], [filter_INPUT_ZONES], 0, [dnl
+NFT_LIST_RULES([inet], [filter_INPUT_POLICIES], 0, [dnl
     table inet firewalld {
-        chain filter_INPUT_ZONES {
-            ip saddr 10.1.1.1 goto filter_IN_foobar_00
-            ip6 saddr 1234:5678::1:1:1 goto filter_IN_foobar_00
-            ip saddr 10.1.1.0/24 goto filter_IN_foobar_01
-            ip6 saddr 1234:5678::1:1:0/112 goto filter_IN_foobar_01
-            ip saddr 10.10.10.10 goto filter_IN_foobar_010
-            ip6 saddr 1234:5678::10:10:10 goto filter_IN_foobar_010
-            ip saddr @ipsetv4 goto filter_IN_foobar_011
-            ip6 saddr @ipsetv6 goto filter_IN_foobar_012
-            ip saddr 10.1.0.0/16 goto filter_IN_foobar_02
-            ip6 saddr 1234:5678::1:0:0/96 goto filter_IN_foobar_02
-            ip saddr 10.2.2.0/24 goto filter_IN_foobar_03
-            ip6 saddr 1234:5678::2:2:0/112 goto filter_IN_foobar_03
-            ip saddr 10.2.0.0/16 goto filter_IN_foobar_04
-            ip6 saddr 1234:5678::2:0:0/96 goto filter_IN_foobar_04
-            ip saddr 10.0.0.0/8 goto filter_IN_foobar_05
-            ip6 saddr 1234:5678::/80 goto filter_IN_foobar_05
-            ip saddr 20.20.20.20 goto filter_IN_public
-            ip6 saddr 1234:5678::20:20:20 goto filter_IN_public
-            iifname "foobar2" goto filter_IN_foobar_010
-            iifname "foobar1" goto filter_IN_trusted
-            iifname "foobar0" goto filter_IN_internal
-            goto filter_IN_public
+        chain filter_INPUT_POLICIES {
+            ip saddr 10.1.1.1 jump filter_IN_policy_allow-host-ipv6
+            ip saddr 10.1.1.1 jump filter_IN_foobar_00
+            ip saddr 10.1.1.1 reject with icmpx admin-prohibited
+            ip6 saddr 1234:5678::1:1:1 jump filter_IN_policy_allow-host-ipv6
+            ip6 saddr 1234:5678::1:1:1 jump filter_IN_foobar_00
+            ip6 saddr 1234:5678::1:1:1 reject with icmpx admin-prohibited
+            ip saddr 10.1.1.0/24 jump filter_IN_policy_allow-host-ipv6
+            ip saddr 10.1.1.0/24 jump filter_IN_foobar_01
+            ip saddr 10.1.1.0/24 reject with icmpx admin-prohibited
+            ip6 saddr 1234:5678::1:1:0/112 jump filter_IN_policy_allow-host-ipv6
+            ip6 saddr 1234:5678::1:1:0/112 jump filter_IN_foobar_01
+            ip6 saddr 1234:5678::1:1:0/112 reject with icmpx admin-prohibited
+            ip saddr 10.10.10.10 jump filter_IN_policy_allow-host-ipv6
+            ip saddr 10.10.10.10 jump filter_IN_foobar_010
+            ip saddr 10.10.10.10 reject with icmpx admin-prohibited
+            ip6 saddr 1234:5678::10:10:10 jump filter_IN_policy_allow-host-ipv6
+            ip6 saddr 1234:5678::10:10:10 jump filter_IN_foobar_010
+            ip6 saddr 1234:5678::10:10:10 reject with icmpx admin-prohibited
+            ip saddr @ipsetv4 jump filter_IN_policy_allow-host-ipv6
+            ip saddr @ipsetv4 jump filter_IN_foobar_011
+            ip saddr @ipsetv4 reject with icmpx admin-prohibited
+            ip6 saddr @ipsetv6 jump filter_IN_policy_allow-host-ipv6
+            ip6 saddr @ipsetv6 jump filter_IN_foobar_012
+            ip6 saddr @ipsetv6 reject with icmpx admin-prohibited
+            ip saddr 10.1.0.0/16 jump filter_IN_policy_allow-host-ipv6
+            ip saddr 10.1.0.0/16 jump filter_IN_foobar_02
+            ip saddr 10.1.0.0/16 reject with icmpx admin-prohibited
+            ip6 saddr 1234:5678::1:0:0/96 jump filter_IN_policy_allow-host-ipv6
+            ip6 saddr 1234:5678::1:0:0/96 jump filter_IN_foobar_02
+            ip6 saddr 1234:5678::1:0:0/96 reject with icmpx admin-prohibited
+            ip saddr 10.2.2.0/24 jump filter_IN_policy_allow-host-ipv6
+            ip saddr 10.2.2.0/24 jump filter_IN_foobar_03
+            ip saddr 10.2.2.0/24 reject with icmpx admin-prohibited
+            ip6 saddr 1234:5678::2:2:0/112 jump filter_IN_policy_allow-host-ipv6
+            ip6 saddr 1234:5678::2:2:0/112 jump filter_IN_foobar_03
+            ip6 saddr 1234:5678::2:2:0/112 reject with icmpx admin-prohibited
+            ip saddr 10.2.0.0/16 jump filter_IN_policy_allow-host-ipv6
+            ip saddr 10.2.0.0/16 jump filter_IN_foobar_04
+            ip saddr 10.2.0.0/16 reject with icmpx admin-prohibited
+            ip6 saddr 1234:5678::2:0:0/96 jump filter_IN_policy_allow-host-ipv6
+            ip6 saddr 1234:5678::2:0:0/96 jump filter_IN_foobar_04
+            ip6 saddr 1234:5678::2:0:0/96 reject with icmpx admin-prohibited
+            ip saddr 10.0.0.0/8 jump filter_IN_policy_allow-host-ipv6
+            ip saddr 10.0.0.0/8 jump filter_IN_foobar_05
+            ip saddr 10.0.0.0/8 reject with icmpx admin-prohibited
+            ip6 saddr 1234:5678::/80 jump filter_IN_policy_allow-host-ipv6
+            ip6 saddr 1234:5678::/80 jump filter_IN_foobar_05
+            ip6 saddr 1234:5678::/80 reject with icmpx admin-prohibited
+            ip6 saddr 1234:5678::20:20:20 jump filter_IN_policy_allow-host-ipv6
+            ip6 saddr 1234:5678::20:20:20 jump filter_IN_public
+            ip6 saddr 1234:5678::20:20:20 reject with icmpx admin-prohibited
+            ip saddr 20.20.20.20 jump filter_IN_policy_allow-host-ipv6
+            ip saddr 20.20.20.20 jump filter_IN_public
+            ip saddr 20.20.20.20 reject with icmpx admin-prohibited
+            iifname "foobar2" jump filter_IN_policy_allow-host-ipv6
+            iifname "foobar2" jump filter_IN_foobar_010
+            iifname "foobar2" reject with icmpx admin-prohibited
+            iifname "foobar0" jump filter_IN_policy_allow-host-ipv6
+            iifname "foobar0" jump filter_IN_internal
+            iifname "foobar0" reject with icmpx admin-prohibited
+            iifname "foobar1" jump filter_IN_policy_allow-host-ipv6
+            iifname "foobar1" jump filter_IN_trusted
+            iifname "foobar1" accept
+            jump filter_IN_policy_allow-host-ipv6
+            jump filter_IN_public
+            reject with icmpx admin-prohibited
         }
     }
 ])
-NFT_LIST_RULES([inet], [nat_POSTROUTING_ZONES], 0, [dnl
+NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES], 0, [dnl
     table inet firewalld {
-        chain nat_POSTROUTING_ZONES {
-            ip daddr 10.1.1.1 goto nat_POST_foobar_00
-            ip6 daddr 1234:5678::1:1:1 goto nat_POST_foobar_00
-            ip daddr 10.1.1.0/24 goto nat_POST_foobar_01
-            ip6 daddr 1234:5678::1:1:0/112 goto nat_POST_foobar_01
-            ip daddr 10.10.10.10 goto nat_POST_foobar_010
-            ip6 daddr 1234:5678::10:10:10 goto nat_POST_foobar_010
-            ip daddr @ipsetv4 goto nat_POST_foobar_011
-            ip6 daddr @ipsetv6 goto nat_POST_foobar_012
-            ip daddr 10.1.0.0/16 goto nat_POST_foobar_02
-            ip6 daddr 1234:5678::1:0:0/96 goto nat_POST_foobar_02
-            ip daddr 10.2.2.0/24 goto nat_POST_foobar_03
-            ip6 daddr 1234:5678::2:2:0/112 goto nat_POST_foobar_03
-            ip daddr 10.2.0.0/16 goto nat_POST_foobar_04
-            ip6 daddr 1234:5678::2:0:0/96 goto nat_POST_foobar_04
-            ip daddr 10.0.0.0/8 goto nat_POST_foobar_05
-            ip6 daddr 1234:5678::/80 goto nat_POST_foobar_05
-            ip daddr 20.20.20.20 goto nat_POST_public
-            ip6 daddr 1234:5678::20:20:20 goto nat_POST_public
-            oifname "foobar2" goto nat_POST_foobar_010
-            oifname "foobar1" goto nat_POST_trusted
-            oifname "foobar0" goto nat_POST_internal
-            goto nat_POST_public
+        chain nat_POSTROUTING_POLICIES {
+            ip saddr 10.1.1.1 ip daddr 10.1.1.1 jump nat_POST_foobar_00
+            ip saddr 10.1.1.1 ip daddr 10.1.1.1 return
+            ip saddr 10.1.1.0/24 ip daddr 10.1.1.1 jump nat_POST_foobar_00
+            ip saddr 10.1.1.0/24 ip daddr 10.1.1.1 return
+            ip saddr 10.10.10.10 ip daddr 10.1.1.1 jump nat_POST_foobar_00
+            ip saddr 10.10.10.10 ip daddr 10.1.1.1 return
+            ip saddr @ipsetv4 ip daddr 10.1.1.1 jump nat_POST_foobar_00
+            ip saddr @ipsetv4 ip daddr 10.1.1.1 return
+            ip saddr 10.1.0.0/16 ip daddr 10.1.1.1 jump nat_POST_foobar_00
+            ip saddr 10.1.0.0/16 ip daddr 10.1.1.1 return
+            ip saddr 10.2.2.0/24 ip daddr 10.1.1.1 jump nat_POST_foobar_00
+            ip saddr 10.2.2.0/24 ip daddr 10.1.1.1 return
+            ip saddr 10.2.0.0/16 ip daddr 10.1.1.1 jump nat_POST_foobar_00
+            ip saddr 10.2.0.0/16 ip daddr 10.1.1.1 return
+            ip saddr 10.0.0.0/8 ip daddr 10.1.1.1 jump nat_POST_foobar_00
+            ip saddr 10.0.0.0/8 ip daddr 10.1.1.1 return
+            ip saddr 20.20.20.20 ip daddr 10.1.1.1 jump nat_POST_foobar_00
+            ip saddr 20.20.20.20 ip daddr 10.1.1.1 return
+            iifname "foobar2" ip daddr 10.1.1.1 jump nat_POST_foobar_00
+            iifname "foobar2" ip daddr 10.1.1.1 return
+            iifname "foobar0" ip daddr 10.1.1.1 jump nat_POST_foobar_00
+            iifname "foobar0" ip daddr 10.1.1.1 return
+            iifname "foobar1" ip daddr 10.1.1.1 jump nat_POST_foobar_00
+            iifname "foobar1" ip daddr 10.1.1.1 return
+            ip daddr 10.1.1.1 jump nat_POST_foobar_00
+            ip daddr 10.1.1.1 return
+            ip6 saddr 1234:5678::1:1:1 ip6 daddr 1234:5678::1:1:1 jump nat_POST_foobar_00
+            ip6 saddr 1234:5678::1:1:1 ip6 daddr 1234:5678::1:1:1 return
+            ip6 saddr 1234:5678::1:1:0/112 ip6 daddr 1234:5678::1:1:1 jump nat_POST_foobar_00
+            ip6 saddr 1234:5678::1:1:0/112 ip6 daddr 1234:5678::1:1:1 return
+            ip6 saddr 1234:5678::10:10:10 ip6 daddr 1234:5678::1:1:1 jump nat_POST_foobar_00
+            ip6 saddr 1234:5678::10:10:10 ip6 daddr 1234:5678::1:1:1 return
+            ip6 saddr @ipsetv6 ip6 daddr 1234:5678::1:1:1 jump nat_POST_foobar_00
+            ip6 saddr @ipsetv6 ip6 daddr 1234:5678::1:1:1 return
+            ip6 saddr 1234:5678::1:0:0/96 ip6 daddr 1234:5678::1:1:1 jump nat_POST_foobar_00
+            ip6 saddr 1234:5678::1:0:0/96 ip6 daddr 1234:5678::1:1:1 return
+            ip6 saddr 1234:5678::2:2:0/112 ip6 daddr 1234:5678::1:1:1 jump nat_POST_foobar_00
+            ip6 saddr 1234:5678::2:2:0/112 ip6 daddr 1234:5678::1:1:1 return
+            ip6 saddr 1234:5678::2:0:0/96 ip6 daddr 1234:5678::1:1:1 jump nat_POST_foobar_00
+            ip6 saddr 1234:5678::2:0:0/96 ip6 daddr 1234:5678::1:1:1 return
+            ip6 saddr 1234:5678::/80 ip6 daddr 1234:5678::1:1:1 jump nat_POST_foobar_00
+            ip6 saddr 1234:5678::/80 ip6 daddr 1234:5678::1:1:1 return
+            ip6 saddr 1234:5678::20:20:20 ip6 daddr 1234:5678::1:1:1 jump nat_POST_foobar_00
+            ip6 saddr 1234:5678::20:20:20 ip6 daddr 1234:5678::1:1:1 return
+            iifname "foobar2" ip6 daddr 1234:5678::1:1:1 jump nat_POST_foobar_00
+            iifname "foobar2" ip6 daddr 1234:5678::1:1:1 return
+            iifname "foobar0" ip6 daddr 1234:5678::1:1:1 jump nat_POST_foobar_00
+            iifname "foobar0" ip6 daddr 1234:5678::1:1:1 return
+            iifname "foobar1" ip6 daddr 1234:5678::1:1:1 jump nat_POST_foobar_00
+            iifname "foobar1" ip6 daddr 1234:5678::1:1:1 return
+            ip6 daddr 1234:5678::1:1:1 jump nat_POST_foobar_00
+            ip6 daddr 1234:5678::1:1:1 return
+            ip saddr 10.1.1.1 ip daddr 10.1.1.0/24 jump nat_POST_foobar_01
+            ip saddr 10.1.1.1 ip daddr 10.1.1.0/24 return
+            ip saddr 10.1.1.0/24 ip daddr 10.1.1.0/24 jump nat_POST_foobar_01
+            ip saddr 10.1.1.0/24 ip daddr 10.1.1.0/24 return
+            ip saddr 10.10.10.10 ip daddr 10.1.1.0/24 jump nat_POST_foobar_01
+            ip saddr 10.10.10.10 ip daddr 10.1.1.0/24 return
+            ip saddr @ipsetv4 ip daddr 10.1.1.0/24 jump nat_POST_foobar_01
+            ip saddr @ipsetv4 ip daddr 10.1.1.0/24 return
+            ip saddr 10.1.0.0/16 ip daddr 10.1.1.0/24 jump nat_POST_foobar_01
+            ip saddr 10.1.0.0/16 ip daddr 10.1.1.0/24 return
+            ip saddr 10.2.2.0/24 ip daddr 10.1.1.0/24 jump nat_POST_foobar_01
+            ip saddr 10.2.2.0/24 ip daddr 10.1.1.0/24 return
+            ip saddr 10.2.0.0/16 ip daddr 10.1.1.0/24 jump nat_POST_foobar_01
+            ip saddr 10.2.0.0/16 ip daddr 10.1.1.0/24 return
+            ip saddr 10.0.0.0/8 ip daddr 10.1.1.0/24 jump nat_POST_foobar_01
+            ip saddr 10.0.0.0/8 ip daddr 10.1.1.0/24 return
+            ip saddr 20.20.20.20 ip daddr 10.1.1.0/24 jump nat_POST_foobar_01
+            ip saddr 20.20.20.20 ip daddr 10.1.1.0/24 return
+            iifname "foobar2" ip daddr 10.1.1.0/24 jump nat_POST_foobar_01
+            iifname "foobar2" ip daddr 10.1.1.0/24 return
+            iifname "foobar0" ip daddr 10.1.1.0/24 jump nat_POST_foobar_01
+            iifname "foobar0" ip daddr 10.1.1.0/24 return
+            iifname "foobar1" ip daddr 10.1.1.0/24 jump nat_POST_foobar_01
+            iifname "foobar1" ip daddr 10.1.1.0/24 return
+            ip daddr 10.1.1.0/24 jump nat_POST_foobar_01
+            ip daddr 10.1.1.0/24 return
+            ip6 saddr 1234:5678::1:1:1 ip6 daddr 1234:5678::1:1:0/112 jump nat_POST_foobar_01
+            ip6 saddr 1234:5678::1:1:1 ip6 daddr 1234:5678::1:1:0/112 return
+            ip6 saddr 1234:5678::1:1:0/112 ip6 daddr 1234:5678::1:1:0/112 jump nat_POST_foobar_01
+            ip6 saddr 1234:5678::1:1:0/112 ip6 daddr 1234:5678::1:1:0/112 return
+            ip6 saddr 1234:5678::10:10:10 ip6 daddr 1234:5678::1:1:0/112 jump nat_POST_foobar_01
+            ip6 saddr 1234:5678::10:10:10 ip6 daddr 1234:5678::1:1:0/112 return
+            ip6 saddr @ipsetv6 ip6 daddr 1234:5678::1:1:0/112 jump nat_POST_foobar_01
+            ip6 saddr @ipsetv6 ip6 daddr 1234:5678::1:1:0/112 return
+            ip6 saddr 1234:5678::1:0:0/96 ip6 daddr 1234:5678::1:1:0/112 jump nat_POST_foobar_01
+            ip6 saddr 1234:5678::1:0:0/96 ip6 daddr 1234:5678::1:1:0/112 return
+            ip6 saddr 1234:5678::2:2:0/112 ip6 daddr 1234:5678::1:1:0/112 jump nat_POST_foobar_01
+            ip6 saddr 1234:5678::2:2:0/112 ip6 daddr 1234:5678::1:1:0/112 return
+            ip6 saddr 1234:5678::2:0:0/96 ip6 daddr 1234:5678::1:1:0/112 jump nat_POST_foobar_01
+            ip6 saddr 1234:5678::2:0:0/96 ip6 daddr 1234:5678::1:1:0/112 return
+            ip6 saddr 1234:5678::/80 ip6 daddr 1234:5678::1:1:0/112 jump nat_POST_foobar_01
+            ip6 saddr 1234:5678::/80 ip6 daddr 1234:5678::1:1:0/112 return
+            ip6 saddr 1234:5678::20:20:20 ip6 daddr 1234:5678::1:1:0/112 jump nat_POST_foobar_01
+            ip6 saddr 1234:5678::20:20:20 ip6 daddr 1234:5678::1:1:0/112 return
+            iifname "foobar2" ip6 daddr 1234:5678::1:1:0/112 jump nat_POST_foobar_01
+            iifname "foobar2" ip6 daddr 1234:5678::1:1:0/112 return
+            iifname "foobar0" ip6 daddr 1234:5678::1:1:0/112 jump nat_POST_foobar_01
+            iifname "foobar0" ip6 daddr 1234:5678::1:1:0/112 return
+            iifname "foobar1" ip6 daddr 1234:5678::1:1:0/112 jump nat_POST_foobar_01
+            iifname "foobar1" ip6 daddr 1234:5678::1:1:0/112 return
+            ip6 daddr 1234:5678::1:1:0/112 jump nat_POST_foobar_01
+            ip6 daddr 1234:5678::1:1:0/112 return
+            ip saddr 10.1.1.1 ip daddr 10.10.10.10 jump nat_POST_foobar_010
+            ip saddr 10.1.1.1 ip daddr 10.10.10.10 return
+            ip saddr 10.1.1.0/24 ip daddr 10.10.10.10 jump nat_POST_foobar_010
+            ip saddr 10.1.1.0/24 ip daddr 10.10.10.10 return
+            ip saddr 10.10.10.10 ip daddr 10.10.10.10 jump nat_POST_foobar_010
+            ip saddr 10.10.10.10 ip daddr 10.10.10.10 return
+            ip saddr @ipsetv4 ip daddr 10.10.10.10 jump nat_POST_foobar_010
+            ip saddr @ipsetv4 ip daddr 10.10.10.10 return
+            ip saddr 10.1.0.0/16 ip daddr 10.10.10.10 jump nat_POST_foobar_010
+            ip saddr 10.1.0.0/16 ip daddr 10.10.10.10 return
+            ip saddr 10.2.2.0/24 ip daddr 10.10.10.10 jump nat_POST_foobar_010
+            ip saddr 10.2.2.0/24 ip daddr 10.10.10.10 return
+            ip saddr 10.2.0.0/16 ip daddr 10.10.10.10 jump nat_POST_foobar_010
+            ip saddr 10.2.0.0/16 ip daddr 10.10.10.10 return
+            ip saddr 10.0.0.0/8 ip daddr 10.10.10.10 jump nat_POST_foobar_010
+            ip saddr 10.0.0.0/8 ip daddr 10.10.10.10 return
+            ip saddr 20.20.20.20 ip daddr 10.10.10.10 jump nat_POST_foobar_010
+            ip saddr 20.20.20.20 ip daddr 10.10.10.10 return
+            iifname "foobar2" ip daddr 10.10.10.10 jump nat_POST_foobar_010
+            iifname "foobar2" ip daddr 10.10.10.10 return
+            iifname "foobar0" ip daddr 10.10.10.10 jump nat_POST_foobar_010
+            iifname "foobar0" ip daddr 10.10.10.10 return
+            iifname "foobar1" ip daddr 10.10.10.10 jump nat_POST_foobar_010
+            iifname "foobar1" ip daddr 10.10.10.10 return
+            ip daddr 10.10.10.10 jump nat_POST_foobar_010
+            ip daddr 10.10.10.10 return
+            ip6 saddr 1234:5678::1:1:1 ip6 daddr 1234:5678::10:10:10 jump nat_POST_foobar_010
+            ip6 saddr 1234:5678::1:1:1 ip6 daddr 1234:5678::10:10:10 return
+            ip6 saddr 1234:5678::1:1:0/112 ip6 daddr 1234:5678::10:10:10 jump nat_POST_foobar_010
+            ip6 saddr 1234:5678::1:1:0/112 ip6 daddr 1234:5678::10:10:10 return
+            ip6 saddr 1234:5678::10:10:10 ip6 daddr 1234:5678::10:10:10 jump nat_POST_foobar_010
+            ip6 saddr 1234:5678::10:10:10 ip6 daddr 1234:5678::10:10:10 return
+            ip6 saddr @ipsetv6 ip6 daddr 1234:5678::10:10:10 jump nat_POST_foobar_010
+            ip6 saddr @ipsetv6 ip6 daddr 1234:5678::10:10:10 return
+            ip6 saddr 1234:5678::1:0:0/96 ip6 daddr 1234:5678::10:10:10 jump nat_POST_foobar_010
+            ip6 saddr 1234:5678::1:0:0/96 ip6 daddr 1234:5678::10:10:10 return
+            ip6 saddr 1234:5678::2:2:0/112 ip6 daddr 1234:5678::10:10:10 jump nat_POST_foobar_010
+            ip6 saddr 1234:5678::2:2:0/112 ip6 daddr 1234:5678::10:10:10 return
+            ip6 saddr 1234:5678::2:0:0/96 ip6 daddr 1234:5678::10:10:10 jump nat_POST_foobar_010
+            ip6 saddr 1234:5678::2:0:0/96 ip6 daddr 1234:5678::10:10:10 return
+            ip6 saddr 1234:5678::/80 ip6 daddr 1234:5678::10:10:10 jump nat_POST_foobar_010
+            ip6 saddr 1234:5678::/80 ip6 daddr 1234:5678::10:10:10 return
+            ip6 saddr 1234:5678::20:20:20 ip6 daddr 1234:5678::10:10:10 jump nat_POST_foobar_010
+            ip6 saddr 1234:5678::20:20:20 ip6 daddr 1234:5678::10:10:10 return
+            iifname "foobar2" ip6 daddr 1234:5678::10:10:10 jump nat_POST_foobar_010
+            iifname "foobar2" ip6 daddr 1234:5678::10:10:10 return
+            iifname "foobar0" ip6 daddr 1234:5678::10:10:10 jump nat_POST_foobar_010
+            iifname "foobar0" ip6 daddr 1234:5678::10:10:10 return
+            iifname "foobar1" ip6 daddr 1234:5678::10:10:10 jump nat_POST_foobar_010
+            iifname "foobar1" ip6 daddr 1234:5678::10:10:10 return
+            ip6 daddr 1234:5678::10:10:10 jump nat_POST_foobar_010
+            ip6 daddr 1234:5678::10:10:10 return
+            ip saddr 10.1.1.1 ip daddr @ipsetv4 jump nat_POST_foobar_011
+            ip saddr 10.1.1.1 ip daddr @ipsetv4 return
+            ip saddr 10.1.1.0/24 ip daddr @ipsetv4 jump nat_POST_foobar_011
+            ip saddr 10.1.1.0/24 ip daddr @ipsetv4 return
+            ip saddr 10.10.10.10 ip daddr @ipsetv4 jump nat_POST_foobar_011
+            ip saddr 10.10.10.10 ip daddr @ipsetv4 return
+            ip saddr @ipsetv4 ip daddr @ipsetv4 jump nat_POST_foobar_011
+            ip saddr @ipsetv4 ip daddr @ipsetv4 return
+            ip saddr 10.1.0.0/16 ip daddr @ipsetv4 jump nat_POST_foobar_011
+            ip saddr 10.1.0.0/16 ip daddr @ipsetv4 return
+            ip saddr 10.2.2.0/24 ip daddr @ipsetv4 jump nat_POST_foobar_011
+            ip saddr 10.2.2.0/24 ip daddr @ipsetv4 return
+            ip saddr 10.2.0.0/16 ip daddr @ipsetv4 jump nat_POST_foobar_011
+            ip saddr 10.2.0.0/16 ip daddr @ipsetv4 return
+            ip saddr 10.0.0.0/8 ip daddr @ipsetv4 jump nat_POST_foobar_011
+            ip saddr 10.0.0.0/8 ip daddr @ipsetv4 return
+            ip saddr 20.20.20.20 ip daddr @ipsetv4 jump nat_POST_foobar_011
+            ip saddr 20.20.20.20 ip daddr @ipsetv4 return
+            iifname "foobar2" ip daddr @ipsetv4 jump nat_POST_foobar_011
+            iifname "foobar2" ip daddr @ipsetv4 return
+            iifname "foobar0" ip daddr @ipsetv4 jump nat_POST_foobar_011
+            iifname "foobar0" ip daddr @ipsetv4 return
+            iifname "foobar1" ip daddr @ipsetv4 jump nat_POST_foobar_011
+            iifname "foobar1" ip daddr @ipsetv4 return
+            ip daddr @ipsetv4 jump nat_POST_foobar_011
+            ip daddr @ipsetv4 return
+            ip6 saddr 1234:5678::1:1:1 ip6 daddr @ipsetv6 jump nat_POST_foobar_012
+            ip6 saddr 1234:5678::1:1:1 ip6 daddr @ipsetv6 return
+            ip6 saddr 1234:5678::1:1:0/112 ip6 daddr @ipsetv6 jump nat_POST_foobar_012
+            ip6 saddr 1234:5678::1:1:0/112 ip6 daddr @ipsetv6 return
+            ip6 saddr 1234:5678::10:10:10 ip6 daddr @ipsetv6 jump nat_POST_foobar_012
+            ip6 saddr 1234:5678::10:10:10 ip6 daddr @ipsetv6 return
+            ip6 saddr @ipsetv6 ip6 daddr @ipsetv6 jump nat_POST_foobar_012
+            ip6 saddr @ipsetv6 ip6 daddr @ipsetv6 return
+            ip6 saddr 1234:5678::1:0:0/96 ip6 daddr @ipsetv6 jump nat_POST_foobar_012
+            ip6 saddr 1234:5678::1:0:0/96 ip6 daddr @ipsetv6 return
+            ip6 saddr 1234:5678::2:2:0/112 ip6 daddr @ipsetv6 jump nat_POST_foobar_012
+            ip6 saddr 1234:5678::2:2:0/112 ip6 daddr @ipsetv6 return
+            ip6 saddr 1234:5678::2:0:0/96 ip6 daddr @ipsetv6 jump nat_POST_foobar_012
+            ip6 saddr 1234:5678::2:0:0/96 ip6 daddr @ipsetv6 return
+            ip6 saddr 1234:5678::/80 ip6 daddr @ipsetv6 jump nat_POST_foobar_012
+            ip6 saddr 1234:5678::/80 ip6 daddr @ipsetv6 return
+            ip6 saddr 1234:5678::20:20:20 ip6 daddr @ipsetv6 jump nat_POST_foobar_012
+            ip6 saddr 1234:5678::20:20:20 ip6 daddr @ipsetv6 return
+            iifname "foobar2" ip6 daddr @ipsetv6 jump nat_POST_foobar_012
+            iifname "foobar2" ip6 daddr @ipsetv6 return
+            iifname "foobar0" ip6 daddr @ipsetv6 jump nat_POST_foobar_012
+            iifname "foobar0" ip6 daddr @ipsetv6 return
+            iifname "foobar1" ip6 daddr @ipsetv6 jump nat_POST_foobar_012
+            iifname "foobar1" ip6 daddr @ipsetv6 return
+            ip6 daddr @ipsetv6 jump nat_POST_foobar_012
+            ip6 daddr @ipsetv6 return
+            ip saddr 10.1.1.1 ip daddr 10.1.0.0/16 jump nat_POST_foobar_02
+            ip saddr 10.1.1.1 ip daddr 10.1.0.0/16 return
+            ip saddr 10.1.1.0/24 ip daddr 10.1.0.0/16 jump nat_POST_foobar_02
+            ip saddr 10.1.1.0/24 ip daddr 10.1.0.0/16 return
+            ip saddr 10.10.10.10 ip daddr 10.1.0.0/16 jump nat_POST_foobar_02
+            ip saddr 10.10.10.10 ip daddr 10.1.0.0/16 return
+            ip saddr @ipsetv4 ip daddr 10.1.0.0/16 jump nat_POST_foobar_02
+            ip saddr @ipsetv4 ip daddr 10.1.0.0/16 return
+            ip saddr 10.1.0.0/16 ip daddr 10.1.0.0/16 jump nat_POST_foobar_02
+            ip saddr 10.1.0.0/16 ip daddr 10.1.0.0/16 return
+            ip saddr 10.2.2.0/24 ip daddr 10.1.0.0/16 jump nat_POST_foobar_02
+            ip saddr 10.2.2.0/24 ip daddr 10.1.0.0/16 return
+            ip saddr 10.2.0.0/16 ip daddr 10.1.0.0/16 jump nat_POST_foobar_02
+            ip saddr 10.2.0.0/16 ip daddr 10.1.0.0/16 return
+            ip saddr 10.0.0.0/8 ip daddr 10.1.0.0/16 jump nat_POST_foobar_02
+            ip saddr 10.0.0.0/8 ip daddr 10.1.0.0/16 return
+            ip saddr 20.20.20.20 ip daddr 10.1.0.0/16 jump nat_POST_foobar_02
+            ip saddr 20.20.20.20 ip daddr 10.1.0.0/16 return
+            iifname "foobar2" ip daddr 10.1.0.0/16 jump nat_POST_foobar_02
+            iifname "foobar2" ip daddr 10.1.0.0/16 return
+            iifname "foobar0" ip daddr 10.1.0.0/16 jump nat_POST_foobar_02
+            iifname "foobar0" ip daddr 10.1.0.0/16 return
+            iifname "foobar1" ip daddr 10.1.0.0/16 jump nat_POST_foobar_02
+            iifname "foobar1" ip daddr 10.1.0.0/16 return
+            ip daddr 10.1.0.0/16 jump nat_POST_foobar_02
+            ip daddr 10.1.0.0/16 return
+            ip6 saddr 1234:5678::1:1:1 ip6 daddr 1234:5678::1:0:0/96 jump nat_POST_foobar_02
+            ip6 saddr 1234:5678::1:1:1 ip6 daddr 1234:5678::1:0:0/96 return
+            ip6 saddr 1234:5678::1:1:0/112 ip6 daddr 1234:5678::1:0:0/96 jump nat_POST_foobar_02
+            ip6 saddr 1234:5678::1:1:0/112 ip6 daddr 1234:5678::1:0:0/96 return
+            ip6 saddr 1234:5678::10:10:10 ip6 daddr 1234:5678::1:0:0/96 jump nat_POST_foobar_02
+            ip6 saddr 1234:5678::10:10:10 ip6 daddr 1234:5678::1:0:0/96 return
+            ip6 saddr @ipsetv6 ip6 daddr 1234:5678::1:0:0/96 jump nat_POST_foobar_02
+            ip6 saddr @ipsetv6 ip6 daddr 1234:5678::1:0:0/96 return
+            ip6 saddr 1234:5678::1:0:0/96 ip6 daddr 1234:5678::1:0:0/96 jump nat_POST_foobar_02
+            ip6 saddr 1234:5678::1:0:0/96 ip6 daddr 1234:5678::1:0:0/96 return
+            ip6 saddr 1234:5678::2:2:0/112 ip6 daddr 1234:5678::1:0:0/96 jump nat_POST_foobar_02
+            ip6 saddr 1234:5678::2:2:0/112 ip6 daddr 1234:5678::1:0:0/96 return
+            ip6 saddr 1234:5678::2:0:0/96 ip6 daddr 1234:5678::1:0:0/96 jump nat_POST_foobar_02
+            ip6 saddr 1234:5678::2:0:0/96 ip6 daddr 1234:5678::1:0:0/96 return
+            ip6 saddr 1234:5678::/80 ip6 daddr 1234:5678::1:0:0/96 jump nat_POST_foobar_02
+            ip6 saddr 1234:5678::/80 ip6 daddr 1234:5678::1:0:0/96 return
+            ip6 saddr 1234:5678::20:20:20 ip6 daddr 1234:5678::1:0:0/96 jump nat_POST_foobar_02
+            ip6 saddr 1234:5678::20:20:20 ip6 daddr 1234:5678::1:0:0/96 return
+            iifname "foobar2" ip6 daddr 1234:5678::1:0:0/96 jump nat_POST_foobar_02
+            iifname "foobar2" ip6 daddr 1234:5678::1:0:0/96 return
+            iifname "foobar0" ip6 daddr 1234:5678::1:0:0/96 jump nat_POST_foobar_02
+            iifname "foobar0" ip6 daddr 1234:5678::1:0:0/96 return
+            iifname "foobar1" ip6 daddr 1234:5678::1:0:0/96 jump nat_POST_foobar_02
+            iifname "foobar1" ip6 daddr 1234:5678::1:0:0/96 return
+            ip6 daddr 1234:5678::1:0:0/96 jump nat_POST_foobar_02
+            ip6 daddr 1234:5678::1:0:0/96 return
+            ip saddr 10.1.1.1 ip daddr 10.2.2.0/24 jump nat_POST_foobar_03
+            ip saddr 10.1.1.1 ip daddr 10.2.2.0/24 return
+            ip saddr 10.1.1.0/24 ip daddr 10.2.2.0/24 jump nat_POST_foobar_03
+            ip saddr 10.1.1.0/24 ip daddr 10.2.2.0/24 return
+            ip saddr 10.10.10.10 ip daddr 10.2.2.0/24 jump nat_POST_foobar_03
+            ip saddr 10.10.10.10 ip daddr 10.2.2.0/24 return
+            ip saddr @ipsetv4 ip daddr 10.2.2.0/24 jump nat_POST_foobar_03
+            ip saddr @ipsetv4 ip daddr 10.2.2.0/24 return
+            ip saddr 10.1.0.0/16 ip daddr 10.2.2.0/24 jump nat_POST_foobar_03
+            ip saddr 10.1.0.0/16 ip daddr 10.2.2.0/24 return
+            ip saddr 10.2.2.0/24 ip daddr 10.2.2.0/24 jump nat_POST_foobar_03
+            ip saddr 10.2.2.0/24 ip daddr 10.2.2.0/24 return
+            ip saddr 10.2.0.0/16 ip daddr 10.2.2.0/24 jump nat_POST_foobar_03
+            ip saddr 10.2.0.0/16 ip daddr 10.2.2.0/24 return
+            ip saddr 10.0.0.0/8 ip daddr 10.2.2.0/24 jump nat_POST_foobar_03
+            ip saddr 10.0.0.0/8 ip daddr 10.2.2.0/24 return
+            ip saddr 20.20.20.20 ip daddr 10.2.2.0/24 jump nat_POST_foobar_03
+            ip saddr 20.20.20.20 ip daddr 10.2.2.0/24 return
+            iifname "foobar2" ip daddr 10.2.2.0/24 jump nat_POST_foobar_03
+            iifname "foobar2" ip daddr 10.2.2.0/24 return
+            iifname "foobar0" ip daddr 10.2.2.0/24 jump nat_POST_foobar_03
+            iifname "foobar0" ip daddr 10.2.2.0/24 return
+            iifname "foobar1" ip daddr 10.2.2.0/24 jump nat_POST_foobar_03
+            iifname "foobar1" ip daddr 10.2.2.0/24 return
+            ip daddr 10.2.2.0/24 jump nat_POST_foobar_03
+            ip daddr 10.2.2.0/24 return
+            ip6 saddr 1234:5678::1:1:1 ip6 daddr 1234:5678::2:2:0/112 jump nat_POST_foobar_03
+            ip6 saddr 1234:5678::1:1:1 ip6 daddr 1234:5678::2:2:0/112 return
+            ip6 saddr 1234:5678::1:1:0/112 ip6 daddr 1234:5678::2:2:0/112 jump nat_POST_foobar_03
+            ip6 saddr 1234:5678::1:1:0/112 ip6 daddr 1234:5678::2:2:0/112 return
+            ip6 saddr 1234:5678::10:10:10 ip6 daddr 1234:5678::2:2:0/112 jump nat_POST_foobar_03
+            ip6 saddr 1234:5678::10:10:10 ip6 daddr 1234:5678::2:2:0/112 return
+            ip6 saddr @ipsetv6 ip6 daddr 1234:5678::2:2:0/112 jump nat_POST_foobar_03
+            ip6 saddr @ipsetv6 ip6 daddr 1234:5678::2:2:0/112 return
+            ip6 saddr 1234:5678::1:0:0/96 ip6 daddr 1234:5678::2:2:0/112 jump nat_POST_foobar_03
+            ip6 saddr 1234:5678::1:0:0/96 ip6 daddr 1234:5678::2:2:0/112 return
+            ip6 saddr 1234:5678::2:2:0/112 ip6 daddr 1234:5678::2:2:0/112 jump nat_POST_foobar_03
+            ip6 saddr 1234:5678::2:2:0/112 ip6 daddr 1234:5678::2:2:0/112 return
+            ip6 saddr 1234:5678::2:0:0/96 ip6 daddr 1234:5678::2:2:0/112 jump nat_POST_foobar_03
+            ip6 saddr 1234:5678::2:0:0/96 ip6 daddr 1234:5678::2:2:0/112 return
+            ip6 saddr 1234:5678::/80 ip6 daddr 1234:5678::2:2:0/112 jump nat_POST_foobar_03
+            ip6 saddr 1234:5678::/80 ip6 daddr 1234:5678::2:2:0/112 return
+            ip6 saddr 1234:5678::20:20:20 ip6 daddr 1234:5678::2:2:0/112 jump nat_POST_foobar_03
+            ip6 saddr 1234:5678::20:20:20 ip6 daddr 1234:5678::2:2:0/112 return
+            iifname "foobar2" ip6 daddr 1234:5678::2:2:0/112 jump nat_POST_foobar_03
+            iifname "foobar2" ip6 daddr 1234:5678::2:2:0/112 return
+            iifname "foobar0" ip6 daddr 1234:5678::2:2:0/112 jump nat_POST_foobar_03
+            iifname "foobar0" ip6 daddr 1234:5678::2:2:0/112 return
+            iifname "foobar1" ip6 daddr 1234:5678::2:2:0/112 jump nat_POST_foobar_03
+            iifname "foobar1" ip6 daddr 1234:5678::2:2:0/112 return
+            ip6 daddr 1234:5678::2:2:0/112 jump nat_POST_foobar_03
+            ip6 daddr 1234:5678::2:2:0/112 return
+            ip saddr 10.1.1.1 ip daddr 10.2.0.0/16 jump nat_POST_foobar_04
+            ip saddr 10.1.1.1 ip daddr 10.2.0.0/16 return
+            ip saddr 10.1.1.0/24 ip daddr 10.2.0.0/16 jump nat_POST_foobar_04
+            ip saddr 10.1.1.0/24 ip daddr 10.2.0.0/16 return
+            ip saddr 10.10.10.10 ip daddr 10.2.0.0/16 jump nat_POST_foobar_04
+            ip saddr 10.10.10.10 ip daddr 10.2.0.0/16 return
+            ip saddr @ipsetv4 ip daddr 10.2.0.0/16 jump nat_POST_foobar_04
+            ip saddr @ipsetv4 ip daddr 10.2.0.0/16 return
+            ip saddr 10.1.0.0/16 ip daddr 10.2.0.0/16 jump nat_POST_foobar_04
+            ip saddr 10.1.0.0/16 ip daddr 10.2.0.0/16 return
+            ip saddr 10.2.2.0/24 ip daddr 10.2.0.0/16 jump nat_POST_foobar_04
+            ip saddr 10.2.2.0/24 ip daddr 10.2.0.0/16 return
+            ip saddr 10.2.0.0/16 ip daddr 10.2.0.0/16 jump nat_POST_foobar_04
+            ip saddr 10.2.0.0/16 ip daddr 10.2.0.0/16 return
+            ip saddr 10.0.0.0/8 ip daddr 10.2.0.0/16 jump nat_POST_foobar_04
+            ip saddr 10.0.0.0/8 ip daddr 10.2.0.0/16 return
+            ip saddr 20.20.20.20 ip daddr 10.2.0.0/16 jump nat_POST_foobar_04
+            ip saddr 20.20.20.20 ip daddr 10.2.0.0/16 return
+            iifname "foobar2" ip daddr 10.2.0.0/16 jump nat_POST_foobar_04
+            iifname "foobar2" ip daddr 10.2.0.0/16 return
+            iifname "foobar0" ip daddr 10.2.0.0/16 jump nat_POST_foobar_04
+            iifname "foobar0" ip daddr 10.2.0.0/16 return
+            iifname "foobar1" ip daddr 10.2.0.0/16 jump nat_POST_foobar_04
+            iifname "foobar1" ip daddr 10.2.0.0/16 return
+            ip daddr 10.2.0.0/16 jump nat_POST_foobar_04
+            ip daddr 10.2.0.0/16 return
+            ip6 saddr 1234:5678::1:1:1 ip6 daddr 1234:5678::2:0:0/96 jump nat_POST_foobar_04
+            ip6 saddr 1234:5678::1:1:1 ip6 daddr 1234:5678::2:0:0/96 return
+            ip6 saddr 1234:5678::1:1:0/112 ip6 daddr 1234:5678::2:0:0/96 jump nat_POST_foobar_04
+            ip6 saddr 1234:5678::1:1:0/112 ip6 daddr 1234:5678::2:0:0/96 return
+            ip6 saddr 1234:5678::10:10:10 ip6 daddr 1234:5678::2:0:0/96 jump nat_POST_foobar_04
+            ip6 saddr 1234:5678::10:10:10 ip6 daddr 1234:5678::2:0:0/96 return
+            ip6 saddr @ipsetv6 ip6 daddr 1234:5678::2:0:0/96 jump nat_POST_foobar_04
+            ip6 saddr @ipsetv6 ip6 daddr 1234:5678::2:0:0/96 return
+            ip6 saddr 1234:5678::1:0:0/96 ip6 daddr 1234:5678::2:0:0/96 jump nat_POST_foobar_04
+            ip6 saddr 1234:5678::1:0:0/96 ip6 daddr 1234:5678::2:0:0/96 return
+            ip6 saddr 1234:5678::2:2:0/112 ip6 daddr 1234:5678::2:0:0/96 jump nat_POST_foobar_04
+            ip6 saddr 1234:5678::2:2:0/112 ip6 daddr 1234:5678::2:0:0/96 return
+            ip6 saddr 1234:5678::2:0:0/96 ip6 daddr 1234:5678::2:0:0/96 jump nat_POST_foobar_04
+            ip6 saddr 1234:5678::2:0:0/96 ip6 daddr 1234:5678::2:0:0/96 return
+            ip6 saddr 1234:5678::/80 ip6 daddr 1234:5678::2:0:0/96 jump nat_POST_foobar_04
+            ip6 saddr 1234:5678::/80 ip6 daddr 1234:5678::2:0:0/96 return
+            ip6 saddr 1234:5678::20:20:20 ip6 daddr 1234:5678::2:0:0/96 jump nat_POST_foobar_04
+            ip6 saddr 1234:5678::20:20:20 ip6 daddr 1234:5678::2:0:0/96 return
+            iifname "foobar2" ip6 daddr 1234:5678::2:0:0/96 jump nat_POST_foobar_04
+            iifname "foobar2" ip6 daddr 1234:5678::2:0:0/96 return
+            iifname "foobar0" ip6 daddr 1234:5678::2:0:0/96 jump nat_POST_foobar_04
+            iifname "foobar0" ip6 daddr 1234:5678::2:0:0/96 return
+            iifname "foobar1" ip6 daddr 1234:5678::2:0:0/96 jump nat_POST_foobar_04
+            iifname "foobar1" ip6 daddr 1234:5678::2:0:0/96 return
+            ip6 daddr 1234:5678::2:0:0/96 jump nat_POST_foobar_04
+            ip6 daddr 1234:5678::2:0:0/96 return
+            ip saddr 10.1.1.1 ip daddr 10.0.0.0/8 jump nat_POST_foobar_05
+            ip saddr 10.1.1.1 ip daddr 10.0.0.0/8 return
+            ip saddr 10.1.1.0/24 ip daddr 10.0.0.0/8 jump nat_POST_foobar_05
+            ip saddr 10.1.1.0/24 ip daddr 10.0.0.0/8 return
+            ip saddr 10.10.10.10 ip daddr 10.0.0.0/8 jump nat_POST_foobar_05
+            ip saddr 10.10.10.10 ip daddr 10.0.0.0/8 return
+            ip saddr @ipsetv4 ip daddr 10.0.0.0/8 jump nat_POST_foobar_05
+            ip saddr @ipsetv4 ip daddr 10.0.0.0/8 return
+            ip saddr 10.1.0.0/16 ip daddr 10.0.0.0/8 jump nat_POST_foobar_05
+            ip saddr 10.1.0.0/16 ip daddr 10.0.0.0/8 return
+            ip saddr 10.2.2.0/24 ip daddr 10.0.0.0/8 jump nat_POST_foobar_05
+            ip saddr 10.2.2.0/24 ip daddr 10.0.0.0/8 return
+            ip saddr 10.2.0.0/16 ip daddr 10.0.0.0/8 jump nat_POST_foobar_05
+            ip saddr 10.2.0.0/16 ip daddr 10.0.0.0/8 return
+            ip saddr 10.0.0.0/8 ip daddr 10.0.0.0/8 jump nat_POST_foobar_05
+            ip saddr 10.0.0.0/8 ip daddr 10.0.0.0/8 return
+            ip saddr 20.20.20.20 ip daddr 10.0.0.0/8 jump nat_POST_foobar_05
+            ip saddr 20.20.20.20 ip daddr 10.0.0.0/8 return
+            iifname "foobar2" ip daddr 10.0.0.0/8 jump nat_POST_foobar_05
+            iifname "foobar2" ip daddr 10.0.0.0/8 return
+            iifname "foobar0" ip daddr 10.0.0.0/8 jump nat_POST_foobar_05
+            iifname "foobar0" ip daddr 10.0.0.0/8 return
+            iifname "foobar1" ip daddr 10.0.0.0/8 jump nat_POST_foobar_05
+            iifname "foobar1" ip daddr 10.0.0.0/8 return
+            ip daddr 10.0.0.0/8 jump nat_POST_foobar_05
+            ip daddr 10.0.0.0/8 return
+            ip6 saddr 1234:5678::1:1:1 ip6 daddr 1234:5678::/80 jump nat_POST_foobar_05
+            ip6 saddr 1234:5678::1:1:1 ip6 daddr 1234:5678::/80 return
+            ip6 saddr 1234:5678::1:1:0/112 ip6 daddr 1234:5678::/80 jump nat_POST_foobar_05
+            ip6 saddr 1234:5678::1:1:0/112 ip6 daddr 1234:5678::/80 return
+            ip6 saddr 1234:5678::10:10:10 ip6 daddr 1234:5678::/80 jump nat_POST_foobar_05
+            ip6 saddr 1234:5678::10:10:10 ip6 daddr 1234:5678::/80 return
+            ip6 saddr @ipsetv6 ip6 daddr 1234:5678::/80 jump nat_POST_foobar_05
+            ip6 saddr @ipsetv6 ip6 daddr 1234:5678::/80 return
+            ip6 saddr 1234:5678::1:0:0/96 ip6 daddr 1234:5678::/80 jump nat_POST_foobar_05
+            ip6 saddr 1234:5678::1:0:0/96 ip6 daddr 1234:5678::/80 return
+            ip6 saddr 1234:5678::2:2:0/112 ip6 daddr 1234:5678::/80 jump nat_POST_foobar_05
+            ip6 saddr 1234:5678::2:2:0/112 ip6 daddr 1234:5678::/80 return
+            ip6 saddr 1234:5678::2:0:0/96 ip6 daddr 1234:5678::/80 jump nat_POST_foobar_05
+            ip6 saddr 1234:5678::2:0:0/96 ip6 daddr 1234:5678::/80 return
+            ip6 saddr 1234:5678::/80 ip6 daddr 1234:5678::/80 jump nat_POST_foobar_05
+            ip6 saddr 1234:5678::/80 ip6 daddr 1234:5678::/80 return
+            ip6 saddr 1234:5678::20:20:20 ip6 daddr 1234:5678::/80 jump nat_POST_foobar_05
+            ip6 saddr 1234:5678::20:20:20 ip6 daddr 1234:5678::/80 return
+            iifname "foobar2" ip6 daddr 1234:5678::/80 jump nat_POST_foobar_05
+            iifname "foobar2" ip6 daddr 1234:5678::/80 return
+            iifname "foobar0" ip6 daddr 1234:5678::/80 jump nat_POST_foobar_05
+            iifname "foobar0" ip6 daddr 1234:5678::/80 return
+            iifname "foobar1" ip6 daddr 1234:5678::/80 jump nat_POST_foobar_05
+            iifname "foobar1" ip6 daddr 1234:5678::/80 return
+            ip6 daddr 1234:5678::/80 jump nat_POST_foobar_05
+            ip6 daddr 1234:5678::/80 return
+            ip6 saddr 1234:5678::1:1:1 ip6 daddr 1234:5678::20:20:20 jump nat_POST_public
+            ip6 saddr 1234:5678::1:1:1 ip6 daddr 1234:5678::20:20:20 return
+            ip6 saddr 1234:5678::1:1:0/112 ip6 daddr 1234:5678::20:20:20 jump nat_POST_public
+            ip6 saddr 1234:5678::1:1:0/112 ip6 daddr 1234:5678::20:20:20 return
+            ip6 saddr 1234:5678::10:10:10 ip6 daddr 1234:5678::20:20:20 jump nat_POST_public
+            ip6 saddr 1234:5678::10:10:10 ip6 daddr 1234:5678::20:20:20 return
+            ip6 saddr @ipsetv6 ip6 daddr 1234:5678::20:20:20 jump nat_POST_public
+            ip6 saddr @ipsetv6 ip6 daddr 1234:5678::20:20:20 return
+            ip6 saddr 1234:5678::1:0:0/96 ip6 daddr 1234:5678::20:20:20 jump nat_POST_public
+            ip6 saddr 1234:5678::1:0:0/96 ip6 daddr 1234:5678::20:20:20 return
+            ip6 saddr 1234:5678::2:2:0/112 ip6 daddr 1234:5678::20:20:20 jump nat_POST_public
+            ip6 saddr 1234:5678::2:2:0/112 ip6 daddr 1234:5678::20:20:20 return
+            ip6 saddr 1234:5678::2:0:0/96 ip6 daddr 1234:5678::20:20:20 jump nat_POST_public
+            ip6 saddr 1234:5678::2:0:0/96 ip6 daddr 1234:5678::20:20:20 return
+            ip6 saddr 1234:5678::/80 ip6 daddr 1234:5678::20:20:20 jump nat_POST_public
+            ip6 saddr 1234:5678::/80 ip6 daddr 1234:5678::20:20:20 return
+            ip6 saddr 1234:5678::20:20:20 ip6 daddr 1234:5678::20:20:20 jump nat_POST_public
+            ip6 saddr 1234:5678::20:20:20 ip6 daddr 1234:5678::20:20:20 return
+            iifname "foobar2" ip6 daddr 1234:5678::20:20:20 jump nat_POST_public
+            iifname "foobar2" ip6 daddr 1234:5678::20:20:20 return
+            iifname "foobar0" ip6 daddr 1234:5678::20:20:20 jump nat_POST_public
+            iifname "foobar0" ip6 daddr 1234:5678::20:20:20 return
+            iifname "foobar1" ip6 daddr 1234:5678::20:20:20 jump nat_POST_public
+            iifname "foobar1" ip6 daddr 1234:5678::20:20:20 return
+            ip6 daddr 1234:5678::20:20:20 jump nat_POST_public
+            ip6 daddr 1234:5678::20:20:20 return
+            ip saddr 10.1.1.1 ip daddr 20.20.20.20 jump nat_POST_public
+            ip saddr 10.1.1.1 ip daddr 20.20.20.20 return
+            ip saddr 10.1.1.0/24 ip daddr 20.20.20.20 jump nat_POST_public
+            ip saddr 10.1.1.0/24 ip daddr 20.20.20.20 return
+            ip saddr 10.10.10.10 ip daddr 20.20.20.20 jump nat_POST_public
+            ip saddr 10.10.10.10 ip daddr 20.20.20.20 return
+            ip saddr @ipsetv4 ip daddr 20.20.20.20 jump nat_POST_public
+            ip saddr @ipsetv4 ip daddr 20.20.20.20 return
+            ip saddr 10.1.0.0/16 ip daddr 20.20.20.20 jump nat_POST_public
+            ip saddr 10.1.0.0/16 ip daddr 20.20.20.20 return
+            ip saddr 10.2.2.0/24 ip daddr 20.20.20.20 jump nat_POST_public
+            ip saddr 10.2.2.0/24 ip daddr 20.20.20.20 return
+            ip saddr 10.2.0.0/16 ip daddr 20.20.20.20 jump nat_POST_public
+            ip saddr 10.2.0.0/16 ip daddr 20.20.20.20 return
+            ip saddr 10.0.0.0/8 ip daddr 20.20.20.20 jump nat_POST_public
+            ip saddr 10.0.0.0/8 ip daddr 20.20.20.20 return
+            ip saddr 20.20.20.20 ip daddr 20.20.20.20 jump nat_POST_public
+            ip saddr 20.20.20.20 ip daddr 20.20.20.20 return
+            iifname "foobar2" ip daddr 20.20.20.20 jump nat_POST_public
+            iifname "foobar2" ip daddr 20.20.20.20 return
+            iifname "foobar0" ip daddr 20.20.20.20 jump nat_POST_public
+            iifname "foobar0" ip daddr 20.20.20.20 return
+            iifname "foobar1" ip daddr 20.20.20.20 jump nat_POST_public
+            iifname "foobar1" ip daddr 20.20.20.20 return
+            ip daddr 20.20.20.20 jump nat_POST_public
+            ip daddr 20.20.20.20 return
+            oifname "foobar2" ip saddr 10.1.1.1 jump nat_POST_foobar_010
+            oifname "foobar2" ip saddr 10.1.1.1 return
+            oifname "foobar2" ip6 saddr 1234:5678::1:1:1 jump nat_POST_foobar_010
+            oifname "foobar2" ip6 saddr 1234:5678::1:1:1 return
+            oifname "foobar2" ip saddr 10.1.1.0/24 jump nat_POST_foobar_010
+            oifname "foobar2" ip saddr 10.1.1.0/24 return
+            oifname "foobar2" ip6 saddr 1234:5678::1:1:0/112 jump nat_POST_foobar_010
+            oifname "foobar2" ip6 saddr 1234:5678::1:1:0/112 return
+            oifname "foobar2" ip saddr 10.10.10.10 jump nat_POST_foobar_010
+            oifname "foobar2" ip saddr 10.10.10.10 return
+            oifname "foobar2" ip6 saddr 1234:5678::10:10:10 jump nat_POST_foobar_010
+            oifname "foobar2" ip6 saddr 1234:5678::10:10:10 return
+            oifname "foobar2" ip saddr @ipsetv4 jump nat_POST_foobar_010
+            oifname "foobar2" ip saddr @ipsetv4 return
+            oifname "foobar2" ip6 saddr @ipsetv6 jump nat_POST_foobar_010
+            oifname "foobar2" ip6 saddr @ipsetv6 return
+            oifname "foobar2" ip saddr 10.1.0.0/16 jump nat_POST_foobar_010
+            oifname "foobar2" ip saddr 10.1.0.0/16 return
+            oifname "foobar2" ip6 saddr 1234:5678::1:0:0/96 jump nat_POST_foobar_010
+            oifname "foobar2" ip6 saddr 1234:5678::1:0:0/96 return
+            oifname "foobar2" ip saddr 10.2.2.0/24 jump nat_POST_foobar_010
+            oifname "foobar2" ip saddr 10.2.2.0/24 return
+            oifname "foobar2" ip6 saddr 1234:5678::2:2:0/112 jump nat_POST_foobar_010
+            oifname "foobar2" ip6 saddr 1234:5678::2:2:0/112 return
+            oifname "foobar2" ip saddr 10.2.0.0/16 jump nat_POST_foobar_010
+            oifname "foobar2" ip saddr 10.2.0.0/16 return
+            oifname "foobar2" ip6 saddr 1234:5678::2:0:0/96 jump nat_POST_foobar_010
+            oifname "foobar2" ip6 saddr 1234:5678::2:0:0/96 return
+            oifname "foobar2" ip saddr 10.0.0.0/8 jump nat_POST_foobar_010
+            oifname "foobar2" ip saddr 10.0.0.0/8 return
+            oifname "foobar2" ip6 saddr 1234:5678::/80 jump nat_POST_foobar_010
+            oifname "foobar2" ip6 saddr 1234:5678::/80 return
+            oifname "foobar2" ip6 saddr 1234:5678::20:20:20 jump nat_POST_foobar_010
+            oifname "foobar2" ip6 saddr 1234:5678::20:20:20 return
+            oifname "foobar2" ip saddr 20.20.20.20 jump nat_POST_foobar_010
+            oifname "foobar2" ip saddr 20.20.20.20 return
+            iifname "foobar2" oifname "foobar2" jump nat_POST_foobar_010
+            iifname "foobar2" oifname "foobar2" return
+            iifname "foobar0" oifname "foobar2" jump nat_POST_foobar_010
+            iifname "foobar0" oifname "foobar2" return
+            iifname "foobar1" oifname "foobar2" jump nat_POST_foobar_010
+            iifname "foobar1" oifname "foobar2" return
+            oifname "foobar2" jump nat_POST_foobar_010
+            oifname "foobar2" return
+            oifname "foobar0" ip saddr 10.1.1.1 jump nat_POST_internal
+            oifname "foobar0" ip saddr 10.1.1.1 return
+            oifname "foobar0" ip6 saddr 1234:5678::1:1:1 jump nat_POST_internal
+            oifname "foobar0" ip6 saddr 1234:5678::1:1:1 return
+            oifname "foobar0" ip saddr 10.1.1.0/24 jump nat_POST_internal
+            oifname "foobar0" ip saddr 10.1.1.0/24 return
+            oifname "foobar0" ip6 saddr 1234:5678::1:1:0/112 jump nat_POST_internal
+            oifname "foobar0" ip6 saddr 1234:5678::1:1:0/112 return
+            oifname "foobar0" ip saddr 10.10.10.10 jump nat_POST_internal
+            oifname "foobar0" ip saddr 10.10.10.10 return
+            oifname "foobar0" ip6 saddr 1234:5678::10:10:10 jump nat_POST_internal
+            oifname "foobar0" ip6 saddr 1234:5678::10:10:10 return
+            oifname "foobar0" ip saddr @ipsetv4 jump nat_POST_internal
+            oifname "foobar0" ip saddr @ipsetv4 return
+            oifname "foobar0" ip6 saddr @ipsetv6 jump nat_POST_internal
+            oifname "foobar0" ip6 saddr @ipsetv6 return
+            oifname "foobar0" ip saddr 10.1.0.0/16 jump nat_POST_internal
+            oifname "foobar0" ip saddr 10.1.0.0/16 return
+            oifname "foobar0" ip6 saddr 1234:5678::1:0:0/96 jump nat_POST_internal
+            oifname "foobar0" ip6 saddr 1234:5678::1:0:0/96 return
+            oifname "foobar0" ip saddr 10.2.2.0/24 jump nat_POST_internal
+            oifname "foobar0" ip saddr 10.2.2.0/24 return
+            oifname "foobar0" ip6 saddr 1234:5678::2:2:0/112 jump nat_POST_internal
+            oifname "foobar0" ip6 saddr 1234:5678::2:2:0/112 return
+            oifname "foobar0" ip saddr 10.2.0.0/16 jump nat_POST_internal
+            oifname "foobar0" ip saddr 10.2.0.0/16 return
+            oifname "foobar0" ip6 saddr 1234:5678::2:0:0/96 jump nat_POST_internal
+            oifname "foobar0" ip6 saddr 1234:5678::2:0:0/96 return
+            oifname "foobar0" ip saddr 10.0.0.0/8 jump nat_POST_internal
+            oifname "foobar0" ip saddr 10.0.0.0/8 return
+            oifname "foobar0" ip6 saddr 1234:5678::/80 jump nat_POST_internal
+            oifname "foobar0" ip6 saddr 1234:5678::/80 return
+            oifname "foobar0" ip6 saddr 1234:5678::20:20:20 jump nat_POST_internal
+            oifname "foobar0" ip6 saddr 1234:5678::20:20:20 return
+            oifname "foobar0" ip saddr 20.20.20.20 jump nat_POST_internal
+            oifname "foobar0" ip saddr 20.20.20.20 return
+            iifname "foobar2" oifname "foobar0" jump nat_POST_internal
+            iifname "foobar2" oifname "foobar0" return
+            iifname "foobar0" oifname "foobar0" jump nat_POST_internal
+            iifname "foobar0" oifname "foobar0" return
+            iifname "foobar1" oifname "foobar0" jump nat_POST_internal
+            iifname "foobar1" oifname "foobar0" return
+            oifname "foobar0" jump nat_POST_internal
+            oifname "foobar0" return
+            oifname "foobar1" ip saddr 10.1.1.1 jump nat_POST_trusted
+            oifname "foobar1" ip saddr 10.1.1.1 return
+            oifname "foobar1" ip6 saddr 1234:5678::1:1:1 jump nat_POST_trusted
+            oifname "foobar1" ip6 saddr 1234:5678::1:1:1 return
+            oifname "foobar1" ip saddr 10.1.1.0/24 jump nat_POST_trusted
+            oifname "foobar1" ip saddr 10.1.1.0/24 return
+            oifname "foobar1" ip6 saddr 1234:5678::1:1:0/112 jump nat_POST_trusted
+            oifname "foobar1" ip6 saddr 1234:5678::1:1:0/112 return
+            oifname "foobar1" ip saddr 10.10.10.10 jump nat_POST_trusted
+            oifname "foobar1" ip saddr 10.10.10.10 return
+            oifname "foobar1" ip6 saddr 1234:5678::10:10:10 jump nat_POST_trusted
+            oifname "foobar1" ip6 saddr 1234:5678::10:10:10 return
+            oifname "foobar1" ip saddr @ipsetv4 jump nat_POST_trusted
+            oifname "foobar1" ip saddr @ipsetv4 return
+            oifname "foobar1" ip6 saddr @ipsetv6 jump nat_POST_trusted
+            oifname "foobar1" ip6 saddr @ipsetv6 return
+            oifname "foobar1" ip saddr 10.1.0.0/16 jump nat_POST_trusted
+            oifname "foobar1" ip saddr 10.1.0.0/16 return
+            oifname "foobar1" ip6 saddr 1234:5678::1:0:0/96 jump nat_POST_trusted
+            oifname "foobar1" ip6 saddr 1234:5678::1:0:0/96 return
+            oifname "foobar1" ip saddr 10.2.2.0/24 jump nat_POST_trusted
+            oifname "foobar1" ip saddr 10.2.2.0/24 return
+            oifname "foobar1" ip6 saddr 1234:5678::2:2:0/112 jump nat_POST_trusted
+            oifname "foobar1" ip6 saddr 1234:5678::2:2:0/112 return
+            oifname "foobar1" ip saddr 10.2.0.0/16 jump nat_POST_trusted
+            oifname "foobar1" ip saddr 10.2.0.0/16 return
+            oifname "foobar1" ip6 saddr 1234:5678::2:0:0/96 jump nat_POST_trusted
+            oifname "foobar1" ip6 saddr 1234:5678::2:0:0/96 return
+            oifname "foobar1" ip saddr 10.0.0.0/8 jump nat_POST_trusted
+            oifname "foobar1" ip saddr 10.0.0.0/8 return
+            oifname "foobar1" ip6 saddr 1234:5678::/80 jump nat_POST_trusted
+            oifname "foobar1" ip6 saddr 1234:5678::/80 return
+            oifname "foobar1" ip6 saddr 1234:5678::20:20:20 jump nat_POST_trusted
+            oifname "foobar1" ip6 saddr 1234:5678::20:20:20 return
+            oifname "foobar1" ip saddr 20.20.20.20 jump nat_POST_trusted
+            oifname "foobar1" ip saddr 20.20.20.20 return
+            iifname "foobar2" oifname "foobar1" jump nat_POST_trusted
+            iifname "foobar2" oifname "foobar1" return
+            iifname "foobar0" oifname "foobar1" jump nat_POST_trusted
+            iifname "foobar0" oifname "foobar1" return
+            iifname "foobar1" oifname "foobar1" jump nat_POST_trusted
+            iifname "foobar1" oifname "foobar1" return
+            oifname "foobar1" jump nat_POST_trusted
+            oifname "foobar1" return
+            ip saddr 10.1.1.1 jump nat_POST_public
+            ip saddr 10.1.1.1 return
+            ip6 saddr 1234:5678::1:1:1 jump nat_POST_public
+            ip6 saddr 1234:5678::1:1:1 return
+            ip saddr 10.1.1.0/24 jump nat_POST_public
+            ip saddr 10.1.1.0/24 return
+            ip6 saddr 1234:5678::1:1:0/112 jump nat_POST_public
+            ip6 saddr 1234:5678::1:1:0/112 return
+            ip saddr 10.10.10.10 jump nat_POST_public
+            ip saddr 10.10.10.10 return
+            ip6 saddr 1234:5678::10:10:10 jump nat_POST_public
+            ip6 saddr 1234:5678::10:10:10 return
+            ip saddr @ipsetv4 jump nat_POST_public
+            ip saddr @ipsetv4 return
+            ip6 saddr @ipsetv6 jump nat_POST_public
+            ip6 saddr @ipsetv6 return
+            ip saddr 10.1.0.0/16 jump nat_POST_public
+            ip saddr 10.1.0.0/16 return
+            ip6 saddr 1234:5678::1:0:0/96 jump nat_POST_public
+            ip6 saddr 1234:5678::1:0:0/96 return
+            ip saddr 10.2.2.0/24 jump nat_POST_public
+            ip saddr 10.2.2.0/24 return
+            ip6 saddr 1234:5678::2:2:0/112 jump nat_POST_public
+            ip6 saddr 1234:5678::2:2:0/112 return
+            ip saddr 10.2.0.0/16 jump nat_POST_public
+            ip saddr 10.2.0.0/16 return
+            ip6 saddr 1234:5678::2:0:0/96 jump nat_POST_public
+            ip6 saddr 1234:5678::2:0:0/96 return
+            ip saddr 10.0.0.0/8 jump nat_POST_public
+            ip saddr 10.0.0.0/8 return
+            ip6 saddr 1234:5678::/80 jump nat_POST_public
+            ip6 saddr 1234:5678::/80 return
+            ip6 saddr 1234:5678::20:20:20 jump nat_POST_public
+            ip6 saddr 1234:5678::20:20:20 return
+            ip saddr 20.20.20.20 jump nat_POST_public
+            ip saddr 20.20.20.20 return
+            iifname "foobar2" jump nat_POST_public
+            iifname "foobar2" return
+            iifname "foobar0" jump nat_POST_public
+            iifname "foobar0" return
+            iifname "foobar1" jump nat_POST_public
+            iifname "foobar1" return
+            jump nat_POST_public
+            return
         }
     }
 ])
 
-IPTABLES_LIST_RULES([filter], [INPUT_ZONES], 0,
-  [[IN_foobar_00 all -- 10.1.1.1 0.0.0.0/0 [goto]
-    IN_foobar_01 all -- 10.1.1.0/24 0.0.0.0/0 [goto]
-    IN_foobar_010 all -- 10.10.10.10 0.0.0.0/0 [goto]
-    IN_foobar_011 all -- 0.0.0.0/0 0.0.0.0/0 [goto] match-set ipsetv4 src
-    IN_foobar_02 all -- 10.1.0.0/16 0.0.0.0/0 [goto]
-    IN_foobar_03 all -- 10.2.2.0/24 0.0.0.0/0 [goto]
-    IN_foobar_04 all -- 10.2.0.0/16 0.0.0.0/0 [goto]
-    IN_foobar_05 all -- 10.0.0.0/8 0.0.0.0/0 [goto]
-    IN_public all -- 20.20.20.20 0.0.0.0/0 [goto]
-    IN_foobar_010 all -- 0.0.0.0/0 0.0.0.0/0 [goto]
-    IN_trusted all -- 0.0.0.0/0 0.0.0.0/0 [goto]
-    IN_internal all -- 0.0.0.0/0 0.0.0.0/0 [goto]
-    IN_public all -- 0.0.0.0/0 0.0.0.0/0 [goto]
-]])
-IP6TABLES_LIST_RULES([filter], [INPUT_ZONES], 0,
-  [[IN_foobar_00 all 1234:5678::1:1:1 ::/0 [goto]
-    IN_foobar_01 all 1234:5678::1:1:0/112 ::/0 [goto]
-    IN_foobar_010 all 1234:5678::10:10:10 ::/0 [goto]
-    IN_foobar_012 all ::/0 ::/0 [goto] match-set ipsetv6 src
-    IN_foobar_02 all 1234:5678::1:0:0/96 ::/0 [goto]
-    IN_foobar_03 all 1234:5678::2:2:0/112 ::/0 [goto]
-    IN_foobar_04 all 1234:5678::2:0:0/96 ::/0 [goto]
-    IN_foobar_05 all 1234:5678::/80 ::/0 [goto]
-    IN_public all 1234:5678::20:20:20 ::/0 [goto]
-    IN_foobar_010 all ::/0 ::/0 [goto]
-    IN_trusted all ::/0 ::/0 [goto]
-    IN_internal all ::/0 ::/0 [goto]
-    IN_public all ::/0 ::/0 [goto]
-]])
-IPTABLES_LIST_RULES([nat], [POSTROUTING_ZONES], 0,
-  [[POST_foobar_00 all -- 0.0.0.0/0 10.1.1.1 [goto]
-    POST_foobar_01 all -- 0.0.0.0/0 10.1.1.0/24 [goto]
-    POST_foobar_010 all -- 0.0.0.0/0 10.10.10.10 [goto]
-    POST_foobar_011 all -- 0.0.0.0/0 0.0.0.0/0 [goto] match-set ipsetv4 dst
-    POST_foobar_02 all -- 0.0.0.0/0 10.1.0.0/16 [goto]
-    POST_foobar_03 all -- 0.0.0.0/0 10.2.2.0/24 [goto]
-    POST_foobar_04 all -- 0.0.0.0/0 10.2.0.0/16 [goto]
-    POST_foobar_05 all -- 0.0.0.0/0 10.0.0.0/8 [goto]
-    POST_public all -- 0.0.0.0/0 20.20.20.20 [goto]
-    POST_foobar_010 all -- 0.0.0.0/0 0.0.0.0/0 [goto]
-    POST_trusted all -- 0.0.0.0/0 0.0.0.0/0 [goto]
-    POST_internal all -- 0.0.0.0/0 0.0.0.0/0 [goto]
-    POST_public all -- 0.0.0.0/0 0.0.0.0/0 [goto]
-]])
-IP6TABLES_LIST_RULES([nat], [POSTROUTING_ZONES], 0,
-  [[POST_foobar_00 all ::/0 1234:5678::1:1:1 [goto]
-    POST_foobar_01 all ::/0 1234:5678::1:1:0/112 [goto]
-    POST_foobar_010 all ::/0 1234:5678::10:10:10 [goto]
-    POST_foobar_012 all ::/0 ::/0 [goto] match-set ipsetv6 dst
-    POST_foobar_02 all ::/0 1234:5678::1:0:0/96 [goto]
-    POST_foobar_03 all ::/0 1234:5678::2:2:0/112 [goto]
-    POST_foobar_04 all ::/0 1234:5678::2:0:0/96 [goto]
-    POST_foobar_05 all ::/0 1234:5678::/80 [goto]
-    POST_public all ::/0 1234:5678::20:20:20 [goto]
-    POST_foobar_010 all ::/0 ::/0 [goto]
-    POST_trusted all ::/0 ::/0 [goto]
-    POST_internal all ::/0 ::/0 [goto]
-    POST_public all ::/0 ::/0 [goto]
-]])
+IPTABLES_LIST_RULES([filter], [INPUT_POLICIES], 0, [dnl
+    IN_allow-host-ipv6 all -- 10.1.1.1 0.0.0.0/0
+    IN_foobar_00 all -- 10.1.1.1 0.0.0.0/0
+    REJECT all -- 10.1.1.1 0.0.0.0/0 reject-with icmp-port-unreachable
+    IN_allow-host-ipv6 all -- 10.1.1.0/24 0.0.0.0/0
+    IN_foobar_01 all -- 10.1.1.0/24 0.0.0.0/0
+    REJECT all -- 10.1.1.0/24 0.0.0.0/0 reject-with icmp-port-unreachable
+    IN_allow-host-ipv6 all -- 10.10.10.10 0.0.0.0/0
+    IN_foobar_010 all -- 10.10.10.10 0.0.0.0/0
+    REJECT all -- 10.10.10.10 0.0.0.0/0 reject-with icmp-port-unreachable
+    IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0 match-set ipsetv4 src
+    IN_foobar_011 all -- 0.0.0.0/0 0.0.0.0/0 match-set ipsetv4 src
+    REJECT all -- 0.0.0.0/0 0.0.0.0/0 match-set ipsetv4 src reject-with icmp-port-unreachable
+    IN_allow-host-ipv6 all -- 10.1.0.0/16 0.0.0.0/0
+    IN_foobar_02 all -- 10.1.0.0/16 0.0.0.0/0
+    REJECT all -- 10.1.0.0/16 0.0.0.0/0 reject-with icmp-port-unreachable
+    IN_allow-host-ipv6 all -- 10.2.2.0/24 0.0.0.0/0
+    IN_foobar_03 all -- 10.2.2.0/24 0.0.0.0/0
+    REJECT all -- 10.2.2.0/24 0.0.0.0/0 reject-with icmp-port-unreachable
+    IN_allow-host-ipv6 all -- 10.2.0.0/16 0.0.0.0/0
+    IN_foobar_04 all -- 10.2.0.0/16 0.0.0.0/0
+    REJECT all -- 10.2.0.0/16 0.0.0.0/0 reject-with icmp-port-unreachable
+    IN_allow-host-ipv6 all -- 10.0.0.0/8 0.0.0.0/0
+    IN_foobar_05 all -- 10.0.0.0/8 0.0.0.0/0
+    REJECT all -- 10.0.0.0/8 0.0.0.0/0 reject-with icmp-port-unreachable
+    IN_allow-host-ipv6 all -- 20.20.20.20 0.0.0.0/0
+    IN_public all -- 20.20.20.20 0.0.0.0/0
+    REJECT all -- 20.20.20.20 0.0.0.0/0 reject-with icmp-port-unreachable
+    IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    IN_foobar_010 all -- 0.0.0.0/0 0.0.0.0/0
+    REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+    IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    IN_internal all -- 0.0.0.0/0 0.0.0.0/0
+    REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+    IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    IN_trusted all -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT all -- 0.0.0.0/0 0.0.0.0/0
+    IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    IN_public all -- 0.0.0.0/0 0.0.0.0/0
+    REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+])
+IP6TABLES_LIST_RULES([filter], [INPUT_POLICIES], 0, [dnl
+    IN_allow-host-ipv6 all 1234:5678::1:1:1 ::/0
+    IN_foobar_00 all 1234:5678::1:1:1 ::/0
+    REJECT all 1234:5678::1:1:1 ::/0 reject-with icmp6-port-unreachable
+    IN_allow-host-ipv6 all 1234:5678::1:1:0/112 ::/0
+    IN_foobar_01 all 1234:5678::1:1:0/112 ::/0
+    REJECT all 1234:5678::1:1:0/112 ::/0 reject-with icmp6-port-unreachable
+    IN_allow-host-ipv6 all 1234:5678::10:10:10 ::/0
+    IN_foobar_010 all 1234:5678::10:10:10 ::/0
+    REJECT all 1234:5678::10:10:10 ::/0 reject-with icmp6-port-unreachable
+    IN_allow-host-ipv6 all ::/0 ::/0 match-set ipsetv6 src
+    IN_foobar_012 all ::/0 ::/0 match-set ipsetv6 src
+    REJECT all ::/0 ::/0 match-set ipsetv6 src reject-with icmp6-port-unreachable
+    IN_allow-host-ipv6 all 1234:5678::1:0:0/96 ::/0
+    IN_foobar_02 all 1234:5678::1:0:0/96 ::/0
+    REJECT all 1234:5678::1:0:0/96 ::/0 reject-with icmp6-port-unreachable
+    IN_allow-host-ipv6 all 1234:5678::2:2:0/112 ::/0
+    IN_foobar_03 all 1234:5678::2:2:0/112 ::/0
+    REJECT all 1234:5678::2:2:0/112 ::/0 reject-with icmp6-port-unreachable
+    IN_allow-host-ipv6 all 1234:5678::2:0:0/96 ::/0
+    IN_foobar_04 all 1234:5678::2:0:0/96 ::/0
+    REJECT all 1234:5678::2:0:0/96 ::/0 reject-with icmp6-port-unreachable
+    IN_allow-host-ipv6 all 1234:5678::/80 ::/0
+    IN_foobar_05 all 1234:5678::/80 ::/0
+    REJECT all 1234:5678::/80 ::/0 reject-with icmp6-port-unreachable
+    IN_allow-host-ipv6 all 1234:5678::20:20:20 ::/0
+    IN_public all 1234:5678::20:20:20 ::/0
+    REJECT all 1234:5678::20:20:20 ::/0 reject-with icmp6-port-unreachable
+    IN_allow-host-ipv6 all ::/0 ::/0
+    IN_foobar_010 all ::/0 ::/0
+    REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+    IN_allow-host-ipv6 all ::/0 ::/0
+    IN_internal all ::/0 ::/0
+    REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+    IN_allow-host-ipv6 all ::/0 ::/0
+    IN_trusted all ::/0 ::/0
+    ACCEPT all ::/0 ::/0
+    IN_allow-host-ipv6 all ::/0 ::/0
+    IN_public all ::/0 ::/0
+    REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+])
 
 FWD_END_TEST

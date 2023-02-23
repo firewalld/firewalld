@@ -477,22 +477,6 @@ class FirewallZone(object):
 
         return _zone
 
-    def change_default_zone(self, old_zone, new_zone, use_transaction=None):
-        self._fw.check_panic()
-
-        if use_transaction is None:
-            transaction = self.new_transaction()
-        else:
-            transaction = use_transaction
-
-        self.apply_zone_settings(new_zone, transaction)
-        self._interface(True, new_zone, "+", transaction, append=True)
-        if old_zone is not None and old_zone != "":
-            self._interface(False, old_zone, "+", transaction, append=True)
-
-        if use_transaction is None:
-            transaction.execute(True)
-
     def remove_interface(self, zone, interface,
                          use_transaction=None):
         self._fw.check_panic()
@@ -660,20 +644,22 @@ class FirewallZone(object):
     def list_sources(self, zone):
         return self.get_zone(zone).sources
 
-    def _interface_or_source_update_policies(self, enable, zone, interface, source, transaction):
-        # update policy dispatch "last" return rule
-        #
+    def _interface_or_source_update_zone_termination(self, enable, zone, interface, source, transaction):
+        self._interface_or_source_update_policies_derived_from_zone(enable, zone, interface, source, transaction, last=True)
+
+    def _interface_or_source_update_policies_derived_from_zone(self, enable, zone, interface, source, transaction, last=False):
         # host <--> zone
         policy = self.policy_name_from_zones(zone, "HOST")
         self._fw.policy._ingress_egress_pair(enable, policy, zone, "HOST",
                                              interface, source, "", "",
-                                             transaction, last=True)
+                                             transaction, last=last)
         policy = self.policy_name_from_zones("HOST", zone)
         self._fw.policy._ingress_egress_pair(enable, policy, "HOST", zone,
                                              "", "", interface, source,
-                                             transaction, last=True)
+                                             transaction, last=last)
         # zone <--> zone
-        for _zoneB in set(self.get_active_zones(append_default=False) + [zone]):
+        _zoneB_list = set(self.get_active_zones() + [zone]) if interface != "+" else [self._fw._default_zone]
+        for _zoneB in _zoneB_list:
             if _zoneB != zone and not self.get_zone(_zoneB).applied:
                 continue
 
@@ -684,20 +670,31 @@ class FirewallZone(object):
                 _zoneB_interfaces.append(interface)
             if zone == _zoneB and source and source not in _zoneB_sources:
                 _zoneB_sources.append(source)
+            # Need to consider dispatch to the default zone as well.
+            if interface == "+":
+                _zoneB_interfaces = ["+"]
+                _zoneB_sources = []
+            elif _zoneB == self._fw._default_zone and "+" not in _zoneB_interfaces:
+                _zoneB_interfaces.append("+")
 
             for _zoneB_interface in _zoneB_interfaces:
-                if _zoneB_interface in ["+", "*"]:
-                    continue
-
                 policy = self.policy_name_from_zones(zone, "ANY")
                 self._fw.policy._ingress_egress_pair(enable, policy, zone, _zoneB,
                                                      interface, source, _zoneB_interface, "",
-                                                     transaction, last=True)
+                                                     transaction, last=last)
+                policy = self.policy_name_from_zones("ANY", zone)
+                self._fw.policy._ingress_egress_pair(enable, policy, _zoneB, zone,
+                                                     _zoneB_interface, "", interface, source,
+                                                     transaction, last=last)
                 if interface != _zoneB_interface:
                     policy = self.policy_name_from_zones(_zoneB, "ANY")
                     self._fw.policy._ingress_egress_pair(enable, policy, _zoneB, zone,
                                                          _zoneB_interface, "", interface, source,
-                                                         transaction, last=True)
+                                                         transaction, last=last)
+                    policy = self.policy_name_from_zones("ANY", _zoneB)
+                    self._fw.policy._ingress_egress_pair(enable, policy, zone, _zoneB,
+                                                         interface, source, _zoneB_interface, "",
+                                                         transaction, last=last)
             for _zoneB_source in _zoneB_sources:
                 # must be same IPv4/IPv6 family!
                 if source and self.check_source(source) != self.check_source(_zoneB_source):
@@ -705,16 +702,24 @@ class FirewallZone(object):
                 policy = self.policy_name_from_zones(zone, "ANY")
                 self._fw.policy._ingress_egress_pair(enable, policy, zone, _zoneB,
                                                      interface, source, "", _zoneB_source,
-                                                     transaction, last=True)
+                                                     transaction, last=last)
+                policy = self.policy_name_from_zones("ANY", zone)
+                self._fw.policy._ingress_egress_pair(enable, policy, _zoneB, zone,
+                                                     "", _zoneB_source, interface, source,
+                                                     transaction, last=last)
                 if source != _zoneB_source:
                     policy = self.policy_name_from_zones(_zoneB, "ANY")
                     self._fw.policy._ingress_egress_pair(enable, policy, _zoneB, zone,
                                                          "", _zoneB_source, interface, source,
-                                                         transaction, last=True)
+                                                         transaction, last=last)
+                    policy = self.policy_name_from_zones("ANY", _zoneB)
+                    self._fw.policy._ingress_egress_pair(enable, policy, zone, _zoneB,
+                                                         interface, source, "", _zoneB_source,
+                                                         transaction, last=last)
 
+    def _interface_or_source_update_policies(self, enable, zone, interface, source, transaction):
         # update policy dispatch for any policy using this zone as an
         # ingress-zone or egress-zone
-        #
         for policy in self._fw.policy.get_policies_not_derived_from_zone():
             if enable and not self._fw.policy.get_policy(policy).applied:
                 transaction.add_post(self._fw.policy.try_apply_policy_settings, policy)
@@ -722,81 +727,65 @@ class FirewallZone(object):
                 if not enable:
                     transaction.add_post(self._fw.policy.try_unapply_policy_settings, policy)
 
-                if zone in self._fw.policy.list_ingress_zones(policy) or "ANY" in self._fw.policy.list_ingress_zones(policy):
-                    _egress_zones = self._fw.policy.list_egress_zones(policy)
-                    if "ANY" in _egress_zones:
-                        _egress_zones = set(self.get_active_zones(append_default=False) + [zone])
-                    for _egress_zone in _egress_zones:
-                        if _egress_zone == "HOST":
-                            _egress_interfaces = [""]
-                            _egress_sources = []
-                        elif _egress_zone != zone and not self.get_zone(_egress_zone).applied:
-                            continue
-                        else:
-                            _egress_interfaces = self.list_interfaces(_egress_zone)
-                            _egress_sources = self.list_sources(_egress_zone)
+                ingress_zone_list = self._fw.policy.list_ingress_zones(policy)
+                egress_zone_list = self._fw.policy.list_egress_zones(policy)
 
-                        for _egress_interface in _egress_interfaces:
-                            self._fw.policy._ingress_egress_pair(enable, policy, zone, _egress_zone,
-                                                                 interface, source, _egress_interface, "",
-                                                                 transaction)
-                        for _egress_source in _egress_sources:
-                            # must be same IPv4/IPv6 family!
-                            if source and self.check_source(source) != self.check_source(_egress_source):
-                                continue
-                            self._fw.policy._ingress_egress_pair(enable, policy, zone, _egress_zone,
-                                                                 interface, source, "", _egress_source,
-                                                                 transaction)
-                elif zone in self._fw.policy.list_egress_zones(policy) or "ANY" in self._fw.policy.list_egress_zones(policy):
-                    _ingress_zones = self._fw.policy.list_ingress_zones(policy)
-                    if "ANY" in _ingress_zones:
-                        _ingress_zones = set(self.get_active_zones(append_default=False) + [zone])
-                    for _ingress_zone in _ingress_zones:
-                        if _ingress_zone == "HOST":
-                            _ingress_interfaces = [""]
-                            _ingress_sources = []
-                        elif _ingress_zone != zone and not self.get_zone(_ingress_zone).applied:
-                            continue
-                        else:
-                            _ingress_interfaces = self.list_interfaces(_ingress_zone)
-                            _ingress_sources = self.list_sources(_ingress_zone)
+                if "ANY" in ingress_zone_list and "ANY" in egress_zone_list:
+                    self._fw.policy._ingress_zone(enable, policy, zone, transaction,
+                                                  ingressInterface=interface, ingressSource=source)
+                    self._fw.policy._egress_zone(enable, policy, zone, transaction,
+                                                 egressInterface=interface, egressSource=source)
+                elif "ANY" in ingress_zone_list and "HOST" in egress_zone_list:
+                    self._fw.policy._ingress_zone(enable, policy, zone, transaction,
+                                                  ingressInterface=interface, ingressSource=source)
+                elif "HOST" in ingress_zone_list and "ANY" in egress_zone_list:
+                    self._fw.policy._egress_zone(enable, policy, zone, transaction,
+                                                 egressInterface=interface, egressSource=source)
+                elif zone in ingress_zone_list and "ANY" in egress_zone_list:
+                    self._fw.policy._ingress_zone(enable, policy, zone, transaction,
+                                                  ingressInterface=interface, ingressSource=source)
+                    self._fw.policy._egress_zone(enable, policy, zone, transaction,
+                                                 egressInterface=interface, egressSource=source)
+                elif zone in ingress_zone_list and "HOST" in egress_zone_list:
+                    self._fw.policy._ingress_zone(enable, policy, zone, transaction,
+                                                  ingressInterface=interface, ingressSource=source)
+                elif "ANY" in ingress_zone_list and zone in egress_zone_list:
+                    self._fw.policy._ingress_zone(enable, policy, zone, transaction,
+                                                  ingressInterface=interface, ingressSource=source)
+                    self._fw.policy._egress_zone(enable, policy, zone, transaction,
+                                                 egressInterface=interface, egressSource=source)
+                elif "HOST" in ingress_zone_list and zone in egress_zone_list:
+                    self._fw.policy._egress_zone(enable, policy, zone, transaction,
+                                                 egressInterface=interface, egressSource=source)
+                elif zone in ingress_zone_list and zone in egress_zone_list:
+                    self._fw.policy._ingress_zone(enable, policy, zone, transaction,
+                                                  ingressInterface=interface, ingressSource=source)
+                    self._fw.policy._egress_zone(enable, policy, zone, transaction,
+                                                 egressInterface=interface, egressSource=source)
+                elif zone in ingress_zone_list:
+                    self._fw.policy._ingress_zone(enable, policy, zone, transaction,
+                                                  ingressInterface=interface, ingressSource=source)
+                elif zone in egress_zone_list:
+                    self._fw.policy._egress_zone(enable, policy, zone, transaction,
+                                                 egressInterface=interface, egressSource=source)
+                else:
+                    raise FirewallError(errors.UNKNOWN_ERROR, f"Unhandled interface update for policy '{policy}'.")
 
-                        for _ingress_interface in _ingress_interfaces:
-                            self._fw.policy._ingress_egress_pair(enable, policy, _ingress_zone, zone,
-                                                                 _ingress_interface, "", interface, source,
-                                                                 transaction)
-                        for _ingress_source in _ingress_sources:
-                            # must be same IPv4/IPv6 family!
-                            if source and self.check_source(_ingress_source) != self.check_source(source):
-                                continue
-                            self._fw.policy._ingress_egress_pair(enable, policy, _ingress_zone, zone,
-                                                                 "", _ingress_source, interface, source,
-                                                                 transaction)
-
-    def _interface(self, enable, zone, interface, transaction, append=False):
+    def _interface(self, enable, zone, interface, transaction):
         for backend in self._fw.enabled_backends():
             if not backend.policies_supported:
                 continue
-            for policy in self._zone_policies[zone]:
-                for (table, chain) in self._fw.policy._get_table_chains_for_zone_dispatch(policy):
-                    rules = backend.build_zone_source_interface_rules(enable,
-                                    zone, policy, interface, table, chain, append)
-                    transaction.add_rules(backend, rules)
+            if interface == "+":
+                continue
 
             # intra zone forward
             policy = self.policy_name_from_zones(zone, "ANY")
-            # Skip adding wildcard/catch-all interface (for default
-            # zone). Otherwise it would allow forwarding from interface
-            # in default zone -> interface not in default zone (but in
-            # a different zone).
-            if self.get_zone(zone).forward and interface not in ["+", "*"]:
+            if self.get_zone(zone).forward:
                 rules = backend.build_zone_forward_rules(enable, zone, policy, "filter", interface=interface)
                 transaction.add_rules(backend, rules)
 
-        # skip policy updates for the default zone
-        if interface in ["+", "*"]:
-            return
-
+        self._interface_or_source_update_zone_termination(enable, zone, interface, "", transaction)
+        self._interface_or_source_update_policies_derived_from_zone(enable, zone, interface, "", transaction)
         self._interface_or_source_update_policies(enable, zone, interface, "", transaction)
 
     # IPSETS
@@ -829,11 +818,6 @@ class FirewallZone(object):
         for backend in [self._fw.get_backend_by_ipv(ipv)] if ipv else self._fw.enabled_backends():
             if not backend.policies_supported:
                 continue
-            for policy in self._zone_policies[zone]:
-                for (table, chain) in self._fw.policy._get_table_chains_for_zone_dispatch(policy):
-                    rules = backend.build_zone_source_address_rules(enable, zone,
-                                            policy, source, table, chain)
-                    transaction.add_rules(backend, rules)
 
             # intra zone forward
             policy = self.policy_name_from_zones(zone, "ANY")
@@ -841,6 +825,8 @@ class FirewallZone(object):
                 rules = backend.build_zone_forward_rules(enable, zone, policy, "filter", source=source)
                 transaction.add_rules(backend, rules)
 
+        self._interface_or_source_update_zone_termination(enable, zone, "", source, transaction)
+        self._interface_or_source_update_policies_derived_from_zone(enable, zone, "", source, transaction)
         self._interface_or_source_update_policies(enable, zone, "", source, transaction)
 
     def add_service(self, zone, service, timeout=0, sender=None):

@@ -1137,6 +1137,9 @@ class FirewallD(DbusServiceObject):
         self.accessCheck(sender)
         self.fw.set_default_zone(zone)
         self.DefaultZoneChanged(zone)
+        self.fw.reload()
+        self.config.reload()
+        self.Reloaded()
 
     @dbus.service.signal(config.dbus.DBUS_INTERFACE, signature='s')
     @dbus_handle_exceptions

@@ -16,40 +16,90 @@ FWD_RELOAD
 dnl Checking when the internal zone (iifname) is the only one with a wildcard
 dnl
 FWD_CHECK([--zone internal --add-interface tun+], 0, [ignore])
-NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
+NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES], 0, [dnl
     table inet firewalld {
-        chain filter_FORWARD_POLICIES_pre {
-            iifname "foobar0" oifname "foobar0" return
-            iifname "foobar0" oifname "foobar1" return
-            iifname "foobar0" oifname "tun*" return
+        chain filter_FORWARD_POLICIES {
+            iifname "foobar0" oifname "foobar0" jump filter_FWD_internal
+            iifname "foobar0" oifname "foobar0" reject with icmpx admin-prohibited
+            iifname "foobar0" oifname "foobar1" jump filter_FWD_internal
+            iifname "foobar0" oifname "foobar1" reject with icmpx admin-prohibited
+            iifname "foobar0" oifname "tun*" jump filter_FWD_internal
+            iifname "foobar0" oifname "tun*" reject with icmpx admin-prohibited
             iifname "foobar0" oifname "foobar2" jump filter_FWD_policy_foobar
-            iifname "foobar0" oifname "foobar2" return
+            iifname "foobar0" oifname "foobar2" jump filter_FWD_internal
+            iifname "foobar0" oifname "foobar2" reject with icmpx admin-prohibited
             iifname "foobar0" oifname "foobar3" jump filter_FWD_policy_foobar
-            iifname "foobar0" oifname "foobar3" return
-            iifname "foobar1" oifname "foobar0" return
-            iifname "foobar1" oifname "foobar1" return
-            iifname "foobar1" oifname "tun*" return
+            iifname "foobar0" oifname "foobar3" jump filter_FWD_internal
+            iifname "foobar0" oifname "foobar3" reject with icmpx admin-prohibited
+            iifname "foobar0" jump filter_FWD_policy_foobar
+            iifname "foobar0" jump filter_FWD_internal
+            iifname "foobar0" reject with icmpx admin-prohibited
+            iifname "foobar1" oifname "foobar0" jump filter_FWD_internal
+            iifname "foobar1" oifname "foobar0" reject with icmpx admin-prohibited
+            iifname "foobar1" oifname "foobar1" jump filter_FWD_internal
+            iifname "foobar1" oifname "foobar1" reject with icmpx admin-prohibited
+            iifname "foobar1" oifname "tun*" jump filter_FWD_internal
+            iifname "foobar1" oifname "tun*" reject with icmpx admin-prohibited
             iifname "foobar1" oifname "foobar2" jump filter_FWD_policy_foobar
-            iifname "foobar1" oifname "foobar2" return
+            iifname "foobar1" oifname "foobar2" jump filter_FWD_internal
+            iifname "foobar1" oifname "foobar2" reject with icmpx admin-prohibited
             iifname "foobar1" oifname "foobar3" jump filter_FWD_policy_foobar
-            iifname "foobar1" oifname "foobar3" return
-            iifname "tun*" oifname "foobar0" return
-            iifname "tun*" oifname "foobar1" return
-            iifname "tun*" oifname "tun*" return
+            iifname "foobar1" oifname "foobar3" jump filter_FWD_internal
+            iifname "foobar1" oifname "foobar3" reject with icmpx admin-prohibited
+            iifname "foobar1" jump filter_FWD_policy_foobar
+            iifname "foobar1" jump filter_FWD_internal
+            iifname "foobar1" reject with icmpx admin-prohibited
+            iifname "tun*" oifname "foobar0" jump filter_FWD_internal
+            iifname "tun*" oifname "foobar0" reject with icmpx admin-prohibited
+            iifname "tun*" oifname "foobar1" jump filter_FWD_internal
+            iifname "tun*" oifname "foobar1" reject with icmpx admin-prohibited
+            iifname "tun*" oifname "tun*" jump filter_FWD_internal
+            iifname "tun*" oifname "tun*" reject with icmpx admin-prohibited
             iifname "tun*" oifname "foobar2" jump filter_FWD_policy_foobar
-            iifname "tun*" oifname "foobar2" return
+            iifname "tun*" oifname "foobar2" jump filter_FWD_internal
+            iifname "tun*" oifname "foobar2" reject with icmpx admin-prohibited
             iifname "tun*" oifname "foobar3" jump filter_FWD_policy_foobar
-            iifname "tun*" oifname "foobar3" return
-            iifname "foobar2" oifname "foobar0" return
-            iifname "foobar2" oifname "foobar1" return
-            iifname "foobar2" oifname "tun*" return
-            iifname "foobar2" oifname "foobar2" return
-            iifname "foobar2" oifname "foobar3" return
-            iifname "foobar3" oifname "foobar0" return
-            iifname "foobar3" oifname "foobar1" return
-            iifname "foobar3" oifname "tun*" return
-            iifname "foobar3" oifname "foobar2" return
-            iifname "foobar3" oifname "foobar3" return
+            iifname "tun*" oifname "foobar3" jump filter_FWD_internal
+            iifname "tun*" oifname "foobar3" reject with icmpx admin-prohibited
+            iifname "tun*" jump filter_FWD_policy_foobar
+            iifname "tun*" jump filter_FWD_internal
+            iifname "tun*" reject with icmpx admin-prohibited
+            iifname "foobar2" oifname "foobar0" jump filter_FWD_public
+            iifname "foobar2" oifname "foobar0" reject with icmpx admin-prohibited
+            iifname "foobar2" oifname "foobar1" jump filter_FWD_public
+            iifname "foobar2" oifname "foobar1" reject with icmpx admin-prohibited
+            iifname "foobar2" oifname "tun*" jump filter_FWD_public
+            iifname "foobar2" oifname "tun*" reject with icmpx admin-prohibited
+            iifname "foobar2" oifname "foobar2" jump filter_FWD_public
+            iifname "foobar2" oifname "foobar2" reject with icmpx admin-prohibited
+            iifname "foobar2" oifname "foobar3" jump filter_FWD_public
+            iifname "foobar2" oifname "foobar3" reject with icmpx admin-prohibited
+            iifname "foobar2" jump filter_FWD_public
+            iifname "foobar2" reject with icmpx admin-prohibited
+            iifname "foobar3" oifname "foobar0" jump filter_FWD_public
+            iifname "foobar3" oifname "foobar0" reject with icmpx admin-prohibited
+            iifname "foobar3" oifname "foobar1" jump filter_FWD_public
+            iifname "foobar3" oifname "foobar1" reject with icmpx admin-prohibited
+            iifname "foobar3" oifname "tun*" jump filter_FWD_public
+            iifname "foobar3" oifname "tun*" reject with icmpx admin-prohibited
+            iifname "foobar3" oifname "foobar2" jump filter_FWD_public
+            iifname "foobar3" oifname "foobar2" reject with icmpx admin-prohibited
+            iifname "foobar3" oifname "foobar3" jump filter_FWD_public
+            iifname "foobar3" oifname "foobar3" reject with icmpx admin-prohibited
+            iifname "foobar3" jump filter_FWD_public
+            iifname "foobar3" reject with icmpx admin-prohibited
+            oifname "foobar0" jump filter_FWD_public
+            oifname "foobar0" reject with icmpx admin-prohibited
+            oifname "foobar1" jump filter_FWD_public
+            oifname "foobar1" reject with icmpx admin-prohibited
+            oifname "tun*" jump filter_FWD_public
+            oifname "tun*" reject with icmpx admin-prohibited
+            oifname "foobar2" jump filter_FWD_public
+            oifname "foobar2" reject with icmpx admin-prohibited
+            oifname "foobar3" jump filter_FWD_public
+            oifname "foobar3" reject with icmpx admin-prohibited
+            jump filter_FWD_public
+            reject with icmpx admin-prohibited
         }
     }
 ])
@@ -59,40 +109,89 @@ FWD_CHECK([--zone internal --remove-interface tun+], 0, [ignore])
 dnl Checking when the public zone (oifname) is the only one with a wildcard
 dnl
 FWD_CHECK([--zone public --add-interface tun+], 0, [ignore])
-NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
+NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES], 0, [dnl
     table inet firewalld {
-        chain filter_FORWARD_POLICIES_pre {
-            iifname "foobar0" oifname "foobar0" return
-            iifname "foobar0" oifname "foobar1" return
+        chain filter_FORWARD_POLICIES {
+            iifname "foobar0" oifname "foobar0" jump filter_FWD_internal
+            iifname "foobar0" oifname "foobar0" reject with icmpx admin-prohibited
+            iifname "foobar0" oifname "foobar1" jump filter_FWD_internal
+            iifname "foobar0" oifname "foobar1" reject with icmpx admin-prohibited
             iifname "foobar0" oifname "foobar2" jump filter_FWD_policy_foobar
-            iifname "foobar0" oifname "foobar2" return
+            iifname "foobar0" oifname "foobar2" jump filter_FWD_internal
+            iifname "foobar0" oifname "foobar2" reject with icmpx admin-prohibited
             iifname "foobar0" oifname "foobar3" jump filter_FWD_policy_foobar
-            iifname "foobar0" oifname "foobar3" return
+            iifname "foobar0" oifname "foobar3" jump filter_FWD_internal
+            iifname "foobar0" oifname "foobar3" reject with icmpx admin-prohibited
             iifname "foobar0" oifname "tun*" jump filter_FWD_policy_foobar
-            iifname "foobar0" oifname "tun*" return
-            iifname "foobar1" oifname "foobar0" return
-            iifname "foobar1" oifname "foobar1" return
+            iifname "foobar0" oifname "tun*" jump filter_FWD_internal
+            iifname "foobar0" oifname "tun*" reject with icmpx admin-prohibited
+            iifname "foobar0" jump filter_FWD_policy_foobar
+            iifname "foobar0" jump filter_FWD_internal
+            iifname "foobar0" reject with icmpx admin-prohibited
+            iifname "foobar1" oifname "foobar0" jump filter_FWD_internal
+            iifname "foobar1" oifname "foobar0" reject with icmpx admin-prohibited
+            iifname "foobar1" oifname "foobar1" jump filter_FWD_internal
+            iifname "foobar1" oifname "foobar1" reject with icmpx admin-prohibited
             iifname "foobar1" oifname "foobar2" jump filter_FWD_policy_foobar
-            iifname "foobar1" oifname "foobar2" return
+            iifname "foobar1" oifname "foobar2" jump filter_FWD_internal
+            iifname "foobar1" oifname "foobar2" reject with icmpx admin-prohibited
             iifname "foobar1" oifname "foobar3" jump filter_FWD_policy_foobar
-            iifname "foobar1" oifname "foobar3" return
+            iifname "foobar1" oifname "foobar3" jump filter_FWD_internal
+            iifname "foobar1" oifname "foobar3" reject with icmpx admin-prohibited
             iifname "foobar1" oifname "tun*" jump filter_FWD_policy_foobar
-            iifname "foobar1" oifname "tun*" return
-            iifname "foobar2" oifname "foobar0" return
-            iifname "foobar2" oifname "foobar1" return
-            iifname "foobar2" oifname "foobar2" return
-            iifname "foobar2" oifname "foobar3" return
-            iifname "foobar2" oifname "tun*" return
-            iifname "foobar3" oifname "foobar0" return
-            iifname "foobar3" oifname "foobar1" return
-            iifname "foobar3" oifname "foobar2" return
-            iifname "foobar3" oifname "foobar3" return
-            iifname "foobar3" oifname "tun*" return
-            iifname "tun*" oifname "foobar0" return
-            iifname "tun*" oifname "foobar1" return
-            iifname "tun*" oifname "foobar2" return
-            iifname "tun*" oifname "foobar3" return
-            iifname "tun*" oifname "tun*" return
+            iifname "foobar1" oifname "tun*" jump filter_FWD_internal
+            iifname "foobar1" oifname "tun*" reject with icmpx admin-prohibited
+            iifname "foobar1" jump filter_FWD_policy_foobar
+            iifname "foobar1" jump filter_FWD_internal
+            iifname "foobar1" reject with icmpx admin-prohibited
+            iifname "foobar2" oifname "foobar0" jump filter_FWD_public
+            iifname "foobar2" oifname "foobar0" reject with icmpx admin-prohibited
+            iifname "foobar2" oifname "foobar1" jump filter_FWD_public
+            iifname "foobar2" oifname "foobar1" reject with icmpx admin-prohibited
+            iifname "foobar2" oifname "foobar2" jump filter_FWD_public
+            iifname "foobar2" oifname "foobar2" reject with icmpx admin-prohibited
+            iifname "foobar2" oifname "foobar3" jump filter_FWD_public
+            iifname "foobar2" oifname "foobar3" reject with icmpx admin-prohibited
+            iifname "foobar2" oifname "tun*" jump filter_FWD_public
+            iifname "foobar2" oifname "tun*" reject with icmpx admin-prohibited
+            iifname "foobar2" jump filter_FWD_public
+            iifname "foobar2" reject with icmpx admin-prohibited
+            iifname "foobar3" oifname "foobar0" jump filter_FWD_public
+            iifname "foobar3" oifname "foobar0" reject with icmpx admin-prohibited
+            iifname "foobar3" oifname "foobar1" jump filter_FWD_public
+            iifname "foobar3" oifname "foobar1" reject with icmpx admin-prohibited
+            iifname "foobar3" oifname "foobar2" jump filter_FWD_public
+            iifname "foobar3" oifname "foobar2" reject with icmpx admin-prohibited
+            iifname "foobar3" oifname "foobar3" jump filter_FWD_public
+            iifname "foobar3" oifname "foobar3" reject with icmpx admin-prohibited
+            iifname "foobar3" oifname "tun*" jump filter_FWD_public
+            iifname "foobar3" oifname "tun*" reject with icmpx admin-prohibited
+            iifname "foobar3" jump filter_FWD_public
+            iifname "foobar3" reject with icmpx admin-prohibited
+            iifname "tun*" oifname "foobar0" jump filter_FWD_public
+            iifname "tun*" oifname "foobar0" reject with icmpx admin-prohibited
+            iifname "tun*" oifname "foobar1" jump filter_FWD_public
+            iifname "tun*" oifname "foobar1" reject with icmpx admin-prohibited
+            iifname "tun*" oifname "foobar2" jump filter_FWD_public
+            iifname "tun*" oifname "foobar2" reject with icmpx admin-prohibited
+            iifname "tun*" oifname "foobar3" jump filter_FWD_public
+            iifname "tun*" oifname "foobar3" reject with icmpx admin-prohibited
+            iifname "tun*" oifname "tun*" jump filter_FWD_public
+            iifname "tun*" oifname "tun*" reject with icmpx admin-prohibited
+            iifname "tun*" jump filter_FWD_public
+            iifname "tun*" reject with icmpx admin-prohibited
+            oifname "foobar0" jump filter_FWD_public
+            oifname "foobar0" reject with icmpx admin-prohibited
+            oifname "foobar1" jump filter_FWD_public
+            oifname "foobar1" reject with icmpx admin-prohibited
+            oifname "foobar2" jump filter_FWD_public
+            oifname "foobar2" reject with icmpx admin-prohibited
+            oifname "foobar3" jump filter_FWD_public
+            oifname "foobar3" reject with icmpx admin-prohibited
+            oifname "tun*" jump filter_FWD_public
+            oifname "tun*" reject with icmpx admin-prohibited
+            jump filter_FWD_public
+            reject with icmpx admin-prohibited
         }
     }
 ])
@@ -100,54 +199,119 @@ NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
 dnl Checking when they are both wildcards
 dnl
 FWD_CHECK([--zone internal --add-interface net+], 0, [ignore])
-NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
+NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES], 0, [dnl
     table inet firewalld {
-        chain filter_FORWARD_POLICIES_pre {
-            iifname "foobar0" oifname "foobar0" return
-            iifname "foobar0" oifname "foobar1" return
-            iifname "foobar0" oifname "net*" return
+        chain filter_FORWARD_POLICIES {
+            iifname "foobar0" oifname "foobar0" jump filter_FWD_internal
+            iifname "foobar0" oifname "foobar0" reject with icmpx admin-prohibited
+            iifname "foobar0" oifname "foobar1" jump filter_FWD_internal
+            iifname "foobar0" oifname "foobar1" reject with icmpx admin-prohibited
+            iifname "foobar0" oifname "net*" jump filter_FWD_internal
+            iifname "foobar0" oifname "net*" reject with icmpx admin-prohibited
             iifname "foobar0" oifname "foobar2" jump filter_FWD_policy_foobar
-            iifname "foobar0" oifname "foobar2" return
+            iifname "foobar0" oifname "foobar2" jump filter_FWD_internal
+            iifname "foobar0" oifname "foobar2" reject with icmpx admin-prohibited
             iifname "foobar0" oifname "foobar3" jump filter_FWD_policy_foobar
-            iifname "foobar0" oifname "foobar3" return
+            iifname "foobar0" oifname "foobar3" jump filter_FWD_internal
+            iifname "foobar0" oifname "foobar3" reject with icmpx admin-prohibited
             iifname "foobar0" oifname "tun*" jump filter_FWD_policy_foobar
-            iifname "foobar0" oifname "tun*" return
-            iifname "foobar1" oifname "foobar0" return
-            iifname "foobar1" oifname "foobar1" return
-            iifname "foobar1" oifname "net*" return
+            iifname "foobar0" oifname "tun*" jump filter_FWD_internal
+            iifname "foobar0" oifname "tun*" reject with icmpx admin-prohibited
+            iifname "foobar0" jump filter_FWD_policy_foobar
+            iifname "foobar0" jump filter_FWD_internal
+            iifname "foobar0" reject with icmpx admin-prohibited
+            iifname "foobar1" oifname "foobar0" jump filter_FWD_internal
+            iifname "foobar1" oifname "foobar0" reject with icmpx admin-prohibited
+            iifname "foobar1" oifname "foobar1" jump filter_FWD_internal
+            iifname "foobar1" oifname "foobar1" reject with icmpx admin-prohibited
+            iifname "foobar1" oifname "net*" jump filter_FWD_internal
+            iifname "foobar1" oifname "net*" reject with icmpx admin-prohibited
             iifname "foobar1" oifname "foobar2" jump filter_FWD_policy_foobar
-            iifname "foobar1" oifname "foobar2" return
+            iifname "foobar1" oifname "foobar2" jump filter_FWD_internal
+            iifname "foobar1" oifname "foobar2" reject with icmpx admin-prohibited
             iifname "foobar1" oifname "foobar3" jump filter_FWD_policy_foobar
-            iifname "foobar1" oifname "foobar3" return
+            iifname "foobar1" oifname "foobar3" jump filter_FWD_internal
+            iifname "foobar1" oifname "foobar3" reject with icmpx admin-prohibited
             iifname "foobar1" oifname "tun*" jump filter_FWD_policy_foobar
-            iifname "foobar1" oifname "tun*" return
-            iifname "net*" oifname "foobar0" return
-            iifname "net*" oifname "foobar1" return
-            iifname "net*" oifname "net*" return
+            iifname "foobar1" oifname "tun*" jump filter_FWD_internal
+            iifname "foobar1" oifname "tun*" reject with icmpx admin-prohibited
+            iifname "foobar1" jump filter_FWD_policy_foobar
+            iifname "foobar1" jump filter_FWD_internal
+            iifname "foobar1" reject with icmpx admin-prohibited
+            iifname "net*" oifname "foobar0" jump filter_FWD_internal
+            iifname "net*" oifname "foobar0" reject with icmpx admin-prohibited
+            iifname "net*" oifname "foobar1" jump filter_FWD_internal
+            iifname "net*" oifname "foobar1" reject with icmpx admin-prohibited
+            iifname "net*" oifname "net*" jump filter_FWD_internal
+            iifname "net*" oifname "net*" reject with icmpx admin-prohibited
             iifname "net*" oifname "foobar2" jump filter_FWD_policy_foobar
-            iifname "net*" oifname "foobar2" return
+            iifname "net*" oifname "foobar2" jump filter_FWD_internal
+            iifname "net*" oifname "foobar2" reject with icmpx admin-prohibited
             iifname "net*" oifname "foobar3" jump filter_FWD_policy_foobar
-            iifname "net*" oifname "foobar3" return
+            iifname "net*" oifname "foobar3" jump filter_FWD_internal
+            iifname "net*" oifname "foobar3" reject with icmpx admin-prohibited
             iifname "net*" oifname "tun*" jump filter_FWD_policy_foobar
-            iifname "net*" oifname "tun*" return
-            iifname "foobar2" oifname "foobar0" return
-            iifname "foobar2" oifname "foobar1" return
-            iifname "foobar2" oifname "net*" return
-            iifname "foobar2" oifname "foobar2" return
-            iifname "foobar2" oifname "foobar3" return
-            iifname "foobar2" oifname "tun*" return
-            iifname "foobar3" oifname "foobar0" return
-            iifname "foobar3" oifname "foobar1" return
-            iifname "foobar3" oifname "net*" return
-            iifname "foobar3" oifname "foobar2" return
-            iifname "foobar3" oifname "foobar3" return
-            iifname "foobar3" oifname "tun*" return
-            iifname "tun*" oifname "foobar0" return
-            iifname "tun*" oifname "foobar1" return
-            iifname "tun*" oifname "net*" return
-            iifname "tun*" oifname "foobar2" return
-            iifname "tun*" oifname "foobar3" return
-            iifname "tun*" oifname "tun*" return
+            iifname "net*" oifname "tun*" jump filter_FWD_internal
+            iifname "net*" oifname "tun*" reject with icmpx admin-prohibited
+            iifname "net*" jump filter_FWD_policy_foobar
+            iifname "net*" jump filter_FWD_internal
+            iifname "net*" reject with icmpx admin-prohibited
+            iifname "foobar2" oifname "foobar0" jump filter_FWD_public
+            iifname "foobar2" oifname "foobar0" reject with icmpx admin-prohibited
+            iifname "foobar2" oifname "foobar1" jump filter_FWD_public
+            iifname "foobar2" oifname "foobar1" reject with icmpx admin-prohibited
+            iifname "foobar2" oifname "net*" jump filter_FWD_public
+            iifname "foobar2" oifname "net*" reject with icmpx admin-prohibited
+            iifname "foobar2" oifname "foobar2" jump filter_FWD_public
+            iifname "foobar2" oifname "foobar2" reject with icmpx admin-prohibited
+            iifname "foobar2" oifname "foobar3" jump filter_FWD_public
+            iifname "foobar2" oifname "foobar3" reject with icmpx admin-prohibited
+            iifname "foobar2" oifname "tun*" jump filter_FWD_public
+            iifname "foobar2" oifname "tun*" reject with icmpx admin-prohibited
+            iifname "foobar2" jump filter_FWD_public
+            iifname "foobar2" reject with icmpx admin-prohibited
+            iifname "foobar3" oifname "foobar0" jump filter_FWD_public
+            iifname "foobar3" oifname "foobar0" reject with icmpx admin-prohibited
+            iifname "foobar3" oifname "foobar1" jump filter_FWD_public
+            iifname "foobar3" oifname "foobar1" reject with icmpx admin-prohibited
+            iifname "foobar3" oifname "net*" jump filter_FWD_public
+            iifname "foobar3" oifname "net*" reject with icmpx admin-prohibited
+            iifname "foobar3" oifname "foobar2" jump filter_FWD_public
+            iifname "foobar3" oifname "foobar2" reject with icmpx admin-prohibited
+            iifname "foobar3" oifname "foobar3" jump filter_FWD_public
+            iifname "foobar3" oifname "foobar3" reject with icmpx admin-prohibited
+            iifname "foobar3" oifname "tun*" jump filter_FWD_public
+            iifname "foobar3" oifname "tun*" reject with icmpx admin-prohibited
+            iifname "foobar3" jump filter_FWD_public
+            iifname "foobar3" reject with icmpx admin-prohibited
+            iifname "tun*" oifname "foobar0" jump filter_FWD_public
+            iifname "tun*" oifname "foobar0" reject with icmpx admin-prohibited
+            iifname "tun*" oifname "foobar1" jump filter_FWD_public
+            iifname "tun*" oifname "foobar1" reject with icmpx admin-prohibited
+            iifname "tun*" oifname "net*" jump filter_FWD_public
+            iifname "tun*" oifname "net*" reject with icmpx admin-prohibited
+            iifname "tun*" oifname "foobar2" jump filter_FWD_public
+            iifname "tun*" oifname "foobar2" reject with icmpx admin-prohibited
+            iifname "tun*" oifname "foobar3" jump filter_FWD_public
+            iifname "tun*" oifname "foobar3" reject with icmpx admin-prohibited
+            iifname "tun*" oifname "tun*" jump filter_FWD_public
+            iifname "tun*" oifname "tun*" reject with icmpx admin-prohibited
+            iifname "tun*" jump filter_FWD_public
+            iifname "tun*" reject with icmpx admin-prohibited
+            oifname "foobar0" jump filter_FWD_public
+            oifname "foobar0" reject with icmpx admin-prohibited
+            oifname "foobar1" jump filter_FWD_public
+            oifname "foobar1" reject with icmpx admin-prohibited
+            oifname "net*" jump filter_FWD_public
+            oifname "net*" reject with icmpx admin-prohibited
+            oifname "foobar2" jump filter_FWD_public
+            oifname "foobar2" reject with icmpx admin-prohibited
+            oifname "foobar3" jump filter_FWD_public
+            oifname "foobar3" reject with icmpx admin-prohibited
+            oifname "tun*" jump filter_FWD_public
+            oifname "tun*" reject with icmpx admin-prohibited
+            jump filter_FWD_public
+            reject with icmpx admin-prohibited
         }
     }
 ])
