@@ -38,10 +38,10 @@ update-docs:
 clean-docs:
 	$(MAKE) -C doc/xml clean
 
-test-rpm: dist-gzip
+rpm test-rpm: dist-gzip
 	@rpmbuild -ta $(PACKAGE_NAME)-$(PACKAGE_VERSION).tar.gz
 
-test-srpm: dist-gzip
+srpm test-srpm: dist-gzip
 	@rpmbuild -ts $(PACKAGE_NAME)-$(PACKAGE_VERSION).tar.gz
 
 update-po:
