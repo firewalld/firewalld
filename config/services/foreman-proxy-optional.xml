@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>foreman-proxy-optional</short>
+  <description>The Smart Proxy is a project which provides a restful API to various sub-systems. Various components are optional and this enables all of them.</description>
+  <!-- used for Remote Execution pull mode -->
+  <include service="mqtt"/>
+  <!-- other optional integrations -->
+  <include service="dhcp"/>
+  <include service="dns"/>
+  <include service="tftp"/>
+  <include service="puppetmaster"/>
+  <!-- foreman-proxy HTTP -->
+  <port protocol="tcp" port="8000"/>
+</service>
