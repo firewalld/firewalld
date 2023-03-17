@@ -7,6 +7,8 @@ FWD_RELOAD
 FWD_CHECK([--list-all | TRIM_WHITESPACE], 0, [m4_strip([dnl
         public
         target: default
+        ingress-priority: 0
+        egress-priority: 0
         icmp-block-inversion: no
         interfaces:
         sources:

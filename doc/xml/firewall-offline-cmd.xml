@@ -1119,6 +1119,62 @@
         </listitem>
       </varlistentry>
 
+      <!-- set/get priority -->
+      <varlistentry>
+        <term> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--get-priority</option></term>
+        <listitem>
+          <para>
+	    Get the priority of the zone.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--set-priority</option></term>
+        <listitem>
+          <para>
+            Set the zone's priority for packet classification. This will set
+            both the ingress and egress priority.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--get-ingress-priority</option></term>
+        <listitem>
+          <para>
+	    Get the ingress priority of the zone.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--set-ingress-priority</option></term>
+        <listitem>
+          <para>
+            Set the zone's ingress priority for packet classification.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--get-egress-priority</option></term>
+        <listitem>
+          <para>
+	    Get the egress priority of the zone.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--set-egress-priority</option></term>
+        <listitem>
+          <para>
+            Set the zone's egress priority for packet classification.
+          </para>
+        </listitem>
+      </varlistentry>
+
       </variablelist>
     </refsect2>
 

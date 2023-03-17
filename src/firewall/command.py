@@ -398,6 +398,8 @@ class FirewallCommand(object):
             interfaces = sorted(set(settings.getInterfaces() + extra_interfaces))
             sources = settings.getSources()
             forward = settings.getForward()
+            ingress_priority = settings.getIngressPriority()
+            egress_priority = settings.getEgressPriority()
 
         def rich_rule_sorted_key(rule):
             priority = 0
@@ -429,6 +431,8 @@ class FirewallCommand(object):
             self.print_msg("  priority: " + str(priority))
         self.print_msg("  target: " + target)
         if not isPolicy:
+            self.print_msg("  ingress-priority: " + str(ingress_priority))
+            self.print_msg("  egress-priority: " + str(egress_priority))
             self.print_msg("  icmp-block-inversion: %s" % \
                            ("yes" if icmp_block_inversion else "no"))
         if isPolicy:

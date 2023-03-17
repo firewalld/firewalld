@@ -69,7 +69,7 @@
 
         <programlisting>
 &lt;?xml version="1.0" encoding="utf-8"?&gt;
-&lt;zone [version="<replaceable>versionstring</replaceable>"] [target="<literal>ACCEPT</literal>|<literal>%%REJECT%%</literal>|<literal>DROP</literal>"]&gt;
+&lt;zone [version="<replaceable>versionstring</replaceable>"] [target="<literal>ACCEPT</literal>|<literal>%%REJECT%%</literal>|<literal>DROP</literal>"] [ingress-priority="<replaceable>priority</replaceable>"] [egress-priority="<replaceable>priority</replaceable>"]&gt;
     [ &lt;interface name="<replaceable>string</replaceable>"/&gt; ]
     [ &lt;source address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]"|mac="<replaceable>MAC</replaceable>"|ipset="<replaceable>ipset</replaceable>"/&gt; ]
     [ &lt;icmp-block-inversion/&gt; ]
@@ -110,6 +110,27 @@
 	      The <literal>%%REJECT%%</literal> target is used in <literal>block</literal> zone to reject (with default firewalld reject type) every packet not matching any rule.
 	      The <literal>DROP</literal> target is used in <literal>drop</literal> zone to drop every packet not matching any rule.
 	      If the target is not specified, every packet not matching any rule will be rejected.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>ingress-priority="<replaceable>priority</replaceable>"</term>
+          <listitem>
+            <para>
+              Ingress priority for classifying traffic into a zone. A zone with
+              a lower priority value will be considered before a zone with a
+              higher priority value. This allows custom ordering of zone
+              dispatch.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>egress-priority="<replaceable>priority</replaceable>"</term>
+          <listitem>
+            <para>
+	      Same as ingress-priority, but for egress classification.
 	    </para>
 	  </listitem>
 	</varlistentry>

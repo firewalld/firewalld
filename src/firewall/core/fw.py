@@ -1294,7 +1294,7 @@ class Firewall(object):
 
         for key,value in runtime.items():
             # omit empty entries
-            if value or isinstance(value, bool):
+            if value or isinstance(value, bool) or isinstance(value, int):
                 combined[key] = value
             # make sure to remove values that were in permanent, but no
             # longer in runtime.

@@ -334,6 +334,17 @@ Options to Adapt and Query Zones
                        sources in a zone [P] [Z]
   --query-forward      Return whether forwarding of packets between interfaces
                        and sources has been enabled for a zone [P] [Z]
+  --get-priority       Get the priority [P only] [Z]
+  --set-priority=<priority>
+                       Set the priority [P only] [Z]
+  --get-ingress-priority
+                       Get the ingress priority [P only] [Z]
+  --set-ingress-priority=<priority>
+                       Set the ingress priority [P only] [Z]
+  --get-egress-priority
+                       Get the egress priority [P only] [Z]
+  --set-egress-priority=<priority>
+                       Set the egress priority [P only] [Z]
 
 Options to Adapt and Query Policies
   --get-priority       Get the priority [P only] [O]
@@ -715,6 +726,10 @@ parser_group_zone_or_policy.add_argument("--get-target", action="store_true")
 parser_group_zone_or_policy.add_argument("--set-target", metavar="<target>")
 parser_group_zone_or_policy.add_argument("--get-priority", action="store_true")
 parser_group_zone_or_policy.add_argument("--set-priority", metavar="<priority>")
+parser_group_zone_or_policy.add_argument("--get-ingress-priority", action="store_true")
+parser_group_zone_or_policy.add_argument("--set-ingress-priority", metavar="<priority>")
+parser_group_zone_or_policy.add_argument("--get-egress-priority", action="store_true")
+parser_group_zone_or_policy.add_argument("--set-egress-priority", metavar="<priority>")
 
 parser.add_argument("--option", metavar="<key>[=<value>]", action='append')
 parser.add_argument("--type", metavar="<ipsettype>")
@@ -898,7 +913,8 @@ options_zone_and_policy_adapt_query = \
     a.list_services or a.list_ports or a.list_protocols or \
     a.list_source_ports or \
     a.list_icmp_blocks or a.list_forward_ports or a.list_rich_rules or \
-    a.list_all or a.get_target or a.set_target
+    a.list_all or a.get_target or a.set_target or \
+    a.set_priority or a.get_priority
 
 options_zone_unique = \
     a.add_icmp_block_inversion or a.remove_icmp_block_inversion or \
@@ -907,7 +923,9 @@ options_zone_unique = \
     a.list_interfaces or a.change_interface or \
     a.add_interface or a.remove_interface or a.query_interface or \
     a.list_sources or a.change_source or \
-    a.add_source or a.remove_source or a.query_source
+    a.add_source or a.remove_source or a.query_source or \
+    a.set_ingress_priority or a.get_ingress_priority or \
+    a.set_egress_priority or a.get_egress_priority
 
 options_zone_ops = options_zone_unique or options_zone_and_policy_adapt_query
 
@@ -915,8 +933,7 @@ options_policy_unique = \
     a.list_ingress_zones or a.add_ingress_zone or \
     a.remove_ingress_zone or a.query_ingress_zone or \
     a.list_egress_zones or a.add_egress_zone or \
-    a.remove_egress_zone or a.query_egress_zone or \
-    a.set_priority or a.get_priority
+    a.remove_egress_zone or a.query_egress_zone
 
 options_policy_ops = options_policy_unique or options_zone_and_policy_adapt_query
 
@@ -984,6 +1001,8 @@ options_permanent_only = a.new_icmptype or a.delete_icmptype or \
                          (a.helper and options_helper) or \
                          a.path_zone or a.path_icmptype or a.path_service or \
                          a.path_ipset or a.path_helper or options_desc_xml_file or \
+                         a.set_priority or a.set_ingress_priority or a.set_egress_priority or \
+                         a.get_priority or a.get_ingress_priority or a.get_egress_priority or \
                          a.path_policy
 
 options_direct = a.passthrough or \
@@ -2198,6 +2217,7 @@ if a.permanent:
         if zone == "":
             zone = fw.getDefaultZone()
         fw_zone = fw.config().getZoneByName(zone)
+        settings = fw_zone.getSettings()
 
         # interface
         if a.list_interfaces:
@@ -2423,7 +2443,7 @@ if a.permanent:
         # list all zone settings
         elif a.list_all:
             interfaces = try_nm_get_interfaces_in_zone(zone)
-            cmd.print_zone_info(zone, fw_zone.getSettings(), extra_interfaces=interfaces)
+            cmd.print_zone_info(zone, settings, extra_interfaces=interfaces)
             sys.exit(0)
 
         # list everything
@@ -2431,32 +2451,44 @@ if a.permanent:
             names = fw.config().getZoneNames()
             for zone in sorted(names):
                 interfaces = try_nm_get_interfaces_in_zone(zone)
-                settings = fw.config().getZoneByName(zone).getSettings()
                 cmd.print_zone_info(zone, settings, extra_interfaces=interfaces)
                 cmd.print_msg("")
             sys.exit(0)
 
         # set zone description
         elif a.set_description:
-            settings = fw.config().getZoneByName(zone).getSettings()
             settings.setDescription(a.set_description)
             fw_zone.update(settings)
 
         # get zone description
         elif a.get_description:
-            settings = fw.config().getZoneByName(zone).getSettings()
             cmd.print_and_exit(settings.getDescription())
 
         # set zone short description
         elif a.set_short:
-            settings = fw.config().getZoneByName(zone).getSettings()
             settings.setShort(a.set_short)
             fw_zone.update(settings)
 
         # get zone short description
         elif a.get_short:
-            settings = fw.config().getZoneByName(zone).getSettings()
             cmd.print_and_exit(settings.getShort())
+
+        # priority
+        elif a.get_priority:
+            cmd.print_and_exit(str(settings.getPriority()))
+        elif a.set_priority:
+            settings.setPriority(a.set_priority)
+            fw_zone.update(settings)
+        elif a.get_ingress_priority:
+            cmd.print_and_exit(str(settings.getIngressPriority()))
+        elif a.set_ingress_priority:
+            settings.setIngressPriority(a.set_ingress_priority)
+            fw_zone.update(settings)
+        elif a.get_egress_priority:
+            cmd.print_and_exit(str(settings.getEgressPriority()))
+        elif a.set_egress_priority:
+            settings.setEgressPriority(a.set_egress_priority)
+            fw_zone.update(settings)
 
 elif a.version:
     cmd.print_and_exit(fw.get_property("version"))

@@ -280,10 +280,6 @@ FWD_CHECK([--permanent --add-ingress-zone public], 2, [ignore], [ignore])
 FWD_CHECK([--permanent --remove-ingress-zone public], 2, [ignore], [ignore])
 FWD_CHECK([--permanent --query-ingress-zone public], 2, [ignore], [ignore])
 FWD_CHECK([--permanent --list-ingress-zones], 2, [ignore], [ignore])
-FWD_CHECK([--get-priority], 2, [ignore], [ignore])
-FWD_CHECK([--set-priority 5], 2, [ignore], [ignore])
-FWD_CHECK([--permanent --get-priority], 2, [ignore], [ignore])
-FWD_CHECK([--permanent --set-priority 5], 2, [ignore], [ignore])
 
 FWD_END_TEST
 
