@@ -28,7 +28,7 @@ import shutil
 
 from firewall import config
 from firewall.functions import checkIPnMask, checkIP6nMask, checkInterface, uniqify, max_zone_name_len, check_mac
-from firewall.core.base import DEFAULT_ZONE_TARGET, ZONE_TARGETS
+from firewall.core.base import DEFAULT_ZONE_TARGET, ZONE_TARGETS, DEFAULT_ZONE_PRIORITY
 from firewall.core.io.io_object import IO_Object, \
     IO_Object_ContentHandler, IO_Object_XMLGenerator
 from firewall.core.io.policy import common_startElement, common_endElement, common_check_config, common_writer
@@ -39,6 +39,9 @@ from firewall.errors import FirewallError
 
 class Zone(IO_Object):
     """ Zone class """
+    priority_min = -32768
+    priority_max =  32767
+    priority_default = DEFAULT_ZONE_PRIORITY
 
     IMPORT_EXPORT_STRUCTURE = (
         ( "version",  "" ),                            # s
@@ -58,6 +61,8 @@ class Zone(IO_Object):
         ( "source_ports", [ ( "", "" ), ], ),          # a(ss)
         ( "icmp_block_inversion", False ),             # b
         ( "forward", True ),                           # b
+        ( "ingress_priority", 0 ),                     # i
+        ( "egress_priority", 0 ),                      # i
     )
     ADDITIONAL_ALNUM_CHARS = [ "_", "-", "/" ]
     PARSER_REQUIRED_ELEMENT_ATTRS = {
@@ -87,7 +92,7 @@ class Zone(IO_Object):
         "icmp-block-inversion": None,
     }
     PARSER_OPTIONAL_ELEMENT_ATTRS = {
-        "zone": [ "name", "immutable", "target", "version" ],
+        "zone": [ "name", "immutable", "target", "version", "ingress-priority", "egress-priority" ],
         "masquerade": [ "enabled" ],
         "forward-port": [ "to-port", "to-addr" ],
         "rule": [ "family", "priority" ],
@@ -128,6 +133,8 @@ class Zone(IO_Object):
         self.icmp_block_inversion = False
         self.combined = False
         self.applied = False
+        self.ingress_priority = self.priority_default
+        self.egress_priority = self.priority_default
 
     def cleanup(self):
         self.version = ""
@@ -150,6 +157,8 @@ class Zone(IO_Object):
         self.icmp_block_inversion = False
         self.combined = False
         self.applied = False
+        self.ingress_priority = self.priority_default
+        self.egress_priority = self.priority_default
 
     def __setattr__(self, name, value):
         if name == "rules_str":
@@ -199,6 +208,11 @@ class Zone(IO_Object):
                         raise FirewallError(errors.INVALID_ADDR,
                                 "Zone '{}': source '{}' already bound to zone '{}'".format(
                                     self.name, source, zone))
+        elif item in ["ingress_priority", "egress_priority"]:
+            if config > self.priority_max or config < self.priority_min:
+                raise FirewallError(errors.INVALID_PRIORITY,
+                        f"Zone '{self.name}': {config} is an invalid priority value. "
+                        f"Must be in range [{self.priority_min}, {self.priority_max}].")
 
 
     def check_name(self, name):
@@ -297,6 +311,10 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                     raise FirewallError(errors.INVALID_TARGET, target)
                 if target != "" and target != DEFAULT_ZONE_TARGET:
                     self.item.target = target
+            if "ingress-priority" in attrs:
+                self.item.ingress_priority = int(attrs["ingress-priority"])
+            if "egress-priority" in attrs:
+                self.item.egress_priority = int(attrs["egress-priority"])
 
         elif name == "forward":
             if self.item.forward:
@@ -452,6 +470,10 @@ def zone_writer(zone, path=None):
         attrs["version"] = zone.version
     if zone.target != DEFAULT_ZONE_TARGET:
         attrs["target"] = zone.target
+    if zone.ingress_priority != zone.priority_default:
+        attrs["ingress-priority"] = str(zone.ingress_priority)
+    if zone.egress_priority != zone.priority_default:
+        attrs["egress-priority"] = str(zone.egress_priority)
     handler.startElement("zone", attrs)
     handler.ignorableWhitespace("\n")
 

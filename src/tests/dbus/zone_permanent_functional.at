@@ -389,10 +389,12 @@ export DBUS_FOOBAR2_ZONE_OBJ
 
 DBUS_CHECK([config/zone/${DBUS_FOOBAR2_ZONE_OBJ}], [config.zone.getSettings2], [], 0, [dnl
        'description': <'foobar zone'>
+       'egress_priority': <0>
        'forward': <false>
        'forward_ports': <@<:@('1234', 'tcp', '4321', ''), ('1234', 'udp', '4321', '10.10.10.10')@:>@>
        'icmp_block_inversion': <false>
        'icmp_blocks': <@<:@'echo-request'@:>@>
+       'ingress_priority': <0>
        'interfaces': <@<:@'dummy2', 'dummy3'@:>@>
        'masquerade': <true>
        'ports': <@<:@('1234', 'tcp'), ('1234', 'udp')@:>@>
@@ -423,15 +425,19 @@ DBUS_CHECK([config/zone/${DBUS_FOOBAR2_ZONE_OBJ}], [config.zone.update2], [dnl
        "rules_str": <@<:@"rule family=ipv4 source address=10.20.20.20 accept"@:>@>, dnl
        "protocols": <@<:@"ipv6-icmp"@:>@>, dnl
        "source_ports": <@<:@("1234", "udp")@:>@>, dnl
+       "ingress_priority": <1>, dnl
+       "egress_priority": <-300>, dnl
        "icmp_block_inversion": <true> dnl
       }'dnl
     ], 0, [ignore])
 DBUS_CHECK([config/zone/${DBUS_FOOBAR2_ZONE_OBJ}], [config.zone.getSettings2], [], 0, [dnl
        'description': <'foobar zone update2'>
+       'egress_priority': <-300>
        'forward': <false>
        'forward_ports': <@<:@('1234', 'udp', '4321', '10.10.10.10')@:>@>
        'icmp_block_inversion': <true>
        'icmp_blocks': <@<:@'echo-request', 'echo-reply'@:>@>
+       'ingress_priority': <1>
        'interfaces': <@<:@'dummy3'@:>@>
        'masquerade': <false>
        'ports': <@<:@('1234', 'udp')@:>@>
@@ -467,8 +473,10 @@ DBUS_CHECK([config/zone/${DBUS_FOOBAR2_ZONE_OBJ}], [config.zone.update2], [dnl
 dnl verify the updates
 DBUS_CHECK([config/zone/${DBUS_FOOBAR2_ZONE_OBJ}], [config.zone.getSettings2], [], 0, [dnl
        'description': <'foobar zone update2'>
+       'egress_priority': <-300>
        'forward': <false>
        'icmp_block_inversion': <false>
+       'ingress_priority': <1>
        'interfaces': <@<:@'dummy3'@:>@>
        'masquerade': <false>
        'ports': <@<:@('1234', 'udp')@:>@>

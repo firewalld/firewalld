@@ -25,7 +25,8 @@ import dbus.mainloop.glib
 import functools
 
 from firewall import config
-from firewall.core.base import DEFAULT_ZONE_TARGET, DEFAULT_POLICY_TARGET, DEFAULT_POLICY_PRIORITY
+from firewall.core.base import (DEFAULT_ZONE_TARGET, DEFAULT_POLICY_TARGET, DEFAULT_POLICY_PRIORITY,
+                                DEFAULT_ZONE_PRIORITY)
 from firewall.dbus_utils import dbus_to_python
 from firewall.core.rich import Rich_Rule
 from firewall.core.ipset import normalize_ipset_entry, check_entry_overlaps_existing, \
@@ -84,19 +85,20 @@ class FirewallClientZoneSettings(object):
     @handle_exceptions
     def __init__(self, settings = None):
         self.settings = ["", "", "", False, DEFAULT_ZONE_TARGET, [], [],
-                         [], False, [], [], [], [], [], [], False, False]
+                         [], False, [], [], [], [], [], [], False, False,
+                         DEFAULT_ZONE_PRIORITY, DEFAULT_ZONE_PRIORITY]
         self.settings_name = ["version", "short", "description", "UNUSED",
                               "target", "services", "ports",
                               "icmp_blocks", "masquerade", "forward_ports",
                               "interfaces", "sources", "rules_str",
                               "protocols", "source_ports", "icmp_block_inversion",
-                              "forward"]
+                              "forward", "ingress_priority", "egress_priority"]
         self.settings_dbus_type = ["s", "s", "s", "b",
                                    "s", "s", "(ss)",
                                    "s", "b", "(ssss)",
                                    "s", "s", "s",
                                    "s", "(ss)", "b",
-                                   "b"]
+                                   "b", "i", "i"]
         if settings:
             if isinstance(settings, list):
                 for i,v in enumerate(settings):
@@ -469,6 +471,29 @@ class FirewallClientZoneSettings(object):
         rule = str(Rich_Rule(rule_str=rule))
         return rule in self.settings[12]
 
+    @handle_exceptions
+    def getPriority(self):
+        if self.getIngressPriority() != self.getEgressPriority():
+            raise FirewallError(errors.INVALID_PRIORITY,
+                                "Ingress and Egress priority mismatch. "
+                                "Use --get-ingress-priority and --get-egress-priority.")
+        return self.getIngressPriority()
+    @handle_exceptions
+    def setPriority(self, priority):
+        self.setIngressPriority(priority)
+        self.setEgressPriority(priority)
+    @handle_exceptions
+    def getIngressPriority(self):
+        return self.getSettingsDict()["ingress_priority"]
+    @handle_exceptions
+    def setIngressPriority(self, priority):
+        self.setSettingsDict({"ingress_priority": int(priority)})
+    @handle_exceptions
+    def getEgressPriority(self):
+        return self.getSettingsDict()["egress_priority"]
+    @handle_exceptions
+    def setEgressPriority(self, priority):
+        self.setSettingsDict({"egress_priority": int(priority)})
 
 # zone config
 

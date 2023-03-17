@@ -254,7 +254,7 @@ class FirewallZone(object):
                     self._source(enable, zone, ipv, args, transaction)
                 elif key == "icmp_block_inversion":
                     continue
-                elif key == "forward":
+                elif key in ["forward", "ingress_priority", "egress_priority"]:
                     # no need to call this when applying the zone as the rules
                     # will be generated when adding the interfaces/sources
                     pass

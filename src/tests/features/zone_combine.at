@@ -32,6 +32,8 @@ block combined dmz drop external home internal public trusted work
 FWD_CHECK([--zone combined --list-all | TRIM_WHITESPACE], 0, [dnl
 combined
 target: default
+ingress-priority: 0
+egress-priority: 0
 icmp-block-inversion: no
 interfaces:
 sources:
@@ -52,6 +54,8 @@ block combined/zone1 combined/zone2 combined/zone3 dmz drop external home intern
 FWD_CHECK([--permanent --zone combined/zone1 --list-all | TRIM_WHITESPACE], 0, [dnl
 combined/zone1
 target: default
+ingress-priority: 0
+egress-priority: 0
 icmp-block-inversion: no
 interfaces:
 sources:
@@ -68,6 +72,8 @@ rich rules:
 FWD_CHECK([--permanent --zone combined/zone2 --list-all | TRIM_WHITESPACE], 0, [dnl
 combined/zone2
 target: default
+ingress-priority: 0
+egress-priority: 0
 icmp-block-inversion: no
 interfaces:
 sources:
@@ -84,6 +90,8 @@ rich rules:
 FWD_CHECK([--permanent --zone combined/zone3 --list-all | TRIM_WHITESPACE], 0, [dnl
 combined/zone3
 target: default
+ingress-priority: 0
+egress-priority: 0
 icmp-block-inversion: no
 interfaces:
 sources:
@@ -104,6 +112,8 @@ FWD_CHECK([--zone combined --add-protocol icmp], 0, [ignore])
 FWD_CHECK([--zone combined --list-all | TRIM_WHITESPACE], 0, [dnl
 combined
 target: default
+ingress-priority: 0
+egress-priority: 0
 icmp-block-inversion: no
 interfaces:
 sources:
@@ -124,6 +134,8 @@ FWD_CHECK([--permanent --zone combined/zone2 --add-protocol icmp], 0, [ignore])
 FWD_CHECK([--permanent --zone combined/zone1 --list-all | TRIM_WHITESPACE], 0, [dnl
 combined/zone1
 target: default
+ingress-priority: 0
+egress-priority: 0
 icmp-block-inversion: no
 interfaces:
 sources:
@@ -140,6 +152,8 @@ rich rules:
 FWD_CHECK([--permanent --zone combined/zone2 --list-all | TRIM_WHITESPACE], 0, [dnl
 combined/zone2
 target: default
+ingress-priority: 0
+egress-priority: 0
 icmp-block-inversion: no
 interfaces:
 sources:
@@ -156,6 +170,8 @@ rich rules:
 FWD_CHECK([--permanent --zone combined/zone3 --list-all | TRIM_WHITESPACE], 0, [dnl
 combined/zone3
 target: default
+ingress-priority: 0
+egress-priority: 0
 icmp-block-inversion: no
 interfaces:
 sources:

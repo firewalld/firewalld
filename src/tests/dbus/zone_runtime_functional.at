@@ -307,10 +307,12 @@ dnl ###################
 
 DBUS_CHECK([], [zone.getZoneSettings2], ["public"], 0, [dnl
        'description': <'For use in public areas. You do not trust the other computers on networks to not harm your computer. Only selected incoming connections are accepted.'>
+       'egress_priority': <0>
        'forward': <true>
        'forward_ports': <@<:@('4321', 'udp', '4444', '10.10.10.10')@:>@>
        'icmp_block_inversion': <false>
        'icmp_blocks': <@<:@'echo-request'@:>@>
+       'ingress_priority': <0>
        'interfaces': <@<:@'dummy1'@:>@>
        'masquerade': <false>
        'ports': <@<:@('4321', 'udp')@:>@>
@@ -342,10 +344,12 @@ DBUS_CHECK([], [zone.setZoneSettings2], [dnl
     ], 0, [ignore])
 DBUS_CHECK([], [zone.getZoneSettings2], ["public"], 0, [dnl
        'description': <'For use in public areas. You do not trust the other computers on networks to not harm your computer. Only selected incoming connections are accepted.'>
+       'egress_priority': <0>
        'forward': <false>
        'forward_ports': <@<:@('1234', 'udp', '4321', '10.10.10.10')@:>@>
        'icmp_block_inversion': <true>
        'icmp_blocks': <@<:@'echo-reply', 'echo-request'@:>@>
+       'ingress_priority': <0>
        'interfaces': <@<:@'dummy3'@:>@>
        'masquerade': <false>
        'ports': <@<:@('1234', 'udp')@:>@>
@@ -403,9 +407,11 @@ DBUS_CHECK([], [zone.setZoneSettings2], [dnl
 dnl verify the updates
 DBUS_CHECK([], [zone.getZoneSettings2], ["public"], 0, [dnl
        'description': <'For use in public areas. You do not trust the other computers on networks to not harm your computer. Only selected incoming connections are accepted.'>
+       'egress_priority': <0>
        'forward': <false>
        'icmp_block_inversion': <false>
        'icmp_blocks': <@<:@'echo-reply'@:>@>
+       'ingress_priority': <0>
        'interfaces': <@<:@'dummy3'@:>@>
        'masquerade': <false>
        'ports': <@<:@('1234', 'udp')@:>@>

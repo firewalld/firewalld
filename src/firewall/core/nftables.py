@@ -677,6 +677,8 @@ class nftables(object):
                                   ingress_interface, ingress_source, egress_interface, egress_source,
                                   priority, last=False, prerouting=False, postrouting=False, log_denied=False):
         p_obj = self._fw.policy.get_policy(policy)
+        ingress_priority = 0 if ingress_zone == "HOST" else self._fw.zone.get_zone(ingress_zone).ingress_priority
+        egress_priority = 0 if egress_zone == "HOST" else self._fw.zone.get_zone(egress_zone).egress_priority
 
         ingress_sort_order = 0 # 0 means output chain
         if ingress_source:
@@ -695,9 +697,9 @@ class nftables(object):
 
         # default zone is always sorted to last as it's a "catch-all"
         if ingress_interface == "*":
-            ingress_sort_order += 1
+            ingress_priority = self._fw.zone.get_zone(ingress_zone).priority_max + 1
         if egress_interface == "*":
-            egress_sort_order += 1
+            egress_priority = self._fw.zone.get_zone(egress_zone).priority_max + 1
 
         last_sort_order = 0
         if last:
@@ -706,8 +708,8 @@ class nftables(object):
             else:
                 last_sort_order = 2
 
-        ingress = (0, ingress_sort_order, ingress_zone, ingress_source, ingress_interface)
-        egress  = (0, egress_sort_order,  egress_zone,  egress_source,  egress_interface)
+        ingress = (ingress_priority, ingress_sort_order, ingress_zone, ingress_source, ingress_interface)
+        egress  = (egress_priority, egress_sort_order,  egress_zone,  egress_source,  egress_interface)
         suffix  = (last_sort_order,  priority)
 
         if postrouting:

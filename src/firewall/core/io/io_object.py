@@ -59,7 +59,7 @@ class IO_Object(object):
         conf = {}
         type_formats = dict([(x[0], x[1]) for x in self.IMPORT_EXPORT_STRUCTURE])
         for key in type_formats:
-            if getattr(self, key) or isinstance(getattr(self, key), bool):
+            if getattr(self, key) or isinstance(getattr(self, key), bool) or isinstance(getattr(self, key), int):
                 conf[key] = copy.deepcopy(getattr(self, key))
         return conf
 
