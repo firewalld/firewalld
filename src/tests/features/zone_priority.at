@@ -1,0 +1,806 @@
+FWD_START_TEST([zone - priority])
+AT_KEYWORDS(zone)
+
+FWD_CHECK([--permanent --new-zone foobar], 0, [ignore])
+
+dnl verify priority bounds
+FWD_CHECK([--permanent --zone foobar --set-priority -32769], 139, [ignore], [ignore])
+FWD_CHECK([--permanent --zone foobar --set-priority -32768], 0, [ignore])
+FWD_CHECK([--permanent --zone foobar --set-priority  32768], 139, [ignore], [ignore])
+FWD_CHECK([--permanent --zone foobar --set-priority  32767], 0, [ignore])
+FWD_CHECK([--permanent --zone foobar --set-ingress-priority -32769], 139, [ignore], [ignore])
+FWD_CHECK([--permanent --zone foobar --set-ingress-priority -32768], 0, [ignore])
+FWD_CHECK([--permanent --zone foobar --set-ingress-priority  32768], 139, [ignore], [ignore])
+FWD_CHECK([--permanent --zone foobar --set-ingress-priority  32767], 0, [ignore])
+FWD_CHECK([--permanent --zone foobar --set-egress-priority -32769], 139, [ignore], [ignore])
+FWD_CHECK([--permanent --zone foobar --set-egress-priority -32768], 0, [ignore])
+FWD_CHECK([--permanent --zone foobar --set-egress-priority  32768], 139, [ignore], [ignore])
+FWD_CHECK([--permanent --zone foobar --set-egress-priority  32767], 0, [ignore])
+FWD_CHECK([--permanent --zone foobar --set-priority 0], 0, [ignore])
+FWD_CHECK([--permanent --zone foobar --set-ingress-priority 0], 0, [ignore])
+FWD_CHECK([--permanent --zone foobar --set-egress-priority 0], 0, [ignore])
+
+dnl these are invalid for policies
+FWD_CHECK([--permanent --policy allow-host-ipv6 --get-ingress-priority], 2, [ignore], [ignore])
+FWD_CHECK([--permanent --policy allow-host-ipv6 --set-ingress-priority 0], 2, [ignore], [ignore])
+FWD_CHECK([--permanent --policy allow-host-ipv6 --get-egress-priority], 2, [ignore], [ignore])
+FWD_CHECK([--permanent --policy allow-host-ipv6 --set-egress-priority 0], 2, [ignore], [ignore])
+
+dnl verify we can change the default zone
+FWD_CHECK([--permanent --set-priority -1], 0, [ignore])
+FWD_CHECK([--permanent --set-ingress-priority -2], 0, [ignore])
+FWD_CHECK([--permanent --set-egress-priority -3], 0, [ignore])
+FWD_CHECK([--permanent --set-priority 0], 0, [ignore])
+
+dnl verify --get*-priority
+FWD_CHECK([--permanent --zone foobar --set-priority 123], 0, [ignore])
+FWD_CHECK([--permanent --zone foobar --get-priority], 0, [dnl
+123
+])
+FWD_CHECK([--permanent --zone foobar --set-ingress-priority 456], 0, [ignore])
+FWD_CHECK([--permanent --zone foobar --get-ingress-priority], 0, [dnl
+456
+])
+FWD_CHECK([--permanent --zone foobar --set-egress-priority 789], 0, [ignore])
+FWD_CHECK([--permanent --zone foobar --get-egress-priority], 0, [dnl
+789
+])
+
+dnl verify --set-priority overrides --set-ingress-priority and --set-egress-priority
+FWD_CHECK([--permanent --zone foobar --set-ingress-priority 666], 0, [ignore])
+FWD_CHECK([--permanent --zone foobar --set-egress-priority 666], 0, [ignore])
+FWD_CHECK([--permanent --zone foobar --set-priority -1], 0, [ignore])
+FWD_CHECK([--permanent --zone foobar --get-priority], 0, [dnl
+-1
+])
+
+dnl verify --get-priority throws an error if ingress and egress priority are different
+FWD_CHECK([--permanent --zone foobar --set-ingress-priority -2], 0, [ignore])
+FWD_CHECK([--permanent --zone foobar --set-egress-priority -3], 0, [ignore])
+FWD_CHECK([--permanent --zone foobar --get-priority], 139, [ignore], [ignore])
+
+dnl verify permanent CLI output
+FWD_CHECK([--permanent --info-zone foobar | TRIM_WHITESPACE], 0, [m4_strip([dnl
+foobar
+  target: default
+  ingress-priority: -2
+  egress-priority: -3
+  icmp-block-inversion: no
+  interfaces:
+  sources:
+  services:
+  ports:
+  protocols:
+  forward: no
+  masquerade: no
+  forward-ports:
+  source-ports:
+  icmp-blocks:
+  rich rules:
+])])
+
+dnl add a ton of zones with different priorities
+FWD_CHECK([--permanent --new-zone zone-1], 0, [ignore])
+FWD_CHECK([--permanent --zone zone-1 --set-priority -30000], 0, [ignore])
+FWD_CHECK([--permanent --zone zone-1 --add-interface dummy-1], 0, [ignore])
+FWD_CHECK([--permanent --new-zone zone-2], 0, [ignore])
+FWD_CHECK([--permanent --zone zone-2 --set-priority -10000], 0, [ignore])
+FWD_CHECK([--permanent --zone zone-2 --add-interface dummy-2], 0, [ignore])
+FWD_CHECK([--permanent --new-zone zone-3], 0, [ignore])
+FWD_CHECK([--permanent --zone zone-3 --set-ingress-priority -5000], 0, [ignore])
+FWD_CHECK([--permanent --zone zone-3 --set-egress-priority -2000], 0, [ignore])
+FWD_CHECK([--permanent --zone zone-3 --add-interface dummy-3], 0, [ignore])
+FWD_CHECK([--permanent --new-zone zone-4], 0, [ignore])
+FWD_CHECK([--permanent --zone zone-4 --set-ingress-priority -100], 0, [ignore])
+FWD_CHECK([--permanent --zone zone-4 --set-egress-priority 1], 0, [ignore])
+FWD_CHECK([--permanent --zone zone-4 --add-interface dummy-4], 0, [ignore])
+FWD_CHECK([--permanent --new-zone zone-5], 0, [ignore])
+FWD_CHECK([--permanent --zone zone-5 --set-ingress-priority -1], 0, [ignore])
+FWD_CHECK([--permanent --zone zone-5 --set-egress-priority 100], 0, [ignore])
+FWD_CHECK([--permanent --zone zone-5 --add-interface dummy-5], 0, [ignore])
+FWD_CHECK([--permanent --new-zone zone-6], 0, [ignore])
+FWD_CHECK([--permanent --zone zone-6 --set-priority 500], 0, [ignore])
+FWD_CHECK([--permanent --zone zone-6 --add-source 10.10.10.0/24], 0, [ignore])
+FWD_CHECK([--permanent --new-zone zone-7], 0, [ignore])
+FWD_CHECK([--permanent --zone zone-7 --set-priority 1000], 0, [ignore])
+FWD_CHECK([--permanent --zone zone-7 --add-interface dummy-7], 0, [ignore])
+FWD_CHECK([--permanent --new-zone zone-8], 0, [ignore])
+FWD_CHECK([--permanent --zone zone-8 --set-priority 30000], 0, [ignore])
+FWD_CHECK([--permanent --zone zone-8 --add-source 10.0.0.0/8], 0, [ignore])
+FWD_CHECK([--permanent --new-zone zone-0andlast], 0, [ignore])
+FWD_CHECK([--permanent --zone zone-0andlast --set-ingress-priority 0], 0, [ignore])
+FWD_CHECK([--permanent --zone zone-0andlast --set-egress-priority 32000], 0, [ignore])
+FWD_CHECK([--permanent --zone zone-0andlast --add-interface dummy-9], 0, [ignore])
+FWD_RELOAD()
+
+dnl verify rule generation is sorted
+NFT_LIST_RULES([inet], [filter_INPUT_POLICIES], 0, [dnl
+  table inet firewalld {
+    chain filter_INPUT_POLICIES {
+      iifname "dummy-1" jump filter_IN_policy_allow-host-ipv6
+      iifname "dummy-1" jump filter_IN_zone-1
+      iifname "dummy-1" reject with icmpx admin-prohibited
+      iifname "dummy-2" jump filter_IN_policy_allow-host-ipv6
+      iifname "dummy-2" jump filter_IN_zone-2
+      iifname "dummy-2" reject with icmpx admin-prohibited
+      iifname "dummy-3" jump filter_IN_policy_allow-host-ipv6
+      iifname "dummy-3" jump filter_IN_zone-3
+      iifname "dummy-3" reject with icmpx admin-prohibited
+      iifname "dummy-4" jump filter_IN_policy_allow-host-ipv6
+      iifname "dummy-4" jump filter_IN_zone-4
+      iifname "dummy-4" reject with icmpx admin-prohibited
+      iifname "dummy-5" jump filter_IN_policy_allow-host-ipv6
+      iifname "dummy-5" jump filter_IN_zone-5
+      iifname "dummy-5" reject with icmpx admin-prohibited
+      iifname "dummy-9" jump filter_IN_policy_allow-host-ipv6
+      iifname "dummy-9" jump filter_IN_zone-0andlast
+      iifname "dummy-9" reject with icmpx admin-prohibited
+      ip saddr 10.10.10.0/24 jump filter_IN_policy_allow-host-ipv6
+      ip saddr 10.10.10.0/24 jump filter_IN_zone-6
+      ip saddr 10.10.10.0/24 reject with icmpx admin-prohibited
+      iifname "dummy-7" jump filter_IN_policy_allow-host-ipv6
+      iifname "dummy-7" jump filter_IN_zone-7
+      iifname "dummy-7" reject with icmpx admin-prohibited
+      ip saddr 10.0.0.0/8 jump filter_IN_policy_allow-host-ipv6
+      ip saddr 10.0.0.0/8 jump filter_IN_zone-8
+      ip saddr 10.0.0.0/8 reject with icmpx admin-prohibited
+      jump filter_IN_policy_allow-host-ipv6
+      jump filter_IN_public
+      reject with icmpx admin-prohibited
+    }
+  }
+])
+NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES], 0, [dnl
+  table inet firewalld {
+    chain filter_FORWARD_POLICIES {
+      iifname "dummy-1" oifname "dummy-1" jump filter_FWD_zone-1
+      iifname "dummy-1" oifname "dummy-1" reject with icmpx admin-prohibited
+      iifname "dummy-1" oifname "dummy-2" jump filter_FWD_zone-1
+      iifname "dummy-1" oifname "dummy-2" reject with icmpx admin-prohibited
+      iifname "dummy-1" oifname "dummy-3" jump filter_FWD_zone-1
+      iifname "dummy-1" oifname "dummy-3" reject with icmpx admin-prohibited
+      iifname "dummy-1" oifname "dummy-4" jump filter_FWD_zone-1
+      iifname "dummy-1" oifname "dummy-4" reject with icmpx admin-prohibited
+      iifname "dummy-1" oifname "dummy-5" jump filter_FWD_zone-1
+      iifname "dummy-1" oifname "dummy-5" reject with icmpx admin-prohibited
+      iifname "dummy-1" ip daddr 10.10.10.0/24 jump filter_FWD_zone-1
+      iifname "dummy-1" ip daddr 10.10.10.0/24 reject with icmpx admin-prohibited
+      iifname "dummy-1" oifname "dummy-7" jump filter_FWD_zone-1
+      iifname "dummy-1" oifname "dummy-7" reject with icmpx admin-prohibited
+      iifname "dummy-1" ip daddr 10.0.0.0/8 jump filter_FWD_zone-1
+      iifname "dummy-1" ip daddr 10.0.0.0/8 reject with icmpx admin-prohibited
+      iifname "dummy-1" oifname "dummy-9" jump filter_FWD_zone-1
+      iifname "dummy-1" oifname "dummy-9" reject with icmpx admin-prohibited
+      iifname "dummy-1" jump filter_FWD_zone-1
+      iifname "dummy-1" reject with icmpx admin-prohibited
+      iifname "dummy-2" oifname "dummy-1" jump filter_FWD_zone-2
+      iifname "dummy-2" oifname "dummy-1" reject with icmpx admin-prohibited
+      iifname "dummy-2" oifname "dummy-2" jump filter_FWD_zone-2
+      iifname "dummy-2" oifname "dummy-2" reject with icmpx admin-prohibited
+      iifname "dummy-2" oifname "dummy-3" jump filter_FWD_zone-2
+      iifname "dummy-2" oifname "dummy-3" reject with icmpx admin-prohibited
+      iifname "dummy-2" oifname "dummy-4" jump filter_FWD_zone-2
+      iifname "dummy-2" oifname "dummy-4" reject with icmpx admin-prohibited
+      iifname "dummy-2" oifname "dummy-5" jump filter_FWD_zone-2
+      iifname "dummy-2" oifname "dummy-5" reject with icmpx admin-prohibited
+      iifname "dummy-2" ip daddr 10.10.10.0/24 jump filter_FWD_zone-2
+      iifname "dummy-2" ip daddr 10.10.10.0/24 reject with icmpx admin-prohibited
+      iifname "dummy-2" oifname "dummy-7" jump filter_FWD_zone-2
+      iifname "dummy-2" oifname "dummy-7" reject with icmpx admin-prohibited
+      iifname "dummy-2" ip daddr 10.0.0.0/8 jump filter_FWD_zone-2
+      iifname "dummy-2" ip daddr 10.0.0.0/8 reject with icmpx admin-prohibited
+      iifname "dummy-2" oifname "dummy-9" jump filter_FWD_zone-2
+      iifname "dummy-2" oifname "dummy-9" reject with icmpx admin-prohibited
+      iifname "dummy-2" jump filter_FWD_zone-2
+      iifname "dummy-2" reject with icmpx admin-prohibited
+      iifname "dummy-3" oifname "dummy-1" jump filter_FWD_zone-3
+      iifname "dummy-3" oifname "dummy-1" reject with icmpx admin-prohibited
+      iifname "dummy-3" oifname "dummy-2" jump filter_FWD_zone-3
+      iifname "dummy-3" oifname "dummy-2" reject with icmpx admin-prohibited
+      iifname "dummy-3" oifname "dummy-3" jump filter_FWD_zone-3
+      iifname "dummy-3" oifname "dummy-3" reject with icmpx admin-prohibited
+      iifname "dummy-3" oifname "dummy-4" jump filter_FWD_zone-3
+      iifname "dummy-3" oifname "dummy-4" reject with icmpx admin-prohibited
+      iifname "dummy-3" oifname "dummy-5" jump filter_FWD_zone-3
+      iifname "dummy-3" oifname "dummy-5" reject with icmpx admin-prohibited
+      iifname "dummy-3" ip daddr 10.10.10.0/24 jump filter_FWD_zone-3
+      iifname "dummy-3" ip daddr 10.10.10.0/24 reject with icmpx admin-prohibited
+      iifname "dummy-3" oifname "dummy-7" jump filter_FWD_zone-3
+      iifname "dummy-3" oifname "dummy-7" reject with icmpx admin-prohibited
+      iifname "dummy-3" ip daddr 10.0.0.0/8 jump filter_FWD_zone-3
+      iifname "dummy-3" ip daddr 10.0.0.0/8 reject with icmpx admin-prohibited
+      iifname "dummy-3" oifname "dummy-9" jump filter_FWD_zone-3
+      iifname "dummy-3" oifname "dummy-9" reject with icmpx admin-prohibited
+      iifname "dummy-3" jump filter_FWD_zone-3
+      iifname "dummy-3" reject with icmpx admin-prohibited
+      iifname "dummy-4" oifname "dummy-1" jump filter_FWD_zone-4
+      iifname "dummy-4" oifname "dummy-1" reject with icmpx admin-prohibited
+      iifname "dummy-4" oifname "dummy-2" jump filter_FWD_zone-4
+      iifname "dummy-4" oifname "dummy-2" reject with icmpx admin-prohibited
+      iifname "dummy-4" oifname "dummy-3" jump filter_FWD_zone-4
+      iifname "dummy-4" oifname "dummy-3" reject with icmpx admin-prohibited
+      iifname "dummy-4" oifname "dummy-4" jump filter_FWD_zone-4
+      iifname "dummy-4" oifname "dummy-4" reject with icmpx admin-prohibited
+      iifname "dummy-4" oifname "dummy-5" jump filter_FWD_zone-4
+      iifname "dummy-4" oifname "dummy-5" reject with icmpx admin-prohibited
+      iifname "dummy-4" ip daddr 10.10.10.0/24 jump filter_FWD_zone-4
+      iifname "dummy-4" ip daddr 10.10.10.0/24 reject with icmpx admin-prohibited
+      iifname "dummy-4" oifname "dummy-7" jump filter_FWD_zone-4
+      iifname "dummy-4" oifname "dummy-7" reject with icmpx admin-prohibited
+      iifname "dummy-4" ip daddr 10.0.0.0/8 jump filter_FWD_zone-4
+      iifname "dummy-4" ip daddr 10.0.0.0/8 reject with icmpx admin-prohibited
+      iifname "dummy-4" oifname "dummy-9" jump filter_FWD_zone-4
+      iifname "dummy-4" oifname "dummy-9" reject with icmpx admin-prohibited
+      iifname "dummy-4" jump filter_FWD_zone-4
+      iifname "dummy-4" reject with icmpx admin-prohibited
+      iifname "dummy-5" oifname "dummy-1" jump filter_FWD_zone-5
+      iifname "dummy-5" oifname "dummy-1" reject with icmpx admin-prohibited
+      iifname "dummy-5" oifname "dummy-2" jump filter_FWD_zone-5
+      iifname "dummy-5" oifname "dummy-2" reject with icmpx admin-prohibited
+      iifname "dummy-5" oifname "dummy-3" jump filter_FWD_zone-5
+      iifname "dummy-5" oifname "dummy-3" reject with icmpx admin-prohibited
+      iifname "dummy-5" oifname "dummy-4" jump filter_FWD_zone-5
+      iifname "dummy-5" oifname "dummy-4" reject with icmpx admin-prohibited
+      iifname "dummy-5" oifname "dummy-5" jump filter_FWD_zone-5
+      iifname "dummy-5" oifname "dummy-5" reject with icmpx admin-prohibited
+      iifname "dummy-5" ip daddr 10.10.10.0/24 jump filter_FWD_zone-5
+      iifname "dummy-5" ip daddr 10.10.10.0/24 reject with icmpx admin-prohibited
+      iifname "dummy-5" oifname "dummy-7" jump filter_FWD_zone-5
+      iifname "dummy-5" oifname "dummy-7" reject with icmpx admin-prohibited
+      iifname "dummy-5" ip daddr 10.0.0.0/8 jump filter_FWD_zone-5
+      iifname "dummy-5" ip daddr 10.0.0.0/8 reject with icmpx admin-prohibited
+      iifname "dummy-5" oifname "dummy-9" jump filter_FWD_zone-5
+      iifname "dummy-5" oifname "dummy-9" reject with icmpx admin-prohibited
+      iifname "dummy-5" jump filter_FWD_zone-5
+      iifname "dummy-5" reject with icmpx admin-prohibited
+      iifname "dummy-9" oifname "dummy-1" jump filter_FWD_zone-0andlast
+      iifname "dummy-9" oifname "dummy-1" reject with icmpx admin-prohibited
+      iifname "dummy-9" oifname "dummy-2" jump filter_FWD_zone-0andlast
+      iifname "dummy-9" oifname "dummy-2" reject with icmpx admin-prohibited
+      iifname "dummy-9" oifname "dummy-3" jump filter_FWD_zone-0andlast
+      iifname "dummy-9" oifname "dummy-3" reject with icmpx admin-prohibited
+      iifname "dummy-9" oifname "dummy-4" jump filter_FWD_zone-0andlast
+      iifname "dummy-9" oifname "dummy-4" reject with icmpx admin-prohibited
+      iifname "dummy-9" oifname "dummy-5" jump filter_FWD_zone-0andlast
+      iifname "dummy-9" oifname "dummy-5" reject with icmpx admin-prohibited
+      iifname "dummy-9" ip daddr 10.10.10.0/24 jump filter_FWD_zone-0andlast
+      iifname "dummy-9" ip daddr 10.10.10.0/24 reject with icmpx admin-prohibited
+      iifname "dummy-9" oifname "dummy-7" jump filter_FWD_zone-0andlast
+      iifname "dummy-9" oifname "dummy-7" reject with icmpx admin-prohibited
+      iifname "dummy-9" ip daddr 10.0.0.0/8 jump filter_FWD_zone-0andlast
+      iifname "dummy-9" ip daddr 10.0.0.0/8 reject with icmpx admin-prohibited
+      iifname "dummy-9" oifname "dummy-9" jump filter_FWD_zone-0andlast
+      iifname "dummy-9" oifname "dummy-9" reject with icmpx admin-prohibited
+      iifname "dummy-9" jump filter_FWD_zone-0andlast
+      iifname "dummy-9" reject with icmpx admin-prohibited
+      oifname "dummy-1" ip saddr 10.10.10.0/24 jump filter_FWD_zone-6
+      oifname "dummy-1" ip saddr 10.10.10.0/24 reject with icmpx admin-prohibited
+      oifname "dummy-2" ip saddr 10.10.10.0/24 jump filter_FWD_zone-6
+      oifname "dummy-2" ip saddr 10.10.10.0/24 reject with icmpx admin-prohibited
+      oifname "dummy-3" ip saddr 10.10.10.0/24 jump filter_FWD_zone-6
+      oifname "dummy-3" ip saddr 10.10.10.0/24 reject with icmpx admin-prohibited
+      oifname "dummy-4" ip saddr 10.10.10.0/24 jump filter_FWD_zone-6
+      oifname "dummy-4" ip saddr 10.10.10.0/24 reject with icmpx admin-prohibited
+      oifname "dummy-5" ip saddr 10.10.10.0/24 jump filter_FWD_zone-6
+      oifname "dummy-5" ip saddr 10.10.10.0/24 reject with icmpx admin-prohibited
+      ip saddr 10.10.10.0/24 ip daddr 10.10.10.0/24 jump filter_FWD_zone-6
+      ip saddr 10.10.10.0/24 ip daddr 10.10.10.0/24 reject with icmpx admin-prohibited
+      oifname "dummy-7" ip saddr 10.10.10.0/24 jump filter_FWD_zone-6
+      oifname "dummy-7" ip saddr 10.10.10.0/24 reject with icmpx admin-prohibited
+      ip saddr 10.10.10.0/24 ip daddr 10.0.0.0/8 jump filter_FWD_zone-6
+      ip saddr 10.10.10.0/24 ip daddr 10.0.0.0/8 reject with icmpx admin-prohibited
+      oifname "dummy-9" ip saddr 10.10.10.0/24 jump filter_FWD_zone-6
+      oifname "dummy-9" ip saddr 10.10.10.0/24 reject with icmpx admin-prohibited
+      ip saddr 10.10.10.0/24 jump filter_FWD_zone-6
+      ip saddr 10.10.10.0/24 reject with icmpx admin-prohibited
+      iifname "dummy-7" oifname "dummy-1" jump filter_FWD_zone-7
+      iifname "dummy-7" oifname "dummy-1" reject with icmpx admin-prohibited
+      iifname "dummy-7" oifname "dummy-2" jump filter_FWD_zone-7
+      iifname "dummy-7" oifname "dummy-2" reject with icmpx admin-prohibited
+      iifname "dummy-7" oifname "dummy-3" jump filter_FWD_zone-7
+      iifname "dummy-7" oifname "dummy-3" reject with icmpx admin-prohibited
+      iifname "dummy-7" oifname "dummy-4" jump filter_FWD_zone-7
+      iifname "dummy-7" oifname "dummy-4" reject with icmpx admin-prohibited
+      iifname "dummy-7" oifname "dummy-5" jump filter_FWD_zone-7
+      iifname "dummy-7" oifname "dummy-5" reject with icmpx admin-prohibited
+      iifname "dummy-7" ip daddr 10.10.10.0/24 jump filter_FWD_zone-7
+      iifname "dummy-7" ip daddr 10.10.10.0/24 reject with icmpx admin-prohibited
+      iifname "dummy-7" oifname "dummy-7" jump filter_FWD_zone-7
+      iifname "dummy-7" oifname "dummy-7" reject with icmpx admin-prohibited
+      iifname "dummy-7" ip daddr 10.0.0.0/8 jump filter_FWD_zone-7
+      iifname "dummy-7" ip daddr 10.0.0.0/8 reject with icmpx admin-prohibited
+      iifname "dummy-7" oifname "dummy-9" jump filter_FWD_zone-7
+      iifname "dummy-7" oifname "dummy-9" reject with icmpx admin-prohibited
+      iifname "dummy-7" jump filter_FWD_zone-7
+      iifname "dummy-7" reject with icmpx admin-prohibited
+      oifname "dummy-1" ip saddr 10.0.0.0/8 jump filter_FWD_zone-8
+      oifname "dummy-1" ip saddr 10.0.0.0/8 reject with icmpx admin-prohibited
+      oifname "dummy-2" ip saddr 10.0.0.0/8 jump filter_FWD_zone-8
+      oifname "dummy-2" ip saddr 10.0.0.0/8 reject with icmpx admin-prohibited
+      oifname "dummy-3" ip saddr 10.0.0.0/8 jump filter_FWD_zone-8
+      oifname "dummy-3" ip saddr 10.0.0.0/8 reject with icmpx admin-prohibited
+      oifname "dummy-4" ip saddr 10.0.0.0/8 jump filter_FWD_zone-8
+      oifname "dummy-4" ip saddr 10.0.0.0/8 reject with icmpx admin-prohibited
+      oifname "dummy-5" ip saddr 10.0.0.0/8 jump filter_FWD_zone-8
+      oifname "dummy-5" ip saddr 10.0.0.0/8 reject with icmpx admin-prohibited
+      ip saddr 10.0.0.0/8 ip daddr 10.10.10.0/24 jump filter_FWD_zone-8
+      ip saddr 10.0.0.0/8 ip daddr 10.10.10.0/24 reject with icmpx admin-prohibited
+      oifname "dummy-7" ip saddr 10.0.0.0/8 jump filter_FWD_zone-8
+      oifname "dummy-7" ip saddr 10.0.0.0/8 reject with icmpx admin-prohibited
+      ip saddr 10.0.0.0/8 ip daddr 10.0.0.0/8 jump filter_FWD_zone-8
+      ip saddr 10.0.0.0/8 ip daddr 10.0.0.0/8 reject with icmpx admin-prohibited
+      oifname "dummy-9" ip saddr 10.0.0.0/8 jump filter_FWD_zone-8
+      oifname "dummy-9" ip saddr 10.0.0.0/8 reject with icmpx admin-prohibited
+      ip saddr 10.0.0.0/8 jump filter_FWD_zone-8
+      ip saddr 10.0.0.0/8 reject with icmpx admin-prohibited
+      oifname "dummy-1" jump filter_FWD_public
+      oifname "dummy-1" reject with icmpx admin-prohibited
+      oifname "dummy-2" jump filter_FWD_public
+      oifname "dummy-2" reject with icmpx admin-prohibited
+      oifname "dummy-3" jump filter_FWD_public
+      oifname "dummy-3" reject with icmpx admin-prohibited
+      oifname "dummy-4" jump filter_FWD_public
+      oifname "dummy-4" reject with icmpx admin-prohibited
+      oifname "dummy-5" jump filter_FWD_public
+      oifname "dummy-5" reject with icmpx admin-prohibited
+      ip daddr 10.10.10.0/24 jump filter_FWD_public
+      ip daddr 10.10.10.0/24 reject with icmpx admin-prohibited
+      oifname "dummy-7" jump filter_FWD_public
+      oifname "dummy-7" reject with icmpx admin-prohibited
+      ip daddr 10.0.0.0/8 jump filter_FWD_public
+      ip daddr 10.0.0.0/8 reject with icmpx admin-prohibited
+      oifname "dummy-9" jump filter_FWD_public
+      oifname "dummy-9" reject with icmpx admin-prohibited
+      jump filter_FWD_public
+      reject with icmpx admin-prohibited
+    }
+  }
+])
+
+IPTABLES_LIST_RULES([filter], [INPUT_POLICIES], 0, [dnl
+  IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+  IN_zone-1 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+  IN_zone-2 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+  IN_zone-3 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+  IN_zone-4 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+  IN_zone-5 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+  IN_zone-0andlast all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  IN_allow-host-ipv6 all -- 10.10.10.0/24 0.0.0.0/0
+  IN_zone-6 all -- 10.10.10.0/24 0.0.0.0/0
+  REJECT all -- 10.10.10.0/24 0.0.0.0/0 reject-with icmp-port-unreachable
+  IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+  IN_zone-7 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  IN_allow-host-ipv6 all -- 10.0.0.0/8 0.0.0.0/0
+  IN_zone-8 all -- 10.0.0.0/8 0.0.0.0/0
+  REJECT all -- 10.0.0.0/8 0.0.0.0/0 reject-with icmp-port-unreachable
+  IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+  IN_public all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+])
+IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES], 0, [dnl
+  FWD_zone-1 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-1 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-1 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-1 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-1 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-1 all -- 0.0.0.0/0 10.10.10.0/24
+  REJECT all -- 0.0.0.0/0 10.10.10.0/24 reject-with icmp-port-unreachable
+  FWD_zone-1 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-1 all -- 0.0.0.0/0 10.0.0.0/8
+  REJECT all -- 0.0.0.0/0 10.0.0.0/8 reject-with icmp-port-unreachable
+  FWD_zone-1 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-1 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-2 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-2 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-2 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-2 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-2 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-2 all -- 0.0.0.0/0 10.10.10.0/24
+  REJECT all -- 0.0.0.0/0 10.10.10.0/24 reject-with icmp-port-unreachable
+  FWD_zone-2 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-2 all -- 0.0.0.0/0 10.0.0.0/8
+  REJECT all -- 0.0.0.0/0 10.0.0.0/8 reject-with icmp-port-unreachable
+  FWD_zone-2 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-2 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-3 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-3 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-3 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-3 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-3 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-3 all -- 0.0.0.0/0 10.10.10.0/24
+  REJECT all -- 0.0.0.0/0 10.10.10.0/24 reject-with icmp-port-unreachable
+  FWD_zone-3 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-3 all -- 0.0.0.0/0 10.0.0.0/8
+  REJECT all -- 0.0.0.0/0 10.0.0.0/8 reject-with icmp-port-unreachable
+  FWD_zone-3 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-3 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-4 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-4 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-4 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-4 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-4 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-4 all -- 0.0.0.0/0 10.10.10.0/24
+  REJECT all -- 0.0.0.0/0 10.10.10.0/24 reject-with icmp-port-unreachable
+  FWD_zone-4 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-4 all -- 0.0.0.0/0 10.0.0.0/8
+  REJECT all -- 0.0.0.0/0 10.0.0.0/8 reject-with icmp-port-unreachable
+  FWD_zone-4 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-4 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-5 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-5 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-5 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-5 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-5 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-5 all -- 0.0.0.0/0 10.10.10.0/24
+  REJECT all -- 0.0.0.0/0 10.10.10.0/24 reject-with icmp-port-unreachable
+  FWD_zone-5 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-5 all -- 0.0.0.0/0 10.0.0.0/8
+  REJECT all -- 0.0.0.0/0 10.0.0.0/8 reject-with icmp-port-unreachable
+  FWD_zone-5 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-5 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-0andlast all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-0andlast all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-0andlast all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-0andlast all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-0andlast all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-0andlast all -- 0.0.0.0/0 10.10.10.0/24
+  REJECT all -- 0.0.0.0/0 10.10.10.0/24 reject-with icmp-port-unreachable
+  FWD_zone-0andlast all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-0andlast all -- 0.0.0.0/0 10.0.0.0/8
+  REJECT all -- 0.0.0.0/0 10.0.0.0/8 reject-with icmp-port-unreachable
+  FWD_zone-0andlast all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-0andlast all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-6 all -- 10.10.10.0/24 0.0.0.0/0
+  REJECT all -- 10.10.10.0/24 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-6 all -- 10.10.10.0/24 0.0.0.0/0
+  REJECT all -- 10.10.10.0/24 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-6 all -- 10.10.10.0/24 0.0.0.0/0
+  REJECT all -- 10.10.10.0/24 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-6 all -- 10.10.10.0/24 0.0.0.0/0
+  REJECT all -- 10.10.10.0/24 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-6 all -- 10.10.10.0/24 0.0.0.0/0
+  REJECT all -- 10.10.10.0/24 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-6 all -- 10.10.10.0/24 10.10.10.0/24
+  REJECT all -- 10.10.10.0/24 10.10.10.0/24 reject-with icmp-port-unreachable
+  FWD_zone-6 all -- 10.10.10.0/24 0.0.0.0/0
+  REJECT all -- 10.10.10.0/24 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-6 all -- 10.10.10.0/24 10.0.0.0/8
+  REJECT all -- 10.10.10.0/24 10.0.0.0/8 reject-with icmp-port-unreachable
+  FWD_zone-6 all -- 10.10.10.0/24 0.0.0.0/0
+  REJECT all -- 10.10.10.0/24 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-6 all -- 10.10.10.0/24 0.0.0.0/0
+  REJECT all -- 10.10.10.0/24 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-7 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-7 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-7 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-7 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-7 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-7 all -- 0.0.0.0/0 10.10.10.0/24
+  REJECT all -- 0.0.0.0/0 10.10.10.0/24 reject-with icmp-port-unreachable
+  FWD_zone-7 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-7 all -- 0.0.0.0/0 10.0.0.0/8
+  REJECT all -- 0.0.0.0/0 10.0.0.0/8 reject-with icmp-port-unreachable
+  FWD_zone-7 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-7 all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-8 all -- 10.0.0.0/8 0.0.0.0/0
+  REJECT all -- 10.0.0.0/8 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-8 all -- 10.0.0.0/8 0.0.0.0/0
+  REJECT all -- 10.0.0.0/8 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-8 all -- 10.0.0.0/8 0.0.0.0/0
+  REJECT all -- 10.0.0.0/8 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-8 all -- 10.0.0.0/8 0.0.0.0/0
+  REJECT all -- 10.0.0.0/8 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-8 all -- 10.0.0.0/8 0.0.0.0/0
+  REJECT all -- 10.0.0.0/8 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-8 all -- 10.0.0.0/8 10.10.10.0/24
+  REJECT all -- 10.0.0.0/8 10.10.10.0/24 reject-with icmp-port-unreachable
+  FWD_zone-8 all -- 10.0.0.0/8 0.0.0.0/0
+  REJECT all -- 10.0.0.0/8 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-8 all -- 10.0.0.0/8 10.0.0.0/8
+  REJECT all -- 10.0.0.0/8 10.0.0.0/8 reject-with icmp-port-unreachable
+  FWD_zone-8 all -- 10.0.0.0/8 0.0.0.0/0
+  REJECT all -- 10.0.0.0/8 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-8 all -- 10.0.0.0/8 0.0.0.0/0
+  REJECT all -- 10.0.0.0/8 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_public all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_public all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_public all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_public all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_public all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_public all -- 0.0.0.0/0 10.10.10.0/24
+  REJECT all -- 0.0.0.0/0 10.10.10.0/24 reject-with icmp-port-unreachable
+  FWD_public all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_public all -- 0.0.0.0/0 10.0.0.0/8
+  REJECT all -- 0.0.0.0/0 10.0.0.0/8 reject-with icmp-port-unreachable
+  FWD_public all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_public all -- 0.0.0.0/0 0.0.0.0/0
+  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+])
+
+IP6TABLES_LIST_RULES([filter], [INPUT_POLICIES], 0, [dnl
+  IN_allow-host-ipv6 all ::/0 ::/0
+  IN_zone-1 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  IN_allow-host-ipv6 all ::/0 ::/0
+  IN_zone-2 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  IN_allow-host-ipv6 all ::/0 ::/0
+  IN_zone-3 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  IN_allow-host-ipv6 all ::/0 ::/0
+  IN_zone-4 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  IN_allow-host-ipv6 all ::/0 ::/0
+  IN_zone-5 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  IN_allow-host-ipv6 all ::/0 ::/0
+  IN_zone-0andlast all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  IN_allow-host-ipv6 all ::/0 ::/0
+  IN_zone-7 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  IN_allow-host-ipv6 all ::/0 ::/0
+  IN_public all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+])
+IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES], 0, [dnl
+  FWD_zone-1 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-1 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-1 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-1 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-1 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-1 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-1 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-1 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-2 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-2 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-2 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-2 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-2 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-2 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-2 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-2 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-3 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-3 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-3 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-3 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-3 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-3 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-3 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-3 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-4 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-4 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-4 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-4 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-4 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-4 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-4 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-4 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-5 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-5 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-5 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-5 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-5 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-5 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-5 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-5 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-0andlast all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-0andlast all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-0andlast all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-0andlast all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-0andlast all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-0andlast all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-0andlast all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-0andlast all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-7 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-7 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-7 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-7 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-7 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-7 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-7 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-7 all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_public all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_public all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_public all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_public all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_public all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_public all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_public all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_public all ::/0 ::/0
+  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+])
+
+dnl verify runtime CLI output
+FWD_CHECK([--info-zone zone-2 | TRIM_WHITESPACE], 0, [m4_strip([dnl
+zone-2 (active)
+  target: default
+  ingress-priority: -10000
+  egress-priority: -10000
+  icmp-block-inversion: no
+  interfaces: dummy-2
+  sources: 
+  services: 
+  ports: 
+  protocols: 
+  forward: no
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+])])
+FWD_CHECK([--info-zone zone-4 | TRIM_WHITESPACE], 0, [m4_strip([dnl
+zone-4 (active)
+  target: default
+  ingress-priority: -100
+  egress-priority: 1
+  icmp-block-inversion: no
+  interfaces: dummy-4
+  sources: 
+  services: 
+  ports: 
+  protocols: 
+  forward: no
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+])])
+
+dnl verify XML
+AT_CHECK([cat ./zones/zone-5.xml], 0, [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone ingress-priority="-1" egress-priority="100">
+  <interface name="dummy-5"/>
+</zone>
+])
+
+dnl --set-priority, etc is invalid for runtime config
+FWD_CHECK([--zone foobar --set-priority -1], 2, [ignore], [ignore])
+FWD_CHECK([--zone foobar --set-ingress-priority -2], 2, [ignore], [ignore])
+FWD_CHECK([--zone foobar --set-egress-priority -3], 2, [ignore], [ignore])
+FWD_CHECK([--zone foobar --get-priority], 2, [ignore], [ignore])
+FWD_CHECK([--zone foobar --get-ingress-priority], 2, [ignore], [ignore])
+FWD_CHECK([--zone foobar --get-egress-priority], 2, [ignore], [ignore])
+
+FWD_END_TEST([ignore])
