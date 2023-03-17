@@ -13,7 +13,7 @@ DISTCLEANFILES = config.log intltool-*
 
 DISTCLEANDIRS = autom4te.cache ${PACKAGE_NAME}-*
 
-dist: clean-docs update-docs
+dist: all
 
 dist-container:
 	$(PODMAN) build --squash-all -t firewalld -f $(abs_top_srcdir)/Dockerfile $(abs_top_srcdir)
@@ -30,12 +30,6 @@ check-container check-integration installcheck-integration:
 
 .PHONY: check-container check-integration installcheck-integration
 .PHONY: dist-container
-
-update-docs:
-	$(MAKE) -C doc/xml
-
-clean-docs:
-	$(MAKE) -C doc/xml clean
 
 rpm test-rpm: dist
 	@rpmbuild -ta $(PACKAGE_NAME)-$(PACKAGE_VERSION).tar.bz2
