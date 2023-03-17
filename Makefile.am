@@ -1,5 +1,4 @@
 SUBDIRS = config doc po shell-completion src
-DIST_TARGETS = dist-gzip
 
 EXTRA_DIST = \
 	CODE_OF_CONDUCT.md \
@@ -38,11 +37,11 @@ update-docs:
 clean-docs:
 	$(MAKE) -C doc/xml clean
 
-rpm test-rpm: dist-gzip
-	@rpmbuild -ta $(PACKAGE_NAME)-$(PACKAGE_VERSION).tar.gz
+rpm test-rpm: dist
+	@rpmbuild -ta $(PACKAGE_NAME)-$(PACKAGE_VERSION).tar.bz2
 
-srpm test-srpm: dist-gzip
-	@rpmbuild -ts $(PACKAGE_NAME)-$(PACKAGE_VERSION).tar.gz
+srpm test-srpm: dist
+	@rpmbuild -ts $(PACKAGE_NAME)-$(PACKAGE_VERSION).tar.bz2
 
 update-po:
 	ls $(top_srcdir)/po/*.po | sed 's/.*\/po\///;s/.po//' > $(top_srcdir)/po/LINGUAS
