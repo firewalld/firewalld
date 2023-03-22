@@ -98,7 +98,7 @@ jobs:
           git clone --depth=1 --branch ${{ matrix.nftables-version }} git://git.netfilter.org/nftables
           cd nftables
           ./autogen.sh
-          ./configure --disable-man-doc --with-json --enable-python
+          ./configure --disable-man-doc --with-json --disable-python
           make
           sudo make install
           cd py
