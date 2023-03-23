@@ -1003,7 +1003,7 @@ options_permanent_only = a.new_icmptype or a.delete_icmptype or \
                          a.path_ipset or a.path_helper or options_desc_xml_file or \
                          a.set_priority or a.set_ingress_priority or a.set_egress_priority or \
                          a.get_priority or a.get_ingress_priority or a.get_egress_priority or \
-                         a.path_policy
+                         a.path_policy or a.get_target or a.set_target
 
 options_direct = a.passthrough or \
            a.add_chain or a.remove_chain or a.query_chain or \
@@ -1012,9 +1012,6 @@ options_direct = a.passthrough or \
            a.get_rules or a.get_all_rules or \
            a.add_passthrough or a.remove_passthrough or a.query_passthrough or \
            a.get_passthroughs or a.get_all_passthroughs
-
-options_require_permanent = options_permanent_only or \
-                            a.get_target or a.set_target
 
 # these are supposed to only write out some output
 options_list_get = a.help or a.version or a.list_all or a.list_all_zones or \
@@ -1077,7 +1074,7 @@ if a.name and not (a.new_zone_from_file or a.new_service_from_file or \
                    a.new_helper_from_file or a.new_policy_from_file):
     cmd.fail(parser.format_usage() + "Wrong usage of '--name' option.")
 
-if options_require_permanent and not a.permanent:
+if options_permanent_only and not a.permanent:
     cmd.fail(parser.format_usage() +
              "Option can be used only with --permanent.")
 
