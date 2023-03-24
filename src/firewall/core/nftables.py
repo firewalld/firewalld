@@ -1100,8 +1100,8 @@ class nftables(object):
                 "table": TABLE_NAME,
                 "chain": "%s_%s_%s" % (table, _policy, chain_suffix),
                 "expr": expr_fragments +
-                        [{"log": log_options},
-                         self._rich_rule_limit_fragment(rich_rule.log.limit)]}
+                        [self._rich_rule_limit_fragment(rich_rule.log.limit),
+                         {"log": log_options}]}
         rule.update(self._rich_rule_priority_fragment(rich_rule))
         return {add_del: {"rule": rule}}
 
@@ -1118,8 +1118,8 @@ class nftables(object):
                 "table": TABLE_NAME,
                 "chain": "%s_%s_%s" % (table, _policy, chain_suffix),
                 "expr": expr_fragments +
-                        [{"log": {"level": "audit"}},
-                         self._rich_rule_limit_fragment(rich_rule.audit.limit)]}
+                        [self._rich_rule_limit_fragment(rich_rule.audit.limit),
+                         {"log": {"level": "audit"}}]}
         rule.update(self._rich_rule_priority_fragment(rich_rule))
         return {add_del: {"rule": rule}}
 
