@@ -768,8 +768,6 @@ class FirewallZone(object):
                 elif zone in egress_zone_list:
                     self._fw.policy._egress_zone(enable, policy, zone, transaction,
                                                  egressInterface=interface, egressSource=source)
-                else:
-                    raise FirewallError(errors.UNKNOWN_ERROR, f"Unhandled interface update for policy '{policy}'.")
 
     def _interface(self, enable, zone, interface, transaction):
         for backend in self._fw.enabled_backends():
