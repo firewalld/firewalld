@@ -1,0 +1,25 @@
+FWD_START_TEST([ipset scale])
+AT_KEYWORDS(ipset gh738)
+
+dnl Create a huge ipset
+AT_CHECK([touch ./entries], 0, [ignore])
+AT_CHECK([sh -c '
+for I in $(seq 250); do
+    for J in $(seq 250); do
+        echo "10.10.${I}.${J}/32" >> ./entries
+    done
+done
+'], 0, [ignore])
+
+FWD_CHECK([--permanent --new-ipset foobar --type hash:net], 0, [ignore])
+FWD_CHECK([--permanent --ipset foobar --add-entries-from-file ./entries], 0, [ignore])
+
+dnl The large amount of entries requires more memory than other tests.
+dnl ulimit is normally set to a lower value by FWD_START_TEST().
+dnl
+ulimit -d $(expr 1024 \* 300)
+
+FWD_RESTART() dnl required because we changed ulimit
+FWD_RELOAD()
+
+FWD_END_TEST()
