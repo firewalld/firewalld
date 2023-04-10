@@ -3,13 +3,19 @@ AT_KEYWORDS(gh703)
 
 FWD_CHECK([--zone=home --add-source=34:7e:5c:3a:4c:32], 0, [ignore])
 
-NFT_LIST_RULES([inet], [nat_POSTROUTING_ZONES], 0, [dnl
+NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES], 0, [dnl
     table inet firewalld {
-        chain nat_POSTROUTING_ZONES {
-            ether daddr 34:7e:5c:3a:4c:32 goto nat_POST_home
-            goto nat_POST_public
-        }          
-    }          
+        chain nat_POSTROUTING_POLICIES {
+            ether daddr 34:7e:5c:3a:4c:32 ether saddr 34:7e:5c:3a:4c:32 jump nat_POST_home
+            ether daddr 34:7e:5c:3a:4c:32 ether saddr 34:7e:5c:3a:4c:32 return
+            ether daddr 34:7e:5c:3a:4c:32 jump nat_POST_home
+            ether daddr 34:7e:5c:3a:4c:32 return
+            ether saddr 34:7e:5c:3a:4c:32 jump nat_POST_public
+            ether saddr 34:7e:5c:3a:4c:32 return
+            jump nat_POST_public
+            return
+        }
+    }
 ])
 
 dnl NOTE: iptables does _not_ support matching mac destination.

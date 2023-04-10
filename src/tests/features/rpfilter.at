@@ -24,7 +24,7 @@ IP6TABLES_LIST_RULES([mangle], [PREROUTING], 0, [dnl
     ACCEPT icmpv6 ::/0 ::/0 ipv6-icmptype 135
     DROP all ::/0 ::/0 rpfilter validmark invert
     PREROUTING_direct all ::/0 ::/0
-    PREROUTING_ZONES all ::/0 ::/0
+    PREROUTING_POLICIES all ::/0 ::/0
 ])
 
 FWD_END_TEST

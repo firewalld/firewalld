@@ -504,11 +504,12 @@ class Firewall(object):
         log.debug1("Applying default rule set")
         self.apply_default_rules(use_transaction=transaction)
 
+        log.debug1("Applying default zone")
+        self.zone.apply_zone_settings(self._default_zone, transaction)
+        self.zone._interface(True, self._default_zone, "+", transaction)
+
         log.debug1("Applying used zones")
         self.zone.apply_zones(use_transaction=transaction)
-
-        self.zone.change_default_zone(None, self._default_zone,
-                                      use_transaction=transaction)
 
         log.debug1("Applying used policies")
         self.policy.apply_policies(use_transaction=transaction)
@@ -1282,26 +1283,11 @@ class Firewall(object):
 
     def set_default_zone(self, zone):
         _zone = self.check_zone(zone)
-        if _zone != self._default_zone:
-            _old_dz = self._default_zone
-            self._default_zone = _zone
-            self._firewalld_conf.set("DefaultZone", _zone)
-            self._firewalld_conf.write()
-
-            if self._offline:
-                return
-
-            # remove old default zone from ZONES and add new default zone
-            self.zone.change_default_zone(_old_dz, _zone)
-
-            # Move interfaces from old default zone to the new one.
-            for iface in self.zone.get_zone(_old_dz).interfaces:
-                if iface in self._default_zone_interfaces:
-                    # move only those that were added to default zone
-                    # (not those that were added to specific zone same as default)
-                    self.zone.change_zone_of_interface("", iface)
-        else:
+        if _zone == self._default_zone:
             raise FirewallError(errors.ZONE_ALREADY_SET, _zone)
+
+        self._firewalld_conf.set("DefaultZone", _zone)
+        self._firewalld_conf.write()
 
     def combine_runtime_with_permanent_settings(self, permanent, runtime):
         combined = permanent.copy()
