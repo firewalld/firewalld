@@ -1921,6 +1921,15 @@ class nftables(object):
         rules = []
         rules.extend(self.build_set_create_rules(set_name, type_name, create_options))
         rules.extend(self.build_set_flush_rules(set_name))
+
+        # avoid large memory usage by chunking the entries
+        chunk = 0
         for entry in entries:
             rules.extend(self.build_set_add_rules(set_name, entry))
-        self.set_rules(rules, self._fw.get_log_denied())
+            chunk += 1
+            if chunk >= 1000:
+                self.set_rules(rules, self._fw.get_log_denied())
+                rules.clear()
+                chunk = 0
+        else:
+            self.set_rules(rules, self._fw.get_log_denied())
