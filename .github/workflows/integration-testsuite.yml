@@ -20,8 +20,8 @@ jobs:
       fail-fast: false
       matrix:
         python-version: [3.7]
-        libnftnl-version: [libnftnl-1.1.6]
-        nftables-version: [v0.9.4]
+        libnftnl-version: [libnftnl-1.2.3]
+        nftables-version: [v1.0.5]
 
     steps:
       - name: checkout
@@ -45,7 +45,8 @@ jobs:
 
       - name: install nftables build dependencies
         run: |
-          sudo apt install -y libmnl-dev libgmp-dev libreadline-dev libjansson-dev 
+          sudo apt install -y libmnl-dev libgmp-dev libreadline-dev \
+          libjansson-dev libedit-dev
 
       - name: install libnftnl ${{ matrix.libnftnl-version }}
         run: |
