@@ -24,8 +24,8 @@ jobs:
       fail-fast: false
       matrix:
         python-version: [3.7]
-        libnftnl-version: [libnftnl-1.1.6]
-        nftables-version: [v0.9.4]
+        libnftnl-version: [libnftnl-1.2.3]
+        nftables-version: [v1.0.5]
         keyword: [offline, nftables, iptables]
         no-iptables: [false]
         no-ip6tables: [true, false]
