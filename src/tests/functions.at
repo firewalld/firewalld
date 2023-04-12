@@ -24,7 +24,7 @@ m4_define([FWD_START_FIREWALLD], [
 
     dnl Give it some time for the dbus interface to come up
     up=0
-    for I in 1 2 3 4 5 6 7 8 9 0; do
+    for I in $(seq 60); do
         if NS_CMD([firewall-cmd --state]); then
             up=1
             break
