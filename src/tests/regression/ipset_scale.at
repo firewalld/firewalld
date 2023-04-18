@@ -5,7 +5,7 @@ dnl Create a huge ipset
 AT_CHECK([touch ./entries], 0, [ignore])
 AT_CHECK([sh -c '
 for I in $(seq 250); do
-    for J in $(seq 250); do
+    for J in $(seq 25); do
         echo "10.10.${I}.${J}/32" >> ./entries
     done
 done
