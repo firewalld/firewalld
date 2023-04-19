@@ -833,45 +833,45 @@ IPTABLES_LIST_RULES([filter], [INPUT_POLICIES], 0, [dnl
     REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
 ])
 IP6TABLES_LIST_RULES([filter], [INPUT_POLICIES], 0, [dnl
-    IN_allow-host-ipv6 0 1234:5678::1:1:1 ::/0
-    IN_foobar_00 0 1234:5678::1:1:1 ::/0
-    REJECT 0 1234:5678::1:1:1 ::/0 reject-with icmp6-port-unreachable
-    IN_allow-host-ipv6 0 1234:5678::1:1:0/112 ::/0
-    IN_foobar_01 0 1234:5678::1:1:0/112 ::/0
-    REJECT 0 1234:5678::1:1:0/112 ::/0 reject-with icmp6-port-unreachable
-    IN_allow-host-ipv6 0 1234:5678::10:10:10 ::/0
-    IN_foobar_010 0 1234:5678::10:10:10 ::/0
-    REJECT 0 1234:5678::10:10:10 ::/0 reject-with icmp6-port-unreachable
-    IN_allow-host-ipv6 0 ::/0 ::/0 match-set ipsetv6 src
-    IN_foobar_012 0 ::/0 ::/0 match-set ipsetv6 src
-    REJECT 0 ::/0 ::/0 match-set ipsetv6 src reject-with icmp6-port-unreachable
-    IN_allow-host-ipv6 0 1234:5678::1:0:0/96 ::/0
-    IN_foobar_02 0 1234:5678::1:0:0/96 ::/0
-    REJECT 0 1234:5678::1:0:0/96 ::/0 reject-with icmp6-port-unreachable
-    IN_allow-host-ipv6 0 1234:5678::2:2:0/112 ::/0
-    IN_foobar_03 0 1234:5678::2:2:0/112 ::/0
-    REJECT 0 1234:5678::2:2:0/112 ::/0 reject-with icmp6-port-unreachable
-    IN_allow-host-ipv6 0 1234:5678::2:0:0/96 ::/0
-    IN_foobar_04 0 1234:5678::2:0:0/96 ::/0
-    REJECT 0 1234:5678::2:0:0/96 ::/0 reject-with icmp6-port-unreachable
-    IN_allow-host-ipv6 0 1234:5678::/80 ::/0
-    IN_foobar_05 0 1234:5678::/80 ::/0
-    REJECT 0 1234:5678::/80 ::/0 reject-with icmp6-port-unreachable
-    IN_allow-host-ipv6 0 1234:5678::20:20:20 ::/0
-    IN_public 0 1234:5678::20:20:20 ::/0
-    REJECT 0 1234:5678::20:20:20 ::/0 reject-with icmp6-port-unreachable
-    IN_allow-host-ipv6 0 ::/0 ::/0
-    IN_foobar_010 0 ::/0 ::/0
-    REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
-    IN_allow-host-ipv6 0 ::/0 ::/0
-    IN_internal 0 ::/0 ::/0
-    REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
-    IN_allow-host-ipv6 0 ::/0 ::/0
-    IN_trusted 0 ::/0 ::/0
-    ACCEPT 0 ::/0 ::/0
-    IN_allow-host-ipv6 0 ::/0 ::/0
-    IN_public 0 ::/0 ::/0
-    REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+    IN_allow-host-ipv6 0 -- 1234:5678::1:1:1 ::/0
+    IN_foobar_00 0 -- 1234:5678::1:1:1 ::/0
+    REJECT 0 -- 1234:5678::1:1:1 ::/0 reject-with icmp6-port-unreachable
+    IN_allow-host-ipv6 0 -- 1234:5678::1:1:0/112 ::/0
+    IN_foobar_01 0 -- 1234:5678::1:1:0/112 ::/0
+    REJECT 0 -- 1234:5678::1:1:0/112 ::/0 reject-with icmp6-port-unreachable
+    IN_allow-host-ipv6 0 -- 1234:5678::10:10:10 ::/0
+    IN_foobar_010 0 -- 1234:5678::10:10:10 ::/0
+    REJECT 0 -- 1234:5678::10:10:10 ::/0 reject-with icmp6-port-unreachable
+    IN_allow-host-ipv6 0 -- ::/0 ::/0 match-set ipsetv6 src
+    IN_foobar_012 0 -- ::/0 ::/0 match-set ipsetv6 src
+    REJECT 0 -- ::/0 ::/0 match-set ipsetv6 src reject-with icmp6-port-unreachable
+    IN_allow-host-ipv6 0 -- 1234:5678::1:0:0/96 ::/0
+    IN_foobar_02 0 -- 1234:5678::1:0:0/96 ::/0
+    REJECT 0 -- 1234:5678::1:0:0/96 ::/0 reject-with icmp6-port-unreachable
+    IN_allow-host-ipv6 0 -- 1234:5678::2:2:0/112 ::/0
+    IN_foobar_03 0 -- 1234:5678::2:2:0/112 ::/0
+    REJECT 0 -- 1234:5678::2:2:0/112 ::/0 reject-with icmp6-port-unreachable
+    IN_allow-host-ipv6 0 -- 1234:5678::2:0:0/96 ::/0
+    IN_foobar_04 0 -- 1234:5678::2:0:0/96 ::/0
+    REJECT 0 -- 1234:5678::2:0:0/96 ::/0 reject-with icmp6-port-unreachable
+    IN_allow-host-ipv6 0 -- 1234:5678::/80 ::/0
+    IN_foobar_05 0 -- 1234:5678::/80 ::/0
+    REJECT 0 -- 1234:5678::/80 ::/0 reject-with icmp6-port-unreachable
+    IN_allow-host-ipv6 0 -- 1234:5678::20:20:20 ::/0
+    IN_public 0 -- 1234:5678::20:20:20 ::/0
+    REJECT 0 -- 1234:5678::20:20:20 ::/0 reject-with icmp6-port-unreachable
+    IN_allow-host-ipv6 0 -- ::/0 ::/0
+    IN_foobar_010 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+    IN_allow-host-ipv6 0 -- ::/0 ::/0
+    IN_internal 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+    IN_allow-host-ipv6 0 -- ::/0 ::/0
+    IN_trusted 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
+    IN_allow-host-ipv6 0 -- ::/0 ::/0
+    IN_public 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
 ])
 
 FWD_END_TEST

@@ -20,9 +20,9 @@ IPTABLES_LIST_RULES([mangle], [PRE_public_allow], 0, [dnl
     MARK 6 -- 0.0.0.0/0 0.0.0.0/0 tcp spt:4321 MARK set 0xc
 ])
 IP6TABLES_LIST_RULES([mangle], [PRE_public_allow], 0, [dnl
-    MARK 6 ::/0 ::/0 tcp dpt:1234 MARK set 0xa
-    MARK 1 ::/0 ::/0 MARK set 0xb
-    MARK 6 ::/0 ::/0 tcp spt:4321 MARK set 0xc
+    MARK 6 -- ::/0 ::/0 tcp dpt:1234 MARK set 0xa
+    MARK 1 -- ::/0 ::/0 MARK set 0xb
+    MARK 6 -- ::/0 ::/0 tcp spt:4321 MARK set 0xc
 ])
 
 FWD_END_TEST
