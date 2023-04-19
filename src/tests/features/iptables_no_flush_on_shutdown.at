@@ -21,7 +21,7 @@ IPTABLES_LIST_RULES_ALWAYS([filter], [firewalld_testsuite], 0, [dnl
     ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES_ALWAYS([filter], [firewalld_testsuite], 0, [dnl
-    ACCEPT 0 ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 EBTABLES_LIST_RULES([filter], [firewalld_testsuite], 0, [dnl
     -j ACCEPT
@@ -31,7 +31,7 @@ IPTABLES_LIST_RULES_ALWAYS([filter], [firewalld_testsuite], 0, [dnl
     ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES_ALWAYS([filter], [firewalld_testsuite], 0, [dnl
-    ACCEPT 0 ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 EBTABLES_LIST_RULES([filter], [firewalld_testsuite], 0, [dnl
     -j ACCEPT
@@ -43,7 +43,7 @@ IPTABLES_LIST_RULES_ALWAYS([filter], [firewalld_testsuite], 0, [dnl
     ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES_ALWAYS([filter], [firewalld_testsuite], 0, [dnl
-    ACCEPT 0 ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 EBTABLES_LIST_RULES([filter], [firewalld_testsuite], 0, [dnl
     -j ACCEPT
@@ -69,7 +69,7 @@ IPTABLES_LIST_RULES_ALWAYS([filter], [firewalld_testsuite], 0, [dnl
     ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES_ALWAYS([filter], [firewalld_testsuite], 0, [dnl
-    ACCEPT 0 ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 EBTABLES_LIST_RULES([filter], [firewalld_testsuite], 0, [dnl
     -j ACCEPT
