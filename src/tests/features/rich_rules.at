@@ -23,18 +23,18 @@ NFT_LIST_RULES([inet], [filter_IN_policy_foobar], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([filter], [IN_foobar], 0, [dnl
-    IN_foobar_pre all -- 0.0.0.0/0 0.0.0.0/0
-    IN_foobar_log all -- 0.0.0.0/0 0.0.0.0/0
-    IN_foobar_deny all -- 0.0.0.0/0 0.0.0.0/0
-    IN_foobar_allow all -- 0.0.0.0/0 0.0.0.0/0
-    IN_foobar_post all -- 0.0.0.0/0 0.0.0.0/0
+    IN_foobar_pre 0 -- 0.0.0.0/0 0.0.0.0/0
+    IN_foobar_log 0 -- 0.0.0.0/0 0.0.0.0/0
+    IN_foobar_deny 0 -- 0.0.0.0/0 0.0.0.0/0
+    IN_foobar_allow 0 -- 0.0.0.0/0 0.0.0.0/0
+    IN_foobar_post 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [IN_foobar], 0, [dnl
-    IN_foobar_pre all ::/0 ::/0
-    IN_foobar_log all ::/0 ::/0
-    IN_foobar_deny all ::/0 ::/0
-    IN_foobar_allow all ::/0 ::/0
-    IN_foobar_post all ::/0 ::/0
+    IN_foobar_pre 0 ::/0 ::/0
+    IN_foobar_log 0 ::/0 ::/0
+    IN_foobar_deny 0 ::/0 ::/0
+    IN_foobar_allow 0 ::/0 ::/0
+    IN_foobar_post 0 ::/0 ::/0
 ])
 
 dnl priority
@@ -55,7 +55,7 @@ NFT_LIST_RULES([inet], [filter_IN_policy_foobar_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([filter], [IN_foobar_pre], 0, [dnl
-    ACCEPT all -- 10.10.10.14 0.0.0.0/0
+    ACCEPT 0 -- 10.10.10.14 0.0.0.0/0
 ])
 NFT_LIST_RULES([inet], [filter_IN_policy_foobar_log], 0, [dnl
     table inet firewalld {
@@ -66,8 +66,8 @@ NFT_LIST_RULES([inet], [filter_IN_policy_foobar_log], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([filter], [IN_foobar_log], 0, [dnl
-    LOG all -- 10.10.10.11 0.0.0.0/0 LOG flags 0 level 4
-    AUDIT all -- 10.10.10.11 0.0.0.0/0 AUDIT accept
+    LOG 0 -- 10.10.10.11 0.0.0.0/0 LOG flags 0 level 4
+    AUDIT 0 -- 10.10.10.11 0.0.0.0/0 AUDIT accept
 ])
 NFT_LIST_RULES([inet], [filter_IN_policy_foobar_deny], 0, [dnl
     table inet firewalld {
@@ -78,8 +78,8 @@ NFT_LIST_RULES([inet], [filter_IN_policy_foobar_deny], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([filter], [IN_foobar_deny], 0, [dnl
-    REJECT all -- 10.10.10.12 0.0.0.0/0 reject-with icmp-port-unreachable
-    DROP all -- 10.10.10.13 0.0.0.0/0
+    REJECT 0 -- 10.10.10.12 0.0.0.0/0 reject-with icmp-port-unreachable
+    DROP 0 -- 10.10.10.13 0.0.0.0/0
 ])
 NFT_LIST_RULES([inet], [filter_IN_policy_foobar_allow], 0, [dnl
     table inet firewalld {
@@ -90,9 +90,9 @@ NFT_LIST_RULES([inet], [filter_IN_policy_foobar_allow], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([filter], [IN_foobar_allow], 0, [dnl
-    ACCEPT all -- 10.10.10.10 0.0.0.0/0
-    ACCEPT all -- 10.10.10.11 0.0.0.0/0
-    ACCEPT all -- 10.10.10.11 0.0.0.0/0
+    ACCEPT 0 -- 10.10.10.10 0.0.0.0/0
+    ACCEPT 0 -- 10.10.10.11 0.0.0.0/0
+    ACCEPT 0 -- 10.10.10.11 0.0.0.0/0
 ])
 NFT_LIST_RULES([inet], [filter_IN_policy_foobar_post], 0, [dnl
     table inet firewalld {
@@ -102,7 +102,7 @@ NFT_LIST_RULES([inet], [filter_IN_policy_foobar_post], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([filter], [IN_foobar_post], 0, [dnl
-    ACCEPT all -- 10.10.10.15 0.0.0.0/0
+    ACCEPT 0 -- 10.10.10.15 0.0.0.0/0
 ])
 
 dnl source/destination
@@ -124,13 +124,13 @@ NFT_LIST_RULES([inet], [filter_IN_policy_foobar_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([filter], [IN_foobar_pre], 0, [dnl
-    DROP all -- 10.20.20.22 10.20.20.23
-    ACCEPT all -- 0.0.0.0/0 10.20.20.21
-    ACCEPT all -- 10.10.10.14 0.0.0.0/0
-    ACCEPT all -- 10.20.20.20 0.0.0.0/0
+    DROP 0 -- 10.20.20.22 10.20.20.23
+    ACCEPT 0 -- 0.0.0.0/0 10.20.20.21
+    ACCEPT 0 -- 10.10.10.14 0.0.0.0/0
+    ACCEPT 0 -- 10.20.20.20 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [IN_foobar_pre], 0, [dnl
-    DROP all 1234::4321 1234::4444
+    DROP 0 1234::4321 1234::4444
 ])
 
 dnl icmp-type
@@ -153,16 +153,16 @@ NFT_LIST_RULES([inet], [filter_IN_policy_foobar_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([filter], [IN_foobar_pre], 0, [dnl
-    DROP all -- 10.20.20.22 10.20.20.23
-    ACCEPT all -- 0.0.0.0/0 10.20.20.21
-    ACCEPT icmp -- 0.0.0.0/0 0.0.0.0/0 icmptype 8
-    ACCEPT all -- 10.10.10.14 0.0.0.0/0
-    ACCEPT all -- 10.20.20.20 0.0.0.0/0
+    DROP 0 -- 10.20.20.22 10.20.20.23
+    ACCEPT 0 -- 0.0.0.0/0 10.20.20.21
+    ACCEPT 1 -- 0.0.0.0/0 0.0.0.0/0 icmptype 8
+    ACCEPT 0 -- 10.10.10.14 0.0.0.0/0
+    ACCEPT 0 -- 10.20.20.20 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [IN_foobar_pre], 0, [dnl
-    DROP all 1234::4321 1234::4444
-    ACCEPT icmpv6 ::/0 ::/0 ipv6-icmptype 128
-    ACCEPT icmpv6 ::/0 ::/0 ipv6-icmptype 136
+    DROP 0 1234::4321 1234::4444
+    ACCEPT 58 ::/0 ::/0 ipv6-icmptype 128
+    ACCEPT 58 ::/0 ::/0 ipv6-icmptype 136
 ])
 
 FWD_CHECK([--permanent --policy=foobar --remove-egress-zone HOST], 0, [ignore])
@@ -183,12 +183,12 @@ NFT_LIST_RULES([inet], [mangle_PRE_policy_foobar_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([mangle], [PRE_foobar_pre], 0, [dnl
-    MARK all -- 0.0.0.0/0 0.0.0.0/0 MARK xset 0x6600/0xff00
-    MARK all -- 0.0.0.0/0 0.0.0.0/0 MARK set 0x4d2
+    MARK 0 -- 0.0.0.0/0 0.0.0.0/0 MARK xset 0x6600/0xff00
+    MARK 0 -- 0.0.0.0/0 0.0.0.0/0 MARK set 0x4d2
 ])
 IP6TABLES_LIST_RULES([mangle], [PRE_foobar_pre], 0, [dnl
-    MARK all ::/0 ::/0 MARK xset 0x6600/0xff00
-    MARK all ::/0 ::/0 MARK set 0x4d2
+    MARK 0 ::/0 ::/0 MARK xset 0x6600/0xff00
+    MARK 0 ::/0 ::/0 MARK set 0x4d2
 ])
 FWD_CHECK([--permanent --policy=foobar --remove-egress-zone HOST], 0, [ignore])
 
@@ -206,12 +206,12 @@ NFT_LIST_RULES([inet], [mangle_PRE_policy_foobar_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([mangle], [PRE_foobar_pre], 0, [dnl
-    MARK all -- 0.0.0.0/0 0.0.0.0/0 MARK xset 0x6600/0xff00
-    MARK all -- 0.0.0.0/0 0.0.0.0/0 MARK set 0x4d2
+    MARK 0 -- 0.0.0.0/0 0.0.0.0/0 MARK xset 0x6600/0xff00
+    MARK 0 -- 0.0.0.0/0 0.0.0.0/0 MARK set 0x4d2
 ])
 IP6TABLES_LIST_RULES([mangle], [PRE_foobar_pre], 0, [dnl
-    MARK all ::/0 ::/0 MARK xset 0x6600/0xff00
-    MARK all ::/0 ::/0 MARK set 0x4d2
+    MARK 0 ::/0 ::/0 MARK xset 0x6600/0xff00
+    MARK 0 ::/0 ::/0 MARK set 0x4d2
 ])
 FWD_CHECK([--permanent --policy=foobar --remove-egress-zone ANY], 0, [ignore])
 
@@ -230,12 +230,12 @@ NFT_LIST_RULES([inet], [mangle_PRE_policy_foobar_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([mangle], [PRE_foobar_pre], 0, [dnl
-    MARK all -- 0.0.0.0/0 0.0.0.0/0 MARK xset 0x6600/0xff00
-    MARK all -- 0.0.0.0/0 0.0.0.0/0 MARK set 0x4d2
+    MARK 0 -- 0.0.0.0/0 0.0.0.0/0 MARK xset 0x6600/0xff00
+    MARK 0 -- 0.0.0.0/0 0.0.0.0/0 MARK set 0x4d2
 ])
 IP6TABLES_LIST_RULES([mangle], [PRE_foobar_pre], 0, [dnl
-    MARK all ::/0 ::/0 MARK xset 0x6600/0xff00
-    MARK all ::/0 ::/0 MARK set 0x4d2
+    MARK 0 ::/0 ::/0 MARK xset 0x6600/0xff00
+    MARK 0 ::/0 ::/0 MARK set 0x4d2
 ])
 FWD_CHECK([--permanent --policy=foobar --remove-egress-zone public], 0, [ignore])
 FWD_CHECK([--permanent --zone=public --remove-source 10.10.10.0/24], 0, [ignore])
@@ -278,15 +278,15 @@ NFT_LIST_RULES([inet], [filter_IN_policy_foobar_post], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([filter], [IN_foobar_post], 0, [dnl
-    ACCEPT all -- 10.10.10.15 0.0.0.0/0
-    LOG all -- 0.0.0.0/0 0.0.0.0/0 LOG flags 0 level 4 prefix "LOG: "
-    AUDIT all -- 0.0.0.0/0 0.0.0.0/0 AUDIT accept
-    ACCEPT all -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 10.10.10.15 0.0.0.0/0
+    LOG 0 -- 0.0.0.0/0 0.0.0.0/0 LOG flags 0 level 4 prefix "LOG: "
+    AUDIT 0 -- 0.0.0.0/0 0.0.0.0/0 AUDIT accept
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [IN_foobar_post], 0, [dnl
-    LOG all ::/0 ::/0 LOG flags 0 level 4 prefix "LOG: "
-    AUDIT all ::/0 ::/0 AUDIT accept
-    ACCEPT all ::/0 ::/0
+    LOG 0 ::/0 ::/0 LOG flags 0 level 4 prefix "LOG: "
+    AUDIT 0 ::/0 ::/0 AUDIT accept
+    ACCEPT 0 ::/0 ::/0
 ])
 FWD_CHECK([--permanent --policy foobar --remove-rich-rule='rule priority=32000 log prefix="LOG: " level="warning"'], 0, ignore)
 FWD_CHECK([--permanent --policy foobar --remove-rich-rule='rule priority=32001 audit accept'], 0, ignore)
@@ -308,15 +308,15 @@ NFT_LIST_RULES([inet], [filter_IN_policy_foobar_post], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([filter], [IN_foobar_post], 0, [dnl
-    ACCEPT all -- 10.10.10.15 0.0.0.0/0
-    NFLOG all -- 0.0.0.0/0 0.0.0.0/0 nflog-prefix "NFLOG: " nflog-threshold 10
-    AUDIT all -- 0.0.0.0/0 0.0.0.0/0 AUDIT accept
-    ACCEPT all -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 10.10.10.15 0.0.0.0/0
+    NFLOG 0 -- 0.0.0.0/0 0.0.0.0/0 nflog-prefix "NFLOG: " nflog-threshold 10
+    AUDIT 0 -- 0.0.0.0/0 0.0.0.0/0 AUDIT accept
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [IN_foobar_post], 0, [dnl
-    NFLOG all ::/0 ::/0 nflog-prefix "NFLOG: " nflog-threshold 10
-    AUDIT all ::/0 ::/0 AUDIT accept
-    ACCEPT all ::/0 ::/0
+    NFLOG 0 ::/0 ::/0 nflog-prefix "NFLOG: " nflog-threshold 10
+    AUDIT 0 ::/0 ::/0 AUDIT accept
+    ACCEPT 0 ::/0 ::/0
 ])
 
 FWD_END_TEST([-e '/ERROR: INVALID_ZONE:/d'])

@@ -18,20 +18,20 @@ NS_CHECK([$IP6TABLES -t filter -I firewalld_testsuite -j ACCEPT])
 NS_CHECK([$EBTABLES -t filter -N firewalld_testsuite])
 NS_CHECK([$EBTABLES -t filter -I firewalld_testsuite -j ACCEPT])
 IPTABLES_LIST_RULES_ALWAYS([filter], [firewalld_testsuite], 0, [dnl
-    ACCEPT all -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES_ALWAYS([filter], [firewalld_testsuite], 0, [dnl
-    ACCEPT all ::/0 ::/0
+    ACCEPT 0 ::/0 ::/0
 ])
 EBTABLES_LIST_RULES([filter], [firewalld_testsuite], 0, [dnl
     -j ACCEPT
 ])
 FWD_RELOAD()
 IPTABLES_LIST_RULES_ALWAYS([filter], [firewalld_testsuite], 0, [dnl
-    ACCEPT all -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES_ALWAYS([filter], [firewalld_testsuite], 0, [dnl
-    ACCEPT all ::/0 ::/0
+    ACCEPT 0 ::/0 ::/0
 ])
 EBTABLES_LIST_RULES([filter], [firewalld_testsuite], 0, [dnl
     -j ACCEPT
@@ -40,10 +40,10 @@ EBTABLES_LIST_RULES([filter], [firewalld_testsuite], 0, [dnl
 dnl no flush on restart (or stop) if no direct rules
 FWD_RESTART()
 IPTABLES_LIST_RULES_ALWAYS([filter], [firewalld_testsuite], 0, [dnl
-    ACCEPT all -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES_ALWAYS([filter], [firewalld_testsuite], 0, [dnl
-    ACCEPT all ::/0 ::/0
+    ACCEPT 0 ::/0 ::/0
 ])
 EBTABLES_LIST_RULES([filter], [firewalld_testsuite], 0, [dnl
     -j ACCEPT
@@ -55,7 +55,7 @@ IPTABLES_LIST_RULES_ALWAYS([filter], [firewalld_testsuite], 1, [ignore], [ignore
 IP6TABLES_LIST_RULES_ALWAYS([filter], [firewalld_testsuite], 1, [ignore], [ignore])
 EBTABLES_LIST_RULES([filter], [firewalld_testsuite], 1, [ignore], [ignore])
 IPTABLES_LIST_RULES_ALWAYS([filter], [INPUT], 0, [dnl
-    ACCEPT all -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 NS_CHECK([$IPTABLES -t filter -N firewalld_testsuite])
 NS_CHECK([$IPTABLES -t filter -I firewalld_testsuite -j ACCEPT])
@@ -66,10 +66,10 @@ NS_CHECK([$IP6TABLES -t filter -I firewalld_testsuite -j ACCEPT])
 NS_CHECK([$EBTABLES -t filter -N firewalld_testsuite])
 NS_CHECK([$EBTABLES -t filter -I firewalld_testsuite -j ACCEPT])
 IPTABLES_LIST_RULES_ALWAYS([filter], [firewalld_testsuite], 0, [dnl
-    ACCEPT all -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES_ALWAYS([filter], [firewalld_testsuite], 0, [dnl
-    ACCEPT all ::/0 ::/0
+    ACCEPT 0 ::/0 ::/0
 ])
 EBTABLES_LIST_RULES([filter], [firewalld_testsuite], 0, [dnl
     -j ACCEPT
@@ -98,7 +98,7 @@ NS_CHECK([$EBTABLES -t filter -I firewalld_testsuite -j ACCEPT])
 FWD_RELOAD()
 IPTABLES_LIST_RULES_ALWAYS([filter], [firewalld_testsuite], 1, [ignore], [ignore])
 IPTABLES_LIST_RULES_ALWAYS([filter], [INPUT], 0, [dnl
-    ACCEPT all -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES_ALWAYS([filter], [firewalld_testsuite], 1, [ignore], [ignore])
 IP6TABLES_LIST_RULES_ALWAYS([filter], [INPUT], 0, [dnl

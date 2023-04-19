@@ -13,30 +13,30 @@ FWD_CHECK([--direct --add-rule ipv4 filter OUTPUT 2 -p udp -d 10.0.0.0/8,172.16.
 FWD_CHECK([--direct --add-rule ipv4 filter OUTPUT 9 -j DROP], 0, [ignore], [ignore])
 
 IPTABLES_LIST_RULES_ALWAYS([filter], [m4_if(iptables, FIREWALL_BACKEND, [OUTPUT_direct], [OUTPUT])], 0, [dnl
-		ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0            state RELATED,ESTABLISHED
-		ACCEPT     tcp  --  0.0.0.0/0            10.0.0.0/8
-		ACCEPT     tcp  --  0.0.0.0/0            172.16.0.0/16
-		ACCEPT     tcp  --  0.0.0.0/0            192.168.0.0/24
-		ACCEPT     udp  --  0.0.0.0/0            10.0.0.0/8
-		ACCEPT     udp  --  0.0.0.0/0            172.16.0.0/16
-		ACCEPT     udp  --  0.0.0.0/0            192.168.0.0/24
-		DROP       all  --  0.0.0.0/0            0.0.0.0/0
+		ACCEPT     0  --  0.0.0.0/0            0.0.0.0/0            state RELATED,ESTABLISHED
+		ACCEPT     6  --  0.0.0.0/0            10.0.0.0/8
+		ACCEPT     6  --  0.0.0.0/0            172.16.0.0/16
+		ACCEPT     6  --  0.0.0.0/0            192.168.0.0/24
+		ACCEPT     17  --  0.0.0.0/0            10.0.0.0/8
+		ACCEPT     17  --  0.0.0.0/0            172.16.0.0/16
+		ACCEPT     17  --  0.0.0.0/0            192.168.0.0/24
+		DROP       0  --  0.0.0.0/0            0.0.0.0/0
 ])
 
 FWD_CHECK([--direct --add-rule ipv4 filter OUTPUT 1 -p sctp -d 10.0.0.0/8,172.16.0.0/16,192.168.0.0/24 -j ACCEPT], 0, [ignore], [ignore])
 
 IPTABLES_LIST_RULES_ALWAYS([filter], [m4_if(iptables, FIREWALL_BACKEND, [OUTPUT_direct], [OUTPUT])], 0, [dnl
-		ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0            state RELATED,ESTABLISHED
-		ACCEPT     sctp --  0.0.0.0/0            10.0.0.0/8
-		ACCEPT     sctp --  0.0.0.0/0            172.16.0.0/16
-		ACCEPT     sctp --  0.0.0.0/0            192.168.0.0/24
-		ACCEPT     tcp  --  0.0.0.0/0            10.0.0.0/8
-		ACCEPT     tcp  --  0.0.0.0/0            172.16.0.0/16
-		ACCEPT     tcp  --  0.0.0.0/0            192.168.0.0/24
-		ACCEPT     udp  --  0.0.0.0/0            10.0.0.0/8
-		ACCEPT     udp  --  0.0.0.0/0            172.16.0.0/16
-		ACCEPT     udp  --  0.0.0.0/0            192.168.0.0/24
-		DROP       all  --  0.0.0.0/0            0.0.0.0/0
+		ACCEPT     0  --  0.0.0.0/0            0.0.0.0/0            state RELATED,ESTABLISHED
+		ACCEPT     132 --  0.0.0.0/0            10.0.0.0/8
+		ACCEPT     132 --  0.0.0.0/0            172.16.0.0/16
+		ACCEPT     132 --  0.0.0.0/0            192.168.0.0/24
+		ACCEPT     6  --  0.0.0.0/0            10.0.0.0/8
+		ACCEPT     6  --  0.0.0.0/0            172.16.0.0/16
+		ACCEPT     6  --  0.0.0.0/0            192.168.0.0/24
+		ACCEPT     17  --  0.0.0.0/0            10.0.0.0/8
+		ACCEPT     17  --  0.0.0.0/0            172.16.0.0/16
+		ACCEPT     17  --  0.0.0.0/0            192.168.0.0/24
+		DROP       0  --  0.0.0.0/0            0.0.0.0/0
 ])
 
 FWD_CHECK([--direct --remove-rule ipv4 filter OUTPUT 0 -m state --state ESTABLISHED,RELATED -j ACCEPT], 0, [ignore], [ignore])
