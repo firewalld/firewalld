@@ -68,7 +68,7 @@ check-container-debian-sid-image: check-container-%-image:
 	                             xsltproc docbook-xsl docbook-xml iproute2 iptables ipset ebtables \
 	                             nftables libxml2-utils libdbus-1-dev libgirepository1.0-dev \
 	                             python3-dbus python3-gi python3-nftables \
-	                             procps network-manager gir1.2-nm-1.0" && \
+	                             procps network-manager gir1.2-nm-1.0 time" && \
 	echo "COPY . /tmp/firewalld"; \
 	} | $(PODMAN) build -t firewalld-testsuite-$* -f - . )
 
@@ -81,7 +81,7 @@ check-container-fedora-rawhide-image: check-container-%-image:
 	                 iptables iptables-nft libtool libxml2 libxslt make nftables \
 	                 python3-nftables python3-gobject-base \
 	                 diffutils procps-ng iproute which dbus-daemon \
-	                 NetworkManager NetworkManager-ovs" && \
+	                 NetworkManager NetworkManager-ovs time" && \
 	echo "RUN alternatives --set ebtables /usr/sbin/ebtables-nft" && \
 	echo "COPY . /tmp/firewalld"; \
 	} | $(PODMAN) build -t firewalld-testsuite-$* -f - . )
@@ -96,7 +96,7 @@ check-container-centos8-stream-image: check-container-%-image:
 	                 iptables iptables-ebtables nftables libtool libxml2 \
 	                 libxslt make nftables python3-nftables \
 	                 python3-gobject-base diffutils procps-ng iproute which dbus-daemon \
-	                 NetworkManager NetworkManager-ovs" && \
+	                 NetworkManager NetworkManager-ovs time" && \
 	echo "COPY . /tmp/firewalld"; \
 	} | $(PODMAN) build -t firewalld-testsuite-$* -f - . )
 
