@@ -358,395 +358,395 @@ NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES], 0, [dnl
 ])
 
 IPTABLES_LIST_RULES([filter], [INPUT_POLICIES], 0, [dnl
-  IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
-  IN_zone-1 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
-  IN_zone-2 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
-  IN_zone-3 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
-  IN_zone-4 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
-  IN_zone-5 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
-  IN_zone-0andlast all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  IN_allow-host-ipv6 all -- 10.10.10.0/24 0.0.0.0/0
-  IN_zone-6 all -- 10.10.10.0/24 0.0.0.0/0
-  REJECT all -- 10.10.10.0/24 0.0.0.0/0 reject-with icmp-port-unreachable
-  IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
-  IN_zone-7 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  IN_allow-host-ipv6 all -- 10.0.0.0/8 0.0.0.0/0
-  IN_zone-8 all -- 10.0.0.0/8 0.0.0.0/0
-  REJECT all -- 10.0.0.0/8 0.0.0.0/0 reject-with icmp-port-unreachable
-  IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
-  IN_public all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  IN_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+  IN_zone-1 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  IN_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+  IN_zone-2 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  IN_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+  IN_zone-3 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  IN_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+  IN_zone-4 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  IN_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+  IN_zone-5 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  IN_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+  IN_zone-0andlast 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  IN_allow-host-ipv6 0 -- 10.10.10.0/24 0.0.0.0/0
+  IN_zone-6 0 -- 10.10.10.0/24 0.0.0.0/0
+  REJECT 0 -- 10.10.10.0/24 0.0.0.0/0 reject-with icmp-port-unreachable
+  IN_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+  IN_zone-7 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  IN_allow-host-ipv6 0 -- 10.0.0.0/8 0.0.0.0/0
+  IN_zone-8 0 -- 10.0.0.0/8 0.0.0.0/0
+  REJECT 0 -- 10.0.0.0/8 0.0.0.0/0 reject-with icmp-port-unreachable
+  IN_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+  IN_public 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
 ])
 IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES], 0, [dnl
-  FWD_zone-1 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-1 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-1 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-1 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-1 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-1 all -- 0.0.0.0/0 10.10.10.0/24
-  REJECT all -- 0.0.0.0/0 10.10.10.0/24 reject-with icmp-port-unreachable
-  FWD_zone-1 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-1 all -- 0.0.0.0/0 10.0.0.0/8
-  REJECT all -- 0.0.0.0/0 10.0.0.0/8 reject-with icmp-port-unreachable
-  FWD_zone-1 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-1 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-2 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-2 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-2 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-2 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-2 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-2 all -- 0.0.0.0/0 10.10.10.0/24
-  REJECT all -- 0.0.0.0/0 10.10.10.0/24 reject-with icmp-port-unreachable
-  FWD_zone-2 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-2 all -- 0.0.0.0/0 10.0.0.0/8
-  REJECT all -- 0.0.0.0/0 10.0.0.0/8 reject-with icmp-port-unreachable
-  FWD_zone-2 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-2 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-3 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-3 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-3 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-3 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-3 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-3 all -- 0.0.0.0/0 10.10.10.0/24
-  REJECT all -- 0.0.0.0/0 10.10.10.0/24 reject-with icmp-port-unreachable
-  FWD_zone-3 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-3 all -- 0.0.0.0/0 10.0.0.0/8
-  REJECT all -- 0.0.0.0/0 10.0.0.0/8 reject-with icmp-port-unreachable
-  FWD_zone-3 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-3 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-4 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-4 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-4 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-4 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-4 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-4 all -- 0.0.0.0/0 10.10.10.0/24
-  REJECT all -- 0.0.0.0/0 10.10.10.0/24 reject-with icmp-port-unreachable
-  FWD_zone-4 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-4 all -- 0.0.0.0/0 10.0.0.0/8
-  REJECT all -- 0.0.0.0/0 10.0.0.0/8 reject-with icmp-port-unreachable
-  FWD_zone-4 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-4 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-5 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-5 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-5 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-5 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-5 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-5 all -- 0.0.0.0/0 10.10.10.0/24
-  REJECT all -- 0.0.0.0/0 10.10.10.0/24 reject-with icmp-port-unreachable
-  FWD_zone-5 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-5 all -- 0.0.0.0/0 10.0.0.0/8
-  REJECT all -- 0.0.0.0/0 10.0.0.0/8 reject-with icmp-port-unreachable
-  FWD_zone-5 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-5 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-0andlast all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-0andlast all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-0andlast all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-0andlast all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-0andlast all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-0andlast all -- 0.0.0.0/0 10.10.10.0/24
-  REJECT all -- 0.0.0.0/0 10.10.10.0/24 reject-with icmp-port-unreachable
-  FWD_zone-0andlast all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-0andlast all -- 0.0.0.0/0 10.0.0.0/8
-  REJECT all -- 0.0.0.0/0 10.0.0.0/8 reject-with icmp-port-unreachable
-  FWD_zone-0andlast all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-0andlast all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-6 all -- 10.10.10.0/24 0.0.0.0/0
-  REJECT all -- 10.10.10.0/24 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-6 all -- 10.10.10.0/24 0.0.0.0/0
-  REJECT all -- 10.10.10.0/24 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-6 all -- 10.10.10.0/24 0.0.0.0/0
-  REJECT all -- 10.10.10.0/24 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-6 all -- 10.10.10.0/24 0.0.0.0/0
-  REJECT all -- 10.10.10.0/24 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-6 all -- 10.10.10.0/24 0.0.0.0/0
-  REJECT all -- 10.10.10.0/24 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-6 all -- 10.10.10.0/24 10.10.10.0/24
-  REJECT all -- 10.10.10.0/24 10.10.10.0/24 reject-with icmp-port-unreachable
-  FWD_zone-6 all -- 10.10.10.0/24 0.0.0.0/0
-  REJECT all -- 10.10.10.0/24 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-6 all -- 10.10.10.0/24 10.0.0.0/8
-  REJECT all -- 10.10.10.0/24 10.0.0.0/8 reject-with icmp-port-unreachable
-  FWD_zone-6 all -- 10.10.10.0/24 0.0.0.0/0
-  REJECT all -- 10.10.10.0/24 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-6 all -- 10.10.10.0/24 0.0.0.0/0
-  REJECT all -- 10.10.10.0/24 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-7 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-7 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-7 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-7 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-7 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-7 all -- 0.0.0.0/0 10.10.10.0/24
-  REJECT all -- 0.0.0.0/0 10.10.10.0/24 reject-with icmp-port-unreachable
-  FWD_zone-7 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-7 all -- 0.0.0.0/0 10.0.0.0/8
-  REJECT all -- 0.0.0.0/0 10.0.0.0/8 reject-with icmp-port-unreachable
-  FWD_zone-7 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-7 all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-8 all -- 10.0.0.0/8 0.0.0.0/0
-  REJECT all -- 10.0.0.0/8 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-8 all -- 10.0.0.0/8 0.0.0.0/0
-  REJECT all -- 10.0.0.0/8 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-8 all -- 10.0.0.0/8 0.0.0.0/0
-  REJECT all -- 10.0.0.0/8 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-8 all -- 10.0.0.0/8 0.0.0.0/0
-  REJECT all -- 10.0.0.0/8 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-8 all -- 10.0.0.0/8 0.0.0.0/0
-  REJECT all -- 10.0.0.0/8 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-8 all -- 10.0.0.0/8 10.10.10.0/24
-  REJECT all -- 10.0.0.0/8 10.10.10.0/24 reject-with icmp-port-unreachable
-  FWD_zone-8 all -- 10.0.0.0/8 0.0.0.0/0
-  REJECT all -- 10.0.0.0/8 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-8 all -- 10.0.0.0/8 10.0.0.0/8
-  REJECT all -- 10.0.0.0/8 10.0.0.0/8 reject-with icmp-port-unreachable
-  FWD_zone-8 all -- 10.0.0.0/8 0.0.0.0/0
-  REJECT all -- 10.0.0.0/8 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_zone-8 all -- 10.0.0.0/8 0.0.0.0/0
-  REJECT all -- 10.0.0.0/8 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_public all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_public all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_public all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_public all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_public all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_public all -- 0.0.0.0/0 10.10.10.0/24
-  REJECT all -- 0.0.0.0/0 10.10.10.0/24 reject-with icmp-port-unreachable
-  FWD_public all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_public all -- 0.0.0.0/0 10.0.0.0/8
-  REJECT all -- 0.0.0.0/0 10.0.0.0/8 reject-with icmp-port-unreachable
-  FWD_public all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
-  FWD_public all -- 0.0.0.0/0 0.0.0.0/0
-  REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-1 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-1 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-1 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-1 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-1 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-1 0 -- 0.0.0.0/0 10.10.10.0/24
+  REJECT 0 -- 0.0.0.0/0 10.10.10.0/24 reject-with icmp-port-unreachable
+  FWD_zone-1 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-1 0 -- 0.0.0.0/0 10.0.0.0/8
+  REJECT 0 -- 0.0.0.0/0 10.0.0.0/8 reject-with icmp-port-unreachable
+  FWD_zone-1 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-1 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-2 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-2 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-2 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-2 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-2 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-2 0 -- 0.0.0.0/0 10.10.10.0/24
+  REJECT 0 -- 0.0.0.0/0 10.10.10.0/24 reject-with icmp-port-unreachable
+  FWD_zone-2 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-2 0 -- 0.0.0.0/0 10.0.0.0/8
+  REJECT 0 -- 0.0.0.0/0 10.0.0.0/8 reject-with icmp-port-unreachable
+  FWD_zone-2 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-2 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-3 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-3 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-3 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-3 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-3 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-3 0 -- 0.0.0.0/0 10.10.10.0/24
+  REJECT 0 -- 0.0.0.0/0 10.10.10.0/24 reject-with icmp-port-unreachable
+  FWD_zone-3 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-3 0 -- 0.0.0.0/0 10.0.0.0/8
+  REJECT 0 -- 0.0.0.0/0 10.0.0.0/8 reject-with icmp-port-unreachable
+  FWD_zone-3 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-3 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-4 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-4 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-4 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-4 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-4 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-4 0 -- 0.0.0.0/0 10.10.10.0/24
+  REJECT 0 -- 0.0.0.0/0 10.10.10.0/24 reject-with icmp-port-unreachable
+  FWD_zone-4 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-4 0 -- 0.0.0.0/0 10.0.0.0/8
+  REJECT 0 -- 0.0.0.0/0 10.0.0.0/8 reject-with icmp-port-unreachable
+  FWD_zone-4 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-4 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-5 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-5 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-5 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-5 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-5 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-5 0 -- 0.0.0.0/0 10.10.10.0/24
+  REJECT 0 -- 0.0.0.0/0 10.10.10.0/24 reject-with icmp-port-unreachable
+  FWD_zone-5 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-5 0 -- 0.0.0.0/0 10.0.0.0/8
+  REJECT 0 -- 0.0.0.0/0 10.0.0.0/8 reject-with icmp-port-unreachable
+  FWD_zone-5 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-5 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-0andlast 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-0andlast 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-0andlast 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-0andlast 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-0andlast 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-0andlast 0 -- 0.0.0.0/0 10.10.10.0/24
+  REJECT 0 -- 0.0.0.0/0 10.10.10.0/24 reject-with icmp-port-unreachable
+  FWD_zone-0andlast 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-0andlast 0 -- 0.0.0.0/0 10.0.0.0/8
+  REJECT 0 -- 0.0.0.0/0 10.0.0.0/8 reject-with icmp-port-unreachable
+  FWD_zone-0andlast 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-0andlast 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-6 0 -- 10.10.10.0/24 0.0.0.0/0
+  REJECT 0 -- 10.10.10.0/24 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-6 0 -- 10.10.10.0/24 0.0.0.0/0
+  REJECT 0 -- 10.10.10.0/24 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-6 0 -- 10.10.10.0/24 0.0.0.0/0
+  REJECT 0 -- 10.10.10.0/24 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-6 0 -- 10.10.10.0/24 0.0.0.0/0
+  REJECT 0 -- 10.10.10.0/24 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-6 0 -- 10.10.10.0/24 0.0.0.0/0
+  REJECT 0 -- 10.10.10.0/24 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-6 0 -- 10.10.10.0/24 10.10.10.0/24
+  REJECT 0 -- 10.10.10.0/24 10.10.10.0/24 reject-with icmp-port-unreachable
+  FWD_zone-6 0 -- 10.10.10.0/24 0.0.0.0/0
+  REJECT 0 -- 10.10.10.0/24 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-6 0 -- 10.10.10.0/24 10.0.0.0/8
+  REJECT 0 -- 10.10.10.0/24 10.0.0.0/8 reject-with icmp-port-unreachable
+  FWD_zone-6 0 -- 10.10.10.0/24 0.0.0.0/0
+  REJECT 0 -- 10.10.10.0/24 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-6 0 -- 10.10.10.0/24 0.0.0.0/0
+  REJECT 0 -- 10.10.10.0/24 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-7 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-7 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-7 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-7 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-7 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-7 0 -- 0.0.0.0/0 10.10.10.0/24
+  REJECT 0 -- 0.0.0.0/0 10.10.10.0/24 reject-with icmp-port-unreachable
+  FWD_zone-7 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-7 0 -- 0.0.0.0/0 10.0.0.0/8
+  REJECT 0 -- 0.0.0.0/0 10.0.0.0/8 reject-with icmp-port-unreachable
+  FWD_zone-7 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-7 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-8 0 -- 10.0.0.0/8 0.0.0.0/0
+  REJECT 0 -- 10.0.0.0/8 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-8 0 -- 10.0.0.0/8 0.0.0.0/0
+  REJECT 0 -- 10.0.0.0/8 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-8 0 -- 10.0.0.0/8 0.0.0.0/0
+  REJECT 0 -- 10.0.0.0/8 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-8 0 -- 10.0.0.0/8 0.0.0.0/0
+  REJECT 0 -- 10.0.0.0/8 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-8 0 -- 10.0.0.0/8 0.0.0.0/0
+  REJECT 0 -- 10.0.0.0/8 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-8 0 -- 10.0.0.0/8 10.10.10.0/24
+  REJECT 0 -- 10.0.0.0/8 10.10.10.0/24 reject-with icmp-port-unreachable
+  FWD_zone-8 0 -- 10.0.0.0/8 0.0.0.0/0
+  REJECT 0 -- 10.0.0.0/8 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-8 0 -- 10.0.0.0/8 10.0.0.0/8
+  REJECT 0 -- 10.0.0.0/8 10.0.0.0/8 reject-with icmp-port-unreachable
+  FWD_zone-8 0 -- 10.0.0.0/8 0.0.0.0/0
+  REJECT 0 -- 10.0.0.0/8 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_zone-8 0 -- 10.0.0.0/8 0.0.0.0/0
+  REJECT 0 -- 10.0.0.0/8 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_public 0 -- 0.0.0.0/0 10.10.10.0/24
+  REJECT 0 -- 0.0.0.0/0 10.10.10.0/24 reject-with icmp-port-unreachable
+  FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_public 0 -- 0.0.0.0/0 10.0.0.0/8
+  REJECT 0 -- 0.0.0.0/0 10.0.0.0/8 reject-with icmp-port-unreachable
+  FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+  FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
+  REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
 ])
 
 IP6TABLES_LIST_RULES([filter], [INPUT_POLICIES], 0, [dnl
-  IN_allow-host-ipv6 all ::/0 ::/0
-  IN_zone-1 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  IN_allow-host-ipv6 all ::/0 ::/0
-  IN_zone-2 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  IN_allow-host-ipv6 all ::/0 ::/0
-  IN_zone-3 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  IN_allow-host-ipv6 all ::/0 ::/0
-  IN_zone-4 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  IN_allow-host-ipv6 all ::/0 ::/0
-  IN_zone-5 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  IN_allow-host-ipv6 all ::/0 ::/0
-  IN_zone-0andlast all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  IN_allow-host-ipv6 all ::/0 ::/0
-  IN_zone-7 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  IN_allow-host-ipv6 all ::/0 ::/0
-  IN_public all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  IN_allow-host-ipv6 0 ::/0 ::/0
+  IN_zone-1 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  IN_allow-host-ipv6 0 ::/0 ::/0
+  IN_zone-2 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  IN_allow-host-ipv6 0 ::/0 ::/0
+  IN_zone-3 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  IN_allow-host-ipv6 0 ::/0 ::/0
+  IN_zone-4 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  IN_allow-host-ipv6 0 ::/0 ::/0
+  IN_zone-5 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  IN_allow-host-ipv6 0 ::/0 ::/0
+  IN_zone-0andlast 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  IN_allow-host-ipv6 0 ::/0 ::/0
+  IN_zone-7 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  IN_allow-host-ipv6 0 ::/0 ::/0
+  IN_public 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
 ])
 IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES], 0, [dnl
-  FWD_zone-1 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-1 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-1 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-1 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-1 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-1 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-1 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-1 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-2 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-2 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-2 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-2 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-2 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-2 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-2 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-2 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-3 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-3 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-3 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-3 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-3 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-3 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-3 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-3 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-4 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-4 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-4 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-4 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-4 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-4 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-4 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-4 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-5 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-5 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-5 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-5 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-5 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-5 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-5 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-5 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-0andlast all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-0andlast all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-0andlast all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-0andlast all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-0andlast all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-0andlast all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-0andlast all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-0andlast all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-7 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-7 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-7 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-7 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-7 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-7 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-7 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_zone-7 all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_public all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_public all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_public all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_public all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_public all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_public all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_public all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
-  FWD_public all ::/0 ::/0
-  REJECT all ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-1 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-1 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-1 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-1 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-1 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-1 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-1 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-1 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-2 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-2 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-2 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-2 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-2 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-2 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-2 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-2 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-3 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-3 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-3 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-3 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-3 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-3 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-3 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-3 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-4 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-4 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-4 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-4 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-4 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-4 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-4 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-4 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-5 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-5 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-5 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-5 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-5 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-5 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-5 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-5 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-0andlast 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-0andlast 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-0andlast 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-0andlast 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-0andlast 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-0andlast 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-0andlast 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-0andlast 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-7 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-7 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-7 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-7 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-7 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-7 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-7 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_zone-7 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_public 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_public 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_public 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_public 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_public 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_public 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_public 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+  FWD_public 0 ::/0 ::/0
+  REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
 ])
 
 dnl verify runtime CLI output

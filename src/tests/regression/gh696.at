@@ -15,10 +15,10 @@ NFT_LIST_RULES([inet], [filter_IN_public_deny], 0, [dnl
 ])
 
 IPTABLES_LIST_RULES([filter], [IN_public_deny], 0, [dnl
-    REJECT icmp -- 0.0.0.0/0 0.0.0.0/0 icmptype 8 reject-with icmp-host-prohibited
+    REJECT 1 -- 0.0.0.0/0 0.0.0.0/0 icmptype 8 reject-with icmp-host-prohibited
 ])
 IP6TABLES_LIST_RULES([filter], [IN_public_deny], 0, [dnl
-    REJECT icmpv6 ::/0 ::/0 ipv6-icmptype 128 reject-with icmp6-adm-prohibited
+    REJECT 58 ::/0 ::/0 ipv6-icmptype 128 reject-with icmp6-adm-prohibited
 ])
 
 dnl since inversion is disabled we should get logs when the ICMP is blocked.
@@ -36,12 +36,12 @@ NFT_LIST_RULES([inet], [filter_IN_public_deny], 0, [dnl
 ])
 
 IPTABLES_LIST_RULES([filter], [IN_public_deny], 0, [dnl
-    LOG icmp -- 0.0.0.0/0 0.0.0.0/0 icmptype 8 LOG flags 0 level 4 prefix "zone_public_HOST_ICMP_BLOCK: "
-    REJECT icmp -- 0.0.0.0/0 0.0.0.0/0 icmptype 8 reject-with icmp-host-prohibited
+    LOG 1 -- 0.0.0.0/0 0.0.0.0/0 icmptype 8 LOG flags 0 level 4 prefix "zone_public_HOST_ICMP_BLOCK: "
+    REJECT 1 -- 0.0.0.0/0 0.0.0.0/0 icmptype 8 reject-with icmp-host-prohibited
 ])
 IP6TABLES_LIST_RULES([filter], [IN_public_deny], 0, [dnl
-    LOG icmpv6 ::/0 ::/0 ipv6-icmptype 128 LOG flags 0 level 4 prefix "zone_public_HOST_ICMP_BLOCK: "
-    REJECT icmpv6 ::/0 ::/0 ipv6-icmptype 128 reject-with icmp6-adm-prohibited
+    LOG 58 ::/0 ::/0 ipv6-icmptype 128 LOG flags 0 level 4 prefix "zone_public_HOST_ICMP_BLOCK: "
+    REJECT 58 ::/0 ::/0 ipv6-icmptype 128 reject-with icmp6-adm-prohibited
 ])
 
 dnl ########################################
@@ -65,13 +65,13 @@ NFT_LIST_RULES([inet], [filter_IN_public_allow], 0, [dnl
 ])
 
 IPTABLES_LIST_RULES([filter], [IN_public_allow], 0, [dnl
-    ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:22 
-    ACCEPT icmp -- 0.0.0.0/0 0.0.0.0/0 icmptype 8
+    ACCEPT 6 -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:22 
+    ACCEPT 1 -- 0.0.0.0/0 0.0.0.0/0 icmptype 8
 ])
 IP6TABLES_LIST_RULES([filter], [IN_public_allow], 0, [dnl
-    ACCEPT tcp ::/0 ::/0 tcp dpt:22 
-    ACCEPT udp ::/0 fe80::/64 udp dpt:546 
-    ACCEPT icmpv6 ::/0 ::/0 ipv6-icmptype 128
+    ACCEPT 6 ::/0 ::/0 tcp dpt:22 
+    ACCEPT 17 ::/0 fe80::/64 udp dpt:546 
+    ACCEPT 58 ::/0 ::/0 ipv6-icmptype 128
 ])
 
 dnl since inversion is enabled, it should be the same whether set-log-denied is
@@ -90,13 +90,13 @@ NFT_LIST_RULES([inet], [filter_IN_public_allow], 0, [dnl
 ])
 
 IPTABLES_LIST_RULES([filter], [IN_public_allow], 0, [dnl
-    ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:22 
-    ACCEPT icmp -- 0.0.0.0/0 0.0.0.0/0 icmptype 8
+    ACCEPT 6 -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:22 
+    ACCEPT 1 -- 0.0.0.0/0 0.0.0.0/0 icmptype 8
 ])
 IP6TABLES_LIST_RULES([filter], [IN_public_allow], 0, [dnl
-    ACCEPT tcp ::/0 ::/0 tcp dpt:22 
-    ACCEPT udp ::/0 fe80::/64 udp dpt:546 
-    ACCEPT icmpv6 ::/0 ::/0 ipv6-icmptype 128
+    ACCEPT 6 ::/0 ::/0 tcp dpt:22 
+    ACCEPT 17 ::/0 fe80::/64 udp dpt:546 
+    ACCEPT 58 ::/0 ::/0 ipv6-icmptype 128
 ])
 
 FWD_END_TEST([-d '/WARNING: NOT_ENABLED: icmp-block-inversion/d'])

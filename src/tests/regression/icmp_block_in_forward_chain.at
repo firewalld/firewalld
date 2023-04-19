@@ -18,7 +18,7 @@ NFT_LIST_RULES([inet], [filter_FWD_public_deny | sed -e 's/icmp code 10/icmp cod
 ])
 
 IPTABLES_LIST_RULES([filter], [IN_public_deny], 0, [dnl
-    REJECT icmp -- 0.0.0.0/0 0.0.0.0/0 icmptype 3 code 10 reject-with icmp-host-prohibited
+    REJECT 1 -- 0.0.0.0/0 0.0.0.0/0 icmptype 3 code 10 reject-with icmp-host-prohibited
 ])
 IPTABLES_LIST_RULES([filter], [FWD_public_deny], 0, [dnl
 ])

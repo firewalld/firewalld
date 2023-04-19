@@ -390,6 +390,16 @@ m4_define([IPXTABLES_LIST_RULES_NORMALIZE], [dnl
     dnl iptables-1.8.8 changed output of some protocols
     dnl commit b6196c7504d4 ("xshared: Prefer xtables_chain_protos lookup over getprotoent")
     sed -e ['s/[ ]ipv6-icmp\([ -]\)/ icmpv6\1/g'] dnl
+    dnl commit da8ecc62dd76 ("xshared: Print protocol numbers if --numeric was given")
+    dnl Caused protocols to be printed in numeric form. We use numeric to avoid
+    dnl reverse DNS lookups. "fix" old iptables versions by translating to
+    dnl numeric here. The first regex must match zone/policy names.
+        -e ['s/^\([-a-zA-Z0-9_]\+\)[ ]all/\1 0/g'] dnl
+        -e ['s/^\([-a-zA-Z0-9_]\+\)[ ]tcp/\1 6/g'] dnl
+        -e ['s/^\([-a-zA-Z0-9_]\+\)[ ]udp/\1 17/g'] dnl
+        -e ['s/^\([-a-zA-Z0-9_]\+\)[ ]icmpv6/\1 58 /g'] dnl
+        -e ['s/^\([-a-zA-Z0-9_]\+\)[ ]icmp/\1 1/g'] dnl
+        -e ['s/^\([-a-zA-Z0-9_]\+\)[ ]sctp/\1 132/g'] dnl
 ])
 
 m4_define([IPTABLES_LIST_RULES_NORMALIZE], [dnl

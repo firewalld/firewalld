@@ -21,8 +21,8 @@ NFT_LIST_RULES([inet], [filter_IN_public_allow], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([filter], [IN_public_allow], 0, [dnl
-    ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:22 
-    ACCEPT all -- 0.0.0.0/0 0.0.0.0/0 match-set foobar dst
+    ACCEPT 6 -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:22 
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0 match-set foobar dst
 ])
 
 dnl policy
@@ -36,7 +36,7 @@ NFT_LIST_RULES([inet], [filter_IN_policy_mypolicy_allow], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([filter], [IN_mypolicy_allow], 0, [dnl
-    ACCEPT all -- 0.0.0.0/0 0.0.0.0/0 match-set foobar dst
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0 match-set foobar dst
 ])
 
 dnl negative tests
