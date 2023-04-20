@@ -79,7 +79,7 @@ check-container-fedora-rawhide-image: check-container-%-image:
 	echo "RUN dnf -y install autoconf automake conntrack-tools desktop-file-utils \
 	                 docbook-style-xsl file gettext glib2-devel intltool ipset \
 	                 iptables iptables-nft libtool libxml2 libxslt make nftables \
-	                 python3-nftables python3-gobject-base \
+	                 python3-nftables python3-gobject-base python3-dbus \
 	                 diffutils procps-ng iproute which dbus-daemon \
 	                 NetworkManager NetworkManager-ovs time" && \
 	echo "RUN alternatives --set ebtables /usr/sbin/ebtables-nft" && \
@@ -94,7 +94,7 @@ check-container-centos8-stream-image: check-container-%-image:
 	echo "RUN dnf -y install autoconf automake conntrack-tools desktop-file-utils \
 	                 docbook-style-xsl file gettext glib2-devel intltool ipset \
 	                 iptables iptables-ebtables nftables libtool libxml2 \
-	                 libxslt make nftables python3-nftables \
+	                 libxslt make nftables python3-nftables python3-dbus \
 	                 python3-gobject-base diffutils procps-ng iproute which dbus-daemon \
 	                 NetworkManager NetworkManager-ovs time" && \
 	echo "COPY . /tmp/firewalld"; \
