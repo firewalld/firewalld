@@ -88,9 +88,8 @@ check-container-fedora-rawhide-image: check-container-%-image:
 
 check-container-centos8-stream-image: check-container-%-image:
 	(cd $(abs_top_srcdir) && { \
-	echo "FROM centos:8" && \
+	echo "FROM centos:stream8" && \
 	echo "RUN dnf -y makecache" && \
-	echo "RUN dnf -y install centos-release-stream" && \
 	echo "RUN dnf -y install autoconf automake conntrack-tools desktop-file-utils \
 	                 docbook-style-xsl file gettext glib2-devel intltool ipset \
 	                 iptables iptables-ebtables nftables libtool libxml2 \
