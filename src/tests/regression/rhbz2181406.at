@@ -29,21 +29,21 @@ table inet firewalld {
 ])
 
 IPTABLES_LIST_RULES([filter], [IN_public_log], 0, [dnl
-LOG tcp -- 10.10.10.10 0.0.0.0/0 tcp dpt:22 limit: avg 2/day burst 5 LOG flags 0 level 4
+LOG 6 -- 10.10.10.10 0.0.0.0/0 tcp dpt:22 limit: avg 2/day burst 5 LOG flags 0 level 4
 ])
 IPTABLES_LIST_RULES([filter], [IN_public_allow], 0, [dnl
-ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:22
-ACCEPT tcp -- 10.10.10.10 0.0.0.0/0 tcp dpt:80 limit: avg 2/day burst 5
+ACCEPT 6 -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:22
+ACCEPT 6 -- 10.10.10.10 0.0.0.0/0 tcp dpt:80 limit: avg 2/day burst 5
 ])
 
 IP6TABLES_LIST_RULES([filter], [IN_public_log], 0, [dnl
-AUDIT tcp ::/0 fc00::10:10:10:10 tcp dpt:22 limit: avg 5/min burst 5 AUDIT accept
+AUDIT 6 ::/0 fc00::10:10:10:10 tcp dpt:22 limit: avg 5/min burst 5 AUDIT accept
 ])
 IP6TABLES_LIST_RULES([filter], [IN_public_allow], 0, [dnl
-ACCEPT tcp ::/0 ::/0 tcp dpt:22
-ACCEPT udp ::/0 fe80::/64 udp dpt:546
-ACCEPT tcp ::/0 fc00::10:10:10:10 tcp dpt:22
-ACCEPT tcp ::/0 fc00::10:10:10:10 tcp dpt:80 limit: avg 5/min burst 5
+ACCEPT 6 ::/0 ::/0 tcp dpt:22
+ACCEPT 17 ::/0 fe80::/64 udp dpt:546
+ACCEPT 6 ::/0 fc00::10:10:10:10 tcp dpt:22
+ACCEPT 6 ::/0 fc00::10:10:10:10 tcp dpt:80 limit: avg 5/min burst 5
 ])
 
 FWD_END_TEST()
