@@ -314,14 +314,14 @@ NFT_LIST_RULES([inet], [filter_INPUT_POLICIES_post], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
-    IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
-    IN_worldToHost all -- 0.0.0.0/0 0.0.0.0/0
+    IN_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+    IN_worldToHost 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IPTABLES_LIST_RULES([filter], [INPUT_POLICIES_post], 0, [dnl
 ])
 IP6TABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
-    IN_allow-host-ipv6 all ::/0 ::/0
-    IN_worldToHost all ::/0 ::/0
+    IN_allow-host-ipv6 0 ::/0 ::/0
+    IN_worldToHost 0 ::/0 ::/0
 ])
 IP6TABLES_LIST_RULES([filter], [INPUT_POLICIES_post], 0, [dnl
 ])
@@ -344,16 +344,16 @@ NFT_LIST_RULES([inet], [filter_INPUT_POLICIES_post], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
-    IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    IN_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IPTABLES_LIST_RULES([filter], [INPUT_POLICIES_post], 0, [dnl
-    IN_worldToHost all -- 0.0.0.0/0 0.0.0.0/0
+    IN_worldToHost 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
-    IN_allow-host-ipv6 all ::/0 ::/0
+    IN_allow-host-ipv6 0 ::/0 ::/0
 ])
 IP6TABLES_LIST_RULES([filter], [INPUT_POLICIES_post], 0, [dnl
-    IN_worldToHost all ::/0 ::/0
+    IN_worldToHost 0 ::/0 ::/0
 ])
 
 dnl verify sorting by priority
@@ -392,20 +392,20 @@ NFT_LIST_RULES([inet], [filter_INPUT_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
-    IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
-    IN_first all -- 0.0.0.0/0 0.0.0.0/0
-    IN_second all -- 0.0.0.0/0 0.0.0.0/0
-    IN_third all -- 0.0.0.0/0 0.0.0.0/0
-    IN_fourth all -- 0.0.0.0/0 0.0.0.0/0
-    IN_fifth all -- 0.0.0.0/0 0.0.0.0/0
+    IN_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+    IN_first 0 -- 0.0.0.0/0 0.0.0.0/0
+    IN_second 0 -- 0.0.0.0/0 0.0.0.0/0
+    IN_third 0 -- 0.0.0.0/0 0.0.0.0/0
+    IN_fourth 0 -- 0.0.0.0/0 0.0.0.0/0
+    IN_fifth 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
-    IN_allow-host-ipv6 all ::/0 ::/0
-    IN_first all ::/0 ::/0
-    IN_second all ::/0 ::/0
-    IN_third all ::/0 ::/0
-    IN_fourth all ::/0 ::/0
-    IN_fifth all ::/0 ::/0
+    IN_allow-host-ipv6 0 ::/0 ::/0
+    IN_first 0 ::/0 ::/0
+    IN_second 0 ::/0 ::/0
+    IN_third 0 ::/0 ::/0
+    IN_fourth 0 ::/0 ::/0
+    IN_fifth 0 ::/0 ::/0
 ])
 
 dnl verify priority bounds
@@ -579,10 +579,10 @@ NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
-    FWD_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    FWD_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
-    FWD_foobar all ::/0 ::/0
+    FWD_foobar 0 ::/0 ::/0
 ])
 FWD_CHECK([--permanent --policy=foobar --remove-ingress-zone="public"], 0, [ignore])
 FWD_RELOAD
@@ -625,12 +625,12 @@ dnl and exist even if zero policies are active.
 dnl
 dnl (raw, output): only iptables uses raw for conntrack helpers
 IPTABLES_LIST_RULES([raw], [PREROUTING], 0, [dnl
-PREROUTING_direct all -- 0.0.0.0/0 0.0.0.0/0
-PREROUTING_ZONES all -- 0.0.0.0/0 0.0.0.0/0
+PREROUTING_direct 0 -- 0.0.0.0/0 0.0.0.0/0
+PREROUTING_ZONES 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([raw], [PREROUTING], 0, [dnl
-PREROUTING_direct all ::/0 ::/0
-PREROUTING_ZONES all ::/0 ::/0
+PREROUTING_direct 0 ::/0 ::/0
+PREROUTING_ZONES 0 ::/0 ::/0
 ])
 dnl (nat, prerouting)
 NFT_LIST_RULES([inet], [nat_PREROUTING], 0, [dnl
@@ -641,12 +641,12 @@ NFT_LIST_RULES([inet], [nat_PREROUTING], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([nat], [PREROUTING], 0, [dnl
-PREROUTING_direct all -- 0.0.0.0/0 0.0.0.0/0
-PREROUTING_ZONES all -- 0.0.0.0/0 0.0.0.0/0
+PREROUTING_direct 0 -- 0.0.0.0/0 0.0.0.0/0
+PREROUTING_ZONES 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [PREROUTING], 0, [dnl
-PREROUTING_direct all ::/0 ::/0
-PREROUTING_ZONES all ::/0 ::/0
+PREROUTING_direct 0 ::/0 ::/0
+PREROUTING_ZONES 0 ::/0 ::/0
 ])
 dnl (nat, output)
 dnl No zones dispatch, so directly dispatch policies
@@ -659,14 +659,14 @@ NFT_LIST_RULES([inet], [nat_OUTPUT], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([nat], [OUTPUT], 0, [dnl
-OUTPUT_direct all -- 0.0.0.0/0 0.0.0.0/0
-OUTPUT_POLICIES_pre all -- 0.0.0.0/0 0.0.0.0/0
-OUTPUT_POLICIES_post all -- 0.0.0.0/0 0.0.0.0/0
+OUTPUT_direct 0 -- 0.0.0.0/0 0.0.0.0/0
+OUTPUT_POLICIES_pre 0 -- 0.0.0.0/0 0.0.0.0/0
+OUTPUT_POLICIES_post 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [OUTPUT], 0, [dnl
-OUTPUT_direct all ::/0 ::/0
-OUTPUT_POLICIES_pre all ::/0 ::/0
-OUTPUT_POLICIES_post all ::/0 ::/0
+OUTPUT_direct 0 ::/0 ::/0
+OUTPUT_POLICIES_pre 0 ::/0 ::/0
+OUTPUT_POLICIES_post 0 ::/0 ::/0
 ])
 dnl (nat, postrouting)
 NFT_LIST_RULES([inet], [nat_POSTROUTING], 0, [dnl
@@ -677,12 +677,12 @@ NFT_LIST_RULES([inet], [nat_POSTROUTING], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([nat], [POSTROUTING], 0, [dnl
-POSTROUTING_direct all -- 0.0.0.0/0 0.0.0.0/0
-POSTROUTING_ZONES all -- 0.0.0.0/0 0.0.0.0/0
+POSTROUTING_direct 0 -- 0.0.0.0/0 0.0.0.0/0
+POSTROUTING_ZONES 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [POSTROUTING], 0, [dnl
-POSTROUTING_direct all ::/0 ::/0
-POSTROUTING_ZONES all ::/0 ::/0
+POSTROUTING_direct 0 ::/0 ::/0
+POSTROUTING_ZONES 0 ::/0 ::/0
 ])
 dnl (mangle, prerouting)
 NFT_LIST_RULES([inet], [mangle_PREROUTING], 0, [dnl
@@ -693,17 +693,17 @@ NFT_LIST_RULES([inet], [mangle_PREROUTING], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([mangle], [PREROUTING], 0, [dnl
-PREROUTING_direct all -- 0.0.0.0/0 0.0.0.0/0
-PREROUTING_ZONES all -- 0.0.0.0/0 0.0.0.0/0
+PREROUTING_direct 0 -- 0.0.0.0/0 0.0.0.0/0
+PREROUTING_ZONES 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 dnl IPv6_rpfilter is in mangle for iptables, nftables is in (filter,
 dnl prerouting)
 IP6TABLES_LIST_RULES([mangle], [PREROUTING], 0, [dnl
-ACCEPT icmpv6 ::/0 ::/0 ipv6-icmptype 134
-ACCEPT icmpv6 ::/0 ::/0 ipv6-icmptype 135
-DROP all ::/0 ::/0 rpfilter validmark invert
-PREROUTING_direct all ::/0 ::/0
-PREROUTING_ZONES all ::/0 ::/0
+ACCEPT 58 ::/0 ::/0 ipv6-icmptype 134
+ACCEPT 58 ::/0 ::/0 ipv6-icmptype 135
+DROP 0 ::/0 ::/0 rpfilter validmark invert
+PREROUTING_direct 0 ::/0 ::/0
+PREROUTING_ZONES 0 ::/0 ::/0
 ])
 dnl (filter, input)
 NFT_LIST_RULES([inet], [filter_INPUT], 0, [dnl
@@ -719,20 +719,20 @@ NFT_LIST_RULES([inet], [filter_INPUT], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([filter], [INPUT], 0, [dnl
-ACCEPT all -- 0.0.0.0/0 0.0.0.0/0 ctstate RELATED,ESTABLISHED,DNAT
-ACCEPT all -- 0.0.0.0/0 0.0.0.0/0
-DROP all -- 0.0.0.0/0 0.0.0.0/0 ctstate INVALID
-INPUT_direct all -- 0.0.0.0/0 0.0.0.0/0
-INPUT_ZONES all -- 0.0.0.0/0 0.0.0.0/0
-REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-host-prohibited
+ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0 ctstate RELATED,ESTABLISHED,DNAT
+ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
+DROP 0 -- 0.0.0.0/0 0.0.0.0/0 ctstate INVALID
+INPUT_direct 0 -- 0.0.0.0/0 0.0.0.0/0
+INPUT_ZONES 0 -- 0.0.0.0/0 0.0.0.0/0
+REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-host-prohibited
 ])
 IP6TABLES_LIST_RULES([filter], [INPUT], 0, [dnl
-ACCEPT all ::/0 ::/0 ctstate RELATED,ESTABLISHED,DNAT
-ACCEPT all ::/0 ::/0
-DROP all ::/0 ::/0 ctstate INVALID
-INPUT_direct all ::/0 ::/0
-INPUT_ZONES all ::/0 ::/0
-REJECT all ::/0 ::/0 reject-with icmp6-adm-prohibited
+ACCEPT 0 ::/0 ::/0 ctstate RELATED,ESTABLISHED,DNAT
+ACCEPT 0 ::/0 ::/0
+DROP 0 ::/0 ::/0 ctstate INVALID
+INPUT_direct 0 ::/0 ::/0
+INPUT_ZONES 0 ::/0 ::/0
+REJECT 0 ::/0 ::/0 reject-with icmp6-adm-prohibited
 ])
 dnl (filter, forward)
 NFT_LIST_RULES([inet], [filter_FORWARD], 0, [dnl
@@ -749,21 +749,21 @@ NFT_LIST_RULES([inet], [filter_FORWARD], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([filter], [FORWARD], 0, [dnl
-ACCEPT all -- 0.0.0.0/0 0.0.0.0/0 ctstate RELATED,ESTABLISHED,DNAT
-ACCEPT all -- 0.0.0.0/0 0.0.0.0/0                                 
-DROP all -- 0.0.0.0/0 0.0.0.0/0 ctstate INVALID
-FORWARD_direct all -- 0.0.0.0/0 0.0.0.0/0
-FORWARD_ZONES all -- 0.0.0.0/0 0.0.0.0/0
-REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-host-prohibited
+ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0 ctstate RELATED,ESTABLISHED,DNAT
+ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0                                 
+DROP 0 -- 0.0.0.0/0 0.0.0.0/0 ctstate INVALID
+FORWARD_direct 0 -- 0.0.0.0/0 0.0.0.0/0
+FORWARD_ZONES 0 -- 0.0.0.0/0 0.0.0.0/0
+REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-host-prohibited
 ])
 IP6TABLES_LIST_RULES([filter], [FORWARD], 0, [dnl
-ACCEPT all ::/0 ::/0 ctstate RELATED,ESTABLISHED,DNAT
-ACCEPT all ::/0 ::/0
-DROP all ::/0 ::/0 ctstate INVALID
-FORWARD_direct all ::/0 ::/0
-RFC3964_IPv4 all ::/0 ::/0
-FORWARD_ZONES all ::/0 ::/0
-REJECT all ::/0 ::/0 reject-with icmp6-adm-prohibited
+ACCEPT 0 ::/0 ::/0 ctstate RELATED,ESTABLISHED,DNAT
+ACCEPT 0 ::/0 ::/0
+DROP 0 ::/0 ::/0 ctstate INVALID
+FORWARD_direct 0 ::/0 ::/0
+RFC3964_IPv4 0 ::/0 ::/0
+FORWARD_ZONES 0 ::/0 ::/0
+REJECT 0 ::/0 ::/0 reject-with icmp6-adm-prohibited
 ])
 dnl (filter, output)
 NFT_LIST_RULES([inet], [filter_OUTPUT], 0, [dnl
@@ -778,19 +778,19 @@ NFT_LIST_RULES([inet], [filter_OUTPUT], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([filter], [OUTPUT], 0, [dnl
-ACCEPT all -- 0.0.0.0/0 0.0.0.0/0 ctstate RELATED,ESTABLISHED
-ACCEPT all -- 0.0.0.0/0 0.0.0.0/0
-OUTPUT_direct all -- 0.0.0.0/0 0.0.0.0/0
-OUTPUT_POLICIES_pre all -- 0.0.0.0/0 0.0.0.0/0
-OUTPUT_POLICIES_post all -- 0.0.0.0/0 0.0.0.0/0
+ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0 ctstate RELATED,ESTABLISHED
+ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
+OUTPUT_direct 0 -- 0.0.0.0/0 0.0.0.0/0
+OUTPUT_POLICIES_pre 0 -- 0.0.0.0/0 0.0.0.0/0
+OUTPUT_POLICIES_post 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [OUTPUT], 0, [dnl
-ACCEPT all ::/0 ::/0 ctstate RELATED,ESTABLISHED
-ACCEPT all ::/0 ::/0
-OUTPUT_direct all ::/0 ::/0
-RFC3964_IPv4 all ::/0 ::/0
-OUTPUT_POLICIES_pre all ::/0 ::/0
-OUTPUT_POLICIES_post all ::/0 ::/0
+ACCEPT 0 ::/0 ::/0 ctstate RELATED,ESTABLISHED
+ACCEPT 0 ::/0 ::/0
+OUTPUT_direct 0 ::/0 ::/0
+RFC3964_IPv4 0 ::/0 ::/0
+OUTPUT_POLICIES_pre 0 ::/0 ::/0
+OUTPUT_POLICIES_post 0 ::/0 ::/0
 ])
 
 dnl Verify zone --> HOST is dispatched correctly (INPUT).
@@ -815,12 +815,12 @@ NFT_LIST_RULES([inet], [filter_INPUT_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
-    IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
-    IN_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    IN_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+    IN_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
-    IN_allow-host-ipv6 all ::/0 ::/0
-    IN_foobar all ::/0 ::/0
+    IN_allow-host-ipv6 0 ::/0 ::/0
+    IN_foobar 0 ::/0 ::/0
 ])
 dnl (filter, output)
 NFT_LIST_RULES([inet], [filter_OUTPUT_POLICIES_pre], 0, [dnl
@@ -846,12 +846,12 @@ IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
 ])
 dnl (raw, prerouting) (helpers, iptables only)
 IPTABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
-    PRE_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all ::/0 ::/0
-    PRE_foobar all ::/0 ::/0
+    PRE_allow-host-ipv6 0 ::/0 ::/0
+    PRE_foobar 0 ::/0 ::/0
 ])
 dnl (mangle, prerouting)
 NFT_LIST_RULES([inet], [mangle_PREROUTING_POLICIES_pre], 0, [dnl
@@ -862,10 +862,10 @@ NFT_LIST_RULES([inet], [mangle_PREROUTING_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all ::/0 ::/0
+    PRE_allow-host-ipv6 0 ::/0 ::/0
 ])
 dnl (nat, prerouting)
 NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
@@ -876,10 +876,10 @@ NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all ::/0 ::/0
+    PRE_allow-host-ipv6 0 ::/0 ::/0
 ])
 dnl (nat, postrouting)
 NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
@@ -920,12 +920,12 @@ NFT_LIST_RULES([inet], [filter_INPUT_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
-    IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
-    IN_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    IN_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+    IN_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
-    IN_allow-host-ipv6 all ::/0 ::/0
-    IN_foobar all ::/0 ::/0
+    IN_allow-host-ipv6 0 ::/0 ::/0
+    IN_foobar 0 ::/0 ::/0
 ])
 dnl (filter, output)
 NFT_LIST_RULES([inet], [filter_OUTPUT_POLICIES_pre], 0, [dnl
@@ -951,12 +951,12 @@ IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
 ])
 dnl (raw, prerouting) (helpers, iptables only)
 IPTABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
-    PRE_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all ::/0 ::/0
-    PRE_foobar all ::/0 ::/0
+    PRE_allow-host-ipv6 0 ::/0 ::/0
+    PRE_foobar 0 ::/0 ::/0
 ])
 dnl (mangle, prerouting)
 NFT_LIST_RULES([inet], [mangle_PREROUTING_POLICIES_pre], 0, [dnl
@@ -968,12 +968,12 @@ NFT_LIST_RULES([inet], [mangle_PREROUTING_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
-    PRE_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all ::/0 ::/0
-    PRE_foobar all ::/0 ::/0
+    PRE_allow-host-ipv6 0 ::/0 ::/0
+    PRE_foobar 0 ::/0 ::/0
 ])
 dnl (nat, prerouting)
 NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
@@ -985,12 +985,12 @@ NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
-    PRE_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all ::/0 ::/0
-    PRE_foobar all ::/0 ::/0
+    PRE_allow-host-ipv6 0 ::/0 ::/0
+    PRE_foobar 0 ::/0 ::/0
 ])
 dnl (nat, postrouting)
 NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
@@ -1030,10 +1030,10 @@ NFT_LIST_RULES([inet], [filter_INPUT_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
-    IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    IN_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
-    IN_allow-host-ipv6 all ::/0 ::/0
+    IN_allow-host-ipv6 0 ::/0 ::/0
 ])
 dnl (filter, output)
 NFT_LIST_RULES([inet], [filter_OUTPUT_POLICIES_pre], 0, [dnl
@@ -1044,10 +1044,10 @@ NFT_LIST_RULES([inet], [filter_OUTPUT_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([filter], [OUTPUT_POLICIES_pre], 0, [dnl
-    OUT_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    OUT_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [OUTPUT_POLICIES_pre], 0, [dnl
-    OUT_foobar all ::/0 ::/0
+    OUT_foobar 0 ::/0 ::/0
 ])
 dnl (filter, forward)
 NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
@@ -1062,10 +1062,10 @@ IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
 ])
 dnl (raw, prerouting) (helpers, iptables only)
 IPTABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all ::/0 ::/0
+    PRE_allow-host-ipv6 0 ::/0 ::/0
 ])
 dnl (mangle, prerouting)
 NFT_LIST_RULES([inet], [mangle_PREROUTING_POLICIES_pre], 0, [dnl
@@ -1076,10 +1076,10 @@ NFT_LIST_RULES([inet], [mangle_PREROUTING_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all ::/0 ::/0
+    PRE_allow-host-ipv6 0 ::/0 ::/0
 ])
 dnl (nat, prerouting)
 NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
@@ -1090,10 +1090,10 @@ NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all ::/0 ::/0
+    PRE_allow-host-ipv6 0 ::/0 ::/0
 ])
 dnl (nat, postrouting)
 NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
@@ -1115,10 +1115,10 @@ NFT_LIST_RULES([inet], [nat_OUTPUT_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
-    OUT_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    OUT_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
-    OUT_foobar all ::/0 ::/0
+    OUT_foobar 0 ::/0 ::/0
 ])
 FWD_CHECK([--policy=foobar --remove-ingress-zone="HOST"], 0, [ignore])
 FWD_CHECK([--policy=foobar --remove-egress-zone="public"], 0, [ignore])
@@ -1136,10 +1136,10 @@ NFT_LIST_RULES([inet], [filter_INPUT_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
-    IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    IN_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
-    IN_allow-host-ipv6 all ::/0 ::/0
+    IN_allow-host-ipv6 0 ::/0 ::/0
 ])
 dnl (filter, output)
 NFT_LIST_RULES([inet], [filter_OUTPUT_POLICIES_pre], 0, [dnl
@@ -1150,10 +1150,10 @@ NFT_LIST_RULES([inet], [filter_OUTPUT_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([filter], [OUTPUT_POLICIES_pre], 0, [dnl
-    OUT_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    OUT_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [OUTPUT_POLICIES_pre], 0, [dnl
-    OUT_foobar all ::/0 ::/0
+    OUT_foobar 0 ::/0 ::/0
 ])
 dnl (filter, forward)
 NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
@@ -1168,10 +1168,10 @@ IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
 ])
 dnl (raw, prerouting) (helpers, iptables only)
 IPTABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all ::/0 ::/0
+    PRE_allow-host-ipv6 0 ::/0 ::/0
 ])
 dnl (mangle, prerouting)
 NFT_LIST_RULES([inet], [mangle_PREROUTING_POLICIES_pre], 0, [dnl
@@ -1182,10 +1182,10 @@ NFT_LIST_RULES([inet], [mangle_PREROUTING_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all ::/0 ::/0
+    PRE_allow-host-ipv6 0 ::/0 ::/0
 ])
 dnl (nat, prerouting)
 NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
@@ -1196,10 +1196,10 @@ NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all ::/0 ::/0
+    PRE_allow-host-ipv6 0 ::/0 ::/0
 ])
 dnl (nat, postrouting)
 NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
@@ -1221,10 +1221,10 @@ NFT_LIST_RULES([inet], [nat_OUTPUT_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
-    OUT_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    OUT_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [OUTPUT_POLICIES_pre], 0, [dnl
-    OUT_foobar all ::/0 ::/0
+    OUT_foobar 0 ::/0 ::/0
 ])
 FWD_CHECK([--policy=foobar --remove-ingress-zone="HOST"], 0, [ignore])
 FWD_CHECK([--policy=foobar --remove-egress-zone="ANY"], 0, [ignore])
@@ -1242,10 +1242,10 @@ NFT_LIST_RULES([inet], [filter_INPUT_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
-    IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    IN_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
-    IN_allow-host-ipv6 all ::/0 ::/0
+    IN_allow-host-ipv6 0 ::/0 ::/0
 ])
 dnl (filter, output)
 NFT_LIST_RULES([inet], [filter_OUTPUT_POLICIES_pre], 0, [dnl
@@ -1267,19 +1267,19 @@ NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
-    FWD_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    FWD_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
-    FWD_foobar all ::/0 ::/0
+    FWD_foobar 0 ::/0 ::/0
 ])
 dnl (raw, prerouting) (helpers, iptables only)
 IPTABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
-    PRE_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all ::/0 ::/0
-    PRE_foobar all ::/0 ::/0
+    PRE_allow-host-ipv6 0 ::/0 ::/0
+    PRE_foobar 0 ::/0 ::/0
 ])
 dnl (mangle, prerouting)
 NFT_LIST_RULES([inet], [mangle_PREROUTING_POLICIES_pre], 0, [dnl
@@ -1291,12 +1291,12 @@ NFT_LIST_RULES([inet], [mangle_PREROUTING_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
-    PRE_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all ::/0 ::/0
-    PRE_foobar all ::/0 ::/0
+    PRE_allow-host-ipv6 0 ::/0 ::/0
+    PRE_foobar 0 ::/0 ::/0
 ])
 dnl (nat, prerouting)
 NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
@@ -1308,12 +1308,12 @@ NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
-    PRE_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all ::/0 ::/0
-    PRE_foobar all ::/0 ::/0
+    PRE_allow-host-ipv6 0 ::/0 ::/0
+    PRE_foobar 0 ::/0 ::/0
 ])
 dnl (nat, postrouting)
 NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
@@ -1324,10 +1324,10 @@ NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
-    POST_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    POST_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
-    POST_foobar all ::/0 ::/0
+    POST_foobar 0 ::/0 ::/0
 ])
 dnl (nat, output)
 NFT_LIST_RULES([inet], [nat_OUTPUT_POLICIES_pre], 0, [dnl
@@ -1356,10 +1356,10 @@ NFT_LIST_RULES([inet], [filter_INPUT_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
-    IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    IN_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
-    IN_allow-host-ipv6 all ::/0 ::/0
+    IN_allow-host-ipv6 0 ::/0 ::/0
 ])
 dnl (filter, output)
 NFT_LIST_RULES([inet], [filter_OUTPUT_POLICIES_pre], 0, [dnl
@@ -1381,19 +1381,19 @@ NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
-    FWD_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    FWD_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
-    FWD_foobar all ::/0 ::/0
+    FWD_foobar 0 ::/0 ::/0
 ])
 dnl (raw, prerouting) (helpers, iptables only)
 IPTABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
-    PRE_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all ::/0 ::/0
-    PRE_foobar all ::/0 ::/0
+    PRE_allow-host-ipv6 0 ::/0 ::/0
+    PRE_foobar 0 ::/0 ::/0
 ])
 dnl (mangle, prerouting)
 NFT_LIST_RULES([inet], [mangle_PREROUTING_POLICIES_pre], 0, [dnl
@@ -1404,10 +1404,10 @@ NFT_LIST_RULES([inet], [mangle_PREROUTING_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all ::/0 ::/0
+    PRE_allow-host-ipv6 0 ::/0 ::/0
 ])
 dnl (nat, prerouting)
 NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
@@ -1418,10 +1418,10 @@ NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all ::/0 ::/0
+    PRE_allow-host-ipv6 0 ::/0 ::/0
 ])
 dnl (nat, postrouting)
 NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
@@ -1432,10 +1432,10 @@ NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
-    POST_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    POST_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
-    POST_foobar all ::/0 ::/0
+    POST_foobar 0 ::/0 ::/0
 ])
 dnl (nat, output)
 NFT_LIST_RULES([inet], [nat_OUTPUT_POLICIES_pre], 0, [dnl
@@ -1467,10 +1467,10 @@ NFT_LIST_RULES([inet], [filter_INPUT_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
-    IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    IN_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
-    IN_allow-host-ipv6 all ::/0 ::/0
+    IN_allow-host-ipv6 0 ::/0 ::/0
 ])
 dnl (filter, output)
 NFT_LIST_RULES([inet], [filter_OUTPUT_POLICIES_pre], 0, [dnl
@@ -1492,17 +1492,17 @@ NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
-    FWD_foobar all -- 0.0.0.0/0 10.10.10.0/24
+    FWD_foobar 0 -- 0.0.0.0/0 10.10.10.0/24
 ])
 IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
 ])
 dnl (raw, prerouting) (helpers, iptables only)
 IPTABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
-    PRE_foobar all -- 0.0.0.0/0 10.10.10.0/24
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar 0 -- 0.0.0.0/0 10.10.10.0/24
 ])
 IP6TABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all ::/0 ::/0
+    PRE_allow-host-ipv6 0 ::/0 ::/0
 ])
 dnl (mangle, prerouting)
 NFT_LIST_RULES([inet], [mangle_PREROUTING_POLICIES_pre], 0, [dnl
@@ -1514,11 +1514,11 @@ NFT_LIST_RULES([inet], [mangle_PREROUTING_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
-    PRE_foobar all -- 0.0.0.0/0 10.10.10.0/24
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar 0 -- 0.0.0.0/0 10.10.10.0/24
 ])
 IP6TABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all ::/0 ::/0
+    PRE_allow-host-ipv6 0 ::/0 ::/0
 ])
 dnl (nat, prerouting)
 NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
@@ -1530,11 +1530,11 @@ NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
-    PRE_foobar all -- 0.0.0.0/0 10.10.10.0/24
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar 0 -- 0.0.0.0/0 10.10.10.0/24
 ])
 IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all ::/0 ::/0
+    PRE_allow-host-ipv6 0 ::/0 ::/0
 ])
 dnl (nat, postrouting)
 NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
@@ -1545,7 +1545,7 @@ NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
-    POST_foobar all -- 0.0.0.0/0 10.10.10.0/24
+    POST_foobar 0 -- 0.0.0.0/0 10.10.10.0/24
 ])
 IP6TABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
 ])
@@ -1578,10 +1578,10 @@ NFT_LIST_RULES([inet], [filter_INPUT_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
-    IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    IN_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
-    IN_allow-host-ipv6 all ::/0 ::/0
+    IN_allow-host-ipv6 0 ::/0 ::/0
 ])
 dnl (filter, output)
 NFT_LIST_RULES([inet], [filter_OUTPUT_POLICIES_pre], 0, [dnl
@@ -1603,19 +1603,19 @@ NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
-    FWD_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    FWD_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
-    FWD_foobar all ::/0 ::/0
+    FWD_foobar 0 ::/0 ::/0
 ])
 dnl (raw, prerouting) (helpers, iptables only)
 IPTABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
-    PRE_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all ::/0 ::/0
-    PRE_foobar all ::/0 ::/0
+    PRE_allow-host-ipv6 0 ::/0 ::/0
+    PRE_foobar 0 ::/0 ::/0
 ])
 dnl (mangle, prerouting)
 NFT_LIST_RULES([inet], [mangle_PREROUTING_POLICIES_pre], 0, [dnl
@@ -1627,12 +1627,12 @@ NFT_LIST_RULES([inet], [mangle_PREROUTING_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
-    PRE_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all ::/0 ::/0
-    PRE_foobar all ::/0 ::/0
+    PRE_allow-host-ipv6 0 ::/0 ::/0
+    PRE_foobar 0 ::/0 ::/0
 ])
 dnl (nat, prerouting)
 NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
@@ -1644,12 +1644,12 @@ NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
-    PRE_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all ::/0 ::/0
-    PRE_foobar all ::/0 ::/0
+    PRE_allow-host-ipv6 0 ::/0 ::/0
+    PRE_foobar 0 ::/0 ::/0
 ])
 dnl (nat, postrouting)
 NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
@@ -1692,10 +1692,10 @@ NFT_LIST_RULES([inet], [filter_INPUT_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
-    IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    IN_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
-    IN_allow-host-ipv6 all ::/0 ::/0
+    IN_allow-host-ipv6 0 ::/0 ::/0
 ])
 dnl (filter, output)
 NFT_LIST_RULES([inet], [filter_OUTPUT_POLICIES_pre], 0, [dnl
@@ -1717,17 +1717,17 @@ NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
-    FWD_foobar all -- 10.10.10.0/24 0.0.0.0/0
+    FWD_foobar 0 -- 10.10.10.0/24 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
 ])
 dnl (raw, prerouting) (helpers, iptables only)
 IPTABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
-    PRE_foobar all -- 10.10.10.0/24 0.0.0.0/0
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar 0 -- 10.10.10.0/24 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all ::/0 ::/0
+    PRE_allow-host-ipv6 0 ::/0 ::/0
 ])
 dnl (mangle, prerouting)
 NFT_LIST_RULES([inet], [mangle_PREROUTING_POLICIES_pre], 0, [dnl
@@ -1739,11 +1739,11 @@ NFT_LIST_RULES([inet], [mangle_PREROUTING_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
-    PRE_foobar all -- 10.10.10.0/24 0.0.0.0/0
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar 0 -- 10.10.10.0/24 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all ::/0 ::/0
+    PRE_allow-host-ipv6 0 ::/0 ::/0
 ])
 dnl (nat, prerouting)
 NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
@@ -1755,11 +1755,11 @@ NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
-    PRE_foobar all -- 10.10.10.0/24 0.0.0.0/0
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar 0 -- 10.10.10.0/24 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all ::/0 ::/0
+    PRE_allow-host-ipv6 0 ::/0 ::/0
 ])
 dnl (nat, postrouting)
 NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
@@ -1770,7 +1770,7 @@ NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
-    POST_foobar all -- 10.10.10.0/24 0.0.0.0/0
+    POST_foobar 0 -- 10.10.10.0/24 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
 ])
@@ -1805,10 +1805,10 @@ NFT_LIST_RULES([inet], [filter_INPUT_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
-    IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    IN_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
-    IN_allow-host-ipv6 all ::/0 ::/0
+    IN_allow-host-ipv6 0 ::/0 ::/0
 ])
 dnl (filter, output)
 NFT_LIST_RULES([inet], [filter_OUTPUT_POLICIES_pre], 0, [dnl
@@ -1830,19 +1830,19 @@ NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
-    FWD_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    FWD_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
-    FWD_foobar all ::/0 ::/0
+    FWD_foobar 0 ::/0 ::/0
 ])
 dnl (raw, prerouting) (helpers, iptables only)
 IPTABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
-    PRE_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all ::/0 ::/0
-    PRE_foobar all ::/0 ::/0
+    PRE_allow-host-ipv6 0 ::/0 ::/0
+    PRE_foobar 0 ::/0 ::/0
 ])
 dnl (mangle, prerouting)
 NFT_LIST_RULES([inet], [mangle_PREROUTING_POLICIES_pre], 0, [dnl
@@ -1853,10 +1853,10 @@ NFT_LIST_RULES([inet], [mangle_PREROUTING_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all ::/0 ::/0
+    PRE_allow-host-ipv6 0 ::/0 ::/0
 ])
 dnl (nat, prerouting)
 NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
@@ -1867,10 +1867,10 @@ NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all ::/0 ::/0
+    PRE_allow-host-ipv6 0 ::/0 ::/0
 ])
 dnl (nat, postrouting)
 NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
@@ -1916,10 +1916,10 @@ NFT_LIST_RULES([inet], [filter_INPUT_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
-    IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    IN_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
-    IN_allow-host-ipv6 all ::/0 ::/0
+    IN_allow-host-ipv6 0 ::/0 ::/0
 ])
 dnl (filter, output)
 NFT_LIST_RULES([inet], [filter_OUTPUT_POLICIES_pre], 0, [dnl
@@ -1941,17 +1941,17 @@ NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
-    FWD_foobar all -- 0.0.0.0/0 10.10.10.0/24
+    FWD_foobar 0 -- 0.0.0.0/0 10.10.10.0/24
 ])
 IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
 ])
 dnl (raw, prerouting) (helpers, iptables only)
 IPTABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
-    PRE_foobar all -- 0.0.0.0/0 10.10.10.0/24
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar 0 -- 0.0.0.0/0 10.10.10.0/24
 ])
 IP6TABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all ::/0 ::/0
+    PRE_allow-host-ipv6 0 ::/0 ::/0
 ])
 dnl (mangle, prerouting)
 NFT_LIST_RULES([inet], [mangle_PREROUTING_POLICIES_pre], 0, [dnl
@@ -1963,11 +1963,11 @@ NFT_LIST_RULES([inet], [mangle_PREROUTING_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
-    PRE_foobar all -- 0.0.0.0/0 10.10.10.0/24
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar 0 -- 0.0.0.0/0 10.10.10.0/24
 ])
 IP6TABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all ::/0 ::/0
+    PRE_allow-host-ipv6 0 ::/0 ::/0
 ])
 dnl (nat, prerouting)
 NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
@@ -1979,11 +1979,11 @@ NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
-    PRE_foobar all -- 0.0.0.0/0 10.10.10.0/24
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar 0 -- 0.0.0.0/0 10.10.10.0/24
 ])
 IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all ::/0 ::/0
+    PRE_allow-host-ipv6 0 ::/0 ::/0
 ])
 dnl (nat, postrouting)
 NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
@@ -2029,10 +2029,10 @@ NFT_LIST_RULES([inet], [filter_INPUT_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
-    IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    IN_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
-    IN_allow-host-ipv6 all ::/0 ::/0
+    IN_allow-host-ipv6 0 ::/0 ::/0
 ])
 dnl (filter, output)
 NFT_LIST_RULES([inet], [filter_OUTPUT_POLICIES_pre], 0, [dnl
@@ -2054,17 +2054,17 @@ NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
-    FWD_foobar all -- 10.10.10.0/24 0.0.0.0/0
+    FWD_foobar 0 -- 10.10.10.0/24 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
 ])
 dnl (raw, prerouting) (helpers, iptables only)
 IPTABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
-    PRE_foobar all -- 10.10.10.0/24 0.0.0.0/0
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar 0 -- 10.10.10.0/24 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all ::/0 ::/0
+    PRE_allow-host-ipv6 0 ::/0 ::/0
 ])
 dnl (mangle, prerouting)
 NFT_LIST_RULES([inet], [mangle_PREROUTING_POLICIES_pre], 0, [dnl
@@ -2075,10 +2075,10 @@ NFT_LIST_RULES([inet], [mangle_PREROUTING_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all ::/0 ::/0
+    PRE_allow-host-ipv6 0 ::/0 ::/0
 ])
 dnl (nat, prerouting)
 NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
@@ -2089,10 +2089,10 @@ NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all ::/0 ::/0
+    PRE_allow-host-ipv6 0 ::/0 ::/0
 ])
 dnl (nat, postrouting)
 NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
@@ -2103,7 +2103,7 @@ NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
-    POST_foobar all -- 10.10.10.0/24 0.0.0.0/0
+    POST_foobar 0 -- 10.10.10.0/24 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
 ])
@@ -2139,10 +2139,10 @@ NFT_LIST_RULES([inet], [filter_INPUT_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
-    IN_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
+    IN_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [INPUT_POLICIES_pre], 0, [dnl
-    IN_allow-host-ipv6 all ::/0 ::/0
+    IN_allow-host-ipv6 0 ::/0 ::/0
 ])
 dnl (filter, output)
 NFT_LIST_RULES([inet], [filter_OUTPUT_POLICIES_pre], 0, [dnl
@@ -2164,17 +2164,17 @@ NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
-    FWD_foobar all -- 10.10.10.0/24 10.20.20.0/24
+    FWD_foobar 0 -- 10.10.10.0/24 10.20.20.0/24
 ])
 IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
 ])
 dnl (raw, prerouting) (helpers, iptables only)
 IPTABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
-    PRE_foobar all -- 10.10.10.0/24 10.20.20.0/24
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar 0 -- 10.10.10.0/24 10.20.20.0/24
 ])
 IP6TABLES_LIST_RULES([raw], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all ::/0 ::/0
+    PRE_allow-host-ipv6 0 ::/0 ::/0
 ])
 dnl (mangle, prerouting)
 NFT_LIST_RULES([inet], [mangle_PREROUTING_POLICIES_pre], 0, [dnl
@@ -2186,11 +2186,11 @@ NFT_LIST_RULES([inet], [mangle_PREROUTING_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
-    PRE_foobar all -- 10.10.10.0/24 10.20.20.0/24
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar 0 -- 10.10.10.0/24 10.20.20.0/24
 ])
 IP6TABLES_LIST_RULES([mangle], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all ::/0 ::/0
+    PRE_allow-host-ipv6 0 ::/0 ::/0
 ])
 dnl (nat, prerouting)
 NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
@@ -2202,11 +2202,11 @@ NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
-    PRE_foobar all -- 10.10.10.0/24 10.20.20.0/24
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar 0 -- 10.10.10.0/24 10.20.20.0/24
 ])
 IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all ::/0 ::/0
+    PRE_allow-host-ipv6 0 ::/0 ::/0
 ])
 dnl (nat, postrouting)
 NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
@@ -2217,7 +2217,7 @@ NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
-    POST_foobar all -- 10.10.10.0/24 10.20.20.0/24
+    POST_foobar 0 -- 10.10.10.0/24 10.20.20.0/24
 ])
 IP6TABLES_LIST_RULES([nat], [POSTROUTING_POLICIES_pre], 0, [dnl
 ])
@@ -2271,10 +2271,10 @@ NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
 ])
 dnl Note: iptables has an extra rule because it can't use anonymous sets of interfaces like nftables.
 IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
-    FWD_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    FWD_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
-    FWD_foobar all ::/0 ::/0
+    FWD_foobar 0 ::/0 ::/0
 ])
 
 dnl verify adding new interfaces updates the dispatch
@@ -2289,12 +2289,12 @@ NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
 ])
 dnl Note: iptables has an extra rule because it can't use anonymous sets of interfaces like nftables.
 IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
-    FWD_foobar all -- 0.0.0.0/0 0.0.0.0/0
-    FWD_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    FWD_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
-    FWD_foobar all ::/0 ::/0
-    FWD_foobar all ::/0 ::/0
+    FWD_foobar 0 ::/0 ::/0
+    FWD_foobar 0 ::/0 ::/0
 ])
 
 dnl verify adding removing interfaces updates the dispatch
@@ -2309,10 +2309,10 @@ NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre], 0, [dnl
 ])
 dnl Note: iptables has an extra rule because it can't use anonymous sets of interfaces like nftables.
 IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
-    FWD_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    FWD_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
-    FWD_foobar all ::/0 ::/0
+    FWD_foobar 0 ::/0 ::/0
 ])
 
 dnl verify adding removing interfaces updates the dispatch
@@ -2343,11 +2343,11 @@ NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
-    PRE_foobar all -- 0.0.0.0/0 10.10.10.0/24
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar 0 -- 0.0.0.0/0 10.10.10.0/24
 ])
 IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all ::/0 ::/0
+    PRE_allow-host-ipv6 0 ::/0 ::/0
 ])
 
 dnl verify adding new sources updates the dispatch
@@ -2360,12 +2360,12 @@ m4_if(nftables, FIREWALL_BACKEND, [
 AT_CHECK([grep 'iifname "foobar0" ip6 daddr 1234::/64 jump nat_PRE_policy_foobar' ./stdout], 0, [ignore])
 ])
 IPTABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
-    PRE_foobar all -- 0.0.0.0/0 10.10.10.0/24
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar 0 -- 0.0.0.0/0 10.10.10.0/24
 ])
 IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all ::/0 ::/0
-    PRE_foobar all ::/0 1234::/64
+    PRE_allow-host-ipv6 0 ::/0 ::/0
+    PRE_foobar 0 ::/0 1234::/64
 ])
 
 dnl verify adding removing sources updates the dispatch
@@ -2382,11 +2382,11 @@ NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES_pre], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all -- 0.0.0.0/0 0.0.0.0/0
-    PRE_foobar all -- 0.0.0.0/0 10.10.10.0/24
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar 0 -- 0.0.0.0/0 10.10.10.0/24
 ])
 IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES_pre], 0, [dnl
-    PRE_allow-host-ipv6 all ::/0 ::/0
+    PRE_allow-host-ipv6 0 ::/0 ::/0
 ])
 
 dnl verify adding removing sources updates the dispatch
@@ -2437,20 +2437,20 @@ NFT_LIST_RULES([inet], [filter_IN_policy_foobar], 0, [dnl
     }
 ])
 IPTABLES_LIST_RULES([filter], [IN_foobar], 0, [dnl
-    IN_foobar_pre all -- 0.0.0.0/0 0.0.0.0/0
-    IN_foobar_log all -- 0.0.0.0/0 0.0.0.0/0
-    IN_foobar_deny all -- 0.0.0.0/0 0.0.0.0/0
-    IN_foobar_allow all -- 0.0.0.0/0 0.0.0.0/0
-    IN_foobar_post all -- 0.0.0.0/0 0.0.0.0/0
-    ACCEPT all -- 0.0.0.0/0 0.0.0.0/0
+    IN_foobar_pre 0 -- 0.0.0.0/0 0.0.0.0/0
+    IN_foobar_log 0 -- 0.0.0.0/0 0.0.0.0/0
+    IN_foobar_deny 0 -- 0.0.0.0/0 0.0.0.0/0
+    IN_foobar_allow 0 -- 0.0.0.0/0 0.0.0.0/0
+    IN_foobar_post 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [IN_foobar], 0, [dnl
-    IN_foobar_pre all ::/0 ::/0
-    IN_foobar_log all ::/0 ::/0
-    IN_foobar_deny all ::/0 ::/0
-    IN_foobar_allow all ::/0 ::/0
-    IN_foobar_post all ::/0 ::/0
-    ACCEPT all ::/0 ::/0
+    IN_foobar_pre 0 ::/0 ::/0
+    IN_foobar_log 0 ::/0 ::/0
+    IN_foobar_deny 0 ::/0 ::/0
+    IN_foobar_allow 0 ::/0 ::/0
+    IN_foobar_post 0 ::/0 ::/0
+    ACCEPT 0 ::/0 ::/0
 ])
 
 FWD_END_TEST([ignore])
