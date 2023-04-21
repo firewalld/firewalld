@@ -38,14 +38,14 @@ IPTABLES_LIST_RULES([filter], [IN_foobar], 0, [dnl
     ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [IN_foobar], 0, [dnl
-    INPUT_POLICIES_pre 0 ::/0 ::/0
-    IN_foobar_pre 0 ::/0 ::/0
-    IN_foobar_log 0 ::/0 ::/0
-    IN_foobar_deny 0 ::/0 ::/0
-    IN_foobar_allow 0 ::/0 ::/0
-    IN_foobar_post 0 ::/0 ::/0
-    INPUT_POLICIES_post 0 ::/0 ::/0
-    ACCEPT 0 ::/0 ::/0
+    INPUT_POLICIES_pre 0 -- ::/0 ::/0
+    IN_foobar_pre 0 -- ::/0 ::/0
+    IN_foobar_log 0 -- ::/0 ::/0
+    IN_foobar_deny 0 -- ::/0 ::/0
+    IN_foobar_allow 0 -- ::/0 ::/0
+    IN_foobar_post 0 -- ::/0 ::/0
+    INPUT_POLICIES_post 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 
 dnl ingress zone with target ACCEPT should still allow the forwarded traffic
@@ -74,14 +74,14 @@ IPTABLES_LIST_RULES([filter], [FWD_foobar], 0, [dnl
     ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [FWD_foobar], 0, [dnl
-    FORWARD_POLICIES_pre 0 ::/0 ::/0
-    FWD_foobar_pre 0 ::/0 ::/0
-    FWD_foobar_log 0 ::/0 ::/0
-    FWD_foobar_deny 0 ::/0 ::/0
-    FWD_foobar_allow 0 ::/0 ::/0
-    FWD_foobar_post 0 ::/0 ::/0
-    FORWARD_POLICIES_post 0 ::/0 ::/0
-    ACCEPT 0 ::/0 ::/0
+    FORWARD_POLICIES_pre 0 -- ::/0 ::/0
+    FWD_foobar_pre 0 -- ::/0 ::/0
+    FWD_foobar_log 0 -- ::/0 ::/0
+    FWD_foobar_deny 0 -- ::/0 ::/0
+    FWD_foobar_allow 0 -- ::/0 ::/0
+    FWD_foobar_post 0 -- ::/0 ::/0
+    FORWARD_POLICIES_post 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 
 dnl same thing, but with target == default
@@ -115,15 +115,15 @@ IPTABLES_LIST_RULES([filter], [IN_foobar], 0, [dnl
     REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
 ])
 IP6TABLES_LIST_RULES([filter], [IN_foobar], 0, [dnl
-    INPUT_POLICIES_pre 0 ::/0 ::/0
-    IN_foobar_pre 0 ::/0 ::/0
-    IN_foobar_log 0 ::/0 ::/0
-    IN_foobar_deny 0 ::/0 ::/0
-    IN_foobar_allow 0 ::/0 ::/0
-    IN_foobar_post 0 ::/0 ::/0
-    INPUT_POLICIES_post 0 ::/0 ::/0
-    ACCEPT 58 ::/0 ::/0                                
-    REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+    INPUT_POLICIES_pre 0 -- ::/0 ::/0
+    IN_foobar_pre 0 -- ::/0 ::/0
+    IN_foobar_log 0 -- ::/0 ::/0
+    IN_foobar_deny 0 -- ::/0 ::/0
+    IN_foobar_allow 0 -- ::/0 ::/0
+    IN_foobar_post 0 -- ::/0 ::/0
+    INPUT_POLICIES_post 0 -- ::/0 ::/0
+    ACCEPT 58 -- ::/0 ::/0                                
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
 ])
 
 NFT_LIST_RULES([inet], [filter_FWD_foobar], 0, [dnl
@@ -151,14 +151,14 @@ IPTABLES_LIST_RULES([filter], [FWD_foobar], 0, [dnl
     REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
 ])
 IP6TABLES_LIST_RULES([filter], [FWD_foobar], 0, [dnl
-    FORWARD_POLICIES_pre 0 ::/0 ::/0
-    FWD_foobar_pre 0 ::/0 ::/0
-    FWD_foobar_log 0 ::/0 ::/0
-    FWD_foobar_deny 0 ::/0 ::/0
-    FWD_foobar_allow 0 ::/0 ::/0
-    FWD_foobar_post 0 ::/0 ::/0
-    FORWARD_POLICIES_post 0 ::/0 ::/0
-    REJECT 0 ::/0 ::/0 reject-with icmp6-port-unreachable
+    FORWARD_POLICIES_pre 0 -- ::/0 ::/0
+    FWD_foobar_pre 0 -- ::/0 ::/0
+    FWD_foobar_log 0 -- ::/0 ::/0
+    FWD_foobar_deny 0 -- ::/0 ::/0
+    FWD_foobar_allow 0 -- ::/0 ::/0
+    FWD_foobar_post 0 -- ::/0 ::/0
+    FORWARD_POLICIES_post 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
 ])
 
 FWD_END_TEST([ignore])

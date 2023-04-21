@@ -54,10 +54,10 @@ IPTABLES_LIST_RULES([filter], [IN_foobar_deny], 0, [dnl
     REJECT 1 -- 0.0.0.0/0 0.0.0.0/0 icmptype 5 reject-with icmp-host-prohibited
 ])
 IP6TABLES_LIST_RULES([filter], [IN_foobar_deny], 0, [dnl
-    REJECT 58 ::/0 ::/0 ipv6-icmptype 128 reject-with icmp6-adm-prohibited
-    REJECT 58 ::/0 ::/0 ipv6-icmptype 129 reject-with icmp6-adm-prohibited
-    REJECT 58 ::/0 ::/0 ipv6-icmptype 137 reject-with icmp6-adm-prohibited
-    REJECT 58 1234:5678::/64 ::/0 ipv6-icmptype 137 reject-with icmp6-adm-prohibited
+    REJECT 58 -- ::/0 ::/0 ipv6-icmptype 128 reject-with icmp6-adm-prohibited
+    REJECT 58 -- ::/0 ::/0 ipv6-icmptype 129 reject-with icmp6-adm-prohibited
+    REJECT 58 -- ::/0 ::/0 ipv6-icmptype 137 reject-with icmp6-adm-prohibited
+    REJECT 58 -- 1234:5678::/64 ::/0 ipv6-icmptype 137 reject-with icmp6-adm-prohibited
 ])
 FWD_CHECK([--permanent --policy=foobar --remove-icmp-block echo-request], 0, [ignore])
 FWD_CHECK([--permanent --policy foobar --query-icmp-block echo-request], 1, [ignore])
@@ -116,8 +116,8 @@ IPTABLES_LIST_RULES([filter], [IN_foobar_deny], 0, [dnl
     REJECT 1 -- 0.0.0.0/0 0.0.0.0/0 icmptype 8 reject-with icmp-host-prohibited
 ])
 IP6TABLES_LIST_RULES([filter], [IN_foobar_deny], 0, [dnl
-    REJECT 58 ::/0 ::/0 ipv6-icmptype 128 reject-with icmp6-adm-prohibited
-    REJECT 58 1234:5678::/64 ::/0 ipv6-icmptype 137 reject-with icmp6-adm-prohibited
+    REJECT 58 -- ::/0 ::/0 ipv6-icmptype 128 reject-with icmp6-adm-prohibited
+    REJECT 58 -- 1234:5678::/64 ::/0 ipv6-icmptype 137 reject-with icmp6-adm-prohibited
 ])
 FWD_CHECK([--permanent --policy=foobar --remove-icmp-block echo-request], 0, [ignore])
 IF_HOST_SUPPORTS_IPV6_RULES([
