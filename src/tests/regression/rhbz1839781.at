@@ -43,20 +43,20 @@ IPTABLES_LIST_RULES([filter], [IN_trusted_allow], 0, [dnl
     ACCEPT 6 -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:9090 
 ])
 IP6TABLES_LIST_RULES([filter], [IN_trusted_allow], 0, [dnl
-    ACCEPT 6 ::/0 ::/0 tcp dpt:53 
-    ACCEPT 17 ::/0 ::/0 udp dpt:53 
-    ACCEPT 6 ::/0 ::/0 tcp dpt:80 
-    ACCEPT 6 ::/0 ::/0 tcp dpt:443 
-    ACCEPT 17 ::/0 ::/0 udp dpt:67 
-    ACCEPT 17 ::/0 ::/0 udp dpt:69 
-    ACCEPT 17 ::/0 ::/0 udp dpt:68 
-    ACCEPT 6 ::/0 ::/0 tcp dpt:8140 
-    ACCEPT 6 ::/0 ::/0 tcp dpt:5000 
-    ACCEPT 6 ::/0 ::/0 tcp dpts:5646:5647 
-    ACCEPT 6 ::/0 ::/0 tcp dpt:5671 
-    ACCEPT 6 ::/0 ::/0 tcp dpt:8000 
-    ACCEPT 6 ::/0 ::/0 tcp dpt:8080 
-    ACCEPT 6 ::/0 ::/0 tcp dpt:9090 
+    ACCEPT 6 -- ::/0 ::/0 tcp dpt:53 
+    ACCEPT 17 -- ::/0 ::/0 udp dpt:53 
+    ACCEPT 6 -- ::/0 ::/0 tcp dpt:80 
+    ACCEPT 6 -- ::/0 ::/0 tcp dpt:443 
+    ACCEPT 17 -- ::/0 ::/0 udp dpt:67 
+    ACCEPT 17 -- ::/0 ::/0 udp dpt:69 
+    ACCEPT 17 -- ::/0 ::/0 udp dpt:68 
+    ACCEPT 6 -- ::/0 ::/0 tcp dpt:8140 
+    ACCEPT 6 -- ::/0 ::/0 tcp dpt:5000 
+    ACCEPT 6 -- ::/0 ::/0 tcp dpts:5646:5647 
+    ACCEPT 6 -- ::/0 ::/0 tcp dpt:5671 
+    ACCEPT 6 -- ::/0 ::/0 tcp dpt:8000 
+    ACCEPT 6 -- ::/0 ::/0 tcp dpt:8080 
+    ACCEPT 6 -- ::/0 ::/0 tcp dpt:9090 
 ])
 
 FWD_CHECK([--zone trusted --remove-service RH-Satellite-6], 0, [ignore])
@@ -103,21 +103,21 @@ IPTABLES_LIST_RULES([filter], [IN_trusted_allow], 0, [dnl
     ACCEPT 6 -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:8443 
 ])
 IP6TABLES_LIST_RULES([filter], [IN_trusted_allow], 0, [dnl
-    ACCEPT 6 ::/0 ::/0 tcp dpt:53 
-    ACCEPT 17 ::/0 ::/0 udp dpt:53 
-    ACCEPT 6 ::/0 ::/0 tcp dpt:80 
-    ACCEPT 6 ::/0 ::/0 tcp dpt:443 
-    ACCEPT 17 ::/0 ::/0 udp dpt:67 
-    ACCEPT 17 ::/0 ::/0 udp dpt:69 
-    ACCEPT 17 ::/0 ::/0 udp dpt:68 
-    ACCEPT 6 ::/0 ::/0 tcp dpt:8140 
-    ACCEPT 6 ::/0 ::/0 tcp dpt:5000 
-    ACCEPT 6 ::/0 ::/0 tcp dpts:5646:5647 
-    ACCEPT 6 ::/0 ::/0 tcp dpt:5671 
-    ACCEPT 6 ::/0 ::/0 tcp dpt:8000 
-    ACCEPT 6 ::/0 ::/0 tcp dpt:8080 
-    ACCEPT 6 ::/0 ::/0 tcp dpt:9090 
-    ACCEPT 6 ::/0 ::/0 tcp dpt:8443 
+    ACCEPT 6 -- ::/0 ::/0 tcp dpt:53 
+    ACCEPT 17 -- ::/0 ::/0 udp dpt:53 
+    ACCEPT 6 -- ::/0 ::/0 tcp dpt:80 
+    ACCEPT 6 -- ::/0 ::/0 tcp dpt:443 
+    ACCEPT 17 -- ::/0 ::/0 udp dpt:67 
+    ACCEPT 17 -- ::/0 ::/0 udp dpt:69 
+    ACCEPT 17 -- ::/0 ::/0 udp dpt:68 
+    ACCEPT 6 -- ::/0 ::/0 tcp dpt:8140 
+    ACCEPT 6 -- ::/0 ::/0 tcp dpt:5000 
+    ACCEPT 6 -- ::/0 ::/0 tcp dpts:5646:5647 
+    ACCEPT 6 -- ::/0 ::/0 tcp dpt:5671 
+    ACCEPT 6 -- ::/0 ::/0 tcp dpt:8000 
+    ACCEPT 6 -- ::/0 ::/0 tcp dpt:8080 
+    ACCEPT 6 -- ::/0 ::/0 tcp dpt:9090 
+    ACCEPT 6 -- ::/0 ::/0 tcp dpt:8443 
 ])
 
 FWD_END_TEST

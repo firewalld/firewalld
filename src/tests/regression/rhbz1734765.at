@@ -141,19 +141,19 @@ IPTABLES_LIST_RULES([filter], [INPUT_ZONES], 0,
     IN_public 0 -- 0.0.0.0/0 0.0.0.0/0 [goto]
 ]])
 IP6TABLES_LIST_RULES([filter], [INPUT_ZONES], 0,
-  [[IN_foobar_00 0 1234:5678::1:1:1 ::/0 [goto]
-    IN_foobar_01 0 1234:5678::1:1:0/112 ::/0 [goto]
-    IN_foobar_010 0 1234:5678::10:10:10 ::/0 [goto]
-    IN_foobar_012 0 ::/0 ::/0 [goto] match-set ipsetv6 src
-    IN_foobar_02 0 1234:5678::1:0:0/96 ::/0 [goto]
-    IN_foobar_03 0 1234:5678::2:2:0/112 ::/0 [goto]
-    IN_foobar_04 0 1234:5678::2:0:0/96 ::/0 [goto]
-    IN_foobar_05 0 1234:5678::/80 ::/0 [goto]
-    IN_public 0 1234:5678::20:20:20 ::/0 [goto]
-    IN_foobar_010 0 ::/0 ::/0 [goto]
-    IN_trusted 0 ::/0 ::/0 [goto]
-    IN_internal 0 ::/0 ::/0 [goto]
-    IN_public 0 ::/0 ::/0 [goto]
+  [[IN_foobar_00 0 -- 1234:5678::1:1:1 ::/0 [goto]
+    IN_foobar_01 0 -- 1234:5678::1:1:0/112 ::/0 [goto]
+    IN_foobar_010 0 -- 1234:5678::10:10:10 ::/0 [goto]
+    IN_foobar_012 0 -- ::/0 ::/0 [goto] match-set ipsetv6 src
+    IN_foobar_02 0 -- 1234:5678::1:0:0/96 ::/0 [goto]
+    IN_foobar_03 0 -- 1234:5678::2:2:0/112 ::/0 [goto]
+    IN_foobar_04 0 -- 1234:5678::2:0:0/96 ::/0 [goto]
+    IN_foobar_05 0 -- 1234:5678::/80 ::/0 [goto]
+    IN_public 0 -- 1234:5678::20:20:20 ::/0 [goto]
+    IN_foobar_010 0 -- ::/0 ::/0 [goto]
+    IN_trusted 0 -- ::/0 ::/0 [goto]
+    IN_internal 0 -- ::/0 ::/0 [goto]
+    IN_public 0 -- ::/0 ::/0 [goto]
 ]])
 IPTABLES_LIST_RULES([nat], [POSTROUTING_ZONES], 0,
   [[POST_foobar_00 0 -- 0.0.0.0/0 10.1.1.1 [goto]
@@ -171,19 +171,19 @@ IPTABLES_LIST_RULES([nat], [POSTROUTING_ZONES], 0,
     POST_public 0 -- 0.0.0.0/0 0.0.0.0/0 [goto]
 ]])
 IP6TABLES_LIST_RULES([nat], [POSTROUTING_ZONES], 0,
-  [[POST_foobar_00 0 ::/0 1234:5678::1:1:1 [goto]
-    POST_foobar_01 0 ::/0 1234:5678::1:1:0/112 [goto]
-    POST_foobar_010 0 ::/0 1234:5678::10:10:10 [goto]
-    POST_foobar_012 0 ::/0 ::/0 [goto] match-set ipsetv6 dst
-    POST_foobar_02 0 ::/0 1234:5678::1:0:0/96 [goto]
-    POST_foobar_03 0 ::/0 1234:5678::2:2:0/112 [goto]
-    POST_foobar_04 0 ::/0 1234:5678::2:0:0/96 [goto]
-    POST_foobar_05 0 ::/0 1234:5678::/80 [goto]
-    POST_public 0 ::/0 1234:5678::20:20:20 [goto]
-    POST_foobar_010 0 ::/0 ::/0 [goto]
-    POST_trusted 0 ::/0 ::/0 [goto]
-    POST_internal 0 ::/0 ::/0 [goto]
-    POST_public 0 ::/0 ::/0 [goto]
+  [[POST_foobar_00 0 -- ::/0 1234:5678::1:1:1 [goto]
+    POST_foobar_01 0 -- ::/0 1234:5678::1:1:0/112 [goto]
+    POST_foobar_010 0 -- ::/0 1234:5678::10:10:10 [goto]
+    POST_foobar_012 0 -- ::/0 ::/0 [goto] match-set ipsetv6 dst
+    POST_foobar_02 0 -- ::/0 1234:5678::1:0:0/96 [goto]
+    POST_foobar_03 0 -- ::/0 1234:5678::2:2:0/112 [goto]
+    POST_foobar_04 0 -- ::/0 1234:5678::2:0:0/96 [goto]
+    POST_foobar_05 0 -- ::/0 1234:5678::/80 [goto]
+    POST_public 0 -- ::/0 1234:5678::20:20:20 [goto]
+    POST_foobar_010 0 -- ::/0 ::/0 [goto]
+    POST_trusted 0 -- ::/0 ::/0 [goto]
+    POST_internal 0 -- ::/0 ::/0 [goto]
+    POST_public 0 -- ::/0 ::/0 [goto]
 ]])
 
 FWD_END_TEST
