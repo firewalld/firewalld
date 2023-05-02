@@ -245,6 +245,7 @@ CONFIG_FILES = \
 	services/mysql.xml \
 	services/nbd.xml \
 	services/nebula.xml \
+	services/need-for-speed-most-wanted.xml \
 	services/netbios-ns.xml \
 	services/netdata-dashboard.xml \
 	services/nfs.xml \
