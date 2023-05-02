@@ -309,6 +309,7 @@ CONFIG_FILES = \
 	services/ssdp.xml \
 	services/ssh.xml \
 	services/steam-streaming.xml \
+	services/stellaris.xml \
 	services/svdrp.xml \
 	services/svn.xml \
 	services/syncthing.xml \
