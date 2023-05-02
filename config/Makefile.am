@@ -231,6 +231,7 @@ CONFIG_FILES = \
 	services/managesieve.xml \
 	services/matrix.xml \
 	services/mdns.xml \
+	services/minecraft.xml \
 	services/memcache.xml \
 	services/minidlna.xml \
 	services/mongodb.xml \
