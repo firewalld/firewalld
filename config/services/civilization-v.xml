@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>Sid Meier's Civilization V</short>
+  <description>
+    Become Ruler of the World by establishing and leading a civilization from
+    the dawn of man into the space age: Wage war, conduct diplomacy, discover
+    new technologies, go head-to-head with some of history’s greatest leaders
+    and build the most powerful empire the world has ever known.
+  </description>
+  <port port="1745" protocol="tcp"/>
+  <port port="1795" protocol="tcp"/>
+  <port port="3074" protocol="tcp"/>
+  <port port="27015-27030" protocol="tcp"/>
+  <port port="27036-27037" protocol="tcp"/>
+  <port port="1745" protocol="udp"/>
+  <port port="1795" protocol="udp"/>
+  <port port="3064" protocol="udp"/>
+  <port port="3074" protocol="udp"/>
+  <port port="4380" protocol="udp"/>
+  <port port="27000-27031" protocol="udp"/>
+  <port port="27036" protocol="udp"/>
+</service>
