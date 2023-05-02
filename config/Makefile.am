@@ -166,6 +166,7 @@ CONFIG_FILES = \
 	services/elasticsearch.xml \
 	services/etcd-client.xml \
 	services/etcd-server.xml \
+	services/factorio.xml \
 	services/finger.xml \
 	services/foreman.xml \
 	services/foreman-proxy.xml \
