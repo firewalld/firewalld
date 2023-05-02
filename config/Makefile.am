@@ -293,6 +293,7 @@ CONFIG_FILES = \
 	services/samba-dc.xml \
 	services/samba.xml \
 	services/sane.xml \
+	services/settlers-history-collection.xml \
 	services/sips.xml \
 	services/sip.xml \
 	services/slp.xml \
