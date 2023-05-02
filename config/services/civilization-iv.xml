@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>Sid Meier's Civilization IV</short>
+  <description>
+    Civilization IV is a 4X turn-based strategy computer game and the fourth
+    installment of the Civilization series.
+  </description>
+  <port port="2033" protocol="tcp"/>
+  <port port="2056" protocol="tcp"/>
+  <port port="3783" protocol="tcp"/>
+  <port port="6500" protocol="tcp"/>
+  <port port="6667" protocol="tcp"/>
+  <port port="28900" protocol="tcp"/>
+  <port port="29900-29901" protocol="tcp"/>
+  <port port="2033" protocol="udp"/>
+  <port port="2302-2400" protocol="udp"/>
+  <port port="6500" protocol="udp"/>
+  <port port="6515" protocol="udp"/>
+  <port port="13139" protocol="udp"/>
+  <port port="27900" protocol="udp"/>
+</service>
