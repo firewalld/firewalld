@@ -144,6 +144,7 @@ CONFIG_FILES = \
 	services/ceph.xml \
 	services/cfengine.xml \
 	services/checkmk-agent.xml \
+	services/civilization-iv.xml \
 	services/cockpit.xml \
 	services/collectd.xml \
 	services/condor-collector.xml \
