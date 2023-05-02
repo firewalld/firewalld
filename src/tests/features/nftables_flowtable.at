@@ -1,0 +1,116 @@
+m4_if(nftables, FIREWALL_BACKEND, [
+FWD_START_TEST([nftables flowtable])
+AT_KEYWORDS(flowtable)
+CHECK_NFTABLES_FLOWTABLE()
+AT_SKIP_IF([! NS_CMD([command -v iperf3 >/dev/null 2>&1])])
+AT_SKIP_IF([! NS_CMD([command -v sysctl >/dev/null 2>&1])])
+AT_SKIP_IF([! NS_CMD([command -v jq >/dev/null 2>&1])])
+
+dnl TEST TOPOLOGY
+dnl -------------
+dnl
+dnl CURRENT_TEST_NS-send { fwd-test-send }
+dnl  (iperf -c)                 |
+dnl                             | veth
+dnl                             |
+dnl CURRENT_TEST_NS      { fwd-test-fwd-0
+dnl  (firewalld)                ^
+dnl                             | forward (flowtable)
+dnl                             V
+dnl                        fwd-test-fwd-1 }
+dnl                             |
+dnl                             | veth
+dnl                             |
+dnl CURRENT_TEST_NS-recv { fwd-test-recv }
+dnl  (iperf -s)
+dnl
+m4_define([do_flowtable_test], [
+AT_CHECK([ip netns add CURRENT_TEST_NS-send])
+AT_CHECK([ip netns add CURRENT_TEST_NS-recv])
+AT_CHECK([ip link add fwd-test-send type veth peer name fwd-test-fwd-0])
+AT_CHECK([ip link add fwd-test-recv type veth peer name fwd-test-fwd-1])
+
+AT_CHECK([ip link set fwd-test-send netns CURRENT_TEST_NS-send])
+AT_CHECK([ip link set fwd-test-recv netns CURRENT_TEST_NS-recv])
+AT_CHECK([ip netns exec CURRENT_TEST_NS-send ip link set fwd-test-send up])
+AT_CHECK([ip netns exec CURRENT_TEST_NS-recv ip link set fwd-test-recv up])
+AT_CHECK([ip netns exec CURRENT_TEST_NS-send ip addr add 10.10.10.2/24 dev fwd-test-send])
+AT_CHECK([ip netns exec CURRENT_TEST_NS-send ip route add 10.20.20.0/24 nexthop via 10.10.10.1 dev fwd-test-send])
+AT_CHECK([ip netns exec CURRENT_TEST_NS-recv ip addr add 10.20.20.2/24 dev fwd-test-recv])
+AT_CHECK([ip netns exec CURRENT_TEST_NS-recv ip route add 10.10.10.0/24 nexthop via 10.20.20.1 dev fwd-test-recv])
+
+AT_CHECK([ip link set fwd-test-fwd-0 netns CURRENT_TEST_NS])
+AT_CHECK([ip link set fwd-test-fwd-1 netns CURRENT_TEST_NS])
+NS_CHECK([ip addr add 10.10.10.1/24 dev fwd-test-fwd-0])
+NS_CHECK([ip addr add 10.20.20.1/24 dev fwd-test-fwd-1])
+NS_CHECK([ip link set fwd-test-fwd-0 up])
+NS_CHECK([ip link set fwd-test-fwd-1 up])
+
+NS_CHECK([sed -i 's/^NftablesFlowtable.*/NftablesFlowtable=$1/' ./firewalld.conf])
+FWD_RELOAD()
+NS_CHECK([sysctl -w net.ipv4.conf.all.forwarding=1], 0, [ignore])
+FWD_CHECK([--zone trusted --add-interface fwd-test-fwd-0], 0, [ignore])
+FWD_CHECK([--zone trusted --add-interface fwd-test-fwd-1], 0, [ignore])
+
+AT_CHECK([ip netns exec CURRENT_TEST_NS-recv iperf3 -s -1 >/dev/null &], 0, [ignore])
+AT_CHECK([ip netns exec CURRENT_TEST_NS-send iperf3 -J -c 10.20.20.2 -O 10 --connect-timeout 10 --interval 0 dnl
+          | jq '.end.sum_received.bits_per_second' | { read RESULT; printf "%s" ${RESULT%.*} > ./bps-tcp ; }], 0, [ignore])
+
+AT_CHECK([ip netns exec CURRENT_TEST_NS-recv iperf3 -s -1 >/dev/null &], 0, [ignore])
+AT_CHECK([ip netns exec CURRENT_TEST_NS-send iperf3 -u -J -c 10.20.20.2 --connect-timeout 10 --interval 0 --bitrate 0 dnl
+          | jq '.end.sum.bits_per_second' | { read RESULT; printf "%s" ${RESULT%.*} > ./bps-udp ; }], 0, [ignore])
+
+NS_CHECK([ip link delete fwd-test-fwd-0])
+NS_CHECK([ip link delete fwd-test-fwd-1])
+AT_CHECK([ip netns delete CURRENT_TEST_NS-send])
+AT_CHECK([ip netns delete CURRENT_TEST_NS-recv])
+])
+
+cat <<HERE >> ./cleanup
+ip netns delete CURRENT_TEST_NS-send
+ip netns delete CURRENT_TEST_NS-recv
+HERE
+
+dnl DISABLED
+dnl
+do_flowtable_test([off])
+AT_CHECK([mv ./bps-tcp ./bps-tcp-disabled])
+AT_CHECK([mv ./bps-udp ./bps-udp-disabled])
+
+dnl ENABLED
+dnl
+do_flowtable_test([fwd-test-fwd-0 fwd-test-fwd-1])
+AT_CHECK([mv ./bps-tcp ./bps-tcp-enabled])
+AT_CHECK([mv ./bps-udp ./bps-udp-enabled])
+
+AT_CHECK([expr $(cat ./bps-tcp-enabled) \> $(cat ./bps-tcp-disabled)], 0, [ignore], [ignore], [dnl
+echo
+echo "FAIL: TCP BPS decreased with flowtable enabled."
+echo "Disabled: $(cat ./bps-tcp-disabled)"
+echo "Enabled:  $(cat ./bps-tcp-enabled)"
+echo
+], [dnl
+echo
+echo "PASS: TCP BPS increased with flowtable enabled."
+echo "Disabled: $(cat ./bps-tcp-disabled)"
+echo "Enabled:  $(cat ./bps-tcp-enabled)"
+echo
+])
+
+AT_CHECK([expr $(cat ./bps-udp-enabled) \> $(cat ./bps-udp-disabled)], 0, [ignore], [ignore], [dnl
+echo
+echo "FAIL: UDP BPS decreased with flowtable enabled."
+echo "Disabled: $(cat ./bps-udp-disabled)"
+echo "Enabled:  $(cat ./bps-udp-enabled)"
+echo
+], [dnl
+echo
+echo "PASS: UDP BPS increased with flowtable enabled."
+echo "Disabled: $(cat ./bps-udp-disabled)"
+echo "Enabled:  $(cat ./bps-udp-enabled)"
+echo
+])
+
+m4_undefine([do_flowtable_test])
+FWD_END_TEST()
+])
