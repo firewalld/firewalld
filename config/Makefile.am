@@ -310,6 +310,7 @@ CONFIG_FILES = \
 	services/ssh.xml \
 	services/steam-streaming.xml \
 	services/stellaris.xml \
+	services/stronghold-crusader.xml \
 	services/svdrp.xml \
 	services/svn.xml \
 	services/syncthing.xml \
