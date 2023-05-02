@@ -121,6 +121,7 @@ CONFIG_FILES = \
 	services/amanda-k5-client.xml \
 	services/amqp.xml \
 	services/amqps.xml \
+	services/anno-1602.xml \
 	services/apcupsd.xml \
 	services/audit.xml \
 	services/ausweisapp2.xml \
