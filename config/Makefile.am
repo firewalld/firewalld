@@ -122,6 +122,7 @@ CONFIG_FILES = \
 	services/amqp.xml \
 	services/amqps.xml \
 	services/anno-1602.xml \
+	services/anno-1800.xml \
 	services/apcupsd.xml \
 	services/audit.xml \
 	services/ausweisapp2.xml \
