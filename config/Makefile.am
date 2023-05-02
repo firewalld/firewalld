@@ -351,6 +351,7 @@ CONFIG_FILES = \
 	services/zabbix-server.xml \
 	services/zabbix-trapper.xml \
 	services/zabbix-web-service.xml \
+	services/zero-k.xml \
 	services/zerotier.xml \
 	zones/block.xml \
 	zones/dmz.xml \
