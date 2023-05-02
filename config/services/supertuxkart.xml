@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>SuperTuxKart</short>
+  <description>
+    SuperTuxKart is a 3D open-source kart racing game. It aims towards fun for
+    players of all skill levels, with item boxes giving random items, nitro,
+    drifting and more.
+  </description>
+  <port port="2759" protocol="tcp"/>
+  <port port="2759" protocol="udp"/>
+  <port port="2757" protocol="udp"/>
+  <port port="2757" protocol="tcp"/>
+</service>
