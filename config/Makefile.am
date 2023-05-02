@@ -322,6 +322,7 @@ CONFIG_FILES = \
 	services/syslog.xml \
 	services/telnet.xml \
 	services/tentacle.xml \
+	services/terraria.xml \
 	services/tftp.xml \
 	services/tile38.xml \
 	services/tinc.xml \
