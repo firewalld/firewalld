@@ -726,3 +726,11 @@ m4_define([CHECK_NM_CAPABILITY_OVS], [
 m4_define([IF_BACKEND_IS_DEFAULT], [
     m4_if(nftables, FIREWALL_BACKEND, [$1], [])
 ])
+
+m4_define([CHECK_NFTABLES_FLOWTABLE], [
+    m4_if(nftables, FIREWALL_BACKEND, [
+        NS_CHECK([nft add table inet firewalld_check_flowtable])
+        AT_SKIP_IF([! NS_CMD([nft add flowtable inet firewalld_check_flowtable foobar { hook ingress priority 0 \; } >/dev/null 2>&1])])
+        NS_CHECK([nft delete table inet firewalld_check_flowtable])
+    ])
+])
