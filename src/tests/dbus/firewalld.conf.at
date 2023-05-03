@@ -27,6 +27,7 @@ string "IndividualCalls" : variant string m4_escape(["${EXPECTED_INDIVIDUAL_CALL
 string "Lockdown" : variant string "no"
 string "LogDenied" : variant string "off"
 string "MinimalMark" : variant int32 100
+string "NftablesFlowtable" : variant string "off"
 string "RFC3964_IPv4" : variant string "yes"
 ])
 

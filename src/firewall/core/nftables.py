@@ -583,6 +583,24 @@ class nftables(object):
                                                 "expr": [{"reject": {"type": "icmpx", "expr": "admin-prohibited"}}]}}})
 
         # filter, FORWARD
+        if self._fw._nftables_flowtable != "off":
+            default_rules.append({"add": {"flowtable":  {"family": "inet",
+                                                         "table": TABLE_NAME,
+                                                         "name": "fastpath",
+                                                         "hook": "ingress",
+                                                         "prio": NFT_HOOK_OFFSET,
+                                                         "dev": self._fw._nftables_flowtable.split()}}})
+            default_rules.append({"add": {"rule":  {"family": "inet",
+                                                    "table": TABLE_NAME,
+                                                    "chain": "filter_%s" % "FORWARD",
+                                                    "expr": [{"match": {"left": {"ct": {"key": "state"}},
+                                                                        "op": "in",
+                                                                        "right": {"set": ["established", "related"]}}},
+                                                             {"match": {"left": {"meta": {"key": "l4proto"}},
+                                                                        "op": "==",
+                                                                        "right": {"set": ["tcp", "udp"]}}},
+                                                             {"flow": {"op": "add",
+                                                                       "flowtable": "@fastpath"}}]}}})
         default_rules.append({"add": {"rule":  {"family": "inet",
                                                 "table": TABLE_NAME,
                                                 "chain": "filter_%s" % "FORWARD",
@@ -1520,7 +1538,11 @@ class nftables(object):
                                        "chain": "filter_OUTPUT",
                                        "index": 1,
                                        "expr": expr_fragments}}})
-        forward_index = 4 if self._fw.get_log_denied() != "off" else 3
+        forward_index = 3
+        if self._fw._nftables_flowtable != "off":
+            forward_index += 1
+        if self._fw.get_log_denied() != "off":
+            forward_index += 1
         rules.append({"add": {"rule": {"family": "inet",
                                        "table": TABLE_NAME,
                                        "chain": "filter_FORWARD",
