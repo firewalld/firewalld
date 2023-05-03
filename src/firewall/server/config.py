@@ -109,6 +109,7 @@ class FirewallDConfig(DbusServiceObject):
                 "FlushAllOnReload": "readwrite",
                 "RFC3964_IPv4": "readwrite",
                 "AllowZoneDrifting": "readwrite",
+                "NftablesFlowtable": "readwrite",
             }
         )
 
@@ -564,7 +565,7 @@ class FirewallDConfig(DbusServiceObject):
                          "CleanupModulesOnExit", "Lockdown", "IPv6_rpfilter",
                          "IndividualCalls", "LogDenied", "AutomaticHelpers",
                          "FirewallBackend", "FlushAllOnReload", "RFC3964_IPv4",
-                         "AllowZoneDrifting" ]:
+                         "AllowZoneDrifting", "NftablesFlowtable" ]:
             raise dbus.exceptions.DBusException(
                 "org.freedesktop.DBus.Error.InvalidArgs: "
                 "Property '%s' does not exist" % prop)
@@ -625,6 +626,10 @@ class FirewallDConfig(DbusServiceObject):
             if value is None:
                 value = "yes" if config.FALLBACK_ALLOW_ZONE_DRIFTING else "no"
             return dbus.String(value)
+        elif prop == "NftablesFlowtable":
+            if value is None:
+                value = config.FALLBACK_NFTABLES_FLOWTABLE
+            return dbus.String(value)
 
     @dbus_handle_exceptions
     def _get_dbus_property(self, prop):
@@ -653,6 +658,8 @@ class FirewallDConfig(DbusServiceObject):
         elif prop == "RFC3964_IPv4":
             return dbus.String(self._get_property(prop))
         elif prop == "AllowZoneDrifting":
+            return dbus.String(self._get_property(prop))
+        elif prop == "NftablesFlowtable":
             return dbus.String(self._get_property(prop))
         else:
             raise dbus.exceptions.DBusException(
@@ -693,7 +700,7 @@ class FirewallDConfig(DbusServiceObject):
                        "CleanupModulesOnExit", "Lockdown", "IPv6_rpfilter",
                        "IndividualCalls", "LogDenied", "AutomaticHelpers",
                        "FirewallBackend", "FlushAllOnReload", "RFC3964_IPv4",
-                       "AllowZoneDrifting" ]:
+                       "AllowZoneDrifting", "NftablesFlowtable" ]:
                 ret[x] = self._get_property(x)
         elif interface_name in [ config.dbus.DBUS_INTERFACE_CONFIG_DIRECT,
                                  config.dbus.DBUS_INTERFACE_CONFIG_POLICIES ]:
@@ -722,7 +729,7 @@ class FirewallDConfig(DbusServiceObject):
                                   "IPv6_rpfilter", "IndividualCalls",
                                   "LogDenied",
                                   "FirewallBackend", "FlushAllOnReload",
-                                  "RFC3964_IPv4"]:
+                                  "RFC3964_IPv4", "NftablesFlowtable"]:
                 if property_name in [ "CleanupOnExit", "CleanupModulesOnExit",
                                       "Lockdown", "IPv6_rpfilter",
                                       "IndividualCalls", "FlushAllOnReload",

@@ -119,6 +119,7 @@ class Firewall(object):
         self._flush_all_on_reload = config.FALLBACK_FLUSH_ALL_ON_RELOAD
         self._rfc3964_ipv4 = config.FALLBACK_RFC3964_IPV4
         self._allow_zone_drifting = config.FALLBACK_ALLOW_ZONE_DRIFTING
+        self._nftables_flowtable = config.FALLBACK_NFTABLES_FLOWTABLE
 
         if self._offline:
             self.ip4tables_enabled = False
@@ -374,6 +375,10 @@ class Firewall(object):
                     self._rfc3964_ipv4 = True
                 log.debug1("RFC3964_IPv4 is set to '%s'",
                            self._rfc3964_ipv4)
+
+            if self._firewalld_conf.get("NftablesFlowtable"):
+                self._nftables_flowtable = self._firewalld_conf.get("NftablesFlowtable")
+                log.debug1("NftablesFlowtable is set to '%s'", self._nftables_flowtable)
 
         self.config.set_firewalld_conf(copy.deepcopy(self._firewalld_conf))
 

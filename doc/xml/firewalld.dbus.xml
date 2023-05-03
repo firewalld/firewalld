@@ -2905,6 +2905,17 @@
               </para>
             </listitem>
           </varlistentry>
+          <varlistentry id="FirewallD1.config.Properties.NftablesFlowtable">
+            <term>NftablesFlowtable - s - (rw)</term>
+            <listitem>
+              <para>
+                This may improve forwarded traffic throughput by enabling
+                nftables flowtable. It is a software fastpath and avoids
+                calling nftables rule evaluation for data packets. Its
+                value is a space separate list of interfaces.
+              </para>
+            </listitem>
+          </varlistentry>
         </variablelist>
       </refsect3>
     </refsect2>

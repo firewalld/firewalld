@@ -216,6 +216,20 @@
             </listitem>
         </varlistentry>
 
+        <varlistentry>
+            <term><option>NftablesFlowtable</option></term>
+            <listitem>
+                <para>
+                  This may improve forwarded traffic throughput by enabling
+                  nftables flowtable. It is a software fastpath and avoids
+                  calling nftables rule evaluation for data packets. Its
+                  value is a space separate list of interfaces.
+                  Example value "eth0 eth1".
+                  Defaults to "off".
+                </para>
+            </listitem>
+        </varlistentry>
+
     </variablelist>
 
   </refsect1>
