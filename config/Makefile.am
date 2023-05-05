@@ -320,6 +320,7 @@ CONFIG_FILES = \
 	services/syncthing-gui.xml \
 	services/syncthing-relay.xml \
 	services/synergy.xml \
+	services/syscomlan.xml \
 	services/syslog-tls.xml \
 	services/syslog.xml \
 	services/telnet.xml \
