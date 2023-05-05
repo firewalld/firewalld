@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>Statistics Server</short>
+  <description> Statistics Server protocol provides a way to give statistics about a system to the outside world. Defined in RFC-996</description>
+  <port protocol="tcp" port="133"/>
+  <port protocol="udp" port="133"/>
+</service>

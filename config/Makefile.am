@@ -309,6 +309,7 @@ CONFIG_FILES = \
 	services/squid.xml \
 	services/ssdp.xml \
 	services/ssh.xml \
+	services/statsrv.xml \
 	services/steam-streaming.xml \
 	services/stellaris.xml \
 	services/stronghold-crusader.xml \
