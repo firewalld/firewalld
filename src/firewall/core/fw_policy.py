@@ -1432,6 +1432,10 @@ class FirewallPolicy(object):
                 tcp_mss_clamp_value = rule.element.value
                 self.check_tcp_mss_clamp(tcp_mss_clamp_value)
 
+                # Convert string "None" to actual None, so the backend can properly handle this value
+                if tcp_mss_clamp_value == "None":
+                    tcp_mss_clamp_value = None
+                
                 rules = backend.build_policy_tcp_mss_clamp_rules(
                             enable, policy, tcp_mss_clamp_value, None, rule)
                 transaction.add_rules(backend, rules)
