@@ -1095,6 +1095,7 @@ class Firewall(object):
         _omit_native_ipset = self.ipset.omit_native_ipset()
 
         # must stash this. The value may change after _start()
+        old_firewall_backend = self._firewall_backend
         flush_all = self._flush_all_on_reload
 
         if not flush_all:
@@ -1114,6 +1115,7 @@ class Firewall(object):
             self.set_policy("DROP")
 
         # stop
+        self.flush()
         self.cleanup()
 
         start_exception = None
@@ -1195,6 +1197,19 @@ class Firewall(object):
         self._panic = _panic
         if not self._panic:
             self.set_policy("ACCEPT")
+
+        # If the FirewallBackend changed, then we must also cleanup the policy
+        # for the old backend that was set to DROP above.
+        if not self._panic and old_firewall_backend != self._firewall_backend:
+            if old_firewall_backend == "nftables":
+                for rule in self.nftables_backend.build_set_policy_rules("ACCEPT"):
+                    self.nftables_backend.set_rule(rule, self._log_denied)
+            else:
+                for rule in self.ip4tables_backend.build_set_policy_rules("ACCEPT"):
+                    self.ip4tables_backend.set_rule(rule, self._log_denied)
+                if self.ip6tables_enabled:
+                    for rule in self.ip6tables_backend.build_set_policy_rules("ACCEPT"):
+                        self.ip6tables_backend.set_rule(rule, self._log_denied)
 
         if start_exception:
             self._state = "FAILED"
