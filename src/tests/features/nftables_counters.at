@@ -1,0 +1,68 @@
+m4_if(nftables, FIREWALL_BACKEND, [
+FWD_START_TEST([nftables counters])
+AT_KEYWORDS(counters)
+
+dnl check no counters
+NFT_LIST_RULES([inet], [filter_INPUT_POLICIES], 0, [dnl
+    table inet firewalld {
+        chain filter_INPUT_POLICIES {
+            jump filter_IN_policy_allow-host-ipv6
+            jump filter_IN_public
+            reject with icmpx admin-prohibited
+        }
+    }
+])
+NFT_LIST_RULES([inet], [filter_IN_public_allow], 0, [dnl
+    table inet firewalld {
+        chain filter_IN_public_allow {
+            tcp dport 22 accept
+            ip6 daddr fe80::/64 udp dport 546 accept
+        }
+    }
+])
+
+AT_CHECK([sed -i 's/^NftablesCounters=.*/NftablesCounters=yes/' ./firewalld.conf])
+FWD_RELOAD()
+
+dnl check counters exist
+NFT_LIST_RULES([inet], [filter_INPUT_POLICIES], 0, [dnl
+    table inet firewalld {
+        chain filter_INPUT_POLICIES {
+            counter packets 0 bytes 0 jump filter_IN_policy_allow-host-ipv6
+            counter packets 0 bytes 0 jump filter_IN_public
+            counter packets 0 bytes 0 reject with icmpx admin-prohibited
+        }
+    }
+])
+NFT_LIST_RULES([inet], [filter_IN_public_allow], 0, [dnl
+    table inet firewalld {
+        chain filter_IN_public_allow {
+            tcp dport 22 counter packets 0 bytes 0 accept
+            ip6 daddr fe80::/64 udp dport 546 counter packets 0 bytes 0 accept
+        }
+    }
+])
+
+dnl make sure rule add/delete works
+FWD_CHECK([--zone public --add-port 1234/tcp], 0, [ignore])
+NFT_LIST_RULES([inet], [filter_IN_public_allow], 0, [dnl
+    table inet firewalld {
+        chain filter_IN_public_allow {
+            tcp dport 22 counter packets 0 bytes 0 accept
+            ip6 daddr fe80::/64 udp dport 546 counter packets 0 bytes 0 accept
+            tcp dport 1234 counter packets 0 bytes 0 accept
+        }
+    }
+])
+FWD_CHECK([--zone public --remove-port 1234/tcp], 0, [ignore])
+NFT_LIST_RULES([inet], [filter_IN_public_allow], 0, [dnl
+    table inet firewalld {
+        chain filter_IN_public_allow {
+            tcp dport 22 counter packets 0 bytes 0 accept
+            ip6 daddr fe80::/64 udp dport 546 counter packets 0 bytes 0 accept
+        }
+    }
+])
+
+FWD_END_TEST()
+])
