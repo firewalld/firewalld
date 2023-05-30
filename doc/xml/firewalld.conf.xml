@@ -230,6 +230,17 @@
             </listitem>
         </varlistentry>
 
+        <varlistentry>
+            <term><option>NftablesCounters</option></term>
+            <listitem>
+                <para>
+                  If set to yes, add a counter to every nftables rule. This is
+                  useful for debugging and comes with a small performance cost.
+                  Defaults to "no".
+                </para>
+            </listitem>
+        </varlistentry>
+
     </variablelist>
 
   </refsect1>

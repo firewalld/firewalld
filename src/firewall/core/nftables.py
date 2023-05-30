@@ -326,6 +326,10 @@ class nftables(object):
                 # does not tolerate them.
                 _rule[verb]["rule"]["expr"] = list(filter(None, _rule[verb]["rule"]["expr"]))
 
+                if self._fw._nftables_counters:
+                    # -1 inserts just before the verdict
+                    _rule[verb]["rule"]["expr"].insert(-1, {"counter": None})
+
                 self._set_rule_replace_priority(_rule, rich_rule_priority_counts, "%%RICH_RULE_PRIORITY%%")
                 self._set_rule_sort_policy_dispatch(_rule, policy_dispatch_index_cache)
 

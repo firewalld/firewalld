@@ -2916,6 +2916,15 @@
               </para>
             </listitem>
           </varlistentry>
+          <varlistentry id="FirewallD1.config.Properties.NftablesCounters">
+            <term>NftablesCounters - s - (rw)</term>
+            <listitem>
+              <para>
+                If set to yes, add a counter to every nftables rule. This is
+                useful for debugging and comes with a small performance cost.
+              </para>
+            </listitem>
+          </varlistentry>
         </variablelist>
       </refsect3>
     </refsect2>
