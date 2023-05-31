@@ -61,7 +61,11 @@ Summary: Firewall panel applet
 Requires: %{name} = %{version}-%{release}
 Requires: firewall-config = %{version}-%{release}
 Requires: hicolor-icon-theme
+%if (0%{?fedora} >= 39 || 0%{?rhel} >= 10)
+Requires: python3-pyqt6
+%else
 Requires: python3-qt5
+%endif
 Requires: python3-gobject
 Requires: libnotify
 Requires: NetworkManager-libnm
