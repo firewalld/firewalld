@@ -138,7 +138,7 @@ class ipset(object):
         return self.__run([ "destroy", set_name ])
 
     def set_add(self, set_name, entry):
-        args = [ "add", set_name, entry ]
+        args = [ "-exist", "add", set_name, entry ]
         return self.__run(args)
 
     def set_delete(self, set_name, entry):
