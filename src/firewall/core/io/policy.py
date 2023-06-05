@@ -109,7 +109,7 @@ def common_startElement(obj, name, attrs):
                 obj._rule_error = True
                 return True
             _value="pmtu"
-            if "value" in attrs:
+            if "value" in attrs and attrs["value"] not in [None, "None"]:
                 _value = attrs["value"]
             obj._rule.element = rich.Rich_Tcp_Mss_Clamp(_value)
         else:
@@ -591,7 +591,8 @@ def common_writer(obj, handler):
                 attrs["value"] = rule.element.value
             elif type(rule.element) == rich.Rich_Tcp_Mss_Clamp:
                 element = "tcp-mss-clamp"
-                attrs["value"] = rule.element.value
+                if rule.element.value and rule.element.value != "pmtu":
+                    attrs["value"] = rule.element.value
             elif type(rule.element) == rich.Rich_Masquerade:
                 element = "masquerade"
             elif type(rule.element) == rich.Rich_IcmpBlock:
