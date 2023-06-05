@@ -3,7 +3,7 @@ dnl ## XML tests ##
 dnl ###############
 
 FWD_START_TEST([tcp-mss-clamp])
-AT_KEYWORDS(tcp-mss-clamp)
+AT_KEYWORDS(tcp-mss-clamp gh1121)
 
 AT_CHECK([mkdir -p ./zones])
 
@@ -61,10 +61,49 @@ AT_DATA([./zones/tcp.xml], [dnl
 ])
 FWD_CHECK([--check-config], 0, ignore,ignore)
 
+dnl github #1121
+dnl
+AT_DATA([./zones/tcp.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+  <service name="ssh"/>
+  <rule>
+    <tcp-mss-clamp value="None"/>
+  </rule>
+</zone>
+])
+FWD_CHECK([--check-config], 0, [ignore], [ignore])
+FWD_OFFLINE_CHECK([--zone tcp --add-service http], 0, [ignore])
+AT_CHECK([cat ./zones/tcp.xml], 0, [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+  <service name="ssh"/>
+  <service name="http"/>
+  <rule>
+    <tcp-mss-clamp/>
+  </rule>
+</zone>
+])
+
 dnl start cli tests (permanent configuration)
 AT_CHECK(rm ./zones/tcp.xml)
 FWD_CHECK([--permanent --add-rich-rule='rule tcp-mss-clamp value=thisdoesnotexist'],122,ignore,ignore)
 FWD_CHECK([--permanent --add-rich-rule='rule tcp-mss-clamp'],0,ignore, ignore)
+dnl github #1121
+dnl
+AT_CHECK([cat ./zones/public.xml], 0, [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+  <short>Public</short>
+  <description>For use in public areas. You do not trust the other computers on networks to not harm your computer. Only selected incoming connections are accepted.</description>
+  <service name="ssh"/>
+  <service name="dhcpv6-client"/>
+  <rule>
+    <tcp-mss-clamp/>
+  </rule>
+  <forward/>
+</zone>
+])
 FWD_CHECK([--permanent --remove-rich-rule='rule tcp-mss-clamp'],0,ignore, ignore)
 FWD_CHECK([--permanent --add-rich-rule='rule tcp-mss-clamp value=0'],122,ignore, ignore)
 FWD_CHECK([--permanent --add-rich-rule='rule tcp-mss-clamp value=536'],0,ignore, ignore)
