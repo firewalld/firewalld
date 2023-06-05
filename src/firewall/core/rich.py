@@ -136,7 +136,10 @@ class Rich_Tcp_Mss_Clamp(object):
         self.value = value
 
     def __str__(self):
-        return 'tcp-mss-clamp value="%s"' % (self.value)
+        if self.value:
+            return 'tcp-mss-clamp value="%s"' % (self.value)
+        else:
+            return 'tcp-mss-clamp'
 
 class Rich_ForwardPort(object):
     def __init__(self, port, protocol, to_port, to_address):
