@@ -3750,7 +3750,8 @@ class FirewallConfig(object):
                 or self.richRuleDialogDestinationInvertCheck.get_active()):
             rule.destination = rich.Rich_Destination(
                 self.richRuleDialogDestinationChooser.get_text(),
-                self.richRuleDialogDestinationInvertCheck.get_active())
+                None,
+                invert=self.richRuleDialogDestinationInvertCheck.get_active())
 
         # log
         if self.richRuleDialogLogCheck.is_sensitive() and \
