@@ -1,0 +1,49 @@
+FWD_START_TEST([policy with mixed family zone source])
+AT_KEYWORDS(policy gh1146)
+
+dnl full matrix of (ipv4, ipv6, interface)
+FWD_CHECK([--permanent --zone internal --add-interface dummy1], 0, [ignore])
+FWD_CHECK([--permanent --zone internal --add-source 10.11.11.0/24], 0, [ignore])
+IF_HOST_SUPPORTS_IPV6_RULES([
+FWD_CHECK([--permanent --zone internal --add-source fc00:1111:1111:1111::/64], 0, [ignore])
+])
+dnl
+FWD_CHECK([--permanent --zone public --add-interface dummy2], 0, [ignore])
+FWD_CHECK([--permanent --zone public --add-source 10.22.22.0/24], 0, [ignore])
+IF_HOST_SUPPORTS_IPV6_RULES([
+FWD_CHECK([--permanent --zone public --add-source fc00:2222:2222:2222::/64], 0, [ignore])
+])
+
+FWD_CHECK([--permanent --new-policy foobar], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar --add-ingress-zone internal], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar --add-egress-zone public], 0, [ignore])
+
+FWD_RELOAD()
+
+dnl Since the families are mixed there should NOT be a rule to dispatch this
+dnl policy. It's invalid to match IPv6 and IPv4 in the same rule.
+dnl
+NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES_pre | grep foobar | sort], 0, [dnl
+    iifname "dummy1" ip daddr 10.22.22.0/24 jump filter_FWD_policy_foobar
+    iifname "dummy1" ip6 daddr fc00:2222:2222:2222::/64 jump filter_FWD_policy_foobar
+    iifname "dummy1" oifname "dummy2" jump filter_FWD_policy_foobar
+    ip saddr 10.11.11.0/24 ip daddr 10.22.22.0/24 jump filter_FWD_policy_foobar
+    ip saddr 10.11.11.0/24 oifname "dummy2" jump filter_FWD_policy_foobar
+    ip6 saddr fc00:1111:1111:1111::/64 ip6 daddr fc00:2222:2222:2222::/64 jump filter_FWD_policy_foobar
+    ip6 saddr fc00:1111:1111:1111::/64 oifname "dummy2" jump filter_FWD_policy_foobar
+])
+
+IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
+    FWD_foobar all -- 0.0.0.0/0 0.0.0.0/0
+    FWD_foobar all -- 0.0.0.0/0 10.22.22.0/24
+    FWD_foobar all -- 10.11.11.0/24 0.0.0.0/0
+    FWD_foobar all -- 10.11.11.0/24 10.22.22.0/24
+])
+IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES_pre], 0, [dnl
+    FWD_foobar all ::/0 ::/0
+    FWD_foobar all ::/0 fc00:2222:2222:2222::/64
+    FWD_foobar all fc00:1111:1111:1111::/64 ::/0
+    FWD_foobar all fc00:1111:1111:1111::/64 fc00:2222:2222:2222::/64
+])
+
+FWD_END_TEST()
