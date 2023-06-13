@@ -1,0 +1,242 @@
+FWD_START_TEST([policy with mixed family zone source])
+AT_KEYWORDS(policy gh1146)
+
+dnl full matrix of (ipv4, ipv6, interface)
+FWD_CHECK([--permanent --zone internal --add-interface dummy1], 0, [ignore])
+FWD_CHECK([--permanent --zone internal --add-source 10.11.11.0/24], 0, [ignore])
+IF_HOST_SUPPORTS_IPV6_RULES([
+FWD_CHECK([--permanent --zone internal --add-source fc00:1111:1111:1111::/64], 0, [ignore])
+])
+dnl
+FWD_CHECK([--permanent --zone public --add-interface dummy2], 0, [ignore])
+FWD_CHECK([--permanent --zone public --add-source 10.22.22.0/24], 0, [ignore])
+IF_HOST_SUPPORTS_IPV6_RULES([
+FWD_CHECK([--permanent --zone public --add-source fc00:2222:2222:2222::/64], 0, [ignore])
+])
+
+FWD_CHECK([--permanent --new-policy foobar], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar --add-ingress-zone internal], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar --add-egress-zone public], 0, [ignore])
+
+FWD_RELOAD()
+
+dnl Since the families are mixed there should NOT be a rule to dispatch this
+dnl policy. It's invalid to match IPv6 and IPv4 in the same rule.
+dnl
+NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES], 0, [dnl
+    table inet firewalld {
+        chain filter_FORWARD_POLICIES {
+            ip saddr 10.11.11.0/24 ip daddr 10.11.11.0/24 jump filter_FWD_internal
+            ip saddr 10.11.11.0/24 ip daddr 10.11.11.0/24 reject with icmpx admin-prohibited
+            ip saddr 10.11.11.0/24 ip daddr 10.22.22.0/24 jump filter_FWD_policy_foobar
+            ip saddr 10.11.11.0/24 ip daddr 10.22.22.0/24 jump filter_FWD_internal
+            ip saddr 10.11.11.0/24 ip daddr 10.22.22.0/24 reject with icmpx admin-prohibited
+            oifname "dummy1" ip saddr 10.11.11.0/24 jump filter_FWD_internal
+            oifname "dummy1" ip saddr 10.11.11.0/24 reject with icmpx admin-prohibited
+            oifname "dummy2" ip saddr 10.11.11.0/24 jump filter_FWD_policy_foobar
+            oifname "dummy2" ip saddr 10.11.11.0/24 jump filter_FWD_internal
+            oifname "dummy2" ip saddr 10.11.11.0/24 reject with icmpx admin-prohibited
+            ip saddr 10.11.11.0/24 jump filter_FWD_policy_foobar
+            ip saddr 10.11.11.0/24 jump filter_FWD_internal
+            ip saddr 10.11.11.0/24 reject with icmpx admin-prohibited
+            ip6 saddr fc00:1111:1111:1111::/64 ip6 daddr fc00:1111:1111:1111::/64 jump filter_FWD_internal
+            ip6 saddr fc00:1111:1111:1111::/64 ip6 daddr fc00:1111:1111:1111::/64 reject with icmpx admin-prohibited
+            ip6 saddr fc00:1111:1111:1111::/64 ip6 daddr fc00:2222:2222:2222::/64 jump filter_FWD_policy_foobar
+            ip6 saddr fc00:1111:1111:1111::/64 ip6 daddr fc00:2222:2222:2222::/64 jump filter_FWD_internal
+            ip6 saddr fc00:1111:1111:1111::/64 ip6 daddr fc00:2222:2222:2222::/64 reject with icmpx admin-prohibited
+            oifname "dummy1" ip6 saddr fc00:1111:1111:1111::/64 jump filter_FWD_internal
+            oifname "dummy1" ip6 saddr fc00:1111:1111:1111::/64 reject with icmpx admin-prohibited
+            oifname "dummy2" ip6 saddr fc00:1111:1111:1111::/64 jump filter_FWD_policy_foobar
+            oifname "dummy2" ip6 saddr fc00:1111:1111:1111::/64 jump filter_FWD_internal
+            oifname "dummy2" ip6 saddr fc00:1111:1111:1111::/64 reject with icmpx admin-prohibited
+            ip6 saddr fc00:1111:1111:1111::/64 jump filter_FWD_policy_foobar
+            ip6 saddr fc00:1111:1111:1111::/64 jump filter_FWD_internal
+            ip6 saddr fc00:1111:1111:1111::/64 reject with icmpx admin-prohibited
+            ip saddr 10.22.22.0/24 ip daddr 10.11.11.0/24 jump filter_FWD_public
+            ip saddr 10.22.22.0/24 ip daddr 10.11.11.0/24 reject with icmpx admin-prohibited
+            ip saddr 10.22.22.0/24 ip daddr 10.22.22.0/24 jump filter_FWD_public
+            ip saddr 10.22.22.0/24 ip daddr 10.22.22.0/24 reject with icmpx admin-prohibited
+            oifname "dummy1" ip saddr 10.22.22.0/24 jump filter_FWD_public
+            oifname "dummy1" ip saddr 10.22.22.0/24 reject with icmpx admin-prohibited
+            oifname "dummy2" ip saddr 10.22.22.0/24 jump filter_FWD_public
+            oifname "dummy2" ip saddr 10.22.22.0/24 reject with icmpx admin-prohibited
+            ip saddr 10.22.22.0/24 jump filter_FWD_public
+            ip saddr 10.22.22.0/24 reject with icmpx admin-prohibited
+            ip6 saddr fc00:2222:2222:2222::/64 ip6 daddr fc00:1111:1111:1111::/64 jump filter_FWD_public
+            ip6 saddr fc00:2222:2222:2222::/64 ip6 daddr fc00:1111:1111:1111::/64 reject with icmpx admin-prohibited
+            ip6 saddr fc00:2222:2222:2222::/64 ip6 daddr fc00:2222:2222:2222::/64 jump filter_FWD_public
+            ip6 saddr fc00:2222:2222:2222::/64 ip6 daddr fc00:2222:2222:2222::/64 reject with icmpx admin-prohibited
+            oifname "dummy1" ip6 saddr fc00:2222:2222:2222::/64 jump filter_FWD_public
+            oifname "dummy1" ip6 saddr fc00:2222:2222:2222::/64 reject with icmpx admin-prohibited
+            oifname "dummy2" ip6 saddr fc00:2222:2222:2222::/64 jump filter_FWD_public
+            oifname "dummy2" ip6 saddr fc00:2222:2222:2222::/64 reject with icmpx admin-prohibited
+            ip6 saddr fc00:2222:2222:2222::/64 jump filter_FWD_public
+            ip6 saddr fc00:2222:2222:2222::/64 reject with icmpx admin-prohibited
+            iifname "dummy1" ip daddr 10.11.11.0/24 jump filter_FWD_internal
+            iifname "dummy1" ip daddr 10.11.11.0/24 reject with icmpx admin-prohibited
+            iifname "dummy1" ip6 daddr fc00:1111:1111:1111::/64 jump filter_FWD_internal
+            iifname "dummy1" ip6 daddr fc00:1111:1111:1111::/64 reject with icmpx admin-prohibited
+            iifname "dummy1" ip daddr 10.22.22.0/24 jump filter_FWD_policy_foobar
+            iifname "dummy1" ip daddr 10.22.22.0/24 jump filter_FWD_internal
+            iifname "dummy1" ip daddr 10.22.22.0/24 reject with icmpx admin-prohibited
+            iifname "dummy1" ip6 daddr fc00:2222:2222:2222::/64 jump filter_FWD_policy_foobar
+            iifname "dummy1" ip6 daddr fc00:2222:2222:2222::/64 jump filter_FWD_internal
+            iifname "dummy1" ip6 daddr fc00:2222:2222:2222::/64 reject with icmpx admin-prohibited
+            iifname "dummy1" oifname "dummy1" jump filter_FWD_internal
+            iifname "dummy1" oifname "dummy1" reject with icmpx admin-prohibited
+            iifname "dummy1" oifname "dummy2" jump filter_FWD_policy_foobar
+            iifname "dummy1" oifname "dummy2" jump filter_FWD_internal
+            iifname "dummy1" oifname "dummy2" reject with icmpx admin-prohibited
+            iifname "dummy1" jump filter_FWD_policy_foobar
+            iifname "dummy1" jump filter_FWD_internal
+            iifname "dummy1" reject with icmpx admin-prohibited
+            iifname "dummy2" ip daddr 10.11.11.0/24 jump filter_FWD_public
+            iifname "dummy2" ip daddr 10.11.11.0/24 reject with icmpx admin-prohibited
+            iifname "dummy2" ip6 daddr fc00:1111:1111:1111::/64 jump filter_FWD_public
+            iifname "dummy2" ip6 daddr fc00:1111:1111:1111::/64 reject with icmpx admin-prohibited
+            iifname "dummy2" ip daddr 10.22.22.0/24 jump filter_FWD_public
+            iifname "dummy2" ip daddr 10.22.22.0/24 reject with icmpx admin-prohibited
+            iifname "dummy2" ip6 daddr fc00:2222:2222:2222::/64 jump filter_FWD_public
+            iifname "dummy2" ip6 daddr fc00:2222:2222:2222::/64 reject with icmpx admin-prohibited
+            iifname "dummy2" oifname "dummy1" jump filter_FWD_public
+            iifname "dummy2" oifname "dummy1" reject with icmpx admin-prohibited
+            iifname "dummy2" oifname "dummy2" jump filter_FWD_public
+            iifname "dummy2" oifname "dummy2" reject with icmpx admin-prohibited
+            iifname "dummy2" jump filter_FWD_public
+            iifname "dummy2" reject with icmpx admin-prohibited
+            ip daddr 10.11.11.0/24 jump filter_FWD_public
+            ip daddr 10.11.11.0/24 reject with icmpx admin-prohibited
+            ip6 daddr fc00:1111:1111:1111::/64 jump filter_FWD_public
+            ip6 daddr fc00:1111:1111:1111::/64 reject with icmpx admin-prohibited
+            ip daddr 10.22.22.0/24 jump filter_FWD_public
+            ip daddr 10.22.22.0/24 reject with icmpx admin-prohibited
+            ip6 daddr fc00:2222:2222:2222::/64 jump filter_FWD_public
+            ip6 daddr fc00:2222:2222:2222::/64 reject with icmpx admin-prohibited
+            oifname "dummy1" jump filter_FWD_public
+            oifname "dummy1" reject with icmpx admin-prohibited
+            oifname "dummy2" jump filter_FWD_public
+            oifname "dummy2" reject with icmpx admin-prohibited
+            jump filter_FWD_public
+            reject with icmpx admin-prohibited
+        }
+    }
+])
+
+IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES], 0, [dnl
+    FWD_internal 0 -- 10.11.11.0/24 10.11.11.0/24
+    REJECT 0 -- 10.11.11.0/24 10.11.11.0/24 reject-with icmp-port-unreachable
+    FWD_foobar 0 -- 10.11.11.0/24 10.22.22.0/24
+    FWD_internal 0 -- 10.11.11.0/24 10.22.22.0/24
+    REJECT 0 -- 10.11.11.0/24 10.22.22.0/24 reject-with icmp-port-unreachable
+    FWD_internal 0 -- 10.11.11.0/24 0.0.0.0/0
+    REJECT 0 -- 10.11.11.0/24 0.0.0.0/0 reject-with icmp-port-unreachable
+    FWD_foobar 0 -- 10.11.11.0/24 0.0.0.0/0
+    FWD_internal 0 -- 10.11.11.0/24 0.0.0.0/0
+    REJECT 0 -- 10.11.11.0/24 0.0.0.0/0 reject-with icmp-port-unreachable
+    FWD_foobar 0 -- 10.11.11.0/24 0.0.0.0/0
+    FWD_internal 0 -- 10.11.11.0/24 0.0.0.0/0
+    REJECT 0 -- 10.11.11.0/24 0.0.0.0/0 reject-with icmp-port-unreachable
+    FWD_public 0 -- 10.22.22.0/24 10.11.11.0/24
+    REJECT 0 -- 10.22.22.0/24 10.11.11.0/24 reject-with icmp-port-unreachable
+    FWD_public 0 -- 10.22.22.0/24 10.22.22.0/24
+    REJECT 0 -- 10.22.22.0/24 10.22.22.0/24 reject-with icmp-port-unreachable
+    FWD_public 0 -- 10.22.22.0/24 0.0.0.0/0
+    REJECT 0 -- 10.22.22.0/24 0.0.0.0/0 reject-with icmp-port-unreachable
+    FWD_public 0 -- 10.22.22.0/24 0.0.0.0/0
+    REJECT 0 -- 10.22.22.0/24 0.0.0.0/0 reject-with icmp-port-unreachable
+    FWD_public 0 -- 10.22.22.0/24 0.0.0.0/0
+    REJECT 0 -- 10.22.22.0/24 0.0.0.0/0 reject-with icmp-port-unreachable
+    FWD_internal 0 -- 0.0.0.0/0 10.11.11.0/24
+    REJECT 0 -- 0.0.0.0/0 10.11.11.0/24 reject-with icmp-port-unreachable
+    FWD_foobar 0 -- 0.0.0.0/0 10.22.22.0/24
+    FWD_internal 0 -- 0.0.0.0/0 10.22.22.0/24
+    REJECT 0 -- 0.0.0.0/0 10.22.22.0/24 reject-with icmp-port-unreachable
+    FWD_internal 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+    FWD_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_internal 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+    FWD_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_internal 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+    FWD_public 0 -- 0.0.0.0/0 10.11.11.0/24
+    REJECT 0 -- 0.0.0.0/0 10.11.11.0/24 reject-with icmp-port-unreachable
+    FWD_public 0 -- 0.0.0.0/0 10.22.22.0/24
+    REJECT 0 -- 0.0.0.0/0 10.22.22.0/24 reject-with icmp-port-unreachable
+    FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+    FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+    FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+    FWD_public 0 -- 0.0.0.0/0 10.11.11.0/24
+    REJECT 0 -- 0.0.0.0/0 10.11.11.0/24 reject-with icmp-port-unreachable
+    FWD_public 0 -- 0.0.0.0/0 10.22.22.0/24
+    REJECT 0 -- 0.0.0.0/0 10.22.22.0/24 reject-with icmp-port-unreachable
+    FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+    FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+    FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+])
+IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES], 0, [dnl
+    FWD_internal 0 -- fc00:1111:1111:1111::/64 fc00:1111:1111:1111::/64
+    REJECT 0 -- fc00:1111:1111:1111::/64 fc00:1111:1111:1111::/64 reject-with icmp6-port-unreachable
+    FWD_foobar 0 -- fc00:1111:1111:1111::/64 fc00:2222:2222:2222::/64
+    FWD_internal 0 -- fc00:1111:1111:1111::/64 fc00:2222:2222:2222::/64
+    REJECT 0 -- fc00:1111:1111:1111::/64 fc00:2222:2222:2222::/64 reject-with icmp6-port-unreachable
+    FWD_internal 0 -- fc00:1111:1111:1111::/64 ::/0
+    REJECT 0 -- fc00:1111:1111:1111::/64 ::/0 reject-with icmp6-port-unreachable
+    FWD_foobar 0 -- fc00:1111:1111:1111::/64 ::/0
+    FWD_internal 0 -- fc00:1111:1111:1111::/64 ::/0
+    REJECT 0 -- fc00:1111:1111:1111::/64 ::/0 reject-with icmp6-port-unreachable
+    FWD_foobar 0 -- fc00:1111:1111:1111::/64 ::/0
+    FWD_internal 0 -- fc00:1111:1111:1111::/64 ::/0
+    REJECT 0 -- fc00:1111:1111:1111::/64 ::/0 reject-with icmp6-port-unreachable
+    FWD_public 0 -- fc00:2222:2222:2222::/64 fc00:1111:1111:1111::/64
+    REJECT 0 -- fc00:2222:2222:2222::/64 fc00:1111:1111:1111::/64 reject-with icmp6-port-unreachable
+    FWD_public 0 -- fc00:2222:2222:2222::/64 fc00:2222:2222:2222::/64
+    REJECT 0 -- fc00:2222:2222:2222::/64 fc00:2222:2222:2222::/64 reject-with icmp6-port-unreachable
+    FWD_public 0 -- fc00:2222:2222:2222::/64 ::/0
+    REJECT 0 -- fc00:2222:2222:2222::/64 ::/0 reject-with icmp6-port-unreachable
+    FWD_public 0 -- fc00:2222:2222:2222::/64 ::/0
+    REJECT 0 -- fc00:2222:2222:2222::/64 ::/0 reject-with icmp6-port-unreachable
+    FWD_public 0 -- fc00:2222:2222:2222::/64 ::/0
+    REJECT 0 -- fc00:2222:2222:2222::/64 ::/0 reject-with icmp6-port-unreachable
+    FWD_internal 0 -- ::/0 fc00:1111:1111:1111::/64
+    REJECT 0 -- ::/0 fc00:1111:1111:1111::/64 reject-with icmp6-port-unreachable
+    FWD_foobar 0 -- ::/0 fc00:2222:2222:2222::/64
+    FWD_internal 0 -- ::/0 fc00:2222:2222:2222::/64
+    REJECT 0 -- ::/0 fc00:2222:2222:2222::/64 reject-with icmp6-port-unreachable
+    FWD_internal 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+    FWD_foobar 0 -- ::/0 ::/0
+    FWD_internal 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+    FWD_foobar 0 -- ::/0 ::/0
+    FWD_internal 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+    FWD_public 0 -- ::/0 fc00:1111:1111:1111::/64
+    REJECT 0 -- ::/0 fc00:1111:1111:1111::/64 reject-with icmp6-port-unreachable
+    FWD_public 0 -- ::/0 fc00:2222:2222:2222::/64
+    REJECT 0 -- ::/0 fc00:2222:2222:2222::/64 reject-with icmp6-port-unreachable
+    FWD_public 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+    FWD_public 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+    FWD_public 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+    FWD_public 0 -- ::/0 fc00:1111:1111:1111::/64
+    REJECT 0 -- ::/0 fc00:1111:1111:1111::/64 reject-with icmp6-port-unreachable
+    FWD_public 0 -- ::/0 fc00:2222:2222:2222::/64
+    REJECT 0 -- ::/0 fc00:2222:2222:2222::/64 reject-with icmp6-port-unreachable
+    FWD_public 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+    FWD_public 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+    FWD_public 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+])
+
+FWD_END_TEST()
