@@ -772,6 +772,15 @@ class nftables(object):
                 egress_fragments.append(self._rule_addr_fragment("daddr", dst))
 
         def _generate_policy_dispatch_rule(ingress_fragment, egress_fragment):
+            if ingress_fragment and egress_fragment:
+                # The IP families must be the same
+                #
+                if "payload" in ingress_fragment["match"]["left"] and \
+                   "payload" in egress_fragment["match"]["left"] and \
+                   ingress_fragment["match"]["left"]["payload"]["protocol"] != \
+                   egress_fragment["match"]["left"]["payload"]["protocol"]:
+                    return None
+
             expr_fragments = []
             if ingress_fragment:
                 expr_fragments.append(ingress_fragment)
