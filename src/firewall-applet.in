@@ -641,7 +641,7 @@ class TrayApplet(QtWidgets.QSystemTrayIcon):
             self.setVisible(True)
 
     def activated_cb(self, reason):
-        if reason == QtWidgets.QSystemTrayIcon.Trigger:
+        if reason == QtWidgets.QSystemTrayIcon.ActivationReason.Trigger:
             self.left_menu.popup(QtGui.QCursor.pos())
 
     def update_active_zones(self):
