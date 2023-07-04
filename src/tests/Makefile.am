@@ -15,6 +15,7 @@ EXTRA_DIST = \
 	$(TESTSUITE_INTEGRATION) \
 	$(TESTSUITE_FILES) \
 	$(wildcard $(srcdir)/python/*.py) \
+	$(wildcard $(srcdir)/unit/*.py) \
 	$(srcdir)/package.m4 \
 	atlocal.in
 
