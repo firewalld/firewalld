@@ -56,7 +56,7 @@ class TestFirewallDInterfaceDirect(unittest.TestCase):
     def test_add_removeChain(self):
         self.fw_direct.addChain("ipv4", "filter", "direct_foo2")
         # Re-adding
-        self.assertRaisesRegexp(Exception, 'ALREADY_ENABLED',
+        self.assertRaisesRegex(Exception, 'ALREADY_ENABLED',
                                 self.fw_direct.addChain, "ipv4", "filter", "direct_foo2")
         ret = self.fw_direct.getChains("ipv4", "filter")
         self.assertTrue(len(ret)==2) # "direct_foo1" and "direct_foo2"
@@ -66,7 +66,7 @@ class TestFirewallDInterfaceDirect(unittest.TestCase):
 
         self.fw_direct.removeChain("ipv4", "filter", "direct_foo2")
         # Re-removing
-        self.assertRaisesRegexp(Exception, 'NOT_ENABLED',
+        self.assertRaisesRegex(Exception, 'NOT_ENABLED',
                                 self.fw_direct.removeChain, "ipv4", "filter", "direct_foo2")
         ret = self.fw_direct.getChains("ipv4", "filter")
         self.assertTrue(len(ret)==1) # "direct_foo1"
@@ -81,7 +81,7 @@ class TestFirewallDInterfaceDirect(unittest.TestCase):
         self.fw_direct.addRule("ipv4", "filter", "direct_foo1", -10, [ "-m", "tcp", "-p", "tcp", "--dport", "330", "-j", "ACCEPT" ])
         self.fw_direct.addRule("ipv4", "filter", "direct_foo1", -5, [ "-m", "udp", "-p", "udp", "--dport", "331", "-j", "ACCEPT" ])
         # Re-adding
-        self.assertRaisesRegexp(Exception, 'ALREADY_ENABLED',
+        self.assertRaisesRegex(Exception, 'ALREADY_ENABLED',
                                 self.fw_direct.addRule, "ipv4", "filter", "direct_foo1", -5, [ "-m", "udp", "-p", "udp", "--dport", "331", "-j", "ACCEPT" ])
         ret = self.fw_direct.queryRule("ipv4", "filter", "direct_foo1", -5, [ "-m", "udp", "-p", "udp", "--dport", "331", "-j", "ACCEPT" ])
         self.assertTrue(dbus_to_python(ret))
@@ -96,7 +96,7 @@ class TestFirewallDInterfaceDirect(unittest.TestCase):
         self.fw_direct.removeRule("ipv4", "filter", "direct_foo1", 0, [ "-m", "tcp", "-p", "tcp", "--dport", "333", "-j", "ACCEPT" ])
         self.fw_direct.removeRule("ipv4", "filter", "direct_foo1", 1, [ "-m", "tcp", "-p", "tcp", "--dport", "334", "-j", "ACCEPT" ])
         # Re-removing
-        self.assertRaisesRegexp(Exception, 'NOT_ENABLED',
+        self.assertRaisesRegex(Exception, 'NOT_ENABLED',
                                 self.fw_direct.removeRule, "ipv4", "filter", "direct_foo1", 1, [ "-m", "tcp", "-p", "tcp", "--dport", "334", "-j", "ACCEPT" ])
         ret = self.fw_direct.queryRule("ipv4", "filter", "direct_foo1", 1, [ "-m", "tcp", "-p", "tcp", "--dport", "334", "-j", "ACCEPT" ])
         self.assertFalse(dbus_to_python(ret))
