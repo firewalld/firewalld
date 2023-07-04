@@ -228,7 +228,7 @@ fi
 %{_datadir}/firewalld/testsuite/python/firewalld_config.py
 %{_datadir}/firewalld/testsuite/python/firewalld_direct.py
 %{_datadir}/firewalld/testsuite/python/firewalld_rich.py
-%{_datadir}/firewalld/testsuite/python/firewalld_test.py
+%{_datadir}/firewalld/testsuite/python/firewalld_misc.py
 
 %files -n firewall-applet
 %attr(0755,root,root) %dir %{_sysconfdir}/firewall

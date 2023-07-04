@@ -1,8 +1,8 @@
 AT_BANNER([python (FIREWALL_BACKEND)])
 
-FWD_START_TEST([firewalld_test.py])
+FWD_START_TEST([firewalld_misc.py])
 AT_KEYWORDS(python)
-NS_CHECK([$PYTHON $(dirname ${at_myself})/python/firewalld_test.py], 0, [ignore], [ignore])
+NS_CHECK([$PYTHON $(dirname ${at_myself})/python/firewalld_misc.py], 0, [ignore], [ignore])
 FWD_END_TEST([ignore])
 
 FWD_START_TEST([firewalld_config.py])
