@@ -94,7 +94,7 @@ def check_icmp_type(_type):
     return False
 
 def check_icmpv6_name(_name):
-    if _name in ICMP_TYPES:
+    if _name in ICMPV6_TYPES:
         return True
     return False
 
