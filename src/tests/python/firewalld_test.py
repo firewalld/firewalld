@@ -81,14 +81,14 @@ class TestFirewallD(unittest.TestCase):
         self.assertTrue(self.fw_zone.queryInterface(zone, interface))
 
         print ("Re-adding")
-        self.assertRaisesRegexp(Exception, 'ZONE_ALREADY_SET', self.fw_zone.addInterface, zone, interface)
+        self.assertRaisesRegex(Exception, 'ZONE_ALREADY_SET', self.fw_zone.addInterface, zone, interface)
 
         zone = "block"
         print ("Re-adding interface '%s' to '%s' zone" % (interface, zone))
-        self.assertRaisesRegexp(Exception, 'ZONE_CONFLICT', self.fw_zone.addInterface, zone, interface)
+        self.assertRaisesRegex(Exception, 'ZONE_CONFLICT', self.fw_zone.addInterface, zone, interface)
 
         print ("Removing interface '%s' from '%s' zone" % (interface, zone))
-        self.assertRaisesRegexp(Exception, 'ZONE_CONFLICT', self.fw_zone.removeInterface, zone, interface)
+        self.assertRaisesRegex(Exception, 'ZONE_CONFLICT', self.fw_zone.removeInterface, zone, interface)
 
         zone = "trusted"
         print ("Removing interface '%s' from '%s' zone" % (interface, zone))
@@ -130,7 +130,7 @@ class TestFirewallD(unittest.TestCase):
         ret = self.fw_zone.addService(zone, service, 0)
         self.assertEqual(ret, zone)
         print ("Re-adding")
-        self.assertRaisesRegexp(Exception, 'ALREADY_ENABLED', self.fw_zone.addService, zone, service, 0)
+        self.assertRaisesRegex(Exception, 'ALREADY_ENABLED', self.fw_zone.addService, zone, service, 0)
 
         print ("Get services of zone '%s'" % (zone))
         ret = self.fw_zone.getServices(zone)
@@ -141,7 +141,7 @@ class TestFirewallD(unittest.TestCase):
         ret = self.fw_zone.removeService(zone, service)
         self.assertEqual(ret, zone)
         print ("Re-removing")
-        self.assertRaisesRegexp(Exception, 'NOT_ENABLED', self.fw_zone.removeService, zone, service)
+        self.assertRaisesRegex(Exception, 'NOT_ENABLED', self.fw_zone.removeService, zone, service)
 
         zone = "dmz"
         timeout = 2
@@ -161,7 +161,7 @@ class TestFirewallD(unittest.TestCase):
         ret = self.fw_zone.addPort(zone, port, protocol, 0)
         self.assertEqual(ret, zone)
         print ("Re-adding port")
-        self.assertRaisesRegexp(Exception, 'ALREADY_ENABLED', self.fw_zone.addPort, zone, port, protocol, 0)
+        self.assertRaisesRegex(Exception, 'ALREADY_ENABLED', self.fw_zone.addPort, zone, port, protocol, 0)
 
         print ("Get ports of zone '%s': " % (zone))
         ret = self.fw_zone.getPorts(zone)
@@ -172,7 +172,7 @@ class TestFirewallD(unittest.TestCase):
         ret = self.fw_zone.removePort(zone, port, protocol)
         self.assertEqual(ret, zone)
         print ("Re-removing")
-        self.assertRaisesRegexp(Exception, 'NOT_ENABLED', self.fw_zone.removePort, zone, port, protocol)
+        self.assertRaisesRegex(Exception, 'NOT_ENABLED', self.fw_zone.removePort, zone, port, protocol)
 
         port = "443-445"
         protocol="udp"
@@ -192,7 +192,7 @@ class TestFirewallD(unittest.TestCase):
         ret = self.fw_zone.addMasquerade(zone, 0)
         self.assertEqual(ret, zone)
         print ("Re-adding")
-        self.assertRaisesRegexp(Exception, 'ALREADY_ENABLED', self.fw_zone.addMasquerade, zone, 0)
+        self.assertRaisesRegex(Exception, 'ALREADY_ENABLED', self.fw_zone.addMasquerade, zone, 0)
 
         print ("Checking if masquerade is added to zone '%s'" % (zone))
         self.assertTrue(self.fw_zone.queryMasquerade(zone))
@@ -201,7 +201,7 @@ class TestFirewallD(unittest.TestCase):
         ret = self.fw_zone.removeMasquerade(zone)
         self.assertEqual(ret, zone)
         print ("Re-adding")
-        self.assertRaisesRegexp(Exception, 'NOT_ENABLED', self.fw_zone.removeMasquerade, zone)
+        self.assertRaisesRegex(Exception, 'NOT_ENABLED', self.fw_zone.removeMasquerade, zone)
 
         zone = "dmz"
         timeout = 2
@@ -223,7 +223,7 @@ class TestFirewallD(unittest.TestCase):
         ret = self.fw_zone.addForwardPort(zone, port, protocol, toport, toaddr, 0)
         self.assertEqual(ret, zone)
         print ("Re-adding")
-        self.assertRaisesRegexp(Exception, 'ALREADY_ENABLED', self.fw_zone.addForwardPort, zone, port, protocol, toport, toaddr, 0)
+        self.assertRaisesRegex(Exception, 'ALREADY_ENABLED', self.fw_zone.addForwardPort, zone, port, protocol, toport, toaddr, 0)
 
         print ("Get forward ports of zone '%s': " % (zone))
         ret = self.fw_zone.getForwardPorts(zone)
@@ -234,7 +234,7 @@ class TestFirewallD(unittest.TestCase):
         ret = self.fw_zone.removeForwardPort(zone, port, protocol, toport, toaddr)
         self.assertEqual(ret, zone)
         print ("Re-removing")
-        self.assertRaisesRegexp(Exception, 'NOT_ENABLED', self.fw_zone.removeForwardPort, zone, port, protocol, toport, toaddr)
+        self.assertRaisesRegex(Exception, 'NOT_ENABLED', self.fw_zone.removeForwardPort, zone, port, protocol, toport, toaddr)
 
         port = "443-445"
         protocol="udp"
@@ -257,7 +257,7 @@ class TestFirewallD(unittest.TestCase):
         ret = self.fw_zone.addIcmpBlock(zone, icmp, 0)
         self.assertEqual(ret, zone)
         print ("Re-adding")
-        self.assertRaisesRegexp(Exception, 'ALREADY_ENABLED', self.fw_zone.addIcmpBlock, zone, icmp, 0)
+        self.assertRaisesRegex(Exception, 'ALREADY_ENABLED', self.fw_zone.addIcmpBlock, zone, icmp, 0)
 
         print ("Get icmp blocks of zone '%s': " % (zone))
         ret = self.fw_zone.getIcmpBlocks(zone)
@@ -268,7 +268,7 @@ class TestFirewallD(unittest.TestCase):
         ret = self.fw_zone.removeIcmpBlock(zone, icmp)
         self.assertEqual(ret, zone)
         print ("Re-removing")
-        self.assertRaisesRegexp(Exception, 'NOT_ENABLED', self.fw_zone.removeIcmpBlock, zone, icmp)
+        self.assertRaisesRegex(Exception, 'NOT_ENABLED', self.fw_zone.removeIcmpBlock, zone, icmp)
 
         icmp = "redirect"
         zone = "dmz"
