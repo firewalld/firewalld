@@ -1,0 +1,5 @@
+# Overrides for NetworkManager.service with fw-in-container
+# Placed in /etc/systemd/system/firewalld.service.d/20-fw-in-container.conf
+[Service]
+Environment=G_DEBUG=fatal-warnings
+Environment=NM_OBFUSCATE_PTR=0
