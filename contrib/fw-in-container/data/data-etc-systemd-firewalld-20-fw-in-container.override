@@ -1,0 +1,7 @@
+# Overrides for firewalld.service with fw-in-container
+# Placed in /etc/systemd/system/firewalld.service.d/
+[Service]
+EnvironmentFile=/etc/sysconfig/firewalld-override
+Environment=G_DEBUG=fatal-warnings
+StandardOutput=journal
+StandardError=journal

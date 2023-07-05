@@ -1,0 +1,629 @@
+#!/bin/bash
+
+set -e
+
+###############################################################################
+# Script to create a podman container for testing firewalld.
+#
+# Commands:
+#  - build: build a new image, named "$CONTAINER_NAME_REPOSITORY:$CONTAINER_NAME_TAG" ("fw:fw").
+#  - run: start the container and tag it "$CONTAINER_NAME_NAME" ("fw").
+#  - exec: run bash inside the container (this is the default).
+#  - journal|j: print the journal from inside the container.
+#  - stop: stop the container.
+#  - reset: stop and delete the container.
+#  - clean|clear: stop and delete the container and the image.
+#
+# Options:
+#  --no-cleanup: don't delete the CONTAINERFILE and other artifacts
+#  --stop: only has effect with "run". It will stop the container afterwards.
+#  -- [EXTRA_ARGS]:
+#    - with command "exec", provide a command and arguments to run in the container.
+#      Defaults to "bash".
+#    - with command "journal", additional arguments that are passed to journalctl.
+#
+# It bind mounts the current working directory inside the container.
+# You can run `make install` and run tests.
+# There is a script net-setup.sh to generate a net1 interface for testing.
+#
+# This will bind-mount the firewalld working tree inside the container and
+# symlink it as /firewalld.  The out host's root is bind mounted as /Host
+# Create symlinks ./.git/fw-in-container-link-$NAME to bind mount the pointed
+# directory as /$NAME.
+#
+# Currently NM-ci requires a working eth1.
+# Hence call `net-setup.sh --prefix eth -i 1 && sleep 1 && nmcli device connect eth1` before
+# running a CI test.
+###############################################################################
+
+if [ -z "$BASE_IMAGE" ]; then
+    if grep -q "^ID=fedora$" /etc/os-release 2>/dev/null ; then
+        BASE_IMAGE="$(sed -n 's/^VERSION_ID=\([0-9]\+\)$/fedora:\1/p' /etc/os-release)"
+    fi
+fi
+if [ -z "$BASE_IMAGE" ]; then
+    BASE_IMAGE=fedora:latest
+fi
+
+BASEDIR_FW="$(readlink -f "$(dirname "$(readlink -f "$0")")/../..")"
+BASEDIR_DATA="$BASEDIR_FW/contrib/fw-in-container/data"
+
+SYMLINK_NAME=()
+SYMLINK_TARGET=()
+for d in $(ls -1d "$BASEDIR_FW/.git/fw-in-container-link-"* 2>/dev/null) ; do
+    NAME="$(echo -n "$d" | sed 's/.*fw-in-container-link-\(.\+\)$/\1/')"
+    TARGET="$(readlink -f "$d")"
+    test -e "$TARGET"
+    SYMLINK_NAME+=("$NAME")
+    SYMLINK_TARGET+=("$TARGET")
+done
+
+CONTAINER_NAME_REPOSITORY=${CONTAINER_NAME_REPOSITORY:-fw}
+CONTAINER_NAME_TAG=${CONTAINER_NAME_TAG:-fw}
+CONTAINER_NAME_NAME=${CONTAINER_NAME_NAME:-fw}
+
+EXEC_ENV=()
+
+###############################################################################
+
+usage() {
+    cat <<EOF
+$0: build|run|exec|stop|reset|reexec|clean|clear|journal [--no-cleanup] [--stop] [-- EXTRA_ARGS]
+EOF
+    echo
+    awk '/^####*$/{ if(on) exit; on=1} { if (on) { if (on==2) print(substr($0,3)); on=2; } }' "$BASH_SOURCE"
+    echo
+}
+
+###############################################################################
+
+die() {
+    (
+        echo -n -e "\033[31m"
+        printf "%s" "$*"
+        echo -e "\033[0m"
+    ) >&2
+    exit 1
+}
+
+###############################################################################
+
+CLEANUP_FILES=()
+DO_CLEANUP=1
+cleanup() {
+    test "$DO_CLEANUP" = 1 || return 0
+    for f in "${CLEANUP_FILES[@]}" ; do
+        rm -rf "$f"
+    done
+}
+
+trap cleanup EXIT
+
+###############################################################################
+
+tmp_file() {
+    cat > "$1"
+    CLEANUP_FILES+=( "$1" )
+    test -z "$2" || chmod "$2" "$1"
+}
+
+bind_files() {
+    local VARIABLE_NAME="$1"
+
+    local ARR=()
+    local H=~
+
+    ARR+=( -v "$BASEDIR_FW:$BASEDIR_FW" )
+    ARR+=( -v "/:/Host" )
+
+    for i in $(seq 1 ${#SYMLINK_TARGET[@]}) ; do
+        j=$((i - 1))
+        ARR+=( -v "${SYMLINK_TARGET[$j]}:${SYMLINK_TARGET[$j]}" )
+    done
+
+    for f in ~/.gitconfig* ~/.vim* ; do
+        test -e "$f" || continue
+        f2="${f#$H/}"
+        [[ "$f2" = .viminf* ]] && continue
+        [[ "$f2" = *.tmp ]] && continue
+        [[ "$f2" = *~ ]] && continue
+        f2="/root/$f2"
+        ARR+=( -v "$f:$f2" )
+    done
+
+    eval "$VARIABLE_NAME=( \"\${ARR[@]}\" )"
+}
+
+create_dockerfile() {
+
+    local CONTAINERFILE="$1"
+    local BASE_IMAGE="$2"
+
+    # Useful script for reading (colorizing) NM logs
+    curl https://gitlab.freedesktop.org/NetworkManager/NetworkManager/-/raw/main/contrib/scripts/NM-log > "$BASEDIR_DATA/data-NM-log"
+    CLEANUP_FILES+=( "$BASEDIR_DATA/data-NM-log" )
+
+    cat <<EOF | tmp_file "$BASEDIR_DATA/data-motd"
+*** fw-in-container:
+
+find firewalld bind mounted at $BASEDIR_FW
+run \`net-setup.sh setup --idx 1\` to setup test interfaces
+
+Coredumps: coredumps are not namespaced, so by default they will
+be sent to coredumpctl of the outer host, which has no idea where
+to get the debugging symbols from. A possible workaround is setting
+
+  $ echo '/tmp/core.%e.%p' | sudo tee /proc/sys/kernel/core_pattern
+
+so that core dumps get written to file. Afterwards, restore with
+
+  echo '|/usr/lib/systemd/systemd-coredump %P %u %g %s %t %c %h' | sudo tee /proc/sys/kernel/core_pattern
+
+from /usr/lib/sysctl.d/50-coredump.conf.
+
+What you really want is to \`make install\` firewalld from the source tree
+in a similar way as the Fedora firewalld package. You can use the
+\`contrib/fedora/configure-for-system.sh\`sscript, followed by
+\`make && make install\` will overwrite your system's firewalld,
+and you can start it with \`systemctl daemon-reload ; systemctl restart firewalld\`.
+EOF
+
+    cat <<EOF | tmp_file "$BASEDIR_DATA/data-bashrc.my"
+alias m="make -j 8"
+alias n="ninja -C build"
+
+alias l='ls -l --color=auto'
+
+ulimit -c unlimited
+
+export G_DEBUG=fatal-warnings
+
+unset DEBUGINFOD_URLS
+
+export NMCI_DEBUG=1
+
+Journald-clear() {
+    rm -rf /var/log/journal/????????????????????????????????/*
+    systemctl restart systemd-journald
+}
+
+. /usr/share/git-core/contrib/completion/git-prompt.sh
+PS1="\[\\033[01;36m\]\u@\h\[\\033[00m\]:\\t:\[\\033[01;34m\]\w\\\$(__git_ps1 \\" \[\\033[01;36m\](%s)\[\\033[00m\]\\")\[\\033[00m\]\$ "
+export GIT_PS1_SHOWDIRTYSTATE=1
+
+if test "\$SHOW_MOTD" != 0; then
+  cat /etc/motd
+  export SHOW_MOTD=0
+fi
+EOF
+
+    cat <<EOF | tmp_file "$BASEDIR_DATA/data-nm-90-my.conf"
+[main]
+dns=none
+no-auto-default=*
+debug=RLIMIT_CORE,fatal-warnings
+
+[logging]
+level=TRACE
+domains=ALL,VPN_PLUGIN:TRACE
+
+[device-managed-0]
+match-device=interface-name:d_*,interface-name:tap*
+managed=0
+
+[device-managed-1]
+match-device=interface-name:net*,interface-name:eth*
+managed=1
+EOF
+
+    cat <<EOF | tmp_file "$BASEDIR_DATA/data-nm-95-user.conf"
+EOF
+
+    cat <<EOF | tmp_file "$BASEDIR_DATA/data-bash_history" 600
+ping -c 3 8.8.8.8
+ping -c 3 www.google.com
+NM-log
+NM-log /tmp/nm-log.txt
+cd $BASEDIR_FW
+cd /firewalld
+for i in {1..9}; do net-setup.sh --prefix eth -i \$i; done
+Journald-clear
+journalctl | NM-log
+journalctl --since '3 min ago' | NM-log
+journalctl -u firewalld.service
+journalctl -u firewalld.service --since '3 min ago'
+m
+make
+make install
+n
+net-setup.sh
+net-setup.sh --prefix eth -i 1
+net-setup.sh --prefix eth -i 1 && sleep 1 && nmcli device connect eth1
+nm_run_gdb
+nm_run_normal
+gdb /usr/sbin/NetworkManager /tmp/core.NetworkManager.
+nmcli connection add type pppoe con-name ppp-net1 ifname ppp-net1 pppoe.parent net1 service isp username test password networkmanager autoconnect no
+nmcli device connect eth1
+systemctl daemon-reload ; systemctl restart firewalld
+(cd /firewalld && m && m install && systemctl daemon-reload && systemctl restart firewalld.service && PAGER= systemctl status firewalld.service)
+systemctl status firewalld
+firewall-cmd --reload
+firewall-cmd --list-all
+firewall-cmd --list-all-zones
+firewall-cmd --get-active-zones
+EOF
+
+    cat <<EOF | tmp_file "$BASEDIR_DATA/data-gdbinit"
+set history save
+set history filename ~/.gdb_history
+EOF
+
+    cat <<EOF | tmp_file "$BASEDIR_DATA/data-gdb_history" 600
+run
+run --debug 2>&1 | tee /tmp/nm-log.txt
+EOF
+
+    cat <<EOF | tmp_file "$BASEDIR_DATA/data-behaverc" 600
+[behave.formatters]
+html = behave_html_formatter:HTMLFormatter
+EOF
+
+    SYMLINK_CMDS=""
+    for i in $(seq 1 ${#SYMLINK_NAME[@]}) ; do
+        j=$((i - 1))
+        SYMLINK_CMDS="$SYMLINK_CMDS"$'\n'"RUN ln -snf \"${SYMLINK_TARGET[$j]}\" \"/${SYMLINK_NAME[$j]}\""
+    done
+
+    cat <<EOF | tmp_file "$CONTAINERFILE"
+FROM $BASE_IMAGE
+
+ENTRYPOINT ["/sbin/init"]
+
+RUN sed -i 's/^tsflags=.*/tsflags=/' /etc/dnf/dnf.conf
+
+RUN dnf install -y \\
+    --skip-broken \\
+    \\
+    'dbus*' \\
+    'openvswitch2*' \\
+    /usr/bin/debuginfo-install \\
+    /usr/bin/pytest \\
+    /usr/bin/python \\
+    NetworkManager-openvpn \\
+    NetworkManager-ovs \\
+    NetworkManager-ppp \\
+    NetworkManager-pptp \\
+    NetworkManager-strongswan \\
+    NetworkManager-team \\
+    NetworkManager-vpnc \\
+    NetworkManager-wifi \\
+    autoconf \\
+    automake \\
+    bash-completion \\
+    ccache \\
+    clang \\
+    clang-tools-extra \\
+    cryptsetup \\
+    cscope \\
+    dbus-broker \\
+    dbus-devel \\
+    dbus-x11 \\
+    desktop-file-utils \\
+    dhclient \\
+    dhcp-client \\
+    dhcp-relay \\
+    dhcp-server \\
+    diffutils \\
+    dnsmasq \\
+    docbook-style-xsl \\
+    dracut-network \\
+    ethtool \\
+    firewalld \\
+    firewalld-filesystem \\
+    gcc \\
+    gcc-c++ \\
+    gdb \\
+    gettext-devel \\
+    git \\
+    glib2-devel \\
+    glib2-doc \\
+    glibc-langpack-pl \\
+    gnutls-devel \\
+    gobject-introspection-devel \\
+    gtk-doc \\
+    hostapd \\
+    intltool \\
+    iproute \\
+    iproute-tc \\
+    ipsec-tools \\
+    iptables \\
+    iputils \\
+    iscsi-initiator-utils \\
+    iw \\
+    jansson-devel \\
+    jq \\
+    ldns \\
+    libasan \\
+    libcurl-devel \\
+    libndp-devel \\
+    libnftnl \\
+    libnmnl-devel \\
+    libpsl-devel \\
+    libreswan \\
+    libselinux-devel \\
+    libselinux-utils \\
+    libtool \\
+    libubsan \\
+    libuuid-devel \\
+    libxslt \\
+    libyaml-devel \\
+    logrotate \\
+    lvm2 \\
+    make \\
+    man-db \\
+    mdadm \\
+    meson \\
+    mlocate \\
+    mobile-broadband-provider-info-devel \\
+    net-tools \\
+    newt-devel \\
+    nfs-utils \\
+    nftables \\
+    nispor \\
+    nmap-ncat \\
+    nmstate \\
+    nss-devel \\
+    nss-tools \\
+    openvpn \\
+    perl-IO-Pty-Easy \\
+    perl-IO-Tty \\
+    polkit-devel \\
+    ppp \\
+    ppp-devel \\
+    procps \\
+    psmisc \\
+    desktop-file-utils \\
+    python3-behave \\
+    python3-black \\
+    python3-dbus \\
+    python3-devel \\
+    python3-flake8 \\
+    python3-gobject \\
+    python3-gobject-base \\
+    python3-netaddr \\
+    python3-nftables \\
+    python3-pexpect \\
+    python3-pip \\
+    python3-pyte \\
+    python3-pyyaml \\
+    qemu-kvm \\
+    qt-devel \\
+    radvd \\
+    readline-devel \\
+    rp-pppoe \\
+    rpm-build \\
+    scsi-target-utils \\
+    strace \\
+    systemd \\
+    systemd-devel \\
+    tcpdump \\
+    tcpreplay \\
+    teamd-devel \\
+    time \\
+    tuned \\
+    vala \\
+    vala-devel \\
+    valgrind \\
+    vim \\
+    which \\
+    wireguard-tools \\
+    wireshark-cli
+
+RUN dnf debuginfo-install -y \\
+    NetworkManager-libnm \\
+    firewalld \\
+    glibc \\
+    libmnl \\
+    libnftnl \\
+    nftables
+
+RUN dnf clean all
+
+RUN pip3 install --user behave_html_formatter || true
+
+RUN mkdir -p /etc/systemd/system/firewalld.service.d
+RUN mkdir -p /etc/systemd/system/NetworkManager.service.d
+
+COPY data-NM-log "/usr/bin/NM-log"
+COPY data-net-setup.sh "/usr/bin/net-setup.sh"
+COPY data-_fw-in-container-setup.sh "/usr/bin/_fw-in-container-setup.sh"
+COPY data-etc-rc.local "/etc/rc.d/rc.local"
+COPY data-motd /etc/motd
+COPY data-bashrc.my /etc/bashrc.my
+COPY data-nm-90-my.conf /etc/NetworkManager/conf.d/90-my.conf
+COPY data-nm-95-user.conf /etc/NetworkManager/conf.d/95-user.conf
+COPY data-bash_history /root/.bash_history
+COPY data-gdbinit /root/.gdbinit
+COPY data-gdb_history /root/.gdb_history
+COPY data-behaverc /root/.behaverc
+COPY data-etc-systemd-firewalld-20-fw-in-container.override /etc/systemd/system/firewalld.service.d/20-fw-in-container.conf
+COPY data-etc-systemd-NetworkManager-20-fw-in-container.override /etc/systemd/system/NetworkManager.service.d/20-fw-in-container.conf
+COPY data-etc-sysconfig-firewalld-override /etc/sysconfig/firewalld-override
+
+RUN systemctl enable firewalld
+RUN systemctl enable NetworkManager
+
+# Generate a stable machine id.
+RUN echo "10001000100010001000100010001000" > /etc/machine-id
+
+RUN echo -e "# Default from the container image\nnameserver 8.8.8.8" > /etc/resolv.conf
+
+# Generate a fixed (version 1) secret key.
+RUN mkdir -p /var/lib/NetworkManager
+RUN chmod 700 /var/lib/NetworkManager
+RUN echo -n "fw-in-container-secret-key" > /var/lib/NetworkManager/secret_key
+RUN chmod 600 /var/lib/NetworkManager/secret_key
+
+RUN sed 's/.*RateLimitBurst=.*/RateLimitBurst=0/' /etc/systemd/journald.conf -i
+
+RUN sed 's#\\(.*PRUNEPATHS *= *".*\)" *\$#\1 /Host"#' /etc/updatedb.conf -i
+
+RUN ln -snf "$BASEDIR_FW" /firewalld
+$SYMLINK_CMDS
+
+RUN rm -rf /etc/NetworkManager/system-connections/*
+
+RUN echo -e '\n. /etc/bashrc.my\n' >> /etc/bashrc
+
+RUN updatedb
+EOF
+}
+
+###############################################################################
+
+container_image_exists() {
+    podman image exists "$1"
+}
+
+container_exists() {
+    podman container exists "$1"
+}
+
+container_is_running() {
+    test -n "$(podman ps --format "{{.ID}} {{.Names}}" | sed -n "s/ $1\$/\0/p")"
+}
+
+###############################################################################
+
+do_reset() {
+    podman stop "$CONTAINER_NAME_NAME" || :
+    podman rm "$CONTAINER_NAME_NAME" || :
+}
+
+do_clear() {
+    do_clean
+}
+
+do_clean() {
+    do_reset
+    podman rmi "$CONTAINER_NAME_REPOSITORY:$CONTAINER_NAME_TAG" || :
+}
+
+do_build() {
+    container_image_exists "$CONTAINER_NAME_REPOSITORY:$CONTAINER_NAME_TAG" && return 0
+
+    CONTAINERFILE="$BASEDIR_DATA/containerfile"
+    create_dockerfile "$CONTAINERFILE" "$BASE_IMAGE"
+    podman build --squash-all --tag "$CONTAINER_NAME_REPOSITORY:$CONTAINER_NAME_TAG" -f "$CONTAINERFILE"
+}
+
+do_run() {
+    do_build
+
+    if container_is_running "$CONTAINER_NAME_NAME" ; then
+        return 0
+    fi
+
+    if container_exists "$CONTAINER_NAME_NAME" ; then
+        podman start "$CONTAINER_NAME_NAME"
+    else
+        bind_files BIND_FILES
+
+        podman run --privileged \
+            --name "$CONTAINER_NAME_NAME" \
+            --dns=none \
+            --no-hosts \
+            -d \
+            "${BIND_FILES[@]}" \
+            "$CONTAINER_NAME_REPOSITORY:$CONTAINER_NAME_TAG"
+    fi
+}
+
+do_exec() {
+    do_run
+
+    local e
+    local EXTRA_ARGS=("$@")
+    if [ "${#EXTRA_ARGS[@]}" = 0 ]; then
+        EXTRA_ARGS=('bash')
+    fi
+
+    local ENV=()
+    for e in "${EXEC_ENV[@]}" ; do
+        ENV+=(-e "$e")
+    done
+
+    podman exec "${ENV[@]}" --workdir "$BASEDIR_FW" -it "$CONTAINER_NAME_NAME" "${EXTRA_ARGS[@]}"
+
+    if [ "$DO_STOP" = 1 ]; then
+        do_stop
+    fi
+}
+
+do_reexec() {
+    do_reset
+    do_exec "$@"
+}
+
+do_journal() {
+    EXEC_ENV+=( "SYSTEMD_COLORS=0" )
+    do_exec "journalctl" --no-pager "$@"
+}
+
+do_stop() {
+    container_is_running "$CONTAINER_NAME_NAME" || return 0
+    podman stop "$CONTAINER_NAME_NAME"
+}
+
+###############################################################################
+
+DO_STOP=0
+CMD=exec
+EXTRA_ARGS=()
+for (( i=1 ; i<="$#" ; )) ; do
+    c="${@:$i:1}"
+    i=$((i+1))
+    case "$c" in
+        --no-cleanup)
+            DO_CLEANUP=0
+            ;;
+        --stop)
+            DO_STOP=1
+            ;;
+        j)
+            CMD=journal
+            ;;
+        build|run|exec|stop|reset|reexec|clear|clean|journal)
+            CMD=$c
+            ;;
+        --)
+            EXTRA_ARGS=( "${@:$i}" )
+            break
+            ;;
+        -h|--help)
+            usage
+            exit 0
+            ;;
+        *)
+            if [ "$CMD" = "journal" ]; then
+                EXTRA_ARGS=( "${@:$((i-1))}" )
+                break;
+            else
+                usage
+                die "invalid argument: $c"
+            fi
+            ;;
+    esac
+done
+
+###############################################################################
+
+test "$UID" != 0 || die "cannot run as root"
+
+if test "$CMD" != exec -a "$CMD" != journal -a "$CMD" != reexec -a "${#EXTRA_ARGS[@]}" != 0 ; then
+    die "Extra arguments are only allowed with exec|journal|reexec command"
+fi
+
+###############################################################################
+
+do_$CMD "${EXTRA_ARGS[@]}"

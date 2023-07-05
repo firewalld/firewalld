@@ -1,0 +1,5 @@
+# Override from fw-in-container for /etc/sysconfig/firewalld
+# This is needed, because `make install` of firewalld will
+# overwrite /etc/sysconfig/firewalld. So we instead add another
+# EnvironmentFile= in a systemd override.
+FIREWALLD_ARGS=--debug=10 --log-target=syslog
