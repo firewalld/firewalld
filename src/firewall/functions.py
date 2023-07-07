@@ -34,7 +34,6 @@ import socket
 import os
 import os.path
 import shlex
-import pipes
 import string
 import tempfile
 from firewall.core.logger import log
@@ -607,10 +606,7 @@ def checkContext(context):
     return True
 
 def joinArgs(args):
-    if "quote" in dir(shlex):
-        return " ".join(shlex.quote(a) for a in args)
-    else:
-        return " ".join(pipes.quote(a) for a in args)
+    return " ".join(shlex.quote(a) for a in args)
 
 def splitArgs(_string):
     return shlex.split(_string)
