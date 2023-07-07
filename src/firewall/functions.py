@@ -113,6 +113,71 @@ def _parse_norm_fcn(parse_fcn, unparse_fcn):
 ###############################################################################
 
 
+def ipaddr_parse(addr, *, family=None, flags=0):
+    """Parses and validates the address
+
+    @addr: the IP address as str
+    @family: the address to parse. Set to None to autodetect the family
+    @flags: EntryType.ParseFlags flags
+    @Returns (addrbin, family) on success, the address in binary and
+      the detected address family (like socket.AF_INET).
+      Otherwise, raises ValueError().
+    """
+
+    family = addr_family(family, allow_unspec=True)
+
+    addrbin = None
+
+    if family == socket.AF_INET or family == socket.AF_UNSPEC:
+        try:
+            addrbin = socket.inet_pton(socket.AF_INET, addr)
+        except socket.error:
+            pass
+        else:
+            family = socket.AF_INET
+
+    if addrbin is None and (family == socket.AF_INET6 or family == socket.AF_UNSPEC):
+        try:
+            addrbin = socket.inet_pton(socket.AF_INET6, addr)
+        except socket.error:
+            pass
+        else:
+            family = socket.AF_INET6
+        if (
+            addrbin is None
+            and not (flags & EntryType.ParseFlags.NO_IP6_BRACKETS)
+            and isinstance(addr, str)
+            and len(addr) > 2
+            and addr[0] == "["
+            and addr[-1] == "]"
+        ):
+            try:
+                addrbin = socket.inet_pton(socket.AF_INET6, addr[1:][0:-1])
+            except socket.error:
+                pass
+            else:
+                family = socket.AF_INET6
+    if addrbin is None:
+        raise ValueError("not a valid {addr_family_str(family)} address")
+
+    return addrbin, family
+
+
+def ipaddr_unparse(addrbin, family, *, with_ip6_brackets=False):
+    s = socket.inet_ntop(family, addrbin)
+    if with_ip6_brackets and family == socket.AF_INET6:
+        s = f"[{s}]"
+    return s
+
+
+ipaddr_check = _parse_check_fcn(ipaddr_parse)
+
+ipaddr_norm = _parse_norm_fcn(ipaddr_parse, ipaddr_unparse)
+
+
+###############################################################################
+
+
 class EntryType:
     class ParseFlags(enum.IntFlag):
         NO_IP6_BRACKETS = 0x1
@@ -175,6 +240,8 @@ class EntryType:
             return False
         return True
 
+
+EntryTypeAddr = EntryType("addr", ipaddr_parse, ipaddr_unparse)
 
 ###############################################################################
 

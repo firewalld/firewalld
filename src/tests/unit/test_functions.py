@@ -192,6 +192,34 @@ def test_addr_family():
 def test_addr_parse():
     assert firewall.functions.IPAddrZero4 == helpers.ipaddr_to_bin("0.0.0.0")
 
+    def _parse(*a, **kw):
+        addrbin, family = firewall.functions.ipaddr_parse(*a, **kw)
+
+        addr_norm = firewall.functions.ipaddr_norm(*a, **kw)
+        assert firewall.functions.ipaddr_parse(addr_norm) == (addrbin, family)
+        assert firewall.functions.ipaddr_parse(addr_norm, family=family) == (
+            addrbin,
+            family,
+        )
+
+        return addr_norm
+
+    assert _parse("1.2.3.4") == "1.2.3.4"
+    assert _parse("::0", family=socket.AF_INET6) == "::"
+
+    with pytest.raises(ValueError):
+        firewall.functions.ipaddr_parse(
+            "[1::2]",
+            family=socket.AF_INET6,
+            flags=firewall.functions.EntryType.ParseFlags.NO_IP6_BRACKETS,
+        )
+    assert _parse("[1::2]", family=socket.AF_INET6) == "1::2"
+
+    assert firewall.functions.ipaddr_parse("0.0.0.0") == (
+        firewall.functions.IPAddrZero4,
+        socket.AF_INET,
+    )
+
 
 def test_entrytype():
     with pytest.raises(TypeError):
@@ -200,3 +228,50 @@ def test_entrytype():
     with pytest.raises(ValueError):
         firewall.functions.EntryType.parse("fooo", types=())
     assert not firewall.functions.EntryType.check("fooo", types=())
+
+    assert firewall.functions.EntryTypeAddr.parse("1::55:00") == (
+        helpers.ipaddr_to_bin("1::55:0"),
+        socket.AF_INET6,
+    )
+
+    assert firewall.functions.EntryType.parse(
+        "1.2.3.4", types=(firewall.functions.EntryTypeAddr,)
+    ) == (
+        firewall.functions.EntryTypeAddr,
+        (
+            helpers.ipaddr_to_bin("1.2.3.4"),
+            socket.AF_INET,
+        ),
+    )
+
+    assert firewall.functions.EntryType.parse(
+        "1:2::aa:ff", types=(firewall.functions.EntryTypeAddr,)
+    ) == (
+        firewall.functions.EntryTypeAddr,
+        (
+            helpers.ipaddr_to_bin("1:2::aa:ff"),
+            socket.AF_INET6,
+        ),
+    )
+
+    assert firewall.functions.EntryType.check(
+        "1.2.3.4", types=(firewall.functions.EntryTypeAddr,)
+    )
+    assert not firewall.functions.EntryType.check(
+        "1.2.3.", types=(firewall.functions.EntryTypeAddr,)
+    )
+
+    entrytype, detail = firewall.functions.EntryType.parse(
+        "[1:2::aa:ff]", types=(firewall.functions.EntryTypeAddr,)
+    )
+    assert (entrytype, detail) == (
+        firewall.functions.EntryTypeAddr,
+        (helpers.ipaddr_to_bin("1:2::aa:ff"), socket.AF_INET6),
+    )
+    assert entrytype.unparse(*detail) == "1:2::aa:ff"
+
+    assert firewall.functions.EntryTypeAddr.check("1.2.3.4")
+    assert not firewall.functions.EntryTypeAddr.check("1.2.")
+    assert firewall.functions.EntryTypeAddr.norm("1.2.3.4") == "1.2.3.4"
+    assert firewall.functions.EntryTypeAddr.norm("1:02::aa:ff") == "1:2::aa:ff"
+    assert firewall.functions.EntryTypeAddr.norm("[1:2::aa:ff]") == "1:2::aa:ff"
