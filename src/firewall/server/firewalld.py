@@ -1197,15 +1197,9 @@ class FirewallD(DbusServiceObject):
         # returns the list of active zones
         log.debug1("zone.getActiveZones()")
         zones = { }
-        for zone in self.fw.zone.get_zones():
-            interfaces = self.fw.zone.list_interfaces(zone)
-            sources = self.fw.zone.list_sources(zone)
-            if len(interfaces) + len(sources) > 0:
-                zones[zone] = { }
-                if len(interfaces) > 0:
-                    zones[zone]["interfaces"] = interfaces
-                if len(sources) > 0:
-                    zones[zone]["sources"] = sources
+        for zone in self.fw.zone.get_active_zones():
+            zones[zone] = {"interfaces": self.fw.zone.list_interfaces(zone),
+                           "sources": self.fw.zone.list_sources(zone)}
         return zones
 
     @dbus_polkit_require_auth(config.dbus.PK_ACTION_INFO)

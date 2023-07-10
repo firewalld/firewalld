@@ -2630,7 +2630,7 @@ elif a.get_active_zones:
     for zone in zones:
         cmd.print_msg("%s%s" % (zone, " (default)" if zone == default_zone else ""))
         for x in [ "interfaces", "sources" ]:
-            if x in zones[zone]:
+            if x in zones[zone] and zones[zone][x]:
                 cmd.print_msg("  %s: %s" % (x, " ".join(zones[zone][x])))
     sys.exit(0)
 elif a.get_policies:
