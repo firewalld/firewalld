@@ -377,7 +377,8 @@ class FirewallCommand(object):
                                 "Module name '%s' too short" % value)
         return value
 
-    def print_zone_policy_info(self, zone, settings, default_zone=None, extra_interfaces=[], isPolicy=True): # pylint: disable=R0914
+    def print_zone_policy_info(self, zone, settings, default_zone=None, extra_interfaces=[],
+                               active_zones=[], active_policies=[], isPolicy=True): # pylint: disable=R0914
         target = settings.getTarget()
         services = settings.getServices()
         ports = settings.getPorts()
@@ -418,8 +419,9 @@ class FirewallCommand(object):
         if default_zone is not None:
             if zone == default_zone:
                 attributes.append("default")
-        if (not isPolicy and (interfaces or sources)) or \
-           (    isPolicy and ingress_zones and egress_zones):
+        if not isPolicy and zone in active_zones:
+            attributes.append("active")
+        if isPolicy and zone in active_policies:
             attributes.append("active")
         if attributes:
             zone = zone + " (%s)" % ", ".join(attributes)
@@ -460,11 +462,13 @@ class FirewallCommand(object):
         self.print_msg("  rich rules: " + ("\n\t" if rules else "") +
                             "\n\t".join(sorted(rules, key=rich_rule_sorted_key)))
 
-    def print_zone_info(self, zone, settings, default_zone=None, extra_interfaces=[]):
-        self.print_zone_policy_info(zone, settings, default_zone=default_zone, extra_interfaces=extra_interfaces, isPolicy=False)
+    def print_zone_info(self, zone, settings, default_zone=None, extra_interfaces=[], active_zones=[]):
+        self.print_zone_policy_info(zone, settings, default_zone=default_zone, extra_interfaces=extra_interfaces,
+                                    active_zones=active_zones, isPolicy=False)
 
-    def print_policy_info(self, policy, settings, default_zone=None, extra_interfaces=[]):
-        self.print_zone_policy_info(policy, settings, default_zone=default_zone, extra_interfaces=extra_interfaces, isPolicy=True)
+    def print_policy_info(self, policy, settings, default_zone=None, extra_interfaces=[], active_policies=[]):
+        self.print_zone_policy_info(policy, settings, default_zone=default_zone, extra_interfaces=extra_interfaces,
+                                    active_policies=active_policies, isPolicy=True)
 
     def print_service_info(self, service, settings):
         ports = settings.getPorts()
