@@ -18,7 +18,7 @@ BuildRequires: docbook-style-xsl
 BuildRequires: libxslt
 BuildRequires: iptables, ebtables, ipset
 BuildRequires: python3-devel
-Requires: iptables, ebtables, ipset
+Recommends: iptables, ebtables, ipset
 Requires(post): systemd
 Requires(preun): systemd
 Requires(postun): systemd
