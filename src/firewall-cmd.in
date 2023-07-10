@@ -2448,7 +2448,8 @@ if a.permanent:
             names = fw.config().getZoneNames()
             for zone in sorted(names):
                 interfaces = try_nm_get_interfaces_in_zone(zone)
-                cmd.print_zone_info(zone, settings, extra_interfaces=interfaces)
+                cmd.print_zone_info(zone, fw.config().getZoneByName(zone).getSettings(),
+                                    extra_interfaces=interfaces)
                 cmd.print_msg("")
             sys.exit(0)
 
