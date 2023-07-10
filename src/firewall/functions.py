@@ -282,6 +282,60 @@ ipaddrmask_norm = _parse_norm_fcn(ipaddrmask_parse, ipaddrmask_unparse)
 ###############################################################################
 
 
+def ipaddrrange_parse(addrrange, *, family=None, flags=0):
+    family = addr_family(family, allow_unspec=True)
+    addr1 = None
+    addr2 = None
+    if isinstance(addrrange, str):
+        index = addrrange.find("-")
+        if index != -1:
+            addr1 = addrrange[:index]
+            addr2 = addrrange[index + 1 :]
+
+    if addr1 is None:
+        raise ValueError("not a valid address range")
+
+    try:
+        addrbin1, family = ipaddr_parse(addr1, family=family, flags=flags)
+        # Second part can also have a mask.
+        addrbin2, plen, _ = ipaddrmask_parse(
+            addr2, family=family, flags=flags, require_plen=False
+        )
+    except ValueError:
+        if family == socket.AF_UNSPEC:
+            # Try to detect the family for a better error message...
+            try:
+                _, _, family = ipaddrmask_parse(addr2, flags=flags, require_plen=False)
+            except ValueError:
+                pass
+        raise ValueError(f"not a valid {addr_family_str(family)} address range")
+
+    # Maybe we should reject negative ranges. I think libnftables
+    # does that too, which would make it important for firewalld to
+    # agree.
+    # if plen == -1:
+    #     addrx1 = int.from_bytes(addrbin1, "big")
+    #     addrx2 = int.from_bytes(addrbin2, "big")
+    #     if addrx1 > addrx2:
+    #         raise ValueError("IP address range has negative size")
+
+    return addrbin1, addrbin2, plen, family
+
+
+def ipaddrrange_unparse(addrbin1, addrbin2, plen, family):
+    s1 = ipaddr_unparse(addrbin1, family)
+    s2 = ipaddrmask_unparse(addrbin2, plen, family)
+    return f"{s1}-{s2}"
+
+
+ipaddrrange_check = _parse_check_fcn(ipaddrrange_parse)
+
+ipaddrrange_norm = _parse_norm_fcn(ipaddrrange_parse, ipaddrrange_unparse)
+
+
+###############################################################################
+
+
 class EntryType:
     class ParseFlags(enum.IntFlag):
         NO_IP6_BRACKETS = 0x1
@@ -348,6 +402,8 @@ class EntryType:
 EntryTypeAddr = EntryType("addr", ipaddr_parse, ipaddr_unparse)
 
 EntryTypeAddrMask = EntryType("addr-mask", ipaddrmask_parse, ipaddrmask_unparse)
+
+EntryTypeAddrRange = EntryType("addr-range", ipaddrrange_parse, ipaddrrange_unparse)
 
 ###############################################################################
 

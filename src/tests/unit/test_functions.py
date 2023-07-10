@@ -367,6 +367,109 @@ def test_addrmask_parse():
     assert _parse("a::01/0") == "a::1/0"
 
 
+def test_ipaddrrange():
+    assert firewall.functions.ipaddrrange_parse("192.168.0.3-192.168.0.10") == (
+        helpers.ipaddr_to_bin("192.168.0.3"),
+        helpers.ipaddr_to_bin("192.168.0.10"),
+        -1,
+        socket.AF_INET,
+    )
+    assert firewall.functions.ipaddrrange_parse("192.168.0.132-192.168.0.132") == (
+        helpers.ipaddr_to_bin("192.168.0.132"),
+        helpers.ipaddr_to_bin("192.168.0.132"),
+        -1,
+        socket.AF_INET,
+    )
+
+    assert firewall.functions.ipaddrrange_parse(
+        "192.168.0.132-192.168.0.132", family="4"
+    ) == (
+        helpers.ipaddr_to_bin("192.168.0.132"),
+        helpers.ipaddr_to_bin("192.168.0.132"),
+        -1,
+        socket.AF_INET,
+    )
+    with pytest.raises(ValueError, match="not a valid IPv6 address range"):
+        firewall.functions.ipaddrrange_parse("192.168.0.132-192.168.0.132", family="6")
+
+    with pytest.raises(ValueError, match="not a valid IPv4 address range"):
+        firewall.functions.ipaddrrange_parse("192.168.0.132/4-192.168.0.132")
+    assert firewall.functions.ipaddrrange_parse("192.168.0.132-192.168.0.132/4") == (
+        helpers.ipaddr_to_bin("192.168.0.132"),
+        helpers.ipaddr_to_bin("192.168.0.132"),
+        4,
+        socket.AF_INET,
+    )
+
+    firewall.functions.ipaddrrange_parse("::5-::10", family="6") == (
+        helpers.ipaddr_to_bin("::5"),
+        helpers.ipaddr_to_bin("::10"),
+        -1,
+        socket.AF_INET6,
+    )
+
+    firewall.functions.ipaddrrange_parse("::5-::10/128", family="6") == (
+        helpers.ipaddr_to_bin("::5"),
+        helpers.ipaddr_to_bin("::10"),
+        128,
+        socket.AF_INET6,
+    )
+
+    with pytest.raises(ValueError, match="not a valid IPv6 address range"):
+        firewall.functions.ipaddrrange_parse("::5/128-::10", family="6")
+
+    assert firewall.functions.ipaddrrange_parse("192.168.0.132-192.168.0.131") == (
+        helpers.ipaddr_to_bin("192.168.0.132"),
+        helpers.ipaddr_to_bin("192.168.0.131"),
+        -1,
+        socket.AF_INET,
+    )
+
+    assert firewall.functions.ipaddrrange_parse("192.168.0.132-192.168.0.131/4") == (
+        helpers.ipaddr_to_bin("192.168.0.132"),
+        helpers.ipaddr_to_bin("192.168.0.131"),
+        4,
+        socket.AF_INET,
+    )
+
+    assert firewall.functions.ipaddrrange_parse(
+        "192.168.0.132-192.168.0.132/5", family="4"
+    ) == (
+        helpers.ipaddr_to_bin("192.168.0.132"),
+        helpers.ipaddr_to_bin("192.168.0.132"),
+        5,
+        socket.AF_INET,
+    )
+
+    assert firewall.functions.ipaddrrange_parse("192.168.0.132-192.168.0.132/5") == (
+        helpers.ipaddr_to_bin("192.168.0.132"),
+        helpers.ipaddr_to_bin("192.168.0.132"),
+        5,
+        socket.AF_INET,
+    )
+
+    assert firewall.functions.ipaddrrange_parse("1.2.3.4-1.2.3.5/8") == (
+        helpers.ipaddr_to_bin("1.2.3.4"),
+        helpers.ipaddr_to_bin("1.2.3.5"),
+        8,
+        socket.AF_INET,
+    )
+
+    assert firewall.functions.ipaddrrange_parse("1.2.3.4-1.2.3.1") == (
+        helpers.ipaddr_to_bin("1.2.3.4"),
+        helpers.ipaddr_to_bin("1.2.3.1"),
+        -1,
+        socket.AF_INET,
+    )
+
+    assert firewall.functions.ipaddrrange_parse("1.2.3.4-1.2.3.1/8") == (
+        helpers.ipaddr_to_bin("1.2.3.4"),
+        helpers.ipaddr_to_bin("1.2.3.1"),
+        8,
+        socket.AF_INET,
+    )
+
+
 def test_entrytype():
     with pytest.raises(TypeError):
         assert firewall.functions.EntryType.check("fooo", types=None)
@@ -387,6 +490,13 @@ def test_entrytype():
         (
             helpers.ipaddr_to_bin("1.2.3.4"),
             socket.AF_INET,
+        ),
+    )
+    assert firewall.functions.EntryType.check(
+        "1.2.3.4-1.3.4.5",
+        types=(
+            firewall.functions.EntryTypeAddrMask,
+            firewall.functions.EntryTypeAddrRange,
         ),
     )
 
@@ -423,11 +533,45 @@ def test_entrytype():
         "1:2:00::aa:ff", require_plen=True
     )
 
+    assert firewall.functions.EntryType.parse(
+        "1.2.3.4-1.3.4.5",
+        types=(
+            firewall.functions.EntryTypeAddrMask,
+            firewall.functions.EntryTypeAddrRange,
+        ),
+    ) == (
+        firewall.functions.EntryTypeAddrRange,
+        (
+            helpers.ipaddr_to_bin("1.2.3.4"),
+            helpers.ipaddr_to_bin("1.3.4.5"),
+            -1,
+            socket.AF_INET,
+        ),
+    )
+
+    assert firewall.functions.EntryType.parse(
+        "::1-::4", types=(firewall.functions.EntryTypeAddrRange,)
+    ) == (
+        firewall.functions.EntryTypeAddrRange,
+        (
+            helpers.ipaddr_to_bin("::1"),
+            helpers.ipaddr_to_bin("::4"),
+            -1,
+            socket.AF_INET6,
+        ),
+    )
+
     assert firewall.functions.EntryType.check(
         "1.2.3.4", types=(firewall.functions.EntryTypeAddr,)
     )
     assert not firewall.functions.EntryType.check(
         "1.2.3.", types=(firewall.functions.EntryTypeAddr,)
+    )
+    assert not firewall.functions.EntryType.check(
+        "1.2.3.", types=(firewall.functions.EntryTypeAddrRange,)
+    )
+    assert firewall.functions.EntryType.check(
+        "::1-::4", types=(firewall.functions.EntryTypeAddrRange,)
     )
 
     entrytype, detail = firewall.functions.EntryType.parse(
