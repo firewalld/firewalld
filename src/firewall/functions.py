@@ -494,12 +494,7 @@ def checkIP(ip):
     @param ip address string
     @return True if address is valid, else False
     """
-
-    try:
-        socket.inet_pton(socket.AF_INET, ip)
-    except socket.error:
-        return False
-    return True
+    return ipaddr_check(ip, family=socket.AF_INET)
 
 
 def normalizeIP6(ip):
