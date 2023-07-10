@@ -1388,7 +1388,7 @@ if a.permanent:
 
     elif a.info_zone:
         zone = fw.config().getZoneByName(a.info_zone)
-        cmd.print_zone_info(a.info_zone, zone.getSettings(), True)
+        cmd.print_zone_info(a.info_zone, zone.getSettings(), default_zone=fw.getDefaultZone())
         sys.exit(0)
 
     elif a.path_zone:
@@ -2440,15 +2440,17 @@ if a.permanent:
         # list all zone settings
         elif a.list_all:
             interfaces = try_nm_get_interfaces_in_zone(zone)
-            cmd.print_zone_info(zone, settings, extra_interfaces=interfaces)
+            cmd.print_zone_info(zone, settings, extra_interfaces=interfaces, default_zone=fw.getDefaultZone())
             sys.exit(0)
 
         # list everything
         elif a.list_all_zones:
             names = fw.config().getZoneNames()
+            default_zone = fw.getDefaultZone()
             for zone in sorted(names):
                 interfaces = try_nm_get_interfaces_in_zone(zone)
                 cmd.print_zone_info(zone, fw.config().getZoneByName(zone).getSettings(),
+                                    default_zone=default_zone,
                                     extra_interfaces=interfaces)
                 cmd.print_msg("")
             sys.exit(0)
@@ -2624,8 +2626,9 @@ elif a.get_zones:
     cmd.print_and_exit(" ".join(fw.getZones()))
 elif a.get_active_zones:
     zones = fw.getActiveZones()
+    default_zone = fw.getDefaultZone()
     for zone in zones:
-        cmd.print_msg("%s" % zone)
+        cmd.print_msg("%s%s" % (zone, " (default)" if zone == default_zone else ""))
         for x in [ "interfaces", "sources" ]:
             if x in zones[zone]:
                 cmd.print_msg("  %s: %s" % (x, " ".join(zones[zone][x])))
@@ -3174,13 +3177,14 @@ elif a.query_icmp_block_inversion:
 # list all
 elif a.list_all:
     z = zone if zone else fw.getDefaultZone()
-    cmd.print_zone_info(z, fw.getZoneSettings(z))
+    cmd.print_zone_info(z, fw.getZoneSettings(z), default_zone=fw.getDefaultZone())
     sys.exit(0)
 
 # list everything
 elif a.list_all_zones:
+    default_zone = fw.getDefaultZone()
     for zone in fw.getZones():
-        cmd.print_zone_info(zone, fw.getZoneSettings(zone))
+        cmd.print_zone_info(zone, fw.getZoneSettings(zone), default_zone=default_zone)
         cmd.print_msg("")
     sys.exit(0)
 
@@ -3191,7 +3195,7 @@ elif a.list_all_policies:
     sys.exit(0)
 
 elif a.info_zone:
-    cmd.print_zone_info(a.info_zone, fw.getZoneSettings(a.info_zone), True)
+    cmd.print_zone_info(a.info_zone, fw.getZoneSettings(a.info_zone), default_zone=fw.getDefaultZone())
     sys.exit(0)
 
 elif a.info_policy:
