@@ -506,9 +506,9 @@ def normalizeIP6(ip):
     """Normalize the IPv6 address
 
     This is mostly about converting URL-like IPv6 address to normal ones.
-    e.g. [1234::4321] --> 1234:4321
+    e.g. [1234::4321] --> 1234::4321
     """
-    return ip.strip("[]")
+    return ipaddr_norm(ip, family=socket.AF_INET6)
 
 
 def checkIP6(ip):
@@ -517,12 +517,7 @@ def checkIP6(ip):
     @param ip address string
     @return True if address is valid, else False
     """
-
-    try:
-        socket.inet_pton(socket.AF_INET6, normalizeIP6(ip))
-    except socket.error:
-        return False
-    return True
+    return ipaddr_check(ip, family=socket.AF_INET6)
 
 
 def checkIPnMask(ip):

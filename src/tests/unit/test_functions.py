@@ -108,26 +108,31 @@ def test_checkIP():
     assert not firewall.functions.checkIP("::")
     assert not firewall.functions.checkIP("")
 
-    with pytest.raises(AttributeError):
+    with pytest.raises(TypeError):
         assert not firewall.functions.checkIP6(None)
     assert firewall.functions.checkIP6("[::]")
     assert firewall.functions.checkIP6("[1:00::a22]")
-    assert firewall.functions.checkIP6("[::")
-    assert firewall.functions.checkIP6("[[[[[::")
-    assert firewall.functions.checkIP6("[[[[[::[")
-    assert firewall.functions.checkIP6("[[[[[1::2[")
+    assert not firewall.functions.checkIP6("[::")
+    assert not firewall.functions.checkIP6("[[[[[::")
+    assert not firewall.functions.checkIP6("[[[[[::[")
+    assert not firewall.functions.checkIP6("[[[[[1::2[")
     assert not firewall.functions.checkIP6("[[[[[bogus[")
 
-    with pytest.raises(AttributeError):
+    with pytest.raises(TypeError):
         assert not firewall.functions.normalizeIP6(None)
     assert firewall.functions.normalizeIP6("[::]") == "::"
-    assert firewall.functions.normalizeIP6("[1:00::a22]") == "1:00::a22"
-    assert firewall.functions.normalizeIP6("1:00::a22") == "1:00::a22"
-    assert firewall.functions.normalizeIP6("[::") == "::"
-    assert firewall.functions.normalizeIP6("[[[[[::") == "::"
-    assert firewall.functions.normalizeIP6("[[[[[::[") == "::"
-    assert firewall.functions.normalizeIP6("[[[[[1::2[") == "1::2"
-    assert firewall.functions.normalizeIP6("[[[[[bogus[") == "bogus"
+    assert firewall.functions.normalizeIP6("[1:00::a22]") == "1::a22"
+    assert firewall.functions.normalizeIP6("1:00::a22") == "1::a22"
+    with pytest.raises(ValueError):
+        assert firewall.functions.normalizeIP6("[::")
+    with pytest.raises(ValueError):
+        assert firewall.functions.normalizeIP6("[[[[[::")
+    with pytest.raises(ValueError):
+        assert firewall.functions.normalizeIP6("[[[[[::[")
+    with pytest.raises(ValueError):
+        assert firewall.functions.normalizeIP6("[[[[[1::2[")
+    with pytest.raises(ValueError):
+        assert firewall.functions.normalizeIP6("[[[[[bogus[")
 
 
 def test_checkInterface():
