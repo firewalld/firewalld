@@ -622,28 +622,7 @@ def checkIP6(ip):
 
 
 def checkIPnMask(ip):
-    index = ip.find("/")
-    if index != -1:
-        addr = ip[:index]
-        mask = ip[index + 1 :]
-        if not addr or not mask:
-            return False
-    else:
-        addr = ip
-        mask = None
-    if not checkIP(addr):
-        return False
-    if mask:
-        if "." in mask:
-            return checkIP(mask)
-        else:
-            try:
-                i = int(mask)
-            except ValueError:
-                return False
-            if i < 0 or i > 32:
-                return False
-    return True
+    return ipaddrmask_check(ip, family=socket.AF_INET, require_plen=False)
 
 
 def stripNonPrintableCharacters(rule_str):
@@ -651,26 +630,7 @@ def stripNonPrintableCharacters(rule_str):
 
 
 def checkIP6nMask(ip):
-    index = ip.find("/")
-    if index != -1:
-        addr = ip[:index]
-        mask = ip[index + 1 :]
-        if not addr or not mask:
-            return False
-    else:
-        addr = ip
-        mask = None
-    if not checkIP6(addr):
-        return False
-    if mask:
-        try:
-            i = int(mask)
-        except ValueError:
-            return False
-        if i < 0 or i > 128:
-            return False
-
-    return True
+    return ipaddrmask_check(ip, family=socket.AF_INET6, require_plen=False)
 
 
 def checkProtocol(protocol):
@@ -838,12 +798,7 @@ def check_port(port):
 
 
 def check_address(ipv, source):
-    if ipv == "ipv4":
-        return checkIPnMask(source)
-    elif ipv == "ipv6":
-        return checkIP6nMask(source)
-    else:
-        return False
+    return ipaddrmask_check(source, family=ipv, require_plen=False)
 
 
 def check_single_address(ipv, source):
