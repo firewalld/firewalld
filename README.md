@@ -78,6 +78,7 @@ source:
   glib2: /usr/bin/glib-compile-schemas
   glib2-devel: /usr/share/aclocal/gsettings.m4
   systemd-units
+  pytest
 ```
 
 To be able to create man pages and documentation from docbook files:
