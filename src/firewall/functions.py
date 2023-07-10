@@ -741,12 +741,7 @@ def check_address(ipv, source):
 
 
 def check_single_address(ipv, source):
-    if ipv == "ipv4":
-        return checkIP(source)
-    elif ipv == "ipv6":
-        return checkIP6(source)
-    else:
-        return False
+    return ipaddr_check(source, family=ipv)
 
 
 def check_mac(mac):
