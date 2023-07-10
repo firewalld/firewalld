@@ -46,7 +46,7 @@ DBUS_CHECK([], [zone.getZones], [], 0, [dnl
 FWD_CHECK([-q --zone public --add-interface dummy0])
 FWD_CHECK([-q --zone public --add-source 10.1.1.1])
 DBUS_CHECK([], [zone.getActiveZones], [], 0, [dnl
-    ['public': {'interfaces': ['dummy0'], 'sources': ['10.1.1.1']}]
+    ['public': {'interfaces': ['dummy0'], 'sources': ['10.1.1.1']}, 'drop': {'interfaces': [], 'sources': []}]
 ])
 FWD_CHECK([-q --zone public --remove-interface dummy0])
 FWD_CHECK([-q --zone public --remove-source 10.1.1.1])
