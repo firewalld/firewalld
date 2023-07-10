@@ -280,6 +280,35 @@ def remove_default_create_options(options):
     return _options
 
 
+def ipset_type_parse(ipset_type):
+    if isinstance(ipset_type, str) and ipset_type.startswith("hash:"):
+        s = ipset_type[5:]
+        if s:
+            return s.split(",")
+    raise FirewallError(
+        errors.INVALID_IPSET, "ipset type '%s' not usable" % (ipset_type,)
+    )
+
+
+def ipset_entry_split(entry):
+    if isinstance(entry, str) and entry:
+        return entry.split(",")
+    raise FirewallError(errors.INVALID_IPSET, "ipset entry '%s' not usable" % (entry,))
+
+
+def ipset_entry_split_with_type(entry, ipset_type):
+    flags = ipset_type_parse(ipset_type)
+    items = ipset_entry_split(entry)
+
+    if len(flags) != len(items):
+        raise FirewallError(
+            errors.INVALID_ENTRY,
+            "entry '%s' does not match ipset type '%s'" % (entry, ipset_type),
+        )
+
+    return items, flags
+
+
 def normalize_ipset_entry(entry):
     """Normalize IP addresses in entry"""
     _entry = []
