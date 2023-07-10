@@ -38,6 +38,7 @@ from firewall.core.icmp import (
 from firewall.core.logger import log
 from firewall import errors
 from firewall.errors import FirewallError
+import firewall.core.ipset
 
 
 class IPSet(IO_Object):
@@ -89,21 +90,11 @@ class IPSet(IO_Object):
             if options["family"] == "inet6":
                 family = "ipv6"
 
-        if not ipset_type.startswith("hash:"):
-            raise FirewallError(
-                errors.INVALID_IPSET, "ipset type '%s' not usable" % ipset_type
-            )
-        flags = ipset_type[5:].split(",")
-        items = entry.split(",")
-
-        if len(flags) != len(items) or len(flags) < 1:
-            raise FirewallError(
-                errors.INVALID_ENTRY,
-                "entry '%s' does not match ipset type '%s'" % (entry, ipset_type),
-            )
-
-        for i, flag in enumerate(flags):
-            item = items[i]
+        lst_entry, lst_ipset_type = firewall.core.ipset.ipset_entry_split_with_type(
+            entry, ipset_type
+        )
+        for i, item in enumerate(lst_entry):
+            flag = lst_ipset_type[i]
 
             if flag == "ip":
                 if "-" in item and family == "ipv4":

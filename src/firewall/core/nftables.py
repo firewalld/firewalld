@@ -23,7 +23,6 @@ from firewall.errors import (
     INVALID_RULE,
     INVALID_ICMPTYPE,
     INVALID_TYPE,
-    INVALID_ENTRY,
     INVALID_PORT,
 )
 from firewall.core.rich import (
@@ -39,6 +38,8 @@ from firewall.core.rich import (
 )
 from firewall.core.base import DEFAULT_ZONE_TARGET
 from nftables.nftables import Nftables
+from firewall.core.ipset import ipset_entry_split_with_type, ipset_type_parse
+
 
 TABLE_NAME = "firewalld"
 TABLE_NAME_POLICY = TABLE_NAME + "_" + "policy_drop"
@@ -2707,7 +2708,7 @@ class nftables:
         }
 
         # Some types need the interval flag
-        for t in type.split(":")[1].split(","):
+        for t in ipset_type_parse(type):
             if t in ["ip", "net", "port"]:
                 set_dict["flags"] = ["interval"]
                 break
@@ -2731,7 +2732,8 @@ class nftables:
         self.set_rule(rule, self._fw.get_log_denied())
 
     def _set_match_fragment(self, name, match_dest, invert=False):
-        type_format = self._fw.ipset.get_ipset(name).type.split(":")[1].split(",")
+        obj = self._fw.ipset.get_ipset(name)
+        type_format = ipset_type_parse(obj.type)
 
         fragments = []
         for format in type_format:
@@ -2780,12 +2782,9 @@ class nftables:
         # to
         #    ["1.2.3.4", "sctp", "8080"]
         obj = self._fw.ipset.get_ipset(name)
-        type_format = obj.type.split(":")[1].split(",")
-        entry_tokens = entry.split(",")
-        if len(type_format) != len(entry_tokens):
-            raise FirewallError(
-                INVALID_ENTRY, "Number of values does not match ipset type."
-            )
+
+        entry_tokens, type_format = ipset_entry_split_with_type(entry, obj.type)
+
         fragment = []
         for i, format in enumerate(type_format):
             if format == "port":

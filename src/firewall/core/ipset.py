@@ -312,7 +312,7 @@ def ipset_entry_split_with_type(entry, ipset_type):
 def normalize_ipset_entry(entry):
     """Normalize IP addresses in entry"""
     _entry = []
-    for _part in entry.split(","):
+    for _part in ipset_entry_split(entry):
         try:
             _part.index("/")
             _entry.append(str(ipaddress.ip_network(_part, strict=False)))
@@ -325,7 +325,7 @@ def normalize_ipset_entry(entry):
 def check_entry_overlaps_existing(entry, entries):
     """Check if entry overlaps any entry in the list of entries"""
     # Only check simple types
-    if len(entry.split(",")) > 1:
+    if len(ipset_entry_split(entry)) > 1:
         return
 
     try:

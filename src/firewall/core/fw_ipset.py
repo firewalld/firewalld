@@ -13,6 +13,7 @@ from firewall.core.ipset import (
     normalize_ipset_entry,
     check_entry_overlaps_existing,
     check_for_overlapping_entries,
+    ipset_type_parse,
 )
 from firewall.core.io.ipset import IPSet
 from firewall import errors
@@ -164,7 +165,8 @@ class FirewallIPSet:
 
     # DIMENSION
     def get_dimension(self, name):
-        return len(self.get_ipset(name, applied=True).type.split(","))
+        obj = self.get_ipset(name, applied=True)
+        return len(ipset_type_parse(obj.type))
 
     def check_applied(self, name):
         obj = self.get_ipset(name)
