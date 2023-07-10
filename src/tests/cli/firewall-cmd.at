@@ -1899,7 +1899,7 @@ FWD_START_TEST([rich rules priority])
     dnl were added.
     FWD_CHECK([--add-rich-rule='rule priority=0 service name="http" accept'], 0, ignore)
     FWD_CHECK([--list-all | TRIM_WHITESPACE], 0, [m4_strip([dnl
-        public (default)
+        public (default, active)
         target: default
         ingress-priority: 0
         egress-priority: 0

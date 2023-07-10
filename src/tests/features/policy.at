@@ -129,7 +129,7 @@ allow-host-ipv6 (active)
        rule family="ipv6" icmp-type name="redirect" accept
 ])])
 FWD_CHECK([--permanent --info-policy allow-host-ipv6 | TRIM_WHITESPACE], 0, [m4_strip([dnl
-allow-host-ipv6 (active)
+allow-host-ipv6
   priority: -15000
   target: CONTINUE
   ingress-zones: ANY
@@ -168,7 +168,7 @@ allow-host-ipv6 (active)
        rule family="ipv6" icmp-type name="redirect" accept
 ])])
 FWD_CHECK([--permanent --list-all-policies | TRIM_WHITESPACE], 0, [m4_strip([dnl
-allow-host-ipv6 (active)
+allow-host-ipv6
   priority: -15000
   target: CONTINUE
   ingress-zones: ANY
@@ -207,7 +207,7 @@ allow-host-ipv6 (active)
        rule family="ipv6" icmp-type name="redirect" accept
 ])])
 FWD_CHECK([--permanent --policy allow-host-ipv6 --list-all | TRIM_WHITESPACE], 0, [m4_strip([dnl
-allow-host-ipv6 (active)
+allow-host-ipv6
   priority: -15000
   target: CONTINUE
   ingress-zones: ANY

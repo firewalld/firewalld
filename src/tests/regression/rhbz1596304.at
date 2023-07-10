@@ -5,7 +5,7 @@ dnl source address contains a tab character
 FWD_CHECK([--permanent --zone=public --add-rich-rule 'rule family="ipv4" source address="104.243.250.0/22	" port port=80 protocol=tcp accept'],0,ignore)
 FWD_RELOAD
 FWD_CHECK([--list-all | TRIM_WHITESPACE], 0, [m4_strip([dnl
-        public (default)
+        public (default, active)
         target: default
         ingress-priority: 0
         egress-priority: 0
