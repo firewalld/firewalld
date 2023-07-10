@@ -214,6 +214,74 @@ def ipaddrmask_to_plen(maskbin, family=None):
 ###############################################################################
 
 
+def ipaddrmask_parse(
+    addrmask,
+    *,
+    family=None,
+    flags=0,
+    require_plen=True,
+):
+
+    family = addr_family(family, allow_unspec=True)
+
+    if isinstance(addrmask, str):
+        index = addrmask.find("/")
+        if index != -1:
+            addr = addrmask[:index]
+            mask = addrmask[index + 1 :]
+        else:
+            addr = addrmask
+            mask = None
+    else:
+        addr = None
+        mask = None
+
+    if addr is not None:
+        try:
+            addrbin, family = ipaddr_parse(addr, family=family, flags=flags)
+            plen = -1
+            if mask is not None:
+                try:
+                    plen = int(mask)
+                    if plen < 0:
+                        raise ValueError("fail")
+                except ValueError:
+                    if family != socket.AF_INET:
+                        # only for IPv4, we accept a subnet mask (/255.255.255.0)
+                        raise
+                    mask, _ = ipaddr_parse(mask, family=family, flags=flags)
+                    plen = ipaddrmask_to_plen(mask, family)
+
+            if plen != -1 and plen > addr_family_bitsize(family):
+                raise ValueError("invalid plen")
+
+            if plen == -1 and require_plen:
+                raise ValueError(
+                    "{addr_family_str(family)} address lacks a mask/prefixlength"
+                )
+
+            return addrbin, plen, family
+        except ValueError:
+            pass
+
+    raise ValueError("not a valid {addr_family_str(family)} subnet")
+
+
+def ipaddrmask_unparse(addrbin, plen, family):
+    s = ipaddr_unparse(addrbin, family)
+    if plen == -1:
+        return s
+    return f"{s}/{plen}"
+
+
+ipaddrmask_check = _parse_check_fcn(ipaddrmask_parse)
+
+ipaddrmask_norm = _parse_norm_fcn(ipaddrmask_parse, ipaddrmask_unparse)
+
+
+###############################################################################
+
+
 class EntryType:
     class ParseFlags(enum.IntFlag):
         NO_IP6_BRACKETS = 0x1
@@ -278,6 +346,8 @@ class EntryType:
 
 
 EntryTypeAddr = EntryType("addr", ipaddr_parse, ipaddr_unparse)
+
+EntryTypeAddrMask = EntryType("addr-mask", ipaddrmask_parse, ipaddrmask_unparse)
 
 ###############################################################################
 
