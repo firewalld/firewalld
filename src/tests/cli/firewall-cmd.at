@@ -178,7 +178,7 @@ FWD_START_TEST([zone sources])
 ])
         FWD_CHECK([--zone=public --list-all | TRIM | grep ^sources], 0, [sources: $1
 ])
-        FWD_CHECK([--get-active-zones | TRIM | grep "^\(public\|sources\)"], 0, [public
+        FWD_CHECK([--get-active-zones | TRIM | grep "^\(public\|sources\)"], 0, [public (default)
 sources: $1
 ])
         FWD_CHECK([--zone public --query-source=$1], 0, ignore)
@@ -1899,7 +1899,7 @@ FWD_START_TEST([rich rules priority])
     dnl were added.
     FWD_CHECK([--add-rich-rule='rule priority=0 service name="http" accept'], 0, ignore)
     FWD_CHECK([--list-all | TRIM_WHITESPACE], 0, [m4_strip([dnl
-        public
+        public (default)
         target: default
         ingress-priority: 0
         egress-priority: 0

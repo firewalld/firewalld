@@ -1347,7 +1347,7 @@ try:
     elif a.info_zone:
         zone = fw.config.get_zone(a.info_zone)
         settings = FirewallClientZoneSettings(fw.config.get_zone_config_dict(zone))
-        cmd.print_zone_info(a.info_zone, settings, True)
+        cmd.print_zone_info(a.info_zone, settings, default_zone=fw.get_default_zone())
         sys.exit(0)
 
     elif a.path_zone:
@@ -2644,16 +2644,18 @@ try:
         # list all zone settings
         elif a.list_all:
             cmd.print_zone_info(zone if zone else fw.get_default_zone(),
-                                fw_settings)
+                                fw_settings,
+                                default_zone=fw.get_default_zone())
             sys.exit(0)
 
         # list everything
         elif a.list_all_zones:
             zones = fw.config.get_zones()
+            default_zone = fw.get_default_zone()
             for zone in zones:
                 fw_zone = fw.config.get_zone(zone)
                 fw_settings = FirewallClientZoneSettings(fw.config.get_zone_config_dict(fw_zone))
-                cmd.print_zone_info(zone, fw_settings)
+                cmd.print_zone_info(zone, fw_settings, default_zone=default_zone)
                 cmd.print_msg("")
             sys.exit(0)
 
