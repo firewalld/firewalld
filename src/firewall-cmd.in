@@ -2897,7 +2897,7 @@ elif a.policy:
     settings = fw.getPolicySettings(a.policy)
 
     if a.list_all:
-        cmd.print_policy_info(a.policy, settings)
+        cmd.print_policy_info(a.policy, settings, active_policies=fw.getActivePolicies())
         sys.exit(0)
 
     # ingress zones
@@ -3177,29 +3177,35 @@ elif a.query_icmp_block_inversion:
 # list all
 elif a.list_all:
     z = zone if zone else fw.getDefaultZone()
-    cmd.print_zone_info(z, fw.getZoneSettings(z), default_zone=fw.getDefaultZone())
+    cmd.print_zone_info(z, fw.getZoneSettings(z), default_zone=fw.getDefaultZone(),
+                        active_zones=fw.getActiveZones())
     sys.exit(0)
 
 # list everything
 elif a.list_all_zones:
     default_zone = fw.getDefaultZone()
+    active_zones = fw.getActiveZones()
     for zone in fw.getZones():
-        cmd.print_zone_info(zone, fw.getZoneSettings(zone), default_zone=default_zone)
+        cmd.print_zone_info(zone, fw.getZoneSettings(zone), default_zone=default_zone,
+                            active_zones=active_zones)
         cmd.print_msg("")
     sys.exit(0)
 
 elif a.list_all_policies:
+    active_policies = fw.getActivePolicies()
     for policy in fw.getPolicies():
-        cmd.print_policy_info(policy, fw.getPolicySettings(policy))
+        cmd.print_policy_info(policy, fw.getPolicySettings(policy), active_policies=active_policies)
         cmd.print_msg("")
     sys.exit(0)
 
 elif a.info_zone:
-    cmd.print_zone_info(a.info_zone, fw.getZoneSettings(a.info_zone), default_zone=fw.getDefaultZone())
+    cmd.print_zone_info(a.info_zone, fw.getZoneSettings(a.info_zone), default_zone=fw.getDefaultZone(),
+                        active_zones=fw.getActiveZones())
     sys.exit(0)
 
 elif a.info_policy:
-    cmd.print_policy_info(a.info_policy, fw.getPolicySettings(a.info_policy))
+    cmd.print_policy_info(a.info_policy, fw.getPolicySettings(a.info_policy),
+                          active_policies=fw.getActivePolicies())
     sys.exit(0)
 
 elif a.info_service:
