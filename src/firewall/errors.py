@@ -135,3 +135,15 @@ FirewallError.errors = {
 FirewallError.codes = {
     FirewallError.errors[code]: code for code in FirewallError.errors
 }
+
+###############################################################################
+
+
+class BugError(Exception):
+    """Indicates that there is a bug in the code. You probably don't
+    want to catch this, but fix the bug."""
+
+    def __init__(self, msg=None):
+        if msg is None:
+            msg = "should not be reached"
+        super().__init__(f"BUG: {msg}")
