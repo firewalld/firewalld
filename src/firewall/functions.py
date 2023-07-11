@@ -336,6 +336,43 @@ ipaddrrange_norm = _parse_norm_fcn(ipaddrrange_parse, ipaddrrange_unparse)
 ###############################################################################
 
 
+def mac_parse(mac, *, family=None, flags=0):
+
+    # The family argument is ignored. It has no meaning for MAC addresses and
+    # only exist so that all parse() function have a compatible API. However,
+    # we still validate it here.
+    family = addr_family(family, allow_unspec=True)
+
+    if isinstance(mac, str) and len(mac) == 12 + 5:
+        good = True
+        # 0 1 : 3 4 : 6 7 : 9 10 : 12 13 : 15 16
+        for i in (2, 5, 8, 11, 14):
+            if mac[i] != ":":
+                good = False
+                break
+        if good:
+            for i in (0, 1, 3, 4, 6, 7, 9, 10, 12, 13, 15, 16):
+                if mac[i] not in string.hexdigits:
+                    good = False
+                    break
+            if good:
+                return (mac.lower(),)
+
+    raise ValueError("not a valid ethernet MAC address")
+
+
+def mac_unparse(mac):
+    return mac
+
+
+mac_check = _parse_check_fcn(mac_parse)
+
+mac_norm = _parse_norm_fcn(mac_parse, mac_unparse)
+
+
+###############################################################################
+
+
 class EntryType:
     class ParseFlags(enum.IntFlag):
         NO_IP6_BRACKETS = 0x1
@@ -404,6 +441,8 @@ EntryTypeAddr = EntryType("addr", ipaddr_parse, ipaddr_unparse)
 EntryTypeAddrMask = EntryType("addr-mask", ipaddrmask_parse, ipaddrmask_unparse)
 
 EntryTypeAddrRange = EntryType("addr-range", ipaddrrange_parse, ipaddrrange_unparse)
+
+EntryTypeMac = EntryType("mac", mac_parse, mac_unparse)
 
 ###############################################################################
 
@@ -862,16 +901,7 @@ def check_single_address(ipv, source):
 
 
 def check_mac(mac):
-    if len(mac) == 12 + 5:
-        # 0 1 : 3 4 : 6 7 : 9 10 : 12 13 : 15 16
-        for i in (2, 5, 8, 11, 14):
-            if mac[i] != ":":
-                return False
-        for i in (0, 1, 3, 4, 6, 7, 9, 10, 12, 13, 15, 16):
-            if mac[i] not in string.hexdigits:
-                return False
-        return True
-    return False
+    return mac_check(mac)
 
 
 def uniqify(_list):

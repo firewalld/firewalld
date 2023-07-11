@@ -470,6 +470,20 @@ def test_ipaddrrange():
     )
 
 
+def test_mac():
+    assert firewall.functions.mac_check("00:11:33:44:55:66")
+    assert firewall.functions.mac_parse("00:aA:33:44:55:66") == ("00:aa:33:44:55:66",)
+    assert firewall.functions.mac_norm("00:aA:33:44:55:66") == "00:aa:33:44:55:66"
+
+    assert not firewall.functions.mac_check("00:11:33:44:5566")
+    with pytest.raises(ValueError):
+        firewall.functions.mac_parse("00:11:33:4x:55:66")
+
+    assert (
+        firewall.functions.EntryTypeMac.norm("aa:BB:cc:dd:ee:00") == "aa:bb:cc:dd:ee:00"
+    )
+
+
 def test_entrytype():
     with pytest.raises(TypeError):
         assert firewall.functions.EntryType.check("fooo", types=None)
@@ -588,3 +602,9 @@ def test_entrytype():
     assert firewall.functions.EntryTypeAddr.norm("1.2.3.4") == "1.2.3.4"
     assert firewall.functions.EntryTypeAddr.norm("1:02::aa:ff") == "1:2::aa:ff"
     assert firewall.functions.EntryTypeAddr.norm("[1:2::aa:ff]") == "1:2::aa:ff"
+
+    assert firewall.functions.EntryTypeMac.check("aa:dd:11:22:33:44")
+    assert not firewall.functions.EntryTypeMac.check("asdf")
+    assert (
+        firewall.functions.EntryTypeMac.norm("aa:dD:11:22:33:44") == "aa:dd:11:22:33:44"
+    )
