@@ -127,3 +127,35 @@ def test_checkIP():
     assert firewall.functions.normalizeIP6("[[[[[::[") == "::"
     assert firewall.functions.normalizeIP6("[[[[[1::2[") == "1::2"
     assert firewall.functions.normalizeIP6("[[[[[bogus[") == "bogus"
+
+
+def test_checkInterface():
+    assert not firewall.functions.checkInterface(None)
+    assert not firewall.functions.checkInterface(0)
+    with pytest.raises(TypeError):
+        firewall.functions.checkInterface(b"eth0")
+
+    assert not firewall.functions.checkInterface("")
+    assert not firewall.functions.checkInterface("/")
+    assert not firewall.functions.checkInterface("a/")
+    assert firewall.functions.checkInterface("\240a")
+    assert firewall.functions.checkInterface(".")
+    assert firewall.functions.checkInterface("..")
+    assert firewall.functions.checkInterface("...")
+    assert firewall.functions.checkInterface("all")
+    assert firewall.functions.checkInterface("bonding_masters")
+    assert firewall.functions.checkInterface("default")
+    assert firewall.functions.checkInterface("defaultx")
+    assert firewall.functions.checkInterface("1234567890abcd")
+    assert firewall.functions.checkInterface("1234567890abcde")
+    assert firewall.functions.checkInterface("1234567890abcdef")
+    assert not firewall.functions.checkInterface("1234567890abcdefg")
+    assert not firewall.functions.checkInterface("eth!x")
+    assert not firewall.functions.checkInterface("eth*x")
+
+    smiley = b"\xF0\x9F\x98\x8A".decode("utf-8")
+    iface = f"{smiley}{smiley}{smiley}"
+    assert firewall.functions.checkInterface(f"123{iface}")
+    assert firewall.functions.checkInterface(f"1234{iface}")
+    assert firewall.functions.checkInterface(f"1234567890abc{iface}")
+    assert not firewall.functions.checkInterface(f"1234567890abcd{iface}")
