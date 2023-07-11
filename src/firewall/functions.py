@@ -5,6 +5,7 @@
 # Authors:
 # Thomas Woerner <twoerner@redhat.com>
 
+import enum
 import socket
 import os
 import os.path
@@ -85,6 +86,94 @@ def addr_family_bitsize(family):
 
 
 IPAddrZero4 = b"\0\0\0\0"
+
+
+###############################################################################
+
+
+def _parse_check_fcn(parse_fcn):
+    def f(*a, **kw):
+        try:
+            parse_fcn(*a, **kw)
+        except ValueError:
+            return False
+        return True
+
+    return f
+
+
+def _parse_norm_fcn(parse_fcn, unparse_fcn):
+    def f(*a, **kw):
+        detail = parse_fcn(*a, **kw)
+        return unparse_fcn(*detail)
+
+    return f
+
+
+###############################################################################
+
+
+class EntryType:
+    class ParseFlags(enum.IntFlag):
+        NO_IP6_BRACKETS = 0x1
+
+    def __init__(self, name, fcn_parse, fcn_unparse):
+        self.name = name
+        self.parse = fcn_parse
+        self.unparse = fcn_unparse
+        self.check = self._check
+
+    def __repr__(self):
+        return f"EntryType({self.name})"
+
+    def norm(self, *a, **kw):
+        detail = self.parse(*a, **kw)
+        return self.unparse(*detail)
+
+    def _check(self, *a, **kw):
+        try:
+            self.parse(*a, **kw)
+        except ValueError:
+            return False
+        return True
+
+    @staticmethod
+    def parse(entry, *, family=None, flags=0, types):
+
+        first_ex = None
+
+        for entrytype in types:
+
+            if entrytype is None:
+                # We allow passing None entry types. Those never parse successfully.
+                continue
+
+            try:
+                detail = entrytype.parse(
+                    entry,
+                    family=family,
+                    flags=flags,
+                )
+            except ValueError as ex:
+                if first_ex is None:
+                    first_ex = ex
+                continue
+
+            return (entrytype, detail)
+
+        if first_ex is not None and len(types) == 1:
+            # Preserve the error message if we only have one type to parse.
+            raise ValueError(str(first_ex))
+
+        raise ValueError("not a valid entry, like an IP address or a port")
+
+    @staticmethod
+    def check(entry, *, family=None, flags=0, types):
+        try:
+            EntryType.parse(entry, family=family, flags=flags, types=types)
+        except ValueError:
+            return False
+        return True
 
 
 ###############################################################################

@@ -191,3 +191,12 @@ def test_addr_family():
 
 def test_addr_parse():
     assert firewall.functions.IPAddrZero4 == helpers.ipaddr_to_bin("0.0.0.0")
+
+
+def test_entrytype():
+    with pytest.raises(TypeError):
+        assert firewall.functions.EntryType.check("fooo", types=None)
+
+    with pytest.raises(ValueError):
+        firewall.functions.EntryType.parse("fooo", types=())
+    assert not firewall.functions.EntryType.check("fooo", types=())
