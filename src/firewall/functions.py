@@ -84,6 +84,12 @@ def addr_family_bitsize(family):
 ###############################################################################
 
 
+IPAddrZero4 = b"\0\0\0\0"
+
+
+###############################################################################
+
+
 def getPortID(port):
     """Check and Get port id from port string or port id using socket.getservbyname
 

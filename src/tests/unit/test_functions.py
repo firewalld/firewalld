@@ -187,3 +187,7 @@ def test_addr_family():
         f2 = firewall.functions.addr_family(family_str, allow_unspec=True)
         assert family_str == firewall.functions.addr_family_str(f2)
         assert family_str == firewall.functions.addr_family_str(family_str)
+
+
+def test_addr_parse():
+    assert firewall.functions.IPAddrZero4 == helpers.ipaddr_to_bin("0.0.0.0")
