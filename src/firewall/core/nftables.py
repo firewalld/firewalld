@@ -1690,19 +1690,22 @@ class nftables(object):
                     fragment.append({"range": [port_str[:index], port_str[index+1:]]})
 
             elif format in ["ip", "net"]:
-                try:
-                    index = entry_tokens[i].index("/")
-                except ValueError:
-                    addr = entry_tokens[i]
-                    if "family" in obj.options and obj.options["family"] == "inet6":
-                        addr = normalizeIP6(addr)
-                    fragment.append(addr)
+                if '-' in entry_tokens[i]:
+                    fragment.append({"range": entry_tokens[i].split('-') })
                 else:
-                    addr = entry_tokens[i][:index]
-                    if "family" in obj.options and obj.options["family"] == "inet6":
-                        addr = normalizeIP6(addr)
-                    fragment.append({"prefix": {"addr": addr,
-                                                "len": int(entry_tokens[i][index+1:])}})
+                    try:
+                        index = entry_tokens[i].index("/")
+                    except ValueError:
+                        addr = entry_tokens[i]
+                        if "family" in obj.options and obj.options["family"] == "inet6":
+                            addr = normalizeIP6(addr)
+                        fragment.append(addr)
+                    else:
+                        addr = entry_tokens[i][:index]
+                        if "family" in obj.options and obj.options["family"] == "inet6":
+                            addr = normalizeIP6(addr)
+                        fragment.append({"prefix": {"addr": addr,
+                                                    "len": int(entry_tokens[i][index+1:])}})
             else:
                 fragment.append(entry_tokens[i])
         return [{"concat": fragment}] if len(type_format) > 1 else fragment
