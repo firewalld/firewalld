@@ -56,21 +56,20 @@ def test_fcnport():
     www_http_port = helpers.getservbyname("www-http", 80, maybe_missing=True)
     gopher_port = helpers.getservbyname("gopher", 70, maybe_missing=True)
 
-    with pytest.raises(TypeError):
-        assert firewall.functions.getPortID(None)
+    assert firewall.functions.getPortID(None) == -1
     assert firewall.functions.getPortID(1) == 1
     assert firewall.functions.getPortID(65535) == 65535
     assert firewall.functions.getPortID(0) == 0
-    assert firewall.functions.getPortID(-1) == -1
-    assert firewall.functions.getPortID(-3) == -3
+    assert firewall.functions.getPortID(-1) == -2
+    assert firewall.functions.getPortID(-3) == -2
     assert firewall.functions.getPortID(65536) == -2
     assert firewall.functions.getPortID("6") == 6
     assert firewall.functions.getPortID("  66 ") == 66
     assert firewall.functions.getPortID("  65535 ") == 65535
     assert firewall.functions.getPortID("  65536 ") == -2
     assert firewall.functions.getPortID("0") == 0
-    assert firewall.functions.getPortID("-1") == -1
-    assert firewall.functions.getPortID("-3") == -3
+    assert firewall.functions.getPortID("-1") == -2
+    assert firewall.functions.getPortID("-3") == -2
     assert firewall.functions.getPortID("foo") == -1
     assert firewall.functions.getPortID("") == -1
     assert firewall.functions.getPortID(" ") == -1
@@ -79,32 +78,31 @@ def test_fcnport():
     if www_http_port is not None:
         assert firewall.functions.getPortID(" www-http   ") == www_http_port
 
-    with pytest.raises(AttributeError):
-        assert firewall.functions.getPortRange(None)
-    assert firewall.functions.getPortRange([]) == []
-    assert firewall.functions.getPortRange(()) == ()
+    assert firewall.functions.getPortRange(None) == -1
+    assert firewall.functions.getPortRange([]) == -1
+    assert firewall.functions.getPortRange(()) == -1
     assert firewall.functions.getPortRange((1,)) == (1,)
-    assert firewall.functions.getPortRange([2342423432]) == [2342423432]
+    assert firewall.functions.getPortRange([2342423432]) == -2
     assert firewall.functions.getPortRange((1, 4)) == (1, 4)
-    assert firewall.functions.getPortRange([2342423432, 5]) == [2342423432, 5]
-    assert firewall.functions.getPortRange((1, 6, 4)) == (1, 6, 4)
+    assert firewall.functions.getPortRange([2342423432, 5]) == -2
+    assert firewall.functions.getPortRange((1, 6, 4)) == -1
 
-    assert firewall.functions.getPortRange(-5) == -5
-    assert firewall.functions.getPortRange(-1) == -1
+    assert firewall.functions.getPortRange(-5) == -2
+    assert firewall.functions.getPortRange(-1) == -2
     assert firewall.functions.getPortRange(0) == (0,)
     assert firewall.functions.getPortRange(5) == (5,)
     assert firewall.functions.getPortRange(65535) == (65535,)
     assert firewall.functions.getPortRange(65536) == -2
 
-    assert firewall.functions.getPortRange("-5") == -1
-    assert firewall.functions.getPortRange("-1") == -1
+    assert firewall.functions.getPortRange("-5") == -2
+    assert firewall.functions.getPortRange("-1") == -2
     assert firewall.functions.getPortRange("0") == (0,)
     assert firewall.functions.getPortRange("0 ") == (0,)
     assert firewall.functions.getPortRange("1") == (1,)
     assert firewall.functions.getPortRange(" 1 ") == (1,)
     assert firewall.functions.getPortRange("65535") == (65535,)
     assert firewall.functions.getPortRange("65536") == -2
-    assert firewall.functions.getPortRange(" 65536 ") == -1
+    assert firewall.functions.getPortRange(" 65536 ") == -2
 
     assert firewall.functions.getPortRange("-") == -1
     assert firewall.functions.getPortRange("1-1") == (1,)
@@ -114,7 +112,7 @@ def test_fcnport():
     assert firewall.functions.getPortRange(" 0-1") == (0, 1)
     assert firewall.functions.getPortRange(" 0-65535") == (0, 65535)
     assert firewall.functions.getPortRange(" 65535 \n - 1  ") == (1, 65535)
-    assert firewall.functions.getPortRange(" 65536-1") == -1
+    assert firewall.functions.getPortRange(" 65536-1") == -2
 
     assert firewall.functions.getPortRange(" http") == (http_port,)
     assert firewall.functions.getPortRange(" http-http") == (http_port,)
@@ -484,6 +482,110 @@ def test_mac():
     )
 
 
+def test_port():
+    def _parse(*a, **kw):
+        detail = firewall.functions.port_parse(*a, **kw)
+
+        # we expect that what we unparse can be parsed again.
+        unparsed = firewall.functions.port_unparse(*detail)
+        assert firewall.functions.port_parse(unparsed) == detail
+
+        return detail
+
+    assert _parse("10") == (None, 10, None, None, None)
+
+    http_port = helpers.getservbyname("http", 80)
+    www_http_port = helpers.getservbyname("www-http", 80, maybe_missing=True)
+    gopher_port = helpers.getservbyname("gopher", 70, maybe_missing=True)
+
+    assert _parse("http") == (None, http_port, "http", None, None)
+    assert _parse("http-http") == (None, http_port, "http", None, None)
+
+    if www_http_port is not None:
+        assert _parse("www-http") == (None, www_http_port, "www-http", None, None)
+        assert _parse("www-http-81") == (None, www_http_port, "www-http", 81, None)
+    if www_http_port is not None and gopher_port is not None:
+        assert _parse("www-http-gopher") == (
+            None,
+            gopher_port,
+            "gopher",
+            www_http_port,
+            "www-http",
+        )
+    assert _parse("100-81") == (None, 81, None, 100, None)
+
+    assert _parse("1720") == (None, 1720, None, None, None)
+
+    with pytest.raises(ValueError, match="port out of range"):
+        _parse("-1 ")
+    assert _parse("0") == (None, 0, None, None, None)
+    assert _parse("1  ") == (None, 1, None, None, None)
+    assert _parse("65535") == (None, 65535, None, None, None)
+    with pytest.raises(ValueError, match="port out of range"):
+        _parse("65536")
+
+    if www_http_port is not None:
+        assert _parse("www-http") == (None, www_http_port, "www-http", None, None)
+    assert _parse("80-http") == (None, http_port, "http", None, None)
+    assert _parse("81-http") == (None, http_port, "http", 81, None)
+    assert _parse("http-81") == (None, http_port, "http", 81, None)
+    assert _parse(" http- 81 ") == (None, http_port, "http", 81, None)
+    assert _parse(" http  -   81 ") == (None, http_port, "http", 81, None)
+
+    assert _parse("icmp:network-prohibited") == (
+        "icmp",
+        None,
+        "network-prohibited",
+        None,
+        None,
+    )
+
+    assert _parse("icmp: 14/0") == (
+        "icmp",
+        None,
+        "14/0",
+        None,
+        None,
+    )
+
+    assert _parse("icmpv6:packet-too-big") == (
+        "icmpv6",
+        None,
+        "packet-too-big",
+        None,
+        None,
+    )
+
+    assert _parse("ipv6-icmp:135/0") == (
+        "ipv6-icmp",
+        None,
+        "135/0",
+        None,
+        None,
+    )
+
+    assert _parse(" tcp : http - 85  ") == ("tcp", http_port, "http", 85, None)
+
+    with pytest.raises(ValueError, match="not a valid port"):
+        _parse("ipv6-icmp:135/0", allow_proto=False)
+    with pytest.raises(ValueError, match="Invalid icmp type"):
+        _parse("icmp:network-prohibitedx")
+    with pytest.raises(ValueError, match="Invalid icmpv6 type"):
+        _parse("icmpv6:network-prohibited")
+
+    assert helpers.getprotobyname("bogus") is None
+    assert helpers.getprotobyname("l2tp") is not None
+    assert _parse("l2tp:66") == ("l2tp", 66, None, None, None)
+    with pytest.raises(ValueError, match="Invalid protocol"):
+        _parse("bogus:66")
+
+    with pytest.raises(ValueError, match="Invalid protocol for address family"):
+        _parse("icmpv6:packet-too-big", family="4")
+
+    with pytest.raises(ValueError, match="Invalid protocol for address family"):
+        _parse("icmp:network-prohibited", family="6")
+
+
 def test_entrytype():
     with pytest.raises(TypeError):
         assert firewall.functions.EntryType.check("fooo", types=None)
@@ -608,3 +710,9 @@ def test_entrytype():
     assert (
         firewall.functions.EntryTypeMac.norm("aa:dD:11:22:33:44") == "aa:dd:11:22:33:44"
     )
+
+    http_port = helpers.getservbyname("http", 80)
+    assert http_port is not None
+    assert firewall.functions.EntryTypePort.check("55")
+    assert firewall.functions.EntryTypePort.check("http-70")
+    assert firewall.functions.EntryTypePort.norm("http-70") == "70-http"

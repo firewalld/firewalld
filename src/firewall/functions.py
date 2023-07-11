@@ -16,6 +16,7 @@ import tempfile
 import firewall.errors
 from firewall.core.logger import log
 from firewall.config import FIREWALLD_TEMPDIR, FIREWALLD_PIDFILE
+import firewall.core.icmp
 
 NOPRINT_TRANS_TABLE = {
     # Limit to C0 and C1 code points. Building entries for all unicode code
@@ -373,6 +374,215 @@ mac_norm = _parse_norm_fcn(mac_parse, mac_unparse)
 ###############################################################################
 
 
+def port_parse(
+    port,
+    *,
+    family=None,
+    flags=0,
+    allow_proto=True,
+    allow_range=True,
+):
+    def check_range(port_id):
+        return port_id >= 0 and port_id <= 65535
+
+    def parse_one(port):
+        port_name = None
+        port_id = None
+        if port:
+            port = port.strip()
+            try:
+                port_id = int(port)
+            except ValueError:
+                if " " in port:
+                    # We don't accept space inside the port name (but we accept
+                    # at the beginning/end, i.e. around the delimiter.
+                    pass
+                else:
+                    try:
+                        port_id = socket.getservbyname(port)
+                        port_name = port
+                    except socket.error:
+                        pass
+
+        if port_id is None:
+            raise ValueError("not a valid port")
+        return port_id, port_name
+
+    def port_swap(port_id1, port_name1, port_id2, port_name2):
+        if port_id2 is not None:
+            # If this is a range that is reversed, fix it up.
+            if port_id1 > port_id2:
+                # swap
+                port_id1, port_id2 = port_id2, port_id1
+                port_name1, port_name2 = port_name2, port_name1
+            elif port_id1 == port_id2:
+                if port_name1 is None and port_name2 is not None:
+                    # We preserve the name.
+                    port_name1 = port_name2
+                port_id2 = None
+                port_name2 = None
+        return port_id1, port_name1, port_id2, port_name2
+
+    family = addr_family(family, allow_unspec=True)
+
+    parse_one_error = None
+    proto = None
+    port_name1 = None
+    port_name2 = None
+    port_id1 = None
+    port_id2 = None
+
+    if isinstance(port, str) and allow_proto:
+        idx = port.find(":")
+        if idx != -1:
+            p1 = port[:idx].strip()
+            p2 = port[idx + 1 :].strip()
+
+            if p1 == "icmp":
+                if family == socket.AF_INET6:
+                    raise ValueError("Invalid protocol for address family")
+                if not firewall.core.icmp.check_icmp_name(
+                    p2
+                ) and not firewall.core.icmp.check_icmp_type(p2):
+                    raise ValueError("Invalid icmp type")
+                proto, port_id1, port_name1 = p1, None, p2
+            elif p1 in ("icmpv6", "ipv6-icmp"):
+                if family == socket.AF_INET:
+                    raise ValueError("Invalid protocol for address family")
+                if not firewall.core.icmp.check_icmpv6_name(
+                    p2
+                ) and not firewall.core.icmp.check_icmpv6_type(p2):
+                    raise ValueError("Invalid icmpv6 type")
+                proto, port_id1, port_name1 = p1, None, p2
+            elif p1 not in (
+                "tcp",
+                "sctp",
+                "udp",
+                "udplite",
+            ) and not checkProtocol(p1):
+                raise ValueError("Invalid protocol")
+            else:
+                (
+                    x_proto,
+                    x_port_id1,
+                    x_port_name1,
+                    x_port_id2,
+                    x_port_name2,
+                ) = port_parse(
+                    p2,
+                    family=family,
+                    flags=flags,
+                    allow_range=allow_range,
+                    allow_proto=False,
+                )
+                proto, port_id1, port_name1, port_id2, port_name2 = (
+                    p1,
+                    x_port_id1,
+                    x_port_name1,
+                    x_port_id2,
+                    x_port_name2,
+                )
+
+    if proto is None:
+        if isinstance(port, str):
+            try:
+                port_id1, port_name1 = parse_one(port)
+            except ValueError as ex:
+                parse_one_error = ex
+            if parse_one_error is None:
+                # We succeeded to parse a single name. We accept that, even if it
+                # contains a delimiter.
+                pass
+            else:
+                if "-" in port and allow_range:
+                    # We want to parse ranges, but port-name can contain dashes.
+                    # So we iterate over all dashes, and try to find one which
+                    # we can use as a split.
+                    for i in range(len(port)):
+                        if port[i] != "-":
+                            continue
+                        try:
+                            p1 = parse_one(port[:i])
+                            p2 = parse_one(port[i + 1 :])
+                        except ValueError:
+                            continue
+                        if port_id1 is not None:
+                            # no unique match. We fail.
+                            raise ValueError("port name is ambiguous")
+                        port_id1, port_name1 = p1
+                        port_id2, port_name2 = p2
+
+        else:
+            # Usually, our parse just accepts strings. However, also accept
+            # already pre-parsed input.
+            if isinstance(port, int):
+                port_id1 = port
+            elif allow_range and (isinstance(port, tuple) or isinstance(port, list)):
+                if len(port) == 1:
+                    (port_id1,) = port
+                elif len(port) == 2:
+                    (port_id1, port_id2) = port
+
+        if port_id1 is None:
+            if parse_one_error is not None:
+                raise ValueError(str(parse_one_error))
+            raise ValueError("not a valid port")
+
+        if not check_range(port_id1) or (
+            port_id2 is not None and not check_range(port_id2)
+        ):
+            raise ValueError("port out of range")
+
+        port_id1, port_name1, port_id2, port_name2 = port_swap(
+            port_id1, port_name1, port_id2, port_name2
+        )
+
+    return proto, port_id1, port_name1, port_id2, port_name2
+
+
+def port_unparse(proto, port_id1, port_name1, port_id2, port_name2, *, delimiter=None):
+
+    if proto is not None:
+        if port_id1 is None:
+            # special case for icmp/icmpv6/ipv6-icmp. There is only a port_name.
+            p = port_name1
+        else:
+            p = port_unparse(
+                None, port_id1, port_name1, port_id2, port_name2, delimiter=delimiter
+            )
+        return f"{proto}:{p}"
+
+    p1 = port_name1 or str(port_id1)
+    p2 = None
+    if port_id2 is not None:
+        p2 = port_name2 or str(port_id2)
+
+    if delimiter is not None:
+        if p2 is None:
+            return p1
+        return f"{p1}{delimiter}{p2}"
+
+    # We want to unparse something, that can be parsed back. Since we use
+    # '-' as delimiter, and '-' can be part of the names, it's not entirely
+    # clear that we always can.
+    #
+    # If any of the names contain a '-', join them with a space. Our names
+    # cannot contain spaces, but the parser strips spaces around the "-"
+    if p2 is None:
+        return p1
+    if "-" not in p1 and "-" not in p2:
+        return f"{p1}-{p2}"
+    return f"{p1} - {p2}"
+
+
+port_check = _parse_check_fcn(port_parse)
+
+port_norm = _parse_norm_fcn(port_parse, port_unparse)
+
+
+###############################################################################
+
+
 class EntryType:
     class ParseFlags(enum.IntFlag):
         NO_IP6_BRACKETS = 0x1
@@ -444,6 +654,8 @@ EntryTypeAddrRange = EntryType("addr-range", ipaddrrange_parse, ipaddrrange_unpa
 
 EntryTypeMac = EntryType("mac", mac_parse, mac_unparse)
 
+EntryTypePort = EntryType("port", port_parse, port_unparse)
+
 ###############################################################################
 
 
@@ -453,22 +665,15 @@ def getPortID(port):
     @param port port string or port id
     @return Port id if valid, -1 if port can not be found and -2 if port is too big
     """
-
-    if isinstance(port, int):
-        _id = port
-    else:
-        if port:
-            port = port.strip()
-        try:
-            _id = int(port)
-        except ValueError:
-            try:
-                _id = socket.getservbyname(port)
-            except socket.error:
-                return -1
-    if _id > 65535:
-        return -2
-    return _id
+    try:
+        proto, port_id1, port_name1, port_id2, port_name2 = port_parse(
+            port, allow_range=False, allow_proto=False
+        )
+    except ValueError as ex:
+        if "out of range" in str(ex):
+            return -2
+        return -1
+    return port_id1
 
 
 def getPortRange(ports):
@@ -477,57 +682,21 @@ def getPortRange(ports):
     @param ports an integer or port string or port range string
     @return Array containing start and end port id for a valid range or -1 if port can not be found and -2 if port is too big for integer input or -1 for invalid ranges or None if the range is ambiguous.
     """
-
-    # (port, port)  or [port, port] case
-    if isinstance(ports, tuple) or isinstance(ports, list):
-        return ports
-
-    # "<port-id>" case
-    if isinstance(ports, int) or ports.isdigit():
-        id1 = getPortID(ports)
-        if id1 >= 0:
-            return (id1,)
-        return id1
-
-    splits = ports.split("-")
-
-    # "<port-id>-<port-id>" case
-    if len(splits) == 2 and splits[0].isdigit() and splits[1].isdigit():
-        id1 = getPortID(splits[0])
-        id2 = getPortID(splits[1])
-        if id1 >= 0 and id2 >= 0:
-            if id1 < id2:
-                return (id1, id2)
-            elif id1 > id2:
-                return (id2, id1)
-            else:  # ids are the same
-                return (id1,)
-
-    # everything else "<port-str>[-<port-str>]"
-    matched = []
-    for i in range(len(splits), 0, -1):
-        id1 = getPortID("-".join(splits[:i]))
-        port2 = "-".join(splits[i:])
-        if len(port2) > 0:
-            id2 = getPortID(port2)
-            if id1 >= 0 and id2 >= 0:
-                if id1 < id2:
-                    matched.append((id1, id2))
-                elif id1 > id2:
-                    matched.append((id2, id1))
-                else:
-                    matched.append((id1,))
-        else:
-            if id1 >= 0:
-                matched.append((id1,))
-                if i == len(splits):
-                    # full match, stop here
-                    break
-    if len(matched) < 1:
+    try:
+        proto, port_id1, port_name1, port_id2, port_name2 = port_parse(
+            ports, allow_proto=False
+        )
+    except ValueError as ex:
+        if "ambiguous" in str(ex):
+            return None
+        if "out of range" in str(ex):
+            return -2
         return -1
-    elif len(matched) > 1:
-        return None
-    return matched[0]
+
+    if port_id2 is None:
+        return (port_id1,)
+
+    return port_id1, port_id2
 
 
 def portStr(port, delimiter=":"):
@@ -540,39 +709,42 @@ def portStr(port, delimiter=":"):
     if port == "":
         return ""
 
-    _range = getPortRange(port)
-    if isinstance(_range, int) and _range < 0:
+    try:
+        proto, port_id1, port_name1, port_id2, port_name2 = port_parse(
+            port, allow_proto=False
+        )
+    except ValueError:
         return None
-    elif len(_range) == 1:
-        return "%s" % _range
-    else:
-        return "%s%s%s" % (_range[0], delimiter, _range[1])
+
+    if port_id2 is not None:
+        return f"{port_id1}{delimiter}{port_id2}"
+    if port_id1 is not None:
+        return f"{port_id1}"
+    return None
 
 
 def portInPortRange(port, range):
-    _port = getPortRange(port)
-    _range = getPortRange(range)
+    try:
+        proto, a_port_id1, a_port_name1, a_port_id2, a_port_name2 = port_parse(
+            port, allow_proto=False
+        )
+        proto, b_port_id1, b_port_name1, b_port_id2, b_port_name2 = port_parse(
+            range, allow_proto=False
+        )
+    except ValueError:
+        return False
 
-    if len(_port) == 1:
-        if len(_range) == 1:
-            return getPortID(_port[0]) == getPortID(_range[0])
-        if (
-            len(_range) == 2
-            and getPortID(_port[0]) >= getPortID(_range[0])
-            and getPortID(_port[0]) <= getPortID(_range[1])
-        ):
-            return True
-    elif len(_port) == 2:
-        if (
-            len(_range) == 2
-            and getPortID(_port[0]) >= getPortID(_range[0])
-            and getPortID(_port[0]) <= getPortID(_range[1])
-            and getPortID(_port[1]) >= getPortID(_range[0])
-            and getPortID(_port[1]) <= getPortID(_range[1])
-        ):
-            return True
-
-    return False
+    if a_port_id2 is None:
+        if b_port_id2 is None:
+            return a_port_id1 == b_port_id1
+        return a_port_id1 >= b_port_id1 and a_port_id1 <= b_port_id2
+    return (
+        b_port_id2 is not None
+        and a_port_id1 >= b_port_id1
+        and a_port_id1 <= b_port_id2
+        and a_port_id2 >= b_port_id1
+        and a_port_id2 <= b_port_id2
+    )
 
 
 def coalescePortRange(new_range, ranges):
