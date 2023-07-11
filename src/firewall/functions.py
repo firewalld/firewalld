@@ -583,6 +583,43 @@ port_norm = _parse_norm_fcn(port_parse, port_unparse)
 ###############################################################################
 
 
+def mark_parse(mark, *, family=None, flags=0):
+    number = None
+    is_hex = False
+    if isinstance(mark, str):
+        mark = mark.strip()
+        base = 10
+        if mark.startswith("0x"):
+            mark = mark[2:]
+            base = 16
+            is_hex = True
+        try:
+            num = int(mark, base)
+        except ValueError:
+            pass
+        else:
+            number = num
+    if number is None:
+        raise ValueError("not a valid mark number")
+    if number < 0 or number > 4294967295:
+        raise ValueError("mark out of range")
+    return number, is_hex
+
+
+def mark_unparse(number, is_hex):
+    if is_hex:
+        return f"0x{number:x}"
+    return str(number)
+
+
+mark_check = _parse_check_fcn(mark_parse)
+
+mark_norm = _parse_norm_fcn(mark_parse, mark_unparse)
+
+
+###############################################################################
+
+
 class EntryType:
     class ParseFlags(enum.IntFlag):
         NO_IP6_BRACKETS = 0x1
@@ -655,6 +692,8 @@ EntryTypeAddrRange = EntryType("addr-range", ipaddrrange_parse, ipaddrrange_unpa
 EntryTypeMac = EntryType("mac", mac_parse, mac_unparse)
 
 EntryTypePort = EntryType("port", port_parse, port_unparse)
+
+EntryTypeMark = EntryType("mark", mark_parse, mark_unparse)
 
 ###############################################################################
 

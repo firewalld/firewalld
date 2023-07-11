@@ -586,6 +586,22 @@ def test_port():
         _parse("icmp:network-prohibited", family="6")
 
 
+def test_mark():
+
+    assert firewall.functions.mark_parse("10") == (10, False)
+    assert firewall.functions.mark_parse(" 0x10") == (16, True)
+    assert firewall.functions.mark_norm("\n0x10") == "0x10"
+    assert firewall.functions.mark_parse(" 0x0000")
+    assert firewall.functions.mark_norm(" -0") == "0"
+    assert firewall.functions.mark_norm("0x0") == "0x0"
+    assert firewall.functions.mark_norm("0x000") == "0x0"
+    assert firewall.functions.mark_norm("0xFFFFFFFF") == "0xffffffff"
+    with pytest.raises(ValueError, match="mark out of range"):
+        assert firewall.functions.mark_norm("-1")
+    with pytest.raises(ValueError, match="mark out of range"):
+        assert firewall.functions.mark_norm("4294967296")
+
+
 def test_entrytype():
     with pytest.raises(TypeError):
         assert firewall.functions.EntryType.check("fooo", types=None)
@@ -716,3 +732,6 @@ def test_entrytype():
     assert firewall.functions.EntryTypePort.check("55")
     assert firewall.functions.EntryTypePort.check("http-70")
     assert firewall.functions.EntryTypePort.norm("http-70") == "70-http"
+
+    assert firewall.functions.EntryTypeMark.check("0xf4")
+    assert firewall.functions.EntryTypeMark.norm("0xF4 ") == "0xf4"
