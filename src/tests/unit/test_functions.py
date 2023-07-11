@@ -97,3 +97,33 @@ def test_fcnport():
     assert firewall.functions.portStr(" http") == "80"
     assert firewall.functions.portStr(" 1 - 5") == "1:5"
     assert firewall.functions.portStr(" http - 5") == "5:80"
+
+
+def test_checkIP():
+    with pytest.raises(TypeError):
+        assert not firewall.functions.checkIP(None)
+    assert firewall.functions.checkIP("0.0.0.0")
+    assert firewall.functions.checkIP("1.2.3.4")
+    assert not firewall.functions.checkIP("::")
+    assert not firewall.functions.checkIP("")
+
+    with pytest.raises(AttributeError):
+        assert not firewall.functions.checkIP6(None)
+    assert firewall.functions.checkIP6("[::]")
+    assert firewall.functions.checkIP6("[1:00::a22]")
+    assert firewall.functions.checkIP6("[::")
+    assert firewall.functions.checkIP6("[[[[[::")
+    assert firewall.functions.checkIP6("[[[[[::[")
+    assert firewall.functions.checkIP6("[[[[[1::2[")
+    assert not firewall.functions.checkIP6("[[[[[bogus[")
+
+    with pytest.raises(AttributeError):
+        assert not firewall.functions.normalizeIP6(None)
+    assert firewall.functions.normalizeIP6("[::]") == "::"
+    assert firewall.functions.normalizeIP6("[1:00::a22]") == "1:00::a22"
+    assert firewall.functions.normalizeIP6("1:00::a22") == "1:00::a22"
+    assert firewall.functions.normalizeIP6("[::") == "::"
+    assert firewall.functions.normalizeIP6("[[[[[::") == "::"
+    assert firewall.functions.normalizeIP6("[[[[[::[") == "::"
+    assert firewall.functions.normalizeIP6("[[[[[1::2[") == "1::2"
+    assert firewall.functions.normalizeIP6("[[[[[bogus[") == "bogus"
