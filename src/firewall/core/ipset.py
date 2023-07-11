@@ -9,6 +9,7 @@
 
 import os.path
 import ipaddress
+import socket
 
 from firewall import errors
 from firewall.errors import FirewallError
@@ -16,6 +17,7 @@ from firewall.core.prog import runProg
 from firewall.core.logger import log
 from firewall.functions import tempFile, readfile
 from firewall.config import COMMANDS
+import firewall.functions
 
 IPSET_MAXNAMELEN = 32
 IPSET_TYPES = [
@@ -320,6 +322,184 @@ def ipset_entry_split_with_type(entry, ipset_type):
         )
 
     return items, flags
+
+
+###############################################################################
+
+
+def _raise_firewallerror_ipset_inval_addr(entry_item, entry, ipset_type, family):
+    raise FirewallError(
+        errors.INVALID_ENTRY,
+        "invalid address '%s' in '%s' for %s (%s)"
+        % (entry_item, entry, ipset_type, family),
+    )
+
+
+def _raise_firewallerror_ipset_inval_mac(entry_item, entry):
+    raise FirewallError(
+        errors.INVALID_ENTRY,
+        "invalid mac address '%s' in '%s'" % (entry_item, entry),
+    )
+
+
+def ipset_entry_parse(entry, ipset_type, lst_entry, lst_ipset_type, idx, family):
+    entry_item = lst_entry[idx]
+    ipset_type_item = lst_ipset_type[idx]
+
+    orig_family = family
+    family = firewall.functions.addr_family(family, allow_unspec=False)
+
+    entrytype = None
+    detail = None
+
+    if ipset_type_item in ("ip", "net"):
+        try:
+            entrytype, detail = firewall.functions.EntryType.parse(
+                entry_item,
+                family=family,
+                types=(
+                    firewall.functions.EntryTypeAddr,
+                    firewall.functions.EntryTypeAddrMask,
+                    firewall.functions.EntryTypeAddrRange,
+                ),
+            )
+        except ValueError:
+            if (
+                ipset_type_item == "ip"
+                and entry_item.count("-") >= 2
+                and family == socket.AF_INET
+            ):
+                raise FirewallError(
+                    errors.INVALID_ENTRY,
+                    "invalid address range '%s' in '%s' for %s (%s)"
+                    % (entry_item, entry, ipset_type, orig_family),
+                )
+            _raise_firewallerror_ipset_inval_addr(
+                entry_item, entry, ipset_type, orig_family
+            )
+
+        if entrytype is firewall.functions.EntryTypeAddr:
+            addrbin, family = detail
+            if ipset_type_item == "ip":
+                if (
+                    family == socket.AF_INET
+                    and addrbin == firewall.functions.IPAddrZero4
+                ):
+                    _raise_firewallerror_ipset_inval_addr(
+                        entry_item, entry, ipset_type, orig_family
+                    )
+            elif ipset_type_item == "net":
+                pass
+            else:
+                raise errors.BugError()
+        elif entrytype is firewall.functions.EntryTypeAddrMask:
+            addrbin, plen, family = detail
+            if ipset_type_item == "ip":
+                if idx > 0:
+                    # IPs with mask only allowed in the first
+                    # position of the type
+                    _raise_firewallerror_ipset_inval_addr(
+                        entry_item, entry, ipset_type, orig_family
+                    )
+            elif ipset_type_item == "net":
+                if plen == 0:
+                    if (
+                        family == socket.AF_INET6
+                        and idx == 0
+                        and tuple(lst_ipset_type) == ("net", "iface")
+                    ):
+                        pass
+                    else:
+                        _raise_firewallerror_ipset_inval_addr(
+                            entry_item, entry, ipset_type, orig_family
+                        )
+            else:
+                raise errors.BugError()
+        elif entrytype is firewall.functions.EntryTypeAddrRange:
+            addrbin1, addrbin2, plen, family = detail
+            if ipset_type_item == "ip":
+                if idx > 1:
+                    # IP ranges only with plain IPs, no masks
+                    raise FirewallError(
+                        errors.INVALID_ENTRY,
+                        "invalid address '%s' in '%s'[%s]" % (entry_item, entry, idx),
+                    )
+                if plen != -1:
+                    # Subnet mask not allowed with this type
+                    _raise_firewallerror_ipset_inval_addr(
+                        f"{firewall.functions.ipaddr_unparse(addrbin2, family)}/{plen}",
+                        entry,
+                        ipset_type,
+                        orig_family,
+                    )
+                if family != socket.AF_INET:
+                    # A range is only supported with the first "ip" for IPv4.
+                    _raise_firewallerror_ipset_inval_addr(
+                        entry_item, entry, ipset_type, orig_family
+                    )
+            elif ipset_type_item == "net":
+                pass
+            else:
+                raise errors.BugError()
+        else:
+            raise errors.BugError()
+
+    elif ipset_type_item == "mac":
+        try:
+            entrytype, detail = firewall.functions.EntryType.parse(
+                entry_item,
+                family=family,
+                types=(firewall.functions.EntryTypeMac,),
+            )
+        except ValueError:
+            _raise_firewallerror_ipset_inval_mac(entry_item, entry)
+        (mac,) = detail
+        if mac == "00:00:00:00:00:00":
+            # ipset does not allow to add 00:00:00:00:00:00
+            _raise_firewallerror_ipset_inval_mac(entry_item, entry)
+    elif ipset_type_item == "port":
+        try:
+            entrytype, detail = firewall.functions.EntryType.parse(
+                entry_item,
+                family=family,
+                types=(firewall.functions.EntryTypePort,),
+            )
+        except ValueError:
+            raise FirewallError(
+                errors.INVALID_ENTRY, "invalid port '%s' in '%s'" % (entry_item, entry)
+            )
+    elif ipset_type_item == "mark":
+        try:
+            entrytype, detail = firewall.functions.EntryType.parse(
+                entry_item,
+                family=family,
+                types=(firewall.functions.EntryTypeMark,),
+            )
+        except ValueError:
+            raise FirewallError(
+                errors.INVALID_ENTRY, "invalid mark '%s' in '%s'" % (entry_item, entry)
+            )
+    elif ipset_type_item == "iface":
+        try:
+            entrytype, detail = firewall.functions.EntryType.parse(
+                entry_item,
+                family=family,
+                types=(firewall.functions.EntryTypeIface,),
+            )
+        except ValueError:
+            raise FirewallError(
+                errors.INVALID_ENTRY,
+                "invalid interface '%s' in '%s'" % (entry_item, entry),
+            )
+    else:
+        raise FirewallError(
+            errors.INVALID_IPSET, "ipset type '%s' not usable" % (ipset_type_item,)
+        )
+
+    return entrytype, detail
+
+
+###############################################################################
 
 
 def normalize_ipset_entry(entry):
