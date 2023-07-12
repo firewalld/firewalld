@@ -1,5 +1,5 @@
 FWD_START_TEST([ipset with timeout])
-AT_KEYWORDS(ipset rhbz1506742)
+AT_KEYWORDS(ipset rhbz1506742 rhbz2055330 gh699 gh908)
 
 CHECK_IPSET
 
@@ -9,7 +9,9 @@ NFT_LIST_SET([foobar], 0, [dnl
     table inet firewalld {
         set foobar {
             type ipv4_addr
-            flags interval
+            size 1000000
+            flags interval,timeout
+            timeout 10m
         }
     }
 ])
