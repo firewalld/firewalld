@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
 import pytest
+import socket
 
 import firewall.functions
 
@@ -159,3 +160,30 @@ def test_checkInterface():
     assert firewall.functions.checkInterface(f"1234{iface}")
     assert firewall.functions.checkInterface(f"1234567890abc{iface}")
     assert not firewall.functions.checkInterface(f"1234567890abcd{iface}")
+
+
+def test_addr_family():
+    assert firewall.functions.addr_family("4") == socket.AF_INET
+    assert firewall.functions.addr_family("IP6") == socket.AF_INET6
+    assert firewall.functions.addr_family(None, allow_unspec=True) == socket.AF_UNSPEC
+    assert firewall.functions.addr_family(socket.AF_INET) == socket.AF_INET
+    assert firewall.functions.addr_family(socket.AF_INET6) == socket.AF_INET6
+    assert (
+        firewall.functions.addr_family(socket.AF_UNSPEC, allow_unspec=True)
+        == socket.AF_UNSPEC
+    )
+    assert firewall.functions.addr_family("IP", allow_unspec=True) == socket.AF_UNSPEC
+
+    with pytest.raises(firewall.errors.BugError):
+        firewall.functions.addr_family("x")
+    with pytest.raises(firewall.errors.BugError):
+        firewall.functions.addr_family("")
+    with pytest.raises(firewall.errors.BugError):
+        firewall.functions.addr_family("", allow_unspec=True)
+    with pytest.raises(firewall.errors.BugError):
+        firewall.functions.addr_family("IP")
+
+    for family_str in ("IPv4", "IPv6", "IP"):
+        f2 = firewall.functions.addr_family(family_str, allow_unspec=True)
+        assert family_str == firewall.functions.addr_family_str(f2)
+        assert family_str == firewall.functions.addr_family_str(family_str)

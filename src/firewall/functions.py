@@ -11,6 +11,8 @@ import os.path
 import shlex
 import string
 import tempfile
+
+import firewall.errors
 from firewall.core.logger import log
 from firewall.config import FIREWALLD_TEMPDIR, FIREWALLD_PIDFILE
 
@@ -24,6 +26,62 @@ NOPRINT_TRANS_TABLE = {
     for i in range(0, 160)
     if not (i > 31 and i < 127)
 }
+
+
+###############################################################################
+
+
+def addr_family(family, allow_unspec=False):
+    """Normalizes (and verifies) the address family. It returns the corresponding
+    socket.AF_INET, socket.AF_INET6, or socket.AF_UNSPEC
+
+    @family: the family to normalize/verify.
+    @allow_unspec: whether socket.AF_UNSPEC and None is accepted as socket.AF_UNSPEC
+    """
+    if family == socket.AF_INET or family == socket.AF_INET6:
+        return family
+    if family is None or family == socket.AF_UNSPEC:
+        if allow_unspec:
+            return socket.AF_UNSPEC
+    elif isinstance(family, str):
+        family = family.lower()
+        if family in ("ipv4", "4", "ip4", "inet4", "inet"):
+            return socket.AF_INET
+        if family in ("ipv6", "6", "ip6", "inet6"):
+            return socket.AF_INET6
+        if allow_unspec and family == "ip":
+            return socket.AF_UNSPEC
+
+    # Family is not untrusted user-input, it's provided by the calling code.
+    # It's a bug to come up with an invalid address family.
+    raise firewall.errors.BugError("not a valid IP address family")
+
+
+def addr_family_str(family):
+    """Returns either 'IPv4' or 'IPv6' or 'IP', depending on the address family."""
+    family = addr_family(family, allow_unspec=True)
+    if family == socket.AF_INET:
+        return "IPv4"
+    if family == socket.AF_INET6:
+        return "IPv6"
+    return "IP"
+
+
+def addr_family_size(family):
+    family = addr_family(family)
+    if family == socket.AF_INET:
+        return 4
+    return 16
+
+
+def addr_family_bitsize(family):
+    family = addr_family(family)
+    if family == socket.AF_INET:
+        return 32
+    return 128
+
+
+###############################################################################
 
 
 def getPortID(port):
