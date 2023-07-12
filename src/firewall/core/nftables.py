@@ -1618,9 +1618,9 @@ class nftables:
 
         if options:
             if "timeout" in options:
-                set_dict["timeout"] = options["timeout"]
+                set_dict["timeout"] = int(options["timeout"])
             if "maxelem" in options:
-                set_dict["size"] = options["maxelem"]
+                set_dict["size"] = int(options["maxelem"])
 
         return [{"add": {"set": set_dict}}]
 
