@@ -81,10 +81,8 @@ EXTRA_DIST = \
 
 CLEANFILES = *~ *\# .\#* *.py?
 
-FLAKE8_IGNORE = E126,E127,E128,E201,E202,E203,E211,E221,E222,E225,E226,E231,E241,E251,E261,E262,E265,E266,E301,E302,E303,E305,E306,E402,E501,E502,W503,W504,E722,E741
 check-local:
-	find . -name '*.py' -or -name '*.py.in' |xargs flake8 --ignore="$(FLAKE8_IGNORE)"
-	flake8 --ignore="$(FLAKE8_IGNORE)" $(dist_bin_SCRIPTS_in) $(dist_sbin_SCRIPTS_in)
+	flake8
 	@echo
 	@for file in $(filter-out $(EXTRA_DIST:.in=),$(nobase_dist_python_DATA) $(dist_bin_SCRIPTS_in) $(dist_sbin_SCRIPTS_in)); do \
 		if ! grep "$${file}" ${top_srcdir}/po/POTFILES.in > /dev/null; then \

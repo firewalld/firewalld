@@ -1,6 +1,7 @@
 SUBDIRS = config doc po shell-completion src
 
 EXTRA_DIST = \
+	.flake8 \
 	CODE_OF_CONDUCT.md \
 	COPYING \
 	README.md \
