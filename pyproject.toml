@@ -1,0 +1,7 @@
+[tool.black]
+target-versions = ["py37", "py38", "py39", "py310"]
+include = '''
+    (
+        src/tests/unit/.*.py
+    )
+    '''
