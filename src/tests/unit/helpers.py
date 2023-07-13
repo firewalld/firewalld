@@ -55,3 +55,35 @@ def ipaddr_from_bin(addr):
     else:
         assert False
     return socket.inet_ntop(family, addr)
+
+
+###############################################################################
+
+
+def getservbyname(name, expected=None, maybe_missing=False):
+    assert name
+    assert isinstance(name, str)
+
+    try:
+        p = socket.getservbyname(name)
+    except socket.error:
+        if not maybe_missing:
+            raise
+        return None
+
+    assert isinstance(p, int)
+    assert p > 0
+
+    if expected is not None:
+        assert p == expected
+
+    return p
+
+
+def getprotobyname(name):
+    assert name
+    assert isinstance(name, str)
+    try:
+        return socket.getprotobyname(name)
+    except socket.error:
+        return None
