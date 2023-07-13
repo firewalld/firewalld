@@ -12,8 +12,14 @@ import sys
 from firewall import errors
 from firewall.errors import FirewallError
 from dbus.exceptions import DBusException
-from firewall.functions import checkIPnMask, checkIP6nMask, check_mac, \
-    check_port, check_single_address
+from firewall.functions import (
+    checkIPnMask,
+    checkIP6nMask,
+    check_mac,
+    check_port,
+    check_single_address,
+)
+
 
 class FirewallCommand:
     def __init__(self, quiet=False, verbose=False):
@@ -46,19 +52,19 @@ class FirewallCommand:
             sys.stderr.write(msg + "\n")
 
     def print_warning(self, msg=None):
-        FAIL = '\033[91m'
-        END = '\033[00m'
+        FAIL = "\033[91m"
+        END = "\033[00m"
         if sys.stderr.isatty():
             msg = FAIL + msg + END
         self.print_error_msg(msg)
 
     def print_and_exit(self, msg=None, exit_code=0):
-        #OK = '\033[92m'
-        #END = '\033[00m'
+        # OK = '\033[92m'
+        # END = '\033[00m'
         if exit_code > 1:
             self.print_warning(msg)
         else:
-            #if sys.stdout.isatty():
+            # if sys.stdout.isatty():
             #   msg = OK + msg + END
             self.print_msg(msg)
         sys.exit(exit_code)
@@ -70,14 +76,23 @@ class FirewallCommand:
         if msg is not None and self.verbose:
             sys.stdout.write(msg + "\n")
 
-    def __cmd_sequence(self, cmd_type, option, action_method, query_method, # pylint: disable=W0613, R0913, R0914
-                       parse_method, message, start_args=None, end_args=None, # pylint: disable=W0613
-                       no_exit=False):
+    def __cmd_sequence(
+        self,
+        cmd_type,
+        option,
+        action_method,
+        query_method,  # pylint: disable=W0613, R0913, R0914
+        parse_method,
+        message,
+        start_args=None,
+        end_args=None,  # pylint: disable=W0613
+        no_exit=False,
+    ):
         if self.fw is not None:
             self.fw.authorizeAll()
-        items = [ ]
+        items = []
         _errors = 0
-        _error_codes = [ ]
+        _error_codes = []
         for item in option:
             if parse_method is not None:
                 try:
@@ -96,7 +111,7 @@ class FirewallCommand:
             items.append(item)
 
         for item in items:
-            call_item = [ ]
+            call_item = []
             if start_args is not None:
                 call_item += start_args
             if not isinstance(item, list) and not isinstance(item, tuple):
@@ -115,8 +130,12 @@ class FirewallCommand:
                 else:
                     msg = str(msg)
                 code = FirewallError.get_code(msg)
-                if code in [ errors.ALREADY_ENABLED, errors.NOT_ENABLED,
-                             errors.ZONE_ALREADY_SET, errors.ALREADY_SET ]:
+                if code in [
+                    errors.ALREADY_ENABLED,
+                    errors.NOT_ENABLED,
+                    errors.ZONE_ALREADY_SET,
+                    errors.ALREADY_SET,
+                ]:
                     code = 0
                 if len(option) > 1:
                     self.print_warning("Warning: %s" % msg)
@@ -145,39 +164,119 @@ class FirewallCommand:
                 # INVALID_PORT and INVALID_PROTOCOL.
                 sys.exit(errors.UNKNOWN_ERROR)
 
-    def add_sequence(self, option, action_method, query_method, parse_method, # pylint: disable=R0913
-                     message, no_exit=False):
-        self.__cmd_sequence("add", option, action_method, query_method,
-                            parse_method, message, no_exit=no_exit)
+    def add_sequence(
+        self,
+        option,
+        action_method,
+        query_method,
+        parse_method,  # pylint: disable=R0913
+        message,
+        no_exit=False,
+    ):
+        self.__cmd_sequence(
+            "add",
+            option,
+            action_method,
+            query_method,
+            parse_method,
+            message,
+            no_exit=no_exit,
+        )
 
-    def x_add_sequence(self, x, option, action_method, query_method, # pylint: disable=R0913
-                       parse_method, message, no_exit=False):
-        self.__cmd_sequence("add", option, action_method, query_method,
-                            parse_method, message, start_args=[x],
-                            no_exit=no_exit)
+    def x_add_sequence(
+        self,
+        x,
+        option,
+        action_method,
+        query_method,  # pylint: disable=R0913
+        parse_method,
+        message,
+        no_exit=False,
+    ):
+        self.__cmd_sequence(
+            "add",
+            option,
+            action_method,
+            query_method,
+            parse_method,
+            message,
+            start_args=[x],
+            no_exit=no_exit,
+        )
 
-    def zone_add_timeout_sequence(self, zone, option, action_method, # pylint: disable=R0913
-                                  query_method, parse_method, message,
-                                  timeout, no_exit=False):
-        self.__cmd_sequence("add", option, action_method, query_method,
-                            parse_method, message, start_args=[zone],
-                            end_args=[timeout], no_exit=no_exit)
+    def zone_add_timeout_sequence(
+        self,
+        zone,
+        option,
+        action_method,  # pylint: disable=R0913
+        query_method,
+        parse_method,
+        message,
+        timeout,
+        no_exit=False,
+    ):
+        self.__cmd_sequence(
+            "add",
+            option,
+            action_method,
+            query_method,
+            parse_method,
+            message,
+            start_args=[zone],
+            end_args=[timeout],
+            no_exit=no_exit,
+        )
 
-    def remove_sequence(self, option, action_method, query_method, # pylint: disable=R0913
-                        parse_method, message, no_exit=False):
-        self.__cmd_sequence("remove", option, action_method, query_method,
-                            parse_method, message, no_exit=no_exit)
+    def remove_sequence(
+        self,
+        option,
+        action_method,
+        query_method,  # pylint: disable=R0913
+        parse_method,
+        message,
+        no_exit=False,
+    ):
+        self.__cmd_sequence(
+            "remove",
+            option,
+            action_method,
+            query_method,
+            parse_method,
+            message,
+            no_exit=no_exit,
+        )
 
-    def x_remove_sequence(self, x, option, action_method, query_method, # pylint: disable=R0913
-                          parse_method, message, no_exit=False):
-        self.__cmd_sequence("remove", option, action_method, query_method,
-                            parse_method, message, start_args=[x],
-                            no_exit=no_exit)
+    def x_remove_sequence(
+        self,
+        x,
+        option,
+        action_method,
+        query_method,  # pylint: disable=R0913
+        parse_method,
+        message,
+        no_exit=False,
+    ):
+        self.__cmd_sequence(
+            "remove",
+            option,
+            action_method,
+            query_method,
+            parse_method,
+            message,
+            start_args=[x],
+            no_exit=no_exit,
+        )
 
-
-    def __query_sequence(self, option, query_method, parse_method, message, # pylint: disable=R0913
-                         start_args=None, no_exit=False):
-        items = [ ]
+    def __query_sequence(
+        self,
+        option,
+        query_method,
+        parse_method,
+        message,  # pylint: disable=R0913
+        start_args=None,
+        no_exit=False,
+    ):
+        items = []
         for item in option:
             if parse_method is not None:
                 try:
@@ -192,7 +291,7 @@ class FirewallCommand:
             items.append(item)
 
         for item in items:
-            call_item = [ ]
+            call_item = []
             if start_args is not None:
                 call_item += start_args
             if not isinstance(item, list) and not isinstance(item, tuple):
@@ -209,8 +308,7 @@ class FirewallCommand:
                     self.print_warning("Warning: %s" % msg.get_dbus_message())
                     continue
                 else:
-                    self.print_and_exit("Error: %s" % msg.get_dbus_message(),
-                                        code)
+                    self.print_and_exit("Error: %s" % msg.get_dbus_message(), code)
             except Exception as msg:
                 code = FirewallError.get_code(str(msg))
                 if len(option) > 1:
@@ -225,38 +323,61 @@ class FirewallCommand:
         if not no_exit:
             sys.exit(0)
 
-    def query_sequence(self, option, query_method, parse_method, message, # pylint: disable=R0913
-                       no_exit=False):
-        self.__query_sequence(option, query_method, parse_method,
-                              message, no_exit=no_exit)
+    def query_sequence(
+        self,
+        option,
+        query_method,
+        parse_method,
+        message,  # pylint: disable=R0913
+        no_exit=False,
+    ):
+        self.__query_sequence(
+            option, query_method, parse_method, message, no_exit=no_exit
+        )
 
-    def x_query_sequence(self, x, option, query_method, parse_method, # pylint: disable=R0913
-                         message, no_exit=False):
-        self.__query_sequence(option, query_method, parse_method,
-                              message, start_args=[x], no_exit=no_exit)
-
+    def x_query_sequence(
+        self,
+        x,
+        option,
+        query_method,
+        parse_method,  # pylint: disable=R0913
+        message,
+        no_exit=False,
+    ):
+        self.__query_sequence(
+            option, query_method, parse_method, message, start_args=[x], no_exit=no_exit
+        )
 
     def parse_source(self, value):
-        if not checkIPnMask(value) and not checkIP6nMask(value) \
-           and not check_mac(value) and not \
-           (value.startswith("ipset:") and len(value) > 6):
-            raise FirewallError(errors.INVALID_ADDR,
-                                "'%s' is no valid IPv4, IPv6 or MAC address, nor an ipset" % value)
+        if (
+            not checkIPnMask(value)
+            and not checkIP6nMask(value)
+            and not check_mac(value)
+            and not (value.startswith("ipset:") and len(value) > 6)
+        ):
+            raise FirewallError(
+                errors.INVALID_ADDR,
+                "'%s' is no valid IPv4, IPv6 or MAC address, nor an ipset" % value,
+            )
         return value
 
     def parse_port(self, value, separator="/"):
         try:
             (port, proto) = value.split(separator)
         except ValueError:
-            raise FirewallError(errors.INVALID_PORT, "bad port (most likely "
-                                "missing protocol), correct syntax is "
-                                "portid[-portid]%sprotocol" % separator)
+            raise FirewallError(
+                errors.INVALID_PORT,
+                "bad port (most likely "
+                "missing protocol), correct syntax is "
+                "portid[-portid]%sprotocol" % separator,
+            )
         if not check_port(port):
             raise FirewallError(errors.INVALID_PORT, port)
-        if proto not in [ "tcp", "udp", "sctp", "dccp" ]:
-            raise FirewallError(errors.INVALID_PROTOCOL,
-                                "'%s' not in {'tcp'|'udp'|'sctp'|'dccp'}" % \
-                                proto)
+        if proto not in ["tcp", "udp", "sctp", "dccp"]:
+            raise FirewallError(
+                errors.INVALID_PROTOCOL,
+                "'%s' not in {'tcp'|'udp'|'sctp'|'dccp'}" % proto,
+            )
         return (port, proto)
 
     def parse_forward_port(self, value, compat=False):
@@ -265,7 +386,7 @@ class FirewallCommand:
         toport = None
         toaddr = None
         i = 0
-        while ("=" in value[i:]):
+        while "=" in value[i:]:
             opt = value[i:].split("=", 1)[0]
             i += len(opt) + 1
             if "=" in value[i:]:
@@ -286,8 +407,9 @@ class FirewallCommand:
                 # ignore if option in compat mode
                 pass
             else:
-                raise FirewallError(errors.INVALID_FORWARD,
-                                    "invalid forward port arg '%s'" % (opt))
+                raise FirewallError(
+                    errors.INVALID_FORWARD, "invalid forward port arg '%s'" % (opt)
+                )
         if not port:
             raise FirewallError(errors.INVALID_FORWARD, "missing port")
         if not protocol:
@@ -297,10 +419,11 @@ class FirewallCommand:
 
         if not check_port(port):
             raise FirewallError(errors.INVALID_PORT, port)
-        if protocol not in [ "tcp", "udp", "sctp", "dccp" ]:
-            raise FirewallError(errors.INVALID_PROTOCOL,
-                                "'%s' not in {'tcp'|'udp'|'sctp'|'dccp'}" % \
-                                protocol)
+        if protocol not in ["tcp", "udp", "sctp", "dccp"]:
+            raise FirewallError(
+                errors.INVALID_PROTOCOL,
+                "'%s' not in {'tcp'|'udp'|'sctp'|'dccp'}" % protocol,
+            )
         if toport and not check_port(toport):
             raise FirewallError(errors.INVALID_PORT, toport)
         if toaddr and not check_single_address("ipv4", toaddr):
@@ -316,53 +439,71 @@ class FirewallCommand:
         elif len(args) == 2:
             return args
         else:
-            raise FirewallError(errors.INVALID_OPTION,
-                                "invalid ipset option '%s'" % (value))
+            raise FirewallError(
+                errors.INVALID_OPTION, "invalid ipset option '%s'" % (value)
+            )
 
     def check_destination_ipv(self, value):
-        ipvs = [ "ipv4", "ipv6", ]
+        ipvs = [
+            "ipv4",
+            "ipv6",
+        ]
         if value not in ipvs:
-            raise FirewallError(errors.INVALID_IPV,
-                                "invalid argument: %s (choose from '%s')" % \
-                                (value, "', '".join(ipvs)))
+            raise FirewallError(
+                errors.INVALID_IPV,
+                "invalid argument: %s (choose from '%s')" % (value, "', '".join(ipvs)),
+            )
         return value
 
     def parse_service_destination(self, value):
         try:
             (ipv, destination) = value.split(":", 1)
         except ValueError:
-            raise FirewallError(errors.INVALID_DESTINATION,
-                                "destination syntax is ipv:address[/mask]")
+            raise FirewallError(
+                errors.INVALID_DESTINATION, "destination syntax is ipv:address[/mask]"
+            )
         return (self.check_destination_ipv(ipv), destination)
 
     def check_ipv(self, value):
-        ipvs = [ "ipv4", "ipv6", "eb" ]
+        ipvs = ["ipv4", "ipv6", "eb"]
         if value not in ipvs:
-            raise FirewallError(errors.INVALID_IPV,
-                                "invalid argument: %s (choose from '%s')" % \
-                                (value, "', '".join(ipvs)))
+            raise FirewallError(
+                errors.INVALID_IPV,
+                "invalid argument: %s (choose from '%s')" % (value, "', '".join(ipvs)),
+            )
         return value
 
     def check_helper_family(self, value):
-        ipvs = [ "", "ipv4", "ipv6" ]
+        ipvs = ["", "ipv4", "ipv6"]
         if value not in ipvs:
-            raise FirewallError(errors.INVALID_IPV,
-                                "invalid argument: %s (choose from '%s')" % \
-                                (value, "', '".join(ipvs)))
+            raise FirewallError(
+                errors.INVALID_IPV,
+                "invalid argument: %s (choose from '%s')" % (value, "', '".join(ipvs)),
+            )
         return value
 
     def check_module(self, value):
         if not value.startswith("nf_conntrack_"):
             raise FirewallError(
                 errors.INVALID_MODULE,
-                "'%s' does not start with 'nf_conntrack_'" % value)
+                "'%s' does not start with 'nf_conntrack_'" % value,
+            )
         if len(value.replace("nf_conntrack_", "")) < 1:
-            raise FirewallError(errors.INVALID_MODULE,
-                                "Module name '%s' too short" % value)
+            raise FirewallError(
+                errors.INVALID_MODULE, "Module name '%s' too short" % value
+            )
         return value
 
-    def print_zone_policy_info(self, zone, settings, default_zone=None, extra_interfaces=[],
-                               active_zones=[], active_policies=[], isPolicy=True): # pylint: disable=R0914
+    def print_zone_policy_info(
+        self,
+        zone,
+        settings,
+        default_zone=None,
+        extra_interfaces=[],
+        active_zones=[],
+        active_policies=[],
+        isPolicy=True,
+    ):  # pylint: disable=R0914
         target = settings.getTarget()
         services = settings.getServices()
         ports = settings.getPorts()
@@ -395,7 +536,7 @@ class FirewallCommand:
                 pass
             else:
                 i += len(search_str)
-                priority = int(rule[i:i+(rule[i:].index(" "))].replace("\"", ""))
+                priority = int(rule[i : i + (rule[i:].index(" "))].replace('"', ""))
 
             return priority
 
@@ -419,8 +560,9 @@ class FirewallCommand:
         if not isPolicy:
             self.print_msg("  ingress-priority: " + str(ingress_priority))
             self.print_msg("  egress-priority: " + str(egress_priority))
-            self.print_msg("  icmp-block-inversion: %s" % \
-                           ("yes" if icmp_block_inversion else "no"))
+            self.print_msg(
+                "  icmp-block-inversion: %s" % ("yes" if icmp_block_inversion else "no")
+            )
         if isPolicy:
             self.print_msg("  ingress-zones: " + " ".join(ingress_zones))
             self.print_msg("  egress-zones: " + " ".join(egress_zones))
@@ -428,31 +570,63 @@ class FirewallCommand:
             self.print_msg("  interfaces: " + " ".join(interfaces))
             self.print_msg("  sources: " + " ".join(sources))
         self.print_msg("  services: " + " ".join(sorted(services)))
-        self.print_msg("  ports: " + " ".join(["%s/%s" % (port[0], port[1])
-                                               for port in ports]))
+        self.print_msg(
+            "  ports: " + " ".join(["%s/%s" % (port[0], port[1]) for port in ports])
+        )
         self.print_msg("  protocols: " + " ".join(sorted(protocols)))
         if not isPolicy:
             self.print_msg("  forward: %s" % ("yes" if forward else "no"))
         self.print_msg("  masquerade: %s" % ("yes" if masquerade else "no"))
-        self.print_msg("  forward-ports: " + ("\n\t" if forward_ports else "") +
-                       "\n\t".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % \
-                                    (port, proto, toport, toaddr)
-                                    for (port, proto, toport, toaddr) in \
-                                    forward_ports]))
-        self.print_msg("  source-ports: " +
-                       " ".join(["%s/%s" % (port[0], port[1])
-                                 for port in source_ports]))
+        self.print_msg(
+            "  forward-ports: "
+            + ("\n\t" if forward_ports else "")
+            + "\n\t".join(
+                [
+                    "port=%s:proto=%s:toport=%s:toaddr=%s"
+                    % (port, proto, toport, toaddr)
+                    for (port, proto, toport, toaddr) in forward_ports
+                ]
+            )
+        )
+        self.print_msg(
+            "  source-ports: "
+            + " ".join(["%s/%s" % (port[0], port[1]) for port in source_ports])
+        )
         self.print_msg("  icmp-blocks: " + " ".join(icmp_blocks))
-        self.print_msg("  rich rules: " + ("\n\t" if rules else "") +
-                            "\n\t".join(sorted(rules, key=rich_rule_sorted_key)))
+        self.print_msg(
+            "  rich rules: "
+            + ("\n\t" if rules else "")
+            + "\n\t".join(sorted(rules, key=rich_rule_sorted_key))
+        )
 
-    def print_zone_info(self, zone, settings, default_zone=None, extra_interfaces=[], active_zones=[]):
-        self.print_zone_policy_info(zone, settings, default_zone=default_zone, extra_interfaces=extra_interfaces,
-                                    active_zones=active_zones, isPolicy=False)
+    def print_zone_info(
+        self, zone, settings, default_zone=None, extra_interfaces=[], active_zones=[]
+    ):
+        self.print_zone_policy_info(
+            zone,
+            settings,
+            default_zone=default_zone,
+            extra_interfaces=extra_interfaces,
+            active_zones=active_zones,
+            isPolicy=False,
+        )
 
-    def print_policy_info(self, policy, settings, default_zone=None, extra_interfaces=[], active_policies=[]):
-        self.print_zone_policy_info(policy, settings, default_zone=default_zone, extra_interfaces=extra_interfaces,
-                                    active_policies=active_policies, isPolicy=True)
+    def print_policy_info(
+        self,
+        policy,
+        settings,
+        default_zone=None,
+        extra_interfaces=[],
+        active_policies=[],
+    ):
+        self.print_zone_policy_info(
+            policy,
+            settings,
+            default_zone=default_zone,
+            extra_interfaces=extra_interfaces,
+            active_policies=active_policies,
+            isPolicy=True,
+        )
 
     def print_service_info(self, service, settings):
         ports = settings.getPorts()
@@ -468,16 +642,19 @@ class FirewallCommand:
         if self.verbose:
             self.print_msg("  summary: " + short_description)
             self.print_msg("  description: " + description)
-        self.print_msg("  ports: " + " ".join(["%s/%s" % (port[0], port[1])
-                                               for port in ports]))
+        self.print_msg(
+            "  ports: " + " ".join(["%s/%s" % (port[0], port[1]) for port in ports])
+        )
         self.print_msg("  protocols: " + " ".join(protocols))
-        self.print_msg("  source-ports: " +
-                       " ".join(["%s/%s" % (port[0], port[1])
-                                 for port in source_ports]))
+        self.print_msg(
+            "  source-ports: "
+            + " ".join(["%s/%s" % (port[0], port[1]) for port in source_ports])
+        )
         self.print_msg("  modules: " + " ".join(modules))
-        self.print_msg("  destination: " +
-                       " ".join(["%s:%s" % (k, v)
-                                 for k, v in destinations.items()]))
+        self.print_msg(
+            "  destination: "
+            + " ".join(["%s:%s" % (k, v) for k, v in destinations.items()])
+        )
         self.print_msg("  includes: " + " ".join(sorted(includes)))
         self.print_msg("  helpers: " + " ".join(sorted(helpers)))
 
@@ -486,7 +663,7 @@ class FirewallCommand:
         description = settings.getDescription()
         short_description = settings.getShort()
         if len(destinations) == 0:
-            destinations = [ "ipv4", "ipv6" ]
+            destinations = ["ipv4", "ipv6"]
         self.print_msg(icmptype)
         if self.verbose:
             self.print_msg("  summary: " + short_description)
@@ -504,8 +681,10 @@ class FirewallCommand:
             self.print_msg("  summary: " + short_description)
             self.print_msg("  description: " + description)
         self.print_msg("  type: " + ipset_type)
-        self.print_msg("  options: " + " ".join(["%s=%s" % (k, v) if v else k
-                                                 for k, v in options.items()]))
+        self.print_msg(
+            "  options: "
+            + " ".join(["%s=%s" % (k, v) if v else k for k, v in options.items()])
+        )
         self.print_msg("  entries: " + " ".join(entries))
 
     def print_helper_info(self, helper, settings):
@@ -520,8 +699,9 @@ class FirewallCommand:
             self.print_msg("  description: " + description)
         self.print_msg("  family: " + family)
         self.print_msg("  module: " + module)
-        self.print_msg("  ports: " + " ".join(["%s/%s" % (port[0], port[1])
-                                               for port in ports]))
+        self.print_msg(
+            "  ports: " + " ".join(["%s/%s" % (port[0], port[1]) for port in ports])
+        )
 
     def print_query_result(self, value):
         if value:
@@ -534,8 +714,12 @@ class FirewallCommand:
             raise
         self.fail_if_not_authorized(exception_message)
         code = FirewallError.get_code(str(exception_message))
-        if code in [ errors.ALREADY_ENABLED, errors.NOT_ENABLED,
-                     errors.ZONE_ALREADY_SET, errors.ALREADY_SET ]:
+        if code in [
+            errors.ALREADY_ENABLED,
+            errors.NOT_ENABLED,
+            errors.ZONE_ALREADY_SET,
+            errors.ALREADY_SET,
+        ]:
             self.print_warning("Warning: %s" % exception_message)
         else:
             self.print_and_exit("Error: %s" % exception_message, code)
@@ -553,14 +737,14 @@ class FirewallCommand:
         self.__use_exception_handler = True
 
     def get_ipset_entries_from_file(self, filename):
-        entries = [ ]
+        entries = []
         entries_set = set()
         f = open(filename)
         for line in f:
             if not line:
                 break
             line = line.strip()
-            if len(line) < 1 or line[0] in ['#', ';']:
+            if len(line) < 1 or line[0] in ["#", ";"]:
                 continue
             if line not in entries_set:
                 entries.append(line)

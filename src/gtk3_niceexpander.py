@@ -6,6 +6,7 @@
 # Authors:
 # Thomas Woerner <twoerner@redhat.com>
 
+
 class NiceExpander:
     def __init__(self, expanded_button, unexpanded_button, paned, child):
         self.expanded_button = expanded_button
@@ -14,7 +15,7 @@ class NiceExpander:
         self.child = child
         self.sensitive = True
         self.expanded = False
-        self.callback = { }
+        self.callback = {}
         self.parent = self.expanded_button.get_parent()
 
         self.expanded_button.connect("clicked", self.expand_cb)
@@ -28,7 +29,7 @@ class NiceExpander:
         self.unexpanded_button.show()
         self.child.hide()
         width = self.unexpanded_button.get_allocated_width()
-        width += self.parent.get_border_width()*2
+        width += self.parent.get_border_width() * 2
         self.paned.set_position(width)
         self.call_notify_expanded()
 
@@ -38,7 +39,7 @@ class NiceExpander:
         self.unexpanded_button.hide()
         self.child.show()
         width = self.expanded_button.get_allocated_width()
-        width += self.parent.get_border_width()*2
+        width += self.parent.get_border_width() * 2
         self.paned.set_position(width)
         self.call_notify_expanded()
 

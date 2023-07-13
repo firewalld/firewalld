@@ -10,13 +10,14 @@
 from firewall import errors
 from firewall.errors import FirewallError
 
+
 class FirewallHelper:
     def __init__(self, fw):
         self._fw = fw
-        self._helpers = { }
+        self._helpers = {}
 
     def __repr__(self):
-        return '%s(%r)' % (self.__class__, self._helpers)
+        return "%s(%r)" % (self.__class__, self._helpers)
 
     # helpers
 

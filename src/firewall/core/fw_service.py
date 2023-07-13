@@ -8,13 +8,14 @@
 from firewall import errors
 from firewall.errors import FirewallError
 
+
 class FirewallService:
     def __init__(self, fw):
         self._fw = fw
-        self._services = { }
+        self._services = {}
 
     def __repr__(self):
-        return '%s(%r)' % (self.__class__, self._services)
+        return "%s(%r)" % (self.__class__, self._services)
 
     def cleanup(self):
         self._services.clear()

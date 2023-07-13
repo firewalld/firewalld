@@ -8,8 +8,10 @@
 # Florian Festi <ffesti@redhat.com>
 
 import gi
-gi.require_version('Gtk', '3.0')
+
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
+
 
 class ChooserButton:
     def __init__(self, button, default_label=""):
@@ -32,8 +34,9 @@ class ChooserButton:
                 button.remove(child)
             hbox = Gtk.HBox()
             self.label = Gtk.Label()
-            arrow = Gtk.Arrow(arrow_type=Gtk.ArrowType.DOWN,
-                              shadow_type=Gtk.ShadowType.IN)
+            arrow = Gtk.Arrow(
+                arrow_type=Gtk.ArrowType.DOWN, shadow_type=Gtk.ShadowType.IN
+            )
             hbox.set_spacing(2)
             hbox.pack_start(self.label, True, True, 0)
             hbox.pack_end(arrow, False, False, 0)
@@ -123,8 +126,7 @@ class ChooserButton:
 
 
 class ToolChooserButton:
-
-    def __init__(self, button, default_label=''):
+    def __init__(self, button, default_label=""):
 
         self.button = button
         self.default_label = default_label

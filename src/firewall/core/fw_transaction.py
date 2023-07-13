@@ -13,14 +13,15 @@ from firewall.core.logger import log
 from firewall import errors
 from firewall.errors import FirewallError
 
+
 class FirewallTransaction:
     def __init__(self, fw):
         self.fw = fw
-        self.rules = { } # [ ( backend.name, [ rule,.. ] ),.. ]
-        self.pre_funcs = [ ] # [ (func, args),.. ]
-        self.post_funcs = [ ] # [ (func, args),.. ]
-        self.fail_funcs = [ ] # [ (func, args),.. ]
-        self.modules = [ ] # [ module,.. ]
+        self.rules = {}  # [ ( backend.name, [ rule,.. ] ),.. ]
+        self.pre_funcs = []  # [ (func, args),.. ]
+        self.post_funcs = []  # [ (func, args),.. ]
+        self.fail_funcs = []  # [ (func, args),.. ]
+        self.modules = []  # [ module,.. ]
 
     def clear(self):
         self.rules.clear()
@@ -29,7 +30,7 @@ class FirewallTransaction:
         del self.fail_funcs[:]
 
     def add_rule(self, backend, rule):
-        self.rules.setdefault(backend.name, [ ]).append(rule)
+        self.rules.setdefault(backend.name, []).append(rule)
 
     def add_rules(self, backend, rules):
         for rule in rules:
@@ -79,7 +80,7 @@ class FirewallTransaction:
         # stage 1: apply rules
         error = False
         errorMsg = ""
-        done = [ ]
+        done = []
         for backend_name in rules:
             try:
                 self.fw.rules(backend_name, rules[backend_name])
@@ -111,8 +112,7 @@ class FirewallTransaction:
                     func(*args)
                 except Exception as msg:
                     log.debug1(traceback.format_exc())
-                    log.error("Calling fail func %s(%s) failed: %s" % \
-                              (func, args, msg))
+                    log.error("Calling fail func %s(%s) failed: %s" % (func, args, msg))
 
             raise FirewallError(errors.COMMAND_FAILED, errorMsg)
 

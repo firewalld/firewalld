@@ -22,34 +22,45 @@ from firewall.core.io.policy import Policy, policy_reader, policy_writer
 from firewall import errors
 from firewall.errors import FirewallError
 
+
 class FirewallConfig:
     def __init__(self, fw):
         self._fw = fw
         self.__init_vars()
 
     def __repr__(self):
-        return '%s(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)' % \
-            (self.__class__,
-             self._ipsets, self._icmptypes, self._services, self._zones,
-             self._helpers, self.policy_objects,
-             self._builtin_ipsets, self._builtin_icmptypes,
-             self._builtin_services, self._builtin_zones, self._builtin_helpers,
-             self._builtin_policy_objects,
-             self._firewalld_conf, self._policies, self._direct)
+        return "%s(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)" % (
+            self.__class__,
+            self._ipsets,
+            self._icmptypes,
+            self._services,
+            self._zones,
+            self._helpers,
+            self.policy_objects,
+            self._builtin_ipsets,
+            self._builtin_icmptypes,
+            self._builtin_services,
+            self._builtin_zones,
+            self._builtin_helpers,
+            self._builtin_policy_objects,
+            self._firewalld_conf,
+            self._policies,
+            self._direct,
+        )
 
     def __init_vars(self):
-        self._ipsets = { }
-        self._icmptypes = { }
-        self._services = { }
-        self._zones = { }
-        self._helpers = { }
-        self._policy_objects = { }
-        self._builtin_ipsets = { }
-        self._builtin_icmptypes = { }
-        self._builtin_services = { }
-        self._builtin_zones = { }
-        self._builtin_helpers = { }
-        self._builtin_policy_objects = { }
+        self._ipsets = {}
+        self._icmptypes = {}
+        self._services = {}
+        self._zones = {}
+        self._helpers = {}
+        self._policy_objects = {}
+        self._builtin_ipsets = {}
+        self._builtin_icmptypes = {}
+        self._builtin_services = {}
+        self._builtin_zones = {}
+        self._builtin_helpers = {}
+        self._builtin_policy_objects = {}
         self._firewalld_conf = None
         self._policies = None
         self._direct = None
@@ -112,15 +123,28 @@ class FirewallConfig:
         Returns a dict of dicts of all permanent config objects.
         """
         conf_dict = {}
-        conf_dict["ipsets"] = {ipset: self.get_ipset(ipset) for ipset in self.get_ipsets()}
-        conf_dict["helpers"] = {helper: self.get_helper(helper) for helper in self.get_helpers()}
-        conf_dict["icmptypes"] = {icmptype: self.get_icmptype(icmptype) for icmptype in self.get_icmptypes()}
-        conf_dict["services"] = {service: self.get_service(service) for service in self.get_services()}
+        conf_dict["ipsets"] = {
+            ipset: self.get_ipset(ipset) for ipset in self.get_ipsets()
+        }
+        conf_dict["helpers"] = {
+            helper: self.get_helper(helper) for helper in self.get_helpers()
+        }
+        conf_dict["icmptypes"] = {
+            icmptype: self.get_icmptype(icmptype) for icmptype in self.get_icmptypes()
+        }
+        conf_dict["services"] = {
+            service: self.get_service(service) for service in self.get_services()
+        }
         conf_dict["zones"] = {zone: self.get_zone(zone) for zone in self.get_zones()}
-        conf_dict["policies"] = {policy: self.get_policy_object(policy) for policy in self.get_policy_objects()}
+        conf_dict["policies"] = {
+            policy: self.get_policy_object(policy)
+            for policy in self.get_policy_objects()
+        }
 
         conf_dict["conf"] = {}
-        conf_dict["conf"]["FirewallBackend"] = self._firewalld_conf.get("FirewallBackend")
+        conf_dict["conf"]["FirewallBackend"] = self._firewalld_conf.get(
+            "FirewallBackend"
+        )
 
         return conf_dict
 
@@ -163,9 +187,13 @@ class FirewallConfig:
 
     def reset_defaults(self):
         order = [
-                    self._zones, self._policy_objects, self._ipsets,
-                    self._services, self._helpers, self._icmptypes
-                ]
+            self._zones,
+            self._policy_objects,
+            self._ipsets,
+            self._services,
+            self._helpers,
+            self._icmptypes,
+        ]
         for io_obj_dict in order:
             dict_copy = copy.copy(io_obj_dict)
             for obj_name in dict_copy:
@@ -211,8 +239,9 @@ class FirewallConfig:
     # ipset
 
     def get_ipsets(self):
-        return sorted(set(list(self._ipsets.keys()) + \
-                          list(self._builtin_ipsets.keys())))
+        return sorted(
+            set(list(self._ipsets.keys()) + list(self._builtin_ipsets.keys()))
+        )
 
     def add_ipset(self, obj):
         if obj.builtin:
@@ -231,11 +260,13 @@ class FirewallConfig:
         if obj.name not in self._ipsets:
             raise FirewallError(errors.NO_DEFAULTS, obj.name)
         elif self._ipsets[obj.name] != obj:
-            raise FirewallError(errors.NO_DEFAULTS,
-                                "self._ipsets[%s] != obj" % obj.name)
+            raise FirewallError(
+                errors.NO_DEFAULTS, "self._ipsets[%s] != obj" % obj.name
+            )
         elif obj.name not in self._builtin_ipsets:
-            raise FirewallError(errors.NO_DEFAULTS,
-                            "'%s' not a built-in ipset" % obj.name)
+            raise FirewallError(
+                errors.NO_DEFAULTS, "'%s' not a built-in ipset" % obj.name
+            )
         self._remove_ipset(obj)
         return self._builtin_ipsets[obj.name]
 
@@ -258,8 +289,7 @@ class FirewallConfig:
 
     def new_ipset(self, name, conf):
         if name in self._ipsets or name in self._builtin_ipsets:
-            raise FirewallError(errors.NAME_CONFLICT,
-                                "new_ipset(): '%s'" % name)
+            raise FirewallError(errors.NAME_CONFLICT, "new_ipset(): '%s'" % name)
 
         x = IPSet()
         x.check_name(name)
@@ -349,9 +379,10 @@ class FirewallConfig:
         if obj.name not in self._ipsets:
             raise FirewallError(errors.INVALID_IPSET, obj.name)
         if obj.path != config.ETC_FIREWALLD_IPSETS:
-            raise FirewallError(errors.INVALID_DIRECTORY,
-                                "'%s' != '%s'" % (obj.path,
-                                                  config.ETC_FIREWALLD_IPSETS))
+            raise FirewallError(
+                errors.INVALID_DIRECTORY,
+                "'%s' != '%s'" % (obj.path, config.ETC_FIREWALLD_IPSETS),
+            )
 
         name = "%s/%s.xml" % (obj.path, obj.name)
         try:
@@ -364,8 +395,9 @@ class FirewallConfig:
 
     def check_builtin_ipset(self, obj):
         if obj.builtin or not obj.default:
-            raise FirewallError(errors.BUILTIN_IPSET,
-                                "'%s' is built-in ipset" % obj.name)
+            raise FirewallError(
+                errors.BUILTIN_IPSET, "'%s' is built-in ipset" % obj.name
+            )
 
     def remove_ipset(self, obj):
         self.check_builtin_ipset(obj)
@@ -383,8 +415,9 @@ class FirewallConfig:
     # icmptypes
 
     def get_icmptypes(self):
-        return sorted(set(list(self._icmptypes.keys()) + \
-                          list(self._builtin_icmptypes.keys())))
+        return sorted(
+            set(list(self._icmptypes.keys()) + list(self._builtin_icmptypes.keys()))
+        )
 
     def add_icmptype(self, obj):
         if obj.builtin:
@@ -403,11 +436,13 @@ class FirewallConfig:
         if obj.name not in self._icmptypes:
             raise FirewallError(errors.NO_DEFAULTS, obj.name)
         elif self._icmptypes[obj.name] != obj:
-            raise FirewallError(errors.NO_DEFAULTS,
-                                "self._icmptypes[%s] != obj" % obj.name)
+            raise FirewallError(
+                errors.NO_DEFAULTS, "self._icmptypes[%s] != obj" % obj.name
+            )
         elif obj.name not in self._builtin_icmptypes:
-            raise FirewallError(errors.NO_DEFAULTS,
-                                "'%s' not a built-in icmptype" % obj.name)
+            raise FirewallError(
+                errors.NO_DEFAULTS, "'%s' not a built-in icmptype" % obj.name
+            )
         self._remove_icmptype(obj)
         return self._builtin_icmptypes[obj.name]
 
@@ -430,8 +465,7 @@ class FirewallConfig:
 
     def new_icmptype(self, name, conf):
         if name in self._icmptypes or name in self._builtin_icmptypes:
-            raise FirewallError(errors.NAME_CONFLICT,
-                                "new_icmptype(): '%s'" % name)
+            raise FirewallError(errors.NAME_CONFLICT, "new_icmptype(): '%s'" % name)
 
         x = IcmpType()
         x.check_name(name)
@@ -521,9 +555,10 @@ class FirewallConfig:
         if obj.name not in self._icmptypes:
             raise FirewallError(errors.INVALID_ICMPTYPE, obj.name)
         if obj.path != config.ETC_FIREWALLD_ICMPTYPES:
-            raise FirewallError(errors.INVALID_DIRECTORY,
-                                "'%s' != '%s'" % \
-                                (obj.path, config.ETC_FIREWALLD_ICMPTYPES))
+            raise FirewallError(
+                errors.INVALID_DIRECTORY,
+                "'%s' != '%s'" % (obj.path, config.ETC_FIREWALLD_ICMPTYPES),
+            )
 
         name = "%s/%s.xml" % (obj.path, obj.name)
         try:
@@ -536,8 +571,9 @@ class FirewallConfig:
 
     def check_builtin_icmptype(self, obj):
         if obj.builtin or not obj.default:
-            raise FirewallError(errors.BUILTIN_ICMPTYPE,
-                                "'%s' is built-in icmp type" % obj.name)
+            raise FirewallError(
+                errors.BUILTIN_ICMPTYPE, "'%s' is built-in icmp type" % obj.name
+            )
 
     def remove_icmptype(self, obj):
         self.check_builtin_icmptype(obj)
@@ -555,8 +591,9 @@ class FirewallConfig:
     # services
 
     def get_services(self):
-        return sorted(set(list(self._services.keys()) + \
-                          list(self._builtin_services.keys())))
+        return sorted(
+            set(list(self._services.keys()) + list(self._builtin_services.keys()))
+        )
 
     def add_service(self, obj):
         if obj.builtin:
@@ -575,22 +612,26 @@ class FirewallConfig:
         if obj.name not in self._services:
             raise FirewallError(errors.NO_DEFAULTS, obj.name)
         elif self._services[obj.name] != obj:
-            raise FirewallError(errors.NO_DEFAULTS,
-                                "self._services[%s] != obj" % obj.name)
+            raise FirewallError(
+                errors.NO_DEFAULTS, "self._services[%s] != obj" % obj.name
+            )
         elif obj.name not in self._builtin_services:
-            raise FirewallError(errors.NO_DEFAULTS,
-                                "'%s' not a built-in service" % obj.name)
+            raise FirewallError(
+                errors.NO_DEFAULTS, "'%s' not a built-in service" % obj.name
+            )
         self._remove_service(obj)
         return self._builtin_services[obj.name]
 
     def get_service_config(self, obj):
         conf_dict = obj.export_config_dict()
         conf_list = []
-        for i in range(8): # tuple based dbus API has 8 elements
+        for i in range(8):  # tuple based dbus API has 8 elements
             if obj.IMPORT_EXPORT_STRUCTURE[i][0] not in conf_dict:
                 # old API needs the empty elements as well. Grab it from the
                 # object otherwise we don't know the type.
-                conf_list.append(copy.deepcopy(getattr(obj, obj.IMPORT_EXPORT_STRUCTURE[i][0])))
+                conf_list.append(
+                    copy.deepcopy(getattr(obj, obj.IMPORT_EXPORT_STRUCTURE[i][0]))
+                )
             else:
                 conf_list.append(conf_dict[obj.IMPORT_EXPORT_STRUCTURE[i][0]])
         return tuple(conf_list)
@@ -600,7 +641,7 @@ class FirewallConfig:
 
     def set_service_config(self, obj, conf):
         conf_dict = {}
-        for i,value in enumerate(conf):
+        for i, value in enumerate(conf):
             conf_dict[obj.IMPORT_EXPORT_STRUCTURE[i][0]] = value
 
         return self.set_service_config_dict(obj, conf_dict)
@@ -621,19 +662,17 @@ class FirewallConfig:
 
     def new_service(self, name, conf):
         if name in self._services or name in self._builtin_services:
-            raise FirewallError(errors.NAME_CONFLICT,
-                                "new_service(): '%s'" % name)
+            raise FirewallError(errors.NAME_CONFLICT, "new_service(): '%s'" % name)
 
         conf_dict = {}
-        for i,value in enumerate(conf):
+        for i, value in enumerate(conf):
             conf_dict[Service.IMPORT_EXPORT_STRUCTURE[i][0]] = value
 
         return self.new_service_dict(name, conf_dict)
 
     def new_service_dict(self, name, conf):
         if name in self._services or name in self._builtin_services:
-            raise FirewallError(errors.NAME_CONFLICT,
-                                "new_service(): '%s'" % name)
+            raise FirewallError(errors.NAME_CONFLICT, "new_service(): '%s'" % name)
 
         x = Service()
         x.check_name(name)
@@ -723,9 +762,10 @@ class FirewallConfig:
         if obj.name not in self._services:
             raise FirewallError(errors.INVALID_SERVICE, obj.name)
         if obj.path != config.ETC_FIREWALLD_SERVICES:
-            raise FirewallError(errors.INVALID_DIRECTORY,
-                                "'%s' != '%s'" % \
-                                (obj.path, config.ETC_FIREWALLD_SERVICES))
+            raise FirewallError(
+                errors.INVALID_DIRECTORY,
+                "'%s' != '%s'" % (obj.path, config.ETC_FIREWALLD_SERVICES),
+            )
 
         name = "%s/%s.xml" % (obj.path, obj.name)
         try:
@@ -738,8 +778,9 @@ class FirewallConfig:
 
     def check_builtin_service(self, obj):
         if obj.builtin or not obj.default:
-            raise FirewallError(errors.BUILTIN_SERVICE,
-                                "'%s' is built-in service" % obj.name)
+            raise FirewallError(
+                errors.BUILTIN_SERVICE, "'%s' is built-in service" % obj.name
+            )
 
     def remove_service(self, obj):
         self.check_builtin_service(obj)
@@ -757,8 +798,7 @@ class FirewallConfig:
     # zones
 
     def get_zones(self):
-        return sorted(set(list(self._zones.keys()) + \
-                          list(self._builtin_zones.keys())))
+        return sorted(set(list(self._zones.keys()) + list(self._builtin_zones.keys())))
 
     def add_zone(self, obj):
         if obj.builtin:
@@ -783,22 +823,24 @@ class FirewallConfig:
         if obj.name not in self._zones:
             raise FirewallError(errors.NO_DEFAULTS, obj.name)
         elif self._zones[obj.name] != obj:
-            raise FirewallError(errors.NO_DEFAULTS,
-                                "self._zones[%s] != obj" % obj.name)
+            raise FirewallError(errors.NO_DEFAULTS, "self._zones[%s] != obj" % obj.name)
         elif obj.name not in self._builtin_zones:
-            raise FirewallError(errors.NO_DEFAULTS,
-                                "'%s' not a built-in zone" % obj.name)
+            raise FirewallError(
+                errors.NO_DEFAULTS, "'%s' not a built-in zone" % obj.name
+            )
         self._remove_zone(obj)
         return self._builtin_zones[obj.name]
 
     def get_zone_config(self, obj):
         conf_dict = obj.export_config_dict()
         conf_list = []
-        for i in range(16): # tuple based dbus API has 16 elements
+        for i in range(16):  # tuple based dbus API has 16 elements
             if obj.IMPORT_EXPORT_STRUCTURE[i][0] not in conf_dict:
                 # old API needs the empty elements as well. Grab it from the
                 # object otherwise we don't know the type.
-                conf_list.append(copy.deepcopy(getattr(obj, obj.IMPORT_EXPORT_STRUCTURE[i][0])))
+                conf_list.append(
+                    copy.deepcopy(getattr(obj, obj.IMPORT_EXPORT_STRUCTURE[i][0]))
+                )
             else:
                 conf_list.append(conf_dict[obj.IMPORT_EXPORT_STRUCTURE[i][0]])
         return tuple(conf_list)
@@ -808,7 +850,7 @@ class FirewallConfig:
 
     def set_zone_config(self, obj, conf):
         conf_dict = {}
-        for i,value in enumerate(conf):
+        for i, value in enumerate(conf):
             conf_dict[obj.IMPORT_EXPORT_STRUCTURE[i][0]] = value
 
         return self.set_zone_config_dict(obj, conf_dict)
@@ -832,7 +874,7 @@ class FirewallConfig:
             raise FirewallError(errors.NAME_CONFLICT, "new_zone(): '%s'" % name)
 
         conf_dict = {}
-        for i,value in enumerate(conf):
+        for i, value in enumerate(conf):
             conf_dict[Zone.IMPORT_EXPORT_STRUCTURE[i][0]] = value
 
         return self.new_zone_dict(name, conf_dict)
@@ -897,11 +939,14 @@ class FirewallConfig:
             log.error("Failed to load zone file '%s': %s", filename, msg)
             return (None, None)
 
-        if path.startswith(config.ETC_FIREWALLD_ZONES) and \
-           len(path) > len(config.ETC_FIREWALLD_ZONES):
+        if path.startswith(config.ETC_FIREWALLD_ZONES) and len(path) > len(
+            config.ETC_FIREWALLD_ZONES
+        ):
             # custom combined zone part
-            obj.name = "%s/%s" % (os.path.basename(path),
-                                  os.path.basename(filename)[0:-4])
+            obj.name = "%s/%s" % (
+                os.path.basename(path),
+                os.path.basename(filename)[0:-4],
+            )
 
         # new zone
         if obj.name not in self._builtin_zones and obj.name not in self._zones:
@@ -935,9 +980,10 @@ class FirewallConfig:
         if obj.name not in self._zones:
             raise FirewallError(errors.INVALID_ZONE, obj.name)
         if not obj.path.startswith(config.ETC_FIREWALLD_ZONES):
-            raise FirewallError(errors.INVALID_DIRECTORY,
-                                "'%s' doesn't start with '%s'" % \
-                                (obj.path, config.ETC_FIREWALLD_ZONES))
+            raise FirewallError(
+                errors.INVALID_DIRECTORY,
+                "'%s' doesn't start with '%s'" % (obj.path, config.ETC_FIREWALLD_ZONES),
+            )
 
         name = "%s/%s.xml" % (obj.path, obj.name)
         try:
@@ -950,8 +996,7 @@ class FirewallConfig:
 
     def check_builtin_zone(self, obj):
         if obj.builtin or not obj.default:
-            raise FirewallError(errors.BUILTIN_ZONE,
-                                "'%s' is built-in zone" % obj.name)
+            raise FirewallError(errors.BUILTIN_ZONE, "'%s' is built-in zone" % obj.name)
 
     def remove_zone(self, obj):
         self.check_builtin_zone(obj)
@@ -972,8 +1017,12 @@ class FirewallConfig:
     # policy objects
 
     def get_policy_objects(self):
-        return sorted(set(list(self._policy_objects.keys()) + \
-                          list(self._builtin_policy_objects.keys())))
+        return sorted(
+            set(
+                list(self._policy_objects.keys())
+                + list(self._builtin_policy_objects.keys())
+            )
+        )
 
     def add_policy_object(self, obj):
         if obj.builtin:
@@ -992,11 +1041,13 @@ class FirewallConfig:
         if obj.name not in self._policy_objects:
             raise FirewallError(errors.NO_DEFAULTS, obj.name)
         elif self._policy_objects[obj.name] != obj:
-            raise FirewallError(errors.NO_DEFAULTS,
-                                "self._policy_objects[%s] != obj" % obj.name)
+            raise FirewallError(
+                errors.NO_DEFAULTS, "self._policy_objects[%s] != obj" % obj.name
+            )
         elif obj.name not in self._builtin_policy_objects:
-            raise FirewallError(errors.NO_DEFAULTS,
-                                "'%s' not a built-in policy" % obj.name)
+            raise FirewallError(
+                errors.NO_DEFAULTS, "'%s' not a built-in policy" % obj.name
+            )
         self._remove_policy_object(obj)
         return self._builtin_policy_objects[obj.name]
 
@@ -1019,7 +1070,9 @@ class FirewallConfig:
 
     def new_policy_object_dict(self, name, conf):
         if name in self._policy_objects or name in self._builtin_policy_objects:
-            raise FirewallError(errors.NAME_CONFLICT, "new_policy_object(): '%s'" % name)
+            raise FirewallError(
+                errors.NAME_CONFLICT, "new_policy_object(): '%s'" % name
+            )
 
         x = Policy()
         x.check_name(name)
@@ -1077,14 +1130,20 @@ class FirewallConfig:
             log.error("Failed to load policy file '%s': %s", filename, msg)
             return (None, None)
 
-        if path.startswith(config.ETC_FIREWALLD_POLICIES) and \
-           len(path) > len(config.ETC_FIREWALLD_POLICIES):
+        if path.startswith(config.ETC_FIREWALLD_POLICIES) and len(path) > len(
+            config.ETC_FIREWALLD_POLICIES
+        ):
             # custom combined policy_object part
-            obj.name = "%s/%s" % (os.path.basename(path),
-                                  os.path.basename(filename)[0:-4])
+            obj.name = "%s/%s" % (
+                os.path.basename(path),
+                os.path.basename(filename)[0:-4],
+            )
 
         # new policy_object
-        if obj.name not in self._builtin_policy_objects and obj.name not in self._policy_objects:
+        if (
+            obj.name not in self._builtin_policy_objects
+            and obj.name not in self._policy_objects
+        ):
             self.add_policy_object(obj)
             return ("new", obj)
 
@@ -1115,9 +1174,11 @@ class FirewallConfig:
         if obj.name not in self._policy_objects:
             raise FirewallError(errors.INVALID_POLICY, obj.name)
         if not obj.path.startswith(config.ETC_FIREWALLD_POLICIES):
-            raise FirewallError(errors.INVALID_DIRECTORY,
-                                "'%s' doesn't start with '%s'" % \
-                                (obj.path, config.ETC_FIREWALLD_POLICIES))
+            raise FirewallError(
+                errors.INVALID_DIRECTORY,
+                "'%s' doesn't start with '%s'"
+                % (obj.path, config.ETC_FIREWALLD_POLICIES),
+            )
 
         name = "%s/%s.xml" % (obj.path, obj.name)
         try:
@@ -1130,8 +1191,9 @@ class FirewallConfig:
 
     def check_builtin_policy_object(self, obj):
         if obj.builtin or not obj.default:
-            raise FirewallError(errors.BUILTIN_POLICY,
-                                "'%s' is built-in policy" % obj.name)
+            raise FirewallError(
+                errors.BUILTIN_POLICY, "'%s' is built-in policy" % obj.name
+            )
 
     def remove_policy_object(self, obj):
         self.check_builtin_policy_object(obj)
@@ -1149,8 +1211,9 @@ class FirewallConfig:
     # helper
 
     def get_helpers(self):
-        return sorted(set(list(self._helpers.keys()) + \
-                          list(self._builtin_helpers.keys())))
+        return sorted(
+            set(list(self._helpers.keys()) + list(self._builtin_helpers.keys()))
+        )
 
     def add_helper(self, obj):
         if obj.builtin:
@@ -1169,11 +1232,13 @@ class FirewallConfig:
         if obj.name not in self._helpers:
             raise FirewallError(errors.NO_DEFAULTS, obj.name)
         elif self._helpers[obj.name] != obj:
-            raise FirewallError(errors.NO_DEFAULTS,
-                                "self._helpers[%s] != obj" % obj.name)
+            raise FirewallError(
+                errors.NO_DEFAULTS, "self._helpers[%s] != obj" % obj.name
+            )
         elif obj.name not in self._builtin_helpers:
-            raise FirewallError(errors.NO_DEFAULTS,
-                            "'%s' not a built-in helper" % obj.name)
+            raise FirewallError(
+                errors.NO_DEFAULTS, "'%s' not a built-in helper" % obj.name
+            )
         self._remove_helper(obj)
         return self._builtin_helpers[obj.name]
 
@@ -1196,8 +1261,7 @@ class FirewallConfig:
 
     def new_helper(self, name, conf):
         if name in self._helpers or name in self._builtin_helpers:
-            raise FirewallError(errors.NAME_CONFLICT,
-                                "new_helper(): '%s'" % name)
+            raise FirewallError(errors.NAME_CONFLICT, "new_helper(): '%s'" % name)
 
         x = Helper()
         x.check_name(name)
@@ -1287,9 +1351,10 @@ class FirewallConfig:
         if obj.name not in self._helpers:
             raise FirewallError(errors.INVALID_HELPER, obj.name)
         if obj.path != config.ETC_FIREWALLD_HELPERS:
-            raise FirewallError(errors.INVALID_DIRECTORY,
-                                "'%s' != '%s'" % (obj.path,
-                                                  config.ETC_FIREWALLD_HELPERS))
+            raise FirewallError(
+                errors.INVALID_DIRECTORY,
+                "'%s' != '%s'" % (obj.path, config.ETC_FIREWALLD_HELPERS),
+            )
 
         name = "%s/%s.xml" % (obj.path, obj.name)
         try:
@@ -1302,8 +1367,9 @@ class FirewallConfig:
 
     def check_builtin_helper(self, obj):
         if obj.builtin or not obj.default:
-            raise FirewallError(errors.BUILTIN_HELPER,
-                                "'%s' is built-in helper" % obj.name)
+            raise FirewallError(
+                errors.BUILTIN_HELPER, "'%s' is built-in helper" % obj.name
+            )
 
     def remove_helper(self, obj):
         self.check_builtin_helper(obj)

@@ -14,6 +14,7 @@ from firewall import config
 from firewall.core.logger import log
 from firewall.core.io.ifcfg import ifcfg
 
+
 def search_ifcfg_of_interface(interface):
     """search ifcfg file for the interface in config.IFCFGDIR"""
 
@@ -24,8 +25,7 @@ def search_ifcfg_of_interface(interface):
     for filename in sorted(os.listdir(config.IFCFGDIR)):
         if not filename.startswith("ifcfg-"):
             continue
-        for ignored in [ ".bak", ".orig", ".rpmnew", ".rpmorig", ".rpmsave",
-                         "-range" ]:
+        for ignored in [".bak", ".orig", ".rpmnew", ".rpmorig", ".rpmsave", "-range"]:
             if filename.endswith(ignored):
                 continue
         if "." in filename:
@@ -44,6 +44,7 @@ def search_ifcfg_of_interface(interface):
 
     return None
 
+
 def ifcfg_set_zone_of_interface(zone, interface):
     """Set zone (ZONE=<zone>) in the ifcfg file that uses the interface
     (DEVICE=<interface>)"""
@@ -52,8 +53,11 @@ def ifcfg_set_zone_of_interface(zone, interface):
         zone = ""
 
     ifcfg_file = search_ifcfg_of_interface(interface)
-    if ifcfg_file is not None and ifcfg_file.get("ZONE") != zone and not \
-       (ifcfg_file.get("ZONE") is None and zone == ""):
+    if (
+        ifcfg_file is not None
+        and ifcfg_file.get("ZONE") != zone
+        and not (ifcfg_file.get("ZONE") is None and zone == "")
+    ):
         log.debug1("Setting ZONE=%s in '%s'" % (zone, ifcfg_file.filename))
         ifcfg_file.set("ZONE", zone)
         ifcfg_file.write()

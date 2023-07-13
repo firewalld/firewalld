@@ -30,12 +30,15 @@ from firewall.server.firewalld import FirewallD
 #
 ############################################################################
 
+
 def sighup(service):
     service.reload()
     return True
 
+
 def sigterm(mainloop):
     mainloop.quit()
+
 
 ############################################################################
 #
@@ -43,28 +46,37 @@ def sigterm(mainloop):
 #
 ############################################################################
 
+
 def run_server(debug_gc=False):
-    """ Main function for firewall server. Handles D-Bus and GLib mainloop.
-    """
+    """Main function for firewall server. Handles D-Bus and GLib mainloop."""
     service = None
     if debug_gc:
         from pprint import pformat
         import gc
+
         gc.enable()
         gc.set_debug(gc.DEBUG_LEAK)
 
         gc_timeout = 10
+
         def gc_collect():
             gc.collect()
             if len(gc.garbage) > 0:
-                print("\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-                      ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n")
+                print(
+                    "\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+                    ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n"
+                )
                 print("GARBAGE OBJECTS (%d):\n" % len(gc.garbage))
                 for x in gc.garbage:
-                    print(type(x), "\n  ",)
+                    print(
+                        type(x),
+                        "\n  ",
+                    )
                     print(pformat(x))
-                print("\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-                      "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n")
+                print(
+                    "\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+                    "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n"
+                )
             GLib.timeout_add_seconds(gc_timeout, gc_collect)
 
     try:
@@ -78,15 +90,13 @@ def run_server(debug_gc=False):
             GLib.timeout_add_seconds(gc_timeout, gc_collect)
 
         # use unix_signal_add if available, else unix_signal_add_full
-        if hasattr(GLib, 'unix_signal_add'):
+        if hasattr(GLib, "unix_signal_add"):
             unix_signal_add = GLib.unix_signal_add
         else:
             unix_signal_add = GLib.unix_signal_add_full
 
-        unix_signal_add(GLib.PRIORITY_HIGH, signal.SIGHUP,
-                        sighup, service)
-        unix_signal_add(GLib.PRIORITY_HIGH, signal.SIGTERM,
-                        sigterm, mainloop)
+        unix_signal_add(GLib.PRIORITY_HIGH, signal.SIGHUP, sighup, service)
+        unix_signal_add(GLib.PRIORITY_HIGH, signal.SIGTERM, sigterm, mainloop)
 
         mainloop.run()
 

@@ -9,13 +9,14 @@ from firewall.core.logger import log
 from firewall import errors
 from firewall.errors import FirewallError
 
+
 class FirewallIcmpType:
     def __init__(self, fw):
         self._fw = fw
-        self._icmptypes = { }
+        self._icmptypes = {}
 
     def __repr__(self):
-        return '%s(%r)' % (self.__class__, self._icmptypes)
+        return "%s(%r)" % (self.__class__, self._icmptypes)
 
     def cleanup(self):
         self._icmptypes.clear()
@@ -36,7 +37,7 @@ class FirewallIcmpType:
     def add_icmptype(self, obj):
         orig_ipvs = obj.destination
         if len(orig_ipvs) == 0:
-            orig_ipvs = [ "ipv4", "ipv6" ]
+            orig_ipvs = ["ipv4", "ipv6"]
         for ipv in orig_ipvs:
             if ipv == "ipv4":
                 if not self._fw.ip4tables_enabled and not self._fw.nftables_enabled:
@@ -47,9 +48,12 @@ class FirewallIcmpType:
                     continue
                 supported_icmps = self._fw.ipv6_supported_icmp_types
             else:
-                supported_icmps = [ ]
+                supported_icmps = []
             if obj.name.lower() not in supported_icmps:
-                log.info1("ICMP type '%s' is not supported by the kernel for %s." % (obj.name, ipv))
+                log.info1(
+                    "ICMP type '%s' is not supported by the kernel for %s."
+                    % (obj.name, ipv)
+                )
         self._icmptypes[obj.name] = obj
 
     def remove_icmptype(self, icmptype):

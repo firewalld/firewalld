@@ -21,6 +21,7 @@ from firewall.core.io.direct import Direct
 from firewall.core.io.lockdown_whitelist import LockdownWhitelist
 from firewall.core.io.firewalld_conf import firewalld_conf
 
+
 def check_on_disk_config(fw):
     fw_config = FirewallConfig(fw)
 
@@ -84,7 +85,9 @@ def check_on_disk_config(fw):
             obj.read()
             obj.check_config(obj.export_config())
         except FirewallError as error:
-            raise FirewallError(error.code, "'%s': %s" % (config.FIREWALLD_DIRECT, error.msg))
+            raise FirewallError(
+                error.code, "'%s': %s" % (config.FIREWALLD_DIRECT, error.msg)
+            )
         except Exception as msg:
             raise Exception("'%s': %s" % (config.FIREWALLD_DIRECT, msg))
     if os.path.isfile(config.LOCKDOWN_WHITELIST):
@@ -93,6 +96,8 @@ def check_on_disk_config(fw):
             obj.read()
             obj.check_config(obj.export_config())
         except FirewallError as error:
-            raise FirewallError(error.code, "'%s': %s" % (config.LOCKDOWN_WHITELIST, error.msg))
+            raise FirewallError(
+                error.code, "'%s': %s" % (config.LOCKDOWN_WHITELIST, error.msg)
+            )
         except Exception as msg:
             raise Exception("'%s': %s" % (config.LOCKDOWN_WHITELIST, msg))

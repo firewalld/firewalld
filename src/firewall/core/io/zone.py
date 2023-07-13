@@ -11,81 +11,105 @@ import io
 import shutil
 
 from firewall import config
-from firewall.functions import checkIPnMask, checkIP6nMask, checkInterface, uniqify, max_zone_name_len, check_mac
+from firewall.functions import (
+    checkIPnMask,
+    checkIP6nMask,
+    checkInterface,
+    uniqify,
+    max_zone_name_len,
+    check_mac,
+)
 from firewall.core.base import DEFAULT_ZONE_TARGET, ZONE_TARGETS, DEFAULT_ZONE_PRIORITY
-from firewall.core.io.io_object import IO_Object, \
-    IO_Object_ContentHandler, IO_Object_XMLGenerator
-from firewall.core.io.policy import common_startElement, common_endElement, common_check_config, common_writer
+from firewall.core.io.io_object import (
+    IO_Object,
+    IO_Object_ContentHandler,
+    IO_Object_XMLGenerator,
+)
+from firewall.core.io.policy import (
+    common_startElement,
+    common_endElement,
+    common_check_config,
+    common_writer,
+)
 from firewall.core import rich
 from firewall.core.logger import log
 from firewall import errors
 from firewall.errors import FirewallError
 
+
 class Zone(IO_Object):
-    """ Zone class """
+    """Zone class"""
+
     priority_min = -32768
-    priority_max =  32767
+    priority_max = 32767
     priority_default = DEFAULT_ZONE_PRIORITY
 
     IMPORT_EXPORT_STRUCTURE = (
-        ( "version",  "" ),                            # s
-        ( "short", "" ),                               # s
-        ( "description", "" ),                         # s
-        ( "UNUSED", False ),                           # b
-        ( "target", "" ),                              # s
-        ( "services", [ "" ] ),                        # as
-        ( "ports", [ ( "", "" ) ] ),                   # a(ss)
-        ( "icmp_blocks", [ "" ] ),                     # as
-        ( "masquerade", False ),                       # b
-        ( "forward_ports", [ ( "", "", "", "" ) ] ),   # a(ssss)
-        ( "interfaces", [ "" ] ),                      # as
-        ( "sources", [ "" ] ),                         # as
-        ( "rules_str", [ "" ] ),                       # as
-        ( "protocols", [ "" ] ),                       # as
-        ( "source_ports", [ ( "", "" ) ] ),            # a(ss)
-        ( "icmp_block_inversion", False ),             # b
-        ( "forward", True ),                           # b
-        ( "ingress_priority", 0 ),                     # i
-        ( "egress_priority", 0 ),                      # i
+        ("version", ""),  # s
+        ("short", ""),  # s
+        ("description", ""),  # s
+        ("UNUSED", False),  # b
+        ("target", ""),  # s
+        ("services", [""]),  # as
+        ("ports", [("", "")]),  # a(ss)
+        ("icmp_blocks", [""]),  # as
+        ("masquerade", False),  # b
+        ("forward_ports", [("", "", "", "")]),  # a(ssss)
+        ("interfaces", [""]),  # as
+        ("sources", [""]),  # as
+        ("rules_str", [""]),  # as
+        ("protocols", [""]),  # as
+        ("source_ports", [("", "")]),  # a(ss)
+        ("icmp_block_inversion", False),  # b
+        ("forward", True),  # b
+        ("ingress_priority", 0),  # i
+        ("egress_priority", 0),  # i
     )
-    ADDITIONAL_ALNUM_CHARS = [ "_", "-", "/" ]
+    ADDITIONAL_ALNUM_CHARS = ["_", "-", "/"]
     PARSER_REQUIRED_ELEMENT_ATTRS = {
         "short": None,
         "description": None,
         "zone": None,
-        "service": [ "name" ],
-        "port": [ "port", "protocol" ],
-        "icmp-block": [ "name" ],
-        "icmp-type": [ "name" ],
+        "service": ["name"],
+        "port": ["port", "protocol"],
+        "icmp-block": ["name"],
+        "icmp-type": ["name"],
         "forward": None,
-        "forward-port": [ "port", "protocol" ],
-        "interface": [ "name" ],
+        "forward-port": ["port", "protocol"],
+        "interface": ["name"],
         "rule": None,
         "source": None,
         "destination": None,
-        "protocol": [ "value" ],
-        "source-port": [ "port", "protocol" ],
-        "log":  None,
-        "nflog":  None,
+        "protocol": ["value"],
+        "source-port": ["port", "protocol"],
+        "log": None,
+        "nflog": None,
         "audit": None,
         "accept": None,
         "reject": None,
         "drop": None,
-        "mark": [ "set" ],
-        "limit": [ "value" ],
+        "mark": ["set"],
+        "limit": ["value"],
         "icmp-block-inversion": None,
     }
     PARSER_OPTIONAL_ELEMENT_ATTRS = {
-        "zone": [ "name", "immutable", "target", "version", "ingress-priority", "egress-priority" ],
-        "masquerade": [ "enabled" ],
-        "forward-port": [ "to-port", "to-addr" ],
-        "rule": [ "family", "priority" ],
-        "source": [ "address", "mac", "invert", "family", "ipset" ],
-        "destination": [ "address", "invert", "ipset" ],
-        "log": [ "prefix", "level" ],
-        "nflog": [ "group", "prefix", "queue-size" ],
-        "reject": [ "type" ],
-        "tcp-mss-clamp": [ "value" ],
+        "zone": [
+            "name",
+            "immutable",
+            "target",
+            "version",
+            "ingress-priority",
+            "egress-priority",
+        ],
+        "masquerade": ["enabled"],
+        "forward-port": ["to-port", "to-addr"],
+        "rule": ["family", "priority"],
+        "source": ["address", "mac", "invert", "family", "ipset"],
+        "destination": ["address", "invert", "ipset"],
+        "log": ["prefix", "level"],
+        "nflog": ["group", "prefix", "queue-size"],
+        "reject": ["type"],
+        "tcp-mss-clamp": ["value"],
     }
 
     @staticmethod
@@ -102,18 +126,18 @@ class Zone(IO_Object):
         self.description = ""
         self.UNUSED = False
         self.target = DEFAULT_ZONE_TARGET
-        self.services = [ ]
-        self.ports = [ ]
-        self.protocols = [ ]
-        self.icmp_blocks = [ ]
+        self.services = []
+        self.ports = []
+        self.protocols = []
+        self.icmp_blocks = []
         self.forward = True
         self.masquerade = False
-        self.forward_ports = [ ]
-        self.source_ports = [ ]
-        self.interfaces = [ ]
-        self.sources = [ ]
-        self.rules = [ ]
-        self.rules_str = [ ]
+        self.forward_ports = []
+        self.source_ports = []
+        self.interfaces = []
+        self.sources = []
+        self.rules = []
+        self.rules_str = []
         self.icmp_block_inversion = False
         self.combined = False
         self.applied = False
@@ -161,64 +185,93 @@ class Zone(IO_Object):
         common_check_config(self, config, item, all_config, all_io_objects)
 
         if self.name in all_io_objects["policies"]:
-            raise FirewallError(errors.NAME_CONFLICT, "Zone '{}': Can't have the same name as a policy.".format(self.name))
+            raise FirewallError(
+                errors.NAME_CONFLICT,
+                "Zone '{}': Can't have the same name as a policy.".format(self.name),
+            )
 
         if item == "target":
             if config not in ZONE_TARGETS:
-                raise FirewallError(errors.INVALID_TARGET, "Zone '{}': invalid target '{}'".format(
-                    self.name, config))
+                raise FirewallError(
+                    errors.INVALID_TARGET,
+                    "Zone '{}': invalid target '{}'".format(self.name, config),
+                )
         elif item == "interfaces":
             for interface in config:
                 if not checkInterface(interface):
-                    raise FirewallError(errors.INVALID_INTERFACE, "Zone '{}': invalid interface '{}'".format(
-                        self.name, interface))
+                    raise FirewallError(
+                        errors.INVALID_INTERFACE,
+                        "Zone '{}': invalid interface '{}'".format(
+                            self.name, interface
+                        ),
+                    )
                 for zone in all_io_objects["zones"]:
                     if zone == self.name:
                         continue
                     if interface in all_io_objects["zones"][zone].interfaces:
-                        raise FirewallError(errors.INVALID_INTERFACE,
-                                "Zone '{}': interface '{}' already bound to zone '{}'".format(
-                                    self.name, interface, zone))
+                        raise FirewallError(
+                            errors.INVALID_INTERFACE,
+                            "Zone '{}': interface '{}' already bound to zone '{}'".format(
+                                self.name, interface, zone
+                            ),
+                        )
         elif item == "sources":
             for source in config:
-                if not checkIPnMask(source) and not checkIP6nMask(source) and \
-                   not check_mac(source) and not source.startswith("ipset:"):
-                    raise FirewallError(errors.INVALID_ADDR, "Zone '{}': invalid source '{}'".format(
-                        self.name, source))
+                if (
+                    not checkIPnMask(source)
+                    and not checkIP6nMask(source)
+                    and not check_mac(source)
+                    and not source.startswith("ipset:")
+                ):
+                    raise FirewallError(
+                        errors.INVALID_ADDR,
+                        "Zone '{}': invalid source '{}'".format(self.name, source),
+                    )
                 for zone in all_io_objects["zones"]:
                     if zone == self.name:
                         continue
                     if source in all_io_objects["zones"][zone].sources:
-                        raise FirewallError(errors.INVALID_ADDR,
-                                "Zone '{}': source '{}' already bound to zone '{}'".format(
-                                    self.name, source, zone))
+                        raise FirewallError(
+                            errors.INVALID_ADDR,
+                            "Zone '{}': source '{}' already bound to zone '{}'".format(
+                                self.name, source, zone
+                            ),
+                        )
         elif item in ["ingress_priority", "egress_priority"]:
             if config > self.priority_max or config < self.priority_min:
-                raise FirewallError(errors.INVALID_PRIORITY,
-                        f"Zone '{self.name}': {config} is an invalid priority value. "
-                        f"Must be in range [{self.priority_min}, {self.priority_max}].")
-
+                raise FirewallError(
+                    errors.INVALID_PRIORITY,
+                    f"Zone '{self.name}': {config} is an invalid priority value. "
+                    f"Must be in range [{self.priority_min}, {self.priority_max}].",
+                )
 
     def check_name(self, name):
         super(Zone, self).check_name(name)
-        if name.startswith('/'):
-            raise FirewallError(errors.INVALID_NAME,
-                                "Zone '{}': name can't start with '/'".format(name))
-        elif name.endswith('/'):
-            raise FirewallError(errors.INVALID_NAME,
-                                "Zone '{}': name can't end with '/'".format(name))
-        elif name.count('/') > 1:
-            raise FirewallError(errors.INVALID_NAME,
-                                "Zone '{}': name has more than one '/'".format(name))
+        if name.startswith("/"):
+            raise FirewallError(
+                errors.INVALID_NAME, "Zone '{}': name can't start with '/'".format(name)
+            )
+        elif name.endswith("/"):
+            raise FirewallError(
+                errors.INVALID_NAME, "Zone '{}': name can't end with '/'".format(name)
+            )
+        elif name.count("/") > 1:
+            raise FirewallError(
+                errors.INVALID_NAME,
+                "Zone '{}': name has more than one '/'".format(name),
+            )
         else:
             if "/" in name:
-                checked_name = name[:name.find('/')]
+                checked_name = name[: name.find("/")]
             else:
                 checked_name = name
             if len(checked_name) > max_zone_name_len():
-                raise FirewallError(errors.INVALID_NAME,
-                                    "Zone '{}': name has {} chars, max is {}".format(
-                                        name, len(checked_name), max_zone_name_len()))
+                raise FirewallError(
+                    errors.INVALID_NAME,
+                    "Zone '{}': name has {} chars, max is {}".format(
+                        name, len(checked_name), max_zone_name_len()
+                    ),
+                )
 
     def combine(self, zone):
         self.combined = True
@@ -261,7 +314,9 @@ class Zone(IO_Object):
         if zone.icmp_block_inversion:
             self.icmp_block_inversion = True
 
+
 # PARSER
+
 
 class zone_ContentHandler(IO_Object_ContentHandler):
     def __init__(self, item):
@@ -282,13 +337,13 @@ class zone_ContentHandler(IO_Object_ContentHandler):
 
         elif name == "zone":
             if "name" in attrs:
-                log.warning("Ignoring deprecated attribute name='%s'",
-                            attrs["name"])
+                log.warning("Ignoring deprecated attribute name='%s'", attrs["name"])
             if "version" in attrs:
                 self.item.version = attrs["version"]
             if "immutable" in attrs:
-                log.warning("Ignoring deprecated attribute immutable='%s'",
-                            attrs["immutable"])
+                log.warning(
+                    "Ignoring deprecated attribute immutable='%s'", attrs["immutable"]
+                )
             if "target" in attrs:
                 target = attrs["target"]
                 if target not in ZONE_TARGETS:
@@ -308,30 +363,30 @@ class zone_ContentHandler(IO_Object_ContentHandler):
 
         elif name == "interface":
             if self._rule:
-                log.warning('Invalid rule: interface use in rule.')
+                log.warning("Invalid rule: interface use in rule.")
                 self._rule_error = True
                 return
             # zone bound to interface
             if "name" not in attrs:
-                log.warning('Invalid interface: Name missing.')
+                log.warning("Invalid interface: Name missing.")
                 self._rule_error = True
                 return
             if attrs["name"] not in self.item.interfaces:
                 self.item.interfaces.append(attrs["name"])
             else:
-                log.warning("Interface '%s' already set, ignoring.",
-                            attrs["name"])
+                log.warning("Interface '%s' already set, ignoring.", attrs["name"])
 
         elif name == "source":
             if self._rule:
                 if self._rule.source:
-                    log.warning("Invalid rule: More than one source in rule '%s', ignoring.",
-                                str(self._rule))
+                    log.warning(
+                        "Invalid rule: More than one source in rule '%s', ignoring.",
+                        str(self._rule),
+                    )
                     self._rule_error = True
                     return
                 invert = False
-                if "invert" in attrs and \
-                        attrs["invert"].lower() in [ "yes", "true" ]:
+                if "invert" in attrs and attrs["invert"].lower() in ["yes", "true"]:
                     invert = True
                 addr = mac = ipset = None
                 if "address" in attrs:
@@ -340,41 +395,41 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                     mac = attrs["mac"]
                 if "ipset" in attrs:
                     ipset = attrs["ipset"]
-                self._rule.source = rich.Rich_Source(addr, mac, ipset,
-                                                     invert=invert)
+                self._rule.source = rich.Rich_Source(addr, mac, ipset, invert=invert)
                 return
             # zone bound to source
             if "address" not in attrs and "ipset" not in attrs:
-                log.warning('Invalid source: No address no ipset.')
+                log.warning("Invalid source: No address no ipset.")
                 return
             if "address" in attrs and "ipset" in attrs:
-                log.warning('Invalid source: Address and ipset.')
+                log.warning("Invalid source: Address and ipset.")
                 return
             if "family" in attrs:
-                log.warning("Ignoring deprecated attribute family='%s'",
-                            attrs["family"])
+                log.warning(
+                    "Ignoring deprecated attribute family='%s'", attrs["family"]
+                )
             if "invert" in attrs:
-                log.warning('Invalid source: Invertion not allowed here.')
+                log.warning("Invalid source: Invertion not allowed here.")
                 return
             if "address" in attrs:
-                if not checkIPnMask(attrs["address"]) and \
-                   not checkIP6nMask(attrs["address"]) and \
-                   not check_mac(attrs["address"]):
+                if (
+                    not checkIPnMask(attrs["address"])
+                    and not checkIP6nMask(attrs["address"])
+                    and not check_mac(attrs["address"])
+                ):
                     raise FirewallError(errors.INVALID_ADDR, attrs["address"])
             if "ipset" in attrs:
                 entry = "ipset:%s" % attrs["ipset"]
                 if entry not in self.item.sources:
                     self.item.sources.append(entry)
                 else:
-                    log.warning("Source '%s' already set, ignoring.",
-                                attrs["address"])
+                    log.warning("Source '%s' already set, ignoring.", attrs["address"])
             if "address" in attrs:
                 entry = attrs["address"]
                 if entry not in self.item.sources:
                     self.item.sources.append(entry)
                 else:
-                    log.warning("Source '%s' already set, ignoring.",
-                                attrs["address"])
+                    log.warning("Source '%s' already set, ignoring.", attrs["address"])
 
         elif name == "icmp-block-inversion":
             if self.item.icmp_block_inversion:
@@ -391,11 +446,13 @@ class zone_ContentHandler(IO_Object_ContentHandler):
 
         common_endElement(self, name)
 
+
 def zone_reader(filename, path, no_check_name=False):
     zone = Zone()
     if not filename.endswith(".xml"):
-        raise FirewallError(errors.INVALID_NAME,
-                            "'%s' is missing .xml suffix" % filename)
+        raise FirewallError(
+            errors.INVALID_NAME, "'%s' is missing .xml suffix" % filename
+        )
     zone.name = filename[:-4]
     if not no_check_name:
         zone.check_name(zone.name)
@@ -417,12 +474,13 @@ def zone_reader(filename, path, no_check_name=False):
         try:
             parser.parse(source)
         except sax.SAXParseException as msg:
-            raise FirewallError(errors.INVALID_ZONE,
-                                "not a valid zone file: %s" % \
-                                msg.getException())
+            raise FirewallError(
+                errors.INVALID_ZONE, "not a valid zone file: %s" % msg.getException()
+            )
     del handler
     del parser
     return zone
+
 
 def zone_writer(zone, path=None):
     _path = path if path else zone.path
@@ -444,7 +502,7 @@ def zone_writer(zone, path=None):
             os.mkdir(config.ETC_FIREWALLD, 0o750)
         os.mkdir(dirpath, 0o750)
 
-    f = io.open(name, mode='wt', encoding='UTF-8')
+    f = io.open(name, mode="wt", encoding="UTF-8")
     handler = IO_Object_XMLGenerator(f)
     handler.startDocument()
 
@@ -466,28 +524,28 @@ def zone_writer(zone, path=None):
     # interfaces
     for interface in uniqify(zone.interfaces):
         handler.ignorableWhitespace("  ")
-        handler.simpleElement("interface", { "name": interface })
+        handler.simpleElement("interface", {"name": interface})
         handler.ignorableWhitespace("\n")
 
     # source
     for source in uniqify(zone.sources):
         handler.ignorableWhitespace("  ")
         if "ipset:" in source:
-            handler.simpleElement("source", { "ipset": source[6:] })
+            handler.simpleElement("source", {"ipset": source[6:]})
         else:
-            handler.simpleElement("source", { "address": source })
+            handler.simpleElement("source", {"address": source})
         handler.ignorableWhitespace("\n")
 
     # icmp-block-inversion
     if zone.icmp_block_inversion:
         handler.ignorableWhitespace("  ")
-        handler.simpleElement("icmp-block-inversion", { })
+        handler.simpleElement("icmp-block-inversion", {})
         handler.ignorableWhitespace("\n")
 
     # forward
     if zone.forward:
         handler.ignorableWhitespace("  ")
-        handler.simpleElement("forward", { })
+        handler.simpleElement("forward", {})
         handler.ignorableWhitespace("\n")
 
     # end zone element

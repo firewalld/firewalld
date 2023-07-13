@@ -21,48 +21,68 @@ from firewall import config
 from firewall.functions import firewalld_is_active
 from firewall.core.logger import log, FileLog
 
+
 def parse_cmdline():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--debug',
-                        nargs='?', const=1, default=0, type=int,
-                        choices=range(1, log.DEBUG_MAX+1),
-                        help="""Enable logging of debug messages.
+    parser.add_argument(
+        "--debug",
+        nargs="?",
+        const=1,
+        default=0,
+        type=int,
+        choices=range(1, log.DEBUG_MAX + 1),
+        help="""Enable logging of debug messages.
                                 Additional argument in range 1..%s can be used
-                                to specify log level.""" % log.DEBUG_MAX,
-                        metavar="level")
-    parser.add_argument('--debug-gc',
-                        help="""Turn on garbage collector leak information.
+                                to specify log level."""
+        % log.DEBUG_MAX,
+        metavar="level",
+    )
+    parser.add_argument(
+        "--debug-gc",
+        help="""Turn on garbage collector leak information.
                         The collector runs every 10 seconds and if there are
                         leaks, it prints information about the leaks.""",
-                        action="store_true")
-    parser.add_argument('--nofork',
-                        help="""Turn off daemon forking,
+        action="store_true",
+    )
+    parser.add_argument(
+        "--nofork",
+        help="""Turn off daemon forking,
                                 run as a foreground process.""",
-                        action="store_true")
-    parser.add_argument('--nopid',
-                        help="""Disable writing pid file and don't check
+        action="store_true",
+    )
+    parser.add_argument(
+        "--nopid",
+        help="""Disable writing pid file and don't check
                                 for existing server process.""",
-                        action="store_true")
-    parser.add_argument('--system-config',
-                        help="""Path to firewalld system configuration""",
-                        metavar="path")
-    parser.add_argument('--default-config',
-                        help="""Path to firewalld default configuration""",
-                        metavar="path")
-    parser.add_argument('--log-target',
-                        choices=['mixed', 'syslog', 'file', 'console'],
-                        default='@DEFAULT_LOG_TARGET@',
-                        help="""Log target.
+        action="store_true",
+    )
+    parser.add_argument(
+        "--system-config",
+        help="""Path to firewalld system configuration""",
+        metavar="path",
+    )
+    parser.add_argument(
+        "--default-config",
+        help="""Path to firewalld default configuration""",
+        metavar="path",
+    )
+    parser.add_argument(
+        "--log-target",
+        choices=["mixed", "syslog", "file", "console"],
+        default="@DEFAULT_LOG_TARGET@",
+        help="""Log target.
                         mixed is a backward compatible mode logging to multiple targets.
-                        The modes syslog, file or console log to one target only.""")
-    parser.add_argument('--log-file',
-                        help="""Path to firewalld log file""",
-                        metavar="path")
+                        The modes syslog, file or console log to one target only.""",
+    )
+    parser.add_argument(
+        "--log-file", help="""Path to firewalld log file""", metavar="path"
+    )
     return parser.parse_args()
+
 
 def setup_logging(args):
     # Set up logging capabilities
-    if config.FIREWALLD_LOGTARGET == 'syslog':
+    if config.FIREWALLD_LOGTARGET == "syslog":
         log.setFormat("%(label)s%(message)s")
         log.setInfoLogging("*", log.syslog)
         if args.debug:
@@ -70,15 +90,14 @@ def setup_logging(args):
             log.setInfoLogLevel(log.INFO_MAX)
             log.setDebugLogLevel(args.debug)
 
-    elif config.FIREWALLD_LOGTARGET == 'file':
+    elif config.FIREWALLD_LOGTARGET == "file":
         log.setDateFormat("%Y-%m-%d %H:%M:%S")
         log.setFormat("%(date)s %(label)s%(message)s")
         log_file = FileLog(config.FIREWALLD_LOGFILE, "a")
         try:
             log_file.open()
         except IOError as e:
-            print("Failed to open log file '%s': %s", config.FIREWALLD_LOGFILE,
-                    str(e))
+            print("Failed to open log file '%s': %s", config.FIREWALLD_LOGFILE, str(e))
         else:
             log.setInfoLogging("*", log_file)
             if args.debug:
@@ -86,7 +105,7 @@ def setup_logging(args):
                 log.setInfoLogLevel(log.INFO_MAX)
                 log.setDebugLogLevel(args.debug)
 
-    elif config.FIREWALLD_LOGTARGET == 'console':
+    elif config.FIREWALLD_LOGTARGET == "console":
         log.setDateFormat("%Y-%m-%d %H:%M:%S")
         log.setFormat("%(date)s %(label)s%(message)s")
         log.setInfoLogging("*", log.stdout)
@@ -98,9 +117,12 @@ def setup_logging(args):
     else:
         log.setDateFormat("%Y-%m-%d %H:%M:%S")
         log.setFormat("%(date)s %(label)s%(message)s")
-        log.setInfoLogging("*", log.syslog, [ log.FATAL, log.ERROR, log.WARNING,
-                                            log.TRACEBACK ],
-                        fmt="%(label)s%(message)s")
+        log.setInfoLogging(
+            "*",
+            log.syslog,
+            [log.FATAL, log.ERROR, log.WARNING, log.TRACEBACK],
+            fmt="%(label)s%(message)s",
+        )
         log.setDebugLogLevel(log.NO_INFO)
         log.setDebugLogLevel(log.NO_DEBUG)
 
@@ -115,15 +137,18 @@ def setup_logging(args):
         try:
             log_file.open()
         except IOError as e:
-            log.error("Failed to open log file '%s': %s", config.FIREWALLD_LOGFILE,
-                    str(e))
+            log.error(
+                "Failed to open log file '%s': %s", config.FIREWALLD_LOGFILE, str(e)
+            )
         else:
-            log.addInfoLogging("*", log_file, [ log.FATAL, log.ERROR, log.WARNING,
-                                                log.TRACEBACK ])
+            log.addInfoLogging(
+                "*", log_file, [log.FATAL, log.ERROR, log.WARNING, log.TRACEBACK]
+            )
             log.addDebugLogging("*", log_file)
             if args.debug:
                 log.addInfoLogging("*", log_file)
                 log.addDebugLogging("*", log_file)
+
 
 def startup(args):
     try:
@@ -167,17 +192,38 @@ def startup(args):
         #   - CAP_SYS_MODULE
         try:
             import capng
+
             capng.capng_clear(capng.CAPNG_SELECT_BOTH)
-            if capng.capng_update(capng.CAPNG_ADD, capng.CAPNG_EFFECTIVE | capng.CAPNG_PERMITTED | capng.CAPNG_BOUNDING_SET,
-                                  capng.CAP_NET_ADMIN) or \
-               capng.capng_update(capng.CAPNG_ADD, capng.CAPNG_EFFECTIVE | capng.CAPNG_PERMITTED | capng.CAPNG_BOUNDING_SET,
-                                  capng.CAP_NET_RAW) or \
-               capng.capng_update(capng.CAPNG_ADD, capng.CAPNG_EFFECTIVE | capng.CAPNG_PERMITTED | capng.CAPNG_BOUNDING_SET,
-                                  capng.CAP_SYS_MODULE) or \
-               capng.capng_apply(capng.CAPNG_SELECT_BOTH):
+            if (
+                capng.capng_update(
+                    capng.CAPNG_ADD,
+                    capng.CAPNG_EFFECTIVE
+                    | capng.CAPNG_PERMITTED
+                    | capng.CAPNG_BOUNDING_SET,
+                    capng.CAP_NET_ADMIN,
+                )
+                or capng.capng_update(
+                    capng.CAPNG_ADD,
+                    capng.CAPNG_EFFECTIVE
+                    | capng.CAPNG_PERMITTED
+                    | capng.CAPNG_BOUNDING_SET,
+                    capng.CAP_NET_RAW,
+                )
+                or capng.capng_update(
+                    capng.CAPNG_ADD,
+                    capng.CAPNG_EFFECTIVE
+                    | capng.CAPNG_PERMITTED
+                    | capng.CAPNG_BOUNDING_SET,
+                    capng.CAP_SYS_MODULE,
+                )
+                or capng.capng_apply(capng.CAPNG_SELECT_BOTH)
+            ):
                 log.info(log.INFO1, "libcap-ng failed to drop Linux capabilities.")
             else:
-                log.info(log.INFO1, "Dropped Linux capabilities to NET_ADMIN, NET_RAW, SYS_MODULE.")
+                log.info(
+                    log.INFO1,
+                    "Dropped Linux capabilities to NET_ADMIN, NET_RAW, SYS_MODULE.",
+                )
         except ImportError:
             pass
 
@@ -189,6 +235,7 @@ def startup(args):
 
         # Start the server mainloop here
         from firewall.server import server
+
         server.run_server(args.debug_gc)
 
         # Clean up on exit
@@ -216,6 +263,7 @@ def startup(args):
             os.remove(config.FIREWALLD_PIDFILE)
         sys.exit(1)
 
+
 def main():
     # firewalld should only be run as the root user
     if os.getuid() != 0:
@@ -240,5 +288,6 @@ def main():
 
     sys.exit(0)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()
