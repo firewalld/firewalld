@@ -1,0 +1,55 @@
+[flake8]
+
+# Run this command, to check whether all the ignored errors still produce
+# errors. Over time, we want to reduce the number of suppressed warnings and
+# the command helps to find them.
+#
+#   $ sed -e '/^#        for e/,/^$/!d' -e 's/^#        //' .flake8 | bash -
+#
+#        for e in $(sed -n 's/^    \([EW]...\)$/\1/p' .flake8); do
+#            echo "Check for error $e";
+#            if flake8 --config <(grep -v "$e" .flake8) ; then
+#                echo "found no errors for $e"
+#                break;
+#            fi
+#        done
+
+extend-ignore =
+    E126
+    E127
+    E128
+    E201
+    E202
+    E203
+    E211
+    E221
+    E222
+    E225
+    E226
+    E231
+    E241
+    E251
+    E261
+    E262
+    E265
+    E266
+    E301
+    E302
+    E303
+    E305
+    E306
+    E402
+    E501
+    E502
+    E722
+    E741
+    W503
+    W504
+filename =
+    *.py
+    *.py.in
+    */src/firewall-applet.in
+    */src/firewall-cmd.in
+    */src/firewall-config.in
+    */src/firewalld.in
+    */src/firewall-offline-cmd.in
