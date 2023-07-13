@@ -9,7 +9,7 @@ jobs:
         iptables libdbus-1-dev libgirepository1.0-dev libglib2.0-dev \
         libxml2-utils nftables pkg-config python3-nftables xsltproc
       pip-dependencies: |
-        dbus-python PyGObject flake8 pytest
+        dbus-python PyGObject flake8 pytest black==22.12.0
 
     runs-on: ubuntu-20.04
 
@@ -42,6 +42,11 @@ jobs:
           ./autogen.sh
           ./configure
           make -j $(nproc)
+
+      - name: check formatting with python-black
+        run: |
+          black --version
+          black --check .
 
       - name: check source code
         run: |
