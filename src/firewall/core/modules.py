@@ -11,6 +11,7 @@ from firewall.core.prog import runProg
 from firewall.core.logger import log
 from firewall.config import COMMANDS
 
+
 class modules:
     def __init__(self):
         self._load_command = COMMANDS["modprobe"]
@@ -18,12 +19,12 @@ class modules:
         self._unload_command = COMMANDS["rmmod"]
 
     def __repr__(self):
-        return '%s' % (self.__class__)
+        return "%s" % (self.__class__)
 
     def loaded_modules(self):
-        """ get all loaded kernel modules and their dependencies """
-        mods = [ ]
-        deps = { }
+        """get all loaded kernel modules and their dependencies"""
+        mods = []
+        deps = {}
         try:
             with open("/proc/modules", "r") as f:
                 for line in f:
@@ -35,22 +36,22 @@ class modules:
                     if splits[3] != "-":
                         deps[splits[0]] = splits[3].split(",")[:-1]
                     else:
-                        deps[splits[0]] = [ ]
+                        deps[splits[0]] = []
         except FileNotFoundError:
             pass
 
-        return mods, deps # [loaded modules], {module:[dependants]}
+        return mods, deps  # [loaded modules], {module:[dependants]}
 
     def load_module(self, module):
         log.debug2("%s: %s %s", self.__class__, self._load_command, module)
-        return runProg(self._load_command, [ module ])
+        return runProg(self._load_command, [module])
 
     def unload_module(self, module):
         log.debug2("%s: %s %s", self.__class__, self._unload_command, module)
-        return runProg(self._unload_command, [ module ])
+        return runProg(self._unload_command, [module])
 
     def get_deps(self, module, deps, ret):
-        """ get all dependants of a module """
+        """get all dependants of a module"""
         if module not in deps:
             return
         for mod in deps[module]:
@@ -61,8 +62,8 @@ class modules:
             ret.append(module)
 
     def get_firewall_modules(self):
-        """ get all loaded firewall-related modules """
-        mods = [ ]
+        """get all loaded firewall-related modules"""
+        mods = []
         (mods2, deps) = self.loaded_modules()
 
         self.get_deps("nf_conntrack", deps, mods)
@@ -74,16 +75,21 @@ class modules:
                 mods.insert(-1, bad_bad_module)
 
         for mod in mods2:
-            if mod in [ "ip_tables", "ip6_tables", "ebtables" ] or \
-               mod.startswith("iptable_") or mod.startswith("ip6table_") or \
-               mod.startswith("nf_") or mod.startswith("xt_") or \
-               mod.startswith("ipt_") or mod.startswith("ip6t_") :
+            if (
+                mod in ["ip_tables", "ip6_tables", "ebtables"]
+                or mod.startswith("iptable_")
+                or mod.startswith("ip6table_")
+                or mod.startswith("nf_")
+                or mod.startswith("xt_")
+                or mod.startswith("ipt_")
+                or mod.startswith("ip6t_")
+            ):
                 self.get_deps(mod, deps, mods)
         return mods
 
     def unload_firewall_modules(self):
-        """ unload all firewall-related modules """
+        """unload all firewall-related modules"""
         for module in self.get_firewall_modules():
             (status, ret) = self.unload_module(module)
             if status != 0:
-                log.debug1("Failed to unload module '%s': %s" %(module, ret))
+                log.debug1("Failed to unload module '%s': %s" % (module, ret))

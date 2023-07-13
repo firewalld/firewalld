@@ -11,13 +11,16 @@ import io
 import shutil
 
 from firewall import config
-from firewall.core.io.io_object import IO_Object, \
-                    IO_Object_ContentHandler, IO_Object_XMLGenerator
+from firewall.core.io.io_object import (
+    IO_Object,
+    IO_Object_ContentHandler,
+    IO_Object_XMLGenerator,
+)
 from firewall.core.logger import log
-from firewall.functions import uniqify, checkUser, checkUid, checkCommand, \
-                               checkContext
+from firewall.functions import uniqify, checkUser, checkUid, checkCommand, checkContext
 from firewall import errors
 from firewall.errors import FirewallError
+
 
 class lockdown_whitelist_ContentHandler(IO_Object_ContentHandler):
     def __init__(self, item):
@@ -30,8 +33,7 @@ class lockdown_whitelist_ContentHandler(IO_Object_ContentHandler):
 
         if name == "whitelist":
             if self.whitelist:
-                raise FirewallError(errors.PARSE_ERROR,
-                                    "More than one whitelist.")
+                raise FirewallError(errors.PARSE_ERROR, "More than one whitelist.")
             self.whitelist = True
 
         elif name == "command":
@@ -49,8 +51,7 @@ class lockdown_whitelist_ContentHandler(IO_Object_ContentHandler):
                 try:
                     uid = int(attrs["id"])
                 except ValueError:
-                    log.error("Parse Error: %s is not a valid uid" %
-                              attrs["id"])
+                    log.error("Parse Error: %s is not a valid uid" % attrs["id"])
                     return
                 self.item.add_uid(uid)
             elif "name" in attrs:
@@ -66,29 +67,30 @@ class lockdown_whitelist_ContentHandler(IO_Object_ContentHandler):
             self.item.add_context(attrs["context"])
 
         else:
-            log.error('Unknown XML element %s' % name)
+            log.error("Unknown XML element %s" % name)
             return
 
+
 class LockdownWhitelist(IO_Object):
-    """ LockdownWhitelist class """
+    """LockdownWhitelist class"""
 
     IMPORT_EXPORT_STRUCTURE = (
-        ( "commands", [ "" ] ),   # as
-        ( "contexts", [ "" ] ),   # as
-        ( "users", [ "" ] ),      # as
-        ( "uids", [ 0 ] )         # ai
+        ("commands", [""]),  # as
+        ("contexts", [""]),  # as
+        ("users", [""]),  # as
+        ("uids", [0]),  # ai
     )
-    DBUS_SIGNATURE = '(asasasai)'
-    ADDITIONAL_ALNUM_CHARS = [ "_" ]
+    DBUS_SIGNATURE = "(asasasai)"
+    ADDITIONAL_ALNUM_CHARS = ["_"]
     PARSER_REQUIRED_ELEMENT_ATTRS = {
         "whitelist": None,
-        "command": [ "name" ],
+        "command": ["name"],
         "user": None,
         # "group": None,
-        "selinux": [ "context" ],
+        "selinux": ["context"],
     }
     PARSER_OPTIONAL_ELEMENT_ATTRS = {
-        "user": [ "id", "name" ],
+        "user": ["id", "name"],
         # "group": [ "id", "name" ],
     }
 
@@ -96,15 +98,16 @@ class LockdownWhitelist(IO_Object):
         super(LockdownWhitelist, self).__init__()
         self.filename = filename
         self.parser = None
-        self.commands = [ ]
-        self.contexts = [ ]
-        self.users = [ ]
-        self.uids = [ ]
-#        self.gids = [ ]
-#        self.groups = [ ]
+        self.commands = []
+        self.contexts = []
+        self.users = []
+        self.uids = []
+
+    #        self.gids = [ ]
+    #        self.groups = [ ]
 
     def _check_config(self, config, item, all_config, all_io_objects):
-        if item in [ "commands", "contexts", "users", "uids" ]:
+        if item in ["commands", "contexts", "users", "uids"]:
             for x in config:
                 self._check_config(x, item[:-1], all_config, all_io_objects)
         elif item == "command":
@@ -125,8 +128,9 @@ class LockdownWhitelist(IO_Object):
         del self.contexts[:]
         del self.users[:]
         del self.uids[:]
-#        del self.gids[:]
-#        del self.groups[:]
+
+    #        del self.gids[:]
+    #        del self.groups[:]
 
     # commands
 
@@ -136,18 +140,20 @@ class LockdownWhitelist(IO_Object):
         if command not in self.commands:
             self.commands.append(command)
         else:
-            raise FirewallError(errors.ALREADY_ENABLED,
-                                'Command "%s" already in whitelist' % command)
+            raise FirewallError(
+                errors.ALREADY_ENABLED, 'Command "%s" already in whitelist' % command
+            )
 
     def remove_command(self, command):
         if command in self.commands:
             self.commands.remove(command)
         else:
-            raise FirewallError(errors.NOT_ENABLED,
-                                'Command "%s" not in whitelist.' % command)
+            raise FirewallError(
+                errors.NOT_ENABLED, 'Command "%s" not in whitelist.' % command
+            )
 
     def has_command(self, command):
-        return (command in self.commands)
+        return command in self.commands
 
     def match_command(self, command):
         for _command in self.commands:
@@ -170,22 +176,21 @@ class LockdownWhitelist(IO_Object):
         if uid not in self.uids:
             self.uids.append(uid)
         else:
-            raise FirewallError(errors.ALREADY_ENABLED,
-                                'Uid "%s" already in whitelist' % uid)
-
+            raise FirewallError(
+                errors.ALREADY_ENABLED, 'Uid "%s" already in whitelist' % uid
+            )
 
     def remove_uid(self, uid):
         if uid in self.uids:
             self.uids.remove(uid)
         else:
-            raise FirewallError(errors.NOT_ENABLED,
-                                'Uid "%s" not in whitelist.' % uid)
+            raise FirewallError(errors.NOT_ENABLED, 'Uid "%s" not in whitelist.' % uid)
 
     def has_uid(self, uid):
-        return (uid in self.uids)
+        return uid in self.uids
 
     def match_uid(self, uid):
-        return (uid in self.uids)
+        return uid in self.uids
 
     def get_uids(self):
         return self.uids
@@ -198,69 +203,70 @@ class LockdownWhitelist(IO_Object):
         if user not in self.users:
             self.users.append(user)
         else:
-            raise FirewallError(errors.ALREADY_ENABLED,
-                                'User "%s" already in whitelist' % user)
-
+            raise FirewallError(
+                errors.ALREADY_ENABLED, 'User "%s" already in whitelist' % user
+            )
 
     def remove_user(self, user):
         if user in self.users:
             self.users.remove(user)
         else:
-            raise FirewallError(errors.NOT_ENABLED,
-                                'User "%s" not in whitelist.' % user)
+            raise FirewallError(
+                errors.NOT_ENABLED, 'User "%s" not in whitelist.' % user
+            )
 
     def has_user(self, user):
-        return (user in self.users)
+        return user in self.users
 
     def match_user(self, user):
-        return (user in self.users)
+        return user in self.users
 
     def get_users(self):
         return self.users
 
-#    # group ids
-#
-#    def add_gid(self, gid):
-#        if gid not in self.gids:
-#            self.gids.append(gid)
-#
-#    def remove_gid(self, gid):
-#        if gid in self.gids:
-#            self.gids.remove(gid)
-#        else:
-#            raise FirewallError(errors.NOT_ENABLED,
-#                                'Gid "%s" not in whitelist.' % gid)
-#
-#    def has_gid(self, gid):
-#        return (gid in self.gids)
-#
-#    def match_gid(self, gid):
-#        return (gid in self.gids)
-#
-#    def get_gids(self):
-#        return self.gids
+    #    # group ids
+    #
+    #    def add_gid(self, gid):
+    #        if gid not in self.gids:
+    #            self.gids.append(gid)
+    #
+    #    def remove_gid(self, gid):
+    #        if gid in self.gids:
+    #            self.gids.remove(gid)
+    #        else:
+    #            raise FirewallError(errors.NOT_ENABLED,
+    #                                'Gid "%s" not in whitelist.' % gid)
+    #
+    #    def has_gid(self, gid):
+    #        return (gid in self.gids)
+    #
+    #    def match_gid(self, gid):
+    #        return (gid in self.gids)
+    #
+    #    def get_gids(self):
+    #        return self.gids
 
-#    # groups
-#
-#    def add_group(self, group):
-#        if group not in self.groups:
-#            self.groups.append(group)
-#
-#    def remove_group(self, group):
-#        if group in self.groups:
-#            self.groups.remove(group)
-#        else:
-#            raise FirewallError(errors.NOT_ENABLED,
-#                                'Group "%s" not in whitelist.' % group)
-#
-#    def has_group(self, group):
-#        return (group in self.groups)
-#
-#    def match_group(self, group):
-#        return (group in self.groups)
-#
-#    def get_groups(self):
-#        return self.groups
+    #    # groups
+    #
+    #    def add_group(self, group):
+    #        if group not in self.groups:
+    #            self.groups.append(group)
+    #
+    #    def remove_group(self, group):
+    #        if group in self.groups:
+    #            self.groups.remove(group)
+    #        else:
+    #            raise FirewallError(errors.NOT_ENABLED,
+    #                                'Group "%s" not in whitelist.' % group)
+    #
+    #    def has_group(self, group):
+    #        return (group in self.groups)
+    #
+    #    def match_group(self, group):
+    #        return (group in self.groups)
+    #
+    #    def get_groups(self):
+    #        return self.groups
 
     # selinux contexts
 
@@ -270,22 +276,23 @@ class LockdownWhitelist(IO_Object):
         if context not in self.contexts:
             self.contexts.append(context)
         else:
-            raise FirewallError(errors.ALREADY_ENABLED,
-                                'Context "%s" already in whitelist' % context)
-
+            raise FirewallError(
+                errors.ALREADY_ENABLED, 'Context "%s" already in whitelist' % context
+            )
 
     def remove_context(self, context):
         if context in self.contexts:
             self.contexts.remove(context)
         else:
-            raise FirewallError(errors.NOT_ENABLED,
-                                'Context "%s" not in whitelist.' % context)
+            raise FirewallError(
+                errors.NOT_ENABLED, 'Context "%s" not in whitelist.' % context
+            )
 
     def has_context(self, context):
-        return (context in self.contexts)
+        return context in self.contexts
 
     def match_context(self, context):
-        return (context in self.contexts)
+        return context in self.contexts
 
     def get_contexts(self):
         return self.contexts
@@ -295,17 +302,18 @@ class LockdownWhitelist(IO_Object):
     def read(self):
         self.cleanup()
         if not self.filename.endswith(".xml"):
-            raise FirewallError(errors.INVALID_NAME,
-                                "'%s' is missing .xml suffix" % self.filename)
+            raise FirewallError(
+                errors.INVALID_NAME, "'%s' is missing .xml suffix" % self.filename
+            )
         handler = lockdown_whitelist_ContentHandler(self)
         parser = sax.make_parser()
         parser.setContentHandler(handler)
         try:
             parser.parse(self.filename)
         except sax.SAXParseException as msg:
-            raise FirewallError(errors.INVALID_TYPE,
-                                "Not a valid file: %s" % \
-                                msg.getException())
+            raise FirewallError(
+                errors.INVALID_TYPE, "Not a valid file: %s" % msg.getException()
+            )
         del handler
         del parser
 
@@ -319,43 +327,43 @@ class LockdownWhitelist(IO_Object):
         if not os.path.exists(config.ETC_FIREWALLD):
             os.mkdir(config.ETC_FIREWALLD, 0o750)
 
-        f = io.open(self.filename, mode='wt', encoding='UTF-8')
+        f = io.open(self.filename, mode="wt", encoding="UTF-8")
         handler = IO_Object_XMLGenerator(f)
         handler.startDocument()
 
         # start whitelist element
-        handler.startElement("whitelist", { })
+        handler.startElement("whitelist", {})
         handler.ignorableWhitespace("\n")
 
         # commands
         for command in uniqify(self.commands):
             handler.ignorableWhitespace("  ")
-            handler.simpleElement("command", { "name": command })
+            handler.simpleElement("command", {"name": command})
             handler.ignorableWhitespace("\n")
 
         for uid in uniqify(self.uids):
             handler.ignorableWhitespace("  ")
-            handler.simpleElement("user", { "id": str(uid) })
+            handler.simpleElement("user", {"id": str(uid)})
             handler.ignorableWhitespace("\n")
 
         for user in uniqify(self.users):
             handler.ignorableWhitespace("  ")
-            handler.simpleElement("user", { "name": user })
+            handler.simpleElement("user", {"name": user})
             handler.ignorableWhitespace("\n")
 
-#        for gid in uniqify(self.gids):
-#            handler.ignorableWhitespace("  ")
-#            handler.simpleElement("user", { "id": str(gid) })
-#            handler.ignorableWhitespace("\n")
+        #        for gid in uniqify(self.gids):
+        #            handler.ignorableWhitespace("  ")
+        #            handler.simpleElement("user", { "id": str(gid) })
+        #            handler.ignorableWhitespace("\n")
 
-#        for group in uniqify(self.groups):
-#            handler.ignorableWhitespace("  ")
-#            handler.simpleElement("group", { "name": group })
-#            handler.ignorableWhitespace("\n")
+        #        for group in uniqify(self.groups):
+        #            handler.ignorableWhitespace("  ")
+        #            handler.simpleElement("group", { "name": group })
+        #            handler.ignorableWhitespace("\n")
 
         for context in uniqify(self.contexts):
             handler.ignorableWhitespace("  ")
-            handler.simpleElement("selinux", { "context": context })
+            handler.simpleElement("selinux", {"context": context})
             handler.ignorableWhitespace("\n")
 
         # end whitelist element

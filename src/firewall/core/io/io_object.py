@@ -16,14 +16,15 @@ from firewall import functions
 from firewall import errors
 from firewall.errors import FirewallError
 
-class IO_Object:
-    """ Abstract IO_Object as base for icmptype, service and zone """
 
-    IMPORT_EXPORT_STRUCTURE = ( )
-    DBUS_SIGNATURE = '()'
-    ADDITIONAL_ALNUM_CHARS = [ ] # additional to alnum
-    PARSER_REQUIRED_ELEMENT_ATTRS = { }
-    PARSER_OPTIONAL_ELEMENT_ATTRS = { }
+class IO_Object:
+    """Abstract IO_Object as base for icmptype, service and zone"""
+
+    IMPORT_EXPORT_STRUCTURE = ()
+    DBUS_SIGNATURE = "()"
+    ADDITIONAL_ALNUM_CHARS = []  # additional to alnum
+    PARSER_REQUIRED_ELEMENT_ATTRS = {}
+    PARSER_OPTIONAL_ELEMENT_ATTRS = {}
 
     def __init__(self):
         self.filename = ""
@@ -33,7 +34,7 @@ class IO_Object:
         self.builtin = False
 
     def export_config(self):
-        ret = [ ]
+        ret = []
         for x in self.IMPORT_EXPORT_STRUCTURE:
             ret.append(copy.deepcopy(getattr(self, x[0])))
         return tuple(ret)
@@ -42,16 +43,20 @@ class IO_Object:
         conf = {}
         type_formats = dict([(x[0], x[1]) for x in self.IMPORT_EXPORT_STRUCTURE])
         for key in type_formats:
-            if getattr(self, key) or isinstance(getattr(self, key), bool) or isinstance(getattr(self, key), int):
+            if (
+                getattr(self, key)
+                or isinstance(getattr(self, key), bool)
+                or isinstance(getattr(self, key), int)
+            ):
                 conf[key] = copy.deepcopy(getattr(self, key))
         return conf
 
     def import_config(self, conf, all_io_objects):
         self.check_config(conf, all_io_objects)
-        for i,(element,dummy) in enumerate(self.IMPORT_EXPORT_STRUCTURE):
+        for i, (element, dummy) in enumerate(self.IMPORT_EXPORT_STRUCTURE):
             if isinstance(conf[i], list):
                 # remove duplicates without changing the order
-                _conf = [ ]
+                _conf = []
                 _set = set()
                 for x in conf[i]:
                     if x not in _set:
@@ -67,7 +72,10 @@ class IO_Object:
 
         for key in conf:
             if not hasattr(self, key):
-                raise FirewallError(errors.UNKNOWN_ERROR, "Internal error. '{}' is not a valid attribute".format(key))
+                raise FirewallError(
+                    errors.UNKNOWN_ERROR,
+                    "Internal error. '{}' is not a valid attribute".format(key),
+                )
             if isinstance(conf[key], list):
                 # maintain list order while removing duplicates
                 setattr(self, key, list(OrderedDict.fromkeys(copy.deepcopy(conf[key]))))
@@ -76,33 +84,37 @@ class IO_Object:
 
     def check_name(self, name):
         if not isinstance(name, str):
-            raise FirewallError(errors.INVALID_TYPE,
-                                "'%s' not of type %s, but %s" % (name, type(""),
-                                                                 type(name)))
+            raise FirewallError(
+                errors.INVALID_TYPE,
+                "'%s' not of type %s, but %s" % (name, type(""), type(name)),
+            )
         if len(name) < 1:
             raise FirewallError(errors.INVALID_NAME, "name can't be empty")
         for char in name:
             if not char.isalnum() and char not in self.ADDITIONAL_ALNUM_CHARS:
                 raise FirewallError(
-                    errors.INVALID_NAME,
-                    "'%s' is not allowed in '%s'" % ((char, name)))
+                    errors.INVALID_NAME, "'%s' is not allowed in '%s'" % ((char, name))
+                )
 
     def check_config(self, conf, all_io_objects={}):
         if len(conf) != len(self.IMPORT_EXPORT_STRUCTURE):
             raise FirewallError(
                 errors.INVALID_TYPE,
-                "structure size mismatch %d != %d" % \
-                (len(conf), len(self.IMPORT_EXPORT_STRUCTURE)))
+                "structure size mismatch %d != %d"
+                % (len(conf), len(self.IMPORT_EXPORT_STRUCTURE)),
+            )
         conf_dict = {}
-        for i,(x,y) in enumerate(self.IMPORT_EXPORT_STRUCTURE):
+        for i, (x, y) in enumerate(self.IMPORT_EXPORT_STRUCTURE):
             conf_dict[x] = conf[i]
         self.check_config_dict(conf_dict, all_io_objects)
 
     def check_config_dict(self, conf, all_io_objects):
         type_formats = dict([(x[0], x[1]) for x in self.IMPORT_EXPORT_STRUCTURE])
         for key in conf:
-            if key not in [x for (x,y) in self.IMPORT_EXPORT_STRUCTURE]:
-                raise FirewallError(errors.INVALID_OPTION, "option '{}' is not valid".format(key))
+            if key not in [x for (x, y) in self.IMPORT_EXPORT_STRUCTURE]:
+                raise FirewallError(
+                    errors.INVALID_OPTION, "option '{}' is not valid".format(key)
+                )
             self._check_config_structure(conf[key], type_formats[key])
             self._check_config(conf[key], key, conf, all_io_objects)
 
@@ -112,35 +124,38 @@ class IO_Object:
 
     def _check_config_structure(self, conf, structure):
         if not isinstance(conf, type(structure)):
-            raise FirewallError(errors.INVALID_TYPE,
-                                "'%s' not of type %s, but %s" % \
-                                (conf, type(structure), type(conf)))
+            raise FirewallError(
+                errors.INVALID_TYPE,
+                "'%s' not of type %s, but %s" % (conf, type(structure), type(conf)),
+            )
         if isinstance(structure, list):
             # same type elements, else struct
             if len(structure) != 1:
-                raise FirewallError(errors.INVALID_TYPE,
-                                    "len('%s') != 1" % structure)
+                raise FirewallError(errors.INVALID_TYPE, "len('%s') != 1" % structure)
             for x in conf:
                 self._check_config_structure(x, structure[0])
         elif isinstance(structure, tuple):
             if len(structure) != len(conf):
-                raise FirewallError(errors.INVALID_TYPE,
-                                    "len('%s') != %d" % (conf,
-                                                         len(structure)))
-            for i,value in enumerate(structure):
+                raise FirewallError(
+                    errors.INVALID_TYPE, "len('%s') != %d" % (conf, len(structure))
+                )
+            for i, value in enumerate(structure):
                 self._check_config_structure(conf[i], value)
         elif isinstance(structure, dict):
             # only one key value pair in structure
             (skey, svalue) = list(structure.items())[0]
             for (key, value) in conf.items():
                 if not isinstance(key, type(skey)):
-                    raise FirewallError(errors.INVALID_TYPE,
-                                        "'%s' not of type %s, but %s" % (\
-                                            key, type(skey), type(key)))
+                    raise FirewallError(
+                        errors.INVALID_TYPE,
+                        "'%s' not of type %s, but %s" % (key, type(skey), type(key)),
+                    )
                 if not isinstance(value, type(svalue)):
-                    raise FirewallError(errors.INVALID_TYPE,
-                                        "'%s' not of type %s, but %s" % (\
-                                            value, type(svalue), type(value)))
+                    raise FirewallError(
+                        errors.INVALID_TYPE,
+                        "'%s' not of type %s, but %s"
+                        % (value, type(svalue), type(value)),
+                    )
 
     # check required elements and attributes and also optional attributes
     def parser_check_element_attrs(self, name, attrs):
@@ -156,46 +171,53 @@ class IO_Object:
                     else:
                         raise FirewallError(
                             errors.PARSE_ERROR,
-                            "Missing attribute %s for %s" % (x, name))
+                            "Missing attribute %s for %s" % (x, name),
+                        )
         if name in self.PARSER_OPTIONAL_ELEMENT_ATTRS:
             found = True
             for x in self.PARSER_OPTIONAL_ELEMENT_ATTRS[name]:
                 if x in _attrs:
                     _attrs.remove(x)
         if not found:
-            raise FirewallError(errors.PARSE_ERROR,
-                                "Unexpected element %s" % name)
+            raise FirewallError(errors.PARSE_ERROR, "Unexpected element %s" % name)
         # raise attributes[0]
         for x in _attrs:
-            raise FirewallError(errors.PARSE_ERROR,
-                                "%s: Unexpected attribute %s" % (name, x))
+            raise FirewallError(
+                errors.PARSE_ERROR, "%s: Unexpected attribute %s" % (name, x)
+            )
+
 
 # PARSER
+
 
 class UnexpectedElementError(Exception):
     def __init__(self, name):
         super(UnexpectedElementError, self).__init__()
         self.name = name
+
     def __str__(self):
         return "Unexpected element '%s'" % (self.name)
+
 
 class MissingAttributeError(Exception):
     def __init__(self, name, attribute):
         super(MissingAttributeError, self).__init__()
         self.name = name
         self.attribute = attribute
+
     def __str__(self):
-        return "Element '%s': missing '%s' attribute" % \
-            (self.name, self.attribute)
+        return "Element '%s': missing '%s' attribute" % (self.name, self.attribute)
+
 
 class UnexpectedAttributeError(Exception):
     def __init__(self, name, attribute):
         super(UnexpectedAttributeError, self).__init__()
         self.name = name
         self.attribute = attribute
+
     def __str__(self):
-        return "Element '%s': unexpected attribute '%s'" % \
-            (self.name, self.attribute)
+        return "Element '%s': unexpected attribute '%s'" % (self.name, self.attribute)
+
 
 class IO_Object_ContentHandler(sax.handler.ContentHandler):
     def __init__(self, item):
@@ -215,7 +237,8 @@ class IO_Object_ContentHandler(sax.handler.ContentHandler):
             self.item.description = self._element
 
     def characters(self, content):
-        self._element += content.replace('\n', ' ')
+        self._element += content.replace("\n", " ")
+
 
 class IO_Object_XMLGenerator(saxutils.XMLGenerator):
     def __init__(self, out):
@@ -228,7 +251,7 @@ class IO_Object_XMLGenerator(saxutils.XMLGenerator):
         sax.handler.ContentHandler.__init__(self)
         self._write = out.write
         self._flush = out.flush
-        self._ns_contexts = [{}] # contains uri -> prefix dicts
+        self._ns_contexts = [{}]  # contains uri -> prefix dicts
         self._current_context = self._ns_contexts[-1]
         self._undeclared_ns_maps = []
         self._encoding = "utf-8"
@@ -236,39 +259,42 @@ class IO_Object_XMLGenerator(saxutils.XMLGenerator):
         self._short_empty_elements = False
 
     def simpleElement(self, name, attrs):
-        """ slightly modified startElement()
-        """
-        self._write('<' + name)
+        """slightly modified startElement()"""
+        self._write("<" + name)
         for (name, value) in attrs.items():
-            self._write(' %s=%s' % (name, saxutils.quoteattr(value)))
-        self._write('/>')
+            self._write(" %s=%s" % (name, saxutils.quoteattr(value)))
+        self._write("/>")
+
 
 def check_port(port):
     port_range = functions.getPortRange(port)
     if port_range == -2:
-        raise FirewallError(errors.INVALID_PORT,
-                            "port number in '%s' is too big" % port)
+        raise FirewallError(
+            errors.INVALID_PORT, "port number in '%s' is too big" % port
+        )
     elif port_range == -1:
-        raise FirewallError(errors.INVALID_PORT,
-                            "'%s' is invalid port range" % port)
+        raise FirewallError(errors.INVALID_PORT, "'%s' is invalid port range" % port)
     elif port_range is None:
-        raise FirewallError(errors.INVALID_PORT,
-                            "port range '%s' is ambiguous" % port)
+        raise FirewallError(errors.INVALID_PORT, "port range '%s' is ambiguous" % port)
     elif len(port_range) == 2 and port_range[0] >= port_range[1]:
-        raise FirewallError(errors.INVALID_PORT,
-                            "'%s' is invalid port range" % port)
+        raise FirewallError(errors.INVALID_PORT, "'%s' is invalid port range" % port)
+
 
 def check_tcpudp(protocol):
-    if protocol not in [ "tcp", "udp", "sctp", "dccp" ]:
-        raise FirewallError(errors.INVALID_PROTOCOL,
-                            "'%s' not from {'tcp'|'udp'|'sctp'|'dccp'}" % \
-                            protocol)
+    if protocol not in ["tcp", "udp", "sctp", "dccp"]:
+        raise FirewallError(
+            errors.INVALID_PROTOCOL,
+            "'%s' not from {'tcp'|'udp'|'sctp'|'dccp'}" % protocol,
+        )
+
 
 def check_protocol(protocol):
     if not functions.checkProtocol(protocol):
         raise FirewallError(errors.INVALID_PROTOCOL, protocol)
 
+
 def check_address(ipv, addr):
     if not functions.check_address(ipv, addr):
-        raise FirewallError(errors.INVALID_ADDR,
-                            "'%s' is not valid %s address" % (addr, ipv))
+        raise FirewallError(
+            errors.INVALID_ADDR, "'%s' is not valid %s address" % (addr, ipv)
+        )

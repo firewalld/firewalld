@@ -11,32 +11,37 @@ import io
 import shutil
 
 from firewall import config
-from firewall.core.io.io_object import IO_Object, \
-    IO_Object_ContentHandler, IO_Object_XMLGenerator, check_port, \
-    check_tcpudp
+from firewall.core.io.io_object import (
+    IO_Object,
+    IO_Object_ContentHandler,
+    IO_Object_XMLGenerator,
+    check_port,
+    check_tcpudp,
+)
 from firewall.core.logger import log
 from firewall import errors
 from firewall.errors import FirewallError
 
+
 class Helper(IO_Object):
     IMPORT_EXPORT_STRUCTURE = (
-        ( "version",  "" ),                   # s
-        ( "short", "" ),                      # s
-        ( "description", "" ),                # s
-        ( "family", "" ),                     # s
-        ( "module", "" ),                     # s
-        ( "ports", [ ( "", "" ) ] ),          # a(ss)
+        ("version", ""),  # s
+        ("short", ""),  # s
+        ("description", ""),  # s
+        ("family", ""),  # s
+        ("module", ""),  # s
+        ("ports", [("", "")]),  # a(ss)
     )
-    DBUS_SIGNATURE = '(sssssa(ss))'
-    ADDITIONAL_ALNUM_CHARS = [ "-", "." ]
+    DBUS_SIGNATURE = "(sssssa(ss))"
+    ADDITIONAL_ALNUM_CHARS = ["-", "."]
     PARSER_REQUIRED_ELEMENT_ATTRS = {
         "short": None,
         "description": None,
-        "helper": [ "module" ],
+        "helper": ["module"],
     }
     PARSER_OPTIONAL_ELEMENT_ATTRS = {
-        "helper": [ "name", "version", "family" ],
-        "port": [ "port", "protocol" ],
+        "helper": ["name", "version", "family"],
+        "port": ["port", "protocol"],
     }
 
     def __init__(self):
@@ -46,7 +51,7 @@ class Helper(IO_Object):
         self.description = ""
         self.module = ""
         self.family = ""
-        self.ports = [ ]
+        self.ports = []
 
     def cleanup(self):
         self.version = ""
@@ -57,10 +62,9 @@ class Helper(IO_Object):
         del self.ports[:]
 
     def check_ipv(self, ipv):
-        ipvs = [ 'ipv4', 'ipv6' ]
+        ipvs = ["ipv4", "ipv6"]
         if ipv not in ipvs:
-            raise FirewallError(errors.INVALID_IPV,
-                                "'%s' not in '%s'" % (ipv, ipvs))
+            raise FirewallError(errors.INVALID_IPV, "'%s' not in '%s'" % (ipv, ipvs))
 
     def _check_config(self, config, item, all_config, all_io_objects):
         if item == "ports":
@@ -71,12 +75,16 @@ class Helper(IO_Object):
             if not config.startswith("nf_conntrack_"):
                 raise FirewallError(
                     errors.INVALID_MODULE,
-                    "'%s' does not start with 'nf_conntrack_'" % config)
+                    "'%s' does not start with 'nf_conntrack_'" % config,
+                )
             if len(config.replace("nf_conntrack_", "")) < 1:
-                raise FirewallError(errors.INVALID_MODULE,
-                                    "Module name '%s' too short" % config)
+                raise FirewallError(
+                    errors.INVALID_MODULE, "Module name '%s' too short" % config
+                )
+
 
 # PARSER
+
 
 class helper_ContentHandler(IO_Object_ContentHandler):
     def startElement(self, name, attrs):
@@ -92,12 +100,13 @@ class helper_ContentHandler(IO_Object_ContentHandler):
                 if not attrs["module"].startswith("nf_conntrack_"):
                     raise FirewallError(
                         errors.INVALID_MODULE,
-                        "'%s' does not start with 'nf_conntrack_'" % \
-                        attrs["module"])
+                        "'%s' does not start with 'nf_conntrack_'" % attrs["module"],
+                    )
                 if len(attrs["module"].replace("nf_conntrack_", "")) < 1:
                     raise FirewallError(
                         errors.INVALID_MODULE,
-                        "Module name '%s' too short" % attrs["module"])
+                        "Module name '%s' too short" % attrs["module"],
+                    )
                 self.item.module = attrs["module"]
         elif name == "short":
             pass
@@ -110,14 +119,19 @@ class helper_ContentHandler(IO_Object_ContentHandler):
             if entry not in self.item.ports:
                 self.item.ports.append(entry)
             else:
-                log.warning("Port '%s/%s' already set, ignoring.",
-                            attrs["port"], attrs["protocol"])
+                log.warning(
+                    "Port '%s/%s' already set, ignoring.",
+                    attrs["port"],
+                    attrs["protocol"],
+                )
+
 
 def helper_reader(filename, path):
     helper = Helper()
     if not filename.endswith(".xml"):
-        raise FirewallError(errors.INVALID_NAME,
-                            "'%s' is missing .xml suffix" % filename)
+        raise FirewallError(
+            errors.INVALID_NAME, "'%s' is missing .xml suffix" % filename
+        )
     helper.name = filename[:-4]
     helper.check_name(helper.name)
     helper.filename = filename
@@ -134,12 +148,14 @@ def helper_reader(filename, path):
         try:
             parser.parse(source)
         except sax.SAXParseException as msg:
-            raise FirewallError(errors.INVALID_HELPER,
-                                "not a valid helper file: %s" % \
-                                msg.getException())
+            raise FirewallError(
+                errors.INVALID_HELPER,
+                "not a valid helper file: %s" % msg.getException(),
+            )
     del handler
     del parser
     return helper
+
 
 def helper_writer(helper, path=None):
     _path = path if path else helper.path
@@ -161,7 +177,7 @@ def helper_writer(helper, path=None):
             os.mkdir(config.ETC_FIREWALLD, 0o750)
         os.mkdir(dirpath, 0o750)
 
-    f = io.open(name, mode='wt', encoding='UTF-8')
+    f = io.open(name, mode="wt", encoding="UTF-8")
     handler = IO_Object_XMLGenerator(f)
     handler.startDocument()
 
@@ -178,7 +194,7 @@ def helper_writer(helper, path=None):
     # short
     if helper.short and helper.short != "":
         handler.ignorableWhitespace("  ")
-        handler.startElement("short", { })
+        handler.startElement("short", {})
         handler.characters(helper.short)
         handler.endElement("short")
         handler.ignorableWhitespace("\n")
@@ -186,7 +202,7 @@ def helper_writer(helper, path=None):
     # description
     if helper.description and helper.description != "":
         handler.ignorableWhitespace("  ")
-        handler.startElement("description", { })
+        handler.startElement("description", {})
         handler.characters(helper.description)
         handler.endElement("description")
         handler.ignorableWhitespace("\n")
@@ -194,11 +210,11 @@ def helper_writer(helper, path=None):
     # ports
     for port in helper.ports:
         handler.ignorableWhitespace("  ")
-        handler.simpleElement("port", { "port": port[0], "protocol": port[1] })
+        handler.simpleElement("port", {"port": port[0], "protocol": port[1]})
         handler.ignorableWhitespace("\n")
 
     # end helper element
-    handler.endElement('helper')
+    handler.endElement("helper")
     handler.ignorableWhitespace("\n")
     handler.endDocument()
     f.close()

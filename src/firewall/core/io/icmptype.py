@@ -11,29 +11,33 @@ import io
 import shutil
 
 from firewall import config
-from firewall.core.io.io_object import IO_Object, \
-    IO_Object_ContentHandler, IO_Object_XMLGenerator
+from firewall.core.io.io_object import (
+    IO_Object,
+    IO_Object_ContentHandler,
+    IO_Object_XMLGenerator,
+)
 from firewall.core.logger import log
 from firewall import errors
 from firewall.errors import FirewallError
 
+
 class IcmpType(IO_Object):
     IMPORT_EXPORT_STRUCTURE = (
-        ( "version",  "" ),          # s
-        ( "short", "" ),             # s
-        ( "description", "" ),       # s
-        ( "destination", [ "" ] ),   # as
+        ("version", ""),  # s
+        ("short", ""),  # s
+        ("description", ""),  # s
+        ("destination", [""]),  # as
     )
-    DBUS_SIGNATURE = '(sssas)'
-    ADDITIONAL_ALNUM_CHARS = [ "_", "-" ]
+    DBUS_SIGNATURE = "(sssas)"
+    ADDITIONAL_ALNUM_CHARS = ["_", "-"]
     PARSER_REQUIRED_ELEMENT_ATTRS = {
         "short": None,
         "description": None,
         "icmptype": None,
     }
     PARSER_OPTIONAL_ELEMENT_ATTRS = {
-        "icmptype": [ "name", "version" ],
-        "destination": [ "ipv4", "ipv6" ],
+        "icmptype": ["name", "version"],
+        "destination": ["ipv4", "ipv6"],
     }
 
     def __init__(self):
@@ -41,7 +45,7 @@ class IcmpType(IO_Object):
         self.version = ""
         self.short = ""
         self.description = ""
-        self.destination = [ ]
+        self.destination = []
 
     def cleanup(self):
         self.version = ""
@@ -52,12 +56,15 @@ class IcmpType(IO_Object):
     def _check_config(self, config, item, all_config, all_io_objects):
         if item == "destination":
             for destination in config:
-                if destination not in [ "ipv4", "ipv6" ]:
-                    raise FirewallError(errors.INVALID_DESTINATION,
-                                        "'%s' not from {'ipv4'|'ipv6'}" % \
-                                        destination)
+                if destination not in ["ipv4", "ipv6"]:
+                    raise FirewallError(
+                        errors.INVALID_DESTINATION,
+                        "'%s' not from {'ipv4'|'ipv6'}" % destination,
+                    )
+
 
 # PARSER
+
 
 class icmptype_ContentHandler(IO_Object_ContentHandler):
     def startElement(self, name, attrs):
@@ -66,8 +73,7 @@ class icmptype_ContentHandler(IO_Object_ContentHandler):
 
         if name == "icmptype":
             if "name" in attrs:
-                log.warning("Ignoring deprecated attribute name='%s'" %
-                            attrs["name"])
+                log.warning("Ignoring deprecated attribute name='%s'" % attrs["name"])
             if "version" in attrs:
                 self.item.version = attrs["version"]
         elif name == "short":
@@ -75,16 +81,15 @@ class icmptype_ContentHandler(IO_Object_ContentHandler):
         elif name == "description":
             pass
         elif name == "destination":
-            for x in [ "ipv4", "ipv6" ]:
-                if x in attrs and \
-                        attrs[x].lower() in [ "yes", "true" ]:
+            for x in ["ipv4", "ipv6"]:
+                if x in attrs and attrs[x].lower() in ["yes", "true"]:
                     self.item.destination.append(str(x))
+
 
 def icmptype_reader(filename, path):
     icmptype = IcmpType()
     if not filename.endswith(".xml"):
-        raise FirewallError(errors.INVALID_NAME,
-                            "%s is missing .xml suffix" % filename)
+        raise FirewallError(errors.INVALID_NAME, "%s is missing .xml suffix" % filename)
     icmptype.name = filename[:-4]
     icmptype.check_name(icmptype.name)
     icmptype.filename = filename
@@ -101,12 +106,14 @@ def icmptype_reader(filename, path):
         try:
             parser.parse(source)
         except sax.SAXParseException as msg:
-            raise FirewallError(errors.INVALID_ICMPTYPE,
-                                "not a valid icmptype file: %s" % \
-                                msg.getException())
+            raise FirewallError(
+                errors.INVALID_ICMPTYPE,
+                "not a valid icmptype file: %s" % msg.getException(),
+            )
     del handler
     del parser
     return icmptype
+
 
 def icmptype_writer(icmptype, path=None):
     _path = path if path else icmptype.path
@@ -128,7 +135,7 @@ def icmptype_writer(icmptype, path=None):
             os.mkdir(config.ETC_FIREWALLD, 0o750)
         os.mkdir(dirpath, 0o750)
 
-    f = io.open(name, mode='wt', encoding='UTF-8')
+    f = io.open(name, mode="wt", encoding="UTF-8")
     handler = IO_Object_XMLGenerator(f)
     handler.startDocument()
 
@@ -142,7 +149,7 @@ def icmptype_writer(icmptype, path=None):
     # short
     if icmptype.short and icmptype.short != "":
         handler.ignorableWhitespace("  ")
-        handler.startElement("short", { })
+        handler.startElement("short", {})
         handler.characters(icmptype.short)
         handler.endElement("short")
         handler.ignorableWhitespace("\n")
@@ -150,7 +157,7 @@ def icmptype_writer(icmptype, path=None):
     # description
     if icmptype.description and icmptype.description != "":
         handler.ignorableWhitespace("  ")
-        handler.startElement("description", { })
+        handler.startElement("description", {})
         handler.characters(icmptype.description)
         handler.endElement("description")
         handler.ignorableWhitespace("\n")
@@ -158,14 +165,14 @@ def icmptype_writer(icmptype, path=None):
     # destination
     if icmptype.destination:
         handler.ignorableWhitespace("  ")
-        attrs = { }
+        attrs = {}
         for x in icmptype.destination:
             attrs[x] = "yes"
         handler.simpleElement("destination", attrs)
         handler.ignorableWhitespace("\n")
 
     # end icmptype element
-    handler.endElement('icmptype')
+    handler.endElement("icmptype")
     handler.ignorableWhitespace("\n")
     handler.endDocument()
     f.close()

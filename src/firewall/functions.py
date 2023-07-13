@@ -20,11 +20,14 @@ NOPRINT_TRANS_TABLE = {
     # C0 = [0, 31]
     # C1 = [127, 159]
     #
-    i: None for i in range(0, 160) if not (i > 31 and i < 127)
+    i: None
+    for i in range(0, 160)
+    if not (i > 31 and i < 127)
 }
 
+
 def getPortID(port):
-    """ Check and Get port id from port string or port id using socket.getservbyname
+    """Check and Get port id from port string or port id using socket.getservbyname
 
     @param port port string or port id
     @return Port id if valid, -1 if port can not be found and -2 if port is too big
@@ -46,8 +49,9 @@ def getPortID(port):
         return -2
     return _id
 
+
 def getPortRange(ports):
-    """ Get port range for port range string or single port id
+    """Get port range for port range string or single port id
 
     @param ports an integer or port string or port range string
     @return Array containing start and end port id for a valid range or -1 if port can not be found and -2 if port is too big for integer input or -1 for invalid ranges or None if the range is ambiguous.
@@ -75,11 +79,11 @@ def getPortRange(ports):
                 return (id1, id2)
             elif id1 > id2:
                 return (id2, id1)
-            else: # ids are the same
+            else:  # ids are the same
                 return (id1,)
 
     # everything else "<port-str>[-<port-str>]"
-    matched = [ ]
+    matched = []
     for i in range(len(splits), 0, -1):
         id1 = getPortID("-".join(splits[:i]))
         port2 = "-".join(splits[i:])
@@ -91,7 +95,7 @@ def getPortRange(ports):
                 elif id1 > id2:
                     matched.append((id2, id1))
                 else:
-                    matched.append((id1, ))
+                    matched.append((id1,))
         else:
             if id1 >= 0:
                 matched.append((id1,))
@@ -104,8 +108,9 @@ def getPortRange(ports):
         return None
     return matched[0]
 
+
 def portStr(port, delimiter=":"):
-    """ Create port and port range string
+    """Create port and port range string
 
     @param port port or port range int or [int, int]
     @param delimiter of the output string for port ranges, default ':'
@@ -122,6 +127,7 @@ def portStr(port, delimiter=":"):
     else:
         return "%s%s%s" % (_range[0], delimiter, _range[1])
 
+
 def portInPortRange(port, range):
     _port = getPortRange(port)
     _range = getPortRange(range)
@@ -129,23 +135,31 @@ def portInPortRange(port, range):
     if len(_port) == 1:
         if len(_range) == 1:
             return getPortID(_port[0]) == getPortID(_range[0])
-        if len(_range) == 2 and \
-           getPortID(_port[0]) >= getPortID(_range[0]) and getPortID(_port[0]) <= getPortID(_range[1]):
+        if (
+            len(_range) == 2
+            and getPortID(_port[0]) >= getPortID(_range[0])
+            and getPortID(_port[0]) <= getPortID(_range[1])
+        ):
             return True
     elif len(_port) == 2:
-        if len(_range) == 2 and \
-           getPortID(_port[0]) >= getPortID(_range[0]) and getPortID(_port[0]) <= getPortID(_range[1]) and \
-           getPortID(_port[1]) >= getPortID(_range[0]) and getPortID(_port[1]) <= getPortID(_range[1]):
+        if (
+            len(_range) == 2
+            and getPortID(_port[0]) >= getPortID(_range[0])
+            and getPortID(_port[0]) <= getPortID(_range[1])
+            and getPortID(_port[1]) >= getPortID(_range[0])
+            and getPortID(_port[1]) <= getPortID(_range[1])
+        ):
             return True
 
     return False
 
-def coalescePortRange(new_range, ranges):
-    """ Coalesce a port range with existing list of port ranges
 
-        @param new_range tuple/list/string
-        @param ranges list of tuple/list/string
-        @return tuple of (list of ranges added after coalescing, list of removed original ranges)
+def coalescePortRange(new_range, ranges):
+    """Coalesce a port range with existing list of port ranges
+
+    @param new_range tuple/list/string
+    @param ranges list of tuple/list/string
+    @return tuple of (list of ranges added after coalescing, list of removed original ranges)
     """
 
     coalesced_range = getPortRange(new_range)
@@ -153,20 +167,28 @@ def coalescePortRange(new_range, ranges):
     if len(coalesced_range) == 1:
         coalesced_range = (coalesced_range[0], coalesced_range[0])
     _ranges = map(getPortRange, ranges)
-    _ranges = sorted(map(lambda x: (x[0],x[0]) if len(x) == 1 else x, _ranges), key=lambda x: x[0])
+    _ranges = sorted(
+        map(lambda x: (x[0], x[0]) if len(x) == 1 else x, _ranges), key=lambda x: x[0]
+    )
 
     removed_ranges = []
     for range in _ranges:
         if coalesced_range[0] <= range[0] and coalesced_range[1] >= range[1]:
             # new range covers this
             removed_ranges.append(range)
-        elif coalesced_range[0] <= range[0] and coalesced_range[1] <  range[1] and \
-                                                coalesced_range[1] >= range[0]:
+        elif (
+            coalesced_range[0] <= range[0]
+            and coalesced_range[1] < range[1]
+            and coalesced_range[1] >= range[0]
+        ):
             # expand beginning of range
             removed_ranges.append(range)
             coalesced_range = (coalesced_range[0], range[1])
-        elif coalesced_range[0] >  range[0] and coalesced_range[1] >= range[1] and \
-                                                coalesced_range[0] <= range[1]:
+        elif (
+            coalesced_range[0] > range[0]
+            and coalesced_range[1] >= range[1]
+            and coalesced_range[0] <= range[1]
+        ):
             # expand end of range
             removed_ranges.append(range)
             coalesced_range = (range[0], coalesced_range[1])
@@ -178,12 +200,13 @@ def coalescePortRange(new_range, ranges):
 
     return ([coalesced_range], removed_ranges)
 
-def breakPortRange(remove_range, ranges):
-    """ break a port range from existing list of port ranges
 
-        @param remove_range tuple/list/string
-        @param ranges list of tuple/list/string
-        @return tuple of (list of ranges added after breaking up, list of removed original ranges)
+def breakPortRange(remove_range, ranges):
+    """break a port range from existing list of port ranges
+
+    @param remove_range tuple/list/string
+    @param ranges list of tuple/list/string
+    @return tuple of (list of ranges added after breaking up, list of removed original ranges)
     """
 
     remove_range = getPortRange(remove_range)
@@ -191,7 +214,9 @@ def breakPortRange(remove_range, ranges):
     if len(remove_range) == 1:
         remove_range = (remove_range[0], remove_range[0])
     _ranges = map(getPortRange, ranges)
-    _ranges = sorted(map(lambda x: (x[0],x[0]) if len(x) == 1 else x, _ranges), key=lambda x: x[0])
+    _ranges = sorted(
+        map(lambda x: (x[0], x[0]) if len(x) == 1 else x, _ranges), key=lambda x: x[0]
+    )
 
     removed_ranges = []
     added_ranges = []
@@ -199,13 +224,19 @@ def breakPortRange(remove_range, ranges):
         if remove_range[0] <= range[0] and remove_range[1] >= range[1]:
             # remove entire range
             removed_ranges.append(range)
-        elif remove_range[0] <= range[0] and remove_range[1] <  range[1] and \
-                                             remove_range[1] >= range[0]:
+        elif (
+            remove_range[0] <= range[0]
+            and remove_range[1] < range[1]
+            and remove_range[1] >= range[0]
+        ):
             # remove from beginning of range
             removed_ranges.append(range)
             added_ranges.append((remove_range[1] + 1, range[1]))
-        elif remove_range[0] >  range[0] and remove_range[1] >= range[1] and \
-                                             remove_range[0] <= range[1]:
+        elif (
+            remove_range[0] > range[0]
+            and remove_range[1] >= range[1]
+            and remove_range[0] <= range[1]
+        ):
             # remove from end of range
             removed_ranges.append(range)
             added_ranges.append((range[0], remove_range[0] - 1))
@@ -221,8 +252,9 @@ def breakPortRange(remove_range, ranges):
 
     return (added_ranges, removed_ranges)
 
+
 def getServiceName(port, proto):
-    """ Check and Get service name from port and proto string combination using socket.getservbyport
+    """Check and Get service name from port and proto string combination using socket.getservbyport
 
     @param port string or id
     @param protocol string
@@ -235,8 +267,9 @@ def getServiceName(port, proto):
         return None
     return name
 
+
 def checkIP(ip):
-    """ Check IPv4 address.
+    """Check IPv4 address.
 
     @param ip address string
     @return True if address is valid, else False
@@ -248,16 +281,18 @@ def checkIP(ip):
         return False
     return True
 
+
 def normalizeIP6(ip):
-    """ Normalize the IPv6 address
+    """Normalize the IPv6 address
 
     This is mostly about converting URL-like IPv6 address to normal ones.
     e.g. [1234::4321] --> 1234:4321
     """
     return ip.strip("[]")
 
+
 def checkIP6(ip):
-    """ Check IPv6 address.
+    """Check IPv6 address.
 
     @param ip address string
     @return True if address is valid, else False
@@ -269,11 +304,12 @@ def checkIP6(ip):
         return False
     return True
 
+
 def checkIPnMask(ip):
     index = ip.find("/")
     if index != -1:
         addr = ip[:index]
-        mask = ip[index + 1:]
+        mask = ip[index + 1 :]
         if not addr or not mask:
             return False
     else:
@@ -293,14 +329,16 @@ def checkIPnMask(ip):
                 return False
     return True
 
+
 def stripNonPrintableCharacters(rule_str):
     return rule_str.translate(NOPRINT_TRANS_TABLE)
+
 
 def checkIP6nMask(ip):
     index = ip.find("/")
     if index != -1:
         addr = ip[:index]
-        mask = ip[index + 1:]
+        mask = ip[index + 1 :]
         if not addr or not mask:
             return False
     else:
@@ -318,6 +356,7 @@ def checkIP6nMask(ip):
 
     return True
 
+
 def checkProtocol(protocol):
     try:
         i = int(protocol)
@@ -333,6 +372,7 @@ def checkProtocol(protocol):
 
     return True
 
+
 def checkTcpMssClamp(tcp_mss_clamp_value):
     if tcp_mss_clamp_value:
         if tcp_mss_clamp_value.isdigit():
@@ -344,8 +384,9 @@ def checkTcpMssClamp(tcp_mss_clamp_value):
             return False
     return True
 
+
 def checkInterface(iface):
-    """ Check interface string
+    """Check interface string
 
     @param interface string
     @return True if interface is valid (maximum 16 chars and does not contain ' ', '/', '!', ':', '*'), else False
@@ -353,15 +394,16 @@ def checkInterface(iface):
 
     if not iface or len(iface) > 16:
         return False
-    for ch in [ ' ', '/', '!', '*' ]:
+    for ch in [" ", "/", "!", "*"]:
         # !:* are limits for iptables <= 1.4.5
         if ch in iface:
             return False
     # disabled old iptables check
-    #if iface == "+":
+    # if iface == "+":
     #    # limit for iptables <= 1.4.5
     #    return False
     return True
+
 
 def checkUINT16(val):
     try:
@@ -373,6 +415,7 @@ def checkUINT16(val):
             return True
     return False
 
+
 def checkUINT32(val):
     try:
         x = int(val, 0)
@@ -383,8 +426,9 @@ def checkUINT32(val):
             return True
     return False
 
+
 def firewalld_is_active():
-    """ Check if firewalld is active
+    """Check if firewalld is active
 
     @return True if there is a firewalld pid file and the pid is used by firewalld
     """
@@ -412,16 +456,19 @@ def firewalld_is_active():
 
     return False
 
+
 def tempFile():
     try:
         if not os.path.exists(FIREWALLD_TEMPDIR):
             os.mkdir(FIREWALLD_TEMPDIR, 0o750)
 
-        return tempfile.NamedTemporaryFile(mode='wt', prefix="temp.",
-                                           dir=FIREWALLD_TEMPDIR, delete=False)
+        return tempfile.NamedTemporaryFile(
+            mode="wt", prefix="temp.", dir=FIREWALLD_TEMPDIR, delete=False
+        )
     except Exception as msg:
         log.error("Failed to create temporary file: %s" % msg)
         raise
+
 
 def readfile(filename):
     try:
@@ -430,6 +477,7 @@ def readfile(filename):
     except Exception as e:
         log.error('Failed to read file "%s": %s' % (filename, e))
     return None
+
 
 def writefile(filename, line):
     try:
@@ -440,6 +488,7 @@ def writefile(filename, line):
         return False
     return True
 
+
 def enable_ip_forwarding(ipv):
     if ipv == "ipv4":
         return writefile("/proc/sys/net/ipv4/ip_forward", "1\n")
@@ -447,13 +496,19 @@ def enable_ip_forwarding(ipv):
         return writefile("/proc/sys/net/ipv6/conf/all/forwarding", "1\n")
     return False
 
+
 def get_nf_conntrack_short_name(module):
-    return module.replace("_","-").replace("nf-conntrack-", "")
+    return module.replace("_", "-").replace("nf-conntrack-", "")
+
 
 def check_port(port):
     _range = getPortRange(port)
-    if _range == -2 or _range == -1 or _range is None or \
-            (len(_range) == 2 and _range[0] >= _range[1]):
+    if (
+        _range == -2
+        or _range == -1
+        or _range is None
+        or (len(_range) == 2 and _range[0] >= _range[1])
+    ):
         if _range == -2:
             log.debug2("'%s': port > 65535" % port)
         elif _range == -1:
@@ -465,6 +520,7 @@ def check_port(port):
         return False
     return True
 
+
 def check_address(ipv, source):
     if ipv == "ipv4":
         return checkIPnMask(source)
@@ -472,6 +528,7 @@ def check_address(ipv, source):
         return checkIP6nMask(source)
     else:
         return False
+
 
 def check_single_address(ipv, source):
     if ipv == "ipv4":
@@ -481,8 +538,9 @@ def check_single_address(ipv, source):
     else:
         return False
 
+
 def check_mac(mac):
-    if len(mac) == 12+5:
+    if len(mac) == 12 + 5:
         # 0 1 : 3 4 : 6 7 : 9 10 : 12 13 : 15 16
         for i in (2, 5, 8, 11, 14):
             if mac[i] != ":":
@@ -493,6 +551,7 @@ def check_mac(mac):
         return True
     return False
 
+
 def uniqify(_list):
     # removes duplicates from list, whilst preserving order
     output = []
@@ -501,8 +560,9 @@ def uniqify(_list):
             output.append(x)
     return output
 
+
 def ppid_of_pid(pid):
-    """ Get parent for pid """
+    """Get parent for pid"""
     try:
         f = os.popen("ps -o ppid -h -p %d 2>/dev/null" % pid)
         pid = int(f.readlines()[0].strip())
@@ -510,6 +570,7 @@ def ppid_of_pid(pid):
     except Exception:
         return None
     return pid
+
 
 def max_policy_name_len():
     """
@@ -519,8 +580,10 @@ def max_policy_name_len():
     """
     from firewall.core.ipXtables import POLICY_CHAIN_PREFIX
     from firewall.core.base import SHORTCUTS
+
     longest_shortcut = max(map(len, SHORTCUTS.values()))
     return 28 - (longest_shortcut + len(POLICY_CHAIN_PREFIX) + len("_allow"))
+
 
 def max_zone_name_len():
     """
@@ -529,18 +592,23 @@ def max_zone_name_len():
     which leaves 28 - 11 = 17 chars for <zone>.
     """
     from firewall.core.base import SHORTCUTS
+
     longest_shortcut = max(map(len, SHORTCUTS.values()))
     return 28 - (longest_shortcut + len("__allow"))
 
+
 def checkUser(user):
-    if len(user) < 1 or len(user) > os.sysconf('SC_LOGIN_NAME_MAX'):
+    if len(user) < 1 or len(user) > os.sysconf("SC_LOGIN_NAME_MAX"):
         return False
     for c in user:
-        if c not in string.ascii_letters and \
-           c not in string.digits and \
-           c not in [ ".", "-", "_", "$" ]:
+        if (
+            c not in string.ascii_letters
+            and c not in string.digits
+            and c not in [".", "-", "_", "$"]
+        ):
             return False
     return True
+
 
 def checkUid(uid):
     if isinstance(uid, str):
@@ -548,19 +616,21 @@ def checkUid(uid):
             uid = int(uid)
         except ValueError:
             return False
-    if uid >= 0 and uid <= 2**31-1:
+    if uid >= 0 and uid <= 2**31 - 1:
         return True
     return False
+
 
 def checkCommand(command):
     if len(command) < 1 or len(command) > 1024:
         return False
-    for ch in [ "|", "\n", "\0" ]:
+    for ch in ["|", "\n", "\0"]:
         if ch in command:
             return False
     if command[0] != "/":
         return False
     return True
+
 
 def checkContext(context):
     splits = context.split(":")
@@ -580,8 +650,10 @@ def checkContext(context):
         return False
     return True
 
+
 def joinArgs(args):
     return " ".join(shlex.quote(a) for a in args)
+
 
 def splitArgs(_string):
     return shlex.split(_string)

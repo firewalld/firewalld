@@ -9,13 +9,15 @@
 
 import gi
 from gi.repository import GLib
+
 try:
-    gi.require_version('NM', '1.0')
+    gi.require_version("NM", "1.0")
 except ValueError:
     _nm_imported = False
 else:
     try:
         from gi.repository import NM
+
         _nm_imported = True
     except (ImportError, ValueError, GLib.Error):
         _nm_imported = False
@@ -26,17 +28,19 @@ from firewall.errors import FirewallError
 from firewall.core.logger import log
 import dbus
 
+
 def check_nm_imported():
-    """Check function to raise a MISSING_IMPORT error if the import of NM failed
-    """
+    """Check function to raise a MISSING_IMPORT error if the import of NM failed"""
     if not _nm_imported:
         raise FirewallError(errors.MISSING_IMPORT, "gi.repository.NM = 1.0")
+
 
 def nm_is_imported():
     """Returns true if NM has been properly imported
     @return True if import was successful, False otherwirse
     """
     return _nm_imported
+
 
 def nm_get_client():
     """Returns the NM client object or None if the import of NM failed
@@ -46,6 +50,7 @@ def nm_get_client():
     if not _nm_client:
         _nm_client = NM.Client.new(None)
     return _nm_client
+
 
 def nm_get_zone_of_connection(connection):
     """Get zone of connection from NM
@@ -63,8 +68,10 @@ def nm_get_zone_of_connection(connection):
         return None
 
     try:
-        if con.get_flags() & (NM.SettingsConnectionFlags.NM_GENERATED
-                              | NM.SettingsConnectionFlags.NM_VOLATILE):
+        if con.get_flags() & (
+            NM.SettingsConnectionFlags.NM_GENERATED
+            | NM.SettingsConnectionFlags.NM_VOLATILE
+        ):
             return ""
     except AttributeError:
         # Prior to NetworkManager 1.12, we can only guess
@@ -76,6 +83,7 @@ def nm_get_zone_of_connection(connection):
     if zone is None:
         zone = ""
     return zone
+
 
 def nm_set_zone_of_connection(zone, connection):
     """Set the zone for a connection
@@ -97,6 +105,7 @@ def nm_set_zone_of_connection(zone, connection):
         zone = None
     setting_con.set_property("zone", zone)
     return con.commit_changes(True, None)
+
 
 def nm_get_connections(connections, connections_name):
     """Get active connections from NM
@@ -126,6 +135,7 @@ def nm_get_connections(connections, connections_name):
             if ip_iface:
                 connections[ip_iface] = uuid
 
+
 def nm_get_interfaces():
     """Get active interfaces from NM
     @returns list of interface names
@@ -142,8 +152,10 @@ def nm_get_interfaces():
 
         try:
             con = active_con.get_connection()
-            if con.get_flags() & (NM.SettingsConnectionFlags.NM_GENERATED
-                                  | NM.SettingsConnectionFlags.NM_VOLATILE):
+            if con.get_flags() & (
+                NM.SettingsConnectionFlags.NM_GENERATED
+                | NM.SettingsConnectionFlags.NM_VOLATILE
+            ):
                 continue
         except AttributeError:
             # Prior to NetworkManager 1.12, we can only guess
@@ -158,6 +170,7 @@ def nm_get_interfaces():
 
     return active_interfaces
 
+
 def nm_get_interfaces_in_zone(zone):
     interfaces = []
     for interface in nm_get_interfaces():
@@ -166,6 +179,7 @@ def nm_get_interfaces_in_zone(zone):
             interfaces.append(interface)
 
     return interfaces
+
 
 def nm_get_device_by_ip_iface(interface):
     """Get device from NM which has the given IP interface
@@ -182,6 +196,7 @@ def nm_get_device_by_ip_iface(interface):
             return device
 
     return None
+
 
 def nm_get_connection_of_interface(interface):
     """Get connection from NM that is using the interface
@@ -210,6 +225,7 @@ def nm_get_connection_of_interface(interface):
 
     return active_con.get_uuid()
 
+
 def nm_get_bus_name():
     if not _nm_imported:
         return None
@@ -222,6 +238,7 @@ def nm_get_bus_name():
     except Exception:
         log.debug2("Failed to get bus name of NetworkManager")
     return None
+
 
 def nm_get_dbus_interface():
     if not _nm_imported:

@@ -5,10 +5,11 @@
 # Authors:
 # Thomas Woerner <twoerner@redhat.com>
 
+
 class LastUpdatedOrderedDict:
     def __init__(self, x=None):
-        self._dict = { }
-        self._list = [ ]
+        self._dict = {}
+        self._list = []
         if x:
             self.update(x)
 
@@ -17,7 +18,7 @@ class LastUpdatedOrderedDict:
         self._dict.clear()
 
     def update(self, x):
-        for key,value in x.items():
+        for key, value in x.items():
             self[key] = value
 
     def items(self):
@@ -29,8 +30,10 @@ class LastUpdatedOrderedDict:
             del self._dict[key]
 
     def __repr__(self):
-        return '%s([%s])' % (self.__class__.__name__, ', '.join(
-                ['(%r, %r)' % (key, self[key]) for key in self._list]))
+        return "%s([%s])" % (
+            self.__class__.__name__,
+            ", ".join(["(%r, %r)" % (key, self[key]) for key in self._list]),
+        )
 
     def __setitem__(self, key, value):
         if key not in self._dict:
@@ -53,7 +56,7 @@ class LastUpdatedOrderedDict:
         return self._list[:]
 
     def values(self):
-        return [ self[key] for key in self._list ]
+        return [self[key] for key in self._list]
 
     def setdefault(self, key, value=None):
         if key in self:
