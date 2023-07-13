@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
 import os
+import re
 import socket
 
 ###############################################################################
@@ -87,3 +88,21 @@ def getprotobyname(name):
         return socket.getprotobyname(name)
     except socket.error:
         return None
+
+
+###############################################################################
+
+
+def assert_firewall_error(obj, code=None, msg=None):
+    import firewall.errors
+
+    assert isinstance(obj, firewall.errors.FirewallError)
+    if msg is None:
+        pass
+    elif isinstance(msg, str):
+        assert obj.msg == msg
+    else:
+        assert isinstance(msg, re.Pattern)
+        assert msg.search(obj.msg)
+    if code is not None:
+        assert obj.code == code
