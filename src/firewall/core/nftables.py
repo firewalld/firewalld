@@ -8,7 +8,6 @@
 import copy
 import json
 import ipaddress
-import socket
 
 from firewall.core.logger import log
 from firewall.functions import (
@@ -2791,56 +2790,58 @@ class nftables:
 
         family = firewall.functions.addr_family(family)
 
-        entry_tokens, type_format = ipset_entry_split_with_type(entry, ipset_type)
+        lst_entry, lst_ipset_type = ipset_entry_split_with_type(entry, ipset_type)
 
         fragment = []
-        for i, format in enumerate(type_format):
-            if format == "port":
-                try:
-                    index = entry_tokens[i].index(":")
-                except ValueError:
+
+        for idx in range(len(lst_ipset_type)):
+            entry_type, detail = firewall.core.ipset.ipset_entry_parse(
+                entry, ipset_type, lst_entry, lst_ipset_type, idx, family
+            )
+
+            if entry_type == firewall.functions.EntryTypePort:
+                proto, port_id1, port_name1, port_id2, port_name2 = detail
+
+                if proto is None:
                     # no protocol means default tcp
-                    fragment.append("tcp")
-                    port_str = entry_tokens[i]
-                else:
-                    fragment.append(entry_tokens[i][:index])
-                    port_str = entry_tokens[i][index + 1 :]
+                    proto = "tcp"
+                if port_name1 is not None:
+                    port_id1 = port_name1
+                if port_name2 is not None:
+                    port_id2 = port_name2
 
-                try:
-                    index = port_str.index("-")
-                except ValueError:
-                    fragment.append(port_str)
+                fragment.append(proto)
+                if port_id2 is not None:
+                    fragment.append({"range": [str(port_id1), str(port_id2)]})
                 else:
-                    fragment.append(
-                        {"range": [port_str[:index], port_str[index + 1 :]]}
-                    )
-
-            elif format in ["ip", "net"]:
-                if "-" in entry_tokens[i]:
-                    fragment.append({"range": entry_tokens[i].split("-")})
-                else:
-                    try:
-                        index = entry_tokens[i].index("/")
-                    except ValueError:
-                        addr = entry_tokens[i]
-                        if family == socket.AF_INET6:
-                            addr = normalizeIP6(addr)
-                        fragment.append(addr)
-                    else:
-                        addr = entry_tokens[i][:index]
-                        if family == socket.AF_INET6:
-                            addr = normalizeIP6(addr)
-                        fragment.append(
-                            {
-                                "prefix": {
-                                    "addr": addr,
-                                    "len": int(entry_tokens[i][index + 1 :]),
-                                }
-                            }
-                        )
+                    fragment.append(str(port_id1))
+            elif entry_type == firewall.functions.EntryTypeAddrRange:
+                addrbin1, addrbin2, plen, family = detail
+                fragment.append(
+                    {
+                        "range": [
+                            firewall.functions.ipaddr_unparse(addrbin1, family),
+                            firewall.functions.ipaddrmask_unparse(
+                                addrbin2, plen, family
+                            ),
+                        ]
+                    }
+                )
+            elif entry_type == firewall.functions.EntryTypeAddrMask:
+                addrbin, plen, family = detail
+                fragment.append(
+                    {
+                        "prefix": {
+                            "addr": firewall.functions.ipaddr_unparse(addrbin, family),
+                            "len": plen,
+                        }
+                    }
+                )
             else:
-                fragment.append(entry_tokens[i])
-        return [{"concat": fragment}] if len(type_format) > 1 else fragment
+                # The default normalization/unparse is what we want for all other types.
+                fragment.append(entry_type.unparse(*detail))
+
+        return [{"concat": fragment}] if len(lst_ipset_type) > 1 else fragment
 
     def build_set_add_rules(self, name, entry):
         rules = []
