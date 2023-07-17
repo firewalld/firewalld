@@ -37,7 +37,6 @@ from firewall.core.rich import (
     Rich_NFLog,
 )
 from firewall.core.base import DEFAULT_ZONE_TARGET
-from nftables.nftables import Nftables
 from firewall.core.ipset import ipset_entry_split_with_type, ipset_type_parse
 import firewall.core.ipset
 
@@ -235,7 +234,9 @@ class nftables:
         self.rich_rule_priority_counts = {}
         self.policy_dispatch_index_cache = {}
 
-        self.nftables = Nftables()
+        import nftables.nftables
+
+        self.nftables = nftables.nftables.Nftables()
         self.nftables.set_echo_output(True)
         self.nftables.set_handle_output(True)
 
