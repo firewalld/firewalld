@@ -8,6 +8,7 @@
 import copy
 import json
 import ipaddress
+import socket
 
 from firewall.core.logger import log
 from firewall.functions import (
@@ -39,6 +40,7 @@ from firewall.core.rich import (
 from firewall.core.base import DEFAULT_ZONE_TARGET
 from firewall.core.ipset import ipset_entry_split_with_type, ipset_type_parse
 import firewall.core.ipset
+import firewall.functions
 
 
 TABLE_NAME = "firewalld"
@@ -2776,13 +2778,20 @@ class nftables:
         }
 
     def _set_entry_fragment(self, name, entry):
+        obj = self._fw.ipset.get_ipset(name)
+        family = firewall.core.ipset.options_to_addr_family(obj.options)
+        return nftables._entry_to_json(entry, obj.type, family)
+
+    @staticmethod
+    def _entry_to_json(entry, ipset_type, family):
         # convert something like
         #    1.2.3.4,sctp:8080 (type hash:ip,port)
         # to
         #    ["1.2.3.4", "sctp", "8080"]
-        obj = self._fw.ipset.get_ipset(name)
 
-        entry_tokens, type_format = ipset_entry_split_with_type(entry, obj.type)
+        family = firewall.functions.addr_family(family)
+
+        entry_tokens, type_format = ipset_entry_split_with_type(entry, ipset_type)
 
         fragment = []
         for i, format in enumerate(type_format):
@@ -2814,18 +2823,12 @@ class nftables:
                         index = entry_tokens[i].index("/")
                     except ValueError:
                         addr = entry_tokens[i]
-                        if (
-                            firewall.core.ipset.options_to_addr_family(obj.options)
-                            == "ipv6"
-                        ):
+                        if family == socket.AF_INET6:
                             addr = normalizeIP6(addr)
                         fragment.append(addr)
                     else:
                         addr = entry_tokens[i][:index]
-                        if (
-                            firewall.core.ipset.options_to_addr_family(obj.options)
-                            == "ipv6"
-                        ):
+                        if family == socket.AF_INET6:
                             addr = normalizeIP6(addr)
                         fragment.append(
                             {
