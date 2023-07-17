@@ -620,6 +620,78 @@ mark_norm = _parse_norm_fcn(mark_parse, mark_unparse)
 ###############################################################################
 
 
+def _iface_validate(iface):
+    if isinstance(iface, str):
+        binary = iface.encode("utf-8", errors="strict")
+        result = iface
+    elif isinstance(iface, bytes):
+        binary = iface
+
+        # Kernel doesn't care about character encoding. However,
+        # we care, because we have to handle the name somehow.
+        # If this is not valid UTF-8, it will be rejected.
+        #
+        # While certain parts of kernel would accept bogus names
+        # that cannot be decoded to ASCII/UTF-8, it's probably a bad
+        # idea. firewalld doesn't support that.
+        try:
+            result = binary.decode("utf-8", errors="strict")
+        except UnicodeError:
+            raise ValueError("interface name has invalid character encoding")
+    else:
+        raise ValueError("interface name not a valid string")
+
+    # These rules come from kernel's dev_valid_name() in "net/core/dev.c"
+    # Names in kernel don't have a defined encoding, they are just binary
+    # blobs, that if were a lucky can interpret as ASCII/UTF-8. Kernel still
+    # assigns values to certain binary "characters".
+    if not binary:
+        raise ValueError("interface name is empty")
+    if binary == b"." or binary == b"..":
+        raise ValueError("interface name is reserved")
+    if len(binary) > 15:
+        raise ValueError("interface name too long")
+    if any(ch in b"/: \n\t\r\f\v\240" for ch in binary):
+        raise ValueError("interface name has invalid characters")
+
+    if b"%" in binary:
+        # Kernel does not reject '%' as invalid characters, however, it will
+        # interpret the string as a format string and mangle the name. Reject
+        # names that contain such a format character. Try `ip link add 'dummy%dx' type dummy`.
+        raise ValueError("interface name has invalid format character")
+
+    if binary in (b"all", b"default", b"bonding_masters"):
+        # Kernel will try to create sysfs entries for the interface.
+        # Note that we already have files "all" and "default" in
+        # "/proc/sys/net/ipv{4,6}/conf/". Kernel will fail to use such
+        # names.
+        #
+        # Same due to "/sys/class/net/bonding_masters" file.
+        raise ValueError("interface name is reserved")
+
+    if any(ch in b"!*" for ch in binary):
+        # !:* are limits for iptables <= 1.4.5
+        raise ValueError("interface name has invalid characters for iptables")
+
+    return result
+
+
+def iface_parse(iface, *, family=None, flags=0):
+    return (_iface_validate(iface),)
+
+
+def iface_unparse(iface):
+    return iface
+
+
+iface_check = _parse_check_fcn(iface_parse)
+
+iface_norm = _parse_norm_fcn(iface_parse, iface_unparse)
+
+
+###############################################################################
+
+
 class EntryType:
     class ParseFlags(enum.IntFlag):
         NO_IP6_BRACKETS = 0x1
@@ -694,6 +766,8 @@ EntryTypeMac = EntryType("mac", mac_parse, mac_unparse)
 EntryTypePort = EntryType("port", port_parse, port_unparse)
 
 EntryTypeMark = EntryType("mark", mark_parse, mark_unparse)
+
+EntryTypeIface = EntryType("iface", iface_parse, iface_unparse)
 
 ###############################################################################
 
@@ -973,18 +1047,7 @@ def checkInterface(iface):
     @param interface string
     @return True if interface is valid (maximum 16 chars and does not contain ' ', '/', '!', ':', '*'), else False
     """
-
-    if not iface or len(iface) > 16:
-        return False
-    for ch in [" ", "/", "!", "*"]:
-        # !:* are limits for iptables <= 1.4.5
-        if ch in iface:
-            return False
-    # disabled old iptables check
-    # if iface == "+":
-    #    # limit for iptables <= 1.4.5
-    #    return False
-    return True
+    return iface_check(iface)
 
 
 def checkUINT16(val):
