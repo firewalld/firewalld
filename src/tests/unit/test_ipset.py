@@ -485,7 +485,6 @@ def test_ipset_entry_parse():
         "1.2.3.4/0.0.0.0",
         "hash:net",
         "ipv4",
-        ipset_check_entry_is_wrong=True,
     )
     assert len(l) == 1
     helpers.assert_firewall_error(
