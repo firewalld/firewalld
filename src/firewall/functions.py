@@ -178,6 +178,42 @@ ipaddr_norm = _parse_norm_fcn(ipaddr_parse, ipaddr_unparse)
 ###############################################################################
 
 
+def ipaddrmask_to_plen(maskbin, family=None):
+    family = addr_family(family, allow_unspec=True)
+
+    if isinstance(maskbin, bytes) and family == socket.AF_UNSPEC:
+        if len(maskbin) == 4:
+            family = socket.AF_INET
+        elif len(maskbin) == 16:
+            family = socket.AF_INET6
+
+    if isinstance(maskbin, bytes) and len(maskbin) == addr_family_size(family):
+        pass
+    else:
+        raise ValueError("Invalid mask")
+
+    n = len(maskbin)
+    plen = n * 8
+    for i in range(n):
+        c = maskbin[n - i - 1]
+        if c == 0:
+            plen -= 8
+            continue
+        if c < 255:
+            b = 1
+            for i in range(8):
+                if (c & b) != 0:
+                    break
+                plen -= 1
+                b <<= 1
+        break
+
+    return plen
+
+
+###############################################################################
+
+
 class EntryType:
     class ParseFlags(enum.IntFlag):
         NO_IP6_BRACKETS = 0x1

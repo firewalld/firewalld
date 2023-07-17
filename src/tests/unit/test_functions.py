@@ -10,6 +10,47 @@ from tests.unit import helpers
 ###############################################################################
 
 
+def ipaddrmask_from_plen(plen, family):
+    n = firewall.functions.addr_family_bitsize(family)
+    if isinstance(plen, int) and (plen >= 0 and plen <= n):
+        pass
+    else:
+        raise ValueError("Invalid prefix length")
+
+    l = [0] * int(n / 8)
+    i = 0
+    while plen >= 8:
+        plen -= 8
+        l[i] = 255
+        i += 1
+    if plen > 0:
+        l[i] = 255 & ~((1 << (8 - plen)) - 1)
+
+    return bytes(l)
+
+
+def ipaddrmask_make_subnet(addrbin, plen):
+    family = None
+    if isinstance(addrbin, bytes):
+        if len(addrbin) == 4:
+            family = socket.AF_INET
+        elif len(addrbin) == 16:
+            family = socket.AF_INET6
+    if family is None:
+        raise ValueError("Invalid address")
+
+    maskbin = ipaddrmask_from_plen(plen, family)
+
+    subnet = bytes(addrbin[i] & maskbin[i] for i in range(len(addrbin)))
+
+    if subnet == addrbin:
+        return addrbin
+    return subnet
+
+
+###############################################################################
+
+
 def test_fcnport():
     http_port = helpers.getservbyname("http", 80)
     www_http_port = helpers.getservbyname("www-http", 80, maybe_missing=True)
@@ -224,6 +265,53 @@ def test_addr_parse():
         firewall.functions.IPAddrZero4,
         socket.AF_INET,
     )
+
+
+def test_ipaddrmask_to_plen():
+    def check(addr, expect_plen):
+        addrbin, family = firewall.functions.ipaddr_parse(addr)
+        assert firewall.functions.ipaddrmask_to_plen(addrbin) == expect_plen
+        addrbin2 = ipaddrmask_from_plen(expect_plen, family)
+        assert firewall.functions.ipaddrmask_to_plen(addrbin2) == expect_plen
+
+    check("224.0.0.0", 3)
+    check("127.0.0.0", 8)
+    check("255.0.0.0", 8)
+    check("255.255.0.0", 16)
+    check("255.1.0.0", 16)
+    check("255.1.0.1", 32)
+    check("255.1.0.255", 32)
+    check("255.255.255.255", 32)
+    check("255.248.0.0", 13)
+    check("113.1.26.220", 30)
+    check("0.0.0.0", 0)
+    check("::", 0)
+    check("::1", 128)
+    check("ffff::1", 128)
+    check("ffff::", 16)
+    check("ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff", 128)
+    check("ffff:ffff:ffff:fe00::", 55)
+    check("ffff:ffff:ffff:ffff:ffff:ffff:fe00::", 103)
+    check("ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffc0", 122)
+    check("54db:020a:cd5d:a2cd:3c96:8ed8:7ea1:8540", 122)
+    check("54db:020a::a2cd:3c96:8ed8:7ea1:8540", 122)
+
+
+def test_ipaddrmask_make_subnet():
+    def s(addr, plen):
+        addrbin = helpers.ipaddr_to_bin(addr)
+        subnetbin = ipaddrmask_make_subnet(addrbin, plen)
+        if addrbin == subnetbin:
+            assert addrbin is subnetbin
+        return helpers.ipaddr_from_bin(subnetbin)
+
+    assert s("192.168.0.0", 24) == "192.168.0.0"
+    assert s("192.168.0.1", 32) == "192.168.0.1"
+    assert s("192.168.0.3", 24) == "192.168.0.0"
+    assert s("192.168.0.3", 0) == "0.0.0.0"
+    assert s("aa::4:1", 128) == "aa::4:1"
+    assert s("aa::4:1", 127) == "aa::4:0"
+    assert s("aa::4:1", 0) == "::"
 
 
 def test_entrytype():
