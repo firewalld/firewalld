@@ -39,6 +39,7 @@ from firewall.core.rich import (
 from firewall.core.base import DEFAULT_ZONE_TARGET
 from nftables.nftables import Nftables
 from firewall.core.ipset import ipset_entry_split_with_type, ipset_type_parse
+import firewall.core.ipset
 
 
 TABLE_NAME = "firewalld"
@@ -2695,10 +2696,7 @@ class nftables:
             )
 
     def build_set_create_rules(self, name, type, options=None):
-        if options and "family" in options and options["family"] == "inet6":
-            ipv = "ipv6"
-        else:
-            ipv = "ipv4"
+        ipv = firewall.core.ipset.options_to_addr_family(options)
 
         set_dict = {
             "family": "inet",
@@ -2815,12 +2813,18 @@ class nftables:
                         index = entry_tokens[i].index("/")
                     except ValueError:
                         addr = entry_tokens[i]
-                        if "family" in obj.options and obj.options["family"] == "inet6":
+                        if (
+                            firewall.core.ipset.options_to_addr_family(obj.options)
+                            == "ipv6"
+                        ):
                             addr = normalizeIP6(addr)
                         fragment.append(addr)
                     else:
                         addr = entry_tokens[i][:index]
-                        if "family" in obj.options and obj.options["family"] == "inet6":
+                        if (
+                            firewall.core.ipset.options_to_addr_family(obj.options)
+                            == "ipv6"
+                        ):
                             addr = normalizeIP6(addr)
                         fragment.append(
                             {
@@ -2883,11 +2887,7 @@ class nftables:
 
         if ipset.type == "hash:mac":
             family = "ether"
-        elif (
-            ipset.options
-            and "family" in ipset.options
-            and ipset.options["family"] == "inet6"
-        ):
+        elif firewall.core.ipset.options_to_addr_family(ipset.options) == "ipv6":
             family = "ip6"
         else:
             family = "ip"

@@ -52,6 +52,7 @@ from firewall.core.fw_nm import (
 )
 from firewall import errors
 from firewall.errors import FirewallError
+import firewall.core.ipset
 
 import gettext
 
@@ -4462,8 +4463,9 @@ class FirewallConfig:
             if ipset_type.startswith("hash:ip") or ipset_type.startswith("hash:net"):
                 opts = ipsets[i].getOptions()
                 if "family" in opts:
-                    if opts["family"] == "inet6" and (ipv != "ipv6" and ipv != "all"):
-                        continue
+                    if firewall.core.ipset.options_to_addr_family(opts) == "ipv6":
+                        if ipv != "ipv6" and ipv != "all":
+                            continue
                 else:
                     if ipv == "ipv6" or ipv is None:
                         continue

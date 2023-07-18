@@ -18,6 +18,7 @@ from firewall.core.ipset import (
 from firewall.core.io.ipset import IPSet
 from firewall import errors
 from firewall.errors import FirewallError
+import firewall.core.io.ipset
 
 
 class FirewallIPSet:
@@ -180,10 +181,7 @@ class FirewallIPSet:
 
     def get_family(self, name, applied=True):
         obj = self.get_ipset(name, applied=applied)
-        if "family" in obj.options:
-            if obj.options["family"] == "inet6":
-                return "ipv6"
-        return "ipv4"
+        return firewall.core.ipset.options_to_addr_family(obj.options)
 
     # ENTRIES
 

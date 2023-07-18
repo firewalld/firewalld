@@ -85,10 +85,7 @@ class IPSet(IO_Object):
 
     @staticmethod
     def check_entry(entry, options, ipset_type):
-        family = "ipv4"
-        if "family" in options:
-            if options["family"] == "inet6":
-                family = "ipv6"
+        family = firewall.core.ipset.options_to_addr_family(options)
 
         lst_entry, lst_ipset_type = firewall.core.ipset.ipset_entry_split_with_type(
             entry, ipset_type
