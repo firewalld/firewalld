@@ -280,6 +280,19 @@ def remove_default_create_options(options):
     return _options
 
 
+###############################################################################
+
+
+def options_to_addr_family(options):
+    # Note that with "hash:mac" there isn't really an IP address family. In
+    # some cases, you may want to treat that as "ether".  In any case, this
+    # function determines the address-family based on the "options", while the
+    # type is a separate field.
+    if options and options.get("family") == "inet6":
+        return "ipv6"
+    return "ipv4"
+
+
 def ipset_type_parse(ipset_type):
     if isinstance(ipset_type, str) and ipset_type.startswith("hash:"):
         s = ipset_type[5:]
