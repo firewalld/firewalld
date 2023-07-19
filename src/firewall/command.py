@@ -20,8 +20,6 @@
 
 """FirewallCommand class for command line client simplification"""
 
-__all__ = [ "FirewallCommand" ]
-
 import sys
 
 from firewall import errors

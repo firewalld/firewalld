@@ -20,8 +20,6 @@
 
 """ipset io XML handler, reader, writer"""
 
-__all__ = [ "IPSet", "ipset_reader", "ipset_writer" ]
-
 import xml.sax as sax
 import os
 import io

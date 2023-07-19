@@ -18,8 +18,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-__all__ = [ "Watcher" ]
-
 from gi.repository import Gio, GLib
 
 class Watcher(object):

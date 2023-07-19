@@ -18,8 +18,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-__all__ = [ "ebtables" ]
-
 import os.path
 from firewall.core.prog import runProg
 from firewall.core.logger import log

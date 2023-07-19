@@ -20,8 +20,6 @@
 
 """helper backend"""
 
-__all__ = [ "FirewallHelper" ]
-
 from firewall import errors
 from firewall.errors import FirewallError
 

@@ -18,13 +18,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-__all__ = [ "Rich_Source", "Rich_Destination", "Rich_Service", "Rich_Port",
-            "Rich_Protocol", "Rich_Masquerade", "Rich_IcmpBlock",
-            "Rich_IcmpType",
-            "Rich_SourcePort", "Rich_ForwardPort", "Rich_Log", "Rich_NFLog",
-            "Rich_Accept", "Rich_Reject", "Rich_Drop", "Rich_Mark",
-            "Rich_Audit", "Rich_Limit", "Rich_Rule", "Rich_Tcp_Mss_Clamp" ]
-
 from firewall import functions
 from firewall.core.ipset import check_ipset_name
 from firewall.core.base import REJECT_TYPES

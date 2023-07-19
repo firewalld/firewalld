@@ -21,9 +21,6 @@
 import subprocess
 
 
-__all__ = ["runProg"]
-
-
 def runProg(prog, argv=None, stdin=None):
     if argv is None:
         argv = []

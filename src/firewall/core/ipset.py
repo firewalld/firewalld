@@ -20,8 +20,6 @@
 
 """The ipset command wrapper"""
 
-__all__ = [ "ipset", "check_ipset_name", "remove_default_create_options" ]
-
 import os.path
 import ipaddress
 

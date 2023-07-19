@@ -18,8 +18,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-__all__ = [ "IcmpType", "icmptype_reader", "icmptype_writer" ]
-
 import xml.sax as sax
 import os
 import io

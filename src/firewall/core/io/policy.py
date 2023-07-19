@@ -1,8 +1,6 @@
 #
 # SPDX-License-Identifier: GPL-2.0-or-later
 
-__all__ = [ "Policy", "policy_reader", "policy_writer" ]
-
 import xml.sax as sax
 import os
 import io

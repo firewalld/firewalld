@@ -20,8 +20,6 @@
 
 """ifcfg file parser"""
 
-__all__ = [ "ifcfg" ]
-
 import os.path
 import io
 import tempfile
