@@ -21,8 +21,6 @@
 
 """Functions to search for and change ifcfg files"""
 
-__all__ = [ "search_ifcfg_of_interface", "ifcfg_set_zone_of_interface" ]
-
 import os
 import os.path
 

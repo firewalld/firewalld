@@ -21,9 +21,6 @@
 
 """Generic io_object handler, io specific check methods."""
 
-__all__ = [ "IO_Object", "IO_Object_ContentHandler", "IO_Object_XMLGenerator",
-            "check_port", "check_tcpudp", "check_protocol", "check_address" ]
-
 import xml.sax as sax
 import xml.sax.saxutils as saxutils
 import copy

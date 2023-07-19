@@ -19,8 +19,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-__all__ = [ "FirewallIcmpType" ]
-
 from firewall.core.logger import log
 from firewall import errors
 from firewall.errors import FirewallError

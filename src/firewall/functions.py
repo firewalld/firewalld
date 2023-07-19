@@ -19,17 +19,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-__all__ = [ "getPortID", "getPortRange", "portStr", "getServiceName",
-            "checkIP", "checkIP6", "checkIPnMask", "checkIP6nMask",
-            "checkProtocol", "checkInterface", "checkUINT16", "checkUINT32",
-            "firewalld_is_active", "tempFile", "readfile", "writefile",
-            "enable_ip_forwarding", "check_port", "check_address",
-            "check_single_address", "check_mac", "uniqify", "ppid_of_pid",
-            "max_zone_name_len", "checkUser", "checkUid", "checkCommand",
-            "checkContext", "joinArgs", "splitArgs",
-            "max_policy_name_len", "checkTcpMssClamp",
-            "stripNonPrintableCharacters"]
-
 import socket
 import os
 import os.path

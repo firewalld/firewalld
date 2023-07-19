@@ -19,8 +19,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-__all__ = [ "FirewallPolicies" ]
-
 from firewall import config
 from firewall.core.logger import log
 from firewall.core.io.lockdown_whitelist import LockdownWhitelist

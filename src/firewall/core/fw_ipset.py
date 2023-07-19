@@ -21,8 +21,6 @@
 
 """ipset backend"""
 
-__all__ = [ "FirewallIPSet" ]
-
 from firewall.core.logger import log
 from firewall.core.ipset import remove_default_create_options as rm_def_cr_opts, \
                                 normalize_ipset_entry, check_entry_overlaps_existing, \

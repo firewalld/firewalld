@@ -25,8 +25,6 @@
 #   Thomas Liu  <tliu@redhat.com>
 #   Dan Walsh <dwalsh@redhat.com>
 
-__all__ = [ "run_server" ]
-
 import signal
 
 from gi.repository import GLib

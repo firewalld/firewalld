@@ -20,8 +20,6 @@
 
 """This module contains decorators for use with and without D-Bus"""
 
-__all__ = ["handle_exceptions", "dbus_handle_exceptions", "dbus_service_method"]
-
 import dbus
 import dbus.service
 import traceback

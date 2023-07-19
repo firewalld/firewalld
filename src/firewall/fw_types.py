@@ -19,8 +19,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-__all__ = [ "LastUpdatedOrderedDict" ]
-
 class LastUpdatedOrderedDict(object):
     def __init__(self, x=None):
         self._dict = { }

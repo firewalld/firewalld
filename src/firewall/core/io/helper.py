@@ -19,8 +19,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-__all__ = [ "Helper", "helper_reader", "helper_writer" ]
-
 import xml.sax as sax
 import os
 import io

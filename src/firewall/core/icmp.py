@@ -19,9 +19,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-__all__ = [ "ICMP_TYPES", "ICMPV6_TYPES",
-            "check_icmp_type", "check_icmpv6_type" ]
-
 ICMP_TYPES = {
      "echo-reply": "0/0",
      "pong": "0/0",

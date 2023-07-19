@@ -21,8 +21,6 @@
 
 """modules backend"""
 
-__all__ = [ "modules" ]
-
 from firewall.core.prog import runProg
 from firewall.core.logger import log
 from firewall.config import COMMANDS

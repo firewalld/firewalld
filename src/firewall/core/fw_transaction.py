@@ -21,8 +21,6 @@
 
 """Transaction classes for firewalld"""
 
-__all__ = [ "FirewallTransaction" ]
-
 import traceback
 
 from firewall.core.logger import log

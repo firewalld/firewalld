@@ -21,11 +21,6 @@
 
 """Functions for NetworkManager interaction"""
 
-__all__ = [ "check_nm_imported", "nm_is_imported",
-            "nm_get_zone_of_connection", "nm_set_zone_of_connection",
-            "nm_get_connections", "nm_get_connection_of_interface",
-            "nm_get_bus_name", "nm_get_dbus_interface" ]
-
 import gi
 from gi.repository import GLib
 try:
