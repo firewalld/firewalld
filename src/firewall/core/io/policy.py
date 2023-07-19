@@ -726,14 +726,14 @@ class Policy(IO_Object):
         ( "short", "" ),                               # s
         ( "description", "" ),                         # s
         ( "target", "" ),                              # s
-        ( "services", [ "", ], ),                      # as
-        ( "ports", [ ( "", "" ), ], ),                 # a(ss)
-        ( "icmp_blocks", [ "", ], ),                   # as
+        ( "services", [ "" ] ),                        # as
+        ( "ports", [ ( "", "" ) ] ),                   # a(ss)
+        ( "icmp_blocks", [ "" ] ),                     # as
         ( "masquerade", False ),                       # b
-        ( "forward_ports", [ ( "", "", "", "" ), ], ), # a(ssss)
+        ( "forward_ports", [ ( "", "", "", "" ) ] ),   # a(ssss)
         ( "rich_rules", [ "" ] ),                      # as
-        ( "protocols", [ "", ], ),                     # as
-        ( "source_ports", [ ( "", "" ), ], ),          # a(ss)
+        ( "protocols", [ "" ] ),                       # as
+        ( "source_ports", [ ( "", "" ) ] ),            # a(ss)
         ( "priority", 0 ),                             # i
         ( "ingress_zones", [ "" ] ),                   # as
         ( "egress_zones", [ "" ] ),                    # as

@@ -23,13 +23,13 @@ class Service(IO_Object):
         ( "version",  "" ),
         ( "short", "" ),
         ( "description", "" ),
-        ( "ports", [ ( "", "" ), ], ),
-        ( "modules", [ "", ], ),
-        ( "destination", { "": "", }, ),
-        ( "protocols", [ "", ], ),
-        ( "source_ports", [ ( "", "" ), ], ),
-        ( "includes", [ "" ], ),
-        ( "helpers", [ "", ], ),
+        ( "ports", [ ( "", "" ) ] ),
+        ( "modules", [ "" ] ),
+        ( "destination", { "": "" } ),
+        ( "protocols", [ "" ] ),
+        ( "source_ports", [ ( "", "" ) ] ),
+        ( "includes", [ "" ] ),
+        ( "helpers", [ "" ] ),
     )
     ADDITIONAL_ALNUM_CHARS = [ "_", "-" ]
     PARSER_REQUIRED_ELEMENT_ATTRS = {
