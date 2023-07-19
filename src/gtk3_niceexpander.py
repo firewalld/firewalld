@@ -1,5 +1,4 @@
 #!/usr/bin/python -Es
-# -*- coding: utf-8 -*-
 #
 # Copyright (C) 2016 Red Hat, Inc.
 #
