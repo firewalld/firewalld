@@ -2,6 +2,7 @@
 *~
 Makefile
 Makefile.in
+Makefile.in.in
 tags
 /aclocal.m4
 /autom4te.cache
@@ -38,10 +39,13 @@ tags
 /install-sh
 /m4/intltool.m4
 /missing
-!/po/*.po
-!/po/POTFILES.in
-!/po/firewalld.weblate.pot
-/po/*
+/po/*.gmo
+/po/*.mo
+/po/.intltool-merge-cache
+/po/LINGUAS
+/po/POTFILES
+/po/firewalld.pot
+/po/stamp-it
 /src/firewall-applet
 /src/firewall-cmd
 /src/firewall-config
