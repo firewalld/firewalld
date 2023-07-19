@@ -23,9 +23,9 @@ class Helper(IO_Object):
         ( "version",  "" ),                   # s
         ( "short", "" ),                      # s
         ( "description", "" ),                # s
-        ( "family", "", ),                    # s
-        ( "module", "", ),                    # s
-        ( "ports", [ ( "", "" ), ], ),        # a(ss)
+        ( "family", "" ),                     # s
+        ( "module", "" ),                     # s
+        ( "ports", [ ( "", "" ) ] ),          # a(ss)
     )
     DBUS_SIGNATURE = '(sssssa(ss))'
     ADDITIONAL_ALNUM_CHARS = [ "-", "." ]

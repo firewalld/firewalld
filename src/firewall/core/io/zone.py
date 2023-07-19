@@ -33,16 +33,16 @@ class Zone(IO_Object):
         ( "description", "" ),                         # s
         ( "UNUSED", False ),                           # b
         ( "target", "" ),                              # s
-        ( "services", [ "", ], ),                      # as
-        ( "ports", [ ( "", "" ), ], ),                 # a(ss)
-        ( "icmp_blocks", [ "", ], ),                   # as
+        ( "services", [ "" ] ),                        # as
+        ( "ports", [ ( "", "" ) ] ),                   # a(ss)
+        ( "icmp_blocks", [ "" ] ),                     # as
         ( "masquerade", False ),                       # b
-        ( "forward_ports", [ ( "", "", "", "" ), ], ), # a(ssss)
+        ( "forward_ports", [ ( "", "", "", "" ) ] ),   # a(ssss)
         ( "interfaces", [ "" ] ),                      # as
         ( "sources", [ "" ] ),                         # as
         ( "rules_str", [ "" ] ),                       # as
-        ( "protocols", [ "", ], ),                     # as
-        ( "source_ports", [ ( "", "" ), ], ),          # a(ss)
+        ( "protocols", [ "" ] ),                       # as
+        ( "source_ports", [ ( "", "" ) ] ),            # a(ss)
         ( "icmp_block_inversion", False ),             # b
         ( "forward", True ),                           # b
         ( "ingress_priority", 0 ),                     # i

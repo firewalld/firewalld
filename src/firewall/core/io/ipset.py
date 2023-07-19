@@ -31,8 +31,8 @@ class IPSet(IO_Object):
         ( "short", "" ),                 # s
         ( "description", "" ),           # s
         ( "type", "" ),                  # s
-        ( "options", { "": "", }, ),     # a{ss}
-        ( "entries", [ "" ], ),          # as
+        ( "options", { "": "" } ),       # a{ss}
+        ( "entries", [ "" ] ),           # as
     )
     DBUS_SIGNATURE = '(ssssa{ss}as)'
     ADDITIONAL_ALNUM_CHARS = [ "_", "-", ":", "." ]

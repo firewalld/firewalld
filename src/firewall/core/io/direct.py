@@ -101,11 +101,11 @@ class Direct(IO_Object):
 
     IMPORT_EXPORT_STRUCTURE = (
         # chain: [ ipv, table, [ chain ] ]
-        ( "chains", [ ( "", "", "" ), ], ),                   # a(sss)
+        ( "chains", [ ( "", "", "" ) ] ),                     # a(sss)
         # rule: [ ipv, table, chain, [ priority, [ arg ] ] ]
-        ( "rules", [ ( "", "", "", 0, [ "" ] ), ], ),         # a(sssias)
+        ( "rules", [ ( "", "", "", 0, [ "" ] ) ] ),           # a(sssias)
         # passthrough: [ ipv, [ [ arg ] ] ]
-        ( "passthroughs", [ ( "", [ "" ]), ], ),              # a(sas)
+        ( "passthroughs", [ ( "", [ "" ]) ] ),                # a(sas)
     )
     DBUS_SIGNATURE = '(a(sss)a(sssias)a(sas))'
     PARSER_REQUIRED_ELEMENT_ATTRS = {

@@ -22,7 +22,7 @@ class IcmpType(IO_Object):
         ( "version",  "" ),          # s
         ( "short", "" ),             # s
         ( "description", "" ),       # s
-        ( "destination", [ "", ], ), # as
+        ( "destination", [ "" ] ),   # as
     )
     DBUS_SIGNATURE = '(sssas)'
     ADDITIONAL_ALNUM_CHARS = [ "_", "-" ]
