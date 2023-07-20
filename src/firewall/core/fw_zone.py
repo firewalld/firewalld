@@ -82,9 +82,19 @@ class FirewallZone:
                 return zone
         return None
 
-    def get_zone(self, zone):
-        z = self._fw.check_zone(zone)
-        return self._zones[z]
+    def check_zone(self, zone):
+        return self.get_zone(zone).name
+
+    def has_zone(self, zone):
+        return self.get_zone(zone, required=False) is not None
+
+    def get_zone(self, zone, required=True):
+        if not zone:
+            zone = self._fw.get_default_zone()
+        z = self._zones.get(zone)
+        if z is None and required:
+            raise FirewallError(errors.INVALID_ZONE, zone)
+        return z
 
     def policy_obj_from_zone_obj(self, z_obj, fromZone, toZone):
         p_obj = Policy()
