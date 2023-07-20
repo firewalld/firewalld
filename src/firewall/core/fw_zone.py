@@ -297,7 +297,7 @@ class FirewallZone:
             self._icmp_block_inversion(enable, zone, transaction)
 
     def apply_zone_settings(self, zone, use_transaction=None):
-        _zone = self._fw.check_zone(zone)
+        _zone = self.check_zone(zone)
         obj = self._zones[_zone]
         if obj.applied:
             return
@@ -318,7 +318,7 @@ class FirewallZone:
             transaction.execute(True)
 
     def unapply_zone_settings(self, zone, use_transaction=None):
-        _zone = self._fw.check_zone(zone)
+        _zone = self.check_zone(zone)
         obj = self._zones[_zone]
         if not obj.applied:
             return
@@ -447,7 +447,7 @@ class FirewallZone:
         self, zone, interface, sender=None, use_transaction=None, allow_apply=True
     ):
         self._fw.check_panic()
-        _zone = self._fw.check_zone(zone)
+        _zone = self.check_zone(zone)
         _obj = self._zones[_zone]
 
         interface_id = self.__interface_id(interface)
@@ -495,7 +495,7 @@ class FirewallZone:
     def change_zone_of_interface(self, zone, interface, sender=None):
         self._fw.check_panic()
         _old_zone = self.get_zone_of_interface(interface)
-        _new_zone = self._fw.check_zone(zone)
+        _new_zone = self.check_zone(zone)
 
         if _new_zone == _old_zone:
             return _old_zone
@@ -514,7 +514,7 @@ class FirewallZone:
             raise FirewallError(
                 errors.UNKNOWN_INTERFACE, "'%s' is not in any zone" % interface
             )
-        _zone = zoi if zone == "" else self._fw.check_zone(zone)
+        _zone = zoi if zone == "" else self.check_zone(zone)
         if zoi != _zone:
             raise FirewallError(
                 errors.ZONE_CONFLICT,
@@ -575,7 +575,7 @@ class FirewallZone:
         self, zone, source, sender=None, use_transaction=None, allow_apply=True
     ):
         self._fw.check_panic()
-        _zone = self._fw.check_zone(zone)
+        _zone = self.check_zone(zone)
         _obj = self._zones[_zone]
 
         if check_mac(source):
@@ -619,7 +619,7 @@ class FirewallZone:
     def change_zone_of_source(self, zone, source, sender=None):
         self._fw.check_panic()
         _old_zone = self.get_zone_of_source(source)
-        _new_zone = self._fw.check_zone(zone)
+        _new_zone = self.check_zone(zone)
 
         if _new_zone == _old_zone:
             return _old_zone
@@ -643,7 +643,7 @@ class FirewallZone:
             raise FirewallError(
                 errors.UNKNOWN_SOURCE, "'%s' is not in any zone" % source
             )
-        _zone = zos if zone == "" else self._fw.check_zone(zone)
+        _zone = zos if zone == "" else self.check_zone(zone)
         if zos != _zone:
             raise FirewallError(
                 errors.ZONE_CONFLICT,
@@ -1068,73 +1068,73 @@ class FirewallZone:
         self._interface_or_source_update_policies(enable, zone, "", source, transaction)
 
     def add_service(self, zone, service, timeout=0, sender=None):
-        zone = self._fw.check_zone(zone)
+        zone = self.check_zone(zone)
         p_name = self.policy_name_from_zones(zone, "HOST")
         self._fw.policy.add_service(p_name, service, timeout, sender)
         return zone
 
     def remove_service(self, zone, service):
-        zone = self._fw.check_zone(zone)
+        zone = self.check_zone(zone)
         p_name = self.policy_name_from_zones(zone, "HOST")
         self._fw.policy.remove_service(p_name, service)
         return zone
 
     def query_service(self, zone, service):
-        zone = self._fw.check_zone(zone)
+        zone = self.check_zone(zone)
         p_name = self.policy_name_from_zones(zone, "HOST")
         return self._fw.policy.query_service(p_name, service)
 
     def list_services(self, zone):
-        zone = self._fw.check_zone(zone)
+        zone = self.check_zone(zone)
         p_name = self.policy_name_from_zones(zone, "HOST")
         return self._fw.policy.list_services(p_name)
 
     def add_port(self, zone, port, protocol, timeout=0, sender=None):
-        zone = self._fw.check_zone(zone)
+        zone = self.check_zone(zone)
         p_name = self.policy_name_from_zones(zone, "HOST")
         self._fw.policy.add_port(p_name, port, protocol, timeout, sender)
         return zone
 
     def remove_port(self, zone, port, protocol):
-        zone = self._fw.check_zone(zone)
+        zone = self.check_zone(zone)
         p_name = self.policy_name_from_zones(zone, "HOST")
         self._fw.policy.remove_port(p_name, port, protocol)
         return zone
 
     def query_port(self, zone, port, protocol):
-        zone = self._fw.check_zone(zone)
+        zone = self.check_zone(zone)
         p_name = self.policy_name_from_zones(zone, "HOST")
         return self._fw.policy.query_port(p_name, port, protocol)
 
     def list_ports(self, zone):
-        zone = self._fw.check_zone(zone)
+        zone = self.check_zone(zone)
         p_name = self.policy_name_from_zones(zone, "HOST")
         return self._fw.policy.list_ports(p_name)
 
     def add_source_port(self, zone, source_port, protocol, timeout=0, sender=None):
-        zone = self._fw.check_zone(zone)
+        zone = self.check_zone(zone)
         p_name = self.policy_name_from_zones(zone, "HOST")
         self._fw.policy.add_source_port(p_name, source_port, protocol, timeout, sender)
         return zone
 
     def remove_source_port(self, zone, source_port, protocol):
-        zone = self._fw.check_zone(zone)
+        zone = self.check_zone(zone)
         p_name = self.policy_name_from_zones(zone, "HOST")
         self._fw.policy.remove_source_port(p_name, source_port, protocol)
         return zone
 
     def query_source_port(self, zone, source_port, protocol):
-        zone = self._fw.check_zone(zone)
+        zone = self.check_zone(zone)
         p_name = self.policy_name_from_zones(zone, "HOST")
         return self._fw.policy.query_source_port(p_name, source_port, protocol)
 
     def list_source_ports(self, zone):
-        zone = self._fw.check_zone(zone)
+        zone = self.check_zone(zone)
         p_name = self.policy_name_from_zones(zone, "HOST")
         return self._fw.policy.list_source_ports(p_name)
 
     def _get_policy_for_rich_rule(self, zone, rule):
-        zone = self._fw.check_zone(zone)
+        zone = self.check_zone(zone)
         if isinstance(rule.action, Rich_Mark):
             return self.policy_name_from_zones(zone, "ANY")
         if isinstance(
@@ -1177,7 +1177,7 @@ class FirewallZone:
         return self._fw.policy.query_rule(p_name, rule)
 
     def list_rules(self, zone):
-        zone = self._fw.check_zone(zone)
+        zone = self.check_zone(zone)
         ret = set()
         for p_name in [
             self.policy_name_from_zones(zone, "ANY"),
@@ -1188,48 +1188,48 @@ class FirewallZone:
         return list(ret)
 
     def add_protocol(self, zone, protocol, timeout=0, sender=None):
-        zone = self._fw.check_zone(zone)
+        zone = self.check_zone(zone)
         p_name = self.policy_name_from_zones(zone, "HOST")
         self._fw.policy.add_protocol(p_name, protocol, timeout, sender)
         return zone
 
     def remove_protocol(self, zone, protocol):
-        zone = self._fw.check_zone(zone)
+        zone = self.check_zone(zone)
         p_name = self.policy_name_from_zones(zone, "HOST")
         self._fw.policy.remove_protocol(p_name, protocol)
         return zone
 
     def query_protocol(self, zone, protocol):
-        zone = self._fw.check_zone(zone)
+        zone = self.check_zone(zone)
         p_name = self.policy_name_from_zones(zone, "HOST")
         return self._fw.policy.query_protocol(p_name, protocol)
 
     def list_protocols(self, zone):
-        zone = self._fw.check_zone(zone)
+        zone = self.check_zone(zone)
         p_name = self.policy_name_from_zones(zone, "HOST")
         return self._fw.policy.list_protocols(p_name)
 
     def add_masquerade(self, zone, timeout=0, sender=None):
-        zone = self._fw.check_zone(zone)
+        zone = self.check_zone(zone)
         p_name = self.policy_name_from_zones("ANY", zone)
         self._fw.policy.add_masquerade(p_name, timeout, sender)
         return zone
 
     def remove_masquerade(self, zone):
-        zone = self._fw.check_zone(zone)
+        zone = self.check_zone(zone)
         p_name = self.policy_name_from_zones("ANY", zone)
         self._fw.policy.remove_masquerade(p_name)
         return zone
 
     def query_masquerade(self, zone):
-        zone = self._fw.check_zone(zone)
+        zone = self.check_zone(zone)
         p_name = self.policy_name_from_zones("ANY", zone)
         return self._fw.policy.query_masquerade(p_name)
 
     def add_forward_port(
         self, zone, port, protocol, toport=None, toaddr=None, timeout=0, sender=None
     ):
-        zone = self._fw.check_zone(zone)
+        zone = self.check_zone(zone)
         p_name = self.policy_name_from_zones(zone, "ANY")
         self._fw.policy.add_forward_port(
             p_name, port, protocol, toport, toaddr, timeout, sender
@@ -1237,68 +1237,68 @@ class FirewallZone:
         return zone
 
     def remove_forward_port(self, zone, port, protocol, toport=None, toaddr=None):
-        zone = self._fw.check_zone(zone)
+        zone = self.check_zone(zone)
         p_name = self.policy_name_from_zones(zone, "ANY")
         self._fw.policy.remove_forward_port(p_name, port, protocol, toport, toaddr)
         return zone
 
     def query_forward_port(self, zone, port, protocol, toport=None, toaddr=None):
-        zone = self._fw.check_zone(zone)
+        zone = self.check_zone(zone)
         p_name = self.policy_name_from_zones(zone, "ANY")
         return self._fw.policy.query_forward_port(
             p_name, port, protocol, toport, toaddr
         )
 
     def list_forward_ports(self, zone):
-        zone = self._fw.check_zone(zone)
+        zone = self.check_zone(zone)
         p_name = self.policy_name_from_zones(zone, "ANY")
         return self._fw.policy.list_forward_ports(p_name)
 
     def add_icmp_block(self, zone, icmp, timeout=0, sender=None):
-        zone = self._fw.check_zone(zone)
+        zone = self.check_zone(zone)
         p_name = self.policy_name_from_zones(zone, "HOST")
         self._fw.policy.add_icmp_block(p_name, icmp, timeout, sender)
 
         return zone
 
     def remove_icmp_block(self, zone, icmp):
-        zone = self._fw.check_zone(zone)
+        zone = self.check_zone(zone)
         p_name = self.policy_name_from_zones(zone, "HOST")
         self._fw.policy.remove_icmp_block(p_name, icmp)
 
         return zone
 
     def query_icmp_block(self, zone, icmp):
-        zone = self._fw.check_zone(zone)
+        zone = self.check_zone(zone)
         p_name_host = self.policy_name_from_zones(zone, "HOST")
         return self._fw.policy.query_icmp_block(p_name_host, icmp)
 
     def list_icmp_blocks(self, zone):
-        zone = self._fw.check_zone(zone)
+        zone = self.check_zone(zone)
         p_name_host = self.policy_name_from_zones(zone, "HOST")
         return sorted(set(self._fw.policy.list_icmp_blocks(p_name_host)))
 
     def add_icmp_block_inversion(self, zone, sender=None):
-        zone = self._fw.check_zone(zone)
+        zone = self.check_zone(zone)
         p_name = self.policy_name_from_zones(zone, "HOST")
         self._fw.policy.add_icmp_block_inversion(p_name, sender)
 
         return zone
 
     def _icmp_block_inversion(self, enable, zone, transaction):
-        zone = self._fw.check_zone(zone)
+        zone = self.check_zone(zone)
         p_name = self.policy_name_from_zones(zone, "HOST")
         self._fw.policy._icmp_block_inversion(enable, p_name, transaction)
 
     def remove_icmp_block_inversion(self, zone):
-        zone = self._fw.check_zone(zone)
+        zone = self.check_zone(zone)
         p_name = self.policy_name_from_zones(zone, "HOST")
         self._fw.policy.remove_icmp_block_inversion(p_name)
 
         return zone
 
     def query_icmp_block_inversion(self, zone):
-        zone = self._fw.check_zone(zone)
+        zone = self.check_zone(zone)
         p_name_host = self.policy_name_from_zones(zone, "HOST")
         return self._fw.policy.query_icmp_block_inversion(p_name_host)
 
@@ -1329,7 +1329,7 @@ class FirewallZone:
                 transaction.add_rules(backend, rules)
 
     def add_forward(self, zone, timeout=0, sender=None, use_transaction=None):
-        _zone = self._fw.check_zone(zone)
+        _zone = self.check_zone(zone)
         self._fw.check_timeout(timeout)
         self._fw.check_panic()
         _obj = self._zones[_zone]
@@ -1359,7 +1359,7 @@ class FirewallZone:
         _obj.forward = True
 
     def remove_forward(self, zone, use_transaction=None):
-        _zone = self._fw.check_zone(zone)
+        _zone = self.check_zone(zone)
         self._fw.check_panic()
         _obj = self._zones[_zone]
 
