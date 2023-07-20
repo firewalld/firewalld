@@ -218,7 +218,7 @@ class FirewallZone:
                 _chain = x
         if _chain is not None:
             # next part needs to be zone name
-            if splits[1] not in self.get_zones():
+            if not self.has_zone(splits[1]):
                 return None
             if len(splits) == 2 or (
                 len(splits) == 3
