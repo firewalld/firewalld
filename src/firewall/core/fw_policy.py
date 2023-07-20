@@ -119,7 +119,7 @@ class FirewallPolicy:
         obj.applied = applied
 
     def _policy_settings(self, enable, policy, use_transaction=None):
-        _policy = self._fw.check_policy(policy)
+        _policy = self.check_policy(policy)
         obj = self._policies[_policy]
         if (enable and obj.applied) or (not enable and not obj.applied):
             return
@@ -292,7 +292,7 @@ class FirewallPolicy:
     def add_ingress_zone(
         self, policy, zone, timeout=0, sender=None, use_transaction=None
     ):
-        _policy = self._fw.check_policy(policy)
+        _policy = self.check_policy(policy)
         self._fw.check_timeout(timeout)
         self._fw.check_panic()
         _obj = self._policies[_policy]
@@ -324,7 +324,7 @@ class FirewallPolicy:
         _obj.ingress_zones.append(zone_id)
 
     def remove_ingress_zone(self, policy, zone, use_transaction=None):
-        _policy = self._fw.check_policy(policy)
+        _policy = self.check_policy(policy)
         self._fw.check_panic()
         _obj = self._policies[_policy]
 
@@ -377,7 +377,7 @@ class FirewallPolicy:
     def add_egress_zone(
         self, policy, zone, timeout=0, sender=None, use_transaction=None
     ):
-        _policy = self._fw.check_policy(policy)
+        _policy = self.check_policy(policy)
         self._fw.check_timeout(timeout)
         self._fw.check_panic()
         _obj = self._policies[_policy]
@@ -409,7 +409,7 @@ class FirewallPolicy:
         _obj.egress_zones.append(zone_id)
 
     def remove_egress_zone(self, policy, zone, use_transaction=None):
-        _policy = self._fw.check_policy(policy)
+        _policy = self.check_policy(policy)
         self._fw.check_panic()
         _obj = self._policies[_policy]
 
@@ -478,7 +478,7 @@ class FirewallPolicy:
         self._rule_prepare(enable, policy, rule, transaction)
 
     def add_rule(self, policy, rule, timeout=0, sender=None, use_transaction=None):
-        _policy = self._fw.check_policy(policy)
+        _policy = self.check_policy(policy)
         self._fw.check_timeout(timeout)
         self._fw.check_panic()
         _obj = self._policies[_policy]
@@ -510,7 +510,7 @@ class FirewallPolicy:
         _obj.rules_str.append(rule_id)
 
     def remove_rule(self, policy, rule, use_transaction=None):
-        _policy = self._fw.check_policy(policy)
+        _policy = self.check_policy(policy)
         self._fw.check_panic()
         _obj = self._policies[_policy]
 
@@ -556,7 +556,7 @@ class FirewallPolicy:
     def add_service(
         self, policy, service, timeout=0, sender=None, use_transaction=None
     ):
-        _policy = self._fw.check_policy(policy)
+        _policy = self.check_policy(policy)
         self._fw.check_timeout(timeout)
         self._fw.check_panic()
         _obj = self._policies[_policy]
@@ -588,7 +588,7 @@ class FirewallPolicy:
         _obj.services.append(service_id)
 
     def remove_service(self, policy, service, use_transaction=None):
-        _policy = self._fw.check_policy(policy)
+        _policy = self.check_policy(policy)
         self._fw.check_panic()
         _obj = self._policies[_policy]
 
@@ -670,7 +670,7 @@ class FirewallPolicy:
     def add_port(
         self, policy, port, protocol, timeout=0, sender=None, use_transaction=None
     ):
-        _policy = self._fw.check_policy(policy)
+        _policy = self.check_policy(policy)
         self._fw.check_timeout(timeout)
         self._fw.check_panic()
         _obj = self._policies[_policy]
@@ -716,7 +716,7 @@ class FirewallPolicy:
         _obj.ports.append(port_id)
 
     def remove_port(self, policy, port, protocol, use_transaction=None):
-        _policy = self._fw.check_policy(policy)
+        _policy = self.check_policy(policy)
         self._fw.check_panic()
         _obj = self._policies[_policy]
 
@@ -793,7 +793,7 @@ class FirewallPolicy:
     def add_protocol(
         self, policy, protocol, timeout=0, sender=None, use_transaction=None
     ):
-        _policy = self._fw.check_policy(policy)
+        _policy = self.check_policy(policy)
         self._fw.check_timeout(timeout)
         self._fw.check_panic()
         _obj = self._policies[_policy]
@@ -825,7 +825,7 @@ class FirewallPolicy:
         _obj.protocols.append(protocol_id)
 
     def remove_protocol(self, policy, protocol, use_transaction=None):
-        _policy = self._fw.check_policy(policy)
+        _policy = self.check_policy(policy)
         self._fw.check_panic()
         _obj = self._policies[_policy]
 
@@ -870,7 +870,7 @@ class FirewallPolicy:
     def add_source_port(
         self, policy, port, protocol, timeout=0, sender=None, use_transaction=None
     ):
-        _policy = self._fw.check_policy(policy)
+        _policy = self.check_policy(policy)
         self._fw.check_timeout(timeout)
         self._fw.check_panic()
         _obj = self._policies[_policy]
@@ -920,7 +920,7 @@ class FirewallPolicy:
         _obj.source_ports.append(port_id)
 
     def remove_source_port(self, policy, port, protocol, use_transaction=None):
-        _policy = self._fw.check_policy(policy)
+        _policy = self.check_policy(policy)
         self._fw.check_panic()
         _obj = self._policies[_policy]
 
@@ -983,7 +983,7 @@ class FirewallPolicy:
     # MASQUERADE
 
     def add_masquerade(self, policy, timeout=0, sender=None, use_transaction=None):
-        _policy = self._fw.check_policy(policy)
+        _policy = self.check_policy(policy)
         self._fw.check_timeout(timeout)
         self._fw.check_panic()
         _obj = self._policies[_policy]
@@ -1014,7 +1014,7 @@ class FirewallPolicy:
         _obj.masquerade = True
 
     def remove_masquerade(self, policy, use_transaction=None):
-        _policy = self._fw.check_policy(policy)
+        _policy = self.check_policy(policy)
         self._fw.check_panic()
         _obj = self._policies[_policy]
 
@@ -1078,7 +1078,7 @@ class FirewallPolicy:
         sender=None,
         use_transaction=None,
     ):
-        _policy = self._fw.check_policy(policy)
+        _policy = self.check_policy(policy)
         self._fw.check_timeout(timeout)
         self._fw.check_panic()
         _obj = self._policies[_policy]
@@ -1116,7 +1116,7 @@ class FirewallPolicy:
     def remove_forward_port(
         self, policy, port, protocol, toport=None, toaddr=None, use_transaction=None
     ):
-        _policy = self._fw.check_policy(policy)
+        _policy = self.check_policy(policy)
         self._fw.check_panic()
         _obj = self._policies[_policy]
 
@@ -1168,7 +1168,7 @@ class FirewallPolicy:
     def add_icmp_block(
         self, policy, icmp, timeout=0, sender=None, use_transaction=None
     ):
-        _policy = self._fw.check_policy(policy)
+        _policy = self.check_policy(policy)
         self._fw.check_timeout(timeout)
         self._fw.check_panic()
         _obj = self._policies[_policy]
@@ -1200,7 +1200,7 @@ class FirewallPolicy:
         _obj.icmp_blocks.append(icmp_id)
 
     def remove_icmp_block(self, policy, icmp, use_transaction=None):
-        _policy = self._fw.check_policy(policy)
+        _policy = self.check_policy(policy)
         self._fw.check_panic()
         _obj = self._policies[_policy]
 
@@ -1237,7 +1237,7 @@ class FirewallPolicy:
     # ICMP BLOCK INVERSION
 
     def add_icmp_block_inversion(self, policy, sender=None, use_transaction=None):
-        _policy = self._fw.check_policy(policy)
+        _policy = self.check_policy(policy)
         self._fw.check_panic()
         _obj = self._policies[_policy]
 
@@ -1296,7 +1296,7 @@ class FirewallPolicy:
         transaction.execute(True)
 
     def remove_icmp_block_inversion(self, policy, use_transaction=None):
-        _policy = self._fw.check_policy(policy)
+        _policy = self.check_policy(policy)
         self._fw.check_panic()
         _obj = self._policies[_policy]
 
