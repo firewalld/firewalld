@@ -159,7 +159,7 @@ class Firewall:
         }
         conf_dict["policies"] = {
             policy: self.policy.get_policy(policy)
-            for policy in self.policy.get_policies_not_derived_from_zone()
+            for policy in self.policy.get_policies()
         }
 
         conf_dict["conf"] = {}
