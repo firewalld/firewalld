@@ -62,12 +62,9 @@ class FirewallPolicy:
         return sorted(self._policies.keys())
 
     def get_policies_not_derived_from_zone(self):
-        policies = []
-        for p in self.get_policies():
-            p_obj = self.get_policy(p)
-            if not p_obj.derived_from_zone:
-                policies.append(p)
-        return sorted(policies)
+        return sorted(
+            (p.name for p in self._policies.values() if not p.derived_from_zone)
+        )
 
     def get_active_policies_not_derived_from_zone(self):
         active_policies = []
