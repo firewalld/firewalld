@@ -32,22 +32,25 @@ class FirewallIPSet:
     def cleanup(self):
         self._ipsets.clear()
 
-    def check_ipset(self, name):
-        if name not in self.get_ipsets():
-            raise FirewallError(errors.INVALID_IPSET, name)
-
-    def query_ipset(self, name):
-        return name in self.get_ipsets()
-
     def get_ipsets(self):
         return sorted(self._ipsets.keys())
 
     def has_ipsets(self):
         return len(self._ipsets) > 0
 
-    def get_ipset(self, name, applied=False):
-        self.check_ipset(name)
-        obj = self._ipsets[name]
+    def query_ipset(self, name):
+        return self.has_ipset(name)
+
+    def check_ipset(self, name, applied=False):
+        return self.get_ipset(name, applied=applied).name
+
+    def has_ipset(self, name, applied=False):
+        return self.get_ipset(name, applied=applied, required=False) is not None
+
+    def get_ipset(self, name, applied=False, required=True):
+        obj = self._ipsets.get(name)
+        if obj is None and required:
+            raise FirewallError(errors.INVALID_IPSET, name)
         if applied:
             self.check_applied_obj(obj)
         return obj
@@ -167,8 +170,7 @@ class FirewallIPSet:
         return len(self.get_ipset(name, applied=True).type.split(","))
 
     def check_applied(self, name):
-        obj = self.get_ipset(name)
-        self.check_applied_obj(obj)
+        self.check_ipset(name, applied=True)
 
     def check_applied_obj(self, obj):
         if not obj.applied:
