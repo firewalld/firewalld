@@ -216,14 +216,14 @@ class FirewallPolicy:
         self._policy_settings(True, policy, use_transaction=use_transaction)
 
     def try_apply_policy_settings(self, policy, use_transaction=None):
-        if policy in self.get_policies(require_active=True):
+        if self.policy_is_active(self.get_policy(policy, required=False)):
             self.apply_policy_settings(policy, use_transaction=use_transaction)
 
     def unapply_policy_settings(self, policy, use_transaction=None):
         self._policy_settings(False, policy, use_transaction=use_transaction)
 
     def try_unapply_policy_settings(self, policy, use_transaction=None):
-        if policy not in self.get_policies(require_active=True):
+        if not self.policy_is_active(self.get_policy(policy, required=False)):
             self.unapply_policy_settings(policy, use_transaction=use_transaction)
 
     def get_config_with_settings_dict(self, policy):
