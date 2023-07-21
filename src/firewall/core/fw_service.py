@@ -26,12 +26,13 @@ class FirewallService:
         return sorted(self._services.keys())
 
     def check_service(self, service):
-        if service not in self._services:
-            raise FirewallError(errors.INVALID_SERVICE, service)
+        return self.get_service(service).name
 
-    def get_service(self, service):
-        self.check_service(service)
-        return self._services[service]
+    def get_service(self, service, required=True):
+        v = self._services.get(service)
+        if v is None and required:
+            raise FirewallError(errors.INVALID_SERVICE, service)
+        return v
 
     def add_service(self, obj):
         self._services[obj.name] = obj

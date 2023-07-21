@@ -1190,9 +1190,6 @@ class Firewall:
         if not functions.checkInterface(interface):
             raise FirewallError(errors.INVALID_INTERFACE, interface)
 
-    def check_service(self, service):
-        self.service.check_service(service)
-
     def check_port(self, port):
         if not functions.check_port(port):
             raise FirewallError(errors.INVALID_PORT, port)
