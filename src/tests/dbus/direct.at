@@ -170,7 +170,7 @@ DBUS_INTROSPECT([], [[//signal[@name="ChainAdded"]]], 0, [dnl
         <arg name="table" type="s"></arg>
         <arg name="chain" type="s"></arg>
         <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
-    </signal>  
+    </signal>
 ])
 
 DBUS_INTROSPECT([], [[//signal[@name="ChainRemoved"]]], 0, [dnl

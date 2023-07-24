@@ -16,7 +16,7 @@ NMCLI_CHECK([connection up ovs-interface-port], 0, [ignore])
 
 dnl Omit the actual linux interface because it requires the OVS daemon to be
 dnl running. The bug is reproducible without it.
-dnl 
+dnl
 dnl NMCLI_CHECK([connection add type ovs-interface slave-type ovs-port conn.interface ovs-br master ovs-interface-port con-name ovs-interface ipv4.method disabled ipv6.method disabled], 0, [ignore])
 dnl echo NS_CMD([nmcli connection delete ovs-interface]) >> ./cleanup
 dnl NMCLI_CHECK([connection up ovs-interface], 0, [ignore])

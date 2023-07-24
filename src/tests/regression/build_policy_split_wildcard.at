@@ -1,7 +1,7 @@
 FWD_START_TEST([build policy split wildcards])
 AT_KEYWORDS(gh892 policy)
 
-dnl Setting up policy and adding interfaces that will remain for the duration of 
+dnl Setting up policy and adding interfaces that will remain for the duration of
 dnl the tests
 dnl
 FWD_CHECK([--permanent --new-policy=foobar], 0, [ignore])

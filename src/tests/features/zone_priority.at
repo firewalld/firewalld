@@ -757,16 +757,16 @@ zone-2 (active)
   egress-priority: -10000
   icmp-block-inversion: no
   interfaces: dummy-2
-  sources: 
-  services: 
-  ports: 
-  protocols: 
+  sources:
+  services:
+  ports:
+  protocols:
   forward: no
   masquerade: no
-  forward-ports: 
-  source-ports: 
-  icmp-blocks: 
-  rich rules: 
+  forward-ports:
+  source-ports:
+  icmp-blocks:
+  rich rules:
 ])])
 FWD_CHECK([--info-zone zone-4 | TRIM_WHITESPACE], 0, [m4_strip([dnl
 zone-4 (active)
@@ -775,16 +775,16 @@ zone-4 (active)
   egress-priority: 1
   icmp-block-inversion: no
   interfaces: dummy-4
-  sources: 
-  services: 
-  ports: 
-  protocols: 
+  sources:
+  services:
+  ports:
+  protocols:
   forward: no
   masquerade: no
-  forward-ports: 
-  source-ports: 
-  icmp-blocks: 
-  rich rules: 
+  forward-ports:
+  source-ports:
+  icmp-blocks:
+  rich rules:
 ])])
 
 dnl verify XML

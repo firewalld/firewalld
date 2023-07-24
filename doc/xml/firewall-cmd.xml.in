@@ -1993,7 +1993,7 @@ For interfaces that are not under control of NetworkManager, firewalld tries to 
            </para>
          </listitem>
        </varlistentry>
-       
+
        <varlistentry>
          <term><option>--permanent</option> <option>--helper</option>=<replaceable>helper</replaceable> <option>--add-port</option>=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable></term>
          <listitem>
@@ -2468,7 +2468,7 @@ For interfaces that are not under control of NetworkManager, firewalld tries to 
 	The context is the security (SELinux) context of a running application or service. To get the context of a running application use <command>ps -e --context</command>.
       </para>
       <para>
-	<emphasis role="bold">Warning:</emphasis> If the context is unconfined, then this will open access for more than the desired application. 
+	<emphasis role="bold">Warning:</emphasis> If the context is unconfined, then this will open access for more than the desired application.
       </para>
       <para>
 	The lockdown whitelist entries are checked in the following order:

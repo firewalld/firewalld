@@ -9,7 +9,7 @@ dnl This test verifies the different policy permissions. It does not verify
 dnl every (dbus API, policy) pair. It is only using a subset of the dbus
 dnl interfaces sufficient to verify the policy actions. It's only verifying
 dnl that policy kit auth is functional.
-dnl 
+dnl
 dnl A prime example of this is that both permanent and runtime config changes
 dnl fall under the "config" polkit action.
 

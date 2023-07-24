@@ -39,7 +39,7 @@ DISTCLEANFILES = $(man_MANS) $(HTMLS) transform-*.xsl \
 
 #SGML_CATALOG_FILES
 #XSLTPROC_FLAGS = --catalogs --nonet --xinclude
-XSLTPROC_FLAGS = --nonet --xinclude 
+XSLTPROC_FLAGS = --nonet --xinclude
 XSLTPROC_MAN_FLAGS = $(XSLTPROC_FLAGS) transform-man.xsl
 XSLTPROC_HTML_FLAGS = $(XSLTPROC_FLAGS) transform-html.xsl
 

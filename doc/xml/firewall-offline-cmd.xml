@@ -223,7 +223,7 @@
           <term><option>--remove-service</option>=<replaceable>service</replaceable></term>
           <listitem>
 	    <para>
-	      Remove a service from the default zone. This option can be specified multiple times. 
+	      Remove a service from the default zone. This option can be specified multiple times.
 	    </para>
 	    <para>
 	      The service is one of the firewalld provided services. To get a list of the supported services, use <command>firewall-cmd --get-services</command>.
@@ -236,7 +236,7 @@
           <term><option>--service</option>=<replaceable>service</replaceable></term>
           <listitem>
 	    <para>
-	      Add a service to the default zone. This option can be specified multiple times. 
+	      Add a service to the default zone. This option can be specified multiple times.
 	    </para>
 	    <para>
 	      The service is one of the firewalld provided services. To get a list of the supported services, use <command>firewall-cmd --get-services</command>.
@@ -305,7 +305,7 @@
 	      This option will result in a warning message.
 	    </para>
 	    <para>
-	      Add the <emphasis>IPv4</emphasis> forward port in the default zone. This option can be specified multiple times. 
+	      Add the <emphasis>IPv4</emphasis> forward port in the default zone. This option can be specified multiple times.
 	    </para>
 	    <para>
 	      The port can either be a single port number <replaceable>portid</replaceable> or a port range <replaceable>portid</replaceable>-<replaceable>portid</replaceable>. The protocol can either be <literal>tcp</literal>, <literal>udp</literal>, <literal>sctp</literal> or <literal>dccp</literal>. The destination address is an IP address.
@@ -1988,7 +1988,7 @@
            </para>
          </listitem>
        </varlistentry>
-       
+
        <varlistentry>
          <term><option>--helper</option>=<replaceable>helper</replaceable> <option>--add-port</option>=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable></term>
          <listitem>
@@ -2425,13 +2425,13 @@
 	If a command entry on the whitelist ends with an asterisk '*', then all command lines starting with the command will match. If the '*' is not there the absolute command inclusive arguments must match.
       </para>
       <para>
-	Commands for user root and others is not always the same. Example: As root <command>/bin/firewall-cmd</command> is used, as a normal user <command>/usr/bin/firewall-cmd</command> is be used on Fedora. 
+	Commands for user root and others is not always the same. Example: As root <command>/bin/firewall-cmd</command> is used, as a normal user <command>/usr/bin/firewall-cmd</command> is be used on Fedora.
       </para>
       <para>
 	The context is the security (SELinux) context of a running application or service. To get the context of a running application use <command>ps -e --context</command>.
       </para>
       <para>
-	<emphasis role="bold">Warning:</emphasis> If the context is unconfined, then this will open access for more than the desired application. 
+	<emphasis role="bold">Warning:</emphasis> If the context is unconfined, then this will open access for more than the desired application.
       </para>
       <para>
 	The lockdown whitelist entries are checked in the following order:

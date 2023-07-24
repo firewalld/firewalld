@@ -264,7 +264,7 @@
     <title>rule</title>
     <para>
         Is an optional element tag and can be used several times to have more
-        than one rich language rule entry. 
+        than one rich language rule entry.
     </para>
     <para>
         The general rule structure:
@@ -284,7 +284,7 @@
         &lt;forward-port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>|<literal>sctp</literal>|<literal>dccp</literal>" [to-port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]"] [to-addr="<replaceable>address</replaceable>"]/&gt; |
         &lt;source-port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>|<literal>sctp</literal>|<literal>dccp</literal>"/&gt; |
     ]
-    [ 
+    [
         &lt;log [prefix="<replaceable>prefix text</replaceable>"] [level="<literal>emerg</literal>|<literal>alert</literal>|<literal>crit</literal>|<literal>err</literal>|<literal>warn</literal>|<literal>notice</literal>|<literal>info</literal>|<literal>debug</literal>"]&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/log&gt; |
         &lt;nflog [group="<replaceable>group id</replaceable>"] [prefix="<replaceable>prefix text</replaceable>"] [queue-size="<replaceable>threshold</replaceable>"]&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/nflog&gt;
     ]
@@ -305,7 +305,7 @@
         <programlisting>
 &lt;rule [family="<literal>ipv4</literal>|<literal>ipv6</literal>"] [priority="<replaceable>priority</replaceable>"]&gt;
     &lt;source address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]"|mac="<replaceable>MAC</replaceable>"|ipset="<replaceable>ipset</replaceable>" [invert="<replaceable>True</replaceable>"]/&gt;
-    [ 
+    [
         &lt;log [prefix="<replaceable>prefix text</replaceable>"] [level="<literal>emerg</literal>|<literal>alert</literal>|<literal>crit</literal>|<literal>err</literal>|<literal>warn</literal>|<literal>notice</literal>|<literal>info</literal>|<literal>debug</literal>"]&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/log&gt; |
         &lt;nflog [group="<replaceable>group id</replaceable>"] [prefix="<replaceable>prefix text</replaceable>"] [queue-size="<replaceable>threshold</replaceable>"]&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/nflog&gt;
     ]

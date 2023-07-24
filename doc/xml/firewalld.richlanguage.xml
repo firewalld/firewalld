@@ -161,7 +161,7 @@ port port="port value" protocol="tcp|udp|sctp|dccp"
 	</programlisting>
       </para>
       <para>
-	The port <replaceable>port value</replaceable> can either be a single port number <replaceable>portid</replaceable> or a port range <replaceable>portid</replaceable>-<replaceable>portid</replaceable>. 
+	The port <replaceable>port value</replaceable> can either be a single port number <replaceable>portid</replaceable> or a port range <replaceable>portid</replaceable>-<replaceable>portid</replaceable>.
       The protocol can either be <literal>tcp</literal>, <literal>udp</literal>, <literal>sctp</literal> or <literal>dccp</literal>.
       </para>
     </refsect2>
@@ -250,7 +250,7 @@ forward-port port="port value" protocol="tcp|udp|sctp|dccp" to-port="port value"
 	Forward port/packets from local port value with protocol "tcp" or "udp" to either another port locally or to another machine or to another port on another machine.
       </para>
       <para>
-	The port value can either be a single port number or a port range <replaceable>portid-portid</replaceable>. The <option>to-addr</option> is an IP address. 
+	The port value can either be a single port number or a port range <replaceable>portid-portid</replaceable>. The <option>to-addr</option> is an IP address.
       The protocol can either be <literal>tcp</literal>, <literal>udp</literal>, <literal>sctp</literal> or <literal>dccp</literal>.
       </para>
       <para>
@@ -269,7 +269,7 @@ source-port port="port value" protocol="tcp|udp|sctp|dccp"
 	</programlisting>
       </para>
       <para>
-	The source-port <replaceable>port value</replaceable> can either be a single port number <replaceable>portid</replaceable> or a port range <replaceable>portid</replaceable>-<replaceable>portid</replaceable>. 
+	The source-port <replaceable>port value</replaceable> can either be a single port number <replaceable>portid</replaceable> or a port range <replaceable>portid</replaceable>-<replaceable>portid</replaceable>.
       The protocol can either be <literal>tcp</literal>, <literal>udp</literal>, <literal>sctp</literal> or <literal>dccp</literal>.
       </para>
     </refsect2>
@@ -308,7 +308,7 @@ nflog [group="group id"] [prefix="prefix text"] [queue-size="threshold"] [limit 
       You can define a prefix text with a maximum length of 127 characters that will be added to the log message as a prefix.
       The <option>queue-size</option> option can be set to increase the queue threshold which can help limit context switching.
       The default value for <option>queue-size</option> is 1, maximum value is 65535.
-	See <citerefentry><refentrytitle>iptables-extensions</refentrytitle><manvolnum>8</manvolnum></citerefentry> and <citerefentry><refentrytitle>nft</refentrytitle><manvolnum>8</manvolnum></citerefentry> for more details. 
+	See <citerefentry><refentrytitle>iptables-extensions</refentrytitle><manvolnum>8</manvolnum></citerefentry> and <citerefentry><refentrytitle>nft</refentrytitle><manvolnum>8</manvolnum></citerefentry> for more details.
       </para>
       <para>
       See Limit section for description of <option>limit</option> tag.

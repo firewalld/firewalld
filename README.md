@@ -6,12 +6,12 @@
 FirewallD - A firewall daemon with D-Bus interface providing a dynamic firewall
 ====================
 
-firewalld provides a dynamically managed firewall with support for network or 
-firewall zones to define the trust level of network connections or interfaces. 
-It has support for IPv4, IPv6 firewall settings and for ethernet bridges and a 
-separation of runtime and permanent configuration options. It also provides an 
-interface for services or applications to add ip*tables and ebtables rules 
-directly. 
+firewalld provides a dynamically managed firewall with support for network or
+firewall zones to define the trust level of network connections or interfaces.
+It has support for IPv4, IPv6 firewall settings and for ethernet bridges and a
+separation of runtime and permanent configuration options. It also provides an
+interface for services or applications to add ip*tables and ebtables rules
+directly.
 
 
 Development
@@ -195,7 +195,7 @@ podman pull quay.io/firewalld/firewalld:<ver>
 ```
 
 where `<ver>` is optional, the latest version will be used if omitted.
-                  
+
 To start the daemon/container:
 
 ```sh

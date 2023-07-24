@@ -1,10 +1,10 @@
     /org/fedoraproject/FirewallD1/config
     ====================================
-    
+
       Interfaces
       ----------
         org.fedoraproject.FirewallD1.config
-    
+
           Methods
           -------
             listZones() -> (Array of [Object Path] zones)
@@ -12,28 +12,28 @@
             getZoneOfInterface(String iface) -> (String zone)
             getZoneOfSource(String source) -> (String zone)
             addZone(String name, Dict of {String, Variant} zone_settings) -> (Ob
-    
+
             listServices() -> (Array of [Object Path] services)
             getServiceByName(String name) -> (Object Path service)
-            addService(String name, Dict of {String, Variant} service_settings) 
-    
+            addService(String name, Dict of {String, Variant} service_settings)
+
             listIcmpTypes() -> (Array of [Object Path] icmptypes)
             getIcmpTypeByName(String name) -> (Object Path icmptype)
             addIcmpType(String name, Dict of {String, Variant} icmptype_settings
-    
+
           Signals
           -------
             ZoneAdded(Object Path zone)
             ServiceAdded(Object Path service)
             IcmpTypeAdded(Object Path icmptype)
-    
+
     /org/fedoraproject/FirewallD1/config/zone/<id>
     ==============================================
-    
+
       Interfaces
       ----------
         org.fedoraproject.FirewallD1.config.zone
-    
+
           Methods
           -------
             getSettings() -> (Struct of (
@@ -61,35 +61,35 @@
             loadDefaults()
             remove()
             rename(String name)
-    
+
           Properties
           ----------
             String name (ro)
             String filename (ro)
             String path (ro)
             Boolean default (ro)
-    
+
           Signals
           -------
             Updated(String name)
             Removed(String name)
             Renamed(String name)
-    
+
         org.freedesktop.DBus.Properties
-    
+
           Methods
           -------
             Get(String interface, String, propname) -> (Variant value)
             GetAll(String interface) -> (Dict of {String, Variant} props)
             Set(String interface, String propname, Variant value)
-    
+
     /org/fedoraproject/FirewallD1/config/service/<id>
     =================================================
-    
+
       Interfaces
       ----------
         org.fedoraproject.FirewallD1.config.service
-    
+
           Methods
           -------
             getSettings() -> (Struct of (
@@ -109,35 +109,35 @@
             loadDefaults()
             remove()
             rename(String name)
-    
+
           Properties
           ----------
             String name (ro)
             String filename (ro)
             String path (ro)
             Boolean default (ro)
-    
+
           Signals
           -------
             Updated(String name)
             Removed(String name)
             Renamed(String name)
-    
+
         org.freedesktop.DBus.Properties
-    
+
           Methods
           -------
             Get(String interface, String, propname) -> (Variant value)
             GetAll(String interface) -> (Dict of {String, Variant} props)
             Set(String interface, String propname, Variant value)
-    
+
     /org/fedoraproject/FirewallD1/config/icmptype/<id>
     ==================================================
-    
+
       Interfaces
       ----------
         org.fedoraproject.FirewallD1.config.icmptype
-    
+
           Methods
           -------
             getSettings() -> (Struct of (
@@ -153,22 +153,22 @@
             loadDefaults()
             remove()
             rename(String name)
-    
+
           Properties
           ----------
             String name (ro)
             String filename (ro)
             String path (ro)
             Boolean default (ro)
-    
+
           Signals
           -------
             Updated(String name)
             Removed(String name)
             Renamed(String name)
-    
+
         org.freedesktop.DBus.Properties
-    
+
           Methods
           -------
             Get(String interface, String, propname) -> (Variant value)
