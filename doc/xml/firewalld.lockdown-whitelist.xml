@@ -59,7 +59,7 @@
     <para>
       The firewalld lockdown-whitelist configuration file contains the selinux contexts, commands, users and user ids that are white-listed when firewalld lockdown feature is enabled (see <citerefentry><refentrytitle>firewalld.conf</refentrytitle><manvolnum>5</manvolnum></citerefentry> and <citerefentry><refentrytitle>firewall-cmd</refentrytitle><manvolnum>1</manvolnum></citerefentry>).
     </para>
- 
+
     <para>
       This example configuration file shows the structure of an lockdown-whitelist file:
 
@@ -104,7 +104,7 @@
 	      To get the context of a running application use <command>ps -e --context</command> and search for the application that should be white-listed.
 	    </para>
 	    <para>
-	      Warning: If the context of an application is unconfined, then this will open access for more than the desired application. 
+	      Warning: If the context of an application is unconfined, then this will open access for more than the desired application.
 	    </para>
 	  </listitem>
 	</varlistentry>

@@ -283,7 +283,7 @@
 
     <para>
       Denylisting of the networks 192.168.1.0/24 and 192.168.5.0/24 with logging and dropping early in the raw table:
-      
+
       <programlisting>
 &lt;?xml version="1.0" encoding="utf-8"?&gt;
 &lt;direct&gt;
@@ -294,7 +294,7 @@
   &lt;rule ipv="ipv4" table="raw" chain="denylist" priority="1"&gt;-j DROP&lt;/rule&gt;
 &lt;/direct&gt;
       </programlisting>
-      
+
     </para>
   </refsect1>
 

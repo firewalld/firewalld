@@ -27,7 +27,7 @@ Requires: python3-firewall  = %{version}-%{release}
 Recommends: libcap-ng-python3
 
 %description
-firewalld is a firewall service daemon that provides a dynamic customizable 
+firewalld is a firewall service daemon that provides a dynamic customizable
 firewall with a D-Bus interface.
 
 %package -n python3-firewall
@@ -72,7 +72,7 @@ Requires: NetworkManager-libnm
 Requires: dbus-x11
 
 %description -n firewall-applet
-The firewall panel applet provides a status information of firewalld and also 
+The firewall panel applet provides a status information of firewalld and also
 the firewall settings.
 
 %package -n firewall-config
@@ -86,7 +86,7 @@ Requires: dbus-x11
 Recommends: polkit
 
 %description -n firewall-config
-The firewall configuration application provides an configuration interface for 
+The firewall configuration application provides an configuration interface for
 firewalld.
 
 %prep
@@ -116,7 +116,7 @@ desktop-file-install --delete-original \
 %systemd_preun firewalld.service
 
 %postun
-%systemd_postun_with_restart firewalld.service 
+%systemd_postun_with_restart firewalld.service
 
 
 %post -n firewall-applet

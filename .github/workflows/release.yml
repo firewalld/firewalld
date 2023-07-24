@@ -1,6 +1,6 @@
 name: release
 
-on: 
+on:
   push:
     tags:
     - 'v*'
@@ -44,7 +44,7 @@ jobs:
           ./autogen.sh
           ./configure
           make dist
-      
+
       - name: make release notes
         run: |
           set -- $(grep "^Version:" firewalld.spec |cut -f2 -d ' ' |tr '.' ' ')

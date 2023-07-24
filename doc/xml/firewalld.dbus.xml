@@ -130,7 +130,7 @@
 		Reload firewall completely, even netfilter kernel modules.
 		This will most likely terminate active connections, because state information is lost.
 		This option should only be used in case of severe firewall problems.
-		For example if there are state information problems that no connection can be established with correct firewall rules. 
+		For example if there are state information problems that no connection can be established with correct firewall rules.
               </para>
             </listitem>
           </varlistentry>
@@ -639,7 +639,7 @@
     <refsect2 id="FirewallD1.direct">
       <title>org.fedoraproject.FirewallD1.direct</title>
 
-      
+
       <refsect3>
         <title>DEPRECATED</title>
 
@@ -932,7 +932,7 @@
             <term>ChainAdded(s: ipv, s: table, s: chain)</term>
             <listitem>
               <para>
-		Emitted when <replaceable>chain</replaceable> has been added into <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables). 
+		Emitted when <replaceable>chain</replaceable> has been added into <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).
               </para>
             </listitem>
           </varlistentry>
@@ -940,7 +940,7 @@
             <term>ChainRemoved(s: ipv, s: table, s: chain)</term>
             <listitem>
               <para>
-		Emitted when <replaceable>chain</replaceable> has been removed from <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables). 
+		Emitted when <replaceable>chain</replaceable> has been removed from <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).
               </para>
             </listitem>
           </varlistentry>
@@ -3740,7 +3740,7 @@
           </varlistentry>
 	</variablelist>
       </refsect3>
-      
+
       <refsect3 id="FirewallD1.config.ipset.Signals">
         <title>Signals</title>
         <variablelist>

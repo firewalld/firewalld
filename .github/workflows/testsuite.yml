@@ -95,7 +95,7 @@ jobs:
           cd py
           pip install .
           sudo ldconfig
-      
+
       - name: remove iptables, et al.
         if: ${{ matrix.no-iptables }}
         run: |

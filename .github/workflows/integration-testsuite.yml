@@ -71,7 +71,7 @@ jobs:
           cd py
           pip install .
           sudo ldconfig
-      
+
       - name: build firewalld
         run: |
           ./autogen.sh
