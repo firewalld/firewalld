@@ -37,45 +37,39 @@ import dbus
 import traceback
 
 exception_handler = None
-not_authorized_loop = False
 
 def handle_exceptions(func):
     """Decorator to handle exceptions
     """
     @functools.wraps(func)
     def _impl(*args, **kwargs):
-        authorized = False
-        while not authorized:
-            try:
-                return func(*args, **kwargs)
-            except dbus.exceptions.DBusException as e:
-                dbus_message = e.get_dbus_message() # returns unicode
-                dbus_name = e.get_dbus_name()
-                if not exception_handler:
-                    raise
-                if "NotAuthorizedException" in dbus_name:
-                    exception_handler("NotAuthorizedException")
-                elif "org.freedesktop.DBus.Error" in dbus_name:
-                    # dbus error, try again
+        try:
+            return func(*args, **kwargs)
+        except dbus.exceptions.DBusException as e:
+            dbus_message = e.get_dbus_message() # returns unicode
+            dbus_name = e.get_dbus_name()
+            if not exception_handler:
+                raise
+            if "NotAuthorizedException" in dbus_name:
+                exception_handler("NotAuthorizedException")
+            elif "org.freedesktop.DBus.Error" in dbus_name:
+                # dbus error, try again
+                exception_handler(dbus_message)
+            else:
+                if dbus_message:
                     exception_handler(dbus_message)
                 else:
-                    authorized = True
-                    if dbus_message:
-                        exception_handler(dbus_message)
-                    else:
-                        exception_handler(str(e))
-            except FirewallError as e:
-                if not exception_handler:
-                    raise
-                else:
                     exception_handler(str(e))
-            except Exception:
-                if not exception_handler:
-                    raise
-                else:
-                    exception_handler(traceback.format_exc())
-            if not not_authorized_loop:
-                break
+        except FirewallError as e:
+            if not exception_handler:
+                raise
+            else:
+                exception_handler(str(e))
+        except Exception:
+            if not exception_handler:
+                raise
+            else:
+                exception_handler(traceback.format_exc())
     return _impl
 
 # zone config settings
@@ -3017,15 +3011,6 @@ class FirewallClient(object):
     def setExceptionHandler(self, handler):
         global exception_handler
         exception_handler = handler
-
-    @handle_exceptions
-    def getNotAuthorizedLoop(self):
-        return not_authorized_loop
-
-    @handle_exceptions
-    def setNotAuthorizedLoop(self, enable):
-        global not_authorized_loop
-        not_authorized_loop = enable
 
     @handle_exceptions
     def connect(self, name, callback, *args):
