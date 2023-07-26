@@ -3465,13 +3465,7 @@ class FirewallClient:
         elif interface == config.dbus.DBUS_INTERFACE_CONFIG_DIRECT:
             signal = "config:direct:" + signal
 
-        cb = None
-        for callback in self._callbacks:
-            if (
-                self._callbacks[callback] == signal
-                and self._callbacks[callback] in self._callback
-            ):
-                cb = self._callback[self._callbacks[callback]]
+        cb = self._callback.get(signal)
         if cb is None:
             return
 
