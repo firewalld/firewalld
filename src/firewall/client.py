@@ -3368,11 +3368,11 @@ class FirewallClient:
         not_authorized_loop = enable
 
     @handle_exceptions
-    def connect(self, name, callback, *args):
-        if name in self._callbacks:
-            self._callback[self._callbacks[name]] = (callback, args)
-        else:
+    def connect(self, name, callback):
+        signal = self._callbacks.get(name)
+        if not signal:
             raise ValueError("Unknown callback name '%s'" % name)
+        self._callback[signal] = callback
 
     @handle_exceptions
     def _dbus_connection_changed(self, name, old_owner, new_owner):
@@ -3477,12 +3477,9 @@ class FirewallClient:
             # is unexpected. Silently ignore.
             return
 
-        if cb[1]:
-            # add call data
-            cb_args.extend(cb[1])
         try:
             # call back
-            cb[0](*cb_args)
+            cb(*cb_args)
         except Exception as msg:
             print(msg)
 
