@@ -3442,13 +3442,8 @@ class FirewallClient:
         )
 
     @handle_exceptions
-    def _signal_receiver(self, *args, **kwargs):
-        if "member" not in kwargs or "interface" not in kwargs:
-            return
-
-        signal = kwargs["member"]
-        interface = kwargs["interface"]
-
+    def _signal_receiver(self, *dbus_args, member=None, interface=None, path=None):
+        signal = member
         # config signals need special treatment
         # pimp signal name
         if interface.startswith(config.dbus.DBUS_INTERFACE_CONFIG_ZONE):
@@ -3480,8 +3475,8 @@ class FirewallClient:
         if cb is None:
             return
 
-        # call back with args converted to python types ...
-        cb_args = [dbus_to_python(arg) for arg in args]
+        # call back with dbus_args converted to python types ...
+        cb_args = [dbus_to_python(arg) for arg in dbus_args]
         try:
             if cb[1]:
                 # add call data
