@@ -3470,11 +3470,17 @@ class FirewallClient:
             return
 
         # call back with dbus_args converted to python types ...
-        cb_args = [dbus_to_python(arg) for arg in dbus_args]
         try:
-            if cb[1]:
-                # add call data
-                cb_args.extend(cb[1])
+            cb_args = [dbus_to_python(arg) for arg in dbus_args]
+        except TypeError:
+            # Unexpected D-Bus type in the argument? Seems the D-Bus API
+            # is unexpected. Silently ignore.
+            return
+
+        if cb[1]:
+            # add call data
+            cb_args.extend(cb[1])
+        try:
             # call back
             cb[0](*cb_args)
         except Exception as msg:
