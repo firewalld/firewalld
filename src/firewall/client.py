@@ -17,7 +17,7 @@ from firewall.core.base import (
     DEFAULT_POLICY_PRIORITY,
     DEFAULT_ZONE_PRIORITY,
 )
-from firewall.dbus_utils import dbus_to_python
+from firewall.dbus_utils import dbus_to_python, dbus_to_python_args
 from firewall.core.rich import Rich_Rule
 from firewall.core.ipset import (
     normalize_ipset_entry,
@@ -3376,9 +3376,15 @@ class FirewallClient:
         self._callback[signal] = callback
 
     @handle_exceptions
-    def _dbus_connection_changed(self, name, old_owner, new_owner):
-        if name != config.dbus.DBUS_INTERFACE:
+    def _dbus_connection_changed(self, *dbus_args):
+        try:
+            name, old_owner, new_owner = dbus_to_python_args(
+                dbus_args, dbus.String, dbus.String, dbus.String
+            )
+        except TypeError:
             return
+
+        assert name == config.dbus.DBUS_INTERFACE
 
         if new_owner:
             # connection established
