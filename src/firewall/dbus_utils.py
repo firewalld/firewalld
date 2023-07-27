@@ -126,21 +126,37 @@ def dbus_to_python(obj, expected_type=None):
     else:
         raise TypeError("Unhandled %s" % repr(obj))
 
-    if expected_type is not None:
-        if (
-            (expected_type == bool and not isinstance(python_obj, bool))
-            or (expected_type == str and not isinstance(python_obj, str))
-            or (expected_type == int and not isinstance(python_obj, int))
-            or (expected_type == float and not isinstance(python_obj, float))
-            or (expected_type == list and not isinstance(python_obj, list))
-            or (expected_type == tuple and not isinstance(python_obj, tuple))
-            or (expected_type == dict and not isinstance(python_obj, dict))
-        ):
-            raise TypeError(
-                "%s is %s, expected %s" % (python_obj, type(python_obj), expected_type)
-            )
+    if expected_type is None:
+        # no type validation requested.
+        pass
+    elif isinstance(python_obj, expected_type):
+        # we are good, the result has the requested type.
+        # for example, expected_type is "str"
+        pass
+    elif isinstance(obj, expected_type):
+        # we are also good. The expected_type might be something like
+        # dbus.ObjectPath, and the caller asserts that this is an "o"
+        # type. The result is of course just a plain "str" type.
+        #
+        # This allows to check that the type is for example a dbus.ObjectPath
+        # and not merely a string (which provides additional consistency
+        # guarantees, like not being empty and well-formed).
+        pass
+    else:
+        raise TypeError(
+            "%s is %s, expected %s" % (python_obj, type(python_obj), expected_type)
+        )
 
     return python_obj
+
+
+def dbus_to_python_args(dbus_args, *expected_types):
+    # Checks that dbus_args is a list of D-Bus arguments, of the expected type.
+    dbus_args = tuple(dbus_args)
+    if len(dbus_args) != len(expected_types):
+        # The number of arguments must match with the expected_types.
+        raise TypeError("Unexpected number of arguments")
+    return tuple(dbus_to_python(a, expected_types[i]) for i, a in enumerate(dbus_args))
 
 
 def dbus_signature(obj):
