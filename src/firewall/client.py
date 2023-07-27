@@ -3399,27 +3399,6 @@ class FirewallClient:
             self.dbus_obj = self.bus.get_object(
                 config.dbus.DBUS_INTERFACE, config.dbus.DBUS_PATH
             )
-            self.fw = dbus.Interface(
-                self.dbus_obj, dbus_interface=config.dbus.DBUS_INTERFACE
-            )
-            self.fw_ipset = dbus.Interface(
-                self.dbus_obj, dbus_interface=config.dbus.DBUS_INTERFACE_IPSET
-            )
-            self.fw_zone = dbus.Interface(
-                self.dbus_obj, dbus_interface=config.dbus.DBUS_INTERFACE_ZONE
-            )
-            self.fw_policy = dbus.Interface(
-                self.dbus_obj, dbus_interface=config.dbus.DBUS_INTERFACE_POLICY
-            )
-            self.fw_direct = dbus.Interface(
-                self.dbus_obj, dbus_interface=config.dbus.DBUS_INTERFACE_DIRECT
-            )
-            self.fw_policies = dbus.Interface(
-                self.dbus_obj, dbus_interface=config.dbus.DBUS_INTERFACE_POLICIES
-            )
-            self.fw_properties = dbus.Interface(
-                self.dbus_obj, dbus_interface="org.freedesktop.DBus.Properties"
-            )
         except dbus.exceptions.DBusException as e:
             # ignore dbus errors
             if not self.quiet:
@@ -3429,6 +3408,29 @@ class FirewallClient:
             if not self.quiet:
                 print("Exception", e)
             return
+
+        self.fw = dbus.Interface(
+            self.dbus_obj, dbus_interface=config.dbus.DBUS_INTERFACE
+        )
+        self.fw_ipset = dbus.Interface(
+            self.dbus_obj, dbus_interface=config.dbus.DBUS_INTERFACE_IPSET
+        )
+        self.fw_zone = dbus.Interface(
+            self.dbus_obj, dbus_interface=config.dbus.DBUS_INTERFACE_ZONE
+        )
+        self.fw_policy = dbus.Interface(
+            self.dbus_obj, dbus_interface=config.dbus.DBUS_INTERFACE_POLICY
+        )
+        self.fw_direct = dbus.Interface(
+            self.dbus_obj, dbus_interface=config.dbus.DBUS_INTERFACE_DIRECT
+        )
+        self.fw_policies = dbus.Interface(
+            self.dbus_obj, dbus_interface=config.dbus.DBUS_INTERFACE_POLICIES
+        )
+        self.fw_properties = dbus.Interface(
+            self.dbus_obj, dbus_interface="org.freedesktop.DBus.Properties"
+        )
+
         self._config = FirewallClientConfig(self.bus)
         self.connected = True
         self._signal_receiver(
