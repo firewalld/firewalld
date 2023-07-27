@@ -23,7 +23,7 @@
 from firewall import errors
 from firewall.errors import FirewallError
 
-class FirewallHelper(object):
+class FirewallHelper:
     def __init__(self, fw):
         self._fw = fw
         self._helpers = { }

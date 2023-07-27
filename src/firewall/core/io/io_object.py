@@ -29,7 +29,7 @@ from firewall import functions
 from firewall import errors
 from firewall.errors import FirewallError
 
-class IO_Object(object):
+class IO_Object:
     """ Abstract IO_Object as base for icmptype, service and zone """
 
     IMPORT_EXPORT_STRUCTURE = ( )

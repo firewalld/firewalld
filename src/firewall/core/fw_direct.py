@@ -32,7 +32,7 @@ from firewall.errors import FirewallError
 #
 ############################################################################
 
-class FirewallDirect(object):
+class FirewallDirect:
     def __init__(self, fw):
         self._fw = fw
         self.__init_vars()

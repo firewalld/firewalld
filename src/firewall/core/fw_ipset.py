@@ -28,7 +28,7 @@ from firewall.core.io.ipset import IPSet
 from firewall import errors
 from firewall.errors import FirewallError
 
-class FirewallIPSet(object):
+class FirewallIPSet:
     def __init__(self, fw):
         self._fw = fw
         self._ipsets = { }

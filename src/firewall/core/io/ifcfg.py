@@ -27,7 +27,7 @@ import shutil
 
 from firewall.core.logger import log
 
-class ifcfg(object):
+class ifcfg:
     def __init__(self, filename):
         self._config = { }
         self._deleted = [ ]

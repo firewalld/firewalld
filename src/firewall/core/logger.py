@@ -32,7 +32,7 @@ import os
 # ---------------------------------------------------------------------------
 
 # abstract class for logging targets
-class LogTarget(object):
+class LogTarget:
     """ Abstract class for logging targets. """
     def __init__(self):
         self.fd = None
@@ -161,7 +161,7 @@ class FileLog(LogTarget):
 
 # ---------------------------------------------------------------------------
 
-class Logger(object):
+class Logger:
     r"""
     Format string:
 

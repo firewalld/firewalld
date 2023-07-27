@@ -64,7 +64,7 @@ from firewall.errors import FirewallError
 #
 ############################################################################
 
-class Firewall(object):
+class Firewall:
     def __init__(self, offline=False):
         self._firewalld_conf = firewalld_conf(config.FIREWALLD_CONF)
         self._offline = offline
