@@ -3339,6 +3339,34 @@ class FirewallClient:
         else:
             self._connection_established()
 
+    def _get_or_raise(self, bus_iface):
+        if bus_iface is None:
+            raise dbus.exceptions.DBusException(
+                "org.freedesktop.DBus.Error.NameHasNoOwner: firewalld is not running"
+            )
+        return bus_iface
+
+    def _get_fw(self):
+        return self._get_or_raise(self.fw)
+
+    def _get_fw_ipset(self):
+        return self._get_or_raise(self.fw_ipset)
+
+    def _get_fw_zone(self):
+        return self._get_or_raise(self.fw_zone)
+
+    def _get_fw_policy(self):
+        return self._get_or_raise(self.fw_policy)
+
+    def _get_fw_direct(self):
+        return self._get_or_raise(self.fw_direct)
+
+    def _get_fw_policies(self):
+        return self._get_or_raise(self.fw_policies)
+
+    def _get_fw_properties(self):
+        return self._get_or_raise(self.fw_properties)
+
     def _init_vars(self):
         self.dbus_obj = None
         self.fw = None
@@ -3511,345 +3539,357 @@ class FirewallClient:
 
     @handle_exceptions
     def reload(self):
-        self.fw.reload()
+        self._get_fw().reload()
 
     @handle_exceptions
     def resetToDefaults(self):
-        self.fw.resetToDefaults()
+        self._get_fw().resetToDefaults()
 
     @handle_exceptions
     def complete_reload(self):
-        self.fw.completeReload()
+        self._get_fw().completeReload()
 
     @handle_exceptions
     def runtimeToPermanent(self):
-        self.fw.runtimeToPermanent()
+        self._get_fw().runtimeToPermanent()
 
     @handle_exceptions
     def checkPermanentConfig(self):
-        self.fw.checkPermanentConfig()
+        self._get_fw().checkPermanentConfig()
 
     @handle_exceptions
     def get_property(self, prop):
-        return dbus_to_python(self.fw_properties.Get(config.dbus.DBUS_INTERFACE, prop))
+        return dbus_to_python(
+            self._get_fw_properties().Get(config.dbus.DBUS_INTERFACE, prop)
+        )
 
     @handle_exceptions
     def get_properties(self):
-        return dbus_to_python(self.fw_properties.GetAll(config.dbus.DBUS_INTERFACE))
+        return dbus_to_python(
+            self._get_fw_properties().GetAll(config.dbus.DBUS_INTERFACE)
+        )
 
     @handle_exceptions
     def set_property(self, prop, value):
-        self.fw_properties.Set(config.dbus.DBUS_INTERFACE, prop, value)
+        self._get_fw_properties().Set(config.dbus.DBUS_INTERFACE, prop, value)
 
     # panic mode
 
     @handle_exceptions
     def enablePanicMode(self):
-        self.fw.enablePanicMode()
+        self._get_fw().enablePanicMode()
 
     @handle_exceptions
     def disablePanicMode(self):
-        self.fw.disablePanicMode()
+        self._get_fw().disablePanicMode()
 
     @handle_exceptions
     def queryPanicMode(self):
-        return dbus_to_python(self.fw.queryPanicMode())
+        return dbus_to_python(self._get_fw().queryPanicMode())
 
     # list functions
 
     @handle_exceptions
     def getZoneSettings(self, zone):
         return FirewallClientZoneSettings(
-            dbus_to_python(self.fw_zone.getZoneSettings2(zone))
+            dbus_to_python(self._get_fw_zone().getZoneSettings2(zone))
         )
 
     @handle_exceptions
     def getIPSets(self):
-        return dbus_to_python(self.fw_ipset.getIPSets())
+        return dbus_to_python(self._get_fw_ipset().getIPSets())
 
     @handle_exceptions
     def getIPSetSettings(self, ipset):
         return FirewallClientIPSetSettings(
-            list(dbus_to_python(self.fw_ipset.getIPSetSettings(ipset)))
+            list(dbus_to_python(self._get_fw_ipset().getIPSetSettings(ipset)))
         )
 
     @handle_exceptions
     def addEntry(self, ipset, entry):
-        self.fw_ipset.addEntry(ipset, entry)
+        self._get_fw_ipset().addEntry(ipset, entry)
 
     @handle_exceptions
     def getEntries(self, ipset):
-        return self.fw_ipset.getEntries(ipset)
+        return self._get_fw_ipset().getEntries(ipset)
 
     @handle_exceptions
     def setEntries(self, ipset, entries):
-        return self.fw_ipset.setEntries(ipset, entries)
+        return self._get_fw_ipset().setEntries(ipset, entries)
 
     @handle_exceptions
     def removeEntry(self, ipset, entry):
-        self.fw_ipset.removeEntry(ipset, entry)
+        self._get_fw_ipset().removeEntry(ipset, entry)
 
     @handle_exceptions
     def queryEntry(self, ipset, entry):
-        return dbus_to_python(self.fw_ipset.queryEntry(ipset, entry))
+        return dbus_to_python(self._get_fw_ipset().queryEntry(ipset, entry))
 
     @handle_exceptions
     def listServices(self):
-        return dbus_to_python(self.fw.listServices())
+        return dbus_to_python(self._get_fw().listServices())
 
     @handle_exceptions
     def getServiceSettings(self, service):
         return FirewallClientServiceSettings(
-            dbus_to_python(self.fw.getServiceSettings2(service))
+            dbus_to_python(self._get_fw().getServiceSettings2(service))
         )
 
     @handle_exceptions
     def listIcmpTypes(self):
-        return dbus_to_python(self.fw.listIcmpTypes())
+        return dbus_to_python(self._get_fw().listIcmpTypes())
 
     @handle_exceptions
     def getIcmpTypeSettings(self, icmptype):
         return FirewallClientIcmpTypeSettings(
-            list(dbus_to_python(self.fw.getIcmpTypeSettings(icmptype)))
+            list(dbus_to_python(self._get_fw().getIcmpTypeSettings(icmptype)))
         )
 
     @handle_exceptions
     def getHelpers(self):
-        return dbus_to_python(self.fw.getHelpers())
+        return dbus_to_python(self._get_fw().getHelpers())
 
     @handle_exceptions
     def getHelperSettings(self, helper):
         return FirewallClientHelperSettings(
-            list(dbus_to_python(self.fw.getHelperSettings(helper)))
+            list(dbus_to_python(self._get_fw().getHelperSettings(helper)))
         )
 
     # automatic helper setting
 
     @handle_exceptions
     def getAutomaticHelpers(self):
-        return dbus_to_python(self.fw.getAutomaticHelpers())
+        return dbus_to_python(self._get_fw().getAutomaticHelpers())
 
     @handle_exceptions
     def setAutomaticHelpers(self, value):
-        self.fw.setAutomaticHelpers(value)
+        self._get_fw().setAutomaticHelpers(value)
 
     # log denied
 
     @handle_exceptions
     def getLogDenied(self):
-        return dbus_to_python(self.fw.getLogDenied())
+        return dbus_to_python(self._get_fw().getLogDenied())
 
     @handle_exceptions
     def setLogDenied(self, value):
-        self.fw.setLogDenied(value)
+        self._get_fw().setLogDenied(value)
 
     # default zone
 
     @handle_exceptions
     def getDefaultZone(self):
-        return dbus_to_python(self.fw.getDefaultZone())
+        return dbus_to_python(self._get_fw().getDefaultZone())
 
     @handle_exceptions
     def setDefaultZone(self, zone):
-        self.fw.setDefaultZone(zone)
+        self._get_fw().setDefaultZone(zone)
 
     # zone
 
     @handle_exceptions
     def setZoneSettings(self, zone, settings):
-        self.fw_zone.setZoneSettings2(zone, settings.getRuntimeSettingsDbusDict())
+        self._get_fw_zone().setZoneSettings2(
+            zone, settings.getRuntimeSettingsDbusDict()
+        )
 
     @handle_exceptions
     def getZones(self):
-        return dbus_to_python(self.fw_zone.getZones())
+        return dbus_to_python(self._get_fw_zone().getZones())
 
     @handle_exceptions
     def getActiveZones(self):
-        return dbus_to_python(self.fw_zone.getActiveZones())
+        return dbus_to_python(self._get_fw_zone().getActiveZones())
 
     @handle_exceptions
     def getZoneOfInterface(self, interface):
-        return dbus_to_python(self.fw_zone.getZoneOfInterface(interface))
+        return dbus_to_python(self._get_fw_zone().getZoneOfInterface(interface))
 
     @handle_exceptions
     def getZoneOfSource(self, source):
-        return dbus_to_python(self.fw_zone.getZoneOfSource(source))
+        return dbus_to_python(self._get_fw_zone().getZoneOfSource(source))
 
     @handle_exceptions
     def isImmutable(self, zone):
-        return dbus_to_python(self.fw_zone.isImmutable(zone))
+        return dbus_to_python(self._get_fw_zone().isImmutable(zone))
 
     # policy
 
     @handle_exceptions
     def getPolicySettings(self, policy):
         return FirewallClientPolicySettings(
-            dbus_to_python(self.fw_policy.getPolicySettings(policy))
+            dbus_to_python(self._get_fw_policy().getPolicySettings(policy))
         )
 
     @handle_exceptions
     def setPolicySettings(self, policy, settings):
-        self.fw_policy.setPolicySettings(policy, settings.getRuntimeSettingsDbusDict())
+        self._get_fw_policy().setPolicySettings(
+            policy, settings.getRuntimeSettingsDbusDict()
+        )
 
     @handle_exceptions
     def getPolicies(self):
-        return dbus_to_python(self.fw_policy.getPolicies())
+        return dbus_to_python(self._get_fw_policy().getPolicies())
 
     @handle_exceptions
     def getActivePolicies(self):
-        return dbus_to_python(self.fw_policy.getActivePolicies())
+        return dbus_to_python(self._get_fw_policy().getActivePolicies())
 
     @handle_exceptions
     def isPolicyImmutable(self, policy):
-        return dbus_to_python(self.fw_policy.isImmutable(policy))
+        return dbus_to_python(self._get_fw_policy().isImmutable(policy))
 
     # interfaces
 
     @handle_exceptions
     def addInterface(self, zone, interface):
-        return dbus_to_python(self.fw_zone.addInterface(zone, interface))
+        return dbus_to_python(self._get_fw_zone().addInterface(zone, interface))
 
     @handle_exceptions
     def changeZone(self, zone, interface):  # DEPRECATED
-        return dbus_to_python(self.fw_zone.changeZone(zone, interface))
+        return dbus_to_python(self._get_fw_zone().changeZone(zone, interface))
 
     @handle_exceptions
     def changeZoneOfInterface(self, zone, interface):
-        return dbus_to_python(self.fw_zone.changeZoneOfInterface(zone, interface))
+        return dbus_to_python(
+            self._get_fw_zone().changeZoneOfInterface(zone, interface)
+        )
 
     @handle_exceptions
     def getInterfaces(self, zone):
-        return dbus_to_python(self.fw_zone.getInterfaces(zone))
+        return dbus_to_python(self._get_fw_zone().getInterfaces(zone))
 
     @handle_exceptions
     def queryInterface(self, zone, interface):
-        return dbus_to_python(self.fw_zone.queryInterface(zone, interface))
+        return dbus_to_python(self._get_fw_zone().queryInterface(zone, interface))
 
     @handle_exceptions
     def removeInterface(self, zone, interface):
-        return dbus_to_python(self.fw_zone.removeInterface(zone, interface))
+        return dbus_to_python(self._get_fw_zone().removeInterface(zone, interface))
 
     # sources
 
     @handle_exceptions
     def addSource(self, zone, source):
-        return dbus_to_python(self.fw_zone.addSource(zone, source))
+        return dbus_to_python(self._get_fw_zone().addSource(zone, source))
 
     @handle_exceptions
     def changeZoneOfSource(self, zone, source):
-        return dbus_to_python(self.fw_zone.changeZoneOfSource(zone, source))
+        return dbus_to_python(self._get_fw_zone().changeZoneOfSource(zone, source))
 
     @handle_exceptions
     def getSources(self, zone):
-        return dbus_to_python(self.fw_zone.getSources(zone))
+        return dbus_to_python(self._get_fw_zone().getSources(zone))
 
     @handle_exceptions
     def querySource(self, zone, source):
-        return dbus_to_python(self.fw_zone.querySource(zone, source))
+        return dbus_to_python(self._get_fw_zone().querySource(zone, source))
 
     @handle_exceptions
     def removeSource(self, zone, source):
-        return dbus_to_python(self.fw_zone.removeSource(zone, source))
+        return dbus_to_python(self._get_fw_zone().removeSource(zone, source))
 
     # rich rules
 
     @handle_exceptions
     def addRichRule(self, zone, rule, timeout=0):
-        return dbus_to_python(self.fw_zone.addRichRule(zone, rule, timeout))
+        return dbus_to_python(self._get_fw_zone().addRichRule(zone, rule, timeout))
 
     @handle_exceptions
     def getRichRules(self, zone):
-        return dbus_to_python(self.fw_zone.getRichRules(zone))
+        return dbus_to_python(self._get_fw_zone().getRichRules(zone))
 
     @handle_exceptions
     def queryRichRule(self, zone, rule):
-        return dbus_to_python(self.fw_zone.queryRichRule(zone, rule))
+        return dbus_to_python(self._get_fw_zone().queryRichRule(zone, rule))
 
     @handle_exceptions
     def removeRichRule(self, zone, rule):
-        return dbus_to_python(self.fw_zone.removeRichRule(zone, rule))
+        return dbus_to_python(self._get_fw_zone().removeRichRule(zone, rule))
 
     # services
 
     @handle_exceptions
     def addService(self, zone, service, timeout=0):
-        return dbus_to_python(self.fw_zone.addService(zone, service, timeout))
+        return dbus_to_python(self._get_fw_zone().addService(zone, service, timeout))
 
     @handle_exceptions
     def getServices(self, zone):
-        return dbus_to_python(self.fw_zone.getServices(zone))
+        return dbus_to_python(self._get_fw_zone().getServices(zone))
 
     @handle_exceptions
     def queryService(self, zone, service):
-        return dbus_to_python(self.fw_zone.queryService(zone, service))
+        return dbus_to_python(self._get_fw_zone().queryService(zone, service))
 
     @handle_exceptions
     def removeService(self, zone, service):
-        return dbus_to_python(self.fw_zone.removeService(zone, service))
+        return dbus_to_python(self._get_fw_zone().removeService(zone, service))
 
     # ports
 
     @handle_exceptions
     def addPort(self, zone, port, protocol, timeout=0):
-        return dbus_to_python(self.fw_zone.addPort(zone, port, protocol, timeout))
+        return dbus_to_python(
+            self._get_fw_zone().addPort(zone, port, protocol, timeout)
+        )
 
     @handle_exceptions
     def getPorts(self, zone):
-        return dbus_to_python(self.fw_zone.getPorts(zone))
+        return dbus_to_python(self._get_fw_zone().getPorts(zone))
 
     @handle_exceptions
     def queryPort(self, zone, port, protocol):
-        return dbus_to_python(self.fw_zone.queryPort(zone, port, protocol))
+        return dbus_to_python(self._get_fw_zone().queryPort(zone, port, protocol))
 
     @handle_exceptions
     def removePort(self, zone, port, protocol):
-        return dbus_to_python(self.fw_zone.removePort(zone, port, protocol))
+        return dbus_to_python(self._get_fw_zone().removePort(zone, port, protocol))
 
     # protocols
 
     @handle_exceptions
     def addProtocol(self, zone, protocol, timeout=0):
-        return dbus_to_python(self.fw_zone.addProtocol(zone, protocol, timeout))
+        return dbus_to_python(self._get_fw_zone().addProtocol(zone, protocol, timeout))
 
     @handle_exceptions
     def getProtocols(self, zone):
-        return dbus_to_python(self.fw_zone.getProtocols(zone))
+        return dbus_to_python(self._get_fw_zone().getProtocols(zone))
 
     @handle_exceptions
     def queryProtocol(self, zone, protocol):
-        return dbus_to_python(self.fw_zone.queryProtocol(zone, protocol))
+        return dbus_to_python(self._get_fw_zone().queryProtocol(zone, protocol))
 
     @handle_exceptions
     def removeProtocol(self, zone, protocol):
-        return dbus_to_python(self.fw_zone.removeProtocol(zone, protocol))
+        return dbus_to_python(self._get_fw_zone().removeProtocol(zone, protocol))
 
     # forward
 
     @handle_exceptions
     def addForward(self, zone):
-        self.fw_zone.setZoneSettings2(zone, {"forward": True})
+        self._get_fw_zone().setZoneSettings2(zone, {"forward": True})
 
     @handle_exceptions
     def queryForward(self, zone):
-        return dbus_to_python(self.fw_zone.getZoneSettings2(zone))["forward"]
+        return dbus_to_python(self._get_fw_zone().getZoneSettings2(zone))["forward"]
 
     @handle_exceptions
     def removeForward(self, zone):
-        self.fw_zone.setZoneSettings2(zone, {"forward": False})
+        self._get_fw_zone().setZoneSettings2(zone, {"forward": False})
 
     # masquerade
 
     @handle_exceptions
     def addMasquerade(self, zone, timeout=0):
-        return dbus_to_python(self.fw_zone.addMasquerade(zone, timeout))
+        return dbus_to_python(self._get_fw_zone().addMasquerade(zone, timeout))
 
     @handle_exceptions
     def queryMasquerade(self, zone):
-        return dbus_to_python(self.fw_zone.queryMasquerade(zone))
+        return dbus_to_python(self._get_fw_zone().queryMasquerade(zone))
 
     @handle_exceptions
     def removeMasquerade(self, zone):
-        return dbus_to_python(self.fw_zone.removeMasquerade(zone))
+        return dbus_to_python(self._get_fw_zone().removeMasquerade(zone))
 
     # forward ports
 
@@ -3860,12 +3900,14 @@ class FirewallClient:
         if toaddr is None:
             toaddr = ""
         return dbus_to_python(
-            self.fw_zone.addForwardPort(zone, port, protocol, toport, toaddr, timeout)
+            self._get_fw_zone().addForwardPort(
+                zone, port, protocol, toport, toaddr, timeout
+            )
         )
 
     @handle_exceptions
     def getForwardPorts(self, zone):
-        return dbus_to_python(self.fw_zone.getForwardPorts(zone))
+        return dbus_to_python(self._get_fw_zone().getForwardPorts(zone))
 
     @handle_exceptions
     def queryForwardPort(self, zone, port, protocol, toport, toaddr):
@@ -3874,7 +3916,7 @@ class FirewallClient:
         if toaddr is None:
             toaddr = ""
         return dbus_to_python(
-            self.fw_zone.queryForwardPort(zone, port, protocol, toport, toaddr)
+            self._get_fw_zone().queryForwardPort(zone, port, protocol, toport, toaddr)
         )
 
     @handle_exceptions
@@ -3884,154 +3926,158 @@ class FirewallClient:
         if toaddr is None:
             toaddr = ""
         return dbus_to_python(
-            self.fw_zone.removeForwardPort(zone, port, protocol, toport, toaddr)
+            self._get_fw_zone().removeForwardPort(zone, port, protocol, toport, toaddr)
         )
 
     # source ports
 
     @handle_exceptions
     def addSourcePort(self, zone, port, protocol, timeout=0):
-        return dbus_to_python(self.fw_zone.addSourcePort(zone, port, protocol, timeout))
+        return dbus_to_python(
+            self._get_fw_zone().addSourcePort(zone, port, protocol, timeout)
+        )
 
     @handle_exceptions
     def getSourcePorts(self, zone):
-        return dbus_to_python(self.fw_zone.getSourcePorts(zone))
+        return dbus_to_python(self._get_fw_zone().getSourcePorts(zone))
 
     @handle_exceptions
     def querySourcePort(self, zone, port, protocol):
-        return dbus_to_python(self.fw_zone.querySourcePort(zone, port, protocol))
+        return dbus_to_python(self._get_fw_zone().querySourcePort(zone, port, protocol))
 
     @handle_exceptions
     def removeSourcePort(self, zone, port, protocol):
-        return dbus_to_python(self.fw_zone.removeSourcePort(zone, port, protocol))
+        return dbus_to_python(
+            self._get_fw_zone().removeSourcePort(zone, port, protocol)
+        )
 
     # icmpblock
 
     @handle_exceptions
     def addIcmpBlock(self, zone, icmp, timeout=0):
-        return dbus_to_python(self.fw_zone.addIcmpBlock(zone, icmp, timeout))
+        return dbus_to_python(self._get_fw_zone().addIcmpBlock(zone, icmp, timeout))
 
     @handle_exceptions
     def getIcmpBlocks(self, zone):
-        return dbus_to_python(self.fw_zone.getIcmpBlocks(zone))
+        return dbus_to_python(self._get_fw_zone().getIcmpBlocks(zone))
 
     @handle_exceptions
     def queryIcmpBlock(self, zone, icmp):
-        return dbus_to_python(self.fw_zone.queryIcmpBlock(zone, icmp))
+        return dbus_to_python(self._get_fw_zone().queryIcmpBlock(zone, icmp))
 
     @handle_exceptions
     def removeIcmpBlock(self, zone, icmp):
-        return dbus_to_python(self.fw_zone.removeIcmpBlock(zone, icmp))
+        return dbus_to_python(self._get_fw_zone().removeIcmpBlock(zone, icmp))
 
     # icmp block inversion
 
     @handle_exceptions
     def addIcmpBlockInversion(self, zone):
-        return dbus_to_python(self.fw_zone.addIcmpBlockInversion(zone))
+        return dbus_to_python(self._get_fw_zone().addIcmpBlockInversion(zone))
 
     @handle_exceptions
     def queryIcmpBlockInversion(self, zone):
-        return dbus_to_python(self.fw_zone.queryIcmpBlockInversion(zone))
+        return dbus_to_python(self._get_fw_zone().queryIcmpBlockInversion(zone))
 
     @handle_exceptions
     def removeIcmpBlockInversion(self, zone):
-        return dbus_to_python(self.fw_zone.removeIcmpBlockInversion(zone))
+        return dbus_to_python(self._get_fw_zone().removeIcmpBlockInversion(zone))
 
     # direct chain
 
     @handle_exceptions
     def addChain(self, ipv, table, chain):
-        self.fw_direct.addChain(ipv, table, chain)
+        self._get_fw_direct().addChain(ipv, table, chain)
 
     @handle_exceptions
     def removeChain(self, ipv, table, chain):
-        self.fw_direct.removeChain(ipv, table, chain)
+        self._get_fw_direct().removeChain(ipv, table, chain)
 
     @handle_exceptions
     def queryChain(self, ipv, table, chain):
-        return dbus_to_python(self.fw_direct.queryChain(ipv, table, chain))
+        return dbus_to_python(self._get_fw_direct().queryChain(ipv, table, chain))
 
     @handle_exceptions
     def getChains(self, ipv, table):
-        return dbus_to_python(self.fw_direct.getChains(ipv, table))
+        return dbus_to_python(self._get_fw_direct().getChains(ipv, table))
 
     @handle_exceptions
     def getAllChains(self):
-        return dbus_to_python(self.fw_direct.getAllChains())
+        return dbus_to_python(self._get_fw_direct().getAllChains())
 
     # direct rule
 
     @handle_exceptions
     def addRule(self, ipv, table, chain, priority, args):
-        self.fw_direct.addRule(ipv, table, chain, priority, args)
+        self._get_fw_direct().addRule(ipv, table, chain, priority, args)
 
     @handle_exceptions
     def removeRule(self, ipv, table, chain, priority, args):
-        self.fw_direct.removeRule(ipv, table, chain, priority, args)
+        self._get_fw_direct().removeRule(ipv, table, chain, priority, args)
 
     @handle_exceptions
     def removeRules(self, ipv, table, chain):
-        self.fw_direct.removeRules(ipv, table, chain)
+        self._get_fw_direct().removeRules(ipv, table, chain)
 
     @handle_exceptions
     def queryRule(self, ipv, table, chain, priority, args):
         return dbus_to_python(
-            self.fw_direct.queryRule(ipv, table, chain, priority, args)
+            self._get_fw_direct().queryRule(ipv, table, chain, priority, args)
         )
 
     @handle_exceptions
     def getRules(self, ipv, table, chain):
-        return dbus_to_python(self.fw_direct.getRules(ipv, table, chain))
+        return dbus_to_python(self._get_fw_direct().getRules(ipv, table, chain))
 
     @handle_exceptions
     def getAllRules(self):
-        return dbus_to_python(self.fw_direct.getAllRules())
+        return dbus_to_python(self._get_fw_direct().getAllRules())
 
     # direct passthrough
 
     @handle_exceptions
     def passthrough(self, ipv, args):
-        return dbus_to_python(self.fw_direct.passthrough(ipv, args))
+        return dbus_to_python(self._get_fw_direct().passthrough(ipv, args))
 
     # tracked passthrough
 
     @handle_exceptions
     def getAllPassthroughs(self):
-        return dbus_to_python(self.fw_direct.getAllPassthroughs())
+        return dbus_to_python(self._get_fw_direct().getAllPassthroughs())
 
     @handle_exceptions
     def removeAllPassthroughs(self):
-        self.fw_direct.removeAllPassthroughs()
+        self._get_fw_direct().removeAllPassthroughs()
 
     @handle_exceptions
     def getPassthroughs(self, ipv):
-        return dbus_to_python(self.fw_direct.getPassthroughs(ipv))
+        return dbus_to_python(self._get_fw_direct().getPassthroughs(ipv))
 
     @handle_exceptions
     def addPassthrough(self, ipv, args):
-        self.fw_direct.addPassthrough(ipv, args)
+        self._get_fw_direct().addPassthrough(ipv, args)
 
     @handle_exceptions
     def removePassthrough(self, ipv, args):
-        self.fw_direct.removePassthrough(ipv, args)
+        self._get_fw_direct().removePassthrough(ipv, args)
 
     @handle_exceptions
     def queryPassthrough(self, ipv, args):
-        return dbus_to_python(self.fw_direct.queryPassthrough(ipv, args))
+        return dbus_to_python(self._get_fw_direct().queryPassthrough(ipv, args))
 
     # lockdown
 
     @handle_exceptions
     def enableLockdown(self):
-        self.fw_policies.enableLockdown()
+        self._get_fw_policies().enableLockdown()
 
     @handle_exceptions
     def disableLockdown(self):
-        self.fw_policies.disableLockdown()
+        self._get_fw_policies().disableLockdown()
 
     @handle_exceptions
     def queryLockdown(self):
-        return dbus_to_python(self.fw_policies.queryLockdown())
+        return dbus_to_python(self._get_fw_policies().queryLockdown())
 
     # policies
 
@@ -4039,75 +4085,79 @@ class FirewallClient:
 
     @handle_exceptions
     def addLockdownWhitelistCommand(self, command):
-        self.fw_policies.addLockdownWhitelistCommand(command)
+        self._get_fw_policies().addLockdownWhitelistCommand(command)
 
     @handle_exceptions
     def getLockdownWhitelistCommands(self):
-        return dbus_to_python(self.fw_policies.getLockdownWhitelistCommands())
+        return dbus_to_python(self._get_fw_policies().getLockdownWhitelistCommands())
 
     @handle_exceptions
     def queryLockdownWhitelistCommand(self, command):
-        return dbus_to_python(self.fw_policies.queryLockdownWhitelistCommand(command))
+        return dbus_to_python(
+            self._get_fw_policies().queryLockdownWhitelistCommand(command)
+        )
 
     @handle_exceptions
     def removeLockdownWhitelistCommand(self, command):
-        self.fw_policies.removeLockdownWhitelistCommand(command)
+        self._get_fw_policies().removeLockdownWhitelistCommand(command)
 
     # lockdown white list contexts
 
     @handle_exceptions
     def addLockdownWhitelistContext(self, context):
-        self.fw_policies.addLockdownWhitelistContext(context)
+        self._get_fw_policies().addLockdownWhitelistContext(context)
 
     @handle_exceptions
     def getLockdownWhitelistContexts(self):
-        return dbus_to_python(self.fw_policies.getLockdownWhitelistContexts())
+        return dbus_to_python(self._get_fw_policies().getLockdownWhitelistContexts())
 
     @handle_exceptions
     def queryLockdownWhitelistContext(self, context):
-        return dbus_to_python(self.fw_policies.queryLockdownWhitelistContext(context))
+        return dbus_to_python(
+            self._get_fw_policies().queryLockdownWhitelistContext(context)
+        )
 
     @handle_exceptions
     def removeLockdownWhitelistContext(self, context):
-        self.fw_policies.removeLockdownWhitelistContext(context)
+        self._get_fw_policies().removeLockdownWhitelistContext(context)
 
     # lockdown white list uids
 
     @handle_exceptions
     def addLockdownWhitelistUid(self, uid):
-        self.fw_policies.addLockdownWhitelistUid(uid)
+        self._get_fw_policies().addLockdownWhitelistUid(uid)
 
     @handle_exceptions
     def getLockdownWhitelistUids(self):
-        return dbus_to_python(self.fw_policies.getLockdownWhitelistUids())
+        return dbus_to_python(self._get_fw_policies().getLockdownWhitelistUids())
 
     @handle_exceptions
     def queryLockdownWhitelistUid(self, uid):
-        return dbus_to_python(self.fw_policies.queryLockdownWhitelistUid(uid))
+        return dbus_to_python(self._get_fw_policies().queryLockdownWhitelistUid(uid))
 
     @handle_exceptions
     def removeLockdownWhitelistUid(self, uid):
-        self.fw_policies.removeLockdownWhitelistUid(uid)
+        self._get_fw_policies().removeLockdownWhitelistUid(uid)
 
     # lockdown white list users
 
     @handle_exceptions
     def addLockdownWhitelistUser(self, user):
-        self.fw_policies.addLockdownWhitelistUser(user)
+        self._get_fw_policies().addLockdownWhitelistUser(user)
 
     @handle_exceptions
     def getLockdownWhitelistUsers(self):
-        return dbus_to_python(self.fw_policies.getLockdownWhitelistUsers())
+        return dbus_to_python(self._get_fw_policies().getLockdownWhitelistUsers())
 
     @handle_exceptions
     def queryLockdownWhitelistUser(self, user):
-        return dbus_to_python(self.fw_policies.queryLockdownWhitelistUser(user))
+        return dbus_to_python(self._get_fw_policies().queryLockdownWhitelistUser(user))
 
     @handle_exceptions
     def removeLockdownWhitelistUser(self, user):
-        self.fw_policies.removeLockdownWhitelistUser(user)
+        self._get_fw_policies().removeLockdownWhitelistUser(user)
 
     @handle_exceptions
     def authorizeAll(self):
         """Authorize once for all polkit actions."""
-        self.fw.authorizeAll()
+        self._get_fw().authorizeAll()
