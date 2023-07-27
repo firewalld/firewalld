@@ -3339,14 +3339,14 @@ class FirewallClient:
         else:
             self._connection_established()
 
-    @handle_exceptions
     def _init_vars(self):
+        self.dbus_obj = None
         self.fw = None
         self.fw_ipset = None
         self.fw_zone = None
         self.fw_policy = None
-        self.fw_helper = None
         self.fw_direct = None
+        self.fw_policies = None
         self.fw_properties = None
         self._config = None
         self.connected = False
