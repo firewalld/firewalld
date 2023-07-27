@@ -26,6 +26,7 @@ from firewall.core.ipset import (
 )
 from firewall import errors
 from firewall.errors import FirewallError
+import firewall.functions
 
 import dbus
 import traceback
@@ -3478,10 +3479,18 @@ class FirewallClient:
             return
 
         try:
-            # call back
             cb(*cb_args)
-        except Exception as msg:
-            print(msg)
+        except Exception:
+            if firewall.functions.wrong_args_for_callable(cb, *cb_args):
+                # Unexpected function signature. The D-Bus arguments (*cb_args) are
+                # not as expected. This either means we wrongly implement the D-Bus API
+                # or the D-Bus API changed.
+                # Both cases might be interesting to know (logging!), but we also
+                # should treat D-Bus as untrusted and don't barf on unexpected
+                # data from D-Bus. Like above, silently ignore.
+                return
+
+            raise
 
     @handle_exceptions
     def config(self):
