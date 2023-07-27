@@ -657,3 +657,16 @@ def joinArgs(args):
 
 def splitArgs(_string):
     return shlex.split(_string)
+
+
+def wrong_args_for_callable(fcn, *a, **kw):
+    import inspect
+
+    # Check whether fcn(*a, **kw) will fail due to invalid
+    # arguments.
+
+    try:
+        inspect.bind(fcn, *a, **kw)
+    except TypeError:
+        return False
+    return True
