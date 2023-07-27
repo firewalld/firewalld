@@ -78,7 +78,7 @@ def escape(text):
 
 FIREWALL_CONFIG_SCHEMA = "org.fedoraproject.FirewallConfig"
 
-class FirewallConfig(object):
+class FirewallConfig:
     def __init__(self):
         builder = Gtk.Builder()
         builder.set_translation_domain("firewalld")

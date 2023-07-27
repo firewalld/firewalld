@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-class LastUpdatedOrderedDict(object):
+class LastUpdatedOrderedDict:
     def __init__(self, x=None):
         self._dict = { }
         self._list = [ ]

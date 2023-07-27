@@ -157,7 +157,7 @@ ICMP_TYPES_FRAGMENTS = {
     }
 }
 
-class nftables(object):
+class nftables:
     name = "nftables"
     policies_supported = True
 

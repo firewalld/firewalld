@@ -80,7 +80,7 @@ def handle_exceptions(func):
 
 # zone config settings
 
-class FirewallClientZoneSettings(object):
+class FirewallClientZoneSettings:
     @handle_exceptions
     def __init__(self, settings = None):
         self.settings = ["", "", "", False, DEFAULT_ZONE_TARGET, [], [],
@@ -496,7 +496,7 @@ class FirewallClientZoneSettings(object):
 
 # zone config
 
-class FirewallClientConfigZone(object):
+class FirewallClientConfigZone:
     def __init__(self, bus, path):
         self.bus = bus
         self.path = path
@@ -860,7 +860,7 @@ class FirewallClientConfigZone(object):
     def queryRichRule(self, rule):
         return self.fw_zone.queryRichRule(rule)
 
-class FirewallClientPolicySettings(object):
+class FirewallClientPolicySettings:
     @handle_exceptions
     def __init__(self, settings=None):
         self.settings = {"description": "",
@@ -1193,7 +1193,7 @@ class FirewallClientPolicySettings(object):
     def setPriority(self, priority):
         self.settings["priority"] = int(priority)
 
-class FirewallClientConfigPolicy(object):
+class FirewallClientConfigPolicy:
     def __init__(self, bus, path):
         self.bus = bus
         self.path = path
@@ -1241,7 +1241,7 @@ class FirewallClientConfigPolicy(object):
 
 # service config settings
 
-class FirewallClientServiceSettings(object):
+class FirewallClientServiceSettings:
     @handle_exceptions
     def __init__(self, settings=None):
         self.settings = ["", "", "", [], [], {}, [], [], [], []]
@@ -1471,7 +1471,7 @@ class FirewallClientServiceSettings(object):
 
 # ipset config settings
 
-class FirewallClientIPSetSettings(object):
+class FirewallClientIPSetSettings:
     @handle_exceptions
     def __init__(self, settings=None):
         if settings:
@@ -1575,7 +1575,7 @@ class FirewallClientIPSetSettings(object):
 
 # ipset config
 
-class FirewallClientConfigIPSet(object):
+class FirewallClientConfigIPSet:
     @handle_exceptions
     def __init__(self, bus, path):
         self.bus = bus
@@ -1677,7 +1677,7 @@ class FirewallClientConfigIPSet(object):
 
 # helper config settings
 
-class FirewallClientHelperSettings(object):
+class FirewallClientHelperSettings:
     @handle_exceptions
     def __init__(self, settings=None):
         if settings:
@@ -1752,7 +1752,7 @@ class FirewallClientHelperSettings(object):
 
 # helper config
 
-class FirewallClientConfigHelper(object):
+class FirewallClientConfigHelper:
     @handle_exceptions
     def __init__(self, bus, path):
         self.bus = bus
@@ -1876,7 +1876,7 @@ class FirewallClientConfigHelper(object):
 
 # service config
 
-class FirewallClientConfigService(object):
+class FirewallClientConfigService:
     @handle_exceptions
     def __init__(self, bus, path):
         self.bus = bus
@@ -2096,7 +2096,7 @@ class FirewallClientConfigService(object):
 
 # icmptype config settings
 
-class FirewallClientIcmpTypeSettings(object):
+class FirewallClientIcmpTypeSettings:
     @handle_exceptions
     def __init__(self, settings=None):
         if settings:
@@ -2163,7 +2163,7 @@ class FirewallClientIcmpTypeSettings(object):
 
 # icmptype config
 
-class FirewallClientConfigIcmpType(object):
+class FirewallClientConfigIcmpType:
     @handle_exceptions
     def __init__(self, bus, path):
         self.bus = bus
@@ -2266,7 +2266,7 @@ class FirewallClientConfigIcmpType(object):
 
 # config.policies lockdown whitelist
 
-class FirewallClientPoliciesLockdownWhitelist(object):
+class FirewallClientPoliciesLockdownWhitelist:
     @handle_exceptions
     def __init__(self, settings=None):
         if settings:
@@ -2352,7 +2352,7 @@ class FirewallClientPoliciesLockdownWhitelist(object):
 
 # config.policies
 
-class FirewallClientConfigPolicies(object):
+class FirewallClientConfigPolicies:
     @handle_exceptions
     def __init__(self, bus):
         self.bus = bus
@@ -2449,7 +2449,7 @@ class FirewallClientConfigPolicies(object):
 
 # config.direct
 
-class FirewallClientDirect(object):
+class FirewallClientDirect:
     @handle_exceptions
     def __init__(self, settings=None):
         if settings:
@@ -2547,7 +2547,7 @@ class FirewallClientDirect(object):
 
 # config.direct
 
-class FirewallClientConfigDirect(object):
+class FirewallClientConfigDirect:
     @handle_exceptions
     def __init__(self, bus):
         self.bus = bus
@@ -2638,7 +2638,7 @@ class FirewallClientConfigDirect(object):
 
 # config
 
-class FirewallClientConfig(object):
+class FirewallClientConfig:
     @handle_exceptions
     def __init__(self, bus):
         self.bus = bus
@@ -2856,7 +2856,7 @@ class FirewallClientConfig(object):
 
 #
 
-class FirewallClient(object):
+class FirewallClient:
     @handle_exceptions
     def __init__(self, bus=None, wait=0, quiet=True):
         if not bus:

@@ -126,7 +126,7 @@ def common_check_passthrough(args):
         raise FirewallError(INVALID_PASSTHROUGH,
                             "no '-A', '-I' or '-N' arg")
 
-class ip4tables(object):
+class ip4tables:
     ipv = "ipv4"
     name = "ip4tables"
     policies_supported = True

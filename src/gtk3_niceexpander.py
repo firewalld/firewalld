@@ -19,7 +19,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-class NiceExpander(object):
+class NiceExpander:
     def __init__(self, expanded_button, unexpanded_button, paned, child):
         self.expanded_button = expanded_button
         self.unexpanded_button = unexpanded_button

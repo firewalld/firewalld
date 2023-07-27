@@ -28,7 +28,7 @@ from dbus.exceptions import DBusException
 from firewall.functions import checkIPnMask, checkIP6nMask, check_mac, \
     check_port, check_single_address
 
-class FirewallCommand(object):
+class FirewallCommand:
     def __init__(self, quiet=False, verbose=False):
         self.quiet = quiet
         self.verbose = verbose

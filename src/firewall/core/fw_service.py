@@ -21,7 +21,7 @@
 from firewall import errors
 from firewall.errors import FirewallError
 
-class FirewallService(object):
+class FirewallService:
     def __init__(self, fw):
         self._fw = fw
         self._services = { }

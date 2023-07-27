@@ -41,7 +41,7 @@ from firewall.functions import checkIPnMask, checkIP6nMask, check_mac
 from firewall import errors
 from firewall.errors import FirewallError
 
-class FirewallZone(object):
+class FirewallZone:
     ZONE_POLICY_PRIORITY = 0
 
     def __init__(self, fw):
