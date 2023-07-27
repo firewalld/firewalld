@@ -3196,6 +3196,7 @@ class FirewallClientConfig:
 class FirewallClient:
     @handle_exceptions
     def __init__(self, bus=None, wait=0, quiet=True):
+        self.dbus_obj = None
         if not bus:
             dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
             try:
@@ -3387,14 +3388,13 @@ class FirewallClient:
         assert name == config.dbus.DBUS_INTERFACE
 
         if new_owner:
-            # connection established
             self._connection_established()
         else:
-            # connection lost
             self._connection_lost()
 
     @handle_exceptions
     def _connection_established(self):
+        changed = self.dbus_obj is None
         try:
             self.dbus_obj = self.bus.get_object(
                 config.dbus.DBUS_INTERFACE, config.dbus.DBUS_PATH
@@ -3403,10 +3403,12 @@ class FirewallClient:
             # ignore dbus errors
             if not self.quiet:
                 print("DBusException", e.get_dbus_message())
+            self._connection_lost()
             return
         except Exception as e:
             if not self.quiet:
                 print("Exception", e)
+            self._connection_lost()
             return
 
         self.fw = dbus.Interface(
@@ -3433,22 +3435,25 @@ class FirewallClient:
 
         self._config = FirewallClientConfig(self.bus)
         self.connected = True
-        self._signal_receiver(
-            member="connection-established", interface=config.dbus.DBUS_INTERFACE
-        )
-        self._signal_receiver(
-            member="connection-changed", interface=config.dbus.DBUS_INTERFACE
-        )
+        if changed:
+            self._signal_receiver(
+                member="connection-established", interface=config.dbus.DBUS_INTERFACE
+            )
+            self._signal_receiver(
+                member="connection-changed", interface=config.dbus.DBUS_INTERFACE
+            )
 
     @handle_exceptions
     def _connection_lost(self):
+        changed = self.dbus_obj is not None
         self._init_vars()
-        self._signal_receiver(
-            member="connection-lost", interface=config.dbus.DBUS_INTERFACE
-        )
-        self._signal_receiver(
-            member="connection-changed", interface=config.dbus.DBUS_INTERFACE
-        )
+        if changed:
+            self._signal_receiver(
+                member="connection-lost", interface=config.dbus.DBUS_INTERFACE
+            )
+            self._signal_receiver(
+                member="connection-changed", interface=config.dbus.DBUS_INTERFACE
+            )
 
     @handle_exceptions
     def _signal_receiver(self, *dbus_args, member=None, interface=None, path=None):
