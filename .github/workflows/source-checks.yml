@@ -9,7 +9,7 @@ jobs:
         iptables libdbus-1-dev libgirepository1.0-dev libglib2.0-dev \
         libxml2-utils nftables pkg-config python3-nftables xsltproc
       pip-dependencies: |
-        dbus-python PyGObject flake8
+        dbus-python PyGObject flake8 pytest
 
     runs-on: ubuntu-20.04
 
@@ -50,3 +50,7 @@ jobs:
       - name: check config files
         run: |
           make -C config check-local
+
+      - name: run unit tests
+        run: |
+          pytest -v
