@@ -75,6 +75,7 @@ nobase_dist_python_DATA = \
 	firewall/server/server.py
 
 EXTRA_DIST = \
+	conftest.py \
 	firewall/config/__init__.py.in \
 	$(dist_bin_SCRIPTS_in) $(dist_sbin_SCRIPTS_in)
 
