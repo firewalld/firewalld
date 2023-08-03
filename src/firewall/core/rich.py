@@ -98,7 +98,11 @@ class Rich_Port(object):
     def __str__(self):
         return 'port port="%s" protocol="%s"' % (self.port, self.protocol)
 
-class Rich_SourcePort(Rich_Port):
+class Rich_SourcePort:
+    def __init__(self, port, protocol):
+        self.port = port
+        self.protocol = protocol
+
     def __str__(self):
         return 'source-port port="%s" protocol="%s"' % (self.port,
                                                         self.protocol)
