@@ -1329,7 +1329,7 @@ class FirewallPolicy(object):
 
     def _rule_prepare(self, enable, policy, rule, transaction, included_services=None):
         # First apply any services this service may include
-        if type(rule.element) == Rich_Service:
+        if isinstance(rule.element, Rich_Service):
             svc = self._fw.service.get_service(rule.element.name)
             if included_services is None:
                 included_services = [rule.element.name]
@@ -1372,7 +1372,7 @@ class FirewallPolicy(object):
 
         for backend in set([self._fw.get_backend_by_ipv(x) for x in ipvs]):
             # SERVICE
-            if type(rule.element) == Rich_Service:
+            if isinstance(rule.element, Rich_Service):
                 svc = self._fw.service.get_service(rule.element.name)
 
                 destinations = []
@@ -1389,7 +1389,7 @@ class FirewallPolicy(object):
                     destinations.append(None)
 
                 for destination in destinations:
-                    if type(rule.action) == Rich_Accept:
+                    if isinstance(rule.action, Rich_Accept):
                         # only load modules for accept action
                         helpers = self.get_helpers_for_service_modules(svc.modules,
                                                                        enable)
@@ -1433,7 +1433,7 @@ class FirewallPolicy(object):
                         transaction.add_rules(backend, rules)
 
             # PORT
-            elif type(rule.element) == Rich_Port:
+            elif isinstance(rule.element, Rich_Port):
                 port = rule.element.port
                 protocol = rule.element.protocol
                 self.check_port(port, protocol)
@@ -1443,7 +1443,7 @@ class FirewallPolicy(object):
                 transaction.add_rules(backend, rules)
 
             # PROTOCOL
-            elif type(rule.element) == Rich_Protocol:
+            elif isinstance(rule.element, Rich_Protocol):
                 protocol = rule.element.value
                 self.check_protocol(protocol)
 
@@ -1452,7 +1452,7 @@ class FirewallPolicy(object):
                 transaction.add_rules(backend, rules)
 
             # TCP/MSS CLAMP
-            elif type(rule.element) == Rich_Tcp_Mss_Clamp:
+            elif isinstance(rule.element, Rich_Tcp_Mss_Clamp):
                 tcp_mss_clamp_value = rule.element.value
                 self.check_tcp_mss_clamp(tcp_mss_clamp_value)
 
@@ -1461,7 +1461,7 @@ class FirewallPolicy(object):
                 transaction.add_rules(backend, rules)
 
             # MASQUERADE
-            elif type(rule.element) == Rich_Masquerade:
+            elif isinstance(rule.element, Rich_Masquerade):
                 if enable:
                     for ipv in ipvs:
                         if backend.is_ipv_supported(ipv):
@@ -1471,7 +1471,7 @@ class FirewallPolicy(object):
                 transaction.add_rules(backend, rules)
 
             # FORWARD PORT
-            elif type(rule.element) == Rich_ForwardPort:
+            elif isinstance(rule.element, Rich_ForwardPort):
                 port = rule.element.port
                 protocol = rule.element.protocol
                 toport = rule.element.to_port
@@ -1488,7 +1488,7 @@ class FirewallPolicy(object):
                 transaction.add_rules(backend, rules)
 
             # SOURCE PORT
-            elif type(rule.element) == Rich_SourcePort:
+            elif isinstance(rule.element, Rich_SourcePort):
                 port = rule.element.port
                 protocol = rule.element.protocol
                 self.check_port(port, protocol)
@@ -1498,8 +1498,8 @@ class FirewallPolicy(object):
                 transaction.add_rules(backend, rules)
 
             # ICMP BLOCK and ICMP TYPE
-            elif type(rule.element) == Rich_IcmpBlock or \
-                 type(rule.element) == Rich_IcmpType:
+            elif isinstance(rule.element, Rich_IcmpBlock) or \
+                 isinstance(rule.element, Rich_IcmpType):
                 ict = self._fw.config.get_icmptype(rule.element.name)
 
                 if rule.family and ict.destination and \
@@ -1508,8 +1508,8 @@ class FirewallPolicy(object):
                                         "rich rule family '%s' conflicts with icmp type '%s'" % \
                                         (rule.family, rule.element.name))
 
-                if type(rule.element) == Rich_IcmpBlock and \
-                   rule.action and type(rule.action) == Rich_Accept:
+                if isinstance(rule.element, Rich_IcmpBlock) and \
+                   rule.action and isinstance(rule.action, Rich_Accept):
                     # icmp block might have reject or drop action, but not accept
                     raise FirewallError(errors.INVALID_RULE,
                                         "IcmpBlock not usable with accept action")

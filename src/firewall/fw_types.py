@@ -54,7 +54,7 @@ class LastUpdatedOrderedDict(object):
         self._dict[key] = value
 
     def __getitem__(self, key):
-        if type(key) == int:
+        if isinstance(key, int):
             return self._list[key]
         else:
             return self._dict[key]
