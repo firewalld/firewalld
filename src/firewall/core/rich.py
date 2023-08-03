@@ -625,7 +625,7 @@ class Rich_Rule(object):
             if (self.source is not None and self.source.addr is not None) or \
                self.destination is not None:
                 raise FirewallError(errors.MISSING_FAMILY)
-            if type(self.element) == Rich_ForwardPort:
+            if isinstance(self.element, Rich_ForwardPort):
                 raise FirewallError(errors.MISSING_FAMILY)
 
         if self.priority < self.priority_min or self.priority > self.priority_max:
@@ -690,33 +690,33 @@ class Rich_Rule(object):
                 raise FirewallError(errors.INVALID_RULE, "invalid destination")
 
         # service
-        if type(self.element) == Rich_Service:
+        if isinstance(self.element, Rich_Service):
             # service availability needs to be checked in Firewall, here is no
             # knowledge about this, therefore only simple check
             if self.element.name is None or len(self.element.name) < 1:
                 raise FirewallError(errors.INVALID_SERVICE, str(self.element.name))
 
         # port
-        elif type(self.element) == Rich_Port:
+        elif isinstance(self.element, Rich_Port):
             if not functions.check_port(self.element.port):
                 raise FirewallError(errors.INVALID_PORT, self.element.port)
             if self.element.protocol not in [ "tcp", "udp", "sctp", "dccp" ]:
                 raise FirewallError(errors.INVALID_PROTOCOL, self.element.protocol)
 
         # protocol
-        elif type(self.element) == Rich_Protocol:
+        elif isinstance(self.element, Rich_Protocol):
             if not functions.checkProtocol(self.element.value):
                 raise FirewallError(errors.INVALID_PROTOCOL, self.element.value)
 
         # masquerade
-        elif type(self.element) == Rich_Masquerade:
+        elif isinstance(self.element, Rich_Masquerade):
             if self.action is not None:
                 raise FirewallError(errors.INVALID_RULE, "masquerade and action")
             if self.source is not None and self.source.mac is not None:
                 raise FirewallError(errors.INVALID_RULE, "masquerade and mac source")
 
         # icmp-block
-        elif type(self.element) == Rich_IcmpBlock:
+        elif isinstance(self.element, Rich_IcmpBlock):
             # icmp type availability needs to be checked in Firewall, here is no
             # knowledge about this, therefore only simple check
             if self.element.name is None or len(self.element.name) < 1:
@@ -725,14 +725,14 @@ class Rich_Rule(object):
                 raise FirewallError(errors.INVALID_RULE, "icmp-block and action")
 
         # icmp-type
-        elif type(self.element) == Rich_IcmpType:
+        elif isinstance(self.element, Rich_IcmpType):
             # icmp type availability needs to be checked in Firewall, here is no
             # knowledge about this, therefore only simple check
             if self.element.name is None or len(self.element.name) < 1:
                 raise FirewallError(errors.INVALID_ICMPTYPE, str(self.element.name))
 
         # forward-port
-        elif type(self.element) == Rich_ForwardPort:
+        elif isinstance(self.element, Rich_ForwardPort):
             if not functions.check_port(self.element.port):
                 raise FirewallError(errors.INVALID_PORT, self.element.port)
             if self.element.protocol not in [ "tcp", "udp", "sctp", "dccp" ]:
@@ -752,14 +752,14 @@ class Rich_Rule(object):
                 raise FirewallError(errors.INVALID_RULE, "forward-port and action")
 
         # source-port
-        elif type(self.element) == Rich_SourcePort:
+        elif isinstance(self.element, Rich_SourcePort):
             if not functions.check_port(self.element.port):
                 raise FirewallError(errors.INVALID_PORT, self.element.port)
             if self.element.protocol not in [ "tcp", "udp", "sctp", "dccp" ]:
                 raise FirewallError(errors.INVALID_PROTOCOL, self.element.protocol)
 
         # tcp-mss-clamp
-        elif type(self.element) == Rich_Tcp_Mss_Clamp:
+        elif isinstance(self.element, Rich_Tcp_Mss_Clamp):
             if self.action is not None:
                 raise FirewallError(errors.INVALID_RULE, "tcp-mss-clamp and %s are mutually exclusive" % self.action)
             if self.element.value:
@@ -785,9 +785,9 @@ class Rich_Rule(object):
 
         # action
         if self.action is not None:
-            if type(self.action) == Rich_Reject:
+            if isinstance(self.action, Rich_Reject):
                 self.action.check(self.family)
-            elif type(self.action) == Rich_Mark:
+            elif isinstance(self.action, Rich_Mark):
                 self.action.check()
 
             if self.action.limit is not None:
