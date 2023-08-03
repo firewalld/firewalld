@@ -248,7 +248,10 @@ class Rich_Reject(object):
                 valid_types = ", ".join(REJECT_TYPES[family])
                 raise FirewallError(errors.INVALID_RULE, "Wrong reject type %s.\nUse one of: %s." % (self.type, valid_types))
 
-class Rich_Drop(Rich_Accept):
+class Rich_Drop:
+    def __init__(self, limit=None):
+        self.limit = limit
+
     def __str__(self):
         return "drop%s" % (" %s" % self.limit if self.limit else "")
 
