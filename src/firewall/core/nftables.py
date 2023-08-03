@@ -222,7 +222,7 @@ class nftables:
         if token in rule[verb]["rule"]:
             priority = rule[verb]["rule"][token]
             del rule[verb]["rule"][token]
-            if type(priority) != int:
+            if not isinstance(priority, int):
                 raise FirewallError(INVALID_RULE, "priority must be followed by a number")
             chain = (rule[verb]["rule"]["family"], rule[verb]["rule"]["chain"]) # family, chain
             # Add the rule to the priority counts. We don't need to store the
@@ -283,7 +283,7 @@ class nftables:
         policy_dispatch_index_cache = copy.deepcopy(self.policy_dispatch_index_cache)
         rule_ref_count = self.rule_ref_count.copy()
         for rule in rules:
-            if type(rule) != dict:
+            if not isinstance(rule, dict):
                 raise FirewallError(UNKNOWN_ERROR, "rule must be a dictionary, rule: %s" % (rule))
 
             for verb in _valid_verbs:
@@ -983,7 +983,7 @@ class nftables:
         chain_suffix = self._rich_rule_chain_suffix_from_log(rich_rule)
 
         log_options = {}
-        if type(rich_rule.log) == Rich_NFLog:
+        if isinstance(rich_rule.log, Rich_NFLog):
             log_options["group"] = int(rich_rule.log.group) if rich_rule.log.group else 0
             if rich_rule.log.threshold:
                 log_options["queue-threshold"] = int(rich_rule.log.threshold)
@@ -1032,16 +1032,16 @@ class nftables:
 
         chain_suffix = self._rich_rule_chain_suffix(rich_rule)
         chain = "%s_%s_%s" % (table, _policy, chain_suffix)
-        if type(rich_rule.action) == Rich_Accept:
+        if isinstance(rich_rule.action, Rich_Accept):
             rule_action = {"accept": None}
-        elif type(rich_rule.action) == Rich_Reject:
+        elif isinstance(rich_rule.action, Rich_Reject):
             if rich_rule.action.type:
                 rule_action = self._reject_types_fragment(rich_rule.action.type)
             else:
                 rule_action = {"reject": None}
-        elif type(rich_rule.action) ==  Rich_Drop:
+        elif isinstance(rich_rule.action, Rich_Drop):
             rule_action = {"drop": None}
-        elif type(rich_rule.action) == Rich_Mark:
+        elif isinstance(rich_rule.action, Rich_Mark):
             table = "mangle"
             _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX)
             chain = "%s_%s_%s" % (table, _policy, chain_suffix)

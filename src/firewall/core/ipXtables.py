@@ -241,7 +241,7 @@ class ip4tables:
             insert_add_index = -1
             rule.pop(i)
             priority = rule.pop(i)
-            if type(priority) != int:
+            if not isinstance(priority, int):
                 raise FirewallError(INVALID_RULE, "priority must be followed by a number")
 
             table = "filter"
@@ -981,7 +981,7 @@ class ip4tables:
         chain_suffix = self._rich_rule_chain_suffix_from_log(rich_rule)
         rule = ["-t", table, add_del, "%s_%s" % (_policy, chain_suffix)]
         rule += self._rich_rule_priority_fragment(rich_rule)
-        if type(rich_rule.log) == Rich_NFLog:
+        if isinstance(rich_rule.log, Rich_NFLog):
             rule += rule_fragment + [ "-j", "NFLOG" ]
             if rich_rule.log.group:
                 rule += [ "--nflog-group", rich_rule.log.group ]
@@ -1011,11 +1011,11 @@ class ip4tables:
         rule = ["-t", table, add_del, "%s_%s" % (_policy, chain_suffix)]
         rule += self._rich_rule_priority_fragment(rich_rule)
         rule += rule_fragment
-        if type(rich_rule.action) == Rich_Accept:
+        if isinstance(rich_rule.action, Rich_Accept):
             _type = "accept"
-        elif type(rich_rule.action) == Rich_Reject:
+        elif isinstance(rich_rule.action, Rich_Reject):
             _type = "reject"
-        elif type(rich_rule.action) ==  Rich_Drop:
+        elif isinstance(rich_rule.action, Rich_Drop):
             _type = "drop"
         else:
             _type = "unknown"
@@ -1034,15 +1034,15 @@ class ip4tables:
 
         chain_suffix = self._rich_rule_chain_suffix(rich_rule)
         chain = "%s_%s" % (_policy, chain_suffix)
-        if type(rich_rule.action) == Rich_Accept:
+        if isinstance(rich_rule.action, Rich_Accept):
             rule_action = [ "-j", "ACCEPT" ]
-        elif type(rich_rule.action) == Rich_Reject:
+        elif isinstance(rich_rule.action, Rich_Reject):
             rule_action = [ "-j", "REJECT" ]
             if rich_rule.action.type:
                 rule_action += [ "--reject-with", rich_rule.action.type ]
-        elif type(rich_rule.action) ==  Rich_Drop:
+        elif isinstance(rich_rule.action, Rich_Drop):
             rule_action = [ "-j", "DROP" ]
-        elif type(rich_rule.action) == Rich_Mark:
+        elif isinstance(rich_rule.action, Rich_Mark):
             table = "mangle"
             _policy = self._fw.policy.policy_base_chain_name(policy, table, POLICY_CHAIN_PREFIX)
             chain = "%s_%s" % (_policy, chain_suffix)
