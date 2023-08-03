@@ -589,29 +589,29 @@ def common_writer(obj, handler):
             element = ""
             attrs = { }
 
-            if type(rule.element) == rich.Rich_Service:
+            if isinstance(rule.element, rich.Rich_Service):
                 element = "service"
                 attrs["name"] = rule.element.name
-            elif type(rule.element) == rich.Rich_Port:
+            elif isinstance(rule.element, rich.Rich_Port):
                 element = "port"
                 attrs["port"] = rule.element.port
                 attrs["protocol"] = rule.element.protocol
-            elif type(rule.element) == rich.Rich_Protocol:
+            elif isinstance(rule.element, rich.Rich_Protocol):
                 element = "protocol"
                 attrs["value"] = rule.element.value
-            elif type(rule.element) == rich.Rich_Tcp_Mss_Clamp:
+            elif isinstance(rule.element, rich.Rich_Tcp_Mss_Clamp):
                 element = "tcp-mss-clamp"
                 if rule.element.value and rule.element.value != "pmtu":
                     attrs["value"] = rule.element.value
-            elif type(rule.element) == rich.Rich_Masquerade:
+            elif isinstance(rule.element, rich.Rich_Masquerade):
                 element = "masquerade"
-            elif type(rule.element) == rich.Rich_IcmpBlock:
+            elif isinstance(rule.element, rich.Rich_IcmpBlock):
                 element = "icmp-block"
                 attrs["name"] = rule.element.name
-            elif type(rule.element) == rich.Rich_IcmpType:
+            elif isinstance(rule.element, rich.Rich_IcmpType):
                 element = "icmp-type"
                 attrs["name"] = rule.element.name
-            elif type(rule.element) == rich.Rich_ForwardPort:
+            elif isinstance(rule.element, rich.Rich_ForwardPort):
                 element = "forward-port"
                 attrs["port"] = rule.element.port
                 attrs["protocol"] = rule.element.protocol
@@ -619,7 +619,7 @@ def common_writer(obj, handler):
                     attrs["to-port"] = rule.element.to_port
                 if rule.element.to_address != "":
                     attrs["to-addr"] = rule.element.to_address
-            elif type(rule.element) == rich.Rich_SourcePort:
+            elif isinstance(rule.element, rich.Rich_SourcePort):
                 element = "source-port"
                 attrs["port"] = rule.element.port
                 attrs["protocol"] = rule.element.protocol
@@ -636,7 +636,7 @@ def common_writer(obj, handler):
 
         # log
         if rule.log:
-            if type(rule.log) == rich.Rich_Log:
+            if isinstance(rule.log, rich.Rich_Log):
                 attrs = { }
                 if rule.log.prefix:
                     attrs["prefix"] = rule.log.prefix
@@ -695,15 +695,15 @@ def common_writer(obj, handler):
         if rule.action:
             action = ""
             attrs = { }
-            if type(rule.action) == rich.Rich_Accept:
+            if isinstance(rule.action, rich.Rich_Accept):
                 action = "accept"
-            elif type(rule.action) == rich.Rich_Reject:
+            elif isinstance(rule.action, rich.Rich_Reject):
                 action = "reject"
                 if rule.action.type:
                     attrs["type"] = rule.action.type
-            elif type(rule.action) == rich.Rich_Drop:
+            elif isinstance(rule.action, rich.Rich_Drop):
                 action = "drop"
-            elif type(rule.action) == rich.Rich_Mark:
+            elif isinstance(rule.action, rich.Rich_Mark):
                 action = "mark"
                 attrs["set"] = rule.action.set
             else:

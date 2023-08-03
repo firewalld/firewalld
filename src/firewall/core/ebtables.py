@@ -258,7 +258,7 @@ class ebtables(object):
                 _default_rules.extend(LOG_RULES[table])
             prefix = [ "-t", table ]
             for rule in _default_rules:
-                if type(rule) == list:
+                if isinstance(rule, list):
                     default_rules.append(prefix + rule)
                 else:
                     default_rules.append(prefix + splitArgs(rule))

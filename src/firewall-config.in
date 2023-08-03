@@ -2040,15 +2040,15 @@ class FirewallConfig(object):
         if obj.priority:
             priority = obj.priority
         if obj.action:
-            if type(obj.action) == rich.Rich_Accept:
+            if isinstance(obj.action, rich.Rich_Accept):
                 action = _("accept")
-            elif type(obj.action) == rich.Rich_Reject:
+            elif isinstance(obj.action, rich.Rich_Reject):
                 action = _("reject")
                 if obj.action.type is not None:
                     action += "\n" + obj.action.type
-            elif type(obj.action) == rich.Rich_Drop:
+            elif isinstance(obj.action, rich.Rich_Drop):
                 action = _("drop")
-            elif type(obj.action) == rich.Rich_Mark:
+            elif isinstance(obj.action, rich.Rich_Mark):
                 action = _("mark")
                 action += "\nset " + obj.action.set
             if obj.action.limit:
@@ -2067,24 +2067,24 @@ class FirewallConfig(object):
             if obj.destination.invert:
                 dest = "! %s" % dest
         if obj.element:
-            if type(obj.element) == rich.Rich_Service:
+            if isinstance(obj.element, rich.Rich_Service):
                 elem = _("service") + "\n" + obj.element.name
-            elif type(obj.element) == rich.Rich_Port:
+            elif isinstance(obj.element, rich.Rich_Port):
                 elem = _("port") + "\n%s/%s" % (obj.element.port,
                                                 obj.element.protocol)
-            elif type(obj.element) == rich.Rich_Protocol:
+            elif isinstance(obj.element, rich.Rich_Protocol):
                 elem = _("protocol") + "\n" + obj.element.value
-            elif type(obj.element) == rich.Rich_Masquerade:
+            elif isinstance(obj.element, rich.Rich_Masquerade):
                 elem = _("masquerade")
-            elif type(obj.element) == rich.Rich_IcmpBlock:
+            elif isinstance(obj.element, rich.Rich_IcmpBlock):
                 elem = _("icmp-block") + "\n%s" % obj.element.name
-            elif type(obj.element) == rich.Rich_IcmpType:
+            elif isinstance(obj.element, rich.Rich_IcmpType):
                 elem = _("icmp-type") + "\n%s" % obj.element.name
-            elif type(obj.element) == rich.Rich_ForwardPort:
+            elif isinstance(obj.element, rich.Rich_ForwardPort):
                 elem = _("forward-port") + "\n%s" % self.create_fwp_string(
                     obj.element.port, obj.element.protocol,
                     obj.element.to_port, obj.element.to_address)
-            elif type(obj.element) == rich.Rich_SourcePort:
+            elif isinstance(obj.element, rich.Rich_SourcePort):
                 elem = _("source-port") + "\n%s/%s" % (obj.element.port,
                                                        obj.element.protocol)
             else:
@@ -3169,36 +3169,36 @@ class FirewallConfig(object):
                 self.richRuleDialogElementCheck.set_active(True)
 
             # element
-            if type(old_obj.element) == rich.Rich_Service:
+            if isinstance(old_obj.element, rich.Rich_Service):
                 combobox_select_text(self.richRuleDialogElementCombobox,
                                      _("service"))
                 self.richRuleDialogElementChooser.set_text( \
                     old_obj.element.name)
 
-            elif type(old_obj.element) == rich.Rich_Port:
+            elif isinstance(old_obj.element, rich.Rich_Port):
                 combobox_select_text(self.richRuleDialogElementCombobox,
                                      _("port"))
                 self.richRuleDialogElementChooser.set_text( \
                     "%s/%s" % (old_obj.element.port, old_obj.element.protocol))
-            elif type(old_obj.element) == rich.Rich_Protocol:
+            elif isinstance(old_obj.element, rich.Rich_Protocol):
                 combobox_select_text(self.richRuleDialogElementCombobox,
                                      _("protocol"))
                 self.richRuleDialogElementChooser.set_text( \
                     old_obj.element.value)
-            elif type(old_obj.element) == rich.Rich_Masquerade:
+            elif isinstance(old_obj.element, rich.Rich_Masquerade):
                 combobox_select_text(self.richRuleDialogElementCombobox,
                                      _("masquerade"))
-            elif type(old_obj.element) == rich.Rich_IcmpBlock:
+            elif isinstance(old_obj.element, rich.Rich_IcmpBlock):
                 combobox_select_text(self.richRuleDialogElementCombobox,
                                      _("icmp-block"))
                 self.richRuleDialogElementChooser.set_text( \
                     old_obj.element.name)
-            elif type(old_obj.element) == rich.Rich_IcmpType:
+            elif isinstance(old_obj.element, rich.Rich_IcmpType):
                 combobox_select_text(self.richRuleDialogElementCombobox,
                                      _("icmp-type"))
                 self.richRuleDialogElementChooser.set_text( \
                     old_obj.element.name)
-            elif type(old_obj.element) == rich.Rich_ForwardPort:
+            elif isinstance(old_obj.element, rich.Rich_ForwardPort):
                 combobox_select_text(self.richRuleDialogElementCombobox,
                                      _("forward-port"))
                 s = "%s/%s" % (old_obj.element.port, old_obj.element.protocol)
@@ -3207,7 +3207,7 @@ class FirewallConfig(object):
                 if old_obj.element.to_address != "":
                     s += " @%s" % old_obj.element.to_address
                 self.richRuleDialogElementChooser.set_text(s)
-            elif type(old_obj.element) == rich.Rich_SourcePort:
+            elif isinstance(old_obj.element, rich.Rich_SourcePort):
                 combobox_select_text(self.richRuleDialogElementCombobox,
                                      _("source-port"))
                 self.richRuleDialogElementChooser.set_text( \
@@ -3216,9 +3216,9 @@ class FirewallConfig(object):
             if old_obj.action:
                 self.richRuleDialogActionCheck.set_active(True)
                 action = None
-                if type(old_obj.action) == rich.Rich_Accept:
+                if isinstance(old_obj.action, rich.Rich_Accept):
                     action = _("accept")
-                elif type(old_obj.action) == rich.Rich_Reject:
+                elif isinstance(old_obj.action, rich.Rich_Reject):
                     action = _("reject")
                     self.richRuleDialogActionRejectTypeCombobox.remove_all()
                     if old_obj.family is not None:
@@ -3233,9 +3233,9 @@ class FirewallConfig(object):
                         else:
                             self.richRuleDialogActionRejectTypeCombobox. \
                                 set_active_id(REJECT_TYPES[old_obj.family][0])
-                elif type(old_obj.action) == rich.Rich_Drop:
+                elif isinstance(old_obj.action, rich.Rich_Drop):
                     action = _("drop")
-                elif type(old_obj.action) == rich.Rich_Mark:
+                elif isinstance(old_obj.action, rich.Rich_Mark):
                     action = _("mark")
                     self.richRuleDialogActionMarkChooser.set_text(old_obj.action.set)
 

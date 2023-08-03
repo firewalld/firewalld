@@ -895,16 +895,16 @@ class FirewallZone(object):
 
     def _rich_rule_to_policies(self, zone, rule):
         zone = self._fw.check_zone(zone)
-        if type(rule.action) == Rich_Mark:
+        if isinstance(rule.action, Rich_Mark):
             return [self.policy_name_from_zones(zone, "ANY")]
-        elif type(rule.element) in [Rich_Service, Rich_Port, Rich_Protocol,
-                                    Rich_SourcePort, Rich_IcmpBlock, Rich_IcmpType]:
+        elif isinstance(rule.element, (Rich_Service, Rich_Port, Rich_Protocol,
+                                       Rich_SourcePort, Rich_IcmpBlock, Rich_IcmpType)):
             return [self.policy_name_from_zones(zone, "HOST")]
-        elif type(rule.element) in [Rich_ForwardPort]:
+        elif isinstance(rule.element, Rich_ForwardPort):
             return [self.policy_name_from_zones(zone, "ANY")]
-        elif type(rule.element) in [Rich_Masquerade]:
+        elif isinstance(rule.element, Rich_Masquerade):
             return [self.policy_name_from_zones("ANY", zone)]
-        elif type(rule.element) in [Rich_Tcp_Mss_Clamp]:
+        elif isinstance(rule.element, Rich_Tcp_Mss_Clamp):
             return [self.policy_name_from_zones(zone, "ANY")]
         elif rule.element is None:
             return [self.policy_name_from_zones(zone, "HOST")]
