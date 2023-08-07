@@ -8,7 +8,9 @@
 """FirewallCommand class for command line client simplification"""
 
 import sys
+import dbus
 
+import firewall.config
 from firewall import errors
 from firewall.errors import FirewallError
 from dbus.exceptions import DBusException
@@ -808,3 +810,210 @@ class FirewallCommand:
                 entries_set.add(line)
         f.close()
         return entries
+
+    def show_state_and_exit(self, fw, usage_text=None, verbose=False):
+        config = fw.config()
+
+        exit_code = 0
+        msg = ""
+        state = fw.get_state()
+        if state == "RUNNING":
+            s = "running"
+        elif state == "FAILED":
+            s = "failed"
+        elif state == "NOT_AUTHORIZED":
+            s = "not authorized"
+            exit_code = errors.NOT_AUTHORIZED
+        else:
+            state = "NOT_RUNNING"
+            s = "not running"
+            exit_code = errors.NOT_RUNNING
+        if verbose or state != "RUNNING":
+            msg += f"State: {s}\n"
+
+        try:
+            v = fw.raw_get_property("version", dbus.String)
+        except (TypeError, dbus.exceptions.DBusException):
+            v = None
+        if v is None:
+            v = "unknown"
+            show_client_version = True
+        elif v != firewall.config.VERSION:
+            show_client_version = True
+        else:
+            show_client_version = False
+        if verbose or show_client_version:
+            msg += f"Version: {v}"
+            if show_client_version:
+                msg += f" (client: {firewall.config.VERSION})"
+            msg += "\n"
+
+        panic_mode = None
+        try:
+            v = fw.raw_queryPanicMode()
+        except (TypeError, dbus.exceptions.DBusException):
+            if state not in ("NOT_RUNNING", "NOT_AUTHORIZED"):
+                panic_mode = "unknown"
+        else:
+            if v:
+                panic_mode = "enabled"
+        if panic_mode is not None:
+            msg += f"PanicMode: {panic_mode}\n"
+
+        try:
+            default_zone = fw.raw_getDefaultZone()
+        except (TypeError, dbus.exceptions.DBusException):
+            default_zone = None
+
+        zones = {}
+        try:
+            lst = fw.raw_getActiveZones()
+        except (TypeError, dbus.exceptions.DBusException):
+            pass
+        else:
+            for name, args in lst.items():
+                d = zones.setdefault(name, {})
+                d["active"] = args
+        try:
+            lst = fw.raw_getZones()
+        except (TypeError, dbus.exceptions.DBusException):
+            pass
+        else:
+            for name in lst:
+                d = zones.setdefault(name, {})
+                d["runtime"] = True
+        if config is not None:
+            try:
+                lst = config.raw_getZoneNames()
+            except (TypeError, dbus.exceptions.DBusException):
+                pass
+            else:
+                for name in lst:
+                    d = zones.setdefault(name, {})
+                    d["permanent"] = True
+        zones_lst = list(zones.items())
+        zones_lst.sort(key=lambda z: (z[0] != default_zone, "active" in z[1], z[0]))
+
+        if default_zone is not None and default_zone not in zones:
+            msg += f"DefaultZone: {default_zone}\n"
+
+        lst_active = [z for z in zones_lst if z[0] == default_zone or "active" in z[1]]
+        lst_other = [
+            z for z in zones_lst if not (z[0] == default_zone or "active" in z[1])
+        ]
+        for i in (0, 1):
+            if i == 0:
+                lst = lst_active
+            else:
+                if not verbose:
+                    continue
+                lst = lst_other
+            if not lst:
+                continue
+            if i == 0:
+                msg += "ActiveZones:\n"
+            else:
+                msg += "Zones:\n"
+            for name, args in lst:
+                msg += f"  {name}"
+                extra = []
+                if name == default_zone:
+                    extra.append("default")
+                if ("permanent" in args) != (
+                    "runtime" in args
+                ) or "permanent" not in args:
+                    if "permanent" in args:
+                        extra.append("permanent")
+                    if "runtime" in args:
+                        extra.append("runtime")
+                if extra:
+                    msg += f" ({' '.join(extra)})"
+                msg += "\n"
+                active_args = args.get("active")
+                if active_args:
+                    v = active_args.get("interfaces")
+                    if v:
+                        v = " ".join(v)
+                        msg += f"    interfaces: {v}\n"
+                    v = active_args.get("sources")
+                    if v:
+                        v = " ".join(v)
+                        msg += f"    sources:    {v}\n"
+
+        policies = {}
+        try:
+            lst = fw.raw_getActivePolicies()
+        except (TypeError, dbus.exceptions.DBusException):
+            pass
+        else:
+            for name, args in lst.items():
+                d = policies.setdefault(name, {})
+                d["active"] = args
+        try:
+            lst = fw.raw_getPolicies()
+        except (TypeError, dbus.exceptions.DBusException):
+            pass
+        else:
+            for name in lst:
+                d = policies.setdefault(name, {})
+                d["runtime"] = True
+        if config is not None:
+            try:
+                lst = config.raw_getPolicyNames()
+            except (TypeError, dbus.exceptions.DBusException):
+                pass
+            else:
+                for name in lst:
+                    d = policies.setdefault(name, {})
+                d["permanent"] = True
+        policies_lst = list(policies.items())
+        policies_lst.sort(key=lambda p: ("active" in p[1], p[0]))
+
+        lst_active = [
+            z for z in policies_lst if z[0] == default_zone or "active" in z[1]
+        ]
+        lst_other = [
+            z for z in policies_lst if not (z[0] == default_zone or "active" in z[1])
+        ]
+        for i in (0, 1):
+            if i == 0:
+                lst = lst_active
+            else:
+                if not verbose:
+                    continue
+                lst = lst_other
+            if not lst:
+                continue
+            if i == 0:
+                msg += "ActivePolicies:\n"
+            else:
+                msg += "Policies:\n"
+            for name, args in lst:
+                msg += f"  {name}"
+                extra = []
+                if ("permanent" in args) != (
+                    "runtime" in args
+                ) or "permanent" not in args:
+                    if "permanent" in args:
+                        extra.append("permanent")
+                    if "runtime" in args:
+                        extra.append("runtime")
+                if extra:
+                    msg += f" ({' '.join(extra)})"
+                msg += "\n"
+                active_args = args.get("active")
+                if active_args:
+                    v = active_args.get("ingress_zones")
+                    if v:
+                        v = " ".join(v)
+                        msg += f"    ingress-zones: {v}\n"
+                    v = active_args.get("egress_zones")
+                    if v:
+                        v = " ".join(v)
+                        msg += f"    egress-zones:  {v}\n"
+
+        if usage_text:
+            msg += f"\n{usage_text}\n"
+
+        self.print(msg, not_with_quiet=False, eol=None)
+        self.exit(exit_code)

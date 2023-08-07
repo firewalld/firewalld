@@ -1551,14 +1551,11 @@ if not (
     or options_direct
     or options_permanent_only
 ):
-    state = fw.get_property("state")
-    if state == "RUNNING":
-        state = "State: running\n\n"
-    elif state == "FAILED":
-        state = "State: failed\n\n"
-    else:
-        state = "State: not running\n\n"
-    cmd.fail(state + "No options specified\n" + parser.format_usage()[:-1])
+    cmd.show_state_and_exit(
+        fw,
+        usage_text=parser.format_usage().strip(),
+        verbose=a.verbose,
+    )
 
 if not fw.connected:
     if a.state:
