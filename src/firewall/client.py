@@ -3034,6 +3034,9 @@ class FirewallClientConfig:
 
     @handle_exceptions
     def getZoneNames(self):
+        return self.raw_getZoneNames()
+
+    def raw_getZoneNames(self):
         return dbus_to_python(self.fw_config.getZoneNames())
 
     @handle_exceptions
@@ -3073,6 +3076,9 @@ class FirewallClientConfig:
 
     @handle_exceptions
     def getPolicyNames(self):
+        return self.raw_getPolicyNames()
+
+    def raw_getPolicyNames(self):
         return dbus_to_python(self.fw_config.getPolicyNames())
 
     @handle_exceptions
@@ -3559,6 +3565,9 @@ class FirewallClient:
 
     @handle_exceptions
     def get_property(self, prop, expected_type=None):
+        return self.raw_get_property(prop, expected_type)
+
+    def raw_get_property(self, prop, expected_type=None):
         return dbus_to_python(
             self._get_fw_properties().Get(config.dbus.DBUS_INTERFACE, prop),
             expected_type=expected_type,
@@ -3586,7 +3595,10 @@ class FirewallClient:
 
     @handle_exceptions
     def queryPanicMode(self):
-        return dbus_to_python(self._get_fw().queryPanicMode())
+        return self.raw_queryPanicMode()
+
+    def raw_queryPanicMode(self):
+        return dbus_to_python(self._get_fw().queryPanicMode(), dbus.Boolean)
 
     # list functions
 
@@ -3680,7 +3692,10 @@ class FirewallClient:
 
     @handle_exceptions
     def getDefaultZone(self):
-        return dbus_to_python(self._get_fw().getDefaultZone())
+        return self.raw_getDefaultZone()
+
+    def raw_getDefaultZone(self):
+        return dbus_to_python(self._get_fw().getDefaultZone(), dbus.String)
 
     @handle_exceptions
     def setDefaultZone(self, zone):
@@ -3696,10 +3711,16 @@ class FirewallClient:
 
     @handle_exceptions
     def getZones(self):
+        return self.raw_getZones()
+
+    def raw_getZones(self):
         return dbus_to_python(self._get_fw_zone().getZones())
 
     @handle_exceptions
     def getActiveZones(self):
+        return self.raw_getActiveZones()
+
+    def raw_getActiveZones(self):
         return dbus_to_python(self._get_fw_zone().getActiveZones())
 
     @handle_exceptions
@@ -3730,10 +3751,16 @@ class FirewallClient:
 
     @handle_exceptions
     def getPolicies(self):
+        return self.raw_getPolicies()
+
+    def raw_getPolicies(self):
         return dbus_to_python(self._get_fw_policy().getPolicies())
 
     @handle_exceptions
     def getActivePolicies(self):
+        return self.raw_getActivePolicies()
+
+    def raw_getActivePolicies(self):
         return dbus_to_python(self._get_fw_policy().getActivePolicies())
 
     @handle_exceptions
