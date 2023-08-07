@@ -46,42 +46,92 @@ class FirewallCommand:
     def exit(self, exit_code=0):
         sys.exit(exit_code)
 
-    def print_msg(self, msg=None, *, force=False, file=None, exit_code=None):
-        if msg is not None and (not self.quiet or force):
-            if file is None:
-                file = sys.stdout
-            file.write(msg + "\n")
+    def get_file(self, *, is_err=False, file=None):
+        if file is None:
+            return sys.stderr if is_err else sys.stdout
+        return file
+
+    def isatty(self, *, is_err=False, file=None):
+        return self.get_file(is_err=is_err, file=file).isatty()
+
+    def print(
+        self,
+        msg,
+        *,
+        file=None,
+        is_err=False,
+        force=False,
+        only_with_verbose=False,
+        not_with_quiet=True,
+        eol="\n",
+        exit_code=None,
+    ):
+        if msg is not None:
+            if not force:
+                if not_with_quiet and self.quiet:
+                    msg = None
+                elif only_with_verbose and not self.verbose:
+                    msg = None
+
+            if msg is not None:
+                msg = str(msg)
+
+                if eol is not None and eol != "":
+                    msg = msg + eol
+
+                file = self.get_file(is_err=is_err, file=file)
+                file.write(msg)
+
         if exit_code is not None:
             self.exit(exit_code)
 
+    def print_msg(self, msg=None, *, force=False, file=None, exit_code=None):
+        self.print(
+            msg=msg,
+            file=file,
+            is_err=False,
+            force=force,
+            only_with_verbose=False,
+            not_with_quiet=True,
+            exit_code=exit_code,
+        )
+
     def print_error_msg(self, msg=None, *, force=False, file=None, exit_code=None):
-        if file is None:
-            file = sys.stderr
-        self.print_msg(msg=msg, force=force, file=file, exit_code=exit_code)
+        self.print(
+            msg=msg,
+            file=file,
+            is_err=True,
+            force=force,
+            only_with_verbose=False,
+            not_with_quiet=True,
+            exit_code=exit_code,
+        )
 
     def print_warning(self, msg=None, *, exit_code=None):
-        if msg is not None and sys.stderr.isatty():
-            FAIL = "\033[91m"
-            END = "\033[00m"
-            msg = FAIL + msg + END
-        self.print_error_msg(msg, exit_code=exit_code)
+        file = sys.stderr
+        if msg is not None:
+            if self.isatty(file=file):
+                FAIL = "\033[91m"
+                END = "\033[00m"
+                msg = FAIL + str(msg) + END
+        self.print_error_msg(msg, file=file, exit_code=exit_code)
 
     def print_and_exit(self, msg=None, exit_code=0):
-        # OK = '\033[92m'
-        # END = '\033[00m'
-        if exit_code > 1:
+        if exit_code is not None and exit_code > 1:
             self.print_warning(msg, exit_code=exit_code)
         else:
-            # if sys.stdout.isatty():
-            #   msg = OK + msg + END
             self.print_msg(msg, exit_code=exit_code)
 
     def fail(self, msg=None):
         self.print_and_exit(msg, 2)
 
     def print_if_verbose(self, msg=None):
-        if msg is not None and self.verbose:
-            sys.stdout.write(msg + "\n")
+        self.print(
+            msg=msg,
+            is_err=False,
+            only_with_verbose=True,
+            not_with_quiet=True,
+        )
 
     def __cmd_sequence(
         self,
