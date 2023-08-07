@@ -43,13 +43,16 @@ class FirewallCommand:
     def get_verbose(self):
         return self.verbose
 
+    def exit(self, exit_code=0):
+        sys.exit(exit_code)
+
     def print_msg(self, msg=None, *, force=False, file=None, exit_code=None):
         if msg is not None and (not self.quiet or force):
             if file is None:
                 file = sys.stdout
             file.write(msg + "\n")
         if exit_code is not None:
-            sys.exit(exit_code)
+            self.exit(exit_code)
 
     def print_error_msg(self, msg=None, *, force=False, file=None, exit_code=None):
         if file is None:
@@ -160,13 +163,13 @@ class FirewallCommand:
                 return
             elif len(_error_codes) == 1:
                 # Exactly one error code, use it.
-                sys.exit(_error_codes[0])
+                self.exit(_error_codes[0])
             elif len(_error_codes) > 1:
                 # There is more than error, exit using
                 # UNKNOWN_ERROR. This could happen within sequences
                 # where parsing failed with different errors like
                 # INVALID_PORT and INVALID_PROTOCOL.
-                sys.exit(errors.UNKNOWN_ERROR)
+                self.exit(errors.UNKNOWN_ERROR)
 
     def add_sequence(
         self,
@@ -325,7 +328,7 @@ class FirewallCommand:
             else:
                 self.print_query_result(res)
         if not no_exit:
-            sys.exit(0)
+            self.exit()
 
     def query_sequence(
         self,
