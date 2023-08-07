@@ -4189,3 +4189,16 @@ class FirewallClient:
     def authorizeAll(self):
         """Authorize once for all polkit actions."""
         self._get_fw().authorizeAll()
+
+    # utils
+
+    def get_state(self):
+        try:
+            return self.raw_get_property("state", dbus.String)
+        except dbus.exceptions.DBusException as e:
+            dbus_name = e.get_dbus_name()
+            if dbus_name and "NotAuthorizedException" in dbus_name:
+                return "NOT_AUTHORIZED"
+            return "NOT_RUNNING"
+        except TypeError:
+            return "DBUS_ERROR"
