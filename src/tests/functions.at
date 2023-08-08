@@ -119,7 +119,13 @@ m4_define([FWD_START_TEST], [
     fi
 
     dnl limit data (and heap) to catch unexpected increases in memory usage
-    ulimit -d $(expr 1024 \* 100)
+    ULIMIT_VAL="$2"
+    if test -z "$ULIMIT_VAL" ; then
+        ULIMIT_VAL=102400
+    fi
+    if test "$ULIMIT_VAL" -ne 0 ; then
+        ulimit -d "$ULIMIT_VAL"
+    fi
 
     dnl start every test with the default config
     if test "x${FIREWALLD_DEFAULT_CONFIG}" != x ; then
