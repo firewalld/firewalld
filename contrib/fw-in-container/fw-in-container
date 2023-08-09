@@ -297,9 +297,11 @@ RUN dnf install -y \\
     NetworkManager-team \\
     NetworkManager-vpnc \\
     NetworkManager-wifi \\
+    asciidoc \\
     autoconf \\
     automake \\
     bash-completion \\
+    bison \\
     ccache \\
     clang \\
     clang-tools-extra \\
@@ -320,6 +322,7 @@ RUN dnf install -y \\
     ethtool \\
     firewalld \\
     firewalld-filesystem \\
+    flex \\
     gcc \\
     gcc-c++ \\
     gdb \\
@@ -333,10 +336,12 @@ RUN dnf install -y \\
     gtk-doc \\
     hostapd \\
     intltool \\
+    iperf3 \\
     iproute \\
     iproute-tc \\
     ipsec-tools \\
     iptables \\
+    iptables-devel \\
     iputils \\
     iscsi-initiator-utils \\
     iw \\
@@ -345,8 +350,10 @@ RUN dnf install -y \\
     ldns \\
     libasan \\
     libcurl-devel \\
+    libedit-devel \\
     libndp-devel \\
     libnftnl \\
+    libnftnl-devel \\
     libnmnl-devel \\
     libpsl-devel \\
     libreswan \\
@@ -382,7 +389,6 @@ RUN dnf install -y \\
     ppp-devel \\
     procps \\
     psmisc \\
-    desktop-file-utils \\
     python3-behave \\
     python3-black \\
     python3-dbus \\
