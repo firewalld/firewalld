@@ -631,6 +631,8 @@ m4_define([CHECK_NFT_CT_HELPER], [
 ])
 
 m4_define([CHECK_MODULE_PROTO_GRE], [
+    dnl Newer kernels use a built-in so the module nf_conntrack_proto_gre
+    dnl doesn't exist. Skip the test in that case.
     AT_SKIP_IF([! NS_CMD([modinfo nf_conntrack_proto_gre])])
 ])
 
