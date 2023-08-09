@@ -1,6 +1,8 @@
 FWD_START_TEST([zone - priority])
 AT_KEYWORDS(zone)
 
+SKIP_IF_FW_IN_CONTAINER_WITH_NFTABLES
+
 FWD_CHECK([--permanent --new-zone foobar], 0, [ignore])
 
 dnl verify priority bounds

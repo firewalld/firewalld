@@ -2,6 +2,9 @@ FWD_START_TEST([ipset scale], 307200)
 AT_KEYWORDS(ipset gh738)
 
 dnl Create a huge ipset
+
+SKIP_IF_FW_IN_CONTAINER_WITH_NFTABLES
+
 AT_CHECK([touch ./entries], 0, [ignore])
 AT_CHECK([sh -c '
 for I in $(seq 250); do

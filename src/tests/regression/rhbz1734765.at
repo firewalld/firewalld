@@ -4,6 +4,8 @@ dnl
 dnl Users depend on firewalld ordering source-based zone dispatch by zone name.
 dnl
 
+SKIP_IF_FW_IN_CONTAINER_WITH_NFTABLES
+
 FWD_CHECK([-q --permanent --new-zone=foobar_00])
 FWD_CHECK([-q --permanent --new-zone=foobar_05])
 FWD_CHECK([-q --permanent --new-zone=foobar_02])
