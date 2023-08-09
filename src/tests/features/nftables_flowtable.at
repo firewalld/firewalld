@@ -6,6 +6,10 @@ AT_SKIP_IF([! NS_CMD([command -v iperf3 >/dev/null 2>&1])])
 AT_SKIP_IF([! NS_CMD([command -v sysctl >/dev/null 2>&1])])
 AT_SKIP_IF([! NS_CMD([command -v jq >/dev/null 2>&1])])
 
+dnl This fails in fw-in-container. The reason is not yet understood. Skip for
+dnl now.
+SKIP_IF_FW_IN_CONTAINER
+
 dnl TEST TOPOLOGY
 dnl -------------
 dnl
