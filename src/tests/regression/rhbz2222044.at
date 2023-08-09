@@ -1,0 +1,44 @@
+FWD_START_TEST([duplicate rules after restart])
+AT_KEYWORDS(rhbz2222044)
+AT_SKIP_IF([! NS_CMD([command -v wc >/dev/null 2>&1])])
+
+dnl rules have not changed so rule count should not change
+m4_define([check_rule_count], [
+m4_if(nftables, FIREWALL_BACKEND, [
+NS_CHECK([nft list table inet firewalld | wc -l], 0, [dnl
+331
+])
+], [ dnl iptables
+NS_CHECK([iptables-save | wc -l], 0, [dnl
+249
+])
+])])
+
+dnl --------------------------
+dnl --------------------------
+
+AT_CHECK([sed -i 's/^CleanupOnExit.*/CleanupOnExit=yes/' ./firewalld.conf])
+FWD_RELOAD()
+
+check_rule_count()
+FWD_RESTART()
+check_rule_count()
+
+check_rule_count()
+FWD_RELOAD()
+check_rule_count()
+
+dnl Now do it again, but with CleanupOnExit=no
+AT_CHECK([sed -i 's/^CleanupOnExit.*/CleanupOnExit=no/' ./firewalld.conf])
+FWD_RELOAD()
+
+check_rule_count()
+FWD_RESTART()
+check_rule_count()
+
+check_rule_count()
+FWD_RELOAD()
+check_rule_count()
+
+m4_undefine([check_rule_count])
+FWD_END_TEST()
