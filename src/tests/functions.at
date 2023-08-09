@@ -742,3 +742,34 @@ m4_define([CHECK_NFTABLES_FLOWTABLE], [
         NS_CHECK([nft delete table inet firewalld_check_flowtable])
     ])
 ])
+
+m4_define([SKIP_IF_FW_IN_CONTAINER], [
+    dnl With contrib/fw-in-container script, we run a rootless (privileged) container.
+    dnl We recognize by having "$FW_IN_CONTAINER" set in the environment variables.
+    dnl
+    dnl Some test won't pass. Skip them.
+    AT_SKIP_IF([test -n "$FW_IN_CONTAINER"])
+])
+
+m4_define([SKIP_IF_FW_IN_CONTAINER_WITH_NFTABLES], [
+    m4_if(nftables, FIREWALL_BACKEND, [
+        dnl With contrib/fw-in-container, we run a rootless (privileged)
+        dnl container.  With nftable backend there are various, well-known
+        dnl issues that cause tests to fail. In such an environment, the test
+        dnl is skipped.
+        dnl
+        dnl Common issues:
+        dnl
+        dnl 1) "/proc/sys/net/core/rmem_max" is too low for the test
+        dnl 2) "/proc/sys/net/core/wmem_max" is too low for the test
+        dnl 3) either "/proc/sys/net/core/wmem_default" is too low, or you need
+        dnl    to ensure to have patch [1] from nftables 1.0.8.
+        dnl    [1] https://git.netfilter.org/nftables/commit/?id=375505a4a8068bf7cb623e18c3aedb831c17fd0e
+        dnl
+        dnl You may be able to get the test to pass, if you ensure that the
+        dnl hindrance is resolved. Usually that means to grant the container
+        dnl certain root permissions or increase systemwide buffer sizes. Try to
+        dnl `unset FW_IN_CONTAINER` and re-run the test.
+        SKIP_IF_FW_IN_CONTAINER
+    ])
+])
