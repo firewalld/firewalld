@@ -410,12 +410,10 @@ class nftables:
         self.rich_rule_priority_counts = {}
         self.policy_dispatch_index_cache = {}
 
-        rules = []
         if TABLE_NAME in self.created_tables["inet"]:
-            rules.append({"delete": {"table": {"family": "inet",
-                                               "name": TABLE_NAME}}})
             self.created_tables["inet"].remove(TABLE_NAME)
-        return rules
+
+        return self._build_delete_table_rules(TABLE_NAME)
 
     def _build_set_policy_rules_ct_rules(self, enable):
         add_del = { True: "add", False: "delete" }[enable]
