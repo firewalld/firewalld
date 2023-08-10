@@ -455,6 +455,7 @@ COPY data-behaverc /root/.behaverc
 COPY data-etc-systemd-firewalld-20-fw-in-container.override /etc/systemd/system/firewalld.service.d/20-fw-in-container.conf
 COPY data-etc-systemd-NetworkManager-20-fw-in-container.override /etc/systemd/system/NetworkManager.service.d/20-fw-in-container.conf
 COPY data-etc-sysconfig-firewalld-override /etc/sysconfig/firewalld-override
+COPY data-etc-polkit-1-rules-d-40-firewalld.rules /etc/polkit-1/rules.d/40-firewalld.rules
 
 RUN systemctl enable firewalld
 RUN systemctl enable NetworkManager
