@@ -169,7 +169,6 @@ class nftables:
         self.rule_ref_count = {}
         self.rich_rule_priority_counts = {}
         self.policy_dispatch_index_cache = {}
-        self.created_tables = {"inet": []}
 
         self.nftables = Nftables()
         self.nftables.set_echo_output(True)
@@ -410,9 +409,6 @@ class nftables:
         self.rich_rule_priority_counts = {}
         self.policy_dispatch_index_cache = {}
 
-        if TABLE_NAME in self.created_tables["inet"]:
-            self.created_tables["inet"].remove(TABLE_NAME)
-
         return self._build_delete_table_rules(TABLE_NAME)
 
     def _build_set_policy_rules_ct_rules(self, enable):
@@ -436,7 +432,6 @@ class nftables:
         if policy == "PANIC":
             rules.append({"add": {"table": {"family": "inet",
                                             "name": TABLE_NAME_POLICY}}})
-            self.created_tables["inet"].append(TABLE_NAME_POLICY)
 
             # Use "raw" priority for panic mode. This occurs before
             # conntrack, mangle, nat, etc
@@ -451,7 +446,6 @@ class nftables:
         elif policy == "DROP":
             rules.append({"add": {"table": {"family": "inet",
                                             "name": TABLE_NAME_POLICY}}})
-            self.created_tables["inet"].append(TABLE_NAME_POLICY)
 
             # To drop everything except existing connections we use
             # "filter" because it occurs _after_ conntrack.
@@ -472,9 +466,6 @@ class nftables:
                     rules.append(rule)
 
             rules += self._build_delete_table_rules(TABLE_NAME_POLICY)
-
-            if TABLE_NAME_POLICY in self.created_tables["inet"]:
-                self.created_tables["inet"].remove(TABLE_NAME_POLICY)
         else:
             raise FirewallError(UNKNOWN_ERROR, "not implemented")
 
@@ -494,7 +485,6 @@ class nftables:
         default_tables = []
         default_tables.append({"add": {"table": {"family": "inet",
                                                  "name": TABLE_NAME}}})
-        self.created_tables["inet"].append(TABLE_NAME)
         return default_tables
 
     def build_default_rules(self, log_denied="off"):
