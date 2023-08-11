@@ -675,7 +675,7 @@ class ip4tables:
                 rules.append(["-t", table, flag])
         return rules
 
-    def build_set_policy_rules(self, policy):
+    def build_set_policy_rules(self, policy, policy_details):
         rules = []
         _policy = "DROP" if policy == "PANIC" else policy
         for table in BUILT_IN_CHAINS.keys():
@@ -684,7 +684,14 @@ class ip4tables:
             if table == "nat":
                 continue
             for chain in BUILT_IN_CHAINS[table]:
-                rules.append(["-t", table, "-P", chain, _policy])
+                if table == "filter":
+                    p = policy_details[chain]
+                    if p == "REJECT":
+                        rules.append(["-t", table, "-A", chain, "-j", "REJECT"])
+                        p = "DROP"
+                else:
+                    p = _policy
+                rules.append(["-t", table, "-P", chain, p])
         return rules
 
     def supported_icmp_types(self, ipv=None):
