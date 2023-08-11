@@ -518,34 +518,29 @@ class nftables:
 
         return self._build_delete_table_rules(TABLE_NAME)
 
-    def _build_set_policy_rules_ct_rules(self, enable):
+    def _build_set_policy_rules_ct_rule(self, enable, hook):
         add_del = {True: "add", False: "delete"}[enable]
-        rules = []
-        for hook in ["input", "forward", "output"]:
-            rules.append(
-                {
-                    add_del: {
-                        "rule": {
-                            "family": "inet",
-                            "table": TABLE_NAME_POLICY,
-                            "chain": "%s_%s" % ("filter", hook),
-                            "expr": [
-                                {
-                                    "match": {
-                                        "left": {"ct": {"key": "state"}},
-                                        "op": "in",
-                                        "right": {"set": ["established", "related"]},
-                                    }
-                                },
-                                {"accept": None},
-                            ],
-                        }
-                    }
+        return {
+            add_del: {
+                "rule": {
+                    "family": "inet",
+                    "table": TABLE_NAME_POLICY,
+                    "chain": "%s_%s" % ("filter", hook),
+                    "expr": [
+                        {
+                            "match": {
+                                "left": {"ct": {"key": "state"}},
+                                "op": "in",
+                                "right": {"set": ["established", "related"]},
+                            }
+                        },
+                        {"accept": None},
+                    ],
                 }
-            )
-        return rules
+            }
+        }
 
-    def build_set_policy_rules(self, policy):
+    def build_set_policy_rules(self, policy, policy_details):
         # Policy is not exposed to the user. It's only to make sure we DROP
         # packets while reloading and for panic mode. As such, using hooks with
         # a higher priority than our base chains is sufficient.
@@ -580,14 +575,19 @@ class nftables:
 
             # To drop everything except existing connections we use
             # "filter" because it occurs _after_ conntrack.
-            for hook in ["input", "forward", "output"]:
+            for hook in ("INPUT", "FORWARD", "OUTPUT"):
+                d_policy = policy_details[hook]
+                assert d_policy in ("ACCEPT", "REJECT", "DROP")
+                hook = hook.lower()
+                chain_name = f"filter_{hook}"
+
                 rules.append(
                     {
                         "add": {
                             "chain": {
                                 "family": "inet",
                                 "table": TABLE_NAME_POLICY,
-                                "name": "%s_%s" % ("filter", hook),
+                                "name": chain_name,
                                 "type": "filter",
                                 "hook": hook,
                                 "prio": 0 + NFT_HOOK_OFFSET - 1,
@@ -597,7 +597,29 @@ class nftables:
                     }
                 )
 
-            rules += self._build_set_policy_rules_ct_rules(True)
+                rules.append(self._build_set_policy_rules_ct_rule(True, hook))
+
+                if d_policy == "ACCEPT":
+                    expr_fragment = {"accept": None}
+                elif d_policy == "DROP":
+                    expr_fragment = {"drop": None}
+                else:
+                    expr_fragment = {
+                        "reject": {"type": "icmpx", "expr": "admin-prohibited"}
+                    }
+
+                rules.append(
+                    {
+                        "add": {
+                            "rule": {
+                                "family": "inet",
+                                "table": TABLE_NAME_POLICY,
+                                "chain": chain_name,
+                                "expr": [expr_fragment],
+                            }
+                        }
+                    }
+                )
         elif policy == "ACCEPT":
             rules += self._build_delete_table_rules(TABLE_NAME_POLICY)
         else:
