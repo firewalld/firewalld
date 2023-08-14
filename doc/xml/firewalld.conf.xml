@@ -186,6 +186,22 @@
         </varlistentry>
 
         <varlistentry>
+            <term><option>ReloadPolicy</option></term>
+            <listitem>
+                <para>
+                    The policy during reload. By default, all traffic except
+                    established connections is dropped while reloading the
+                    firewall rules. This can be overridden for INPUT, FORWARD
+                    and OUTPUT. The accepted values are "DROP", "REJECT" and
+                    "ACCEPT", which then applies to all tables. Alternatively,
+                    the policy can be specified per table, like
+                    "INPUT:REJECT,FORWARD:DROP,OUTPUT:ACCEPT".
+                    Defaults to "INPUT:DROP,FORWARD:DROP,OUTPUT:DROP".
+                </para>
+            </listitem>
+        </varlistentry>
+
+        <varlistentry>
             <term><option>RFC3964_IPv4</option></term>
             <listitem>
                 <para>

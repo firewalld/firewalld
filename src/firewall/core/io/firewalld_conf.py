@@ -25,6 +25,7 @@ valid_keys = [
     "AutomaticHelpers",
     "FirewallBackend",
     "FlushAllOnReload",
+    "ReloadPolicy",
     "RFC3964_IPv4",
     "AllowZoneDrifting",
     "NftablesFlowtable",
@@ -81,6 +82,7 @@ class firewalld_conf:
         self.set(
             "FlushAllOnReload", "yes" if config.FALLBACK_FLUSH_ALL_ON_RELOAD else "no"
         )
+        self.set("ReloadPolicy", config.FALLBACK_RELOAD_POLICY)
         self.set("RFC3964_IPv4", "yes" if config.FALLBACK_RFC3964_IPV4 else "no")
         self.set(
             "AllowZoneDrifting", "yes" if config.FALLBACK_ALLOW_ZONE_DRIFTING else "no"
@@ -247,6 +249,17 @@ class firewalld_conf:
                 )
             self.set("FlushAllOnReload", str(config.FALLBACK_FLUSH_ALL_ON_RELOAD))
 
+        value = self.get("ReloadPolicy")
+        try:
+            value = self._parse_reload_policy(value)
+        except ValueError:
+            log.warning(
+                "ReloadPolicy '%s' is not valid, using default value '%s'",
+                value,
+                config.FALLBACK_RELOAD_POLICY,
+            )
+            self.set("ReloadPolicy", config.FALLBACK_RELOAD_POLICY)
+
         value = self.get("RFC3964_IPv4")
         if not value or value.lower() not in ["yes", "true", "no", "false"]:
             if value is not None:
@@ -381,3 +394,45 @@ class firewalld_conf:
             raise IOError("Failed to create '%s': %s" % (self.filename, msg))
         else:
             os.chmod(self.filename, 0o600)
+
+    @staticmethod
+    def _parse_reload_policy(value):
+        valid = True
+        result = {
+            "INPUT": "DROP",
+            "FORWARD": "DROP",
+            "OUTPUT": "DROP",
+        }
+        if value:
+            value = value.strip()
+            v = value.upper()
+            if v in ("ACCEPT", "REJECT", "DROP"):
+                for k in result:
+                    result[k] = v
+            else:
+                for a in value.replace(";", ",").split(","):
+                    a = a.strip()
+                    if not a:
+                        continue
+                    a2 = a.replace("=", ":").split(":", 2)
+                    if len(a2) != 2:
+                        valid = False
+                        continue
+                    k = a2[0].strip().upper()
+                    if k not in result:
+                        valid = False
+                        continue
+                    v = a2[1].strip().upper()
+                    if v not in ("ACCEPT", "REJECT", "DROP"):
+                        valid = False
+                        continue
+                    result[k] = v
+
+        if not valid:
+            raise ValueError("Invalid ReloadPolicy")
+
+        return result
+
+    @staticmethod
+    def _unparse_reload_policy(value):
+        return ",".join(f"{k}:{v}" for k, v in value.items())
