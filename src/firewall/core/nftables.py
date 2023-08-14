@@ -482,9 +482,9 @@ class nftables(object):
                 if policy_key in self.rule_to_handle:
                     rules.append(rule)
 
+            rules += self._build_delete_table_rules(TABLE_NAME_POLICY)
+
             if TABLE_NAME_POLICY in self.created_tables["inet"]:
-                rules.append({"delete": {"table": {"family": "inet",
-                                                   "name": TABLE_NAME_POLICY}}})
                 self.created_tables["inet"].remove(TABLE_NAME_POLICY)
         else:
             raise FirewallError(UNKNOWN_ERROR, "not implemented")
