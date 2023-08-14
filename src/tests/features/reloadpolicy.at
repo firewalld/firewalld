@@ -1,0 +1,12 @@
+FWD_START_TEST([check ReloadPolicy])
+AT_KEYWORDS(reloadpolicy rhbz2149039)
+
+AT_CHECK([sed -i 's/^ReloadPolicy=.*/ReloadPolicy=INPUT:REJECT,FORWARD:ACCEPT/' ./firewalld.conf])
+dnl call RELOAD twice, to see more action about the ReloadPolicy.
+FWD_RELOAD()
+FWD_RELOAD()
+
+AT_CHECK([sed -i 's/^ReloadPolicy=.*/ReloadPolicy=REJECT/' ./firewalld.conf])
+FWD_RELOAD()
+
+FWD_END_TEST()

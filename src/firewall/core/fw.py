@@ -1107,7 +1107,13 @@ class Firewall:
         else:
             transaction = use_transaction
 
-        log.debug1("Setting policy to '%s'", policy)
+        log.debug1(
+            "Setting policy to '%s'%s",
+            policy,
+            f" (ReloadPolicy={firewalld_conf._unparse_reload_policy(policy_details)})"
+            if policy == "DROP"
+            else "",
+        )
 
         for backend in self.enabled_backends():
             rules = self._set_policy_build_rules(backend, policy, policy_details)
@@ -1263,7 +1269,10 @@ class Firewall:
             _ipset_objs.append(self.ipset.get_ipset(_name))
 
         if not _panic:
-            self.set_policy("DROP")
+            reload_policy = firewalld_conf._parse_reload_policy(
+                self._firewalld_conf.get("ReloadPolicy")
+            )
+            self.set_policy("DROP", policy_details=reload_policy)
 
         self.flush()
         self.cleanup()
