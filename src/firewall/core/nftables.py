@@ -384,6 +384,17 @@ class nftables(object):
         # Tables always exist in nftables
         return [table] if table else IPTABLES_TO_NFT_HOOK.keys()
 
+    def _build_delete_table_rules(self, table):
+        # To avoid nftables returning ENOENT we always add the table before
+        # deleting to guarantee it will exist.
+        #
+        # In the future, this add+delete should be replaced with "destroy", but
+        # that verb is too new to rely upon.
+        return [{"add": {"table": {"family": "inet",
+                                   "name": table}}},
+                {"delete": {"table": {"family": "inet",
+                                      "name": table}}}]
+
     def build_flush_rules(self):
         # Policy is stashed in a separate table that we're _not_ going to
         # flush. As such, we retain the policy rule handles and ref counts.
