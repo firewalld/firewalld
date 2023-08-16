@@ -403,7 +403,8 @@ class FirewallConfig:
 
         self.zoneView = builder.get_object("zoneView")
         self.zoneStore = Gtk.ListStore(GObject.TYPE_STRING, # name
-                                       GObject.TYPE_INT) # weight
+                                       GObject.TYPE_INT,    # weight
+                                       GObject.TYPE_STRING) # tooltip
         self.zoneView.append_column(
             Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=0, weight=1))
         self.zoneView.set_model(self.zoneStore)
@@ -1748,7 +1749,18 @@ class FirewallConfig:
         else:
             weight = Pango.Weight.NORMAL
 
-        self.zoneStore.append([zone, weight])
+        desc = None
+        zone_obj = self.fw.config().getZoneByName(zone)
+        if zone_obj:
+            settings = zone_obj.getSettings()
+            if settings:
+                desc = settings.getDescription()
+                if desc:
+                    import re
+
+                    desc = re.sub("\s+", ' ', desc)
+
+        self.zoneStore.append([zone, weight, desc])
 
     def load_zones(self):
         selected_zone = self.get_selected_zone()
