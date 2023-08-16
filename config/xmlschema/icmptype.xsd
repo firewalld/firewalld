@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+elementFormDefault="qualified">
+
+<xs:element name="icmptype">
+  <xs:complexType>
+    <xs:choice maxOccurs="unbounded">
+      <xs:element name="short" type="xs:string" minOccurs="0"/>
+      <xs:element name="description" type="xs:string" minOccurs="0"/>
+      <xs:element name="destination" type="desttype" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:choice>
+    <xs:attribute name="version" type="xs:string"/>
+  </xs:complexType>
+</xs:element>
+
+<xs:complexType name="desttype">
+  <xs:attribute name="ipv4" type="booltype"/>
+  <xs:attribute name="ipv6" type="booltype"/>
+</xs:complexType>
+
+<xs:simpleType name="booltype">
+  <xs:restriction base="xs:string">
+    <xs:pattern value="[Yy]es|[Nn]o|[Tt]rue|[Ff]alse"/>
+  </xs:restriction>
+</xs:simpleType>
+
+</xs:schema>
+
+
