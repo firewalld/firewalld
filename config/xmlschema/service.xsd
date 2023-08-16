@@ -7,11 +7,13 @@ elementFormDefault="qualified">
     <xs:sequence>
       <xs:element name="short" type="xs:string" minOccurs="0"/>
       <xs:element name="description" type="xs:string" minOccurs="0"/>
+      <xs:element name="include" type="includetype" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="port" type="porttype" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="source-port" type="porttype" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="protocol" type="prototype" minOccurs="0" maxOccurs="unbounded"/>
-      <xs:element name="module" type="nametype" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="destination" type="desttype" minOccurs="0"/>
+      <xs:element name="module" type="nametype" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="helper" type="helpertype" minOccurs="0"/>
     </xs:sequence>
     <xs:attribute name="version" type="xs:string"/>
   </xs:complexType>
@@ -53,6 +55,14 @@ elementFormDefault="qualified">
     <xs:pattern value="[0-9A-Fa-f:]{3,39}(/[0-9]{1,3})?"/>
   </xs:restriction>
 </xs:simpleType>
+
+<xs:complexType name="includetype">
+  <xs:attribute name="service" type="xs:string" use="required"/>
+</xs:complexType>
+
+<xs:complexType name="helpertype">
+  <xs:attribute name="name" type="xs:string" use="required"/>
+</xs:complexType>
 
 </xs:schema>
 
