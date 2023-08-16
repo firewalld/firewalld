@@ -42,11 +42,11 @@ update-po:
 	$(MAKE) -C po update-po ${PACKAGE_NAME}.pot
 	cp po/${PACKAGE_NAME}.pot po/${PACKAGE_NAME}.weblate.pot
 
-# This merges translations from the upstream master branch.
+# This merges translations from the upstream main branch.
 # It's only meant to be used from the stable branches. Translations
-# contributions are only done against master.
+# contributions are only done against main.
 merge-po: update-po
-	git fetch -q https://github.com/firewalld/firewalld master; \
+	git fetch -q https://github.com/firewalld/firewalld main; \
 	for po in $(top_srcdir)/po/*.po; do \
 		mv $${po} $${po}.old; \
 		git checkout -q FETCH_HEAD $${po}; \
