@@ -286,6 +286,7 @@ Directory Structure
 | config/           | Configuration files                                   |
 | config/icmptypes/ | Predefined ICMP types                                 |
 | config/services/  | Predefined services                                   |
+| config/xmlschema/ | XML Schema checks for config files                    |
 | config/zones/     | Predefined zones                                      |
 | config/ipsets/    | Predefined ipsets                                     |
 | doc/              | Documentation                                         |
