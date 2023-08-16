@@ -1742,6 +1742,14 @@ class FirewallConfig:
         self.load_lockdown_whitelist()
         self.update_active_zones()
 
+    def _load_store_append(self, zone, is_active):
+        if is_active:
+            weight = Pango.Weight.BOLD
+        else:
+            weight = Pango.Weight.NORMAL
+
+        self.zoneStore.append([zone, weight])
+
     def load_zones(self):
         selected_zone = self.get_selected_zone()
 
@@ -1779,10 +1787,7 @@ class FirewallConfig:
         # zones
         active_zones = self.active_zones.keys()
         for zone in zones:
-            if zone in active_zones:
-                self.zoneStore.append([zone, Pango.Weight.BOLD])
-            else:
-                self.zoneStore.append([zone, Pango.Weight.NORMAL])
+            self._load_store_append(zone, zone in active_zones)
 
         if selected_zone in zones:
             _zone = selected_zone
@@ -2230,10 +2235,7 @@ class FirewallConfig:
                 return
             iter = self.zoneStore.iter_next(iter)
         # not in list, append
-        if zone in self.active_zones:
-            self.zoneStore.append([zone, Pango.Weight.BOLD])
-        else:
-            self.zoneStore.append([zone, Pango.Weight.NORMAL])
+        self._load_store_append(zone, zone in self.active_zones)
         selection = self.zoneView.get_selection()
         if selection.count_selected_rows() == 0:
             selection.select_path(0)
