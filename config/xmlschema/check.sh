@@ -1,20 +1,22 @@
 #!/bin/bash
 
+set -e
+
 # requires libxml2 packages for xmllint
 XMLLINT=/usr/bin/xmllint
 PACKAGE=libxml2
 
-prog=$(basename $0)
+prog="$(basename $0)"
 BASEDIR=$(realpath $(dirname $0))
 
-checkdir=$(pwd)
+checkdir="$PWD"
 while getopts "d:h" arg; do
-    case $arg in
-	d)
-	    checkdir=$OPTARG
-	    ;;
-	h)
-	    cat <<EOF
+    case "$arg" in
+        d)
+            checkdir="$OPTARG"
+            ;;
+        h)
+            cat <<EOF
 Usage: $prog [options]
 
 Checks zone, service and icmptype firewalld config files to be valid.
@@ -27,8 +29,8 @@ Options:
   -d <directory>  Check files in this directory
 
 EOF
-	    exit 0
-	    ;;
+            exit 0
+            ;;
         \?)
             echo "Invalid option: -$OPTARG" >&2
             exit 1
@@ -42,27 +44,41 @@ done
 
 if [ ! -f "$XMLLINT" ]; then
     echo "$XMLLINT is not installed, please install the $PACKAGE package."
-    exit -1
+    exit 1
 fi
 
 if [ ! -d "$checkdir" ]; then
-    echo "Directory '${checkdir}' does not exist"
-    exit -2
+    echo "Directory \"$checkdir\"' does not exist"
+    exit 2
 fi
 
-# Stop execution if something failed
-set -e
+shopt -s nullglob
 
-for keyword in zone service icmptype ipset; do
-    if [ -d "${checkdir}/${keyword}s" ]; then
-	echo "Checking ${keyword}s"
-	pushd "${checkdir}/${keyword}s"
-	ls -f *.xml 2>/dev/null | while read -r file; do
-	    echo -n "  "
-	    $XMLLINT --noout --schema "$BASEDIR"/${keyword}.xsd "${file}"
-	done
-	popd
+ANY_FOUND=0
+
+for keyword in \
+        helper \
+        icmptype \
+        ipset \
+        policy \
+        service \
+        zone \
+    ; do
+    if [ $keyword = policy ]; then
+        dir="${checkdir%%/}/policies"
     else
-	echo "Directory '${checkdir}/${keyword}s' does not exist"
+        dir="${checkdir%%/}/${keyword}s"
     fi
+    echo "Checking ${keyword} in \"$dir\""
+    if [ ! -d "$dir" ]; then
+        echo "  Directory \"$dir\" does not exist."
+        continue
+    fi
+    for f in "$dir/"*.xml ; do
+        ANY_FOUND=1
+        echo -n "  "
+        "$XMLLINT" --noout --schema "$BASEDIR/$keyword.xsd" "$f"
+    done
 done
+
+test "$ANY_FOUND" = 1
