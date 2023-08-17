@@ -375,6 +375,17 @@ CONFIG_FILES = \
 	zones/trusted.xml \
 	zones/work.xml
 
+CONFIG_FILES_TESTS = \
+	tests/policies/libvirt-routed-in.xml \
+	tests/policies/libvirt-routed-out.xml \
+	tests/policies/libvirt-to-host.xml \
+	tests/zones/FedoraServer.xml \
+	tests/zones/FedoraWorkstation.xml \
+	tests/zones/libvirt-routed.xml \
+	tests/zones/libvirt.xml \
+	tests/zones/nm-shared.xml \
+	$(NULL)
+
 EXTRA_DIST = \
 	$(desktop_FILES) \
 	$(appdata_FILES) \
@@ -382,6 +393,7 @@ EXTRA_DIST = \
 	$(polkit1_action_FILES) \
 	$(gsettings_in_file) \
 	$(CONFIG_FILES) \
+	$(CONFIG_FILES_TESTS) \
 	$(dist_xmlschema_DATA) \
 	lockdown-whitelist.xml.in \
 	firewalld.init \
