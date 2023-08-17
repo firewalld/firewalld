@@ -56,11 +56,12 @@ set -e
 for keyword in zone service icmptype ipset; do
     if [ -d "${checkdir}/${keyword}s" ]; then
 	echo "Checking ${keyword}s"
-	cd "${checkdir}/${keyword}s"
+	pushd "${checkdir}/${keyword}s"
 	ls -f *.xml 2>/dev/null | while read -r file; do
 	    echo -n "  "
 	    $XMLLINT --noout --schema "$BASEDIR"/${keyword}.xsd "${file}"
 	done
+	popd
     else
 	echo "Directory '${checkdir}/${keyword}s' does not exist"
     fi
