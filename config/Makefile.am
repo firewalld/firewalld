@@ -541,8 +541,12 @@ install-data-hook:
 		rm -f org.fedoraproject.FirewallD1.policy && \
 		$(LN_S) org.fedoraproject.FirewallD1.server.policy.choice org.fedoraproject.FirewallD1.policy
 
+check-local-xmlschema:
+	./xmlschema/check.sh
+	./xmlschema/check.sh -d ./tests/
+
 # make sure CONFIG_FILES are also in POTFILES
-check-local:
+check-local: check-local-xmlschema
 	@for file in $(filter-out helpers/% %/README.md,$(CONFIG_FILES)); do \
 		if ! grep "$${file}" ${top_srcdir}/po/POTFILES.in > /dev/null; then \
 			echo "$${file} should be in ${abs_top_srcdir}/po/POTFILES.in"; \
