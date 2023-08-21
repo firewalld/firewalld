@@ -614,11 +614,11 @@ class FirewallConfig:
         self.bindingsView.append_column(
             Gtk.TreeViewColumn(_("Bindings"), Gtk.CellRendererText(), markup=0))
         self.connectionsIter = self.bindingsStore.append(
-            None, [ _("Connections"), "", "" ])
+            None, [ escape(_("Connections")), "", "" ])
         self.interfacesIter = self.bindingsStore.append(
-            None, [ _("Interfaces"), "", "" ])
+            None, [ escape(_("Interfaces")), "", "" ])
         self.sourcesIter = self.bindingsStore.append(
-            None, [ _("Sources"), "", "" ])
+            None, [ escape(_("Sources")), "", "" ])
         self.bindingsView.get_selection().connect("changed",
                                                   self.onSelectBinding)
         self.bindingsView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
@@ -2675,13 +2675,13 @@ class FirewallConfig:
             self.changeBindingsButton.set_sensitive(False)
             #self.editBindingsButton.set_sensitive(False)
             return
-        if self.bindingsStore.get_value(parent_iter, 0) == _("Connections"):
+        if self.bindingsStore.get_value(parent_iter, 0) == escape(_("Connections")):
             self.changeBindingsButton.set_sensitive(True)
             #self.editBindingsButton.set_sensitive(False)
-        elif self.bindingsStore.get_value(parent_iter, 0) == _("Interfaces"):
+        elif self.bindingsStore.get_value(parent_iter, 0) == escape(_("Interfaces")):
             self.changeBindingsButton.set_sensitive(True)
             #self.editBindingsButton.set_sensitive(True)
-        elif self.bindingsStore.get_value(parent_iter, 0) == _("Sources"):
+        elif self.bindingsStore.get_value(parent_iter, 0) == escape(_("Sources")):
             self.changeBindingsButton.set_sensitive(True)
             #self.editBindingsButton.set_sensitive(True)
 
@@ -2701,11 +2701,11 @@ class FirewallConfig:
         item = self.bindingsStore.get_value(iter, 1)
         zone = self.bindingsStore.get_value(iter, 2)
 
-        if self.bindingsStore.get_value(parent_iter, 0) == _("Connections"):
+        if self.bindingsStore.get_value(parent_iter, 0) == escape(_("Connections")):
             self.change_zone_connection_editor(None, item, self.connections_name[item], zone)
-        elif self.bindingsStore.get_value(parent_iter, 0) == _("Interfaces"):
+        elif self.bindingsStore.get_value(parent_iter, 0) == escape(_("Interfaces")):
             self.change_zone_interface_editor(None, item, zone)
-        elif self.bindingsStore.get_value(parent_iter, 0) == _("Sources"):
+        elif self.bindingsStore.get_value(parent_iter, 0) == escape(_("Sources")):
             self.change_zone_source_editor(None, item, zone)
 
     #def onEditBindingClicked(self, widget, event):
