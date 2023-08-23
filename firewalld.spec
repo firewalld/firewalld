@@ -234,10 +234,10 @@ fi
 %{_datadir}/firewalld/testsuite/python/firewalld_misc.py
 
 %files -n firewall-applet
-%attr(0755,root,root) %dir %{_sysconfdir}/firewall
 %{_bindir}/firewall-applet
 %defattr(0644,root,root)
 %config(noreplace) %{_sysconfdir}/xdg/autostart/firewall-applet.desktop
+%dir %{_sysconfdir}/firewall
 %config(noreplace) %{_sysconfdir}/firewall/applet.conf
 %{_datadir}/icons/hicolor/*/apps/firewall-applet*.*
 %{_mandir}/man1/firewall-applet*.1*
