@@ -1,7 +1,27 @@
+# SPEC file to build firewalld for testing. It aims to be the template for
+# RHEL/Fedora.
+#
+# This spec file is not directly usable. Instead, it contains __PLACEHOLDERS__ that
+# are adjusted by the accompanying "build.sh" script.
+
+%global version __VERSION__
+%global release_version __RELEASE_VERSION__
+%global snapshot __SNAPSHOT__
+%global git_sha __COMMIT__
+
+%if "x%{?snapshot}" != "x"
+%global snapshot_dot .%{snapshot}
+%endif
+%if "x%{?git_sha}" != "x"
+%global git_sha_dot .%{git_sha}
+%endif
+
+%global snap %{?snapshot_dot}%{?git_sha_dot}
+
 Summary: A firewall daemon with D-Bus interface providing a dynamic firewall
 Name: firewalld
-Version: 2.0.0
-Release: 5%{?dist}
+Version: %{version}
+Release: %{release_version}%{?snap}%{?dist}
 URL:     http://www.firewalld.org
 License: GPLv2+
 Source0: https://github.com/firewalld/firewalld/releases/download/v%{version}/firewalld-%{version}.tar.bz2
@@ -287,7 +307,7 @@ fi
 %{_datadir}/firewalld/testsuite/python/firewalld_config.py
 %{_datadir}/firewalld/testsuite/python/firewalld_direct.py
 %{_datadir}/firewalld/testsuite/python/firewalld_rich.py
-%{_datadir}/firewalld/testsuite/python/firewalld_test.py
+%{_datadir}/firewalld/testsuite/python/firewalld_misc.py
 
 %files -n firewall-applet
 %{_bindir}/firewall-applet
