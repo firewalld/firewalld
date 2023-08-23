@@ -262,9 +262,9 @@ cat "$RPMDIR/firewalld.spec" \
         }" > "$SPECFILE" || die "Error generating spec file \"$SPECFILE\""
 
 for f in \
+    contrib/fedora/rpm/1001-fedora-only-MDNS-default.patch \
     contrib/fedora/rpm/FedoraServer.xml \
     contrib/fedora/rpm/FedoraWorkstation.xml \
-    contrib/fedora/rpm/fedora-only-MDNS-default.patch \
     contrib/fedora/rpm/org.fedoraproject.FirewallD1.desktop.rules.choice \
     "$TARBALL" \
     ; do

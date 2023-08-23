@@ -28,7 +28,29 @@ Source0: https://github.com/firewalld/firewalld/releases/download/v%{version}/fi
 Source1: FedoraServer.xml
 Source2: FedoraWorkstation.xml
 Source3: org.fedoraproject.FirewallD1.desktop.rules.choice
-Patch0: fedora-only-MDNS-default.patch
+
+# The patches starting from 0001+ are downstream-only patches that apply
+# on both Fedora and RHEL.
+# They always apply, also after are rebase to a newer release tarball.
+#Patch0001: 0001-some.patch
+
+%if 0%{?fedora}
+# The patches starting from 1001+ are downstream-only patches only for Fedora.
+# They always apply, also after are rebase to a newer release tarball.
+Patch1001: 1001-fedora-only-MDNS-default.patch
+%endif
+
+%if 0%{?rhel}
+# The patches starting from 2001+ are downstream-only patches only for RHEL.
+# They always apply, also after are rebase to a newer release tarball.
+#Patch2001: 2001-some.patch
+%endif
+
+# The patches starting from 9001+ are bugfix patches.
+# They can be dropped after the rebase of the tarball (as the fix is already
+# upstream).
+#Patch9001: 9001-some.patch
+
 BuildArch: noarch
 BuildRequires: autoconf
 BuildRequires: automake
