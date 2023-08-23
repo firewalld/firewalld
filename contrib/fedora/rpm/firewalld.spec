@@ -23,7 +23,7 @@ Name: firewalld
 Version: %{version}
 Release: %{release_version}%{?snap}%{?dist}
 URL:     http://firewalld.org
-License: GPLv2+
+License: GPL-2.0-or-later
 Source0: https://github.com/firewalld/firewalld/releases/download/v%{version}/firewalld-%{version}.tar.bz2
 Source1: FedoraServer.xml
 Source2: FedoraWorkstation.xml
@@ -67,8 +67,6 @@ Summary: Python3 bindings for firewalld
 
 %{?python_provide:%python_provide python3-firewall}
 
-Obsoletes: python-firewall < 0.5.2-2
-Obsoletes: python2-firewall < 0.5.2-2
 Requires: python3-dbus
 Requires: python3-gobject-base
 Requires: python3-nftables
@@ -127,12 +125,11 @@ firewalld.
 
 %build
 %configure --enable-sysconfig --enable-rpmmacros PYTHON="%{__python3} %{py3_shbang_opts}"
-# Enable the make line if there are patches affecting man pages to
-# regenerate them
 make %{?_smp_mflags}
 
 %install
 make install DESTDIR=%{buildroot}
+
 desktop-file-install --delete-original \
   --dir %{buildroot}%{_sysconfdir}/xdg/autostart \
   %{buildroot}%{_sysconfdir}/xdg/autostart/firewall-applet.desktop
@@ -162,12 +159,6 @@ sed -i 's|^DefaultZone=.*|DefaultZone=FedoraWorkstation|g' \
     %{buildroot}%{_sysconfdir}/firewalld/firewalld-workstation.conf
 
 rm -f %{buildroot}%{_datadir}/polkit-1/actions/org.fedoraproject.FirewallD1.policy
-
-# remove file mistakenly added to upstream dist tarball
-rm -f %{buildroot}%{_datadir}/man/man1/firewallctl.1
-
-# conflicts with kodi-firewalld package, bug #2129946
-rm -f %{buildroot}%{_prefix}/lib/firewalld/services/kodi-*.xml
 
 %find_lang %{name} --all-name
 
@@ -217,7 +208,7 @@ if [ ! -e %{_datadir}/polkit-1/actions/org.fedoraproject.FirewallD1.policy ]; th
 fi
 
 %files -f %{name}.lang
-%doc COPYING README.md
+%doc COPYING README.md CODE_OF_CONDUCT.md
 %{_sbindir}/firewalld
 %{_bindir}/firewall-cmd
 %{_bindir}/firewall-offline-cmd
@@ -232,6 +223,8 @@ fi
 %{_prefix}/lib/firewalld/ipsets/README.md
 %{_prefix}/lib/firewalld/policies/*.xml
 %{_prefix}/lib/firewalld/services/*.xml
+%{_prefix}/lib/firewalld/xmlschema/*.xsd
+%{_prefix}/lib/firewalld/xmlschema/check.sh
 %{_prefix}/lib/firewalld/zones/*.xml
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld
 %ghost %config(noreplace) %{_sysconfdir}/firewalld/firewalld.conf
@@ -288,6 +281,7 @@ fi
 %dir %{_prefix}/lib/firewalld/policies
 %dir %{_prefix}/lib/firewalld/services
 %dir %{_prefix}/lib/firewalld/zones
+%dir %{_prefix}/lib/firewalld/xmlschema
 %{_rpmconfigdir}/macros.d/macros.firewalld
 
 %files -n firewalld-test
