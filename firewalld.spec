@@ -18,12 +18,16 @@ BuildRequires: docbook-style-xsl
 BuildRequires: libxslt
 BuildRequires: iptables, ebtables, ipset
 BuildRequires: python3-devel
+BuildRequires: make
 Recommends: iptables, ebtables, ipset
+Suggests: iptables-nft
 Requires(post): systemd
 Requires(preun): systemd
 Requires(postun): systemd
 Requires: firewalld-filesystem = %{version}-%{release}
 Requires: python3-firewall  = %{version}-%{release}
+Conflicts: selinux-policy < 3.14.1-28
+Conflicts: cockpit-ws < 173-2
 Recommends: libcap-ng-python3
 
 %description
@@ -32,13 +36,12 @@ firewall with a D-Bus interface.
 
 %package -n python3-firewall
 Summary: Python3 bindings for firewalld
+
+%{?python_provide:%python_provide python3-firewall}
+
 Requires: python3-dbus
-Requires: python3-nftables
-%if (0%{?fedora} >= 23 || 0%{?rhel} >= 8)
 Requires: python3-gobject-base
-%else
-Requires: python3-gobject
-%endif
+Requires: python3-nftables
 
 %description -n python3-firewall
 Python3 bindings for firewalld.
@@ -64,7 +67,7 @@ Requires: hicolor-icon-theme
 %if (0%{?fedora} >= 39 || 0%{?rhel} >= 10)
 Requires: python3-pyqt6
 %else
-Requires: python3-qt5
+Requires: python3-qt5-base
 %endif
 Requires: python3-gobject
 Requires: libnotify
@@ -90,11 +93,11 @@ The firewall configuration application provides an configuration interface for
 firewalld.
 
 %prep
-%autosetup
+%autosetup -p1
 ./autogen.sh
 
 %build
-%configure --enable-sysconfig --enable-rpmmacros PYTHON=%{__python3}
+%configure --enable-sysconfig --enable-rpmmacros PYTHON="%{__python3} %{py3_shbang_opts}"
 make %{?_smp_mflags}
 
 %install
@@ -176,7 +179,6 @@ fi
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld/zones
 %defattr(0644,root,root)
 %config(noreplace) %{_sysconfdir}/sysconfig/firewalld
-#%attr(0755,root,root) %{_initrddir}/firewalld
 %{_unitdir}/firewalld.service
 %config(noreplace) %{_datadir}/dbus-1/system.d/FirewallD.conf
 %{_datadir}/polkit-1/actions/org.fedoraproject.FirewallD1.desktop.policy.choice
