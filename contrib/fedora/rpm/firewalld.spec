@@ -22,7 +22,7 @@ Summary: A firewall daemon with D-Bus interface providing a dynamic firewall
 Name: firewalld
 Version: %{version}
 Release: %{release_version}%{?snap}%{?dist}
-URL:     http://www.firewalld.org
+URL:     http://firewalld.org
 License: GPLv2+
 Source0: https://github.com/firewalld/firewalld/releases/download/v%{version}/firewalld-%{version}.tar.bz2
 Source1: FedoraServer.xml
