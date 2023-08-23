@@ -46,7 +46,7 @@ Obsoletes: firewalld-config-server <= 0.3.15
 Obsoletes: firewalld-config-workstation <= 0.3.15
 
 %description
-firewalld is a firewall service daemon that provides a dynamic customizable 
+firewalld is a firewall service daemon that provides a dynamic customizable
 firewall with a D-Bus interface.
 
 %package -n python3-firewall
@@ -82,8 +82,8 @@ Requires: %{name} = %{version}-%{release}
 Requires: firewall-config = %{version}-%{release}
 Requires: hicolor-icon-theme
 %if (0%{?fedora} >= 39 || 0%{?rhel} >= 10)
-Requires: python3-pyqt6                   
-%else                                     
+Requires: python3-pyqt6
+%else
 Requires: python3-qt5-base
 %endif
 Requires: python3-gobject
@@ -92,7 +92,7 @@ Requires: NetworkManager-libnm
 Requires: dbus-x11
 
 %description -n firewall-applet
-The firewall panel applet provides a status information of firewalld and also 
+The firewall panel applet provides a status information of firewalld and also
 the firewall settings.
 
 %package -n firewall-config
@@ -106,7 +106,7 @@ Requires: dbus-x11
 Recommends: polkit
 
 %description -n firewall-config
-The firewall configuration application provides an configuration interface for 
+The firewall configuration application provides an configuration interface for
 firewalld.
 
 %prep
