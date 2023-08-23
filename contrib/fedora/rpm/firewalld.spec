@@ -227,12 +227,12 @@ fi
 %{_datadir}/zsh/site-functions/_firewalld
 %{_datadir}/polkit-1/rules.d/org.fedoraproject.FirewallD1.desktop.rules.choice
 %ghost %config(missingok,noreplace) %{_datadir}/polkit-1/rules.d/org.fedoraproject.FirewallD1.rules
+%{_prefix}/lib/firewalld/helpers/*.xml
 %{_prefix}/lib/firewalld/icmptypes/*.xml
 %{_prefix}/lib/firewalld/ipsets/README.md
 %{_prefix}/lib/firewalld/policies/*.xml
 %{_prefix}/lib/firewalld/services/*.xml
 %{_prefix}/lib/firewalld/zones/*.xml
-%{_prefix}/lib/firewalld/helpers/*.xml
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld
 %ghost %config(noreplace) %{_sysconfdir}/firewalld/firewalld.conf
 %config(noreplace) %{_sysconfdir}/firewalld/firewalld-standard.conf

@@ -157,14 +157,14 @@ fi
 %{_datadir}/bash-completion/completions/firewall-cmd
 %dir %{_datadir}/zsh/site-functions
 %{_datadir}/zsh/site-functions/_firewalld
+%{_prefix}/lib/firewalld/helpers/*.xml
 %{_prefix}/lib/firewalld/icmptypes/*.xml
 %{_prefix}/lib/firewalld/ipsets/README.md
 %{_prefix}/lib/firewalld/policies/*.xml
 %{_prefix}/lib/firewalld/services/*.xml
-%{_prefix}/lib/firewalld/zones/*.xml
-%{_prefix}/lib/firewalld/helpers/*.xml
-%{_prefix}/lib/firewalld/xmlschema/check.sh
 %{_prefix}/lib/firewalld/xmlschema/*.xsd
+%{_prefix}/lib/firewalld/xmlschema/check.sh
+%{_prefix}/lib/firewalld/zones/*.xml
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld
 %config(noreplace) %{_sysconfdir}/firewalld/firewalld.conf
 %config(noreplace) %{_sysconfdir}/firewalld/lockdown-whitelist.xml
