@@ -50,7 +50,6 @@ Requires(preun): systemd
 Requires(postun): systemd
 Requires: firewalld-filesystem = %{version}-%{release}
 Requires: python3-firewall  = %{version}-%{release}
-Obsoletes: firewalld-selinux < 0.4.4.2-2
 Conflicts: selinux-policy < 3.14.1-28
 Conflicts: cockpit-ws < 173-2
 Recommends: libcap-ng-python3
