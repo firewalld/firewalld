@@ -58,12 +58,6 @@ Provides: variant_config(Server)
 Provides: variant_config(Workstation)
 Provides: variant_config(KDE Plasma)
 
-# Remove old config subpackages
-Obsoletes: firewalld-config-standard <= 0.3.15
-Obsoletes: firewalld-config-cloud <= 0.3.15
-Obsoletes: firewalld-config-server <= 0.3.15
-Obsoletes: firewalld-config-workstation <= 0.3.15
-
 %description
 firewalld is a firewall service daemon that provides a dynamic customizable
 firewall with a D-Bus interface.
