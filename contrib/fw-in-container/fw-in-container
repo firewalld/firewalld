@@ -235,6 +235,7 @@ journalctl -u firewalld.service --since '3 min ago'
 m
 make
 make install
+make check TESTSUITEFLAGS="-j\$(nproc)"
 n
 net-setup.sh
 net-setup.sh --prefix eth -i 1
