@@ -18,6 +18,18 @@
 
 %global snap %{?snapshot_dot}%{?git_sha_dot}
 
+%if 0%{?fedora}
+%bcond_without fedora_variant
+%else
+%bcond_with    fedora_variant
+%endif
+
+%if 0%{?rhel}
+%bcond_with    firewalld_test
+%else
+%bcond_without firewalld_test
+%endif
+
 Summary: A firewall daemon with D-Bus interface providing a dynamic firewall
 Name: firewalld
 Version: %{version}
@@ -38,12 +50,16 @@ Source3: org.fedoraproject.FirewallD1.desktop.rules.choice
 # The patches starting from 1001+ are downstream-only patches only for Fedora.
 # They always apply, also after are rebase to a newer release tarball.
 Patch1001: 1001-fedora-only-MDNS-default.patch
+%else
+Source1001: 1001-fedora-only-MDNS-default.patch
 %endif
 
 %if 0%{?rhel}
 # The patches starting from 2001+ are downstream-only patches only for RHEL.
 # They always apply, also after are rebase to a newer release tarball.
-#Patch2001: 2001-some.patch
+Patch2001: 2001-RHEL-only-Add-cockpit-by-default-to-some-zones.patch
+%else
+Source2001: 2001-RHEL-only-Add-cockpit-by-default-to-some-zones.patch
 %endif
 
 # The patches starting from 9001+ are bugfix patches.
@@ -76,9 +92,11 @@ Conflicts: selinux-policy < 3.14.1-28
 Conflicts: cockpit-ws < 173-2
 Recommends: libcap-ng-python3
 
+%if %{with fedora_variant}
 Provides: variant_config(Server)
 Provides: variant_config(Workstation)
 Provides: variant_config(KDE Plasma)
+%endif
 
 %description
 firewalld is a firewall service daemon that provides a dynamic customizable
@@ -103,11 +121,13 @@ Summary: Firewalld directory layout and rpm macros
 This package provides directories and rpm macros which
 are required by other packages that add firewalld configuration files.
 
+%if %{with firewalld_test}
 %package -n firewalld-test
 Summary: Firewalld testsuite
 
 %description -n firewalld-test
 This package provides the firewalld testsuite.
+%endif
 
 %package -n firewall-applet
 Summary: Firewall panel applet
@@ -142,6 +162,29 @@ Recommends: polkit
 The firewall configuration application provides an configuration interface for
 firewalld.
 
+%if 0%{?rhel} && 0%{?rhel} < 10
+%pretrans -p <lua>
+-- HACK: Old rpm versions had an untracked (%ghost) symlink for
+-- /etc/firewalld/firewalld.conf. RPM won't handle replacing the symlink due to
+-- "%config(noreplace)". As such, we remove the symlink here before attempting
+-- to install the new version which is a real file. Only replace the symlink if
+-- the target matches one of the previous package's expected targets.
+--
+-- Unfortunately this must be done in pretrans in order to occur before RPM
+-- makes decisions about file replacement.
+--
+local old_package_symlinks = {"firewalld-standard.conf", "firewalld-server.conf",
+                              "firewalld-workstation.conf"}
+
+local symlink_target = posix.readlink("%{_sysconfdir}/firewalld/firewalld.conf")
+for k,v in ipairs(old_package_symlinks) do
+  if symlink_target == v then
+    posix.unlink("%{_sysconfdir}/firewalld/firewalld.conf")
+    break
+  end
+end
+%endif
+
 %prep
 %autosetup -p1
 
@@ -160,10 +203,17 @@ desktop-file-install --delete-original \
   %{buildroot}%{_datadir}/applications/firewall-config.desktop
 
 install -d -m 755 %{buildroot}%{_prefix}/lib/firewalld/zones/
+
+%if 0%{?fedora}
 install -c -m 644 %{SOURCE1} %{buildroot}%{_prefix}/lib/firewalld/zones/FedoraServer.xml
 install -c -m 644 %{SOURCE2} %{buildroot}%{_prefix}/lib/firewalld/zones/FedoraWorkstation.xml
-install -m 644 -D %{SOURCE3} %{buildroot}%{_datadir}/polkit-1/rules.d/org.fedoraproject.FirewallD1.desktop.rules.choice
+%endif
 
+%if %{with fedora_variant}
+install -m 644 -D %{SOURCE3} %{buildroot}%{_datadir}/polkit-1/rules.d/org.fedoraproject.FirewallD1.desktop.rules.choice
+%endif
+
+%if %{with fedora_variant}
 # standard firewalld.conf
 mv %{buildroot}%{_sysconfdir}/firewalld/firewalld.conf \
     %{buildroot}%{_sysconfdir}/firewalld/firewalld-standard.conf
@@ -181,6 +231,7 @@ sed -i 's|^DefaultZone=.*|DefaultZone=FedoraWorkstation|g' \
     %{buildroot}%{_sysconfdir}/firewalld/firewalld-workstation.conf
 
 rm -f %{buildroot}%{_datadir}/polkit-1/actions/org.fedoraproject.FirewallD1.policy
+%endif
 
 %find_lang %{name} --all-name
 
@@ -193,6 +244,7 @@ rm -f %{buildroot}%{_datadir}/polkit-1/actions/org.fedoraproject.FirewallD1.poli
 %postun
 %systemd_postun_with_restart firewalld.service
 
+%if %{with fedora_variant}
 %posttrans
 # If we don't yet have a symlink or existing file for firewalld.conf,
 # create it. Note: this will intentionally reset the policykit policy
@@ -228,6 +280,7 @@ if [ ! -e %{_datadir}/polkit-1/actions/org.fedoraproject.FirewallD1.policy ]; th
             rm -f %{_datadir}/polkit-1/rules.d/org.fedoraproject.FirewallD1.rules || :
     esac
 fi
+%endif
 
 %files -f %{name}.lang
 %doc COPYING README.md CODE_OF_CONDUCT.md
@@ -238,8 +291,10 @@ fi
 %{_datadir}/bash-completion/completions/firewall-cmd
 %dir %{_datadir}/zsh/site-functions
 %{_datadir}/zsh/site-functions/_firewalld
+%if %{with fedora_variant}
 %{_datadir}/polkit-1/rules.d/org.fedoraproject.FirewallD1.desktop.rules.choice
 %ghost %config(missingok,noreplace) %{_datadir}/polkit-1/rules.d/org.fedoraproject.FirewallD1.rules
+%endif
 %{_prefix}/lib/firewalld/helpers/*.xml
 %{_prefix}/lib/firewalld/icmptypes/*.xml
 %{_prefix}/lib/firewalld/ipsets/README.md
@@ -249,10 +304,14 @@ fi
 %{_prefix}/lib/firewalld/xmlschema/check.sh
 %{_prefix}/lib/firewalld/zones/*.xml
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld
+%if %{with fedora_variant}
 %ghost %config(noreplace) %{_sysconfdir}/firewalld/firewalld.conf
 %config(noreplace) %{_sysconfdir}/firewalld/firewalld-standard.conf
 %config(noreplace) %{_sysconfdir}/firewalld/firewalld-server.conf
 %config(noreplace) %{_sysconfdir}/firewalld/firewalld-workstation.conf
+%else
+%config(noreplace) %{_sysconfdir}/firewalld/firewalld.conf
+%endif
 %config(noreplace) %{_sysconfdir}/firewalld/lockdown-whitelist.xml
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld/helpers
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld/icmptypes
@@ -266,12 +325,20 @@ fi
 %config(noreplace) %{_datadir}/dbus-1/system.d/FirewallD.conf
 %{_datadir}/polkit-1/actions/org.fedoraproject.FirewallD1.desktop.policy.choice
 %{_datadir}/polkit-1/actions/org.fedoraproject.FirewallD1.server.policy.choice
+%if %{with fedora_variant}
 %ghost %{_datadir}/polkit-1/actions/org.fedoraproject.FirewallD1.policy
+%else
+%{_datadir}/polkit-1/actions/org.fedoraproject.FirewallD1.policy
+%endif
 %{_mandir}/man1/firewall*cmd*.1*
 %{_mandir}/man1/firewalld*.1*
 %{_mandir}/man5/firewall*.5*
 %{_sysconfdir}/modprobe.d/firewalld-sysctls.conf
 %config(noreplace) %{_sysconfdir}/logrotate.d/firewalld
+
+%if %{without firewalld_test}
+%exclude %{_datadir}/firewalld/testsuite
+%endif
 
 %files -n python3-firewall
 %attr(0755,root,root) %dir %{python3_sitelib}/firewall
@@ -306,6 +373,7 @@ fi
 %dir %{_prefix}/lib/firewalld/xmlschema
 %{_rpmconfigdir}/macros.d/macros.firewalld
 
+%if %{with firewalld_test}
 %files -n firewalld-test
 %dir %{_datadir}/firewalld/testsuite
 %{_datadir}/firewalld/testsuite/README.md
@@ -317,6 +385,7 @@ fi
 %{_datadir}/firewalld/testsuite/python/firewalld_direct.py
 %{_datadir}/firewalld/testsuite/python/firewalld_rich.py
 %{_datadir}/firewalld/testsuite/python/firewalld_misc.py
+%endif
 
 %files -n firewall-applet
 %{_bindir}/firewall-applet

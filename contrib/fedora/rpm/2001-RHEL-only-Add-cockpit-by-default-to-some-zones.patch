@@ -1,0 +1,99 @@
+From 4393a93f777973ee35f69e16d2be36dc24536f46 Mon Sep 17 00:00:00 2001
+From: Eric Garver <egarver@redhat.com>
+Date: Tue, 25 May 2021 13:31:41 -0400
+Subject: [PATCH 1/1] RHEL only: Add cockpit by default to some zones
+
+Fixes: #1581578
+---
+ config/zones/home.xml     |  1 +
+ config/zones/internal.xml |  1 +
+ config/zones/public.xml   |  1 +
+ config/zones/work.xml     |  1 +
+ src/tests/functions.at    | 20 ++++++++++++++++++++
+ 5 files changed, 24 insertions(+)
+
+diff --git a/config/zones/home.xml b/config/zones/home.xml
+index d73c9bdb16b6..33064688367e 100644
+--- a/config/zones/home.xml
++++ b/config/zones/home.xml
+@@ -6,5 +6,6 @@
+   <service name="mdns"/>
+   <service name="samba-client"/>
+   <service name="dhcpv6-client"/>
++  <service name="cockpit"/>
+   <forward/>
+ </zone>
+diff --git a/config/zones/internal.xml b/config/zones/internal.xml
+index 053c18ccda8b..852b16ad94dd 100644
+--- a/config/zones/internal.xml
++++ b/config/zones/internal.xml
+@@ -6,5 +6,6 @@
+   <service name="mdns"/>
+   <service name="samba-client"/>
+   <service name="dhcpv6-client"/>
++  <service name="cockpit"/>
+   <forward/>
+ </zone>
+diff --git a/config/zones/public.xml b/config/zones/public.xml
+index 49fc4c20af52..62bc751de448 100644
+--- a/config/zones/public.xml
++++ b/config/zones/public.xml
+@@ -4,5 +4,6 @@
+   <description>For use in public areas. You do not trust the other computers on networks to not harm your computer. Only selected incoming connections are accepted.</description>
+   <service name="ssh"/>
+   <service name="dhcpv6-client"/>
++  <service name="cockpit"/>
+   <forward/>
+ </zone>
+diff --git a/config/zones/work.xml b/config/zones/work.xml
+index f1a14a9b4682..27b54a7783c4 100644
+--- a/config/zones/work.xml
++++ b/config/zones/work.xml
+@@ -4,5 +4,6 @@
+   <description>For use in work areas. You mostly trust the other computers on networks to not harm your computer. Only selected incoming connections are accepted.</description>
+   <service name="ssh"/>
+   <service name="dhcpv6-client"/>
++  <service name="cockpit"/>
+   <forward/>
+ </zone>
+diff --git a/src/tests/functions.at b/src/tests/functions.at
+index 33582928888c..b63a2685a05b 100644
+--- a/src/tests/functions.at
++++ b/src/tests/functions.at
+@@ -129,6 +129,14 @@ m4_define([FWD_START_TEST], [
+     fi
+ 
+     m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [
++        AT_KEYWORDS(offline)
++        dnl cockpit is added by default downstream, but upstream tests don't expect
++        dnl it. Simply remove it at the start of every test.
++        dnl
++        FWD_OFFLINE_CHECK([--zone home --remove-service-from-zone cockpit], 0, [ignore])
++        FWD_OFFLINE_CHECK([--zone internal --remove-service-from-zone cockpit], 0, [ignore])
++        FWD_OFFLINE_CHECK([--zone public --remove-service-from-zone cockpit], 0, [ignore])
++        FWD_OFFLINE_CHECK([--zone work --remove-service-from-zone cockpit], 0, [ignore])
+     ], [
+         dnl set the appropriate backend
+         AT_CHECK([sed -i 's/^FirewallBackend.*/FirewallBackend=FIREWALL_BACKEND/' ./firewalld.conf])
+@@ -260,6 +268,18 @@ m4_define([FWD_START_TEST], [
+         ])
+ 
+         FWD_START_FIREWALLD
++
++        dnl cockpit is added by default downstream, but upstream tests don't expect
++        dnl it. Simply remove it at the start of every test.
++        dnl
++        FWD_CHECK([--permanent --zone home --remove-service cockpit], 0, [ignore])
++        FWD_CHECK([            --zone home --remove-service cockpit], 0, [ignore])
++        FWD_CHECK([--permanent --zone internal --remove-service cockpit], 0, [ignore])
++        FWD_CHECK([            --zone internal --remove-service cockpit], 0, [ignore])
++        FWD_CHECK([--permanent --zone public --remove-service cockpit], 0, [ignore])
++        FWD_CHECK([            --zone public --remove-service cockpit], 0, [ignore])
++        FWD_CHECK([--permanent --zone work --remove-service cockpit], 0, [ignore])
++        FWD_CHECK([            --zone work --remove-service cockpit], 0, [ignore])
+     ])
+ ])
+ 
+-- 
+2.41.0
+

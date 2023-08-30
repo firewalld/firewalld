@@ -263,6 +263,7 @@ cat "$RPMDIR/firewalld.spec" \
 
 for f in \
     contrib/fedora/rpm/1001-fedora-only-MDNS-default.patch \
+    contrib/fedora/rpm/2001-RHEL-only-Add-cockpit-by-default-to-some-zones.patch \
     contrib/fedora/rpm/FedoraServer.xml \
     contrib/fedora/rpm/FedoraWorkstation.xml \
     contrib/fedora/rpm/org.fedoraproject.FirewallD1.desktop.rules.choice \
