@@ -323,6 +323,7 @@ CONFIG_FILES = \
 	services/steam-streaming.xml \
 	services/stellaris.xml \
 	services/stronghold-crusader.xml \
+	services/submission.xml \
 	services/supertuxkart.xml \
 	services/svdrp.xml \
 	services/svn.xml \
