@@ -125,6 +125,7 @@ CONFIG_FILES = \
 	policies/allow-host-ipv6.xml \
 	services/0-AD.xml \
 	services/afp.xml \
+	services/alvr.xml \
 	services/amanda-client.xml \
 	services/amanda-k5-client.xml \
 	services/amqp.xml \
