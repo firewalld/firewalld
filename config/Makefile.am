@@ -328,6 +328,7 @@ CONFIG_FILES = \
 	services/ssh.xml \
 	services/statsrv.xml \
 	services/steam-streaming.xml \
+	services/steam-lan-transfer.xml \
 	services/stellaris.xml \
 	services/stronghold-crusader.xml \
 	services/submission.xml \
