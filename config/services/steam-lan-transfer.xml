@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>Steam Local Network Game Transfer</short>
+  <description>Allow transfer of game files between devices on the local network.</description>
+  <port protocol="tcp" port="27040" />
+  <port protocol="udp" port="27031-27036" />
+</service>
+
