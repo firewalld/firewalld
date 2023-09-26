@@ -460,7 +460,7 @@ class FirewallD(DbusServiceObject):
         config_names = self.config.getZoneNames()
         for name in self.fw.zone.get_zones():
             conf = self.getZoneSettings2(name)
-            settings = FirewallClientZoneSettings(conf)
+            settings = FirewallClientZoneSettings(copy.deepcopy(conf))
             changed = False
             for interface in settings.getInterfaces():
                 if interface in self.fw._nm_assigned_interfaces:
