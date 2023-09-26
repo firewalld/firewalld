@@ -1,0 +1,29 @@
+FWD_START_TEST([interfaces present after --runtime-to-permanent])
+AT_KEYWORDS(zone rhel-5802)
+
+START_NETWORKMANAGER()
+
+NMCLI_CHECK([connection add type dummy con-name dummy0 ifname dummy0 ip4 10.0.0.2 gw4 10.0.0.1], 0, [ignore])
+echo NS_CMD([nmcli connection delete dummy0]) >> ./cleanup
+NMCLI_CHECK([connection show dummy0], 0, [ignore])
+NMCLI_CHECK([connection up dummy0], 0, [ignore])
+NMCLI_CHECK([-f connection.zone connection show dummy0], 0, [dnl
+connection.zone:                        --
+])
+
+FWD_CHECK([--permanent --zone internal --change-interface dummy0], 0, [ignore], [ignore])
+NMCLI_CHECK([-f connection.zone connection show dummy0], 0, [dnl
+connection.zone:                        internal
+])
+
+FWD_CHECK([--get-zone-of-interface dummy0], 0, [dnl
+internal
+])
+
+FWD_CHECK([--runtime-to-permanent], 0, [ignore])
+
+FWD_CHECK([--get-zone-of-interface dummy0], 0, [dnl
+internal
+])
+
+FWD_END_TEST()
