@@ -439,6 +439,8 @@ m4_define([NFT_LIST_RULES_NORMALIZE], [dnl
         -e ['s/\(icmp\|icmpv6\|icmpx\) type \([a-z-]\+\)/\1 \2/g'] dnl
         dnl transform bare "reject" to "reject with icmp port-unreachable"
         -e ['s/reject$/reject with icmp port-unreachable/g'] dnl
+        dnl newer nft always outputs the default value of "burst"
+        -e ['s/burst 5 packets //g'] dnl
 ])
 
 m4_define([NFT_LIST_RULES_ALWAYS], [
