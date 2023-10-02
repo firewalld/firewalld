@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-05 10:57-0500\n"
+"POT-Creation-Date: 2023-06-23 13:46-0400\n"
 "PO-Revision-Date: 2016-01-04 12:15+0000\n"
 "Last-Translator: Copied by Zanata <copied-by-zanata@zanata.org>\n"
 "Language-Team: Assamese (http://www.transifex.com/projects/p/firewalld/"
@@ -25,7 +25,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Zanata 4.6.2\n"
 
-#: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:408
+#: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:417
 msgid "Firewall Applet"
 msgstr "ফায়াৰৱাল এপ্লেট"
 
@@ -42,41 +42,41 @@ msgstr "ফায়াৰ্ৱাল বিন্যাস"
 msgid "firewall;network;security;iptables;netfilter;"
 msgstr "firewall;network;security;iptables;netfilter;"
 
-#: ../src/firewall-applet.in:84 ../src/firewall-config.in:7997
+#: ../src/firewall-applet.in:93 ../src/firewall-config.in:7998
 #, c-format
 msgid "Select zone for interface '%s'"
 msgstr "আন্তঃপৃষ্ঠ '%s' ৰ বাবে অঞ্চল বাছক"
 
-#: ../src/firewall-applet.in:124 ../src/firewall-applet.in:131
-#: ../src/firewall-applet.in:137 ../src/firewall-config.in:2449
-#: ../src/firewall-config.in:8043 ../src/firewall-config.in:8051
-#: ../src/firewall-config.in:8084 ../src/firewall-config.glade.h:8
+#: ../src/firewall-applet.in:133 ../src/firewall-applet.in:140
+#: ../src/firewall-applet.in:146 ../src/firewall-config.in:2449
+#: ../src/firewall-config.in:8044 ../src/firewall-config.in:8052
+#: ../src/firewall-config.in:8085 ../src/firewall-config.glade.h:8
 msgid "Default Zone"
 msgstr "অবিকল্পিত অঞ্চল"
 
-#: ../src/firewall-applet.in:158 ../src/firewall-config.in:8077
+#: ../src/firewall-applet.in:167 ../src/firewall-config.in:8078
 #, c-format
 msgid "Select zone for connection '%s'"
 msgstr "সংযোগ '%s' ৰ বাবে অঞ্চল বাছক"
 
-#: ../src/firewall-applet.in:168 ../src/firewall-config.in:3936
+#: ../src/firewall-applet.in:177 ../src/firewall-config.in:3937
 msgid "Failed to set zone {zone} for connection {connection_name}"
 msgstr ""
 
-#: ../src/firewall-applet.in:182
+#: ../src/firewall-applet.in:191
 #, c-format
 msgid "Select zone for source '%s'"
 msgstr ""
 
-#: ../src/firewall-applet.in:199
+#: ../src/firewall-applet.in:208
 msgid "Configure Shields Up/Down Zones"
 msgstr "শিল্ড আপ/ডাউন অঞ্চলবোৰ সংৰূপণ কৰক"
 
-#: ../src/firewall-applet.in:212
+#: ../src/firewall-applet.in:221
 msgid "Here you can select the zones used for Shields Up and Shields Down."
 msgstr "ইয়াত আপুনি শিল্ড আপ আৰু শিল্ড ডাউনৰ বাবে ব্যৱহৃত অঞ্চলবোৰ বাছিব পাৰিব।"
 
-#: ../src/firewall-applet.in:218
+#: ../src/firewall-applet.in:227
 msgid ""
 "This feature is useful for people using the default zones mostly. For users, "
 "that are changing zones of connections, it might be of limited use."
@@ -84,178 +84,178 @@ msgstr ""
 "এই বৈশিষ্ট্য অবিকল্পিত অঞ্চলবোৰ ব্যৱহাৰ কৰা লোকৰ বাবে উপযোগী। ব্যৱহাৰকাৰীসকল, "
 "যিসকলে সংযোগসমূহৰ অঞ্চলসমূহ পৰিবৰ্তন কৰি আছে, ইয়াৰ ব্যৱহাৰ সীমিত হব।"
 
-#: ../src/firewall-applet.in:227
+#: ../src/firewall-applet.in:236
 msgid "Shields Up Zone:"
 msgstr "শিল্ড আপ অঞ্চল:"
 
-#: ../src/firewall-applet.in:236 ../src/firewall-applet.in:249
+#: ../src/firewall-applet.in:245 ../src/firewall-applet.in:258
 msgid "Reset To Default"
 msgstr ""
 
-#: ../src/firewall-applet.in:240
+#: ../src/firewall-applet.in:249
 msgid "Shields Down Zone:"
 msgstr "শিল্ড ডাউন অঞ্চল:"
 
-#: ../src/firewall-applet.in:332
+#: ../src/firewall-applet.in:341
 #, c-format
 msgid "About %s"
 msgstr ""
 
-#: ../src/firewall-applet.in:383
+#: ../src/firewall-applet.in:392
 msgid "Authors"
 msgstr ""
 
-#: ../src/firewall-applet.in:393
+#: ../src/firewall-applet.in:402
 msgid "License"
 msgstr ""
 
-#: ../src/firewall-applet.in:462
+#: ../src/firewall-applet.in:471
 msgid "Shields Up"
 msgstr "শিল্ড আপ"
 
-#: ../src/firewall-applet.in:469
+#: ../src/firewall-applet.in:478
 msgid "Enable Notifications"
 msgstr "অধিসূচনাসমূহ সামৰ্থবান কৰক"
 
-#: ../src/firewall-applet.in:475
+#: ../src/firewall-applet.in:484
 msgid "Edit Firewall Settings..."
 msgstr "ফায়াৰৱাল সংহতিসমূহ সম্পাদনা কৰক..."
 
-#: ../src/firewall-applet.in:479 ../src/firewall-config.glade.h:61
+#: ../src/firewall-applet.in:488 ../src/firewall-config.glade.h:61
 msgid "Change Zones of Connections..."
 msgstr "সংযোগসমূহৰ অঞ্চলবোৰ পৰিবৰ্তন কৰক..."
 
-#: ../src/firewall-applet.in:483
+#: ../src/firewall-applet.in:492
 msgid "Configure Shields UP/Down Zones..."
 msgstr "শিল্ড আপ/ডাউন অঞ্চলবোৰ সংৰূপণ কৰক..."
 
-#: ../src/firewall-applet.in:487
+#: ../src/firewall-applet.in:496
 msgid "Block all network traffic"
 msgstr "সকলো নেটৱাৰ্ক ট্ৰাফিক ৰোধ কৰক"
 
-#: ../src/firewall-applet.in:492
+#: ../src/firewall-applet.in:501
 msgid "About"
 msgstr ""
 
-#: ../src/firewall-applet.in:500 ../src/firewall-config.in:618
+#: ../src/firewall-applet.in:509 ../src/firewall-config.in:618
 #: ../src/firewall-config.in:2389 ../src/firewall-config.in:2679
 #: ../src/firewall-config.in:2705
 msgid "Connections"
 msgstr "সংযোগসমূহ"
 
-#: ../src/firewall-applet.in:504 ../src/firewall-config.in:620
+#: ../src/firewall-applet.in:513 ../src/firewall-config.in:620
 #: ../src/firewall-config.in:2480 ../src/firewall-config.in:2682
 #: ../src/firewall-config.in:2707 ../src/firewall-config.glade.h:130
 msgid "Interfaces"
 msgstr "<interface>"
 
-#: ../src/firewall-applet.in:508 ../src/firewall-config.in:622
+#: ../src/firewall-applet.in:517 ../src/firewall-config.in:622
 #: ../src/firewall-config.in:2514 ../src/firewall-config.in:2685
 #: ../src/firewall-config.in:2709 ../src/firewall-config.glade.h:135
 msgid "Sources"
 msgstr "উৎসসমূহ"
 
-#: ../src/firewall-applet.in:579 ../src/firewall-config.in:2290
+#: ../src/firewall-applet.in:588 ../src/firewall-config.in:2290
 msgid "Authorization failed."
 msgstr "প্ৰমাণীকৰণ ব্যৰ্থ হল।"
 
-#: ../src/firewall-applet.in:581 ../src/firewall-config.in:2292
+#: ../src/firewall-applet.in:590 ../src/firewall-config.in:2292
 msgid "Invalid name"
 msgstr "অবৈধ তৰ্ক %s"
 
-#: ../src/firewall-applet.in:585 ../src/firewall-config.in:2295
+#: ../src/firewall-applet.in:594 ../src/firewall-config.in:2295
 msgid "Name already exists"
 msgstr "নাম ইতিমধ্যে অস্তিত্ববান"
 
-#: ../src/firewall-applet.in:677
+#: ../src/firewall-applet.in:686
 msgid "{entry} (Zone: {zone})"
 msgstr ""
 
-#: ../src/firewall-applet.in:684
+#: ../src/firewall-applet.in:693
 msgid "{entry} (Default Zone: {default_zone})"
 msgstr ""
 
-#: ../src/firewall-applet.in:762 ../src/firewall-config.in:1574
+#: ../src/firewall-applet.in:771 ../src/firewall-config.in:1574
 msgid "Failed to get connections from NetworkManager"
 msgstr ""
 
-#: ../src/firewall-applet.in:774 ../src/firewall-config.in:1386
+#: ../src/firewall-applet.in:783 ../src/firewall-config.in:1386
 msgid "No NetworkManager imports available"
 msgstr ""
 
-#: ../src/firewall-applet.in:851
+#: ../src/firewall-applet.in:860
 msgid "No connection to firewall daemon"
 msgstr "ফায়াৰৱাল ডিমনলৈ কোনো সংযোগ নাই"
 
-#: ../src/firewall-applet.in:857 ../src/firewall-applet.in:994
+#: ../src/firewall-applet.in:866 ../src/firewall-applet.in:1008
 msgid "All network traffic is blocked."
 msgstr "সকলো নেটৱাৰ্ক ট্ৰাফিক ৰোধ কৰা হৈছে।"
 
-#: ../src/firewall-applet.in:860
+#: ../src/firewall-applet.in:869
 #, c-format
 msgid "Default Zone: '%s'"
 msgstr "অবিকল্পিত অঞ্চল: '%s'"
 
-#: ../src/firewall-applet.in:866
+#: ../src/firewall-applet.in:875
 msgid ""
 "Default Zone '{default_zone}' active for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet.in:869
+#: ../src/firewall-applet.in:878
 msgid ""
 "Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
 msgstr ""
 "আন্তঃপৃষ্ঠ '{interface}' ত সংযোগ '{connection}' ৰ বাবে সক্ৰিয় অঞ্চল '{zone}'"
 
-#: ../src/firewall-applet.in:881
+#: ../src/firewall-applet.in:890
 msgid "Zone '{zone}' active for interface '{interface}'"
 msgstr "আন্তঃপৃষ্ঠ '{interface}' ৰ বাবে সক্ৰিয় অঞ্চল '{zone}'"
 
-#: ../src/firewall-applet.in:889
+#: ../src/firewall-applet.in:898
 msgid "Zone '{zone}' active for source {source}"
 msgstr "উৎস {source} ৰ বাবে সক্ৰিয় অঞ্চল '{zone}'"
 
-#: ../src/firewall-applet.in:893
+#: ../src/firewall-applet.in:902
 msgid "No Active Zones."
 msgstr "কোনো সক্ৰিয় অঞ্চল নাই।"
 
-#: ../src/firewall-applet.in:952
+#: ../src/firewall-applet.in:966
 msgid "Connection to FirewallD established."
 msgstr "FirewallD লৈ সংযোগ স্থাপিত।"
 
-#: ../src/firewall-applet.in:964
+#: ../src/firewall-applet.in:978
 msgid "Connection to FirewallD lost."
 msgstr "FirewallD লৈ সংযোগ বিচ্ছিন্ন হৈছে।"
 
-#: ../src/firewall-applet.in:969
+#: ../src/firewall-applet.in:983
 msgid "FirewallD has been reloaded."
 msgstr "FirewallD ক পুনৰ ল'ড কৰা হৈছে।"
 
-#: ../src/firewall-applet.in:976
+#: ../src/firewall-applet.in:990
 #, c-format
 msgid "Default zone changed to '%s'."
 msgstr "অবিকল্পিত অঞ্চলক '%s' লৈ পৰিবৰ্তন কৰা হৈছে।"
 
-#: ../src/firewall-applet.in:995
+#: ../src/firewall-applet.in:1009
 msgid "Network traffic is not blocked anymore."
 msgstr "নেটৱাৰ্ক ট্ৰাফিক আৰু ৰোধ কৰা হোৱা নাই।"
 
-#: ../src/firewall-applet.in:1021 ../src/firewall-applet.in:1075
+#: ../src/firewall-applet.in:1035 ../src/firewall-applet.in:1089
 msgid "activated"
 msgstr "সক্ৰিয়"
 
-#: ../src/firewall-applet.in:1022 ../src/firewall-applet.in:1076
+#: ../src/firewall-applet.in:1036 ../src/firewall-applet.in:1090
 msgid "deactivated"
 msgstr "নিষ্ক্ৰিয়"
 
-#: ../src/firewall-applet.in:1027
+#: ../src/firewall-applet.in:1041
 msgid ""
 "Default zone '{default_zone}' {activated_deactivated} for connection "
 "'{connection}' on interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet.in:1032
+#: ../src/firewall-applet.in:1046
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
@@ -263,20 +263,20 @@ msgstr ""
 "আন্তঃপৃষ্ঠ '{interface}' ত সংযোগ '{connection}' ৰ বাবে অঞ্চল "
 "'{zone}' {activated_deactivated}"
 
-#: ../src/firewall-applet.in:1037
+#: ../src/firewall-applet.in:1051
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
 msgstr "আন্তঃপৃষ্ঠ '{interface}' ৰ বাবে অঞ্চল '{zone}' {activated_deactivated}"
 
-#: ../src/firewall-applet.in:1060
+#: ../src/firewall-applet.in:1074
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
 msgstr "আন্তঃপৃষ্ঠ '%s' ৰ বাবে অঞ্চল '%s' সক্ৰিয়"
 
-#: ../src/firewall-applet.in:1077
+#: ../src/firewall-applet.in:1091
 msgid "Zone '{zone}' {activated_deactivated} for source '{source}'"
 msgstr "উৎস '{source}' ৰ বাবে অঞ্চল '{zone}' {activated_deactivated}"
 
-#: ../src/firewall-applet.in:1101
+#: ../src/firewall-applet.in:1115
 #, c-format
 msgid "Zone '%s' activated for source '%s'"
 msgstr "উৎস '%s' ৰ বাবে অঞ্চল '%s' সক্ৰিয়"
@@ -454,7 +454,7 @@ msgid "accept"
 msgstr "গ্ৰহণ কৰক"
 
 #: ../src/firewall-config.in:2046 ../src/firewall-config.in:3222
-#: ../src/firewall-config.in:3720 ../src/firewall-config.in:3868
+#: ../src/firewall-config.in:3720 ../src/firewall-config.in:3869
 #: ../src/firewall-config.glade.h:263
 msgid "reject"
 msgstr "নাকচ কৰক"
@@ -465,7 +465,7 @@ msgid "drop"
 msgstr "ড্ৰপ কৰক"
 
 #: ../src/firewall-config.in:2052 ../src/firewall-config.in:3239
-#: ../src/firewall-config.in:3727 ../src/firewall-config.in:3869
+#: ../src/firewall-config.in:3727 ../src/firewall-config.in:3870
 #: ../src/firewall-config.glade.h:265
 msgid "mark"
 msgstr ""
@@ -494,14 +494,14 @@ msgid "protocol"
 msgstr "প্ৰটোকল"
 
 #: ../src/firewall-config.in:2078 ../src/firewall-config.in:3190
-#: ../src/firewall-config.in:3695 ../src/firewall-config.in:3881
+#: ../src/firewall-config.in:3695 ../src/firewall-config.in:3882
 #: ../src/firewall-config.glade.h:291
 msgid "masquerade"
 msgstr "ছদ্মবেশ"
 
 #: ../src/firewall-config.in:2080 ../src/firewall-config.in:3193
 #: ../src/firewall-config.in:3367 ../src/firewall-config.in:3681
-#: ../src/firewall-config.in:3896 ../src/firewall-config.glade.h:287
+#: ../src/firewall-config.in:3897 ../src/firewall-config.glade.h:287
 msgid "icmp-block"
 msgstr "icmp-block"
 
@@ -513,7 +513,7 @@ msgstr ""
 
 #: ../src/firewall-config.in:2084 ../src/firewall-config.in:3203
 #: ../src/firewall-config.in:3371 ../src/firewall-config.in:3687
-#: ../src/firewall-config.in:3889 ../src/firewall-config.glade.h:289
+#: ../src/firewall-config.in:3890 ../src/firewall-config.glade.h:289
 msgid "forward-port"
 msgstr "forward-port"
 
@@ -632,17 +632,17 @@ msgstr "ডিবাগ কৰক"
 
 #: ../src/firewall-config.in:3346 ../src/firewall-config.in:3571
 #: ../src/firewall-config.in:3595 ../src/firewall-config.in:3650
-#: ../src/firewall-config.in:3785 ../src/firewall-config.in:3832
+#: ../src/firewall-config.in:3786 ../src/firewall-config.in:3833
 msgid "ipv4"
 msgstr "ipv4"
 
 #: ../src/firewall-config.in:3348 ../src/firewall-config.in:3573
 #: ../src/firewall-config.in:3597 ../src/firewall-config.in:3652
-#: ../src/firewall-config.in:3787 ../src/firewall-config.in:3834
+#: ../src/firewall-config.in:3788 ../src/firewall-config.in:3835
 msgid "ipv6"
 msgstr "ipv6"
 
-#: ../src/firewall-config.in:5040
+#: ../src/firewall-config.in:5041
 msgid ""
 "Forwarding to another system is only useful if the interface is "
 "masqueraded.\n"
@@ -652,81 +652,81 @@ msgstr ""
 "থাকে।\n"
 "আপুনি এই অঞ্চলটো মাস্কুৰেড কৰিব বিচাৰে নে?"
 
-#: ../src/firewall-config.in:5402
+#: ../src/firewall-config.in:5403
 msgid "Built-in service, rename not supported."
 msgstr "বিলট-ইন সেৱা, পুনৰ নামকৰণ সমৰ্থিত নহয়।"
 
-#: ../src/firewall-config.in:5611
+#: ../src/firewall-config.in:5612
 msgid "Please enter an ipv4 address with the form address[/mask]."
 msgstr ""
 
-#: ../src/firewall-config.in:5612
+#: ../src/firewall-config.in:5613
 msgid "The mask can be a network mask or a number."
 msgstr ""
 
-#: ../src/firewall-config.in:5614
+#: ../src/firewall-config.in:5615
 msgid "Please enter an ipv6 address with the form address[/mask]."
 msgstr ""
 
-#: ../src/firewall-config.in:5615
+#: ../src/firewall-config.in:5616
 msgid "The mask is a number."
 msgstr ""
 
-#: ../src/firewall-config.in:5617
+#: ../src/firewall-config.in:5618
 msgid "Please enter an ipv4 or ipv6 address with the form address[/mask]."
 msgstr ""
 
-#: ../src/firewall-config.in:5618
+#: ../src/firewall-config.in:5619
 msgid ""
 "The mask can be a network mask or a number for ipv4.\n"
 "The mask is a number for ipv6."
 msgstr ""
 
-#: ../src/firewall-config.in:5802
+#: ../src/firewall-config.in:5803
 msgid "Built-in ipset, rename not supported."
 msgstr ""
 
-#: ../src/firewall-config.in:5894 ../src/firewall-config.in:5976
+#: ../src/firewall-config.in:5895 ../src/firewall-config.in:5977
 msgid "Please select a file"
 msgstr ""
 
-#: ../src/firewall-config.in:5901 ../src/firewall-config.in:5983
+#: ../src/firewall-config.in:5902 ../src/firewall-config.in:5984
 msgid "Text Files"
 msgstr ""
 
-#: ../src/firewall-config.in:5906 ../src/firewall-config.in:5988
+#: ../src/firewall-config.in:5907 ../src/firewall-config.in:5989
 msgid "All Files"
 msgstr ""
 
-#: ../src/firewall-config.in:6409 ../src/firewall-config.in:6438
+#: ../src/firewall-config.in:6410 ../src/firewall-config.in:6439
 #: ../src/firewall-config.glade.h:40
 msgid "All"
 msgstr ""
 
-#: ../src/firewall-config.in:6409 ../src/firewall-config.in:6438
+#: ../src/firewall-config.in:6410 ../src/firewall-config.in:6439
 #: ../src/firewall-config.glade.h:41
 msgid "IPv4"
 msgstr "IPv4"
 
-#: ../src/firewall-config.in:6410 ../src/firewall-config.in:6438
+#: ../src/firewall-config.in:6411 ../src/firewall-config.in:6439
 #: ../src/firewall-config.glade.h:42
 msgid "IPv6"
 msgstr "IPv6"
 
-#: ../src/firewall-config.in:6415
+#: ../src/firewall-config.in:6416
 msgid "Built-in helper, rename not supported."
 msgstr ""
 
-#: ../src/firewall-config.in:6893
+#: ../src/firewall-config.in:6894
 msgid "Built-in icmp, rename not supported."
 msgstr "বিলট-ইন icmp, পুনৰ নামকৰণ সমৰ্থিত নহয়।"
 
-#: ../src/firewall-config.in:7965
+#: ../src/firewall-config.in:7966
 #, c-format
 msgid "Failed to read file '%s': %s"
 msgstr ""
 
-#: ../src/firewall-config.in:8099
+#: ../src/firewall-config.in:8100
 #, c-format
 msgid "Select zone for source %s"
 msgstr "উৎস %s ৰ বাবে অঞ্চল বাছক"
