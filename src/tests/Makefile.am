@@ -18,7 +18,10 @@ EXTRA_DIST = \
 	$(srcdir)/package.m4 \
 	atlocal.in
 
-DISTCLEANFILES = atconfig
+DISTCLEANFILES = \
+	$(TESTSUITE) \
+	$(TESTSUITE_INTEGRATION) \
+	atconfig
 
 testsuitedir = $(pkgdatadir)/testsuite
 dist_testsuite_SCRIPTS = $(TESTSUITE)
