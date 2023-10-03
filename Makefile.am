@@ -9,7 +9,7 @@ EXTRA_DIST = \
 
 CLEANFILES = *~ *\# .\#* *.tar*
 
-DISTCLEANFILES = config.log intltool-*
+DISTCLEANFILES = config.log intltool-* po/.intltool-merge-cache.lock
 
 DISTCLEANDIRS = autom4te.cache ${PACKAGE_NAME}-*
 
