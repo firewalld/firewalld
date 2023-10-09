@@ -3,7 +3,7 @@ Name: firewalld
 Version: 2.0.999
 Release: 1%{?dist}
 URL:     http://firewalld.org
-License: GPLv2+
+License: GPL-2.0-or-later
 Source0: https://github.com/firewalld/firewalld/archive/v%{version}.tar.bz2#/%{name}-%{version}.tar.bz2
 BuildArch: noarch
 BuildRequires: autoconf
@@ -255,5 +255,8 @@ fi
 %{_mandir}/man1/firewall-config*.1*
 
 %changelog
+* Mon Oct 09 2023 Eric Garver <eric@garver.life> - 2.0.999-1
+- migrated to SPDX license
+
 * Mon Jul 10 2023 Eric Garver <eric@garver.life> - 2.0.999-1
 - bump package version to development version
