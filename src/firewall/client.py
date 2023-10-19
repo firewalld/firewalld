@@ -3558,9 +3558,10 @@ class FirewallClient:
         self._get_fw().checkPermanentConfig()
 
     @handle_exceptions
-    def get_property(self, prop):
+    def get_property(self, prop, expected_type=None):
         return dbus_to_python(
-            self._get_fw_properties().Get(config.dbus.DBUS_INTERFACE, prop)
+            self._get_fw_properties().Get(config.dbus.DBUS_INTERFACE, prop),
+            expected_type=expected_type,
         )
 
     @handle_exceptions
