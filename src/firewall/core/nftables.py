@@ -348,6 +348,7 @@ class nftables:
         _valid_verbs = ["add", "insert", "delete", "flush", "replace"]
         _valid_add_verbs = ["add", "insert", "replace"]
         _deduplicated_rules = []
+        _deduplicated_rules_keys = []
         _executed_rules = []
         rich_rule_priority_counts = copy.deepcopy(self.rich_rule_priority_counts)
         policy_dispatch_index_cache = copy.deepcopy(self.policy_dispatch_index_cache)
@@ -407,8 +408,9 @@ class nftables:
                 )
 
             _deduplicated_rules.append(rule)
+            _deduplicated_rules_keys.append(rule_key)
 
-            _rule = copy.deepcopy(rule)
+            _rule = rule
             if rule_key:
                 # filter empty rule expressions. Rich rules add quite a bit of
                 # them, but it makes the rest of the code simpler. libnftables
@@ -464,8 +466,8 @@ class nftables:
 
         index = 0
         for rule in _deduplicated_rules:
+            rule_key = _deduplicated_rules_keys[index]
             index += 1  # +1 due to metainfo
-            rule_key = self._get_rule_key(rule)
 
             if not rule_key:
                 continue
