@@ -410,38 +410,37 @@ class nftables:
             _deduplicated_rules.append(rule)
             _deduplicated_rules_keys.append(rule_key)
 
-            _rule = rule
             if rule_key:
                 # filter empty rule expressions. Rich rules add quite a bit of
                 # them, but it makes the rest of the code simpler. libnftables
                 # does not tolerate them.
-                _rule[verb]["rule"]["expr"] = list(
-                    filter(None, _rule[verb]["rule"]["expr"])
+                rule[verb]["rule"]["expr"] = list(
+                    filter(None, rule[verb]["rule"]["expr"])
                 )
 
                 if self._fw._nftables_counters:
                     # -1 inserts just before the verdict
-                    _rule[verb]["rule"]["expr"].insert(-1, {"counter": None})
+                    rule[verb]["rule"]["expr"].insert(-1, {"counter": None})
 
                 self._set_rule_replace_priority(
-                    _rule, rich_rule_priority_counts, "%%RICH_RULE_PRIORITY%%"
+                    rule, rich_rule_priority_counts, "%%RICH_RULE_PRIORITY%%"
                 )
-                self._set_rule_sort_policy_dispatch(_rule, policy_dispatch_index_cache)
+                self._set_rule_sort_policy_dispatch(rule, policy_dispatch_index_cache)
 
                 # delete using rule handle
                 if verb == "delete":
-                    _rule = {
+                    rule = {
                         "delete": {
                             "rule": {
-                                "family": _rule["delete"]["rule"]["family"],
-                                "table": _rule["delete"]["rule"]["table"],
-                                "chain": _rule["delete"]["rule"]["chain"],
+                                "family": rule["delete"]["rule"]["family"],
+                                "table": rule["delete"]["rule"]["table"],
+                                "chain": rule["delete"]["rule"]["chain"],
                                 "handle": self.rule_to_handle[rule_key],
                             }
                         }
                     }
 
-            _executed_rules.append(_rule)
+            _executed_rules.append(rule)
 
         json_blob = {
             "nftables": [{"metainfo": {"json_schema_version": 1}}] + _executed_rules
