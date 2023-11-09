@@ -217,6 +217,7 @@ def dbus_introspection_prepare_properties(obj, interface, access=None):
 
 
 def dbus_introspection_add_properties(obj, data, interface):
+    modified = False
     doc = minidom.parseString(data)
 
     if hasattr(obj, "_fw_dbus_properties"):
@@ -232,16 +233,21 @@ def dbus_introspection_add_properties(obj, data, interface):
                         prop.setAttribute("type", value["type"])
                         prop.setAttribute("access", value["access"])
                         node.appendChild(prop)
+                        modified = True
 
-    log.debug10(doc.toxml())
-    new_data = doc.toxml()
+    if modified:
+        data = doc.toxml()
+        log.debug10(data)
+
     doc.unlink()
-    return new_data
+
+    return data
 
 
 def dbus_introspection_add_deprecated(
     obj, data, interface, deprecated_methods, deprecated_signals
 ):
+    modified = False
     doc = minidom.parseString(data)
 
     if interface in deprecated_methods:
@@ -259,6 +265,7 @@ def dbus_introspection_add_deprecated(
                         )
                         annotation.setAttribute("value", "true")
                         method_node.appendChild(annotation)
+                        modified = True
 
     if interface in deprecated_signals:
         for node in doc.getElementsByTagName("interface"):
@@ -275,9 +282,12 @@ def dbus_introspection_add_deprecated(
                         )
                         annotation.setAttribute("value", "true")
                         signal_node.appendChild(annotation)
+                        modified = True
 
-    log.debug10(doc.toxml())
-    data = doc.toxml()
+    if modified:
+        data = doc.toxml()
+        log.debug10(data)
+
     doc.unlink()
 
     return data
