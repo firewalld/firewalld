@@ -333,13 +333,9 @@ class nftables:
     def _get_rule_key(self, rule):
         for verb in ["add", "insert", "delete"]:
             if verb in rule and "rule" in rule[verb]:
-                rule_key = copy.deepcopy(rule[verb]["rule"])
-                for non_key in ["index", "handle", "position"]:
-                    if non_key in rule_key:
-                        del rule_key[non_key]
                 # str(rule_key) is insufficient because dictionary order is
                 # not stable.. so abuse the JSON library
-                rule_key = json.dumps(rule_key, sort_keys=True)
+                rule_key = json.dumps(rule[verb]["rule"], sort_keys=True)
                 return rule_key
         # Not a rule (it's a table, chain, etc)
         return None
