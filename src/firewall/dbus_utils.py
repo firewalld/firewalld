@@ -221,12 +221,10 @@ def dbus_introspection_add_properties(obj, data, interface):
     doc = minidom.parseString(data)
 
     if hasattr(obj, "_fw_dbus_properties"):
-        for node in doc.getElementsByTagName("interface"):
-            if node.hasAttribute("name") and node.getAttribute("name") == interface:
-                dip = {}
-                if getattr(obj, "_fw_dbus_properties"):
-                    dip = getattr(obj, "_fw_dbus_properties")
-                if interface in dip:
+        dip = getattr(obj, "_fw_dbus_properties")
+        if isinstance(dip, dict) and interface in dip:
+            for node in doc.getElementsByTagName("interface"):
+                if node.hasAttribute("name") and node.getAttribute("name") == interface:
                     for key, value in dip[interface].items():
                         prop = doc.createElement("property")
                         prop.setAttribute("name", key)
