@@ -7,7 +7,7 @@
 
 import dbus
 import pwd
-from xml.dom import minidom
+import xml.etree.ElementTree as ET
 
 from firewall.core.logger import log
 
@@ -218,26 +218,25 @@ def dbus_introspection_prepare_properties(obj, interface, access=None):
 
 def dbus_introspection_add_properties(obj, data, interface):
     modified = False
-    doc = minidom.parseString(data)
 
     if hasattr(obj, "_fw_dbus_properties"):
         dip = getattr(obj, "_fw_dbus_properties")
         if isinstance(dip, dict) and interface in dip:
-            for node in doc.getElementsByTagName("interface"):
-                if node.hasAttribute("name") and node.getAttribute("name") == interface:
+            doc = ET.fromstring(data)
+            for node in doc.iter("interface"):
+                if "name" in node.attrib and node.attrib["name"] == interface:
                     for key, value in dip[interface].items():
-                        prop = doc.createElement("property")
-                        prop.setAttribute("name", key)
-                        prop.setAttribute("type", value["type"])
-                        prop.setAttribute("access", value["access"])
-                        node.appendChild(prop)
+                        attrib = {
+                            "name": key,
+                            "type": value["type"],
+                            "access": value["access"],
+                        }
+                        ET.SubElement(node, "property", attrib)
                         modified = True
 
     if modified:
-        data = doc.toxml()
+        data = ET.tostring(doc, encoding="unicode")
         log.debug10(data)
-
-    doc.unlink()
 
     return data
 
@@ -250,44 +249,36 @@ def dbus_introspection_add_deprecated(
     is_deprecated_signal = interface in deprecated_signals
 
     if is_deprecated_method or is_deprecated_signal:
-        doc = minidom.parseString(data)
+        attrib = {
+            "name": "org.freedesktop.DBus.Deprecated",
+            "value": "true",
+        }
+        doc = ET.fromstring(data)
 
-        for node in doc.getElementsByTagName("interface"):
-            if node.hasAttribute("name") and node.getAttribute("name") == interface:
+        for node in doc.iter("interface"):
+            if "name" in node.attrib and node.attrib["name"] == interface:
                 if is_deprecated_method:
-                    for method_node in node.getElementsByTagName("method"):
+                    for method_node in node.iter("method"):
                         if (
-                            method_node.hasAttribute("name")
-                            and method_node.getAttribute("name")
+                            "name" in method_node.attrib
+                            and method_node.attrib["name"]
                             in deprecated_methods[interface]
                         ):
-                            annotation = doc.createElement("annotation")
-                            annotation.setAttribute(
-                                "name", "org.freedesktop.DBus.Deprecated"
-                            )
-                            annotation.setAttribute("value", "true")
-                            method_node.appendChild(annotation)
+                            ET.SubElement(method_node, "annotation", attrib)
                             modified = True
 
                 if is_deprecated_signal:
-                    for signal_node in node.getElementsByTagName("signal"):
+                    for signal_node in node.iter("signal"):
                         if (
-                            signal_node.hasAttribute("name")
-                            and signal_node.getAttribute("name")
+                            "name" in signal_node.attrib
+                            and signal_node.attrib["name"]
                             in deprecated_signals[interface]
                         ):
-                            annotation = doc.createElement("annotation")
-                            annotation.setAttribute(
-                                "name", "org.freedesktop.DBus.Deprecated"
-                            )
-                            annotation.setAttribute("value", "true")
-                            signal_node.appendChild(annotation)
+                            ET.SubElement(signal_node, "annotation", attrib)
                             modified = True
 
         if modified:
-            data = doc.toxml()
+            data = ET.tostring(doc, encoding="unicode")
             log.debug10(data)
-
-        doc.unlink()
 
     return data
