@@ -246,46 +246,48 @@ def dbus_introspection_add_deprecated(
     obj, data, interface, deprecated_methods, deprecated_signals
 ):
     modified = False
-    doc = minidom.parseString(data)
+    is_deprecated_method = interface in deprecated_methods
+    is_deprecated_signal = interface in deprecated_signals
 
-    if interface in deprecated_methods:
+    if is_deprecated_method or is_deprecated_signal:
+        doc = minidom.parseString(data)
+
         for node in doc.getElementsByTagName("interface"):
             if node.hasAttribute("name") and node.getAttribute("name") == interface:
-                for method_node in node.getElementsByTagName("method"):
-                    if (
-                        method_node.hasAttribute("name")
-                        and method_node.getAttribute("name")
-                        in deprecated_methods[interface]
-                    ):
-                        annotation = doc.createElement("annotation")
-                        annotation.setAttribute(
-                            "name", "org.freedesktop.DBus.Deprecated"
-                        )
-                        annotation.setAttribute("value", "true")
-                        method_node.appendChild(annotation)
-                        modified = True
+                if is_deprecated_method:
+                    for method_node in node.getElementsByTagName("method"):
+                        if (
+                            method_node.hasAttribute("name")
+                            and method_node.getAttribute("name")
+                            in deprecated_methods[interface]
+                        ):
+                            annotation = doc.createElement("annotation")
+                            annotation.setAttribute(
+                                "name", "org.freedesktop.DBus.Deprecated"
+                            )
+                            annotation.setAttribute("value", "true")
+                            method_node.appendChild(annotation)
+                            modified = True
 
-    if interface in deprecated_signals:
-        for node in doc.getElementsByTagName("interface"):
-            if node.hasAttribute("name") and node.getAttribute("name") == interface:
-                for signal_node in node.getElementsByTagName("signal"):
-                    if (
-                        signal_node.hasAttribute("name")
-                        and signal_node.getAttribute("name")
-                        in deprecated_signals[interface]
-                    ):
-                        annotation = doc.createElement("annotation")
-                        annotation.setAttribute(
-                            "name", "org.freedesktop.DBus.Deprecated"
-                        )
-                        annotation.setAttribute("value", "true")
-                        signal_node.appendChild(annotation)
-                        modified = True
+                if is_deprecated_signal:
+                    for signal_node in node.getElementsByTagName("signal"):
+                        if (
+                            signal_node.hasAttribute("name")
+                            and signal_node.getAttribute("name")
+                            in deprecated_signals[interface]
+                        ):
+                            annotation = doc.createElement("annotation")
+                            annotation.setAttribute(
+                                "name", "org.freedesktop.DBus.Deprecated"
+                            )
+                            annotation.setAttribute("value", "true")
+                            signal_node.appendChild(annotation)
+                            modified = True
 
-    if modified:
-        data = doc.toxml()
-        log.debug10(data)
+        if modified:
+            data = doc.toxml()
+            log.debug10(data)
 
-    doc.unlink()
+        doc.unlink()
 
     return data
