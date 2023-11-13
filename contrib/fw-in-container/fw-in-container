@@ -182,6 +182,8 @@ unset DEBUGINFOD_URLS
 
 export FW_IN_CONTAINER=1
 
+export TERM=xterm
+
 Journald-clear() {
     rm -rf /var/log/journal/????????????????????????????????/*
     systemctl restart systemd-journald
@@ -286,7 +288,6 @@ RUN dnf install -y \\
     --skip-broken \\
     \\
     'dbus*' \\
-    'openvswitch2*' \\
     /usr/bin/debuginfo-install \\
     /usr/bin/pytest \\
     /usr/bin/python \\
@@ -340,7 +341,6 @@ RUN dnf install -y \\
     iperf3 \\
     iproute \\
     iproute-tc \\
-    ipsec-tools \\
     iptables \\
     iptables-devel \\
     iputils \\
@@ -352,10 +352,10 @@ RUN dnf install -y \\
     libasan \\
     libcurl-devel \\
     libedit-devel \\
+    libmnl-devel \\
     libndp-devel \\
     libnftnl \\
     libnftnl-devel \\
-    libnmnl-devel \\
     libpsl-devel \\
     libreswan \\
     libselinux-devel \\
