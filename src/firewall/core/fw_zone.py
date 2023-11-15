@@ -762,10 +762,10 @@ class FirewallZone(object):
                                                   ingressInterface=interface, ingressSource=source)
                     self._fw.policy._egress_zone(enable, policy, zone, transaction,
                                                  egressInterface=interface, egressSource=source)
-                elif zone in ingress_zone_list:
+                elif zone in ingress_zone_list or "ANY" in ingress_zone_list:
                     self._fw.policy._ingress_zone(enable, policy, zone, transaction,
                                                   ingressInterface=interface, ingressSource=source)
-                elif zone in egress_zone_list:
+                elif zone in egress_zone_list or "ANY" in egress_zone_list:
                     self._fw.policy._egress_zone(enable, policy, zone, transaction,
                                                  egressInterface=interface, egressSource=source)
 
