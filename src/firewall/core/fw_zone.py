@@ -972,7 +972,7 @@ class FirewallZone:
                         egressInterface=interface,
                         egressSource=source,
                     )
-                elif zone in ingress_zone_list:
+                elif zone in ingress_zone_list or "ANY" in ingress_zone_list:
                     self._fw.policy._ingress_zone(
                         enable,
                         policy,
@@ -981,7 +981,7 @@ class FirewallZone:
                         ingressInterface=interface,
                         ingressSource=source,
                     )
-                elif zone in egress_zone_list:
+                elif zone in egress_zone_list or "ANY" in egress_zone_list:
                     self._fw.policy._egress_zone(
                         enable,
                         policy,
