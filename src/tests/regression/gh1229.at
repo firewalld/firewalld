@@ -1,0 +1,260 @@
+FWD_START_TEST([policy dispatch with egress-zone=ANY])
+AT_KEYWORDS(policy gh1229 gh1234)
+
+FWD_CHECK([--permanent --zone internal --add-interface foobar-int], 0, [ignore])
+FWD_CHECK([--permanent --zone external --add-interface foobar-ext], 0, [ignore])
+
+FWD_CHECK([--permanent --new-policy foobar], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar --add-ingress-zone internal], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar --add-egress-zone ANY], 0, [ignore])
+
+FWD_CHECK([--permanent --new-policy raboof], 0, [ignore])
+FWD_CHECK([--permanent --policy raboof --add-ingress-zone ANY], 0, [ignore])
+FWD_CHECK([--permanent --policy raboof --add-egress-zone internal], 0, [ignore])
+
+FWD_RELOAD()
+
+FWD_CHECK([--zone public --add-interface foobar-public], 0, [ignore])
+FWD_CHECK([--zone trusted --add-interface foobar-trusted], 0, [ignore])
+FWD_CHECK([--zone trusted --add-source 10.10.10.0/24], 0, [ignore])
+
+NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES], 0, [dnl
+    table inet firewalld {
+        chain filter_FORWARD_POLICIES {
+            ip saddr 10.10.10.0/24 ip daddr 10.10.10.0/24 jump filter_FWD_trusted
+            ip saddr 10.10.10.0/24 ip daddr 10.10.10.0/24 accept
+            oifname "foobar-ext" ip saddr 10.10.10.0/24 jump filter_FWD_trusted
+            oifname "foobar-ext" ip saddr 10.10.10.0/24 accept
+            oifname "foobar-int" ip saddr 10.10.10.0/24 jump filter_FWD_policy_raboof
+            oifname "foobar-int" ip saddr 10.10.10.0/24 jump filter_FWD_trusted
+            oifname "foobar-int" ip saddr 10.10.10.0/24 accept
+            oifname "foobar-public" ip saddr 10.10.10.0/24 jump filter_FWD_trusted
+            oifname "foobar-public" ip saddr 10.10.10.0/24 accept
+            oifname "foobar-trusted" ip saddr 10.10.10.0/24 jump filter_FWD_trusted
+            oifname "foobar-trusted" ip saddr 10.10.10.0/24 accept
+            ip saddr 10.10.10.0/24 jump filter_FWD_trusted
+            ip saddr 10.10.10.0/24 accept
+            iifname "foobar-ext" ip daddr 10.10.10.0/24 jump filter_FWD_external
+            iifname "foobar-ext" ip daddr 10.10.10.0/24 reject with icmpx admin-prohibited
+            iifname "foobar-ext" oifname "foobar-ext" jump filter_FWD_external
+            iifname "foobar-ext" oifname "foobar-ext" reject with icmpx admin-prohibited
+            iifname "foobar-ext" oifname "foobar-int" jump filter_FWD_policy_raboof
+            iifname "foobar-ext" oifname "foobar-int" jump filter_FWD_external
+            iifname "foobar-ext" oifname "foobar-int" reject with icmpx admin-prohibited
+            iifname "foobar-ext" oifname "foobar-public" jump filter_FWD_external
+            iifname "foobar-ext" oifname "foobar-public" reject with icmpx admin-prohibited
+            iifname "foobar-ext" oifname "foobar-trusted" jump filter_FWD_external
+            iifname "foobar-ext" oifname "foobar-trusted" reject with icmpx admin-prohibited
+            iifname "foobar-ext" jump filter_FWD_external
+            iifname "foobar-ext" reject with icmpx admin-prohibited
+            iifname "foobar-int" ip daddr 10.10.10.0/24 jump filter_FWD_policy_foobar
+            iifname "foobar-int" ip daddr 10.10.10.0/24 jump filter_FWD_internal
+            iifname "foobar-int" ip daddr 10.10.10.0/24 reject with icmpx admin-prohibited
+            iifname "foobar-int" oifname "foobar-ext" jump filter_FWD_policy_foobar
+            iifname "foobar-int" oifname "foobar-ext" jump filter_FWD_internal
+            iifname "foobar-int" oifname "foobar-ext" reject with icmpx admin-prohibited
+            iifname "foobar-int" oifname "foobar-int" jump filter_FWD_policy_raboof
+            iifname "foobar-int" oifname "foobar-int" jump filter_FWD_policy_foobar
+            iifname "foobar-int" oifname "foobar-int" jump filter_FWD_internal
+            iifname "foobar-int" oifname "foobar-public" jump filter_FWD_policy_foobar
+            iifname "foobar-int" oifname "foobar-public" jump filter_FWD_internal
+            iifname "foobar-int" oifname "foobar-public" reject with icmpx admin-prohibited
+            iifname "foobar-int" oifname "foobar-trusted" jump filter_FWD_policy_foobar
+            iifname "foobar-int" oifname "foobar-trusted" jump filter_FWD_internal
+            iifname "foobar-int" oifname "foobar-trusted" reject with icmpx admin-prohibited
+            iifname "foobar-int" oifname "foobar-int" reject with icmpx admin-prohibited
+            iifname "foobar-int" jump filter_FWD_policy_foobar
+            iifname "foobar-int" jump filter_FWD_internal
+            iifname "foobar-public" ip daddr 10.10.10.0/24 jump filter_FWD_public
+            iifname "foobar-public" ip daddr 10.10.10.0/24 reject with icmpx admin-prohibited
+            iifname "foobar-public" oifname "foobar-ext" jump filter_FWD_public
+            iifname "foobar-public" oifname "foobar-ext" reject with icmpx admin-prohibited
+            iifname "foobar-public" oifname "foobar-int" jump filter_FWD_policy_raboof
+            iifname "foobar-public" oifname "foobar-int" jump filter_FWD_public
+            iifname "foobar-public" oifname "foobar-int" reject with icmpx admin-prohibited
+            iifname "foobar-public" oifname "foobar-public" jump filter_FWD_public
+            iifname "foobar-public" oifname "foobar-public" reject with icmpx admin-prohibited
+            iifname "foobar-public" oifname "foobar-trusted" jump filter_FWD_public
+            iifname "foobar-public" oifname "foobar-trusted" reject with icmpx admin-prohibited
+            iifname "foobar-public" jump filter_FWD_public
+            iifname "foobar-public" reject with icmpx admin-prohibited
+            iifname "foobar-trusted" ip daddr 10.10.10.0/24 jump filter_FWD_trusted
+            iifname "foobar-trusted" ip daddr 10.10.10.0/24 accept
+            iifname "foobar-trusted" oifname "foobar-ext" jump filter_FWD_trusted
+            iifname "foobar-trusted" oifname "foobar-ext" accept
+            iifname "foobar-trusted" oifname "foobar-int" jump filter_FWD_policy_raboof
+            iifname "foobar-trusted" oifname "foobar-int" jump filter_FWD_trusted
+            iifname "foobar-trusted" oifname "foobar-int" accept
+            iifname "foobar-trusted" oifname "foobar-public" jump filter_FWD_trusted
+            iifname "foobar-trusted" oifname "foobar-public" accept
+            iifname "foobar-trusted" oifname "foobar-trusted" jump filter_FWD_trusted
+            iifname "foobar-trusted" oifname "foobar-trusted" accept
+            iifname "foobar-trusted" jump filter_FWD_trusted
+            iifname "foobar-trusted" accept
+            ip daddr 10.10.10.0/24 jump filter_FWD_public
+            ip daddr 10.10.10.0/24 reject with icmpx admin-prohibited
+            iifname "foobar-int" reject with icmpx admin-prohibited
+            oifname "foobar-ext" jump filter_FWD_public
+            oifname "foobar-int" jump filter_FWD_policy_raboof
+            oifname "foobar-ext" reject with icmpx admin-prohibited
+            oifname "foobar-int" jump filter_FWD_public
+            oifname "foobar-public" jump filter_FWD_public
+            oifname "foobar-public" reject with icmpx admin-prohibited
+            oifname "foobar-trusted" jump filter_FWD_public
+            oifname "foobar-trusted" reject with icmpx admin-prohibited
+            oifname "foobar-int" reject with icmpx admin-prohibited
+            jump filter_FWD_public
+            reject with icmpx admin-prohibited
+        }
+    }
+])
+
+IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES], 0, [dnl
+    FWD_trusted 0 -- 10.10.10.0/24 10.10.10.0/24
+    ACCEPT 0 -- 10.10.10.0/24 10.10.10.0/24
+    FWD_trusted 0 -- 10.10.10.0/24 0.0.0.0/0
+    ACCEPT 0 -- 10.10.10.0/24 0.0.0.0/0
+    FWD_raboof 0 -- 10.10.10.0/24 0.0.0.0/0
+    FWD_trusted 0 -- 10.10.10.0/24 0.0.0.0/0
+    ACCEPT 0 -- 10.10.10.0/24 0.0.0.0/0
+    FWD_trusted 0 -- 10.10.10.0/24 0.0.0.0/0
+    ACCEPT 0 -- 10.10.10.0/24 0.0.0.0/0
+    FWD_trusted 0 -- 10.10.10.0/24 0.0.0.0/0
+    ACCEPT 0 -- 10.10.10.0/24 0.0.0.0/0
+    FWD_trusted 0 -- 10.10.10.0/24 0.0.0.0/0
+    ACCEPT 0 -- 10.10.10.0/24 0.0.0.0/0
+    FWD_external 0 -- 0.0.0.0/0 10.10.10.0/24
+    REJECT 0 -- 0.0.0.0/0 10.10.10.0/24 reject-with icmp-port-unreachable
+    FWD_external 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+    FWD_raboof 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_external 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+    FWD_external 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+    FWD_external 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+    FWD_external 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+    FWD_foobar 0 -- 0.0.0.0/0 10.10.10.0/24
+    FWD_internal 0 -- 0.0.0.0/0 10.10.10.0/24
+    REJECT 0 -- 0.0.0.0/0 10.10.10.0/24 reject-with icmp-port-unreachable
+    FWD_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_internal 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+    FWD_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_internal 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+    FWD_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_internal 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+    FWD_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_internal 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+    FWD_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_internal 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+    FWD_public 0 -- 0.0.0.0/0 10.10.10.0/24
+    REJECT 0 -- 0.0.0.0/0 10.10.10.0/24 reject-with icmp-port-unreachable
+    FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+    FWD_raboof 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+    FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+    FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+    FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+    FWD_trusted 0 -- 0.0.0.0/0 10.10.10.0/24
+    ACCEPT 0 -- 0.0.0.0/0 10.10.10.0/24
+    FWD_trusted 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_raboof 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_trusted 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_trusted 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_trusted 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_trusted 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_public 0 -- 0.0.0.0/0 10.10.10.0/24
+    REJECT 0 -- 0.0.0.0/0 10.10.10.0/24 reject-with icmp-port-unreachable
+    FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+    FWD_raboof 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+    FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+    FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+    FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+])
+
+IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES], 0, [dnl
+    FWD_external 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+    FWD_raboof 0 -- ::/0 ::/0
+    FWD_external 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+    FWD_external 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+    FWD_external 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+    FWD_external 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+    FWD_foobar 0 -- ::/0 ::/0
+    FWD_internal 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+    FWD_foobar 0 -- ::/0 ::/0
+    FWD_internal 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+    FWD_foobar 0 -- ::/0 ::/0
+    FWD_internal 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+    FWD_foobar 0 -- ::/0 ::/0
+    FWD_internal 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+    FWD_foobar 0 -- ::/0 ::/0
+    FWD_internal 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+    FWD_public 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+    FWD_raboof 0 -- ::/0 ::/0
+    FWD_public 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+    FWD_public 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+    FWD_public 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+    FWD_public 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+    FWD_trusted 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
+    FWD_raboof 0 -- ::/0 ::/0
+    FWD_trusted 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
+    FWD_trusted 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
+    FWD_trusted 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
+    FWD_trusted 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
+    FWD_public 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+    FWD_raboof 0 -- ::/0 ::/0
+    FWD_public 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+    FWD_public 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+    FWD_public 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+    FWD_public 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+])
+
+FWD_END_TEST()
