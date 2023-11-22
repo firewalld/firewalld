@@ -39,6 +39,7 @@ else:
     except (ImportError, ValueError, GLib.Error):
         _nm_imported = False
 _nm_client = None
+_nm_client_timeout = None
 
 from firewall import errors
 from firewall.errors import FirewallError
@@ -61,9 +62,28 @@ def nm_get_client():
     """Returns the NM client object or None if the import of NM failed
     @return NM.Client instance if import was successful, None otherwise
     """
+
+    def _release():
+        """
+        Release the client to avoid excess memory usage when libnm pushes
+        irrelevant (to firewalld) updates.
+        """
+        global _nm_client
+        global _nm_client_timeout
+        _nm_client = None
+        _nm_client_timeout = None
+
     global _nm_client
+    global _nm_client_timeout
+
     if not _nm_client:
         _nm_client = NM.Client.new(None)
+    else:
+        # refresh timer
+        GLib.source_remove(_nm_client_timeout)
+
+    _nm_client_timeout = GLib.timeout_add_seconds(5, _release)
+
     return _nm_client
 
 def nm_get_zone_of_connection(connection):
