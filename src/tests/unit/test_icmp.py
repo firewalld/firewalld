@@ -1,7 +1,13 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
+import os
+
 import firewall.core.icmp
+import firewall.core.io.icmptype
 import firewall.core.ipXtables
+import firewall.core.nftables
+
+from tests.unit import helpers
 
 
 def test_icmp():
@@ -312,3 +318,116 @@ redirect
 def test_iptables_parse_supported_icmp_types():
     _iptables_parse_supported_icmp_types_4()
     _iptables_parse_supported_icmp_types_6()
+
+
+###############################################################################
+
+
+def _get_destination(xmlobj):
+    d = xmlobj.destination
+    if d == []:
+        d = ["ipv4", "ipv6"]
+
+    assert d in (
+        ["ipv4"],
+        ["ipv6"],
+        ["ipv4", "ipv6"],
+    )
+
+    return d
+
+
+def _icmptypes_load_file(dirname, file):
+    assert dirname
+    assert file
+    assert file.endswith(".xml")
+    assert "/" not in file
+
+    full_name = os.path.join(dirname, file)
+
+    assert os.path.exists(dirname)
+    assert os.path.exists(full_name)
+
+    xmlobj = firewall.core.io.icmptype.icmptype_reader(file, dirname)
+    assert xmlobj
+
+    assert xmlobj.name == file[: -len(".xml")]
+    assert xmlobj.path == dirname
+    _get_destination(xmlobj)
+    return xmlobj
+
+
+def _test_icmptypes_nftables(xmlobjs):
+    nft = firewall.core.nftables.ICMP_TYPES_FRAGMENTS
+    assert set(nft.keys()) == set(["ipv4", "ipv6"])
+
+    # Check that all .xml files are listed in firewall.core.nftables.ICMP_TYPES_FRAGMENTS
+    for xmlobj in xmlobjs:
+        for ipx in _get_destination(xmlobj):
+            assert xmlobj.name in nft[ipx], (
+                f'XML file "{xmlobj.path}/{xmlobj.name}.xml" has no entry '
+                f'"{xmlobj.name}" in firewall.core.nftables.ICMP_TYPES_FRAGMENTS["{ipx}"]'
+            )
+
+    # Check that all firewall.core.nftables.ICMP_TYPES_FRAGMENTS have an .xml file.
+    for ipx in nft:
+        assert ipx in ["ipv4", "ipv6"]
+        for icmp_type in nft[ipx]:
+            l = [xmlobj for xmlobj in xmlobjs if xmlobj.name == icmp_type]
+            assert len(l) == 1
+            xmlobj = l[0]
+            assert ipx in _get_destination(xmlobj)
+
+
+def _test_icmptypes_ipset(xmlobjs):
+    # firewall.core.icmp is only used by src/firewall/core/io/ipset.py, and
+    # hard-codes valid ICMP types. It's not used anywhere else.
+    #
+    # It should still correspond to our XML files, where every entry here has
+    # an XML file, but some XML files are not found here.
+    types4 = firewall.core.icmp.ICMP_TYPES
+    types6 = firewall.core.icmp.ICMPV6_TYPES
+    for xmlobj in xmlobjs:
+        should_have4 = "ipv4" in _get_destination(xmlobj)
+        should_have6 = "ipv6" in _get_destination(xmlobj)
+        assert should_have4 or should_have6
+        has4 = xmlobj.name in types4
+        has6 = xmlobj.name in types6
+        if not has4 and not has6:
+            # We have XML files for those ICMP types, but they are not in
+            # firewall.core.icmp.{ICMP_TYPES,ICMPV6_TYPES}.
+            assert xmlobj.name in [
+                "beyond-scope",
+                "destination-unreachable",
+                "failed-policy",
+                "parameter-problem",
+                "reject-route",
+                "time-exceeded",
+                "tos-host-redirect",
+                "tos-host-unreachable",
+                "tos-network-redirect",
+                "tos-network-unreachable",
+            ]
+            continue
+        if has4 != should_have4:
+            # The file "redirect.xml" is both for IPv4 and IPv6. However, it is
+            # only in firewall.core.icmp.ICMPV6_TYPES not
+            # firewall.core.icmp.ICMP_TYPES.
+            assert xmlobj.name in [
+                "redirect",
+            ]
+            assert should_have4
+            assert should_have6
+        assert has6 == should_have6
+
+
+def test_icmptypes():
+    dirname = helpers.srcdir("config/icmptypes")
+    files = [f for f in os.listdir(dirname) if f.endswith(".xml")]
+    assert files
+    xmlobjs = []
+    for file in files:
+        xmlobjs.append(_icmptypes_load_file(dirname, file))
+
+    _test_icmptypes_nftables(xmlobjs)
+    _test_icmptypes_ipset(xmlobjs)
