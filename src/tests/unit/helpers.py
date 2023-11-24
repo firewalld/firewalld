@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
+import os
+
 
 def str_to_bool(val, default_val=False):
     if isinstance(val, str):
@@ -16,3 +18,13 @@ def str_to_bool(val, default_val=False):
 
     # No nonsense.
     raise ValueError(f"Unexpcted value for str_to_bool({repr(val)})")
+
+
+_srcdir = os.path.realpath(os.path.dirname(__file__) + "../../../..")
+
+
+def srcdir(*a, exists=True):
+    f = os.path.join(_srcdir, *a)
+    if exists:
+        assert os.path.exists(f)
+    return f
