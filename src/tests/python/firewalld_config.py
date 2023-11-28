@@ -92,15 +92,15 @@ class TestFirewallDInterfaceConfig(unittest.TestCase):
         self.assertIsInstance(config_zone, firewall.client.FirewallClientConfigZone)
         zone_settings = config_zone.getSettings()
         self.assertIsInstance(zone_settings, firewall.client.FirewallClientZoneSettings)
-        self.assertEquals(zone_settings.getVersion(), zone_version)
-        self.assertEquals(zone_settings.getShort(), zone_short)
-        self.assertEquals(zone_settings.getDescription(), zone_description)
-        self.assertEquals(zone_settings.getTarget(), "default")
-        self.assertEquals(zone_settings.getServices().sort(), zone_services.sort())
-        self.assertEquals(zone_settings.getPorts().sort(), zone_ports.sort())
-        self.assertEquals(zone_settings.getIcmpBlocks().sort(), zone_icmpblocks.sort())
-        self.assertEquals(zone_settings.getMasquerade(), zone_masquerade)
-        self.assertEquals(
+        self.assertEqual(zone_settings.getVersion(), zone_version)
+        self.assertEqual(zone_settings.getShort(), zone_short)
+        self.assertEqual(zone_settings.getDescription(), zone_description)
+        self.assertEqual(zone_settings.getTarget(), "default")
+        self.assertEqual(zone_settings.getServices().sort(), zone_services.sort())
+        self.assertEqual(zone_settings.getPorts().sort(), zone_ports.sort())
+        self.assertEqual(zone_settings.getIcmpBlocks().sort(), zone_icmpblocks.sort())
+        self.assertEqual(zone_settings.getMasquerade(), zone_masquerade)
+        self.assertEqual(
             zone_settings.getForwardPorts().sort(), zone_forward_ports.sort()
         )
 
@@ -114,13 +114,13 @@ class TestFirewallDInterfaceConfig(unittest.TestCase):
 
         print("Checking of runtime settings")
         self.assertTrue(zone_name in self.fw.getZones())
-        self.assertEquals(self.fw.getServices(zone_name).sort(), zone_services.sort())
-        self.assertEquals(self.fw.getPorts(zone_name).sort(), zone_ports.sort())
-        self.assertEquals(
+        self.assertEqual(self.fw.getServices(zone_name).sort(), zone_services.sort())
+        self.assertEqual(self.fw.getPorts(zone_name).sort(), zone_ports.sort())
+        self.assertEqual(
             self.fw.getIcmpBlocks(zone_name).sort(), zone_icmpblocks.sort()
         )
-        self.assertEquals(self.fw.queryMasquerade(zone_name), zone_masquerade)
-        self.assertEquals(
+        self.assertEqual(self.fw.queryMasquerade(zone_name), zone_masquerade)
+        self.assertEqual(
             self.fw.getForwardPorts(zone_name).sort(), zone_forward_ports.sort()
         )
 
@@ -143,15 +143,15 @@ class TestFirewallDInterfaceConfig(unittest.TestCase):
         print("Checking whether the zone '%s' is accessible" % new_zone_name)
         config_zone = self.fw.config().getZoneByName(new_zone_name)
         zone_settings = config_zone.getSettings()
-        self.assertEquals(zone_settings.getVersion(), zone_version)
-        self.assertEquals(zone_settings.getShort(), zone_short)
-        self.assertEquals(zone_settings.getDescription(), zone_description)
-        self.assertEquals(zone_settings.getTarget(), "default")
-        self.assertEquals(zone_settings.getServices().sort(), zone_services.sort())
-        self.assertEquals(zone_settings.getPorts().sort(), zone_ports.sort())
-        self.assertEquals(zone_settings.getIcmpBlocks().sort(), zone_icmpblocks.sort())
-        self.assertEquals(zone_settings.getMasquerade(), zone_masquerade)
-        self.assertEquals(
+        self.assertEqual(zone_settings.getVersion(), zone_version)
+        self.assertEqual(zone_settings.getShort(), zone_short)
+        self.assertEqual(zone_settings.getDescription(), zone_description)
+        self.assertEqual(zone_settings.getTarget(), "default")
+        self.assertEqual(zone_settings.getServices().sort(), zone_services.sort())
+        self.assertEqual(zone_settings.getPorts().sort(), zone_ports.sort())
+        self.assertEqual(zone_settings.getIcmpBlocks().sort(), zone_icmpblocks.sort())
+        self.assertEqual(zone_settings.getMasquerade(), zone_masquerade)
+        self.assertEqual(
             zone_settings.getForwardPorts().sort(), zone_forward_ports.sort()
         )
 
@@ -226,11 +226,11 @@ class TestFirewallDInterfaceConfig(unittest.TestCase):
         service_settings.setModules(service_modules)
         service_settings.setDestinations(service_destinations)
         config_service.update(service_settings)
-        self.assertEquals(service_settings.getVersion(), service_version)
-        self.assertEquals(service_settings.getShort(), service_short)
-        self.assertEquals(service_settings.getDescription(), service_description)
-        self.assertEquals(service_settings.getPorts().sort(), service_ports.sort())
-        self.assertEquals(service_settings.getModules().sort(), service_modules.sort())
+        self.assertEqual(service_settings.getVersion(), service_version)
+        self.assertEqual(service_settings.getShort(), service_short)
+        self.assertEqual(service_settings.getDescription(), service_description)
+        self.assertEqual(service_settings.getPorts().sort(), service_ports.sort())
+        self.assertEqual(service_settings.getModules().sort(), service_modules.sort())
         self.assertDictEqual(service_settings.getDestinations(), service_destinations)
 
         print("Renaming service to name that already exists")
@@ -255,11 +255,11 @@ class TestFirewallDInterfaceConfig(unittest.TestCase):
         print("Checking whether the service '%s' is accessible" % new_service_name)
         config_service = self.fw.config().getServiceByName(new_service_name)
         service_settings = config_service.getSettings()
-        self.assertEquals(service_settings.getVersion(), service_version)
-        self.assertEquals(service_settings.getShort(), service_short)
-        self.assertEquals(service_settings.getDescription(), service_description)
-        self.assertEquals(service_settings.getPorts().sort(), service_ports.sort())
-        self.assertEquals(service_settings.getModules().sort(), service_modules.sort())
+        self.assertEqual(service_settings.getVersion(), service_version)
+        self.assertEqual(service_settings.getShort(), service_short)
+        self.assertEqual(service_settings.getDescription(), service_description)
+        self.assertEqual(service_settings.getPorts().sort(), service_ports.sort())
+        self.assertEqual(service_settings.getModules().sort(), service_modules.sort())
         self.assertDictEqual(service_settings.getDestinations(), service_destinations)
 
         print("Removing the service '%s'" % new_service_name)
@@ -336,10 +336,10 @@ class TestFirewallDInterfaceConfig(unittest.TestCase):
         icmptype_destinations.append("ipv6")
         icmptype_settings.setDestinations(icmptype_destinations)
         config_icmptype.update(icmptype_settings)
-        self.assertEquals(icmptype_settings.getVersion(), icmptype_version)
-        self.assertEquals(icmptype_settings.getShort(), icmptype_short)
-        self.assertEquals(icmptype_settings.getDescription(), icmptype_description)
-        self.assertEquals(
+        self.assertEqual(icmptype_settings.getVersion(), icmptype_version)
+        self.assertEqual(icmptype_settings.getShort(), icmptype_short)
+        self.assertEqual(icmptype_settings.getDescription(), icmptype_description)
+        self.assertEqual(
             icmptype_settings.getDestinations().sort(), icmptype_destinations.sort()
         )
 
@@ -365,10 +365,10 @@ class TestFirewallDInterfaceConfig(unittest.TestCase):
         print("Checking whether the icmp type '%s' is accessible" % new_icmptype_name)
         config_icmptype = self.fw.config().getIcmpTypeByName(new_icmptype_name)
         icmptype_settings = config_icmptype.getSettings()
-        self.assertEquals(icmptype_settings.getVersion(), icmptype_version)
-        self.assertEquals(icmptype_settings.getShort(), icmptype_short)
-        self.assertEquals(icmptype_settings.getDescription(), icmptype_description)
-        self.assertEquals(
+        self.assertEqual(icmptype_settings.getVersion(), icmptype_version)
+        self.assertEqual(icmptype_settings.getShort(), icmptype_short)
+        self.assertEqual(icmptype_settings.getDescription(), icmptype_description)
+        self.assertEqual(
             icmptype_settings.getDestinations().sort(), icmptype_destinations.sort()
         )
 
