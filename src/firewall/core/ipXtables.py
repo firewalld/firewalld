@@ -689,7 +689,6 @@ class ip4tables:
 
     def supported_icmp_types(self, ipv=None):
         """Return ICMP types that are supported by the iptables/ip6tables command and kernel"""
-        ret = []
         output = ""
         try:
             output = self.__run(
@@ -700,11 +699,14 @@ class ip4tables:
                 log.debug1("iptables error: %s" % ex)
             else:
                 log.debug1("ip6tables error: %s" % ex)
-        lines = output.splitlines()
 
+        return self._parse_supported_icmp_types(self.ipv, output)
+
+    @staticmethod
+    def _parse_supported_icmp_types(ipv, output):
         in_types = False
-        for line in lines:
-            # print(line)
+        ret = []
+        for line in output.splitlines():
             if in_types:
                 line = line.strip().lower()
                 splits = line.split()
@@ -716,9 +718,9 @@ class ip4tables:
                     if x not in ret:
                         ret.append(x)
             if (
-                self.ipv == "ipv4"
+                ipv == "ipv4"
                 and line.startswith("Valid ICMP Types:")
-                or self.ipv == "ipv6"
+                or ipv == "ipv6"
                 and line.startswith("Valid ICMPv6 Types:")
             ):
                 in_types = True
