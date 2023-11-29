@@ -189,6 +189,10 @@ ICMP_TYPES_FRAGMENTS = {
         "echo-reply": _icmp_types_fragments("icmpv6", "echo-reply"),
         "echo-request": _icmp_types_fragments("icmpv6", "echo-request"),
         "failed-policy": _icmp_types_fragments("icmpv6", "destination-unreachable", 5),
+        "mld-listener-done": _icmp_types_fragments("icmpv6", "mld-listener-done"),
+        "mld-listener-query": _icmp_types_fragments("icmpv6", "mld-listener-query"),
+        "mld-listener-report": _icmp_types_fragments("icmpv6", "mld-listener-report"),
+        "mld2-listener-report": _icmp_types_fragments("icmpv6", "mld2-listener-report"),
         "neighbour-advertisement": _icmp_types_fragments(
             "icmpv6", "nd-neighbor-advert"
         ),
