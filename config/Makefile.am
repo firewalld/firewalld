@@ -91,6 +91,10 @@ CONFIG_FILES = \
 	icmptypes/host-unknown.xml \
 	icmptypes/host-unreachable.xml \
 	icmptypes/ip-header-bad.xml \
+	icmptypes/mld-listener-done.xml \
+	icmptypes/mld-listener-query.xml \
+	icmptypes/mld-listener-report.xml \
+	icmptypes/mld2-listener-report.xml \
 	icmptypes/neighbour-advertisement.xml \
 	icmptypes/neighbour-solicitation.xml \
 	icmptypes/network-prohibited.xml \
