@@ -3,12 +3,12 @@
 
 def str_to_bool(val, default_val=False):
     if isinstance(val, str):
-        val = val.lower().strip()
-        if val in ("", "default", "-1"):
+        val2 = val.lower().strip()
+        if val2 in ("", "default", "-1"):
             return default_val
-        if val in ("0", "n", "no", "false"):
+        if val2 in ("0", "n", "no", "false"):
             return False
-        if val in ("1", "y", "yes", "true"):
+        if val2 in ("1", "y", "yes", "true"):
             return True
         # Invalid. Fall through.
     elif val is None:
