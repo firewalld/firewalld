@@ -1873,7 +1873,7 @@ class FirewallConfig:
                 if desc:
                     import re
 
-                    desc = re.sub("\s+", " ", desc)
+                    desc = re.sub(r"\s+", " ", desc)
 
         self.zoneStore.append([zone, weight, desc])
 
