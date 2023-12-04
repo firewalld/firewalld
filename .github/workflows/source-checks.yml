@@ -7,7 +7,7 @@ jobs:
       apt-dependencies: |
         autoconf automake docbook-xml docbook-xsl ebtables intltool ipset \
         iptables libdbus-1-dev libgirepository1.0-dev libglib2.0-dev \
-        libxml2-utils nftables pkg-config python3-nftables xsltproc
+        libxml2-utils pkg-config xsltproc
       pip-dependencies: |
         dbus-python PyGObject flake8 pytest black==22.12.0
 
@@ -16,6 +16,8 @@ jobs:
     strategy:
       matrix:
         python-version: [3.7]
+        libnftnl-version: [libnftnl-1.2.3]
+        nftables-version: [v1.0.5]
 
     steps:
       - name: checkout
@@ -36,6 +38,35 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install ${{ env.pip-dependencies }}
+
+      - name: install nftables build dependencies
+        run: |
+          sudo apt install -y libmnl-dev libgmp-dev libreadline-dev \
+          libjansson-dev libedit-dev
+
+      - name: install libnftnl ${{ matrix.libnftnl-version }}
+        run: |
+          cd /tmp
+          git clone --depth=1 --branch ${{ matrix.libnftnl-version }} git://git.netfilter.org/libnftnl
+          cd libnftnl
+          ./autogen.sh
+          ./configure
+          make
+          sudo make install
+          sudo ldconfig
+
+      - name: install nftables ${{ matrix.nftables-version }}
+        run: |
+          cd /tmp
+          git clone --depth=1 --branch ${{ matrix.nftables-version }} git://git.netfilter.org/nftables
+          cd nftables
+          ./autogen.sh
+          ./configure --disable-man-doc --with-json --disable-python
+          make
+          sudo make install
+          cd py
+          pip install .
+          sudo ldconfig
 
       - name: build firewalld
         run: |
