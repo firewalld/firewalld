@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>Virtual Router Redundancy Protocol RFC3768 and RFC5798.</short>
+  <description>VRRP specifies an election protocol that dynamically assigns responsibility for a virtual router to one of the VRRP routers on a LAN.</description>
+  <protocol value="112"/>
+  <destination ipv4="224.0.0.18" ipv6="FF02:0:0:0:0:0:0:12"/>
+</service>
