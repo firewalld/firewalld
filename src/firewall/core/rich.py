@@ -837,9 +837,10 @@ class Rich_Rule:
             entry.check(family=self.family)
 
     def check(self):
-        if self.family is not None and self.family not in ["ipv4", "ipv6"]:
-            raise FirewallError(errors.INVALID_FAMILY, self.family)
-        if self.family is None:
+        if self.family is not None:
+            if self.family not in ["ipv4", "ipv6"]:
+                raise FirewallError(errors.INVALID_FAMILY, self.family)
+        else:
             if (
                 self.source is not None and self.source.addr is not None
             ) or self.destination is not None:
@@ -876,33 +877,24 @@ class Rich_Rule:
         self._check_entry(self.source)
         self._check_entry(self.destination)
 
-        # service
         if isinstance(self.element, Rich_Service):
             # service availability needs to be checked in Firewall, here is no
             # knowledge about this, therefore only simple check
             if self.element.name is None or len(self.element.name) < 1:
                 raise FirewallError(errors.INVALID_SERVICE, str(self.element.name))
-
-        # port
         elif isinstance(self.element, Rich_Port):
             if not functions.check_port(self.element.port):
                 raise FirewallError(errors.INVALID_PORT, self.element.port)
             if self.element.protocol not in ["tcp", "udp", "sctp", "dccp"]:
                 raise FirewallError(errors.INVALID_PROTOCOL, self.element.protocol)
-
-        # protocol
         elif isinstance(self.element, Rich_Protocol):
             if not functions.checkProtocol(self.element.value):
                 raise FirewallError(errors.INVALID_PROTOCOL, self.element.value)
-
-        # masquerade
         elif isinstance(self.element, Rich_Masquerade):
             if self.action is not None:
                 raise FirewallError(errors.INVALID_RULE, "masquerade and action")
             if self.source is not None and self.source.mac is not None:
                 raise FirewallError(errors.INVALID_RULE, "masquerade and mac source")
-
-        # icmp-block
         elif isinstance(self.element, Rich_IcmpBlock):
             # icmp type availability needs to be checked in Firewall, here is no
             # knowledge about this, therefore only simple check
@@ -910,15 +902,11 @@ class Rich_Rule:
                 raise FirewallError(errors.INVALID_ICMPTYPE, str(self.element.name))
             if self.action:
                 raise FirewallError(errors.INVALID_RULE, "icmp-block and action")
-
-        # icmp-type
         elif isinstance(self.element, Rich_IcmpType):
             # icmp type availability needs to be checked in Firewall, here is no
             # knowledge about this, therefore only simple check
             if self.element.name is None or len(self.element.name) < 1:
                 raise FirewallError(errors.INVALID_ICMPTYPE, str(self.element.name))
-
-        # forward-port
         elif isinstance(self.element, Rich_ForwardPort):
             if not functions.check_port(self.element.port):
                 raise FirewallError(errors.INVALID_PORT, self.element.port)
@@ -938,15 +926,11 @@ class Rich_Rule:
                 raise FirewallError(errors.INVALID_FAMILY)
             if self.action is not None:
                 raise FirewallError(errors.INVALID_RULE, "forward-port and action")
-
-        # source-port
         elif isinstance(self.element, Rich_SourcePort):
             if not functions.check_port(self.element.port):
                 raise FirewallError(errors.INVALID_PORT, self.element.port)
             if self.element.protocol not in ["tcp", "udp", "sctp", "dccp"]:
                 raise FirewallError(errors.INVALID_PROTOCOL, self.element.protocol)
-
-        # tcp-mss-clamp
         elif isinstance(self.element, Rich_Tcp_Mss_Clamp):
             if self.action is not None:
                 raise FirewallError(
@@ -956,8 +940,6 @@ class Rich_Rule:
             if self.element.value:
                 if not functions.checkTcpMssClamp(self.element.value):
                     raise FirewallError(errors.INVALID_RULE, self.element.value)
-
-        # other element and not empty?
         elif self.element is not None:
             raise FirewallError(
                 errors.INVALID_RULE, "Unknown element %s" % type(self.element)
