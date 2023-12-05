@@ -372,7 +372,8 @@ class Rich_Rule:
         if rule_str:
             self._import_from_string(rule_str)
 
-    def _lexer(self, rule_str):
+    @staticmethod
+    def _lexer(rule_str):
         """Lexical analysis"""
         tokens = []
 
