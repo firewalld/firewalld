@@ -33,6 +33,10 @@ class _Rich_EntryWithLimit(_Rich_Entry):
     def __init__(self, limit=None):
         self.limit = limit
 
+    def check(self, family=None):
+        if self.limit is not None:
+            self.limit.check(family=family)
+
 
 class _Rich_Element(_Rich_Entry):
     pass
@@ -73,6 +77,27 @@ class Rich_Source(_Rich_Entry):
             return ret + 'ipset="%s"' % self.ipset
         raise FirewallError(errors.INVALID_RULE, "no address, mac and ipset")
 
+    def check(self, family=None):
+        if self.addr is not None:
+            if family is None:
+                raise FirewallError(errors.INVALID_FAMILY)
+            if self.mac is not None:
+                raise FirewallError(errors.INVALID_RULE, "address and mac")
+            if self.ipset is not None:
+                raise FirewallError(errors.INVALID_RULE, "address and ipset")
+            if not functions.check_address(family, self.addr):
+                raise FirewallError(errors.INVALID_ADDR, str(self.addr))
+        elif self.mac is not None:
+            if self.ipset is not None:
+                raise FirewallError(errors.INVALID_RULE, "mac and ipset")
+            if not functions.check_mac(self.mac):
+                raise FirewallError(errors.INVALID_MAC, str(self.mac))
+        elif self.ipset is not None:
+            if not check_ipset_name(self.ipset):
+                raise FirewallError(errors.INVALID_IPSET, str(self.ipset))
+        else:
+            raise FirewallError(errors.INVALID_RULE, "invalid source")
+
 
 class Rich_Destination(_Rich_Entry):
     def __init__(self, addr, ipset, invert=False):
@@ -93,6 +118,20 @@ class Rich_Destination(_Rich_Entry):
         elif self.ipset is not None:
             return ret + 'ipset="%s"' % self.ipset
         raise FirewallError(errors.INVALID_RULE, "no address and ipset")
+
+    def check(self, family=None):
+        if self.addr is not None:
+            if family is None:
+                raise FirewallError(errors.INVALID_FAMILY)
+            if self.ipset is not None:
+                raise FirewallError(errors.INVALID_DESTINATION, "address and ipset")
+            if not functions.check_address(family, self.addr):
+                raise FirewallError(errors.INVALID_ADDR, str(self.addr))
+        elif self.ipset is not None:
+            if not check_ipset_name(self.ipset):
+                raise FirewallError(errors.INVALID_IPSET, str(self.ipset))
+        else:
+            raise FirewallError(errors.INVALID_RULE, "invalid destination")
 
 
 class Rich_Service(_Rich_Element):
@@ -214,8 +253,7 @@ class Rich_Log(_Rich_Log):
         ]:
             raise FirewallError(errors.INVALID_LOG_LEVEL, self.level)
 
-        if self.limit is not None:
-            self.limit.check(family=family)
+        super().check(family=family)
 
 
 class Rich_NFLog(_Rich_Log):
@@ -251,8 +289,7 @@ class Rich_NFLog(_Rich_Log):
                 "nflog 'queue-size' must be an integer between 0 and 65535.",
             )
 
-        if self.limit is not None:
-            self.limit.check(family=family)
+        super().check(family=family)
 
 
 class Rich_Audit(_Rich_EntryWithLimit):
@@ -297,6 +334,8 @@ class Rich_Reject(_Rich_Action):
                     "Wrong reject type %s.\nUse one of: %s." % (self.type, valid_types),
                 )
 
+        super().check(family=family)
+
 
 class Rich_Drop(_Rich_Action):
     def __init__(self, limit=None):
@@ -333,6 +372,8 @@ class Rich_Mark(_Rich_Action):
             if not functions.checkUINT32(x):
                 # value is uint32
                 raise FirewallError(errors.INVALID_MARK, x)
+
+        super().check(family=family)
 
 
 class Rich_Limit(_Rich_Entry):
@@ -791,6 +832,10 @@ class Rich_Rule:
 
             index = index + 1
 
+    def _check_entry(self, entry):
+        if entry is not None:
+            entry.check(family=self.family)
+
     def check(self):
         if self.family is not None and self.family not in ["ipv4", "ipv6"]:
             raise FirewallError(errors.INVALID_FAMILY, self.family)
@@ -828,49 +873,8 @@ class Rich_Rule:
             if self.log is None and self.audit is None and self.action is None:
                 raise FirewallError(errors.INVALID_RULE, "no action, no log, no audit")
 
-        # source
-        if self.source is not None:
-            if self.source.addr is not None:
-                if self.family is None:
-                    raise FirewallError(errors.INVALID_FAMILY)
-                if self.source.mac is not None:
-                    raise FirewallError(errors.INVALID_RULE, "address and mac")
-                if self.source.ipset is not None:
-                    raise FirewallError(errors.INVALID_RULE, "address and ipset")
-                if not functions.check_address(self.family, self.source.addr):
-                    raise FirewallError(errors.INVALID_ADDR, str(self.source.addr))
-
-            elif self.source.mac is not None:
-                if self.source.ipset is not None:
-                    raise FirewallError(errors.INVALID_RULE, "mac and ipset")
-                if not functions.check_mac(self.source.mac):
-                    raise FirewallError(errors.INVALID_MAC, str(self.source.mac))
-
-            elif self.source.ipset is not None:
-                if not check_ipset_name(self.source.ipset):
-                    raise FirewallError(errors.INVALID_IPSET, str(self.source.ipset))
-
-            else:
-                raise FirewallError(errors.INVALID_RULE, "invalid source")
-
-        # destination
-        if self.destination is not None:
-            if self.destination.addr is not None:
-                if self.family is None:
-                    raise FirewallError(errors.INVALID_FAMILY)
-                if self.destination.ipset is not None:
-                    raise FirewallError(errors.INVALID_DESTINATION, "address and ipset")
-                if not functions.check_address(self.family, self.destination.addr):
-                    raise FirewallError(errors.INVALID_ADDR, str(self.destination.addr))
-
-            elif self.destination.ipset is not None:
-                if not check_ipset_name(self.destination.ipset):
-                    raise FirewallError(
-                        errors.INVALID_IPSET, str(self.destination.ipset)
-                    )
-
-            else:
-                raise FirewallError(errors.INVALID_RULE, "invalid destination")
+        self._check_entry(self.source)
+        self._check_entry(self.destination)
 
         # service
         if isinstance(self.element, Rich_Service):
@@ -959,27 +963,14 @@ class Rich_Rule:
                 errors.INVALID_RULE, "Unknown element %s" % type(self.element)
             )
 
-        # log
-        if self.log is not None:
-            self.log.check(family=self.family)
+        self._check_entry(self.log)
 
-        # audit
         if self.audit is not None:
             if type(self.action) not in [Rich_Accept, Rich_Reject, Rich_Drop]:
                 raise FirewallError(errors.INVALID_AUDIT_TYPE, type(self.action))
 
-            if self.audit.limit is not None:
-                self.audit.limit.check(family=self.family)
-
-        # action
-        if self.action is not None:
-            if isinstance(self.action, Rich_Reject):
-                self.action.check(family=self.family)
-            elif isinstance(self.action, Rich_Mark):
-                self.action.check(family=self.family)
-
-            if self.action.limit is not None:
-                self.action.limit.check(family=self.family)
+        self._check_entry(self.audit)
+        self._check_entry(self.action)
 
     def __str__(self):
         ret = "rule"
