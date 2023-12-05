@@ -349,6 +349,7 @@ CONFIG_FILES = \
 	services/upnp-client.xml \
 	services/vdsm.xml \
 	services/vnc-server.xml \
+	services/vrrp.xml \
 	services/warpinator.xml \
 	services/wbem-http.xml \
 	services/wbem-https.xml \
