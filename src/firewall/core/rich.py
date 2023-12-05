@@ -24,7 +24,27 @@ class _EOLType:
 EOL = _EOLType()
 
 
-class Rich_Source:
+class _Rich_Entry:
+    pass
+
+
+class _Rich_EntryWithLimit(_Rich_Entry):
+    pass
+
+
+class _Rich_Element(_Rich_Entry):
+    pass
+
+
+class _Rich_Action(_Rich_EntryWithLimit):
+    pass
+
+
+class _Rich_Log(_Rich_EntryWithLimit):
+    pass
+
+
+class Rich_Source(_Rich_Entry):
     def __init__(self, addr, mac, ipset, invert=False):
         self.addr = addr
         if self.addr == "":
@@ -52,7 +72,7 @@ class Rich_Source:
         raise FirewallError(errors.INVALID_RULE, "no address, mac and ipset")
 
 
-class Rich_Destination:
+class Rich_Destination(_Rich_Entry):
     def __init__(self, addr, ipset, invert=False):
         self.addr = addr
         if self.addr == "":
@@ -73,7 +93,7 @@ class Rich_Destination:
         raise FirewallError(errors.INVALID_RULE, "no address and ipset")
 
 
-class Rich_Service:
+class Rich_Service(_Rich_Element):
     def __init__(self, name):
         self.name = name
 
@@ -81,7 +101,7 @@ class Rich_Service:
         return 'service name="%s"' % (self.name)
 
 
-class Rich_Port:
+class Rich_Port(_Rich_Element):
     def __init__(self, port, protocol):
         self.port = port
         self.protocol = protocol
@@ -90,7 +110,7 @@ class Rich_Port:
         return 'port port="%s" protocol="%s"' % (self.port, self.protocol)
 
 
-class Rich_SourcePort:
+class Rich_SourcePort(_Rich_Element):
     def __init__(self, port, protocol):
         self.port = port
         self.protocol = protocol
@@ -99,7 +119,7 @@ class Rich_SourcePort:
         return 'source-port port="%s" protocol="%s"' % (self.port, self.protocol)
 
 
-class Rich_Protocol:
+class Rich_Protocol(_Rich_Element):
     def __init__(self, value):
         self.value = value
 
@@ -107,15 +127,12 @@ class Rich_Protocol:
         return 'protocol value="%s"' % (self.value)
 
 
-class Rich_Masquerade:
-    def __init__(self):
-        pass
-
+class Rich_Masquerade(_Rich_Element):
     def __str__(self):
         return "masquerade"
 
 
-class Rich_IcmpBlock:
+class Rich_IcmpBlock(_Rich_Element):
     def __init__(self, name):
         self.name = name
 
@@ -123,7 +140,7 @@ class Rich_IcmpBlock:
         return 'icmp-block name="%s"' % (self.name)
 
 
-class Rich_IcmpType:
+class Rich_IcmpType(_Rich_Element):
     def __init__(self, name):
         self.name = name
 
@@ -131,7 +148,7 @@ class Rich_IcmpType:
         return 'icmp-type name="%s"' % (self.name)
 
 
-class Rich_Tcp_Mss_Clamp:
+class Rich_Tcp_Mss_Clamp(_Rich_Element):
     def __init__(self, value):
         self.value = value
 
@@ -142,7 +159,7 @@ class Rich_Tcp_Mss_Clamp:
             return "tcp-mss-clamp"
 
 
-class Rich_ForwardPort:
+class Rich_ForwardPort(_Rich_Element):
     def __init__(self, port, protocol, to_port, to_address):
         self.port = port
         self.protocol = protocol
@@ -163,7 +180,7 @@ class Rich_ForwardPort:
         )
 
 
-class Rich_Log:
+class Rich_Log(_Rich_Log):
     def __init__(self, prefix=None, level=None, limit=None):
         # TODO check default level in iptables
         self.prefix = prefix
@@ -199,7 +216,7 @@ class Rich_Log:
             self.limit.check()
 
 
-class Rich_NFLog:
+class Rich_NFLog(_Rich_Log):
     def __init__(self, group=None, prefix=None, queue_size=None, limit=None):
         self.group = group
         self.prefix = prefix
@@ -236,7 +253,7 @@ class Rich_NFLog:
             self.limit.check()
 
 
-class Rich_Audit:
+class Rich_Audit(_Rich_EntryWithLimit):
     def __init__(self, limit=None):
         # TODO check default level in iptables
         self.limit = limit
@@ -245,7 +262,7 @@ class Rich_Audit:
         return "audit%s" % (" %s" % self.limit if self.limit else "")
 
 
-class Rich_Accept:
+class Rich_Accept(_Rich_Action):
     def __init__(self, limit=None):
         self.limit = limit
 
@@ -253,7 +270,7 @@ class Rich_Accept:
         return "accept%s" % (" %s" % self.limit if self.limit else "")
 
 
-class Rich_Reject:
+class Rich_Reject(_Rich_Action):
     def __init__(self, _type=None, limit=None):
         self.type = _type
         self.limit = limit
@@ -279,7 +296,7 @@ class Rich_Reject:
                 )
 
 
-class Rich_Drop:
+class Rich_Drop(_Rich_Action):
     def __init__(self, limit=None):
         self.limit = limit
 
@@ -287,7 +304,7 @@ class Rich_Drop:
         return "drop%s" % (" %s" % self.limit if self.limit else "")
 
 
-class Rich_Mark:
+class Rich_Mark(_Rich_Action):
     def __init__(self, _set, limit=None):
         self.set = _set
         self.limit = limit
@@ -316,7 +333,7 @@ class Rich_Mark:
                 raise FirewallError(errors.INVALID_MARK, x)
 
 
-class Rich_Limit:
+class Rich_Limit(_Rich_Entry):
     def __init__(self, value):
         self.value = value
         if "/" in self.value:
