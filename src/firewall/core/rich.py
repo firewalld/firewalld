@@ -12,6 +12,18 @@ from firewall import errors
 from firewall.errors import FirewallError
 
 
+# Dummy class for EOL singleton instance. It's a class, so we
+# can overwrite __repr__().
+class _EOLType:
+    def __repr__(self):
+        # The string representation is the full name of the instance.
+        return "firewall.core.rich.EOL"
+
+
+# A EndOfLine singleton instance to indicate EOL token.
+EOL = _EOLType()
+
+
 class Rich_Source:
     def __init__(self, addr, mac, ipset, invert=False):
         self.addr = addr
@@ -387,7 +399,7 @@ class Rich_Rule:
                 tokens.append({"attr_name": attr[0], "attr_value": attr[1]})
             else:
                 tokens.append({"element": r})
-        tokens.append({"element": "EOL"})
+        tokens.append({"element": EOL})
 
         return tokens
 
@@ -407,13 +419,13 @@ class Rich_Rule:
         self.action = None
 
         tokens = self._lexer(rule_str)
-        if tokens and tokens[0].get("element") == "EOL":
+        if tokens and tokens[0].get("element") is EOL:
             raise FirewallError(errors.INVALID_RULE, "empty rule")
 
         attrs = {}  # attributes of elements
         in_elements = []  # stack with elements we are in
         index = 0  # index into tokens
-        while not (tokens[index].get("element") == "EOL" and in_elements == ["rule"]):
+        while not (tokens[index].get("element") is EOL and in_elements == ["rule"]):
             element = tokens[index].get("element")
             attr_name = tokens[index].get("attr_name")
             attr_value = tokens[index].get("attr_value")
@@ -466,7 +478,7 @@ class Rich_Rule:
                     "limit",
                     "not",
                     "NOT",
-                    "EOL",
+                    EOL,
                     "tcp-mss-clamp",
                 ]:
                     if element == "source" and self.source:
