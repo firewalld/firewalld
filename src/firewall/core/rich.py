@@ -25,7 +25,8 @@ EOL = _EOLType()
 
 
 class _Rich_Entry:
-    pass
+    def check(self, family=None):
+        pass
 
 
 class _Rich_EntryWithLimit(_Rich_Entry):
@@ -195,7 +196,7 @@ class Rich_Log(_Rich_Log):
             " %s" % self.limit if self.limit else "",
         )
 
-    def check(self):
+    def check(self, family=None):
         if self.prefix and len(self.prefix) > 127:
             raise FirewallError(
                 errors.INVALID_LOG_PREFIX, "maximum accepted length of 'prefix' is 127."
@@ -214,7 +215,7 @@ class Rich_Log(_Rich_Log):
             raise FirewallError(errors.INVALID_LOG_LEVEL, self.level)
 
         if self.limit is not None:
-            self.limit.check()
+            self.limit.check(family=family)
 
 
 class Rich_NFLog(_Rich_Log):
@@ -232,7 +233,7 @@ class Rich_NFLog(_Rich_Log):
             " %s" % self.limit if self.limit else "",
         )
 
-    def check(self):
+    def check(self, family=None):
         if self.group and not functions.checkUINT16(self.group):
             raise FirewallError(
                 errors.INVALID_NFLOG_GROUP,
@@ -251,7 +252,7 @@ class Rich_NFLog(_Rich_Log):
             )
 
         if self.limit is not None:
-            self.limit.check()
+            self.limit.check(family=family)
 
 
 class Rich_Audit(_Rich_EntryWithLimit):
@@ -282,14 +283,14 @@ class Rich_Reject(_Rich_Action):
             " %s" % self.limit if self.limit else "",
         )
 
-    def check(self, family):
+    def check(self, family=None):
         if self.type:
-            if not family:
+            if family not in ["ipv4", "ipv6"]:
                 raise FirewallError(
                     errors.INVALID_RULE,
                     "When using reject type you must specify also rule family.",
                 )
-            if family in ["ipv4", "ipv6"] and self.type not in REJECT_TYPES[family]:
+            if self.type not in REJECT_TYPES[family]:
                 valid_types = ", ".join(REJECT_TYPES[family])
                 raise FirewallError(
                     errors.INVALID_RULE,
@@ -313,7 +314,7 @@ class Rich_Mark(_Rich_Action):
     def __str__(self):
         return "mark set=%s%s" % (self.set, " %s" % self.limit if self.limit else "")
 
-    def check(self):
+    def check(self, family=None):
         if self.set is not None:
             x = self.set
         else:
@@ -342,7 +343,7 @@ class Rich_Limit(_Rich_Entry):
             if len(splits) == 2 and splits[1] in ["second", "minute", "hour", "day"]:
                 self.value = "%s/%s" % (splits[0], splits[1][:1])
 
-    def check(self):
+    def check(self, family=None):
         splits = None
         if "/" in self.value:
             splits = self.value.split("/")
@@ -960,7 +961,7 @@ class Rich_Rule:
 
         # log
         if self.log is not None:
-            self.log.check()
+            self.log.check(family=self.family)
 
         # audit
         if self.audit is not None:
@@ -968,17 +969,17 @@ class Rich_Rule:
                 raise FirewallError(errors.INVALID_AUDIT_TYPE, type(self.action))
 
             if self.audit.limit is not None:
-                self.audit.limit.check()
+                self.audit.limit.check(family=self.family)
 
         # action
         if self.action is not None:
             if isinstance(self.action, Rich_Reject):
-                self.action.check(self.family)
+                self.action.check(family=self.family)
             elif isinstance(self.action, Rich_Mark):
-                self.action.check()
+                self.action.check(family=self.family)
 
             if self.action.limit is not None:
-                self.action.limit.check()
+                self.action.limit.check(family=self.family)
 
     def __str__(self):
         ret = "rule"
