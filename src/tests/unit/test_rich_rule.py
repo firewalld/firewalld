@@ -60,7 +60,7 @@ EXP_RULE_LIST = [
             {"element": "protocol"},
             {"attr_name": "value", "attr_value": "ah"},
             {"element": "reject"},
-            {"element": "EOL"},
+            {"element": firewall.core.rich.EOL},
         ],
     ),
     ExpRule('rule protocol value="esp" accept'),
@@ -132,7 +132,7 @@ EXP_RULE_LIST = [
             {"attr_name": "family", "attr_value": "ipv4"},
             {"element": "source"},
             {"attr_name": "address", "attr_value": "192.168.2.100"},
-            {"element": "EOL"},
+            {"element": firewall.core.rich.EOL},
         ],
     ),
     ExpRule(
@@ -150,7 +150,7 @@ EXP_RULE_LIST = [
             {"attr_name": "family", "attr_value": "ipv6"},
             {"element": "source"},
             {"attr_name": "address", "attr_value": "1:2:3:4:6::"},
-            {"element": "EOL"},
+            {"element": firewall.core.rich.EOL},
         ],
     ),
     ExpRule(
@@ -165,7 +165,7 @@ EXP_RULE_LIST = [
             {"attr_name": "family", "attr_value": "ipv6"},
             {"element": "source"},
             {"attr_name": "address", "attr_value": "1:2:3:4:6::"},
-            {"element": "EOL"},
+            {"element": firewall.core.rich.EOL},
         ],
     ),
     ExpRule(
@@ -183,7 +183,7 @@ EXP_RULE_LIST = [
             {"element": "limit"},
             {"attr_name": "value", "attr_value": "1/m"},
             {"element": "accept"},
-            {"element": "EOL"},
+            {"element": firewall.core.rich.EOL},
         ],
     ),
     ExpRule(
@@ -197,7 +197,7 @@ EXP_RULE_LIST = [
             {"element": "limit"},
             {"attr_name": "value", "attr_value": "1 /m"},
             {"element": "accept"},
-            {"element": "EOL"},
+            {"element": firewall.core.rich.EOL},
         ],
     ),
     ExpRule('name="dns" accept', invalid=True),
@@ -219,7 +219,7 @@ EXP_RULE_LIST = [
             {"attr_name": "value", "attr_value": "ah"},
             {"element": "accept"},
             {"element": "drop"},
-            {"element": "EOL"},
+            {"element": firewall.core.rich.EOL},
         ],
     ),
     ExpRule('rule service name="radius" port port="4011" reject', invalid=True),
@@ -255,6 +255,7 @@ EXP_RULE_LIST = [
     ),
     ExpRule(
         'rule protocol value="igmp" log EOL bogus',
+        invalid=True,
         tokens=[
             {"element": "rule"},
             {"element": "protocol"},
@@ -262,7 +263,7 @@ EXP_RULE_LIST = [
             {"element": "log"},
             {"element": "EOL"},
             {"element": "bogus"},
-            {"element": "EOL"},
+            {"element": firewall.core.rich.EOL},
         ],
     ),
 ]
