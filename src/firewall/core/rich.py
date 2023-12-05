@@ -141,6 +141,10 @@ class Rich_Service(_Rich_Element):
     def __str__(self):
         return 'service name="%s"' % (self.name)
 
+    def check(self, family=None):
+        if self.name is None or len(self.name) < 1:
+            raise FirewallError(errors.INVALID_SERVICE, str(self.name))
+
 
 class Rich_Port(_Rich_Element):
     def __init__(self, port, protocol):
@@ -149,6 +153,12 @@ class Rich_Port(_Rich_Element):
 
     def __str__(self):
         return 'port port="%s" protocol="%s"' % (self.port, self.protocol)
+
+    def check(self, family=None):
+        if not functions.check_port(self.port):
+            raise FirewallError(errors.INVALID_PORT, self.port)
+        if self.protocol not in ["tcp", "udp", "sctp", "dccp"]:
+            raise FirewallError(errors.INVALID_PROTOCOL, self.protocol)
 
 
 class Rich_SourcePort(_Rich_Element):
@@ -159,6 +169,12 @@ class Rich_SourcePort(_Rich_Element):
     def __str__(self):
         return 'source-port port="%s" protocol="%s"' % (self.port, self.protocol)
 
+    def check(self, family=None):
+        if not functions.check_port(self.port):
+            raise FirewallError(errors.INVALID_PORT, self.port)
+        if self.protocol not in ["tcp", "udp", "sctp", "dccp"]:
+            raise FirewallError(errors.INVALID_PROTOCOL, self.protocol)
+
 
 class Rich_Protocol(_Rich_Element):
     def __init__(self, value):
@@ -166,6 +182,10 @@ class Rich_Protocol(_Rich_Element):
 
     def __str__(self):
         return 'protocol value="%s"' % (self.value)
+
+    def check(self, family=None):
+        if not functions.checkProtocol(self.value):
+            raise FirewallError(errors.INVALID_PROTOCOL, self.value)
 
 
 class Rich_Masquerade(_Rich_Element):
@@ -180,6 +200,10 @@ class Rich_IcmpBlock(_Rich_Element):
     def __str__(self):
         return 'icmp-block name="%s"' % (self.name)
 
+    def check(self, family=None):
+        if self.name is None or len(self.name) < 1:
+            raise FirewallError(errors.INVALID_ICMPTYPE, str(self.name))
+
 
 class Rich_IcmpType(_Rich_Element):
     def __init__(self, name):
@@ -187,6 +211,10 @@ class Rich_IcmpType(_Rich_Element):
 
     def __str__(self):
         return 'icmp-type name="%s"' % (self.name)
+
+    def check(self, family=None):
+        if self.name is None or len(self.name) < 1:
+            raise FirewallError(errors.INVALID_ICMPTYPE, str(self.name))
 
 
 class Rich_Tcp_Mss_Clamp(_Rich_Element):
@@ -198,6 +226,11 @@ class Rich_Tcp_Mss_Clamp(_Rich_Element):
             return 'tcp-mss-clamp value="%s"' % (self.value)
         else:
             return "tcp-mss-clamp"
+
+    def check(self, family=None):
+        if self.value:
+            if not functions.checkTcpMssClamp(self.value):
+                raise FirewallError(errors.INVALID_RULE, self.value)
 
 
 class Rich_ForwardPort(_Rich_Element):
@@ -219,6 +252,22 @@ class Rich_ForwardPort(_Rich_Element):
             ' to-port="%s"' % self.to_port if self.to_port != "" else "",
             ' to-addr="%s"' % self.to_address if self.to_address != "" else "",
         )
+
+    def check(self, family=None):
+        if not functions.check_port(self.port):
+            raise FirewallError(errors.INVALID_PORT, self.port)
+        if self.protocol not in ["tcp", "udp", "sctp", "dccp"]:
+            raise FirewallError(errors.INVALID_PROTOCOL, self.protocol)
+        if self.to_port == "" and self.to_address == "":
+            raise FirewallError(errors.INVALID_PORT, self.to_port)
+        if self.to_port != "" and not functions.check_port(self.to_port):
+            raise FirewallError(errors.INVALID_PORT, self.to_port)
+        if self.to_address != "" and not functions.check_single_address(
+            family, self.to_address
+        ):
+            raise FirewallError(errors.INVALID_ADDR, self.to_address)
+        if family is None:
+            raise FirewallError(errors.INVALID_FAMILY)
 
 
 class Rich_Log(_Rich_Log):
@@ -877,73 +926,25 @@ class Rich_Rule:
         self._check_entry(self.source)
         self._check_entry(self.destination)
 
-        if isinstance(self.element, Rich_Service):
-            # service availability needs to be checked in Firewall, here is no
-            # knowledge about this, therefore only simple check
-            if self.element.name is None or len(self.element.name) < 1:
-                raise FirewallError(errors.INVALID_SERVICE, str(self.element.name))
-        elif isinstance(self.element, Rich_Port):
-            if not functions.check_port(self.element.port):
-                raise FirewallError(errors.INVALID_PORT, self.element.port)
-            if self.element.protocol not in ["tcp", "udp", "sctp", "dccp"]:
-                raise FirewallError(errors.INVALID_PROTOCOL, self.element.protocol)
-        elif isinstance(self.element, Rich_Protocol):
-            if not functions.checkProtocol(self.element.value):
-                raise FirewallError(errors.INVALID_PROTOCOL, self.element.value)
-        elif isinstance(self.element, Rich_Masquerade):
+        self._check_entry(self.element)
+
+        if isinstance(self.element, Rich_Masquerade):
             if self.action is not None:
                 raise FirewallError(errors.INVALID_RULE, "masquerade and action")
             if self.source is not None and self.source.mac is not None:
                 raise FirewallError(errors.INVALID_RULE, "masquerade and mac source")
         elif isinstance(self.element, Rich_IcmpBlock):
-            # icmp type availability needs to be checked in Firewall, here is no
-            # knowledge about this, therefore only simple check
-            if self.element.name is None or len(self.element.name) < 1:
-                raise FirewallError(errors.INVALID_ICMPTYPE, str(self.element.name))
             if self.action:
                 raise FirewallError(errors.INVALID_RULE, "icmp-block and action")
-        elif isinstance(self.element, Rich_IcmpType):
-            # icmp type availability needs to be checked in Firewall, here is no
-            # knowledge about this, therefore only simple check
-            if self.element.name is None or len(self.element.name) < 1:
-                raise FirewallError(errors.INVALID_ICMPTYPE, str(self.element.name))
         elif isinstance(self.element, Rich_ForwardPort):
-            if not functions.check_port(self.element.port):
-                raise FirewallError(errors.INVALID_PORT, self.element.port)
-            if self.element.protocol not in ["tcp", "udp", "sctp", "dccp"]:
-                raise FirewallError(errors.INVALID_PROTOCOL, self.element.protocol)
-            if self.element.to_port == "" and self.element.to_address == "":
-                raise FirewallError(errors.INVALID_PORT, self.element.to_port)
-            if self.element.to_port != "" and not functions.check_port(
-                self.element.to_port
-            ):
-                raise FirewallError(errors.INVALID_PORT, self.element.to_port)
-            if self.element.to_address != "" and not functions.check_single_address(
-                self.family, self.element.to_address
-            ):
-                raise FirewallError(errors.INVALID_ADDR, self.element.to_address)
-            if self.family is None:
-                raise FirewallError(errors.INVALID_FAMILY)
             if self.action is not None:
                 raise FirewallError(errors.INVALID_RULE, "forward-port and action")
-        elif isinstance(self.element, Rich_SourcePort):
-            if not functions.check_port(self.element.port):
-                raise FirewallError(errors.INVALID_PORT, self.element.port)
-            if self.element.protocol not in ["tcp", "udp", "sctp", "dccp"]:
-                raise FirewallError(errors.INVALID_PROTOCOL, self.element.protocol)
         elif isinstance(self.element, Rich_Tcp_Mss_Clamp):
             if self.action is not None:
                 raise FirewallError(
                     errors.INVALID_RULE,
                     "tcp-mss-clamp and %s are mutually exclusive" % self.action,
                 )
-            if self.element.value:
-                if not functions.checkTcpMssClamp(self.element.value):
-                    raise FirewallError(errors.INVALID_RULE, self.element.value)
-        elif self.element is not None:
-            raise FirewallError(
-                errors.INVALID_RULE, "Unknown element %s" % type(self.element)
-            )
 
         self._check_entry(self.log)
 
