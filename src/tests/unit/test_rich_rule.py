@@ -51,7 +51,7 @@ class ExpRule:
 
 
 EXP_RULE_LIST = [
-    ExpRule(""),
+    ExpRule("", invalid=True),
     ExpRule("rule", invalid=True),
     ExpRule(
         'rule protocol value="ah" reject',
@@ -300,14 +300,8 @@ def test_rich_rule_parse():
         if r.rule_id is not None:
             assert r.rule_id == s2
 
-        if s1 in ("",):
-            # These strings can be parsed, but cannot be normalized.
-            with pytest.raises(firewall.errors.FirewallError):
-                firewall.core.rich.Rich_Rule(rule_str=s2)
-        else:
-            rule2 = firewall.core.rich.Rich_Rule(rule_str=s2)
-
-            assert s2 == str(rule2)
+        rule2 = firewall.core.rich.Rich_Rule(rule_str=s2)
+        assert s2 == str(rule2)
 
         r.check(rule1)
 

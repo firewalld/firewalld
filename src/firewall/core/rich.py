@@ -381,7 +381,7 @@ class Rich_Rule:
         self.audit = None
         self.action = None
 
-        if rule_str:
+        if rule_str is not None:
             self._import_from_string(rule_str)
 
     @staticmethod
