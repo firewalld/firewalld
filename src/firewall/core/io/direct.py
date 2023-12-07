@@ -103,14 +103,14 @@ class direct_ContentHandler(IO_Object_ContentHandler):
 class Direct(IO_Object):
     """Direct class"""
 
-    IMPORT_EXPORT_STRUCTURE = (
+    IMPORT_EXPORT_STRUCTURE = {
         # chain: [ ipv, table, [ chain ] ]
-        ("chains", [("", "", "")]),  # a(sss)
+        "chains": [("", "", "")],  # a(sss)
         # rule: [ ipv, table, chain, [ priority, [ arg ] ] ]
-        ("rules", [("", "", "", 0, [""])]),  # a(sssias)
+        "rules": [("", "", "", 0, [""])],  # a(sssias)
         # passthrough: [ ipv, [ [ arg ] ] ]
-        ("passthroughs", [("", [""])]),  # a(sas)
-    )
+        "passthroughs": [("", [""])],  # a(sas)
+    }
     DBUS_SIGNATURE = "(a(sss)a(sssias)a(sas))"
     PARSER_REQUIRED_ELEMENT_ATTRS = {
         "direct": None,
@@ -153,14 +153,14 @@ class Direct(IO_Object):
     def import_config(self, conf, all_io_objects):
         self.cleanup()
         self.check_config(conf)
-        for i, (element, dummy) in enumerate(self.IMPORT_EXPORT_STRUCTURE):
+        for i, element in enumerate(self.IMPORT_EXPORT_STRUCTURE):
             if element == "chains":
                 for x in conf[i]:
                     self.add_chain(*x)
-            if element == "rules":
+            elif element == "rules":
                 for x in conf[i]:
                     self.add_rule(*x)
-            if element == "passthroughs":
+            elif element == "passthroughs":
                 for x in conf[i]:
                     self.add_passthrough(*x)
 

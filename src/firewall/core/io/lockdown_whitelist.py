@@ -74,12 +74,12 @@ class lockdown_whitelist_ContentHandler(IO_Object_ContentHandler):
 class LockdownWhitelist(IO_Object):
     """LockdownWhitelist class"""
 
-    IMPORT_EXPORT_STRUCTURE = (
-        ("commands", [""]),  # as
-        ("contexts", [""]),  # as
-        ("users", [""]),  # as
-        ("uids", [0]),  # ai
-    )
+    IMPORT_EXPORT_STRUCTURE = {
+        "commands": [""],  # as
+        "contexts": [""],  # as
+        "users": [""],  # as
+        "uids": [0],  # ai
+    }
     DBUS_SIGNATURE = "(asasasai)"
     ADDITIONAL_ALNUM_CHARS = ["_"]
     PARSER_REQUIRED_ELEMENT_ATTRS = {

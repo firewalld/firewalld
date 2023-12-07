@@ -41,14 +41,14 @@ from firewall.errors import FirewallError
 
 
 class IPSet(IO_Object):
-    IMPORT_EXPORT_STRUCTURE = (
-        ("version", ""),  # s
-        ("short", ""),  # s
-        ("description", ""),  # s
-        ("type", ""),  # s
-        ("options", {"": ""}),  # a{ss}
-        ("entries", [""]),  # as
-    )
+    IMPORT_EXPORT_STRUCTURE = {
+        "version": "",  # s
+        "short": "",  # s
+        "description": "",  # s
+        "type": "",  # s
+        "options": {"": ""},  # a{ss}
+        "entries": [""],  # as
+    }
     DBUS_SIGNATURE = "(ssssa{ss}as)"
     ADDITIONAL_ALNUM_CHARS = ["_", "-", ":", "."]
     PARSER_REQUIRED_ELEMENT_ATTRS = {

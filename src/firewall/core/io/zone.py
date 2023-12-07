@@ -44,27 +44,27 @@ class Zone(IO_Object):
     priority_max = 32767
     priority_default = DEFAULT_ZONE_PRIORITY
 
-    IMPORT_EXPORT_STRUCTURE = (
-        ("version", ""),  # s
-        ("short", ""),  # s
-        ("description", ""),  # s
-        ("UNUSED", False),  # b
-        ("target", ""),  # s
-        ("services", [""]),  # as
-        ("ports", [("", "")]),  # a(ss)
-        ("icmp_blocks", [""]),  # as
-        ("masquerade", False),  # b
-        ("forward_ports", [("", "", "", "")]),  # a(ssss)
-        ("interfaces", [""]),  # as
-        ("sources", [""]),  # as
-        ("rules_str", [""]),  # as
-        ("protocols", [""]),  # as
-        ("source_ports", [("", "")]),  # a(ss)
-        ("icmp_block_inversion", False),  # b
-        ("forward", True),  # b
-        ("ingress_priority", 0),  # i
-        ("egress_priority", 0),  # i
-    )
+    IMPORT_EXPORT_STRUCTURE = {
+        "version": "",  # s
+        "short": "",  # s
+        "description": "",  # s
+        "UNUSED": False,  # b
+        "target": "",  # s
+        "services": [""],  # as
+        "ports": [("", "")],  # a(ss)
+        "icmp_blocks": [""],  # as
+        "masquerade": False,  # b
+        "forward_ports": [("", "", "", "")],  # a(ssss)
+        "interfaces": [""],  # as
+        "sources": [""],  # as
+        "rules_str": [""],  # as
+        "protocols": [""],  # as
+        "source_ports": [("", "")],  # a(ss)
+        "icmp_block_inversion": False,  # b
+        "forward": True,  # b
+        "ingress_priority": 0,  # i
+        "egress_priority": 0,  # i
+    }
     ADDITIONAL_ALNUM_CHARS = ["_", "-", "/"]
     PARSER_REQUIRED_ELEMENT_ATTRS = {
         "short": None,
@@ -114,7 +114,7 @@ class Zone(IO_Object):
 
     @staticmethod
     def index_of(element):
-        for i, (el, dummy) in enumerate(Zone.IMPORT_EXPORT_STRUCTURE):
+        for i, el in enumerate(Zone.IMPORT_EXPORT_STRUCTURE):
             if el == element:
                 return i
         raise FirewallError(errors.UNKNOWN_ERROR, "index_of()")
