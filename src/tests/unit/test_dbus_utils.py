@@ -7,7 +7,6 @@ import firewall.dbus_utils
 
 
 def test_dbus_to_python():
-
     assert firewall.dbus_utils.dbus_to_python_args(
         [dbus.String("a"), dbus.String("b")], str, str
     ) == ("a", "b")

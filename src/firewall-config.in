@@ -5273,7 +5273,6 @@ class FirewallConfig:
             if not self.fw.queryForwardPort(
                 selected_zone, port, proto, to_port, to_addr
             ):
-
                 self.fw.addForwardPort(selected_zone, port, proto, to_port, to_addr)
                 if not add:
                     self.fw.removeForwardPort(
@@ -7364,11 +7363,11 @@ class FirewallConfig:
 
         for x in chains:
             self.directChainStore.append(x)
-        for (ipv, table, chain, priority, args) in rules:
+        for ipv, table, chain, priority, args in rules:
             self.directRuleStore.append(
                 (ipv, table, chain, priority, functions.joinArgs(args))
             )
-        for (ipv, args) in passthroughs:
+        for ipv, args in passthroughs:
             self.directPassthroughStore.append((ipv, functions.joinArgs(args)))
 
     def load_lockdown_whitelist(self):

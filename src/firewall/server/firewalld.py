@@ -2468,7 +2468,7 @@ class FirewallD(DbusServiceObject):
         chain = dbus_to_python(chain, str)
         log.debug1("direct.removeRules('%s', '%s', '%s')" % (ipv, table, chain))
         self.accessCheck(sender)
-        for (priority, args) in self.fw.direct.get_rules(ipv, table, chain):
+        for priority, args in self.fw.direct.get_rules(ipv, table, chain):
             self.fw.direct.remove_rule(ipv, table, chain, priority, args)
             self.RuleRemoved(ipv, table, chain, priority, args)
 

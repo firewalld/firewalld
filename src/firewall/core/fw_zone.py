@@ -239,7 +239,6 @@ class FirewallZone:
         return (self.policy_name_from_zones(fromZone, toZone), _chain)
 
     def create_zone_base_by_chain(self, ipv, table, chain, use_transaction=None):
-
         # Create zone base chains if the chain is reserved for a zone
         if ipv in ["ipv4", "ipv6"]:
             x = self.policy_from_chain(chain)

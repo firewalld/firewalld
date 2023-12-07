@@ -153,7 +153,6 @@ class dbus_polkit_require_auth:
     def __call__(self, func):
         @functools.wraps(func)
         def _impl(*args, **kwargs):
-
             if not type(self)._bus:
                 type(self)._bus = dbus.SystemBus()
 

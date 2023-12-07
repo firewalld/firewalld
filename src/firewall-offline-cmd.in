@@ -36,6 +36,7 @@ from firewall.core.io.icmptype import icmptype_reader
 from firewall.core.io.helper import helper_reader
 from firewall.command import FirewallCommand
 
+
 # check for root user
 def assert_root():
     if os.getuid() != 0:
@@ -2690,7 +2691,7 @@ try:
             sys.exit(0)
         elif a.get_all_chains:
             chains = obj.get_all_chains()
-            for (ipv, table) in chains:
+            for ipv, table in chains:
                 for chain in chains[(ipv, table)]:
                     cmd.print_msg("%s %s %s" % (ipv, table, chain))
             sys.exit(0)
@@ -2764,13 +2765,13 @@ try:
             rules = obj.get_rules(
                 cmd.check_ipv(a.get_rules[0]), a.get_rules[1], a.get_rules[2]
             )
-            for (priority, rule) in rules:
+            for priority, rule in rules:
                 cmd.print_msg("%d %s" % (priority, joinArgs(rule)))
             sys.exit(0)
         elif a.get_all_rules:
             rules = obj.get_all_rules()
-            for (ipv, table, chain) in rules:
-                for (priority, rule) in rules[(ipv, table, chain)]:
+            for ipv, table, chain in rules:
+                for priority, rule in rules[(ipv, table, chain)]:
                     cmd.print_msg(
                         "%s %s %s %d %s" % (ipv, table, chain, priority, joinArgs(rule))
                     )

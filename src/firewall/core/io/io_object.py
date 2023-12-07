@@ -144,7 +144,7 @@ class IO_Object:
         elif isinstance(structure, dict):
             # only one key value pair in structure
             (skey, svalue) = list(structure.items())[0]
-            for (key, value) in conf.items():
+            for key, value in conf.items():
                 if not isinstance(key, type(skey)):
                     raise FirewallError(
                         errors.INVALID_TYPE,
@@ -261,7 +261,7 @@ class IO_Object_XMLGenerator(saxutils.XMLGenerator):
     def simpleElement(self, name, attrs):
         """slightly modified startElement()"""
         self._write("<" + name)
-        for (name, value) in attrs.items():
+        for name, value in attrs.items():
             self._write(" %s=%s" % (name, saxutils.quoteattr(value)))
         self._write("/>")
 
