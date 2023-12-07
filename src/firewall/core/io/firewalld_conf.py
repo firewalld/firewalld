@@ -58,7 +58,7 @@ class firewalld_conf:
 
     def __str__(self):
         s = ""
-        for (key, value) in self._config.items():
+        for key, value in self._config.items():
             if s:
                 s += "\n"
             s += "%s=%s" % (key, value)
@@ -343,7 +343,7 @@ class firewalld_conf:
 
         # write remaining key/value pairs
         if len(self._config) > 0:
-            for (key, value) in self._config.items():
+            for key, value in self._config.items():
                 if key in done:
                     continue
                 if key in [

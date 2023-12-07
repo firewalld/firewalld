@@ -176,7 +176,7 @@ class Direct(IO_Object):
         print("rules")
         for key in self.rules:
             print("  (%s, %s, %s):" % (key[0], key[1], key[2]))
-            for (priority, args) in self.rules[key]:
+            for priority, args in self.rules[key]:
                 print("    (%d, ('%s'))" % (priority, "','".join(args)))
         print("passthroughs")
         for key in self.passthroughs:
@@ -399,7 +399,7 @@ class Direct(IO_Object):
         # rules
         for key in self.rules:
             (ipv, table, chain) = key
-            for (priority, args) in self.rules[key]:
+            for priority, args in self.rules[key]:
                 if len(args) < 1:
                     continue
                 handler.ignorableWhitespace("  ")

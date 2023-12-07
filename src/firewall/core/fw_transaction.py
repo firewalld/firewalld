@@ -107,7 +107,7 @@ class FirewallTransaction:
 
         if error:
             # call failure functions
-            for (func, args) in self.fail_funcs:
+            for func, args in self.fail_funcs:
                 try:
                     func(*args)
                 except Exception as msg:
@@ -122,11 +122,11 @@ class FirewallTransaction:
     def pre(self):
         log.debug4("%s.pre()" % type(self))
 
-        for (func, args) in self.pre_funcs:
+        for func, args in self.pre_funcs:
             func(*args)
 
     def post(self):
         log.debug4("%s.post()" % type(self))
 
-        for (func, args) in self.post_funcs:
+        for func, args in self.post_funcs:
             func(*args)

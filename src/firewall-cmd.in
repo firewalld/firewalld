@@ -2482,7 +2482,7 @@ if a.permanent:
                 cmd.print_msg(joinArgs(rule))
             sys.exit(0)
         elif a.get_all_passthroughs:
-            for (ipv, rule) in direct.getAllPassthroughs():
+            for ipv, rule in direct.getAllPassthroughs():
                 cmd.print_msg("%s %s" % (ipv, joinArgs(rule)))
             sys.exit(0)
 
@@ -2510,7 +2510,7 @@ if a.permanent:
             sys.exit(0)
         elif a.get_all_chains:
             chains = direct.getAllChains()
-            for (ipv, table, chain) in chains:
+            for ipv, table, chain in chains:
                 cmd.print_msg("%s %s %s" % (ipv, table, chain))
             sys.exit(0)
         elif a.add_rule:
@@ -2582,12 +2582,12 @@ if a.permanent:
             rules = direct.getRules(
                 cmd.check_ipv(a.get_rules[0]), a.get_rules[1], a.get_rules[2]
             )
-            for (priority, rule) in rules:
+            for priority, rule in rules:
                 cmd.print_msg("%d %s" % (priority, joinArgs(rule)))
             sys.exit(0)
         elif a.get_all_rules:
             rules = direct.getAllRules()
-            for (ipv, table, chain, priority, rule) in rules:
+            for ipv, table, chain, priority, rule in rules:
                 cmd.print_msg(
                     "%s %s %s %d %s" % (ipv, table, chain, priority, joinArgs(rule))
                 )
@@ -3339,7 +3339,7 @@ elif a.direct:
             cmd.print_msg(joinArgs(rule))
         sys.exit(0)
     elif a.get_all_passthroughs:
-        for (ipv, rule) in fw.getAllPassthroughs():
+        for ipv, rule in fw.getAllPassthroughs():
             cmd.print_msg("%s %s" % (ipv, joinArgs(rule)))
         sys.exit(0)
     elif a.add_chain:
@@ -3360,7 +3360,7 @@ elif a.direct:
         )
     elif a.get_all_chains:
         chains = fw.getAllChains()
-        for (ipv, table, chain) in chains:
+        for ipv, table, chain in chains:
             cmd.print_msg("%s %s %s" % (ipv, table, chain))
         sys.exit(0)
     elif a.add_rule:
@@ -3431,12 +3431,12 @@ elif a.direct:
         rules = fw.getRules(
             cmd.check_ipv(a.get_rules[0]), a.get_rules[1], a.get_rules[2]
         )
-        for (priority, rule) in rules:
+        for priority, rule in rules:
             cmd.print_msg("%d %s" % (priority, joinArgs(rule)))
         sys.exit(0)
     elif a.get_all_rules:
         rules = fw.getAllRules()
-        for (ipv, table, chain, priority, rule) in rules:
+        for ipv, table, chain, priority, rule in rules:
             cmd.print_msg(
                 "%s %s %s %d %s" % (ipv, table, chain, priority, joinArgs(rule))
             )

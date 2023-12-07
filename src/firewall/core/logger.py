@@ -18,6 +18,7 @@ import os
 
 # ---------------------------------------------------------------------------
 
+
 # abstract class for logging targets
 class LogTarget:
     """Abstract class for logging targets."""
@@ -36,6 +37,7 @@ class LogTarget:
 
 
 # ---------------------------------------------------------------------------
+
 
 # private class for stdout
 class _StdoutLog(LogTarget):
@@ -57,6 +59,7 @@ class _StdoutLog(LogTarget):
 
 # ---------------------------------------------------------------------------
 
+
 # private class for stderr
 class _StderrLog(_StdoutLog):
     def __init__(self):
@@ -65,6 +68,7 @@ class _StderrLog(_StdoutLog):
 
 
 # ---------------------------------------------------------------------------
+
 
 # private class for syslog
 class _SyslogLog(LogTarget):
@@ -317,7 +321,7 @@ class Logger:
         for level in range(self.FATAL, self.DEBUG_MAX + 1):
             if level not in self._logging:
                 continue
-            for (dummy, target, dummy) in self._logging[level]:
+            for dummy, target, dummy in self._logging[level]:
                 target.close()
 
     def getInfoLogLevel(self, domain="*"):
@@ -541,7 +545,7 @@ class Logger:
         for level in range(_range[0], _range[1]):
             if level not in _logging:
                 continue
-            for (domain, dummy, dummy) in _logging[level]:
+            for domain, dummy, dummy in _logging[level]:
                 if domain not in _domains:
                     _domains.setdefault(level, []).append(domain)
 
@@ -615,7 +619,7 @@ class Logger:
             _logging = self._logging
 
         # do we need to log?
-        for (domain, dummy, dummy) in _logging[level]:
+        for domain, dummy, dummy in _logging[level]:
             if (
                 domain == "*"
                 or point_domain.startswith(domain)
@@ -647,7 +651,7 @@ class Logger:
                 return None
 
         # class in module
-        for (dummy, obj) in module.__dict__.items():
+        for dummy, obj in module.__dict__.items():
             if isinstance(obj, types.ClassType):
                 if hasattr(obj, code.co_name):
                     value = getattr(obj, code.co_name)
@@ -705,7 +709,7 @@ class Logger:
 
         used_targets = []
         # log to target(s)
-        for (domain, target, _format) in _logging[level]:
+        for domain, target, _format in _logging[level]:
             if target in used_targets:
                 continue
             if (

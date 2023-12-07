@@ -160,7 +160,7 @@ class FirewallConfig:
         order = ["ipsets", "helpers", "icmptypes", "services", "zones", "policies"]
         for io_obj_type in order:
             io_objs = all_io_objects[io_obj_type]
-            for (name, io_obj) in io_objs.items():
+            for name, io_obj in io_objs.items():
                 io_obj.check_config_dict(io_obj.export_config_dict(), all_io_objects)
 
     # access check

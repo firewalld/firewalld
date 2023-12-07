@@ -218,7 +218,7 @@ class Firewall:
         order = ["ipsets", "helpers", "icmptypes", "services", "zones", "policies"]
         for io_obj_type in order:
             io_objs = all_io_objects[io_obj_type]
-            for (name, io_obj) in io_objs.items():
+            for name, io_obj in io_objs.items():
                 io_obj.check_config_dict(io_obj.export_config_dict(), all_io_objects)
 
     def _start_check_tables(self):
@@ -1298,7 +1298,6 @@ class Firewall:
             # add interfaces to zones again
             for zone in self.zone.get_zones():
                 if zone in _zone_interfaces:
-
                     for interface_id in _zone_interfaces[zone]:
                         self.zone.change_zone_of_interface(zone, interface_id)
 

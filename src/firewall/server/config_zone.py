@@ -534,7 +534,7 @@ class FirewallDConfigZone(DbusServiceObject):
         port = dbus_to_python(port, str)
         protocol = dbus_to_python(protocol, str)
         log.debug1("%s.queryPort('%s', '%s')", self._log_prefix, port, protocol)
-        for (_port, _protocol) in self.getSettings()[6]:
+        for _port, _protocol in self.getSettings()[6]:
             if portInPortRange(port, _port) and protocol == _protocol:
                 return True
 
@@ -672,7 +672,7 @@ class FirewallDConfigZone(DbusServiceObject):
         port = dbus_to_python(port, str)
         protocol = dbus_to_python(protocol, str)
         log.debug1("%s.querySourcePort('%s', '%s')", self._log_prefix, port, protocol)
-        for (_port, _protocol) in self.getSettings()[14]:
+        for _port, _protocol in self.getSettings()[14]:
             if portInPortRange(port, _port) and protocol == _protocol:
                 return True
 

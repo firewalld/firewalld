@@ -125,7 +125,7 @@ class FirewallPolicy:
 
         if enable:
             # build the base chain layout of the policy
-            for (table, chain) in (
+            for table, chain in (
                 self._get_table_chains_for_policy_dispatch(policy)
                 if not obj.derived_from_zone
                 else self._get_table_chains_for_zone_dispatch(policy)
@@ -184,7 +184,7 @@ class FirewallPolicy:
                     )
 
         if not enable:
-            for (table, chain) in (
+            for table, chain in (
                 self._get_table_chains_for_policy_dispatch(policy)
                 if not obj.derived_from_zone
                 else self._get_table_chains_for_zone_dispatch(policy)
@@ -755,7 +755,7 @@ class FirewallPolicy:
             _obj.ports.remove(port_id)
 
     def query_port(self, policy, port, protocol):
-        for (_port, _protocol) in self.get_policy(policy).ports:
+        for _port, _protocol in self.get_policy(policy).ports:
             if portInPortRange(port, _port) and protocol == _protocol:
                 return True
 
@@ -963,7 +963,7 @@ class FirewallPolicy:
             _obj.source_ports.remove(port_id)
 
     def query_source_port(self, policy, port, protocol):
-        for (_port, _protocol) in self.get_policy(policy).source_ports:
+        for _port, _protocol in self.get_policy(policy).source_ports:
             if portInPortRange(port, _port) and protocol == _protocol:
                 return True
 
@@ -1366,7 +1366,7 @@ class FirewallPolicy:
         )
 
     def _register_chains(self, policy, create, tables):
-        for (table, chain) in tables:
+        for table, chain in tables:
             if create:
                 self._chains.setdefault(policy, []).append((table, chain))
             else:
@@ -1495,7 +1495,7 @@ class FirewallPolicy:
                             if len(helper.ports) < 1:
                                 modules.append(module)
                             else:
-                                for (port, proto) in helper.ports:
+                                for port, proto in helper.ports:
                                     rules = backend.build_policy_helper_ports_rules(
                                         enable,
                                         policy,
@@ -1509,7 +1509,7 @@ class FirewallPolicy:
                         transaction.add_modules(modules)
 
                     # create rules
-                    for (port, proto) in svc.ports:
+                    for port, proto in svc.ports:
                         rules = backend.build_policy_ports_rules(
                             enable, policy, proto, port, destination, rule
                         )
@@ -1522,7 +1522,7 @@ class FirewallPolicy:
                         transaction.add_rules(backend, rules)
 
                     # create rules
-                    for (port, proto) in svc.source_ports:
+                    for port, proto in svc.source_ports:
                         rules = backend.build_policy_source_ports_rules(
                             enable, policy, proto, port, destination, rule
                         )
@@ -1676,7 +1676,7 @@ class FirewallPolicy:
                 if (backend, None) not in backends_ipv:
                     backends_ipv.append((backend, None))
 
-        for (backend, destination) in backends_ipv:
+        for backend, destination in backends_ipv:
             for helper in helpers:
                 module = helper.module
                 _module_short_name = get_nf_conntrack_short_name(module)
@@ -1688,7 +1688,7 @@ class FirewallPolicy:
                 if len(helper.ports) < 1:
                     transaction.add_module(module)
                 else:
-                    for (port, proto) in helper.ports:
+                    for port, proto in helper.ports:
                         rules = backend.build_policy_helper_ports_rules(
                             enable,
                             policy,
@@ -1700,7 +1700,7 @@ class FirewallPolicy:
                         )
                         transaction.add_rules(backend, rules)
 
-            for (port, proto) in svc.ports:
+            for port, proto in svc.ports:
                 rules = backend.build_policy_ports_rules(
                     enable, policy, proto, port, destination
                 )
@@ -1712,7 +1712,7 @@ class FirewallPolicy:
                 )
                 transaction.add_rules(backend, rules)
 
-            for (port, proto) in svc.source_ports:
+            for port, proto in svc.source_ports:
                 rules = backend.build_policy_source_ports_rules(
                     enable, policy, proto, port, destination
                 )
@@ -1834,7 +1834,7 @@ class FirewallPolicy:
             if not backend.policies_supported:
                 continue
 
-            for (table, chain) in (
+            for table, chain in (
                 self._get_table_chains_for_policy_dispatch(policy)
                 if not p_obj.derived_from_zone
                 else self._get_table_chains_for_zone_dispatch(policy)

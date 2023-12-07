@@ -107,7 +107,7 @@ class FirewallDirect:
 
         for chain_id in self._rules:
             (ipv, table, chain) = chain_id
-            for (priority, args) in self._rules[chain_id]:
+            for priority, args in self._rules[chain_id]:
                 if not self._obj.query_rule(ipv, table, chain, priority, args):
                     if chain_id not in rules:
                         rules[chain_id] = LastUpdatedOrderedDict()
@@ -143,7 +143,7 @@ class FirewallDirect:
 
         for chain_id in _rules:
             (ipv, table, chain) = chain_id
-            for (priority, args) in _rules[chain_id]:
+            for priority, args in _rules[chain_id]:
                 if not self.query_rule(ipv, table, chain, priority, args):
                     try:
                         self.add_rule(
@@ -310,7 +310,7 @@ class FirewallDirect:
         r = []
         for key in self._rules:
             (ipv, table, chain) = key
-            for (priority, args) in self._rules[key]:
+            for priority, args in self._rules[key]:
                 r.append((ipv, table, chain, priority, list(args)))
         return r
 
