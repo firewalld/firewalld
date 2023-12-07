@@ -7,6 +7,7 @@
 
 """Generic io_object handler, io specific check methods."""
 
+import itertools
 import xml.sax as sax
 import xml.sax.saxutils as saxutils
 import copy
@@ -20,7 +21,7 @@ from firewall.errors import FirewallError
 class IO_Object:
     """Abstract IO_Object as base for icmptype, service and zone"""
 
-    IMPORT_EXPORT_STRUCTURE = ()
+    IMPORT_EXPORT_STRUCTURE = {}
     DBUS_SIGNATURE = "()"
     ADDITIONAL_ALNUM_CHARS = []  # additional to alnum
     PARSER_REQUIRED_ELEMENT_ATTRS = {}
@@ -34,54 +35,51 @@ class IO_Object:
         self.builtin = False
 
     def export_config(self):
-        ret = []
-        for x in self.IMPORT_EXPORT_STRUCTURE:
-            ret.append(copy.deepcopy(getattr(self, x[0])))
-        return tuple(ret)
+        return tuple(
+            copy.deepcopy(getattr(self, key)) for key in self.IMPORT_EXPORT_STRUCTURE
+        )
 
     @staticmethod
     def get_dict_from_tuple_static(IMPORT_EXPORT_STRUCTURE, conf):
-        conf_dict = {}
-        for i, value in enumerate(conf):
-            conf_dict[IMPORT_EXPORT_STRUCTURE[i][0]] = value
-        return conf_dict
+        if len(conf) > len(IMPORT_EXPORT_STRUCTURE):
+            raise errors.BugError(
+                f"conf tuple has unexpected too many elements ({conf} vs. {list(IMPORT_EXPORT_STRUCTURE)})"
+            )
+        return dict(zip(IMPORT_EXPORT_STRUCTURE, conf))
 
     def get_dict_from_tuple(obj, conf):
         return IO_Object.get_dict_from_tuple_static(obj.IMPORT_EXPORT_STRUCTURE, conf)
 
     def export_config_dict(self):
         conf = {}
-        type_formats = dict([(x[0], x[1]) for x in self.IMPORT_EXPORT_STRUCTURE])
-        for key in type_formats:
-            if (
-                getattr(self, key)
-                or isinstance(getattr(self, key), bool)
-                or isinstance(getattr(self, key), int)
-            ):
-                conf[key] = copy.deepcopy(getattr(self, key))
+        for key in self.IMPORT_EXPORT_STRUCTURE:
+            v = getattr(self, key)
+            if v or isinstance(v, bool) or isinstance(v, int):
+                conf[key] = copy.deepcopy(v)
         return conf
 
     def export_config_tuple(self, conf_dict=None, length=None):
         if conf_dict is None:
             conf_dict = self.export_config_dict()
 
-        if length is None:
-            length = len(self.IMPORT_EXPORT_STRUCTURE)
+        keys = self.IMPORT_EXPORT_STRUCTURE
 
-        conf_list = []
-        for i in range(length):
-            key = self.IMPORT_EXPORT_STRUCTURE[i][0]
+        if length is not None:
+            keys = tuple(itertools.islice(keys, length))
+            assert length == len(keys)
+
+        def _get(self, conf_dict, key):
             if key not in conf_dict:
                 # old API needs the empty elements as well. Grab it from the
                 # object otherwise we don't know the type.
-                conf_list.append(copy.deepcopy(getattr(self, key)))
-            else:
-                conf_list.append(conf_dict[key])
-        return tuple(conf_list)
+                return copy.deepcopy(getattr(self, key))
+            return conf_dict[key]
+
+        return tuple(_get(self, conf_dict, key) for key in keys)
 
     def import_config(self, conf, all_io_objects):
         self.check_config(conf, all_io_objects)
-        for i, (element, dummy) in enumerate(self.IMPORT_EXPORT_STRUCTURE):
+        for i, element in enumerate(self.IMPORT_EXPORT_STRUCTURE):
             if isinstance(conf[i], list):
                 # remove duplicates without changing the order
                 _conf = []
@@ -131,19 +129,17 @@ class IO_Object:
                 "structure size mismatch %d != %d"
                 % (len(conf), len(self.IMPORT_EXPORT_STRUCTURE)),
             )
-        conf_dict = {}
-        for i, (x, y) in enumerate(self.IMPORT_EXPORT_STRUCTURE):
-            conf_dict[x] = conf[i]
+        conf_dict = dict(zip(self.IMPORT_EXPORT_STRUCTURE, conf))
         self.check_config_dict(conf_dict, all_io_objects)
 
     def check_config_dict(self, conf, all_io_objects):
-        type_formats = dict([(x[0], x[1]) for x in self.IMPORT_EXPORT_STRUCTURE])
         for key in conf:
-            if key not in [x for (x, y) in self.IMPORT_EXPORT_STRUCTURE]:
+            type_format = self.IMPORT_EXPORT_STRUCTURE.get(key)
+            if type_format is None:
                 raise FirewallError(
                     errors.INVALID_OPTION, "option '{}' is not valid".format(key)
                 )
-            self._check_config_structure(conf[key], type_formats[key])
+            self._check_config_structure(conf[key], type_format)
             self._check_config(conf[key], key, conf, all_io_objects)
 
     def _check_config(self, dummy1, dummy2, dummy3, dummy4):

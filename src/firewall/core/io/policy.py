@@ -828,23 +828,23 @@ class Policy(IO_Object):
     priority_default = DEFAULT_POLICY_PRIORITY
     priority_reserved = [0]
 
-    IMPORT_EXPORT_STRUCTURE = (
-        ("version", ""),  # s
-        ("short", ""),  # s
-        ("description", ""),  # s
-        ("target", ""),  # s
-        ("services", [""]),  # as
-        ("ports", [("", "")]),  # a(ss)
-        ("icmp_blocks", [""]),  # as
-        ("masquerade", False),  # b
-        ("forward_ports", [("", "", "", "")]),  # a(ssss)
-        ("rich_rules", [""]),  # as
-        ("protocols", [""]),  # as
-        ("source_ports", [("", "")]),  # a(ss)
-        ("priority", 0),  # i
-        ("ingress_zones", [""]),  # as
-        ("egress_zones", [""]),  # as
-    )
+    IMPORT_EXPORT_STRUCTURE = {
+        "version": "",  # s
+        "short": "",  # s
+        "description": "",  # s
+        "target": "",  # s
+        "services": [""],  # as
+        "ports": [("", "")],  # a(ss)
+        "icmp_blocks": [""],  # as
+        "masquerade": False,  # b
+        "forward_ports": [("", "", "", "")],  # a(ssss)
+        "rich_rules": [""],  # as
+        "protocols": [""],  # as
+        "source_ports": [("", "")],  # a(ss)
+        "priority": 0,  # i
+        "ingress_zones": [""],  # as
+        "egress_zones": [""],  # as
+    }
     ADDITIONAL_ALNUM_CHARS = ["_", "-", "/"]
     PARSER_REQUIRED_ELEMENT_ATTRS = {
         "short": None,

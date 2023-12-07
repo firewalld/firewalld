@@ -22,12 +22,12 @@ from firewall.errors import FirewallError
 
 
 class IcmpType(IO_Object):
-    IMPORT_EXPORT_STRUCTURE = (
-        ("version", ""),  # s
-        ("short", ""),  # s
-        ("description", ""),  # s
-        ("destination", [""]),  # as
-    )
+    IMPORT_EXPORT_STRUCTURE = {
+        "version": "",  # s
+        "short": "",  # s
+        "description": "",  # s
+        "destination": [""],  # as
+    }
     DBUS_SIGNATURE = "(sssas)"
     ADDITIONAL_ALNUM_CHARS = ["_", "-"]
     PARSER_REQUIRED_ELEMENT_ATTRS = {

@@ -24,14 +24,14 @@ from firewall.errors import FirewallError
 
 
 class Helper(IO_Object):
-    IMPORT_EXPORT_STRUCTURE = (
-        ("version", ""),  # s
-        ("short", ""),  # s
-        ("description", ""),  # s
-        ("family", ""),  # s
-        ("module", ""),  # s
-        ("ports", [("", "")]),  # a(ss)
-    )
+    IMPORT_EXPORT_STRUCTURE = {
+        "version": "",  # s
+        "short": "",  # s
+        "description": "",  # s
+        "family": "",  # s
+        "module": "",  # s
+        "ports": [("", "")],  # a(ss)
+    }
     DBUS_SIGNATURE = "(sssssa(ss))"
     ADDITIONAL_ALNUM_CHARS = ["-", "."]
     PARSER_REQUIRED_ELEMENT_ATTRS = {
