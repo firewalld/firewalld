@@ -51,6 +51,24 @@ class IO_Object:
                 conf[key] = copy.deepcopy(getattr(self, key))
         return conf
 
+    def export_config_tuple(self, conf_dict=None, length=None):
+        if conf_dict is None:
+            conf_dict = self.export_config_dict()
+
+        if length is None:
+            length = len(self.IMPORT_EXPORT_STRUCTURE)
+
+        conf_list = []
+        for i in range(length):
+            key = self.IMPORT_EXPORT_STRUCTURE[i][0]
+            if key not in conf_dict:
+                # old API needs the empty elements as well. Grab it from the
+                # object otherwise we don't know the type.
+                conf_list.append(copy.deepcopy(getattr(self, key)))
+            else:
+                conf_list.append(conf_dict[key])
+        return tuple(conf_list)
+
     def import_config(self, conf, all_io_objects):
         self.check_config(conf, all_io_objects)
         for i, (element, dummy) in enumerate(self.IMPORT_EXPORT_STRUCTURE):

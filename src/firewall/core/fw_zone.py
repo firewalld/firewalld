@@ -329,18 +329,9 @@ class FirewallZone:
         :return: exported config updated with runtime settings
         """
         obj = self.get_zone(zone)
-        conf_dict = self.get_config_with_settings_dict(zone)
-        conf_list = []
-        for i in range(16):  # tuple based API has 16 elements
-            if obj.IMPORT_EXPORT_STRUCTURE[i][0] not in conf_dict:
-                # old API needs the empty elements as well. Grab it from the
-                # class otherwise we don't know the type.
-                conf_list.append(
-                    copy.deepcopy(getattr(obj, obj.IMPORT_EXPORT_STRUCTURE[i][0]))
-                )
-            else:
-                conf_list.append(conf_dict[obj.IMPORT_EXPORT_STRUCTURE[i][0]])
-        return tuple(conf_list)
+        return obj.export_config_tuple(
+            conf_dict=self.get_config_with_settings_dict(zone), length=16
+        )
 
     def get_config_with_settings_dict(self, zone):
         """

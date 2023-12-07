@@ -623,18 +623,7 @@ class FirewallConfig:
         return self._builtin_services[obj.name]
 
     def get_service_config(self, obj):
-        conf_dict = obj.export_config_dict()
-        conf_list = []
-        for i in range(8):  # tuple based dbus API has 8 elements
-            if obj.IMPORT_EXPORT_STRUCTURE[i][0] not in conf_dict:
-                # old API needs the empty elements as well. Grab it from the
-                # object otherwise we don't know the type.
-                conf_list.append(
-                    copy.deepcopy(getattr(obj, obj.IMPORT_EXPORT_STRUCTURE[i][0]))
-                )
-            else:
-                conf_list.append(conf_dict[obj.IMPORT_EXPORT_STRUCTURE[i][0]])
-        return tuple(conf_list)
+        return obj.export_config_tuple(length=8)
 
     def get_service_config_dict(self, obj):
         return obj.export_config_dict()
@@ -832,18 +821,7 @@ class FirewallConfig:
         return self._builtin_zones[obj.name]
 
     def get_zone_config(self, obj):
-        conf_dict = obj.export_config_dict()
-        conf_list = []
-        for i in range(16):  # tuple based dbus API has 16 elements
-            if obj.IMPORT_EXPORT_STRUCTURE[i][0] not in conf_dict:
-                # old API needs the empty elements as well. Grab it from the
-                # object otherwise we don't know the type.
-                conf_list.append(
-                    copy.deepcopy(getattr(obj, obj.IMPORT_EXPORT_STRUCTURE[i][0]))
-                )
-            else:
-                conf_list.append(conf_dict[obj.IMPORT_EXPORT_STRUCTURE[i][0]])
-        return tuple(conf_list)
+        return obj.export_config_tuple(length=16)
 
     def get_zone_config_dict(self, obj):
         return obj.export_config_dict()

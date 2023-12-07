@@ -1050,18 +1050,7 @@ class FirewallD(DbusServiceObject):
         service = dbus_to_python(service, str)
         log.debug1("getServiceSettings(%s)", service)
         obj = self.fw.service.get_service(service)
-        conf_dict = obj.export_config_dict()
-        conf_list = []
-        for i in range(8):  # tuple based dbus API has 8 elements
-            if obj.IMPORT_EXPORT_STRUCTURE[i][0] not in conf_dict:
-                # old API needs the empty elements as well. Grab it from the
-                # object otherwise we don't know the type.
-                conf_list.append(
-                    copy.deepcopy(getattr(obj, obj.IMPORT_EXPORT_STRUCTURE[i][0]))
-                )
-            else:
-                conf_list.append(conf_dict[obj.IMPORT_EXPORT_STRUCTURE[i][0]])
-        return tuple(conf_list)
+        return obj.export_config_tuple(length=8)
 
     @dbus_polkit_require_auth(config.dbus.PK_ACTION_CONFIG_INFO)
     @dbus_service_method(
