@@ -367,13 +367,9 @@ class Rich_Rule:
     priority_min = -32768
     priority_max = 32767
 
-    def __init__(self, family=None, rule_str=None, priority=0):
-        if family is not None:
-            self.family = str(family)
-        else:
-            self.family = None
-
-        self.priority = priority
+    def __init__(self, family=None, rule_str=None, priority=None):
+        self.family = None
+        self.priority = 0
         self.source = None
         self.destination = None
         self.element = None
@@ -383,6 +379,19 @@ class Rich_Rule:
 
         if rule_str is not None:
             self._import_from_string(rule_str)
+
+        if priority is not None:
+            self.priority = priority
+
+        if family is not None:
+            family = str(family)
+            if self.family is None:
+                self.family = family
+            elif self.family != family:
+                raise FirewallError(errors.INVALID_FAMILY, family)
+
+        if rule_str is not None:
+            self.check()
 
     @staticmethod
     def _lexer(rule_str):
@@ -408,15 +417,6 @@ class Rich_Rule:
             raise FirewallError(errors.INVALID_RULE, "empty rule")
 
         rule_str = functions.stripNonPrintableCharacters(rule_str)
-
-        self.priority = 0
-        self.family = None
-        self.source = None
-        self.destination = None
-        self.element = None
-        self.log = None
-        self.audit = None
-        self.action = None
 
         tokens = self._lexer(rule_str)
         if tokens and tokens[0].get("element") is EOL:
@@ -771,8 +771,6 @@ class Rich_Rule:
                     raise FirewallError(errors.INVALID_RULE, "invalid 'limit' element")
 
             index = index + 1
-
-        self.check()
 
     def check(self):
         if self.family is not None and self.family not in ["ipv4", "ipv6"]:
