@@ -629,10 +629,7 @@ class FirewallConfig:
         return obj.export_config_dict()
 
     def set_service_config(self, obj, conf):
-        conf_dict = {}
-        for i, value in enumerate(conf):
-            conf_dict[obj.IMPORT_EXPORT_STRUCTURE[i][0]] = value
-
+        conf_dict = obj.get_dict_from_tuple(conf)
         return self.set_service_config_dict(obj, conf_dict)
 
     def set_service_config_dict(self, obj, conf):
@@ -653,10 +650,9 @@ class FirewallConfig:
         if name in self._services or name in self._builtin_services:
             raise FirewallError(errors.NAME_CONFLICT, "new_service(): '%s'" % name)
 
-        conf_dict = {}
-        for i, value in enumerate(conf):
-            conf_dict[Service.IMPORT_EXPORT_STRUCTURE[i][0]] = value
-
+        conf_dict = IO_Object.get_dict_from_tuple_static(
+            Service.IMPORT_EXPORT_STRUCTURE, conf
+        )
         return self.new_service_dict(name, conf_dict)
 
     def new_service_dict(self, name, conf):
@@ -827,10 +823,7 @@ class FirewallConfig:
         return obj.export_config_dict()
 
     def set_zone_config(self, obj, conf):
-        conf_dict = {}
-        for i, value in enumerate(conf):
-            conf_dict[obj.IMPORT_EXPORT_STRUCTURE[i][0]] = value
-
+        conf_dict = obj.get_dict_from_tuple(conf)
         return self.set_zone_config_dict(obj, conf_dict)
 
     def set_zone_config_dict(self, obj, conf):
@@ -851,10 +844,9 @@ class FirewallConfig:
         if name in self._zones or name in self._builtin_zones:
             raise FirewallError(errors.NAME_CONFLICT, "new_zone(): '%s'" % name)
 
-        conf_dict = {}
-        for i, value in enumerate(conf):
-            conf_dict[Zone.IMPORT_EXPORT_STRUCTURE[i][0]] = value
-
+        conf_dict = IO_Object.get_dict_from_tuple_static(
+            Zone.IMPORT_EXPORT_STRUCTURE, conf
+        )
         return self.new_zone_dict(name, conf_dict)
 
     def new_zone_dict(self, name, conf):

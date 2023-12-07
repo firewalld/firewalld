@@ -39,6 +39,16 @@ class IO_Object:
             ret.append(copy.deepcopy(getattr(self, x[0])))
         return tuple(ret)
 
+    @staticmethod
+    def get_dict_from_tuple_static(IMPORT_EXPORT_STRUCTURE, conf):
+        conf_dict = {}
+        for i, value in enumerate(conf):
+            conf_dict[IMPORT_EXPORT_STRUCTURE[i][0]] = value
+        return conf_dict
+
+    def get_dict_from_tuple(obj, conf):
+        return IO_Object.get_dict_from_tuple_static(obj.IMPORT_EXPORT_STRUCTURE, conf)
+
     def export_config_dict(self):
         conf = {}
         type_formats = dict([(x[0], x[1]) for x in self.IMPORT_EXPORT_STRUCTURE])
