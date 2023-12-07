@@ -29,7 +29,8 @@ class _Rich_Entry:
 
 
 class _Rich_EntryWithLimit(_Rich_Entry):
-    pass
+    def __init__(self, limit=None):
+        self.limit = limit
 
 
 class _Rich_Element(_Rich_Entry):
@@ -182,10 +183,10 @@ class Rich_ForwardPort(_Rich_Element):
 
 class Rich_Log(_Rich_Log):
     def __init__(self, prefix=None, level=None, limit=None):
+        super().__init__(limit=limit)
         # TODO check default level in iptables
         self.prefix = prefix
         self.level = level
-        self.limit = limit
 
     def __str__(self):
         return "log%s%s%s" % (
@@ -218,10 +219,10 @@ class Rich_Log(_Rich_Log):
 
 class Rich_NFLog(_Rich_Log):
     def __init__(self, group=None, prefix=None, queue_size=None, limit=None):
+        super().__init__(limit=limit)
         self.group = group
         self.prefix = prefix
         self.threshold = queue_size
-        self.limit = limit
 
     def __str__(self):
         return "nflog%s%s%s%s" % (
@@ -256,7 +257,7 @@ class Rich_NFLog(_Rich_Log):
 class Rich_Audit(_Rich_EntryWithLimit):
     def __init__(self, limit=None):
         # TODO check default level in iptables
-        self.limit = limit
+        super().__init__(limit=limit)
 
     def __str__(self):
         return "audit%s" % (" %s" % self.limit if self.limit else "")
@@ -264,7 +265,7 @@ class Rich_Audit(_Rich_EntryWithLimit):
 
 class Rich_Accept(_Rich_Action):
     def __init__(self, limit=None):
-        self.limit = limit
+        super().__init__(limit=limit)
 
     def __str__(self):
         return "accept%s" % (" %s" % self.limit if self.limit else "")
@@ -272,8 +273,8 @@ class Rich_Accept(_Rich_Action):
 
 class Rich_Reject(_Rich_Action):
     def __init__(self, _type=None, limit=None):
+        super().__init__(limit=limit)
         self.type = _type
-        self.limit = limit
 
     def __str__(self):
         return "reject%s%s" % (
@@ -298,7 +299,7 @@ class Rich_Reject(_Rich_Action):
 
 class Rich_Drop(_Rich_Action):
     def __init__(self, limit=None):
-        self.limit = limit
+        super().__init__(limit=limit)
 
     def __str__(self):
         return "drop%s" % (" %s" % self.limit if self.limit else "")
@@ -306,8 +307,8 @@ class Rich_Drop(_Rich_Action):
 
 class Rich_Mark(_Rich_Action):
     def __init__(self, _set, limit=None):
+        super().__init__(limit=limit)
         self.set = _set
-        self.limit = limit
 
     def __str__(self):
         return "mark set=%s%s" % (self.set, " %s" % self.limit if self.limit else "")
