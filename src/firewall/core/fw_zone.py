@@ -143,7 +143,9 @@ class FirewallZone:
                     current_policy = self.policy_name_from_zones(fromZone, toZone)
 
                     rule = Rich_Rule(rule_str=rule_str)
-                    if current_policy in self._rich_rule_to_policies(z_obj.name, rule):
+                    if current_policy == self._get_policy_for_rich_rule(
+                        z_obj.name, rule
+                    ):
                         p_obj.rules_str.append(rule_str)
                         p_obj.rules.append(rule)
 
@@ -1121,11 +1123,11 @@ class FirewallZone:
         p_name = self.policy_name_from_zones(zone, "HOST")
         return self._fw.policy.list_source_ports(p_name)
 
-    def _rich_rule_to_policies(self, zone, rule):
+    def _get_policy_for_rich_rule(self, zone, rule):
         zone = self._fw.check_zone(zone)
         if isinstance(rule.action, Rich_Mark):
-            return [self.policy_name_from_zones(zone, "ANY")]
-        elif isinstance(
+            return self.policy_name_from_zones(zone, "ANY")
+        if isinstance(
             rule.element,
             (
                 Rich_Service,
@@ -1136,36 +1138,33 @@ class FirewallZone:
                 Rich_IcmpType,
             ),
         ):
-            return [self.policy_name_from_zones(zone, "HOST")]
-        elif isinstance(rule.element, Rich_ForwardPort):
-            return [self.policy_name_from_zones(zone, "ANY")]
-        elif isinstance(rule.element, Rich_Masquerade):
-            return [self.policy_name_from_zones("ANY", zone)]
-        elif isinstance(rule.element, Rich_Tcp_Mss_Clamp):
-            return [self.policy_name_from_zones(zone, "ANY")]
-        elif rule.element is None:
-            return [self.policy_name_from_zones(zone, "HOST")]
-        else:
-            raise FirewallError(
-                errors.INVALID_RULE,
-                "Rich rule type (%s) not handled." % (type(rule.element)),
-            )
+            return self.policy_name_from_zones(zone, "HOST")
+        if isinstance(rule.element, Rich_ForwardPort):
+            return self.policy_name_from_zones(zone, "ANY")
+        if isinstance(rule.element, Rich_Masquerade):
+            return self.policy_name_from_zones("ANY", zone)
+        if isinstance(rule.element, Rich_Tcp_Mss_Clamp):
+            return self.policy_name_from_zones(zone, "ANY")
+        if rule.element is None:
+            return self.policy_name_from_zones(zone, "HOST")
+        raise FirewallError(
+            errors.INVALID_RULE,
+            "Rich rule type (%s) not handled." % (type(rule.element)),
+        )
 
     def add_rule(self, zone, rule, timeout=0, sender=None):
-        for p_name in self._rich_rule_to_policies(zone, rule):
-            self._fw.policy.add_rule(p_name, rule, timeout, sender)
+        p_name = self._get_policy_for_rich_rule(zone, rule)
+        self._fw.policy.add_rule(p_name, rule, timeout, sender)
         return zone
 
     def remove_rule(self, zone, rule):
-        for p_name in self._rich_rule_to_policies(zone, rule):
-            self._fw.policy.remove_rule(p_name, rule)
+        p_name = self._get_policy_for_rich_rule(zone, rule)
+        self._fw.policy.remove_rule(p_name, rule)
         return zone
 
     def query_rule(self, zone, rule):
-        ret = True
-        for p_name in self._rich_rule_to_policies(zone, rule):
-            ret = ret and self._fw.policy.query_rule(p_name, rule)
-        return ret
+        p_name = self._get_policy_for_rich_rule(zone, rule)
+        return self._fw.policy.query_rule(p_name, rule)
 
     def list_rules(self, zone):
         zone = self._fw.check_zone(zone)
