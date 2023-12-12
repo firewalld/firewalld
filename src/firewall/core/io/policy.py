@@ -570,6 +570,14 @@ def common_check_config(obj, config, item, all_config, all_io_objects):
                             log.debug1("{} (unsupported)".format(ex))
                         else:
                             raise ex
+            elif isinstance(obj_rich.element, rich.Rich_Service):
+                if obj_rich.element.name not in all_io_objects["services"]:
+                    raise FirewallError(
+                        errors.INVALID_SERVICE,
+                        "{} '{}': '{}' not among existing services".format(
+                            obj_type, obj.name, obj_rich.element.name
+                        ),
+                    )
 
 
 def common_writer(obj, handler):
