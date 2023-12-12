@@ -46,6 +46,10 @@ FWD_CHECK([--permanent --policy foobar --add-rich-rule='rule family=ipv4 priorit
 FWD_CHECK([--permanent --policy foobar --add-rich-rule='rule family=ipv4 priority=0  source address=10.10.10.13 drop'], 0, ignore)
 FWD_CHECK([--permanent --policy foobar --add-rich-rule='rule family=ipv4 priority=-1 source address=10.10.10.14 accept'], 0, ignore)
 FWD_CHECK([--permanent --policy foobar --add-rich-rule='rule family=ipv4 priority=1  source address=10.10.10.15 accept'], 0, ignore)
+
+dnl Invalid service name is rejected.
+FWD_CHECK([--permanent --policy foobar --add-rich-rule='rule priority="-100" family="ipv4" source address="10.0.0.10" service name="bogusservice" accept'], 101, ignore, ignore)
+
 FWD_RELOAD
 NFT_LIST_RULES([inet], [filter_IN_policy_foobar_pre], 0, [dnl
     table inet firewalld {
@@ -319,4 +323,5 @@ IP6TABLES_LIST_RULES([filter], [IN_foobar_post], 0, [dnl
     ACCEPT 0 -- ::/0 ::/0
 ])
 
-FWD_END_TEST([-e '/ERROR: INVALID_ZONE:/d'])
+FWD_END_TEST([-e '/ERROR: INVALID_ZONE:/d' dnl
+              -e "/ERROR: INVALID_SERVICE: Policy 'foobar': 'bogusservice' not among existing services/d"])
