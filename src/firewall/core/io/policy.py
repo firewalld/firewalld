@@ -432,7 +432,7 @@ def common_startElement(obj, name, attrs):
             obj._rule_error = True
             return True
         value = attrs["value"]
-        obj._limit_ok.limit = rich.Rich_Limit(value)
+        obj._limit_ok.limit = rich.Rich_Limit(value, attrs.get("burst"))
     else:
         return False
 
@@ -581,7 +581,11 @@ def common_check_config(obj, config, item, all_config, all_io_objects):
 
 
 def _handler_add_rich_limit(handler, limit):
-    handler.simpleElement("limit", {"value": limit.value})
+    d = {"value": limit.value}
+    burst = limit.burst
+    if burst is not None:
+        d["burst"] = burst
+    handler.simpleElement("limit", d)
 
 
 def common_writer(obj, handler):
@@ -882,6 +886,7 @@ class Policy(IO_Object):
         "nflog": ["group", "prefix", "queue-size"],
         "reject": ["type"],
         "tcp-mss-clamp": ["value"],
+        "limit": ["burst"],
     }
 
     def __init__(self):

@@ -1596,12 +1596,16 @@ class nftables:
 
         rate, duration = limit.value_parse()
 
-        return {
-            "limit": {
-                "rate": rate,
-                "per": rich_to_nft[duration],
-            }
+        d = {
+            "rate": rate,
+            "per": rich_to_nft[duration],
         }
+
+        burst = limit.burst_parse()
+        if burst is not None:
+            d["burst"] = burst
+
+        return {"limit": d}
 
     def _rich_rule_chain_suffix(self, rich_rule):
         if type(rich_rule.element) in [

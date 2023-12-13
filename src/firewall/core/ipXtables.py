@@ -1164,7 +1164,10 @@ class ip4tables:
     def _rule_limit(self, limit):
         if not limit:
             return []
-        return ["-m", "limit", "--limit", limit.value]
+        s = ["-m", "limit", "--limit", limit.value]
+        if limit.burst is not None:
+            s += ["--limit-burst", limit.burst]
+        return s
 
     def _rich_rule_chain_suffix(self, rich_rule):
         if type(rich_rule.element) in [

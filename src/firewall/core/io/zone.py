@@ -109,6 +109,7 @@ class Zone(IO_Object):
         "log": ["prefix", "level"],
         "nflog": ["group", "prefix", "queue-size"],
         "reject": ["type"],
+        "limit": ["burst"],
         "tcp-mss-clamp": ["value"],
     }
 

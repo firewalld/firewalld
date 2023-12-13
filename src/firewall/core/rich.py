@@ -434,11 +434,13 @@ DURATION_TO_MULT = {
 
 
 class Rich_Limit(_Rich_Entry):
-    def __init__(self, value):
+    def __init__(self, value, burst=None):
         self.value = value
+        self.burst = burst
 
     def check(self, family=None):
         self.value_parse()
+        self.burst_parse()
 
     @property
     def value(self):
@@ -458,6 +460,24 @@ class Rich_Limit(_Rich_Entry):
             v = f"{rate}/{duration}"
         if getattr(self, "_value", None) != v:
             self._value = v
+
+    @property
+    def burst(self):
+        return self._burst
+
+    @burst.setter
+    def burst(self, burst):
+        if burst is None:
+            self._burst = None
+            return
+        try:
+            b = self._burst_parse(burst)
+        except FirewallError:
+            b = burst
+        else:
+            b = str(burst)
+        if getattr(self, "_burst", None) != b:
+            self._burst = b
 
     @staticmethod
     def _value_parse(value):
@@ -490,8 +510,28 @@ class Rich_Limit(_Rich_Entry):
     def value_parse(self):
         return self._value_parse(self._value)
 
+    @staticmethod
+    def _burst_parse(burst):
+        if burst is None:
+            return None
+        try:
+            b = int(burst)
+        except:
+            raise FirewallError(errors.INVALID_LIMIT, burst)
+
+        if b < 1 or b > 10_000_000:
+            raise FirewallError(errors.INVALID_LIMIT, burst)
+
+        return b
+
+    def burst_parse(self):
+        return self._burst_parse(self._burst)
+
     def __str__(self):
-        return f'limit value="{self._value}"'
+        s = f'limit value="{self._value}"'
+        if self._burst is not None:
+            s += f" burst={self._burst}"
+        return s
 
 
 class Rich_Rule:
@@ -582,6 +622,7 @@ class Rich_Rule:
                     "queue-size",
                     "type",
                     "set",
+                    "burst",
                 ]:
                     raise FirewallError(
                         errors.INVALID_RULE, "bad attribute '%s'" % attr_name
@@ -895,11 +936,20 @@ class Rich_Rule:
                     attrs.clear()
                     index = index - 1  # return token to input
             elif in_element == "limit":
-                if attr_name == "value":
-                    attrs["limit"] = Rich_Limit(attr_value)
-                    in_elements.pop()  # limit
+                if attr_name in ["value", "burst"]:
+                    attrs[f"limit.{attr_name}"] = attr_value
                 else:
-                    raise FirewallError(errors.INVALID_RULE, "invalid 'limit' element")
+                    if "limit.value" not in attrs:
+                        raise FirewallError(
+                            errors.INVALID_RULE, "invalid 'limit' element"
+                        )
+                    attrs["limit"] = Rich_Limit(
+                        attrs["limit.value"], attrs.get("limit.burst")
+                    )
+                    attrs.pop("limit.value", None)
+                    attrs.pop("limit.burst", None)
+                    in_elements.pop()  # limit
+                    index = index - 1  # return token to input
 
             index = index + 1
 
