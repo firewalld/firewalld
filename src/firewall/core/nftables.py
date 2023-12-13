@@ -1594,15 +1594,12 @@ class nftables:
             "d": "day",
         }
 
-        try:
-            i = limit.value.index("/")
-        except ValueError:
-            raise FirewallError(INVALID_RULE, "Expected '/' in limit")
+        rate, duration = limit.value_parse()
 
         return {
             "limit": {
-                "rate": int(limit.value[0:i]),
-                "per": rich_to_nft[limit.value[i + 1]],
+                "rate": rate,
+                "per": rich_to_nft[duration],
             }
         }
 

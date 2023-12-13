@@ -425,51 +425,73 @@ class Rich_Mark(_Rich_Action):
         super().check(family=family)
 
 
+DURATION_TO_MULT = {
+    "s": 1,
+    "m": 60,
+    "h": 60 * 60,
+    "d": 24 * 60 * 60,
+}
+
+
 class Rich_Limit(_Rich_Entry):
     def __init__(self, value):
         self.value = value
-        if "/" in self.value:
-            splits = self.value.split("/")
-            if len(splits) == 2 and splits[1] in ["second", "minute", "hour", "day"]:
-                self.value = "%s/%s" % (splits[0], splits[1][:1])
 
     def check(self, family=None):
+        self.value_parse()
+
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, value):
+        if value is None:
+            self._value = None
+            return
+        try:
+            rate, duration = self._value_parse(value)
+        except FirewallError:
+            # The value is invalid. We cannot normalize it.
+            v = value
+        else:
+            v = f"{rate}/{duration}"
+        if getattr(self, "_value", None) != v:
+            self._value = v
+
+    @staticmethod
+    def _value_parse(value):
         splits = None
-        if "/" in self.value:
-            splits = self.value.split("/")
+        if "/" in value:
+            splits = value.split("/")
         if not splits or len(splits) != 2:
-            raise FirewallError(errors.INVALID_LIMIT, self.value)
+            raise FirewallError(errors.INVALID_LIMIT, value)
         (rate, duration) = splits
         try:
             rate = int(rate)
         except:
-            raise FirewallError(errors.INVALID_LIMIT, self.value)
+            raise FirewallError(errors.INVALID_LIMIT, value)
+
+        if duration in ["second", "minute", "hour", "day"]:
+            duration = duration[:1]
 
         if rate < 1 or duration not in ["s", "m", "h", "d"]:
-            raise FirewallError(errors.INVALID_LIMIT, self.value)
+            raise FirewallError(errors.INVALID_LIMIT, value)
 
-        mult = 1
-        if duration == "s":
-            mult = 1
-        elif duration == "m":
-            mult = 60
-        elif duration == "h":
-            mult = 60 * 60
-        elif duration == "d":
-            mult = 24 * 60 * 60
-
-        if 10000 * mult // rate == 0:
-            raise FirewallError(errors.INVALID_LIMIT, "%s too fast" % self.value)
+        if 10000 * DURATION_TO_MULT[duration] // rate == 0:
+            raise FirewallError(errors.INVALID_LIMIT, "%s too fast" % (value,))
 
         if rate == 1 and duration == "d":
             # iptables (v1.4.21) doesn't accept 1/d
-            raise FirewallError(errors.INVALID_LIMIT, "%s too slow" % self.value)
+            raise FirewallError(errors.INVALID_LIMIT, "%s too slow" % (value,))
+
+        return rate, duration
+
+    def value_parse(self):
+        return self._value_parse(self._value)
 
     def __str__(self):
-        return 'limit value="%s"' % (self.value)
-
-    def command(self):
-        return ""
+        return f'limit value="{self._value}"'
 
 
 class Rich_Rule:

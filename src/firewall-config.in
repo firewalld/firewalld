@@ -3443,8 +3443,8 @@ class FirewallConfig:
 
                 if old_obj.action.limit:
                     self.richRuleDialogActionLimitCheck.set_active(True)
-                    (rate, duration) = old_obj.action.limit.value.split("/")
-                    self.richRuleDialogActionLimitRateEntry.set_text(rate)
+                    (rate, duration) = old_obj.action.limit.value_parse()
+                    self.richRuleDialogActionLimitRateEntry.set_text(str(rate))
                     combobox_select_text(
                         self.richRuleDialogActionLimitDurationCombobox,
                         smhd[duration],
@@ -3484,8 +3484,8 @@ class FirewallConfig:
                 )
                 if old_obj.log.limit:
                     self.richRuleDialogLogLimitCheck.set_active(True)
-                    (rate, duration) = old_obj.log.limit.value.split("/")
-                    self.richRuleDialogLogLimitRateEntry.set_text(rate)
+                    (rate, duration) = old_obj.log.limit.value_parse()
+                    self.richRuleDialogLogLimitRateEntry.set_text(str(rate))
                     combobox_select_text(
                         self.richRuleDialogLogLimitDurationCombobox,
                         smhd[duration],
@@ -3497,8 +3497,8 @@ class FirewallConfig:
                 self.richRuleDialogAuditCheck.set_active(True)
                 if old_obj.audit.limit:
                     self.richRuleDialogAuditLimitCheck.set_active(True)
-                    (rate, duration) = old_obj.audit.limit.value.split("/")
-                    self.richRuleDialogAuditLimitRateEntry.set_text(rate)
+                    (rate, duration) = old_obj.audit.limit.value_parse()
+                    self.richRuleDialogAuditLimitRateEntry.set_text(str(rate))
                     combobox_select_text(
                         self.richRuleDialogAuditLimitDurationCombobox,
                         smhd[duration],

@@ -1162,9 +1162,9 @@ class ip4tables:
         return rules
 
     def _rule_limit(self, limit):
-        if limit:
-            return ["-m", "limit", "--limit", limit.value]
-        return []
+        if not limit:
+            return []
+        return ["-m", "limit", "--limit", limit.value]
 
     def _rich_rule_chain_suffix(self, rich_rule):
         if type(rich_rule.element) in [
