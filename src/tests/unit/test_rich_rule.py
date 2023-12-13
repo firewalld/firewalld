@@ -21,7 +21,7 @@ def _exp_rule_check_1(exp_rule, rule):
 def _exp_rule_check_2(exp_rule, rule):
     assert (
         exp_rule.rule_str
-        == 'rule family="ipv6" source address="1:2:3:4:6::" icmp-block name="redirect" log prefix="redirected: " level="info" limit value="4/m"'
+        == 'rule family="ipv6" source address="1:2:3:4:6::" icmp-block name="redirect" log prefix="redirected: " level="info" limit value="4/minute"'
     )
     s = rule.element
     assert type(s) == firewall.core.rich.Rich_IcmpBlock
@@ -105,7 +105,7 @@ EXP_RULE_LIST = [
         'rule family="ipv6" source address="1:2:3:4:6::" forward-port port="4011" protocol="tcp" to-port="4012" to-addr="1::2:3:4:7"'
     ),
     ExpRule(
-        'rule family="ipv6" source address="1:2:3:4:6::" icmp-block name="redirect" log prefix="redirected: " level="info" limit value="4/m"',
+        'rule family="ipv6" source address="1:2:3:4:6::" icmp-block name="redirect" log prefix="redirected: " level="info" limit value="4/minute"',
         check=_exp_rule_check_2,
     ),
     ExpRule(
@@ -192,7 +192,7 @@ EXP_RULE_LIST = [
     ),
     ExpRule(
         'rule service name="ftp" audit limit value="1 /m" accept',
-        'rule service name="ftp" audit limit value="1 /m" accept',
+        'rule service name="ftp" audit limit value="1/m" accept',
         tokens=[
             {"element": "rule"},
             {"element": "service"},
