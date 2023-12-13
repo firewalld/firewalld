@@ -204,6 +204,8 @@ EXP_RULE_LIST = [
             {"element": firewall.core.rich.EOL},
         ],
     ),
+    ExpRule('rule service name="ftp" audit limit burst="1" value="1/m" accept'),
+    ExpRule('rule service name="ftp" audit limit value="1/m" burst="1" accept'),
     ExpRule('name="dns" accept', invalid=True),
     ExpRule('protocol value="ah" reject', invalid=True),
     ExpRule(
