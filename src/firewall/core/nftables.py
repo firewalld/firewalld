@@ -482,6 +482,11 @@ class nftables:
             else:
                 continue
 
+            # don't bother tracking handles for the policy table as we simply
+            # delete the entire table.
+            if TABLE_NAME_POLICY == output["nftables"][index][verb]["rule"]["table"]:
+                continue
+
             self.rule_to_handle[rule_key] = output["nftables"][index][verb]["rule"][
                 "handle"
             ]
@@ -506,18 +511,8 @@ class nftables:
         ]
 
     def build_flush_rules(self):
-        # Policy is stashed in a separate table that we're _not_ going to
-        # flush. As such, we retain the policy rule handles and ref counts.
-        saved_rule_to_handle = {}
-        saved_rule_ref_count = {}
-        for rule in self._build_set_policy_rules_ct_rules(True):
-            policy_key = self._get_rule_key(rule)
-            if policy_key in self.rule_to_handle:
-                saved_rule_to_handle[policy_key] = self.rule_to_handle[policy_key]
-                saved_rule_ref_count[policy_key] = self.rule_ref_count[policy_key]
-
-        self.rule_to_handle = saved_rule_to_handle
-        self.rule_ref_count = saved_rule_ref_count
+        self.rule_to_handle = {}
+        self.rule_ref_count = {}
         self.rich_rule_priority_counts = {}
         self.policy_dispatch_index_cache = {}
 
@@ -604,11 +599,6 @@ class nftables:
 
             rules += self._build_set_policy_rules_ct_rules(True)
         elif policy == "ACCEPT":
-            for rule in self._build_set_policy_rules_ct_rules(False):
-                policy_key = self._get_rule_key(rule)
-                if policy_key in self.rule_to_handle:
-                    rules.append(rule)
-
             rules += self._build_delete_table_rules(TABLE_NAME_POLICY)
         else:
             raise FirewallError(UNKNOWN_ERROR, "not implemented")
