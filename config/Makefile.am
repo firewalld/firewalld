@@ -357,6 +357,7 @@ CONFIG_FILES = \
 	services/wbem-https.xml \
 	services/wireguard.xml \
 	services/ws-discovery-client.xml \
+	services/ws-discovery-host.xml \
 	services/ws-discovery-tcp.xml \
 	services/ws-discovery-udp.xml \
 	services/ws-discovery.xml \

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>ws-discovery</short>
+  <description>Web Service Discovery Host</description>
+  <include service="ws-discovery-udp"/>
+  <port protocol="tcp" port="5357"/>
+</service>
