@@ -24,7 +24,7 @@ def _exp_rule_check_2(exp_rule, rule):
         == 'rule family="ipv6" source address="1:2:3:4:6::" icmp-block name="redirect" log prefix="redirected: " level="info" limit value="4/minute"'
     )
     s = rule.element
-    assert type(s) == firewall.core.rich.Rich_IcmpBlock
+    assert type(s) is firewall.core.rich.Rich_IcmpBlock
     assert s.name == "redirect"
 
 
