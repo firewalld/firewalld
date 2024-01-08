@@ -48,7 +48,7 @@
     <link linkend="FirewallD1">org.fedoraproject.FirewallD1</link>
     <link linkend="FirewallD1.direct">org.fedoraproject.FirewallD1.direct</link> (deprecated)
     <link linkend="FirewallD1.ipset">org.fedoraproject.FirewallD1.ipset</link>
-    <link linkend="FirewallD1.policies">org.fedoraproject.FirewallD1.policies</link>
+    <link linkend="FirewallD1.policies">org.fedoraproject.FirewallD1.policies</link> (deprecated)
     <link linkend="FirewallD1.zone">org.fedoraproject.FirewallD1.zone</link>
     org.freedesktop.DBus.Introspectable
     org.freedesktop.DBus.Properties
@@ -57,7 +57,7 @@
   Interfaces
     <link linkend="FirewallD1.config">org.fedoraproject.FirewallD1.config</link>
     <link linkend="FirewallD1.config.direct">org.fedoraproject.FirewallD1.config.direct</link> (deprecated)
-    <link linkend="FirewallD1.config.policies">org.fedoraproject.FirewallD1.config.policies</link>
+    <link linkend="FirewallD1.config.policies">org.fedoraproject.FirewallD1.config.policies</link> (deprecated)
     org.freedesktop.DBus.Introspectable
     org.freedesktop.DBus.Properties
 
@@ -972,6 +972,13 @@
 
     <refsect2 id="FirewallD1.policies">
       <title>org.fedoraproject.FirewallD1.policies</title>
+      <refsect3>
+        <title>DEPRECATED</title>
+        <para>
+          The Lockdown feature is deprecated and will be removed in a future release.
+        </para>
+      </refsect3>
+
       <para>
 	Enables firewalld to be able to lock down configuration changes from local applications.
 	Local applications or services are able to change the firewall configuration if they are running as root (example: libvirt).
@@ -2866,6 +2873,9 @@
               <para>
 		If this property is enabled, firewall changes with the D-Bus interface will be limited to applications that are listed in the lockdown whitelist.
               </para>
+              <para>
+                The Lockdown feature is deprecated and will be removed in a future release.
+              </para>
             </listitem>
           </varlistentry>
 	  <varlistentry id="FirewallD1.config.Properties.LogDenied">
@@ -3232,6 +3242,14 @@
 
     <refsect2 id="FirewallD1.config.policies">
       <title>org.fedoraproject.FirewallD1.config.policies</title>
+
+      <refsect3>
+        <title>DEPRECATED</title>
+        <para>
+          The Lockdown feature is deprecated and will be removed in a future release.
+        </para>
+      </refsect3>
+
       <para>
 	Interface for permanent lockdown-whitelist configuration, see also <citerefentry><refentrytitle>firewalld.lockdown-whitelist</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
 	For runtime configuration see <link linkend="FirewallD1.policies">org.fedoraproject.FirewallD1.policies</link> interface.

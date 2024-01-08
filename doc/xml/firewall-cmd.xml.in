@@ -2399,6 +2399,9 @@ For interfaces that are not under control of NetworkManager, firewalld tries to 
     <refsect2 id="lockdown_options">
       <title>Lockdown Options</title>
       <para>
+        The Lockdown feature is deprecated and will be removed in a future release.
+      </para>
+      <para>
 	Local applications or services are able to change the firewall configuration if they are running as root (example: libvirt) or are authenticated using PolicyKit. With this feature administrators can lock the firewall configuration so that only applications on lockdown whitelist are able to request firewall changes.
       </para>
       <para>
@@ -2445,6 +2448,9 @@ For interfaces that are not under control of NetworkManager, firewalld tries to 
 
     <refsect2 id="lockdown_whitelist_options">
       <title>Lockdown Whitelist Options</title>
+      <para>
+        The Lockdown feature is deprecated and will be removed in a future release.
+      </para>
       <para>
 	The lockdown whitelist can contain <replaceable>commands</replaceable>, <replaceable>contexts</replaceable>, <replaceable>users</replaceable> and <replaceable>user ids</replaceable>.
       </para>
