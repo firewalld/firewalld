@@ -9,18 +9,9 @@
 
 # TODO: find a way how to get the following options from firewall-cmd
 
-OPTIONS_LOCKDOWN="--add-lockdown-whitelist-command= --remove-lockdown-whitelist-command= \
-       --query-lockdown-whitelist-command= --list-lockdown-whitelist-commands \
-       --add-lockdown-whitelist-context= --remove-lockdown-whitelist-context= \
-       --query-lockdown-whitelist-context= --list-lockdown-whitelist-contexts \
-       --add-lockdown-whitelist-uid= --remove-lockdown-whitelist-uid= \
-       --query-lockdown-whitelist-uid= --list-lockdown-whitelist-uids  \
-       --add-lockdown-whitelist-user= --remove-lockdown-whitelist-user= \
-       --query-lockdown-whitelist-user= --list-lockdown-whitelist-users"
-
 # can be used as standalone or with --permanent
 OPTIONS_CONFIG="--get-zones --get-policies --get-services --get-icmptypes --get-helpers \
-                ${OPTIONS_LOCKDOWN} --list-all-zones --list-all-policies \
+                --list-all-zones --list-all-policies \
                 --info-zone= --info-policy= --info-service= --info-icmptype= \
                 --info-ipset= --info-helper="
 
@@ -113,7 +104,6 @@ OPTIONS_GENERAL="--help --version \
                  --runtime-to-permanent --check-config --reset-to-defaults \
                  --panic-on --panic-off --query-panic \
                  --get-log-denied --set-log-denied= --get-ipset-types \
-                 --lockdown-on --lockdown-off --query-lockdown \
                  --get-default-zone --set-default-zone= --get-active-zones \
                  --get-zone-of-interface= --get-zone-of-interface= \
                  ${OPTIONS_CONFIG} \
