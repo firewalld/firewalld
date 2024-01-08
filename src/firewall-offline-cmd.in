@@ -481,47 +481,6 @@ Direct Options
   --query-passthrough {ipv4|ipv6|eb} <arg>...
                        Return whether the passthrough rule has been added
 
-Lockdown Options
-  The Lockdown feature is deprecated and will be removed in a future release.
-  --lockdown-on        Enable lockdown.
-  --lockdown-off       Disable lockdown.
-  --query-lockdown     Query whether lockdown is enabled
-
-Lockdown Whitelist Options
-  The Lockdown feature is deprecated and will be removed in a future release.
-  --list-lockdown-whitelist-commands
-                       List all command lines that are on the whitelist
-  --add-lockdown-whitelist-command=<command>
-                       Add the command to the whitelist
-  --remove-lockdown-whitelist-command=<command>
-                       Remove the command from the whitelist
-  --query-lockdown-whitelist-command=<command>
-                       Query whether the command is on the whitelist
-  --list-lockdown-whitelist-contexts
-                       List all contexts that are on the whitelist
-  --add-lockdown-whitelist-context=<context>
-                       Add the context context to the whitelist
-  --remove-lockdown-whitelist-context=<context>
-                       Remove the context from the whitelist
-  --query-lockdown-whitelist-context=<context>
-                       Query whether the context is on the whitelist
-  --list-lockdown-whitelist-uids
-                       List all user ids that are on the whitelist
-  --add-lockdown-whitelist-uid=<uid>
-                       Add the user id uid to the whitelist
-  --remove-lockdown-whitelist-uid=<uid>
-                       Remove the user id uid from the whitelist
-  --query-lockdown-whitelist-uid=<uid>
-                       Query whether the user id uid is on the whitelist
-  --list-lockdown-whitelist-users
-                       List all user names that are on the whitelist
-  --add-lockdown-whitelist-user=<user>
-                       Add the user name user to the whitelist
-  --remove-lockdown-whitelist-user=<user>
-                       Remove the user name user from the whitelist
-  --query-lockdown-whitelist-user=<user>
-                       Query whether the user name user is on the whitelist
-
 Polkit Options
   --policy-server      Change Polkit actions to 'server'  (more restricted)
   --policy-desktop     Change Polkit actions to 'desktop' (less restricted)
@@ -1664,12 +1623,10 @@ try:
         fw.set_default_zone(a.set_default_zone)
 
     # lockdown
-    elif a.lockdown_on:
-        fw.enable_lockdown()
-    elif a.lockdown_off:
-        fw.disable_lockdown()
-    elif a.query_lockdown:
-        cmd.print_query_result(fw.policies.query_lockdown())
+    elif a.lockdown_on or a.lockdown_off or a.query_lockdown:
+        cmd.print_error_msg(
+            "Lockdown feature is deprecated and removed.", exit_code=0, force=True
+        )
 
     # reset defaults
     elif a.reset_to_defaults:
@@ -2521,110 +2478,9 @@ try:
     # lockdown whitelist
 
     elif options_lockdown_whitelist:
-        whitelist = fw.config.get_policies().lockdown_whitelist
-
-        # commands
-        if a.list_lockdown_whitelist_commands:
-            l = whitelist.get_commands()
-            cmd.print_and_exit("\n".join(l))
-        elif a.add_lockdown_whitelist_command:
-            cmd.add_sequence(
-                a.add_lockdown_whitelist_command,
-                whitelist.add_command,
-                whitelist.has_command,
-                None,
-                "'%s'",
-            )
-        elif a.remove_lockdown_whitelist_command:
-            cmd.remove_sequence(
-                a.remove_lockdown_whitelist_command,
-                whitelist.remove_command,
-                whitelist.has_command,
-                None,
-                "'%s'",
-            )
-        elif a.query_lockdown_whitelist_command:
-            cmd.query_sequence(
-                a.query_lockdown_whitelist_command, whitelist.has_command, None, "'%s'"
-            )
-
-        # contexts
-        elif a.list_lockdown_whitelist_contexts:
-            l = whitelist.get_contexts()
-            cmd.print_and_exit("\n".join(l))
-        elif a.add_lockdown_whitelist_context:
-            cmd.add_sequence(
-                a.add_lockdown_whitelist_context,
-                whitelist.add_context,
-                whitelist.has_context,
-                None,
-                "'%s'",
-            )
-        elif a.remove_lockdown_whitelist_context:
-            cmd.remove_sequence(
-                a.remove_lockdown_whitelist_context,
-                whitelist.remove_context,
-                whitelist.has_context,
-                None,
-                "'%s'",
-            )
-        elif a.query_lockdown_whitelist_context:
-            cmd.query_sequence(
-                a.query_lockdown_whitelist_context, whitelist.has_context, None, "'%s'"
-            )
-
-        # uids
-        elif a.list_lockdown_whitelist_uids:
-            l = whitelist.get_uids()
-            cmd.print_and_exit(" ".join(map(str, l)))
-        elif a.add_lockdown_whitelist_uid:
-            cmd.add_sequence(
-                a.add_lockdown_whitelist_uid,
-                whitelist.add_uid,
-                whitelist.has_uid,
-                None,
-                "'%s'",
-            )
-        elif a.remove_lockdown_whitelist_uid:
-            cmd.remove_sequence(
-                a.remove_lockdown_whitelist_uid,
-                whitelist.remove_uid,
-                whitelist.has_uid,
-                None,
-                "'%s'",
-            )
-        elif a.query_lockdown_whitelist_uid:
-            cmd.query_sequence(
-                a.query_lockdown_whitelist_uid, whitelist.has_uid, None, "'%s'"
-            )
-
-        # users
-        elif a.list_lockdown_whitelist_users:
-            l = whitelist.get_users()
-            cmd.print_and_exit("\n".join(l))
-        elif a.add_lockdown_whitelist_user:
-            cmd.add_sequence(
-                a.add_lockdown_whitelist_user,
-                whitelist.add_user,
-                whitelist.has_user,
-                None,
-                "'%s'",
-            )
-        elif a.remove_lockdown_whitelist_user:
-            cmd.remove_sequence(
-                a.remove_lockdown_whitelist_user,
-                whitelist.remove_user,
-                whitelist.has_user,
-                None,
-                "'%s'",
-            )
-        elif a.query_lockdown_whitelist_user:
-            cmd.query_sequence(
-                a.query_lockdown_whitelist_user, whitelist.has_user, None, "'%s'"
-            )
-
-        # apply whitelist changes
-        whitelist.write()
+        cmd.print_error_msg(
+            "Lockdown feature is deprecated and removed.", exit_code=0, force=True
+        )
 
     elif options_direct:
         obj = fw.config.get_direct()
