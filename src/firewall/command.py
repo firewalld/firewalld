@@ -43,31 +43,35 @@ class FirewallCommand:
     def get_verbose(self):
         return self.verbose
 
-    def print_msg(self, msg=None):
-        if msg is not None and not self.quiet:
-            sys.stdout.write(msg + "\n")
+    def print_msg(self, msg=None, *, force=False, file=None, exit_code=None):
+        if msg is not None and (not self.quiet or force):
+            if file is None:
+                file = sys.stdout
+            file.write(msg + "\n")
+        if exit_code is not None:
+            sys.exit(exit_code)
 
-    def print_error_msg(self, msg=None):
-        if msg is not None and not self.quiet:
-            sys.stderr.write(msg + "\n")
+    def print_error_msg(self, msg=None, *, force=False, file=None, exit_code=None):
+        if file is None:
+            file = sys.stderr
+        self.print_msg(msg=msg, force=force, file=file, exit_code=exit_code)
 
-    def print_warning(self, msg=None):
-        FAIL = "\033[91m"
-        END = "\033[00m"
-        if sys.stderr.isatty():
+    def print_warning(self, msg=None, *, exit_code=None):
+        if msg is not None and sys.stderr.isatty():
+            FAIL = "\033[91m"
+            END = "\033[00m"
             msg = FAIL + msg + END
-        self.print_error_msg(msg)
+        self.print_error_msg(msg, exit_code=exit_code)
 
     def print_and_exit(self, msg=None, exit_code=0):
         # OK = '\033[92m'
         # END = '\033[00m'
         if exit_code > 1:
-            self.print_warning(msg)
+            self.print_warning(msg, exit_code=exit_code)
         else:
             # if sys.stdout.isatty():
             #   msg = OK + msg + END
-            self.print_msg(msg)
-        sys.exit(exit_code)
+            self.print_msg(msg, exit_code=exit_code)
 
     def fail(self, msg=None):
         self.print_and_exit(msg, 2)
