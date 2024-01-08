@@ -280,3 +280,10 @@ def dbus_introspection_add_deprecated(
             log.debug10(data)
 
     return data
+
+
+def deprecated_nop(return_value):
+    # This function does nothing. It exists as marker for places where a deprecated
+    # and dropped D-Bus function returns always the same value. It is to allow finding
+    # such deprecated functions.
+    return return_value

@@ -11,6 +11,7 @@ import copy
 import dbus
 import dbus.service
 
+import firewall.dbus_utils
 from firewall import config
 from firewall.core.fw import Firewall
 from firewall.core.rich import Rich_Rule
@@ -622,13 +623,8 @@ class FirewallD(DbusServiceObject):
         out_signature="",
         is_deprecated=True,
     )
-    @dbus_handle_exceptions
     def enableLockdown(self, sender=None):
-        """Enable lockdown policies"""
-        log.debug1("policies.enableLockdown()")
-        self.accessCheck(sender)
-        self.fw.policies.enable_lockdown()
-        self.LockdownEnabled()
+        return firewall.dbus_utils.deprecated_nop(None)
 
     @dbus_polkit_require_auth(config.dbus.PK_ACTION_POLICIES)
     @dbus_service_method(
@@ -637,13 +633,8 @@ class FirewallD(DbusServiceObject):
         out_signature="",
         is_deprecated=True,
     )
-    @dbus_handle_exceptions
     def disableLockdown(self, sender=None):
-        """Disable lockdown policies"""
-        log.debug1("policies.disableLockdown()")
-        self.accessCheck(sender)
-        self.fw.policies.disable_lockdown()
-        self.LockdownDisabled()
+        return firewall.dbus_utils.deprecated_nop(None)
 
     @dbus_polkit_require_auth(config.dbus.PK_ACTION_POLICIES_INFO)
     @dbus_service_method(
@@ -652,30 +643,24 @@ class FirewallD(DbusServiceObject):
         out_signature="b",
         is_deprecated=True,
     )
-    @dbus_handle_exceptions
     def queryLockdown(self, sender=None):  # pylint: disable=W0613
-        """Returns True if lockdown is enabled"""
-        log.debug1("policies.queryLockdown()")
-        # no access check here
-        return self.fw.policies.query_lockdown()
+        return firewall.dbus_utils.deprecated_nop(False)
 
     @dbus_service_signal(
         config.dbus.DBUS_INTERFACE_POLICIES,
         signature="",
         is_deprecated=True,
     )
-    @dbus_handle_exceptions
     def LockdownEnabled(self):
-        log.debug1("LockdownEnabled()")
+        pass
 
     @dbus_service_signal(
         config.dbus.DBUS_INTERFACE_POLICIES,
         signature="",
         is_deprecated=True,
     )
-    @dbus_handle_exceptions
     def LockdownDisabled(self):
-        log.debug1("LockdownDisabled()")
+        pass
 
     # lockdown whitelist
 
@@ -688,14 +673,8 @@ class FirewallD(DbusServiceObject):
         out_signature="",
         is_deprecated=True,
     )
-    @dbus_handle_exceptions
     def addLockdownWhitelistCommand(self, command, sender=None):
-        """Add lockdown command"""
-        command = dbus_to_python(command, str)
-        log.debug1("policies.addLockdownWhitelistCommand('%s')" % command)
-        self.accessCheck(sender)
-        self.fw.policies.lockdown_whitelist.add_command(command)
-        self.LockdownWhitelistCommandAdded(command)
+        return firewall.dbus_utils.deprecated_nop(None)
 
     @dbus_polkit_require_auth(config.dbus.PK_ACTION_POLICIES)
     @dbus_service_method(
@@ -704,14 +683,8 @@ class FirewallD(DbusServiceObject):
         out_signature="",
         is_deprecated=True,
     )
-    @dbus_handle_exceptions
     def removeLockdownWhitelistCommand(self, command, sender=None):
-        """Remove lockdown command"""
-        command = dbus_to_python(command, str)
-        log.debug1("policies.removeLockdownWhitelistCommand('%s')" % command)
-        self.accessCheck(sender)
-        self.fw.policies.lockdown_whitelist.remove_command(command)
-        self.LockdownWhitelistCommandRemoved(command)
+        return firewall.dbus_utils.deprecated_nop(None)
 
     @dbus_polkit_require_auth(config.dbus.PK_ACTION_POLICIES_INFO)
     @dbus_service_method(
@@ -720,15 +693,10 @@ class FirewallD(DbusServiceObject):
         out_signature="b",
         is_deprecated=True,
     )
-    @dbus_handle_exceptions
     def queryLockdownWhitelistCommand(
         self, command, sender=None
     ):  # pylint: disable=W0613
-        """Query lockdown command"""
-        command = dbus_to_python(command, str)
-        log.debug1("policies.queryLockdownWhitelistCommand('%s')" % command)
-        # no access check here
-        return self.fw.policies.lockdown_whitelist.has_command(command)
+        return firewall.dbus_utils.deprecated_nop(False)
 
     @dbus_polkit_require_auth(config.dbus.PK_ACTION_POLICIES_INFO)
     @dbus_service_method(
@@ -737,30 +705,24 @@ class FirewallD(DbusServiceObject):
         out_signature="as",
         is_deprecated=True,
     )
-    @dbus_handle_exceptions
     def getLockdownWhitelistCommands(self, sender=None):  # pylint: disable=W0613
-        """Add lockdown command"""
-        log.debug1("policies.getLockdownWhitelistCommands()")
-        # no access check here
-        return self.fw.policies.lockdown_whitelist.get_commands()
+        return firewall.dbus_utils.deprecated_nop([])
 
     @dbus_service_signal(
         config.dbus.DBUS_INTERFACE_POLICIES,
         signature="s",
         is_deprecated=True,
     )
-    @dbus_handle_exceptions
     def LockdownWhitelistCommandAdded(self, command):
-        log.debug1("LockdownWhitelistCommandAdded('%s')" % command)
+        pass
 
     @dbus_service_signal(
         config.dbus.DBUS_INTERFACE_POLICIES,
         signature="s",
         is_deprecated=True,
     )
-    @dbus_handle_exceptions
     def LockdownWhitelistCommandRemoved(self, command):
-        log.debug1("LockdownWhitelistCommandRemoved('%s')" % command)
+        pass
 
     # uid
 
@@ -771,14 +733,8 @@ class FirewallD(DbusServiceObject):
         out_signature="",
         is_deprecated=True,
     )
-    @dbus_handle_exceptions
     def addLockdownWhitelistUid(self, uid, sender=None):
-        """Add lockdown uid"""
-        uid = dbus_to_python(uid, int)
-        log.debug1("policies.addLockdownWhitelistUid('%s')" % uid)
-        self.accessCheck(sender)
-        self.fw.policies.lockdown_whitelist.add_uid(uid)
-        self.LockdownWhitelistUidAdded(uid)
+        return firewall.dbus_utils.deprecated_nop(None)
 
     @dbus_polkit_require_auth(config.dbus.PK_ACTION_POLICIES)
     @dbus_service_method(
@@ -787,14 +743,8 @@ class FirewallD(DbusServiceObject):
         out_signature="",
         is_deprecated=True,
     )
-    @dbus_handle_exceptions
     def removeLockdownWhitelistUid(self, uid, sender=None):
-        """Remove lockdown uid"""
-        uid = dbus_to_python(uid, int)
-        log.debug1("policies.removeLockdownWhitelistUid('%s')" % uid)
-        self.accessCheck(sender)
-        self.fw.policies.lockdown_whitelist.remove_uid(uid)
-        self.LockdownWhitelistUidRemoved(uid)
+        return firewall.dbus_utils.deprecated_nop(None)
 
     @dbus_polkit_require_auth(config.dbus.PK_ACTION_POLICIES_INFO)
     @dbus_service_method(
@@ -803,13 +753,8 @@ class FirewallD(DbusServiceObject):
         out_signature="b",
         is_deprecated=True,
     )
-    @dbus_handle_exceptions
     def queryLockdownWhitelistUid(self, uid, sender=None):  # pylint: disable=W0613
-        """Query lockdown uid"""
-        uid = dbus_to_python(uid, int)
-        log.debug1("policies.queryLockdownWhitelistUid('%s')" % uid)
-        # no access check here
-        return self.fw.policies.lockdown_whitelist.has_uid(uid)
+        return firewall.dbus_utils.deprecated_nop(False)
 
     @dbus_polkit_require_auth(config.dbus.PK_ACTION_POLICIES_INFO)
     @dbus_service_method(
@@ -818,30 +763,24 @@ class FirewallD(DbusServiceObject):
         out_signature="ai",
         is_deprecated=True,
     )
-    @dbus_handle_exceptions
     def getLockdownWhitelistUids(self, sender=None):  # pylint: disable=W0613
-        """Add lockdown uid"""
-        log.debug1("policies.getLockdownWhitelistUids()")
-        # no access check here
-        return self.fw.policies.lockdown_whitelist.get_uids()
+        return firewall.dbus_utils.deprecated_nop([])
 
     @dbus_service_signal(
         config.dbus.DBUS_INTERFACE_POLICIES,
         signature="i",
         is_deprecated=True,
     )
-    @dbus_handle_exceptions
     def LockdownWhitelistUidAdded(self, uid):
-        log.debug1("LockdownWhitelistUidAdded(%d)" % uid)
+        pass
 
     @dbus_service_signal(
         config.dbus.DBUS_INTERFACE_POLICIES,
         signature="i",
         is_deprecated=True,
     )
-    @dbus_handle_exceptions
     def LockdownWhitelistUidRemoved(self, uid):
-        log.debug1("LockdownWhitelistUidRemoved(%d)" % uid)
+        pass
 
     # user
 
@@ -852,14 +791,8 @@ class FirewallD(DbusServiceObject):
         out_signature="",
         is_deprecated=True,
     )
-    @dbus_handle_exceptions
     def addLockdownWhitelistUser(self, user, sender=None):
-        """Add lockdown user"""
-        user = dbus_to_python(user, str)
-        log.debug1("policies.addLockdownWhitelistUser('%s')" % user)
-        self.accessCheck(sender)
-        self.fw.policies.lockdown_whitelist.add_user(user)
-        self.LockdownWhitelistUserAdded(user)
+        return firewall.dbus_utils.deprecated_nop(None)
 
     @dbus_polkit_require_auth(config.dbus.PK_ACTION_POLICIES)
     @dbus_service_method(
@@ -868,14 +801,8 @@ class FirewallD(DbusServiceObject):
         out_signature="",
         is_deprecated=True,
     )
-    @dbus_handle_exceptions
     def removeLockdownWhitelistUser(self, user, sender=None):
-        """Remove lockdown user"""
-        user = dbus_to_python(user, str)
-        log.debug1("policies.removeLockdownWhitelistUser('%s')" % user)
-        self.accessCheck(sender)
-        self.fw.policies.lockdown_whitelist.remove_user(user)
-        self.LockdownWhitelistUserRemoved(user)
+        return firewall.dbus_utils.deprecated_nop(None)
 
     @dbus_polkit_require_auth(config.dbus.PK_ACTION_POLICIES_INFO)
     @dbus_service_method(
@@ -884,13 +811,8 @@ class FirewallD(DbusServiceObject):
         out_signature="b",
         is_deprecated=True,
     )
-    @dbus_handle_exceptions
     def queryLockdownWhitelistUser(self, user, sender=None):  # pylint: disable=W0613
-        """Query lockdown user"""
-        user = dbus_to_python(user, str)
-        log.debug1("policies.queryLockdownWhitelistUser('%s')" % user)
-        # no access check here
-        return self.fw.policies.lockdown_whitelist.has_user(user)
+        return firewall.dbus_utils.deprecated_nop(False)
 
     @dbus_polkit_require_auth(config.dbus.PK_ACTION_POLICIES_INFO)
     @dbus_service_method(
@@ -899,30 +821,24 @@ class FirewallD(DbusServiceObject):
         out_signature="as",
         is_deprecated=True,
     )
-    @dbus_handle_exceptions
     def getLockdownWhitelistUsers(self, sender=None):  # pylint: disable=W0613
-        """Add lockdown user"""
-        log.debug1("policies.getLockdownWhitelistUsers()")
-        # no access check here
-        return self.fw.policies.lockdown_whitelist.get_users()
+        return firewall.dbus_utils.deprecated_nop([])
 
     @dbus_service_signal(
         config.dbus.DBUS_INTERFACE_POLICIES,
         signature="s",
         is_deprecated=True,
     )
-    @dbus_handle_exceptions
     def LockdownWhitelistUserAdded(self, user):
-        log.debug1("LockdownWhitelistUserAdded('%s')" % user)
+        pass
 
     @dbus_service_signal(
         config.dbus.DBUS_INTERFACE_POLICIES,
         signature="s",
         is_deprecated=True,
     )
-    @dbus_handle_exceptions
     def LockdownWhitelistUserRemoved(self, user):
-        log.debug1("LockdownWhitelistUserRemoved('%s')" % user)
+        pass
 
     # context
 
@@ -933,14 +849,8 @@ class FirewallD(DbusServiceObject):
         out_signature="",
         is_deprecated=True,
     )
-    @dbus_handle_exceptions
     def addLockdownWhitelistContext(self, context, sender=None):
-        """Add lockdown context"""
-        context = dbus_to_python(context, str)
-        log.debug1("policies.addLockdownWhitelistContext('%s')" % context)
-        self.accessCheck(sender)
-        self.fw.policies.lockdown_whitelist.add_context(context)
-        self.LockdownWhitelistContextAdded(context)
+        return firewall.dbus_utils.deprecated_nop(None)
 
     @dbus_polkit_require_auth(config.dbus.PK_ACTION_POLICIES)
     @dbus_service_method(
@@ -949,14 +859,8 @@ class FirewallD(DbusServiceObject):
         out_signature="",
         is_deprecated=True,
     )
-    @dbus_handle_exceptions
     def removeLockdownWhitelistContext(self, context, sender=None):
-        """Remove lockdown context"""
-        context = dbus_to_python(context, str)
-        log.debug1("policies.removeLockdownWhitelistContext('%s')" % context)
-        self.accessCheck(sender)
-        self.fw.policies.lockdown_whitelist.remove_context(context)
-        self.LockdownWhitelistContextRemoved(context)
+        return firewall.dbus_utils.deprecated_nop(None)
 
     @dbus_polkit_require_auth(config.dbus.PK_ACTION_POLICIES_INFO)
     @dbus_service_method(
@@ -965,15 +869,10 @@ class FirewallD(DbusServiceObject):
         out_signature="b",
         is_deprecated=True,
     )
-    @dbus_handle_exceptions
     def queryLockdownWhitelistContext(
         self, context, sender=None
     ):  # pylint: disable=W0613
-        """Query lockdown context"""
-        context = dbus_to_python(context, str)
-        log.debug1("policies.queryLockdownWhitelistContext('%s')" % context)
-        # no access check here
-        return self.fw.policies.lockdown_whitelist.has_context(context)
+        return firewall.dbus_utils.deprecated_nop(False)
 
     @dbus_polkit_require_auth(config.dbus.PK_ACTION_POLICIES_INFO)
     @dbus_service_method(
@@ -982,30 +881,24 @@ class FirewallD(DbusServiceObject):
         out_signature="as",
         is_deprecated=True,
     )
-    @dbus_handle_exceptions
     def getLockdownWhitelistContexts(self, sender=None):  # pylint: disable=W0613
-        """Add lockdown context"""
-        log.debug1("policies.getLockdownWhitelistContexts()")
-        # no access check here
-        return self.fw.policies.lockdown_whitelist.get_contexts()
+        return firewall.dbus_utils.deprecated_nop([])
 
     @dbus_service_signal(
         config.dbus.DBUS_INTERFACE_POLICIES,
         signature="s",
         is_deprecated=True,
     )
-    @dbus_handle_exceptions
     def LockdownWhitelistContextAdded(self, context):
-        log.debug1("LockdownWhitelistContextAdded('%s')" % context)
+        pass
 
     @dbus_service_signal(
         config.dbus.DBUS_INTERFACE_POLICIES,
         signature="s",
         is_deprecated=True,
     )
-    @dbus_handle_exceptions
     def LockdownWhitelistContextRemoved(self, context):
-        log.debug1("LockdownWhitelistContextRemoved('%s')" % context)
+        pass
 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
