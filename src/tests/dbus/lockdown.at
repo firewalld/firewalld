@@ -1,0 +1,37 @@
+FWD_START_TEST([dbus api - lockdown signatures])
+AT_KEYWORDS(dbus lockdown)
+
+dnl ###############################
+dnl ########## runtime ############
+dnl ###############################
+
+DBUS_INTROSPECT([], [[//method[@name="enableLockdown"]]], 0, [dnl
+    <method name="enableLockdown">
+        <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
+    </method>
+])
+
+DBUS_INTROSPECT([], [[//signal[@name="LockdownEnabled"]]], 0, [dnl
+    <signal name="LockdownEnabled">
+        <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
+    </signal>
+])
+
+dnl ###############################
+dnl ######### permanent ###########
+dnl ###############################
+
+DBUS_INTROSPECT([config], [[//interface[@name="org.fedoraproject.FirewallD1.config.policies"]//method[@name="setLockdownWhitelist"]]], 0, [dnl
+    <method name="setLockdownWhitelist">
+        <arg direction="in" name="settings" type="(asasasai)"></arg>
+        <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
+    </method>
+])
+
+DBUS_INTROSPECT([config], [[//interface[@name="org.fedoraproject.FirewallD1.config.policies"]//signal[@name="LockdownWhitelistUpdated"]]], 0, [dnl
+    <signal name="LockdownWhitelistUpdated">
+        <annotation name="org.freedesktop.DBus.Deprecated" value="true"></annotation>
+    </signal>
+])
+
+FWD_END_TEST
