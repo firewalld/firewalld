@@ -923,8 +923,8 @@ class FirewallDConfig(DbusServiceObject):
                 self,
                 data,
                 interface,
-                dbus_service_method_deprecated().deprecated,
-                dbus_service_signal_deprecated().deprecated,
+                dbus_service_method_deprecated.deprecated,
+                dbus_service_signal_deprecated.deprecated,
             )
 
         return data

@@ -244,35 +244,33 @@ def dbus_introspection_add_properties(obj, data, interface):
 def dbus_introspection_add_deprecated(
     obj, data, interface, deprecated_methods, deprecated_signals
 ):
-    modified = False
-    is_deprecated_method = interface in deprecated_methods
-    is_deprecated_signal = interface in deprecated_signals
+    set_methods = deprecated_methods.get(interface)
+    set_signals = deprecated_signals.get(interface)
 
-    if is_deprecated_method or is_deprecated_signal:
+    if set_methods or set_signals:
         attrib = {
             "name": "org.freedesktop.DBus.Deprecated",
             "value": "true",
         }
         doc = ET.fromstring(data)
 
+        modified = False
         for node in doc.iter("interface"):
-            if "name" in node.attrib and node.attrib["name"] == interface:
-                if is_deprecated_method:
+            if node.attrib.get("name") == interface:
+                if set_methods:
                     for method_node in node.iter("method"):
                         if (
                             "name" in method_node.attrib
-                            and method_node.attrib["name"]
-                            in deprecated_methods[interface]
+                            and method_node.attrib["name"] in set_methods
                         ):
                             ET.SubElement(method_node, "annotation", attrib)
                             modified = True
 
-                if is_deprecated_signal:
+                if set_signals:
                     for signal_node in node.iter("signal"):
                         if (
                             "name" in signal_node.attrib
-                            and signal_node.attrib["name"]
-                            in deprecated_signals[interface]
+                            and signal_node.attrib["name"] in set_signals
                         ):
                             ET.SubElement(signal_node, "annotation", attrib)
                             modified = True
