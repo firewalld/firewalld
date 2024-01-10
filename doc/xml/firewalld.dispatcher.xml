@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN" "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd"
+[
+<!ENTITY authors SYSTEM "authors.xml">
+<!ENTITY seealso SYSTEM "seealso.xml">
+<!ENTITY notes SYSTEM "notes.xml">
+]>
+
+<!--
+  SPDX-License-Identifier: GPL-2.0-or-later
+
+  This file is part of firewalld.
+
+  Copyright (C) 2024 Red Hat, Inc.
+
+  Authors:
+  Eric Garver <eric@garver.life>
+-->
+
+<refentry id="firewalld.dispatcher">
+
+  <refentryinfo>
+    <title>firewalld.dispatcher</title>
+    <productname>firewalld</productname>
+    &authors;
+  </refentryinfo>
+
+  <refmeta>
+    <refentrytitle>firewalld.dispatcher</refentrytitle>
+    <manvolnum>5</manvolnum>
+  </refmeta>
+
+  <refnamediv>
+    <refname>firewalld.dispatcher</refname>
+    <refpurpose>firewalld dispatcher</refpurpose>
+  </refnamediv>
+
+  <refsynopsisdiv>
+    <para>
+      <filename><config.prefix/>/lib/firewalld/dispatcher.d</filename>
+    </para>
+    <para>
+      <filename><config.sysconfdir/>/firewalld/dispatcher.d</filename>
+    </para>
+  </refsynopsisdiv>
+
+  <refsect1 id="description">
+    <title>Description</title>
+
+    <para>
+      Firewalld may call dispatcher scripts whenever it performs an action, e.g.
+      Reloaded, that may be interesting to external entities. These
+      actions correspond to dbus signals as documented in
+      <citerefentry>
+      <refentrytitle>firewalld.dbus</refentrytitle>
+      <manvolnum>5</manvolnum>
+      </citerefentry>.
+      This is useful to entities that can't listen for dbus signals. This
+      includes daemonless and dbus unaware software.
+    </para>
+
+  </refsect1>
+
+  <refsect1 id="location">
+    <title>Dispatchers</title>
+    <para>
+      Dispatchers are an executable in one of two locations:
+    </para>
+
+    <variablelist>
+      <varlistentry>
+        <term><filename><config.prefix/>/lib/firewalld/dispatcher.d</filename></term>
+      </varlistentry>
+      <varlistentry>
+        <term><filename><config.sysconfdir/>/firewalld/dispatcher.d</filename></term>
+      </varlistentry>
+    </variablelist>
+
+    <para>
+      Executables from both locations will be called. If both locations contain
+      the same executable name then both will be called. One does not override
+      or replace the other.
+    </para>
+
+    <para>
+      Dispatchers are called via systemd-run. They are transient systemd
+      services with a randomly generated name. They are run with the systemd
+      property TimeoutSec=60 to guarantee they don't result in long lived
+      processes. There is no guarantee about execution order. Dispatchers may
+      run simultaneously.
+    </para>
+
+  </refsect1>
+
+  <refsect1 id="arguments">
+    <title>Dispatcher Arguments</title>
+
+    <para>
+      Every dispatcher is called with the below arguments.
+      Refer to <citerefentry><refentrytitle>firewalld.dbus</refentrytitle><manvolnum>5</manvolnum></citerefentry> for details.
+    </para>
+
+    <variablelist>
+      <varlistentry>
+        <term>DBUS interface</term>
+      </varlistentry>
+      <varlistentry>
+        <term>DBUS signal</term>
+      </varlistentry>
+      <varlistentry>
+        <term>DBUS signal arguments</term>
+      </varlistentry>
+    </variablelist>
+
+    <para>
+      For example, upon a user executing "firewall-cmd --zone internal --add-service https"
+      a dispatcher located at <filename><config.sysconfdir/>/firewalld/dispatcher.d/foobar</filename>
+      would be called thusly:
+    </para>
+    <para>
+      <config.sysconfdir/>/firewalld/dispatcher.d/foobar org.fedoraproject.FirewallD1.zone ServiceAdded internal https 0
+    </para>
+
+  </refsect1>
+
+  &seealso;
+
+  &notes;
+
+</refentry>
