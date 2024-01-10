@@ -1534,9 +1534,10 @@ class FirewallDConfig(DbusServiceObject):
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
     # DIRECT
 
-    @dbus_service_method_deprecated(config.dbus.DBUS_INTERFACE_CONFIG_DIRECT)
     @dbus_service_method(
-        config.dbus.DBUS_INTERFACE_CONFIG_DIRECT, out_signature=Direct.DBUS_SIGNATURE
+        config.dbus.DBUS_INTERFACE_CONFIG_DIRECT,
+        out_signature=Direct.DBUS_SIGNATURE,
+        is_deprecated=True,
     )
     @dbus_handle_exceptions
     def getSettings(self, sender=None):  # pylint: disable=W0613
@@ -1544,9 +1545,10 @@ class FirewallDConfig(DbusServiceObject):
         log.debug1("config.direct.getSettings()")
         return self.config.get_direct().export_config()
 
-    @dbus_service_method_deprecated(config.dbus.DBUS_INTERFACE_CONFIG_DIRECT)
     @dbus_service_method(
-        config.dbus.DBUS_INTERFACE_CONFIG_DIRECT, in_signature=Direct.DBUS_SIGNATURE
+        config.dbus.DBUS_INTERFACE_CONFIG_DIRECT,
+        in_signature=Direct.DBUS_SIGNATURE,
+        is_deprecated=True,
     )
     @dbus_handle_exceptions
     def update(self, settings, sender=None):  # pylint: disable=W0613
@@ -1565,8 +1567,11 @@ class FirewallDConfig(DbusServiceObject):
 
     # chain
 
-    @dbus_service_method_deprecated(config.dbus.DBUS_INTERFACE_CONFIG_DIRECT)
-    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_DIRECT, in_signature="sss")
+    @dbus_service_method(
+        config.dbus.DBUS_INTERFACE_CONFIG_DIRECT,
+        in_signature="sss",
+        is_deprecated=True,
+    )
     @dbus_handle_exceptions
     def addChain(self, ipv, table, chain, sender=None):
         ipv = dbus_to_python(ipv)
@@ -1584,8 +1589,11 @@ class FirewallDConfig(DbusServiceObject):
         settings[0].append(idx)
         self.update(settings)
 
-    @dbus_service_method_deprecated(config.dbus.DBUS_INTERFACE_CONFIG_DIRECT)
-    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_DIRECT, in_signature="sss")
+    @dbus_service_method(
+        config.dbus.DBUS_INTERFACE_CONFIG_DIRECT,
+        in_signature="sss",
+        is_deprecated=True,
+    )
     @dbus_handle_exceptions
     def removeChain(self, ipv, table, chain, sender=None):
         ipv = dbus_to_python(ipv)
@@ -1602,9 +1610,11 @@ class FirewallDConfig(DbusServiceObject):
         settings[0].remove(idx)
         self.update(settings)
 
-    @dbus_service_method_deprecated(config.dbus.DBUS_INTERFACE_CONFIG_DIRECT)
     @dbus_service_method(
-        config.dbus.DBUS_INTERFACE_CONFIG_DIRECT, in_signature="sss", out_signature="b"
+        config.dbus.DBUS_INTERFACE_CONFIG_DIRECT,
+        in_signature="sss",
+        out_signature="b",
+        is_deprecated=True,
     )
     @dbus_handle_exceptions
     def queryChain(self, ipv, table, chain, sender=None):  # pylint: disable=W0613
@@ -1615,9 +1625,11 @@ class FirewallDConfig(DbusServiceObject):
         idx = tuple((ipv, table, chain))
         return idx in self.getSettings()[0]
 
-    @dbus_service_method_deprecated(config.dbus.DBUS_INTERFACE_CONFIG_DIRECT)
     @dbus_service_method(
-        config.dbus.DBUS_INTERFACE_CONFIG_DIRECT, in_signature="ss", out_signature="as"
+        config.dbus.DBUS_INTERFACE_CONFIG_DIRECT,
+        in_signature="ss",
+        out_signature="as",
+        is_deprecated=True,
     )
     @dbus_handle_exceptions
     def getChains(self, ipv, table, sender=None):  # pylint: disable=W0613
@@ -1630,11 +1642,11 @@ class FirewallDConfig(DbusServiceObject):
                 ret.append(idx[2])
         return ret
 
-    @dbus_service_method_deprecated(config.dbus.DBUS_INTERFACE_CONFIG_DIRECT)
     @dbus_service_method(
         config.dbus.DBUS_INTERFACE_CONFIG_DIRECT,
         in_signature="",
         out_signature="a(sss)",
+        is_deprecated=True,
     )
     @dbus_handle_exceptions
     def getAllChains(self, sender=None):  # pylint: disable=W0613
@@ -1643,9 +1655,10 @@ class FirewallDConfig(DbusServiceObject):
 
     # rule
 
-    @dbus_service_method_deprecated(config.dbus.DBUS_INTERFACE_CONFIG_DIRECT)
     @dbus_service_method(
-        config.dbus.DBUS_INTERFACE_CONFIG_DIRECT, in_signature="sssias"
+        config.dbus.DBUS_INTERFACE_CONFIG_DIRECT,
+        in_signature="sssias",
+        is_deprecated=True,
     )
     @dbus_handle_exceptions
     def addRule(
@@ -1671,9 +1684,10 @@ class FirewallDConfig(DbusServiceObject):
         settings[1].append(idx)
         self.update(tuple(settings))
 
-    @dbus_service_method_deprecated(config.dbus.DBUS_INTERFACE_CONFIG_DIRECT)
     @dbus_service_method(
-        config.dbus.DBUS_INTERFACE_CONFIG_DIRECT, in_signature="sssias"
+        config.dbus.DBUS_INTERFACE_CONFIG_DIRECT,
+        in_signature="sssias",
+        is_deprecated=True,
     )
     @dbus_handle_exceptions
     def removeRule(
@@ -1699,11 +1713,11 @@ class FirewallDConfig(DbusServiceObject):
         settings[1].remove(idx)
         self.update(tuple(settings))
 
-    @dbus_service_method_deprecated(config.dbus.DBUS_INTERFACE_CONFIG_DIRECT)
     @dbus_service_method(
         config.dbus.DBUS_INTERFACE_CONFIG_DIRECT,
         in_signature="sssias",
         out_signature="b",
+        is_deprecated=True,
     )
     @dbus_handle_exceptions
     def queryRule(
@@ -1721,8 +1735,11 @@ class FirewallDConfig(DbusServiceObject):
         idx = (ipv, table, chain, priority, args)
         return idx in self.getSettings()[1]
 
-    @dbus_service_method_deprecated(config.dbus.DBUS_INTERFACE_CONFIG_DIRECT)
-    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_DIRECT, in_signature="sss")
+    @dbus_service_method(
+        config.dbus.DBUS_INTERFACE_CONFIG_DIRECT,
+        in_signature="sss",
+        is_deprecated=True,
+    )
     @dbus_handle_exceptions
     def removeRules(self, ipv, table, chain, sender=None):
         ipv = dbus_to_python(ipv)
@@ -1743,11 +1760,11 @@ class FirewallDConfig(DbusServiceObject):
                 settings[1].remove(rule)
         self.update(tuple(settings))
 
-    @dbus_service_method_deprecated(config.dbus.DBUS_INTERFACE_CONFIG_DIRECT)
     @dbus_service_method(
         config.dbus.DBUS_INTERFACE_CONFIG_DIRECT,
         in_signature="sss",
         out_signature="a(ias)",
+        is_deprecated=True,
     )
     @dbus_handle_exceptions
     def getRules(self, ipv, table, chain, sender=None):  # pylint: disable=W0613
@@ -1761,11 +1778,11 @@ class FirewallDConfig(DbusServiceObject):
                 ret.append((idx[3], idx[4]))
         return ret
 
-    @dbus_service_method_deprecated(config.dbus.DBUS_INTERFACE_CONFIG_DIRECT)
     @dbus_service_method(
         config.dbus.DBUS_INTERFACE_CONFIG_DIRECT,
         in_signature="",
         out_signature="a(sssias)",
+        is_deprecated=True,
     )
     @dbus_handle_exceptions
     def getAllRules(self, sender=None):  # pylint: disable=W0613
@@ -1774,8 +1791,11 @@ class FirewallDConfig(DbusServiceObject):
 
     # passthrough
 
-    @dbus_service_method_deprecated(config.dbus.DBUS_INTERFACE_CONFIG_DIRECT)
-    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_DIRECT, in_signature="sas")
+    @dbus_service_method(
+        config.dbus.DBUS_INTERFACE_CONFIG_DIRECT,
+        in_signature="sas",
+        is_deprecated=True,
+    )
     @dbus_handle_exceptions
     def addPassthrough(self, ipv, args, sender=None):
         ipv = dbus_to_python(ipv)
@@ -1791,8 +1811,11 @@ class FirewallDConfig(DbusServiceObject):
         settings[2].append(idx)
         self.update(settings)
 
-    @dbus_service_method_deprecated(config.dbus.DBUS_INTERFACE_CONFIG_DIRECT)
-    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_DIRECT, in_signature="sas")
+    @dbus_service_method(
+        config.dbus.DBUS_INTERFACE_CONFIG_DIRECT,
+        in_signature="sas",
+        is_deprecated=True,
+    )
     @dbus_handle_exceptions
     def removePassthrough(self, ipv, args, sender=None):
         ipv = dbus_to_python(ipv)
@@ -1810,9 +1833,11 @@ class FirewallDConfig(DbusServiceObject):
         settings[2].remove(idx)
         self.update(settings)
 
-    @dbus_service_method_deprecated(config.dbus.DBUS_INTERFACE_CONFIG_DIRECT)
     @dbus_service_method(
-        config.dbus.DBUS_INTERFACE_CONFIG_DIRECT, in_signature="sas", out_signature="b"
+        config.dbus.DBUS_INTERFACE_CONFIG_DIRECT,
+        in_signature="sas",
+        out_signature="b",
+        is_deprecated=True,
     )
     @dbus_handle_exceptions
     def queryPassthrough(self, ipv, args, sender=None):  # pylint: disable=W0613
@@ -1824,9 +1849,11 @@ class FirewallDConfig(DbusServiceObject):
         idx = (ipv, args)
         return idx in self.getSettings()[2]
 
-    @dbus_service_method_deprecated(config.dbus.DBUS_INTERFACE_CONFIG_DIRECT)
     @dbus_service_method(
-        config.dbus.DBUS_INTERFACE_CONFIG_DIRECT, in_signature="s", out_signature="aas"
+        config.dbus.DBUS_INTERFACE_CONFIG_DIRECT,
+        in_signature="s",
+        out_signature="aas",
+        is_deprecated=True,
     )
     @dbus_handle_exceptions
     def getPassthroughs(self, ipv, sender=None):  # pylint: disable=W0613
@@ -1838,9 +1865,10 @@ class FirewallDConfig(DbusServiceObject):
                 ret.append(idx[1])
         return ret
 
-    @dbus_service_method_deprecated(config.dbus.DBUS_INTERFACE_CONFIG_DIRECT)
     @dbus_service_method(
-        config.dbus.DBUS_INTERFACE_CONFIG_DIRECT, out_signature="a(sas)"
+        config.dbus.DBUS_INTERFACE_CONFIG_DIRECT,
+        out_signature="a(sas)",
+        is_deprecated=True,
     )
     @dbus_handle_exceptions
     def getAllPassthroughs(self, sender=None):  # pylint: disable=W0613
