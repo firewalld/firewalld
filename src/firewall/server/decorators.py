@@ -89,10 +89,26 @@ def dbus_handle_exceptions(func):
     return _impl
 
 
-def dbus_service_method(*args, **kwargs):
-    """Add sender argument for D-Bus"""
-    kwargs.setdefault("sender_keyword", "sender")
-    return dbus.service.method(*args, **kwargs)
+def dbus_service_method(
+    dbus_interface,
+    *args,
+    is_deprecated=False,
+    sender_keyword="sender",
+    **kwargs,
+):
+    def decorator(func):
+        if is_deprecated:
+            dbus_service_method_deprecated.register(dbus_interface, func.__name__)
+
+        dbus_decorator = dbus.service.method(
+            dbus_interface,
+            *args,
+            sender_keyword=sender_keyword,
+            **kwargs,
+        )
+        return dbus_decorator(func)
+
+    return decorator
 
 
 class dbus_service_deprecated:
