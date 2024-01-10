@@ -347,6 +347,18 @@ m4_define([FWD_GREP_LOG], [
     AT_CHECK([grep "$1" ./firewalld.log], $2, [ignore], [ignore])
 ])
 
+m4_define([GREP], [
+    fail=1
+    for I in $(seq ${3:-30}); do
+        grep "$1" "$2" && {
+            fail=0
+            break
+        }
+        sleep 1
+    done
+    AT_FAIL_IF([test $fail -ne 0])
+])
+
 m4_define([TRIM], [[sed -e 's/^[ \t]*//' -e 's/[ \t]*$//']])
 m4_define([TRIMV], [[sed -e '/^[ \t]*$/d']])
 m4_define([TRIM_INTERNAL], [[sed -e 's/[ \t]\+/ /g']])
