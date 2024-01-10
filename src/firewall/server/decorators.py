@@ -115,6 +115,16 @@ def dbus_service_method(
     return decorator
 
 
+def dbus_service_signal(
+    *args,
+    **kwargs,
+):
+    return dbus.service.signal(
+        *args,
+        **kwargs,
+    )
+
+
 class dbus_service_deprecated:
     """Decorator that maintains a list of deprecated methods in dbus
     interfaces.
