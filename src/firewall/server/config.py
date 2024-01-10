@@ -19,6 +19,7 @@ from firewall.server.decorators import (
     handle_exceptions,
     dbus_handle_exceptions,
     dbus_service_method,
+    dbus_service_signal,
     dbus_service_method_deprecated,
     dbus_service_signal_deprecated,
     dbus_polkit_require_auth,
@@ -891,7 +892,7 @@ class FirewallDConfig(DbusServiceObject):
                 "Interface '%s' does not exist" % interface_name
             )
 
-    @dbus.service.signal(dbus.PROPERTIES_IFACE, signature="sa{sv}as")
+    @dbus_service_signal(dbus.PROPERTIES_IFACE, signature="sa{sv}as")
     def PropertiesChanged(
         self, interface_name, changed_properties, invalidated_properties
     ):
@@ -954,7 +955,7 @@ class FirewallDConfig(DbusServiceObject):
         self.config.get_policies().lockdown_whitelist.write()
         self.LockdownWhitelistUpdated()
 
-    @dbus.service.signal(config.dbus.DBUS_INTERFACE_CONFIG_POLICIES)
+    @dbus_service_signal(config.dbus.DBUS_INTERFACE_CONFIG_POLICIES)
     @dbus_handle_exceptions
     def LockdownWhitelistUpdated(self):
         log.debug1("config.policies.LockdownWhitelistUpdated()")
@@ -1177,7 +1178,7 @@ class FirewallDConfig(DbusServiceObject):
         config_ipset = self._addIPSet(obj)
         return config_ipset
 
-    @dbus.service.signal(config.dbus.DBUS_INTERFACE_CONFIG, signature="s")
+    @dbus_service_signal(config.dbus.DBUS_INTERFACE_CONFIG, signature="s")
     @dbus_handle_exceptions
     def IPSetAdded(self, ipset):
         ipset = dbus_to_python(ipset, str)
@@ -1231,7 +1232,7 @@ class FirewallDConfig(DbusServiceObject):
         config_icmptype = self._addIcmpType(obj)
         return config_icmptype
 
-    @dbus.service.signal(config.dbus.DBUS_INTERFACE_CONFIG, signature="s")
+    @dbus_service_signal(config.dbus.DBUS_INTERFACE_CONFIG, signature="s")
     @dbus_handle_exceptions
     def IcmpTypeAdded(self, icmptype):
         log.debug1("config.IcmpTypeAdded('%s')" % (icmptype))
@@ -1298,7 +1299,7 @@ class FirewallDConfig(DbusServiceObject):
         config_service = self._addService(obj)
         return config_service
 
-    @dbus.service.signal(config.dbus.DBUS_INTERFACE_CONFIG, signature="s")
+    @dbus_service_signal(config.dbus.DBUS_INTERFACE_CONFIG, signature="s")
     @dbus_handle_exceptions
     def ServiceAdded(self, service):
         log.debug1("config.ServiceAdded('%s')" % (service))
@@ -1418,7 +1419,7 @@ class FirewallDConfig(DbusServiceObject):
         config_zone = self._addZone(obj)
         return config_zone
 
-    @dbus.service.signal(config.dbus.DBUS_INTERFACE_CONFIG, signature="s")
+    @dbus_service_signal(config.dbus.DBUS_INTERFACE_CONFIG, signature="s")
     @dbus_handle_exceptions
     def ZoneAdded(self, zone):
         log.debug1("config.ZoneAdded('%s')" % (zone))
@@ -1469,7 +1470,7 @@ class FirewallDConfig(DbusServiceObject):
         config_policy = self._addPolicy(obj)
         return config_policy
 
-    @dbus.service.signal(config.dbus.DBUS_INTERFACE_CONFIG, signature="s")
+    @dbus_service_signal(config.dbus.DBUS_INTERFACE_CONFIG, signature="s")
     @dbus_handle_exceptions
     def PolicyAdded(self, policy):
         log.debug1("config.PolicyAdded('%s')" % (policy))
@@ -1524,7 +1525,7 @@ class FirewallDConfig(DbusServiceObject):
         config_helper = self._addHelper(obj)
         return config_helper
 
-    @dbus.service.signal(config.dbus.DBUS_INTERFACE_CONFIG, signature="s")
+    @dbus_service_signal(config.dbus.DBUS_INTERFACE_CONFIG, signature="s")
     @dbus_handle_exceptions
     def HelperAdded(self, helper):
         helper = dbus_to_python(helper, str)
@@ -1557,7 +1558,7 @@ class FirewallDConfig(DbusServiceObject):
         self.Updated()
 
     @dbus_service_signal_deprecated(config.dbus.DBUS_INTERFACE_CONFIG_DIRECT)
-    @dbus.service.signal(config.dbus.DBUS_INTERFACE_CONFIG_DIRECT)
+    @dbus_service_signal(config.dbus.DBUS_INTERFACE_CONFIG_DIRECT)
     @dbus_handle_exceptions
     def Updated(self):
         log.debug1("config.direct.Updated()")
