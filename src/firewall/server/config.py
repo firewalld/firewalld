@@ -1559,8 +1559,10 @@ class FirewallDConfig(DbusServiceObject):
         self.config.get_direct().write()
         self.Updated()
 
-    @dbus_service_signal_deprecated(config.dbus.DBUS_INTERFACE_CONFIG_DIRECT)
-    @dbus_service_signal(config.dbus.DBUS_INTERFACE_CONFIG_DIRECT)
+    @dbus_service_signal(
+        config.dbus.DBUS_INTERFACE_CONFIG_DIRECT,
+        is_deprecated=True,
+    )
     @dbus_handle_exceptions
     def Updated(self):
         log.debug1("config.direct.Updated()")
