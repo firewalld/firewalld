@@ -20,6 +20,7 @@ from firewall.server.decorators import (
     handle_exceptions,
     dbus_handle_exceptions,
     dbus_service_method,
+    dbus_service_signal,
     dbus_polkit_require_auth,
 )
 from firewall import errors
@@ -146,7 +147,7 @@ class FirewallDConfigService(DbusServiceObject):
             "Property '%s' is read-only" % property_name
         )
 
-    @dbus.service.signal(dbus.PROPERTIES_IFACE, signature="sa{sv}as")
+    @dbus_service_signal(dbus.PROPERTIES_IFACE, signature="sa{sv}as")
     def PropertiesChanged(
         self, interface_name, changed_properties, invalidated_properties
     ):
@@ -229,7 +230,7 @@ class FirewallDConfigService(DbusServiceObject):
         self.obj = self.config.load_service_defaults(self.obj)
         self.Updated(self.obj.name)
 
-    @dbus.service.signal(config.dbus.DBUS_INTERFACE_CONFIG_SERVICE, signature="s")
+    @dbus_service_signal(config.dbus.DBUS_INTERFACE_CONFIG_SERVICE, signature="s")
     @dbus_handle_exceptions
     def Updated(self, name):
         log.debug1("%s.Updated('%s')" % (self._log_prefix, name))
@@ -245,7 +246,7 @@ class FirewallDConfigService(DbusServiceObject):
         self.config.remove_service(self.obj)
         self.parent.removeService(self.obj)
 
-    @dbus.service.signal(config.dbus.DBUS_INTERFACE_CONFIG_SERVICE, signature="s")
+    @dbus_service_signal(config.dbus.DBUS_INTERFACE_CONFIG_SERVICE, signature="s")
     @dbus_handle_exceptions
     def Removed(self, name):
         log.debug1("%s.Removed('%s')" % (self._log_prefix, name))
@@ -262,7 +263,7 @@ class FirewallDConfigService(DbusServiceObject):
         self.obj = self.config.rename_service(self.obj, name)
         self.Renamed(name)
 
-    @dbus.service.signal(config.dbus.DBUS_INTERFACE_CONFIG_SERVICE, signature="s")
+    @dbus_service_signal(config.dbus.DBUS_INTERFACE_CONFIG_SERVICE, signature="s")
     @dbus_handle_exceptions
     def Renamed(self, name):
         log.debug1("%s.Renamed('%s')" % (self._log_prefix, name))
