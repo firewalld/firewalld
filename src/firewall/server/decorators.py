@@ -91,6 +91,8 @@ def dbus_handle_exceptions(func):
 
 def dbus_service_method(
     dbus_interface,
+    in_signature="",
+    out_signature="",
     *args,
     is_deprecated=False,
     sender_keyword="sender",
@@ -102,6 +104,8 @@ def dbus_service_method(
 
         dbus_decorator = dbus.service.method(
             dbus_interface,
+            in_signature=in_signature,
+            out_signature=out_signature,
             *args,
             sender_keyword=sender_keyword,
             **kwargs,
