@@ -116,13 +116,25 @@ def dbus_service_method(
 
 
 def dbus_service_signal(
+    dbus_interface,
+    signature="",
     *args,
+    is_deprecated=False,
     **kwargs,
 ):
-    return dbus.service.signal(
-        *args,
-        **kwargs,
-    )
+    def decorator(func):
+        if is_deprecated:
+            dbus_service_signal_deprecated.register(dbus_interface, func.__name__)
+
+        dbus_decorator = dbus.service.signal(
+            dbus_interface,
+            *args,
+            signature=signature,
+            **kwargs,
+        )
+        return dbus_decorator(func)
+
+    return decorator
 
 
 class dbus_service_deprecated:
