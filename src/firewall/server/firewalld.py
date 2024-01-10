@@ -2393,14 +2393,20 @@ class FirewallD(DbusServiceObject):
         log.debug1("direct.getAllChains()")
         return self.fw.direct.get_all_chains()
 
-    @dbus_service_signal_deprecated(config.dbus.DBUS_INTERFACE_DIRECT)
-    @dbus_service_signal(config.dbus.DBUS_INTERFACE_DIRECT, signature="sss")
+    @dbus_service_signal(
+        config.dbus.DBUS_INTERFACE_DIRECT,
+        signature="sss",
+        is_deprecated=True,
+    )
     @dbus_handle_exceptions
     def ChainAdded(self, ipv, table, chain):
         log.debug1("direct.ChainAdded('%s', '%s', '%s')" % (ipv, table, chain))
 
-    @dbus_service_signal_deprecated(config.dbus.DBUS_INTERFACE_DIRECT)
-    @dbus_service_signal(config.dbus.DBUS_INTERFACE_DIRECT, signature="sss")
+    @dbus_service_signal(
+        config.dbus.DBUS_INTERFACE_DIRECT,
+        signature="sss",
+        is_deprecated=True,
+    )
     @dbus_handle_exceptions
     def ChainRemoved(self, ipv, table, chain):
         log.debug1("direct.ChainRemoved('%s', '%s', '%s')" % (ipv, table, chain))
@@ -2530,8 +2536,11 @@ class FirewallD(DbusServiceObject):
         log.debug1("direct.getAllRules()")
         return self.fw.direct.get_all_rules()
 
-    @dbus_service_signal_deprecated(config.dbus.DBUS_INTERFACE_DIRECT)
-    @dbus_service_signal(config.dbus.DBUS_INTERFACE_DIRECT, signature="sssias")
+    @dbus_service_signal(
+        config.dbus.DBUS_INTERFACE_DIRECT,
+        signature="sssias",
+        is_deprecated=True,
+    )
     @dbus_handle_exceptions
     def RuleAdded(self, ipv, table, chain, priority, args):  # pylint: disable=R0913
         log.debug1(
@@ -2539,8 +2548,11 @@ class FirewallD(DbusServiceObject):
             % (ipv, table, chain, priority, "','".join(args))
         )
 
-    @dbus_service_signal_deprecated(config.dbus.DBUS_INTERFACE_DIRECT)
-    @dbus_service_signal(config.dbus.DBUS_INTERFACE_DIRECT, signature="sssias")
+    @dbus_service_signal(
+        config.dbus.DBUS_INTERFACE_DIRECT,
+        signature="sssias",
+        is_deprecated=True,
+    )
     @dbus_handle_exceptions
     def RuleRemoved(self, ipv, table, chain, priority, args):  # pylint: disable=R0913
         log.debug1(
@@ -2673,14 +2685,20 @@ class FirewallD(DbusServiceObject):
         log.debug1("direct.getPassthroughs('%s')", ipv)
         return self.fw.direct.get_passthroughs(ipv)
 
-    @dbus_service_signal_deprecated(config.dbus.DBUS_INTERFACE_DIRECT)
-    @dbus_service_signal(config.dbus.DBUS_INTERFACE_DIRECT, signature="sas")
+    @dbus_service_signal(
+        config.dbus.DBUS_INTERFACE_DIRECT,
+        signature="sas",
+        is_deprecated=True,
+    )
     @dbus_handle_exceptions
     def PassthroughAdded(self, ipv, args):
         log.debug1("direct.PassthroughAdded('%s', '%s')" % (ipv, "','".join(args)))
 
-    @dbus_service_signal_deprecated(config.dbus.DBUS_INTERFACE_DIRECT)
-    @dbus_service_signal(config.dbus.DBUS_INTERFACE_DIRECT, signature="sas")
+    @dbus_service_signal(
+        config.dbus.DBUS_INTERFACE_DIRECT,
+        signature="sas",
+        is_deprecated=True,
+    )
     @dbus_handle_exceptions
     def PassthroughRemoved(self, ipv, args):
         log.debug1("direct.PassthroughRemoved('%s', '%s')" % (ipv, "','".join(args)))
