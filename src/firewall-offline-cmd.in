@@ -2214,6 +2214,8 @@ try:
         if a.option:
             for opt in a.option:
                 settings.addOption(*cmd.parse_ipset_option(opt))
+        if a.family:
+            settings.addOption("family", a.family)
         fw.config.new_ipset(a.new_ipset, settings.settings)
 
     elif a.new_ipset_from_file:
