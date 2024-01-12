@@ -167,7 +167,6 @@ fi
 %{_prefix}/lib/firewalld/xmlschema/*.xsd
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld
 %config(noreplace) %{_sysconfdir}/firewalld/firewalld.conf
-%config(noreplace) %{_sysconfdir}/firewalld/lockdown-whitelist.xml
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld/helpers
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld/icmptypes
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld/ipsets
