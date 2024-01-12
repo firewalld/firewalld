@@ -6,7 +6,6 @@ import firewall.config
 
 def test_reload_policy():
     def t(value, expected_valid=True, **kw):
-
         expected = {
             "INPUT": "DROP",
             "FORWARD": "DROP",
