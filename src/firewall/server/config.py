@@ -616,28 +616,6 @@ class FirewallDConfig(DbusServiceObject):
 
     @dbus_handle_exceptions
     def _get_property(self, prop):
-        if prop not in [
-            "DefaultZone",
-            "MinimalMark",
-            "CleanupOnExit",
-            "CleanupModulesOnExit",
-            "Lockdown",
-            "IPv6_rpfilter",
-            "IndividualCalls",
-            "LogDenied",
-            "AutomaticHelpers",
-            "FirewallBackend",
-            "FlushAllOnReload",
-            "RFC3964_IPv4",
-            "AllowZoneDrifting",
-            "NftablesFlowtable",
-            "NftablesCounters",
-        ]:
-            raise dbus.exceptions.DBusException(
-                "org.freedesktop.DBus.Error.InvalidArgs: "
-                "Property '%s' does not exist" % prop
-            )
-
         value = self.config.get_firewalld_conf().get(prop)
 
         if prop == "DefaultZone":
@@ -702,39 +680,6 @@ class FirewallDConfig(DbusServiceObject):
             if value is None:
                 value = "yes" if config.FALLBACK_NFTABLES_COUNTERS else "no"
             return dbus.String(value)
-
-    @dbus_handle_exceptions
-    def _get_dbus_property(self, prop):
-        if prop == "DefaultZone":
-            return dbus.String(self._get_property(prop))
-        elif prop == "MinimalMark":
-            return dbus.Int32(self._get_property(prop))
-        elif prop == "CleanupOnExit":
-            return dbus.String(self._get_property(prop))
-        elif prop == "CleanupModulesOnExit":
-            return dbus.String(self._get_property(prop))
-        elif prop == "Lockdown":
-            return dbus.String(self._get_property(prop))
-        elif prop == "IPv6_rpfilter":
-            return dbus.String(self._get_property(prop))
-        elif prop == "IndividualCalls":
-            return dbus.String(self._get_property(prop))
-        elif prop == "LogDenied":
-            return dbus.String(self._get_property(prop))
-        elif prop == "AutomaticHelpers":
-            return dbus.String(self._get_property(prop))
-        elif prop == "FirewallBackend":
-            return dbus.String(self._get_property(prop))
-        elif prop == "FlushAllOnReload":
-            return dbus.String(self._get_property(prop))
-        elif prop == "RFC3964_IPv4":
-            return dbus.String(self._get_property(prop))
-        elif prop == "AllowZoneDrifting":
-            return dbus.String(self._get_property(prop))
-        elif prop == "NftablesFlowtable":
-            return dbus.String(self._get_property(prop))
-        elif prop == "NftablesCounters":
-            return dbus.String(self._get_property(prop))
         else:
             raise dbus.exceptions.DBusException(
                 "org.freedesktop.DBus.Error.InvalidArgs: "
@@ -750,7 +695,7 @@ class FirewallDConfig(DbusServiceObject):
         log.debug1("config.Get('%s', '%s')", interface_name, property_name)
 
         if interface_name == config.dbus.DBUS_INTERFACE_CONFIG:
-            return self._get_dbus_property(property_name)
+            return self._get_property(property_name)
         elif interface_name in [
             config.dbus.DBUS_INTERFACE_CONFIG_DIRECT,
             config.dbus.DBUS_INTERFACE_CONFIG_POLICIES,
