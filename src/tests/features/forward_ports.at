@@ -274,3 +274,49 @@ FWD_CHECK([            --policy foobar --remove-ingress-zone HOST], 0, [ignore])
 FWD_CHECK([            --policy foobar --remove-egress-zone localhost], 0, [ignore])
 
 FWD_END_TEST([-e '/ERROR: INVALID_FORWARD/d' -e '/ERROR: INVALID_ZONE/d'])
+
+
+FWD_START_TEST([forward ports - logging and limiting])
+AT_KEYWORDS(forward_port rich logging limit)
+
+FWD_CHECK([--add-rich-rule='rule family=ipv4 forward-port port=33 protocol=tcp to-port=33 to-addr=10.10.10.10 log prefix="forward-port: " level="info" limit value="1/m"'], 0, ignore)
+FWD_CHECK([--query-rich-rule='rule family=ipv4 forward-port port=33 protocol=tcp to-port=33 to-addr=10.10.10.10 log prefix="forward-port: " level="info" limit value="1/m"'], 0, ignore)
+IF_HOST_SUPPORTS_IPV6_RULES([
+FWD_CHECK([--add-rich-rule='rule family=ipv6 forward-port port=44 protocol=udp to-port=4444 to-addr=1234::4321 nflog prefix="forward-port: " queue-size=10 limit value="1/m"'], 0, ignore)
+FWD_CHECK([--query-rich-rule='rule family=ipv6 forward-port port=44 protocol=udp to-port=4444 to-addr=1234::4321 nflog prefix="forward-port: " queue-size=10 limit value="1/m"'], 0, ignore)
+])
+
+NFT_LIST_RULES([inet], [nat_PRE_public_log], 0, [dnl
+    table inet firewalld {
+        chain nat_PRE_public_log {
+            meta nfproto ipv4 tcp dport 33 limit rate 1/minute log prefix "forward-port: " level info
+            meta nfproto ipv6 udp dport 44 limit rate 1/minute log prefix "forward-port: " group 0 queue-threshold 10
+        }
+    }
+])
+
+NFT_LIST_RULES([inet], [nat_PRE_public_allow], 0, [dnl
+    table inet firewalld {
+        chain nat_PRE_public_allow {
+            meta nfproto ipv4 tcp dport 33 dnat ip to 10.10.10.10:33
+            meta nfproto ipv6 udp dport 44 dnat ip6 to [[1234::4321]:4444]
+        }
+    }
+])
+
+
+IPTABLES_LIST_RULES([nat], [PRE_public_log], 0, [dnl
+    LOG 6 -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:33 limit: avg 1/min burst 5 LOG flags 0 level 6 prefix "forward-port: "
+])
+IP6TABLES_LIST_RULES([nat], [PRE_public_log], 0, [dnl
+    NFLOG 17 -- ::/0 ::/0 udp dpt:44 limit: avg 1/min burst 5 nflog-prefix "forward-port: " nflog-threshold 10
+])
+
+IPTABLES_LIST_RULES([nat], [PRE_public_allow], 0, [dnl
+    DNAT 6 -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:33 to:10.10.10.10:33
+])
+IP6TABLES_LIST_RULES([nat], [PRE_public_allow], 0, [dnl
+    DNAT 17 -- ::/0 ::/0 udp dpt:44 [to:[1234::4321]:4444]
+])
+
+FWD_END_TEST
