@@ -1370,6 +1370,12 @@ class nftables(object):
                                          "op": "==",
                                          "right": self._port_fragment(port)}})
 
+        rules = []
+        if rich_rule:
+            rules.append(
+                self._rich_rule_log(policy, rich_rule, enable, table, expr_fragments)
+            )
+
         if toaddr:
             if check_single_address("ipv6", toaddr):
                 toaddr = normalizeIP6(toaddr)
@@ -1385,7 +1391,9 @@ class nftables(object):
                 "chain": "nat_%s_%s" % (_policy, chain_suffix),
                 "expr": expr_fragments}
         rule.update(self._rich_rule_priority_fragment(rich_rule))
-        return [{add_del: {"rule": rule}}]
+        rules.append({add_del: {"rule": rule}})
+
+        return rules
 
     def _icmp_types_to_nft_fragments(self, ipv, icmp_type):
         if icmp_type in ICMP_TYPES_FRAGMENTS[ipv]:
