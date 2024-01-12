@@ -2541,211 +2541,6 @@ class FirewallClientConfigIcmpType:
         return self.fw_icmptype.queryDestination(destination)
 
 
-# config.policies lockdown whitelist
-
-
-class FirewallClientPoliciesLockdownWhitelist:
-    @handle_exceptions
-    def __init__(self, settings=None):
-        if settings:
-            self.settings = settings
-        else:
-            self.settings = [[], [], [], []]
-
-    @handle_exceptions
-    def __repr__(self):
-        return "%s(%r)" % (self.__class__, self.settings)
-
-    @handle_exceptions
-    def getCommands(self):
-        return self.settings[0]
-
-    @handle_exceptions
-    def setCommands(self, commands):
-        self.settings[0] = commands
-
-    @handle_exceptions
-    def addCommand(self, command):
-        if command not in self.settings[0]:
-            self.settings[0].append(command)
-
-    @handle_exceptions
-    def removeCommand(self, command):
-        if command in self.settings[0]:
-            self.settings[0].remove(command)
-
-    @handle_exceptions
-    def queryCommand(self, command):
-        return command in self.settings[0]
-
-    @handle_exceptions
-    def getContexts(self):
-        return self.settings[1]
-
-    @handle_exceptions
-    def setContexts(self, contexts):
-        self.settings[1] = contexts
-
-    @handle_exceptions
-    def addContext(self, context):
-        if context not in self.settings[1]:
-            self.settings[1].append(context)
-
-    @handle_exceptions
-    def removeContext(self, context):
-        if context in self.settings[1]:
-            self.settings[1].remove(context)
-
-    @handle_exceptions
-    def queryContext(self, context):
-        return context in self.settings[1]
-
-    @handle_exceptions
-    def getUsers(self):
-        return self.settings[2]
-
-    @handle_exceptions
-    def setUsers(self, users):
-        self.settings[2] = users
-
-    @handle_exceptions
-    def addUser(self, user):
-        if user not in self.settings[2]:
-            self.settings[2].append(user)
-
-    @handle_exceptions
-    def removeUser(self, user):
-        if user in self.settings[2]:
-            self.settings[2].remove(user)
-
-    @handle_exceptions
-    def queryUser(self, user):
-        return user in self.settings[2]
-
-    @handle_exceptions
-    def getUids(self):
-        return self.settings[3]
-
-    @handle_exceptions
-    def setUids(self, uids):
-        self.settings[3] = uids
-
-    @handle_exceptions
-    def addUid(self, uid):
-        if uid not in self.settings[3]:
-            self.settings[3].append(uid)
-
-    @handle_exceptions
-    def removeUid(self, uid):
-        if uid in self.settings[3]:
-            self.settings[3].remove(uid)
-
-    @handle_exceptions
-    def queryUid(self, uid):
-        return uid in self.settings[3]
-
-
-# config.policies
-
-
-class FirewallClientConfigPolicies:
-    @handle_exceptions
-    def __init__(self, bus):
-        self.bus = bus
-        self.dbus_obj = self.bus.get_object(
-            config.dbus.DBUS_INTERFACE, config.dbus.DBUS_PATH_CONFIG
-        )
-        self.fw_policies = dbus.Interface(
-            self.dbus_obj, dbus_interface=config.dbus.DBUS_INTERFACE_CONFIG_POLICIES
-        )
-
-    @handle_exceptions
-    def getLockdownWhitelist(self):
-        return FirewallClientPoliciesLockdownWhitelist(
-            list(dbus_to_python(self.fw_policies.getLockdownWhitelist()))
-        )
-
-    @handle_exceptions
-    def setLockdownWhitelist(self, settings):
-        self.fw_policies.setLockdownWhitelist(tuple(settings.settings))
-
-    # command
-
-    @handle_exceptions
-    def addLockdownWhitelistCommand(self, command):
-        self.fw_policies.addLockdownWhitelistCommand(command)
-
-    @handle_exceptions
-    def removeLockdownWhitelistCommand(self, command):
-        self.fw_policies.removeLockdownWhitelistCommand(command)
-
-    @handle_exceptions
-    def queryLockdownWhitelistCommand(self, command):
-        return dbus_to_python(self.fw_policies.queryLockdownWhitelistCommand(command))
-
-    @handle_exceptions
-    def getLockdownWhitelistCommands(self):
-        return dbus_to_python(self.fw_policies.getLockdownWhitelistCommands())
-
-    # context
-
-    @handle_exceptions
-    def addLockdownWhitelistContext(self, context):
-        self.fw_policies.addLockdownWhitelistContext(context)
-
-    @handle_exceptions
-    def removeLockdownWhitelistContext(self, context):
-        self.fw_policies.removeLockdownWhitelistContext(context)
-
-    @handle_exceptions
-    def queryLockdownWhitelistContext(self, context):
-        return dbus_to_python(self.fw_policies.queryLockdownWhitelistContext(context))
-
-    @handle_exceptions
-    def getLockdownWhitelistContexts(self):
-        return dbus_to_python(self.fw_policies.getLockdownWhitelistContexts())
-
-    # user
-
-    @handle_exceptions
-    def addLockdownWhitelistUser(self, user):
-        self.fw_policies.addLockdownWhitelistUser(user)
-
-    @handle_exceptions
-    def removeLockdownWhitelistUser(self, user):
-        self.fw_policies.removeLockdownWhitelistUser(user)
-
-    @handle_exceptions
-    def queryLockdownWhitelistUser(self, user):
-        return dbus_to_python(self.fw_policies.queryLockdownWhitelistUser(user))
-
-    @handle_exceptions
-    def getLockdownWhitelistUsers(self):
-        return dbus_to_python(self.fw_policies.getLockdownWhitelistUsers())
-
-    # uid
-
-    @handle_exceptions
-    def getLockdownWhitelistUids(self):
-        return dbus_to_python(self.fw_policies.getLockdownWhitelistUids())
-
-    @handle_exceptions
-    def setLockdownWhitelistUids(self, uids):
-        self.fw_policies.setLockdownWhitelistUids(uids)
-
-    @handle_exceptions
-    def addLockdownWhitelistUid(self, uid):
-        self.fw_policies.addLockdownWhitelistUid(uid)
-
-    @handle_exceptions
-    def removeLockdownWhitelistUid(self, uid):
-        self.fw_policies.removeLockdownWhitelistUid(uid)
-
-    @handle_exceptions
-    def queryLockdownWhitelistUid(self, uid):
-        return dbus_to_python(self.fw_policies.queryLockdownWhitelistUid(uid))
-
-
 # config.direct
 
 
@@ -2982,7 +2777,6 @@ class FirewallClientConfig:
         self.fw_properties = dbus.Interface(
             self.dbus_obj, dbus_interface="org.freedesktop.DBus.Properties"
         )
-        self._policies = FirewallClientConfigPolicies(self.bus)
         self._direct = FirewallClientConfigDirect(self.bus)
 
     # properties
@@ -3155,10 +2949,6 @@ class FirewallClientConfig:
         return FirewallClientConfigIcmpType(self.bus, path)
 
     @handle_exceptions
-    def policies(self):
-        return self._policies
-
-    @handle_exceptions
     def direct(self):
         return self._direct
 
@@ -3288,19 +3078,7 @@ class FirewallClient:
             "direct:passthrough-added": "PassthroughAdded",
             "direct:passthrough-removed": "PassthroughRemoved",
             "config:direct:updated": "config:direct:Updated",
-            # policy callbacks
-            "lockdown-enabled": "LockdownEnabled",
-            "lockdown-disabled": "LockdownDisabled",
-            "lockdown-whitelist-command-added": "LockdownWhitelistCommandAdded",
-            "lockdown-whitelist-command-removed": "LockdownWhitelistCommandRemoved",
-            "lockdown-whitelist-context-added": "LockdownWhitelistContextAdded",
-            "lockdown-whitelist-context-removed": "LockdownWhitelistContextRemoved",
-            "lockdown-whitelist-uid-added": "LockdownWhitelistUidAdded",
-            "lockdown-whitelist-uid-removed": "LockdownWhitelistUidRemoved",
-            "lockdown-whitelist-user-added": "LockdownWhitelistUserAdded",
-            "lockdown-whitelist-user-removed": "LockdownWhitelistUserRemoved",
             # firewalld.config callbacks
-            "config:policies:lockdown-whitelist-updated": "config:policies:LockdownWhitelistUpdated",
             "config:ipset-added": "config:IPSetAdded",
             "config:ipset-updated": "config:IPSetUpdated",
             "config:ipset-removed": "config:IPSetRemoved",
@@ -4011,94 +3789,6 @@ class FirewallClient:
     @handle_exceptions
     def queryPassthrough(self, ipv, args):
         return dbus_to_python(self.fw_direct.queryPassthrough(ipv, args))
-
-    # lockdown
-
-    @handle_exceptions
-    def enableLockdown(self):
-        self.fw_policies.enableLockdown()
-
-    @handle_exceptions
-    def disableLockdown(self):
-        self.fw_policies.disableLockdown()
-
-    @handle_exceptions
-    def queryLockdown(self):
-        return dbus_to_python(self.fw_policies.queryLockdown())
-
-    # policies
-
-    # lockdown white list commands
-
-    @handle_exceptions
-    def addLockdownWhitelistCommand(self, command):
-        self.fw_policies.addLockdownWhitelistCommand(command)
-
-    @handle_exceptions
-    def getLockdownWhitelistCommands(self):
-        return dbus_to_python(self.fw_policies.getLockdownWhitelistCommands())
-
-    @handle_exceptions
-    def queryLockdownWhitelistCommand(self, command):
-        return dbus_to_python(self.fw_policies.queryLockdownWhitelistCommand(command))
-
-    @handle_exceptions
-    def removeLockdownWhitelistCommand(self, command):
-        self.fw_policies.removeLockdownWhitelistCommand(command)
-
-    # lockdown white list contexts
-
-    @handle_exceptions
-    def addLockdownWhitelistContext(self, context):
-        self.fw_policies.addLockdownWhitelistContext(context)
-
-    @handle_exceptions
-    def getLockdownWhitelistContexts(self):
-        return dbus_to_python(self.fw_policies.getLockdownWhitelistContexts())
-
-    @handle_exceptions
-    def queryLockdownWhitelistContext(self, context):
-        return dbus_to_python(self.fw_policies.queryLockdownWhitelistContext(context))
-
-    @handle_exceptions
-    def removeLockdownWhitelistContext(self, context):
-        self.fw_policies.removeLockdownWhitelistContext(context)
-
-    # lockdown white list uids
-
-    @handle_exceptions
-    def addLockdownWhitelistUid(self, uid):
-        self.fw_policies.addLockdownWhitelistUid(uid)
-
-    @handle_exceptions
-    def getLockdownWhitelistUids(self):
-        return dbus_to_python(self.fw_policies.getLockdownWhitelistUids())
-
-    @handle_exceptions
-    def queryLockdownWhitelistUid(self, uid):
-        return dbus_to_python(self.fw_policies.queryLockdownWhitelistUid(uid))
-
-    @handle_exceptions
-    def removeLockdownWhitelistUid(self, uid):
-        self.fw_policies.removeLockdownWhitelistUid(uid)
-
-    # lockdown white list users
-
-    @handle_exceptions
-    def addLockdownWhitelistUser(self, user):
-        self.fw_policies.addLockdownWhitelistUser(user)
-
-    @handle_exceptions
-    def getLockdownWhitelistUsers(self):
-        return dbus_to_python(self.fw_policies.getLockdownWhitelistUsers())
-
-    @handle_exceptions
-    def queryLockdownWhitelistUser(self, user):
-        return dbus_to_python(self.fw_policies.queryLockdownWhitelistUser(user))
-
-    @handle_exceptions
-    def removeLockdownWhitelistUser(self, user):
-        self.fw_policies.removeLockdownWhitelistUser(user)
 
     @handle_exceptions
     def authorizeAll(self):
