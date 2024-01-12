@@ -18,7 +18,6 @@ valid_keys = [
     "MinimalMark",
     "CleanupOnExit",
     "CleanupModulesOnExit",
-    "Lockdown",
     "IPv6_rpfilter",
     "IndividualCalls",
     "LogDenied",
@@ -30,6 +29,8 @@ valid_keys = [
     "AllowZoneDrifting",
     "NftablesFlowtable",
     "NftablesCounters",
+    # Deprecated keys:
+    "Lockdown",
 ]
 
 
@@ -73,7 +74,6 @@ class firewalld_conf:
             "CleanupModulesOnExit",
             "yes" if config.FALLBACK_CLEANUP_MODULES_ON_EXIT else "no",
         )
-        self.set("Lockdown", "yes" if config.FALLBACK_LOCKDOWN else "no")
         self.set("IPv6_rpfilter", "yes" if config.FALLBACK_IPV6_RPFILTER else "no")
         self.set("IndividualCalls", "yes" if config.FALLBACK_INDIVIDUAL_CALLS else "no")
         self.set("LogDenied", config.FALLBACK_LOG_DENIED)
@@ -172,16 +172,9 @@ class firewalld_conf:
                 "yes" if config.FALLBACK_CLEANUP_MODULES_ON_EXIT else "no",
             )
 
-        # check lockdown
         value = self.get("Lockdown")
-        if not value or value.lower() not in ["yes", "true", "no", "false"]:
-            if value is not None:
-                log.warning(
-                    "Lockdown '%s' is not valid, using default " "value %s",
-                    value if value else "",
-                    config.FALLBACK_LOCKDOWN,
-                )
-            self.set("Lockdown", "yes" if config.FALLBACK_LOCKDOWN else "no")
+        if value and value.lower() not in ["no", "false"]:
+            log.warning('"Lockdown" option is deprecated and has no effect')
 
         # check ipv6_rpfilter
         value = self.get("IPv6_rpfilter")

@@ -29,10 +29,6 @@ from firewall.server.decorators import (
 from firewall.server.config import FirewallDConfig
 from firewall.dbus_utils import (
     dbus_to_python,
-    command_of_sender,
-    context_of_sender,
-    uid_of_sender,
-    user_of_uid,
     dbus_introspection_prepare_properties,
     dbus_introspection_add_properties,
     dbus_introspection_add_deprecated,
@@ -94,28 +90,8 @@ class FirewallD(DbusServiceObject):
         log.debug1("stop()")
         return self.fw.stop()
 
-    # lockdown functions
-
-    @dbus_handle_exceptions
     def accessCheck(self, sender):
-        if self.fw.policies.query_lockdown():
-            if sender is None:
-                log.error("Lockdown not possible, sender not set.")
-                return
-            bus = dbus.SystemBus()
-            context = context_of_sender(bus, sender)
-            if self.fw.policies.access_check("context", context):
-                return
-            uid = uid_of_sender(bus, sender)
-            if self.fw.policies.access_check("uid", uid):
-                return
-            user = user_of_uid(uid)
-            if self.fw.policies.access_check("user", user):
-                return
-            command = command_of_sender(bus, sender)
-            if self.fw.policies.access_check("command", command):
-                return
-            raise FirewallError(errors.ACCESS_DENIED, "lockdown is enabled")
+        pass
 
     # timeout functions
 
@@ -591,19 +567,6 @@ class FirewallD(DbusServiceObject):
                 log.debug1("Direct configuration is identical, ignoring.")
         except Exception as e:
             log.warning("Runtime To Permanent failed on direct configuration: %s" % e)
-            error = True
-
-        # policies
-
-        conf = self.fw.policies.lockdown_whitelist.export_config()
-        try:
-            if self.config.getSettings() != conf:
-                log.debug1("Copying policies configuration")
-                self.config.setLockdownWhitelist(conf)
-            else:
-                log.debug1("Policies configuration is identical, ignoring.")
-        except Exception as e:
-            log.warning("Runtime To Permanent failed on policies configuration: %s" % e)
             error = True
 
         if error:

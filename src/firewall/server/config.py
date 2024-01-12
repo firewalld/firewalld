@@ -37,10 +37,6 @@ from firewall.core.io.helper import Helper
 from firewall.core.io.direct import Direct
 from firewall.dbus_utils import (
     dbus_to_python,
-    command_of_sender,
-    context_of_sender,
-    uid_of_sender,
-    user_of_uid,
     dbus_introspection_prepare_properties,
     dbus_introspection_add_properties,
     dbus_introspection_add_deprecated,
@@ -70,7 +66,7 @@ CONFIG_PROPERTIES = {
     "CleanupOnExit": ConfigPropertiesTuple("readwrite", False, False),
     "CleanupModulesOnExit": ConfigPropertiesTuple("readwrite", False, False),
     "IPv6_rpfilter": ConfigPropertiesTuple("readwrite", False, False),
-    "Lockdown": ConfigPropertiesTuple("readwrite", False, False),
+    "Lockdown": ConfigPropertiesTuple("readwrite", True, True),
     "IndividualCalls": ConfigPropertiesTuple("readwrite", False, False),
     "LogDenied": ConfigPropertiesTuple("readwrite", False, False),
     "AutomaticHelpers": ConfigPropertiesTuple("readwrite", True, True),
@@ -117,7 +113,6 @@ class FirewallDConfig(DbusServiceObject):
                 path = "%s/%s" % (config.ETC_FIREWALLD_ZONES, filename)
                 if os.path.isdir(path):
                     self.watcher.add_watch_dir(path)
-        self.watcher.add_watch_file(config.LOCKDOWN_WHITELIST)
         self.watcher.add_watch_file(config.FIREWALLD_DIRECT)
         self.watcher.add_watch_file(config.FIREWALLD_CONF)
 
@@ -300,16 +295,6 @@ class FirewallDConfig(DbusServiceObject):
                 self.removeHelper(obj)
             elif what == "update":
                 self._updateHelper(obj)
-
-        elif name == config.LOCKDOWN_WHITELIST:
-            try:
-                self.config.update_lockdown_whitelist()
-            except Exception as msg:
-                log.error(
-                    "Failed to load lockdown whitelist file '%s': %s" % (name, msg)
-                )
-                return
-            self.LockdownWhitelistUpdated()
 
         elif name == config.FIREWALLD_DIRECT:
             try:
@@ -604,25 +589,6 @@ class FirewallDConfig(DbusServiceObject):
                 "restarted. Try `firewall-offline-cmd --check-config`.",
             )
 
-        if self.config.lockdown_enabled():
-            if sender is None:
-                log.error("Lockdown not possible, sender not set.")
-                return
-            bus = dbus.SystemBus()
-            context = context_of_sender(bus, sender)
-            if self.config.access_check("context", context):
-                return
-            uid = uid_of_sender(bus, sender)
-            if self.config.access_check("uid", uid):
-                return
-            user = user_of_uid(uid)
-            if self.config.access_check("user", user):
-                return
-            command = command_of_sender(bus, sender)
-            if self.config.access_check("command", command):
-                return
-            raise FirewallError(errors.ACCESS_DENIED, "lockdown is enabled")
-
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
     # P R O P E R T I E S
@@ -650,9 +616,8 @@ class FirewallDConfig(DbusServiceObject):
                 value = "yes" if config.FALLBACK_CLEANUP_MODULES_ON_EXIT else "no"
             return dbus.String(value)
         elif prop == "Lockdown":
-            if value is None:
-                value = "yes" if config.FALLBACK_LOCKDOWN else "no"
-            return dbus.String(value)
+            # Deprecated and dropped.
+            return dbus.String("no")
         elif prop == "IPv6_rpfilter":
             if value is None:
                 value = "yes" if config.FALLBACK_IPV6_RPFILTER else "no"
@@ -772,7 +737,6 @@ class FirewallDConfig(DbusServiceObject):
                 if property_name in [
                     "CleanupOnExit",
                     "CleanupModulesOnExit",
-                    "Lockdown",
                     "IPv6_rpfilter",
                     "IndividualCalls",
                     "FlushAllOnReload",
