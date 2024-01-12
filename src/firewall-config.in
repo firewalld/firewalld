@@ -133,7 +133,6 @@ class FirewallConfig:
 
         self.statusLabel = builder.get_object("statusLabel")
         self.modifiedLabel = builder.get_object("modifiedLabel")
-        self.lockdownLabel = builder.get_object("lockdownLabel")
         self.panicLabel = builder.get_object("panicLabel")
 
         self.waitingWindow = builder.get_object("waitingWindow")
@@ -153,8 +152,6 @@ class FirewallConfig:
         self.helpersMenuitem = builder.get_object("helpersMenuitem")
         self.directBox = builder.get_object("directBox")
         self.directMenuitem = builder.get_object("directMenuitem")
-        self.lockdownWhitelistBox = builder.get_object("lockdownWhitelistBox")
-        self.lockdownWhitelistMenuitem = builder.get_object("lockdownWhitelistMenuitem")
         self.activeBindingsMenuitem = builder.get_object("activeBindingsMenuitem")
 
         self.changeZonesConnectionMenuitem = builder.get_object(
@@ -173,82 +170,6 @@ class FirewallConfig:
         self.panic_check_id = self.panicMenuitem.connect_after(
             "toggled", self.panic_check_cb
         )
-        self.lockdownMenuitem = builder.get_object("lockdownMenuitem")
-        self.lockdown_check_id = self.lockdownMenuitem.connect_after(
-            "toggled", self.lockdown_check_cb
-        )
-
-        self.lockdownContextView = builder.get_object("lockdownContextView")
-        self.lockdownContextStore = Gtk.ListStore(GObject.TYPE_STRING)
-        self.lockdownContextView.append_column(
-            Gtk.TreeViewColumn(_("Context"), Gtk.CellRendererText(), text=0)
-        )
-        self.lockdownContextView.set_model(self.lockdownContextStore)
-        self.lockdownContextView.get_selection().connect(
-            "changed", self.change_lockdown_context_selection_cb
-        )
-        self.editLockdownContextButton = builder.get_object("editLockdownContextButton")
-        self.removeLockdownContextButton = builder.get_object(
-            "removeLockdownContextButton"
-        )
-
-        self.contextDialog = builder.get_object("contextDialog")
-        self.contextDialogOkButton = builder.get_object("contextDialogOkButton")
-        self.contextDialogCancelButton = builder.get_object("contextDialogCancelButton")
-        self.contextDialogContextEntry = builder.get_object("contextDialogContextEntry")
-
-        self.lockdownCommandView = builder.get_object("lockdownCommandView")
-        self.lockdownCommandStore = Gtk.ListStore(GObject.TYPE_STRING)
-        self.lockdownCommandView.append_column(
-            Gtk.TreeViewColumn(_("Command line"), Gtk.CellRendererText(), text=0)
-        )
-        self.lockdownCommandView.set_model(self.lockdownCommandStore)
-        self.lockdownCommandView.get_selection().connect(
-            "changed", self.change_lockdown_command_selection_cb
-        )
-        self.editLockdownCommandButton = builder.get_object("editLockdownCommandButton")
-        self.removeLockdownCommandButton = builder.get_object(
-            "removeLockdownCommandButton"
-        )
-
-        self.commandDialog = builder.get_object("commandDialog")
-        self.commandDialogOkButton = builder.get_object("commandDialogOkButton")
-        self.commandDialogCancelButton = builder.get_object("commandDialogCancelButton")
-        self.commandDialogCommandEntry = builder.get_object("commandDialogCommandEntry")
-
-        self.lockdownUserView = builder.get_object("lockdownUserView")
-        self.lockdownUserStore = Gtk.ListStore(GObject.TYPE_STRING)
-        self.lockdownUserView.append_column(
-            Gtk.TreeViewColumn(_("User name"), Gtk.CellRendererText(), text=0)
-        )
-        self.lockdownUserView.set_model(self.lockdownUserStore)
-        self.lockdownUserView.get_selection().connect(
-            "changed", self.change_lockdown_user_selection_cb
-        )
-        self.editLockdownUserButton = builder.get_object("editLockdownUserButton")
-        self.removeLockdownUserButton = builder.get_object("removeLockdownUserButton")
-
-        self.userDialog = builder.get_object("userDialog")
-        self.userDialogOkButton = builder.get_object("userDialogOkButton")
-        self.userDialogCancelButton = builder.get_object("userDialogCancelButton")
-        self.userDialogUserEntry = builder.get_object("userDialogUserEntry")
-
-        self.lockdownUidView = builder.get_object("lockdownUidView")
-        self.lockdownUidStore = Gtk.ListStore(GObject.TYPE_INT)
-        self.lockdownUidView.append_column(
-            Gtk.TreeViewColumn(_("User id"), Gtk.CellRendererText(), text=0)
-        )
-        self.lockdownUidView.set_model(self.lockdownUidStore)
-        self.lockdownUidView.get_selection().connect(
-            "changed", self.change_lockdown_uid_selection_cb
-        )
-        self.editLockdownUidButton = builder.get_object("editLockdownUidButton")
-        self.removeLockdownUidButton = builder.get_object("removeLockdownUidButton")
-
-        self.uidDialog = builder.get_object("uidDialog")
-        self.uidDialogOkButton = builder.get_object("uidDialogOkButton")
-        self.uidDialogCancelButton = builder.get_object("uidDialogCancelButton")
-        self.uidDialogUidEntry = builder.get_object("uidDialogUidEntry")
 
         self.serviceConfServicesEditBox = builder.get_object(
             "serviceConfServicesEditBox"
@@ -1344,8 +1265,6 @@ class FirewallConfig:
 
         self.fw.connect("default-zone-changed", self.default_zone_changed_cb)
         self.fw.connect("reloaded", self.reload_cb)
-        self.fw.connect("lockdown-enabled", self.lockdown_enabled_cb)
-        self.fw.connect("lockdown-disabled", self.lockdown_disabled_cb)
 
         self.fw.connect("log-denied-changed", self.log_denied_changed_cb)
 
@@ -1377,33 +1296,6 @@ class FirewallConfig:
         self.fw.connect("ipset-entry-added", self.ipset_entry_added_cb)
         self.fw.connect("ipset-entry-removed", self.ipset_entry_removed_cb)
 
-        self.fw.connect(
-            "lockdown-whitelist-command-added", self.lockdown_whitelist_command_added_cb
-        )
-        self.fw.connect(
-            "lockdown-whitelist-command-removed",
-            self.lockdown_whitelist_command_removed_cb,
-        )
-        self.fw.connect(
-            "lockdown-whitelist-context-added", self.lockdown_whitelist_context_added_cb
-        )
-        self.fw.connect(
-            "lockdown-whitelist-context-removed",
-            self.lockdown_whitelist_context_removed_cb,
-        )
-        self.fw.connect(
-            "lockdown-whitelist-uid-added", self.lockdown_whitelist_uid_added_cb
-        )
-        self.fw.connect(
-            "lockdown-whitelist-uid-removed", self.lockdown_whitelist_uid_removed_cb
-        )
-        self.fw.connect(
-            "lockdown-whitelist-user-added", self.lockdown_whitelist_user_added_cb
-        )
-        self.fw.connect(
-            "lockdown-whitelist-user-removed", self.lockdown_whitelist_user_removed_cb
-        )
-
         self.fw.connect("direct:chain-added", self.direct_chain_added_cb)
         self.fw.connect("direct:chain-removed", self.direct_chain_removed_cb)
         self.fw.connect("direct:rule-added", self.direct_rule_added_cb)
@@ -1434,10 +1326,6 @@ class FirewallConfig:
         self.fw.connect("config:helper-updated", self.conf_helper_updated_cb)
         self.fw.connect("config:helper-removed", self.conf_helper_removed_cb)
         self.fw.connect("config:helper-renamed", self.conf_helper_renamed_cb)
-        self.fw.connect(
-            "config:policies:lockdown-whitelist-updated",
-            self.lockdown_whitelist_updated_cb,
-        )
 
         # settings
 
@@ -1457,13 +1345,6 @@ class FirewallConfig:
         )
         self.settings_show_helpers_changed(self.settings, "show-helpers")
 
-        self.settings.connect(
-            "changed::show-lockdown-whitelist",
-            self.settings_show_lockdown_whitelist_changed,
-        )
-        self.settings_show_lockdown_whitelist_changed(
-            self.settings, "show-lockdown-whitelist"
-        )
         self.settings.connect(
             "changed::show-active-bindings", self.settings_show_active_bindings_changed
         )
@@ -1625,23 +1506,6 @@ class FirewallConfig:
             self.directRuleStore.clear()
             self.directPassthroughStore.clear()
 
-    def onViewLockdownWhitelist_toggled(self, button):
-        self.settings.set_boolean("show-lockdown-whitelist", button.get_active())
-
-    def settings_show_lockdown_whitelist_changed(self, settings, key):
-        self.show_lockdown_whitelist = settings.get_boolean(key)
-        self.lockdownWhitelistBox.set_visible(self.show_lockdown_whitelist)
-        self.lockdownWhitelistMenuitem.set_active(self.show_lockdown_whitelist)
-
-        if self.show_lockdown_whitelist:
-            if self.fw.connected:
-                self.load_lockdown_whitelist()
-        else:
-            self.lockdownContextStore.clear()
-            self.lockdownCommandStore.clear()
-            self.lockdownUserStore.clear()
-            self.lockdownUidStore.clear()
-
     def settings_show_active_bindings_changed(self, settings, key):
         self.show_active_bindings = settings.get_boolean(key)
         self.activeBindingsMenuitem.set_active(self.show_active_bindings)
@@ -1759,20 +1623,12 @@ class FirewallConfig:
             self.logDeniedLabel.set_text(self.log_denied)
             self.automatic_helpers = self.fw.getAutomaticHelpers()
             self.set_automaticHelpersLabel(self.automatic_helpers)
-            lockdown = self.fw.queryLockdown()
-            if lockdown:
-                self.lockdownLabel.set_text(self.enabled)
-            else:
-                self.lockdownLabel.set_text(self.disabled)
             panic = self.fw.queryPanicMode()
             if panic:
                 self.panicLabel.set_text(self.enabled)
             else:
                 self.panicLabel.set_text(self.disabled)
             self.modifiedLabel.set_text("")
-            self.lockdownMenuitem.handler_block(self.lockdown_check_id)
-            self.lockdownMenuitem.set_active(lockdown)
-            self.lockdownMenuitem.handler_unblock(self.lockdown_check_id)
             self.panicMenuitem.handler_block(self.panic_check_id)
             self.panicMenuitem.set_active(panic)
             self.panicMenuitem.handler_unblock(self.panic_check_id)
@@ -1794,7 +1650,6 @@ class FirewallConfig:
                 self.connection_lost = True
             self.statusLabel.set_text(self.trying_to_connect_label)
             self.defaultZoneLabel.set_text("-")
-            self.lockdownLabel.set_text("-")
             self.panicLabel.set_text("-")
 
             self.moduleDialogModuleCombobox.remove_all()
@@ -1855,7 +1710,6 @@ class FirewallConfig:
         self.load_icmps()
         self.load_helpers()
         self.load_direct()
-        self.load_lockdown_whitelist()
         self.update_active_zones()
 
     def _load_store_append(self, zone, is_active):
@@ -2502,7 +2356,6 @@ class FirewallConfig:
         self.load_icmps()
         self.load_helpers()
         self.load_direct()
-        self.load_lockdown_whitelist()
 
     def update_active_zones(self):
         self.active_zones.clear()
@@ -7327,15 +7180,6 @@ class FirewallConfig:
 
         self.icmpDialogIcmpStore.set_value(use_iter, 0, icmp)
 
-    def lockdown_check_cb(self, *args):
-        if self.fw.queryLockdown():
-            self.fw.config().set_property("Lockdown", "no")  # permanent
-            self.fw.disableLockdown()  # runtime
-        else:
-            self.fw.config().set_property("Lockdown", "yes")  # permanent
-            self.fw.enableLockdown()  # runtime
-        self.changes_applied()
-
     def panic_check_cb(self, *args):
         if self.fw.queryPanicMode():
             self.fw.disablePanicMode()
@@ -7370,474 +7214,6 @@ class FirewallConfig:
             )
         for ipv, args in passthroughs:
             self.directPassthroughStore.append((ipv, functions.joinArgs(args)))
-
-    def load_lockdown_whitelist(self):
-        if not self.show_lockdown_whitelist:
-            return
-        if self.runtime_view:
-            contexts = self.fw.getLockdownWhitelistContexts()
-            commands = self.fw.getLockdownWhitelistCommands()
-            users = self.fw.getLockdownWhitelistUsers()
-            uids = self.fw.getLockdownWhitelistUids()
-        else:
-            whitelist = self.fw.config().policies().getLockdownWhitelist()
-            contexts = whitelist.getContexts()
-            commands = whitelist.getCommands()
-            users = whitelist.getUsers()
-            uids = whitelist.getUids()
-
-        self.lockdownContextStore.clear()
-        self.lockdownCommandStore.clear()
-        self.lockdownUserStore.clear()
-        self.lockdownUidStore.clear()
-
-        for context in contexts:
-            self.lockdownContextStore.append([context])
-        self.lockdownContextView.get_selection().select_path(0)
-        for command in commands:
-            self.lockdownCommandStore.append([command])
-        self.lockdownCommandView.get_selection().select_path(0)
-        for user in users:
-            self.lockdownUserStore.append([user])
-        self.lockdownUserView.get_selection().select_path(0)
-        for uid in uids:
-            self.lockdownUidStore.append([uid])
-        self.lockdownUidView.get_selection().select_path(0)
-
-    def lockdown_enabled_cb(self):
-        self.lockdownLabel.set_text(self.enabled)
-        self.lockdownMenuitem.handler_block(self.lockdown_check_id)
-        self.lockdownMenuitem.set_active(True)
-        self.lockdownMenuitem.handler_unblock(self.lockdown_check_id)
-
-    def lockdown_disabled_cb(self):
-        self.lockdownLabel.set_text(self.disabled)
-        self.lockdownMenuitem.handler_block(self.lockdown_check_id)
-        self.lockdownMenuitem.set_active(False)
-        self.lockdownMenuitem.handler_unblock(self.lockdown_check_id)
-
-    def change_lockdown_context_selection_cb(self, selection):
-        (model, iter) = selection.get_selected()
-        if iter:
-            self.editLockdownContextButton.set_sensitive(True)
-            self.removeLockdownContextButton.set_sensitive(True)
-        else:
-            self.editLockdownContextButton.set_sensitive(False)
-            self.removeLockdownContextButton.set_sensitive(False)
-
-    def change_lockdown_command_selection_cb(self, selection):
-        (model, iter) = selection.get_selected()
-        if iter:
-            self.editLockdownCommandButton.set_sensitive(True)
-            self.removeLockdownCommandButton.set_sensitive(True)
-        else:
-            self.editLockdownCommandButton.set_sensitive(False)
-            self.removeLockdownCommandButton.set_sensitive(False)
-
-    def change_lockdown_user_selection_cb(self, selection):
-        (model, iter) = selection.get_selected()
-        if iter:
-            self.editLockdownUserButton.set_sensitive(True)
-            self.removeLockdownUserButton.set_sensitive(True)
-        else:
-            self.editLockdownUserButton.set_sensitive(False)
-            self.removeLockdownUserButton.set_sensitive(False)
-
-    def change_lockdown_uid_selection_cb(self, selection):
-        (model, iter) = selection.get_selected()
-        if iter:
-            self.editLockdownUidButton.set_sensitive(True)
-            self.removeLockdownUidButton.set_sensitive(True)
-        else:
-            self.editLockdownUidButton.set_sensitive(False)
-            self.removeLockdownUidButton.set_sensitive(False)
-
-    def onAddContext(self, button):
-        self.add_edit_context(True)
-
-    def onEditContext(self, button):
-        self.add_edit_context(False)
-
-    def onContextClicked(self, widget, event):
-        if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS:
-            self.add_edit_context(False)
-
-    def onRemoveContext(self, button):
-        selection = self.lockdownContextView.get_selection()
-        (model, iter) = selection.get_selected()
-        if iter is None:
-            return
-        context = self.lockdownContextStore.get_value(iter, 0)
-
-        if self.runtime_view:
-            self.fw.removeLockdownWhitelistContext(context)
-        else:
-            whitelist = self.fw.config().policies().getLockdownWhitelist()
-            whitelist.removeContext(context)
-            self.fw.config().policies().setLockdownWhitelist(whitelist)
-        self.changes_applied()
-
-    def lockdown_whitelist_context_added_cb(self, context):
-        if not self.show_lockdown_whitelist:
-            return
-        iter = self.lockdownContextStore.get_iter_first()
-        while iter:
-            if self.lockdownContextStore.get_value(iter, 0) == context:
-                return
-            iter = self.lockdownContextStore.iter_next(iter)
-        self.lockdownContextStore.append([context])
-
-    def lockdown_whitelist_context_removed_cb(self, context):
-        if not self.show_lockdown_whitelist:
-            return
-        iter = self.lockdownContextStore.get_iter_first()
-        while iter:
-            if self.lockdownContextStore.get_value(iter, 0) == context:
-                self.lockdownContextStore.remove(iter)
-                break
-            iter = self.lockdownContextStore.iter_next(iter)
-
-    def add_edit_context(self, add):
-        if add:
-            old_context = ""
-        else:
-            selection = self.lockdownContextView.get_selection()
-            (model, iter) = selection.get_selected()
-            if iter is None:
-                return
-            old_context = self.lockdownContextStore.get_value(iter, 0)
-
-        self.contextDialogContextEntry.set_text(old_context)
-        self.contextDialogOkButton.set_sensitive(False)
-
-        self.contextDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
-        self.contextDialog.set_transient_for(self.mainWindow)
-        self.contextDialog.show_all()
-        self.add_visible_dialog(self.contextDialog)
-        result = self.contextDialog.run()
-        self.contextDialog.hide()
-        self.remove_visible_dialog(self.contextDialog)
-
-        if result != 1:
-            return
-
-        context = self.contextDialogContextEntry.get_text()
-        if old_context == context:
-            # nothing to change
-            return
-
-        if self.runtime_view:
-            if not self.fw.queryLockdownWhitelistContext(context):
-                self.fw.addLockdownWhitelistContext(context)
-                if not add:
-                    self.fw.removeLockdownWhitelistContext(old_context)
-                self.changes_applied()
-        else:
-            whitelist = self.fw.config().policies().getLockdownWhitelist()
-            if not whitelist.queryContext(context):
-                if not add:
-                    whitelist.removeContext(old_context)
-                whitelist.addContext(context)
-                self.fw.config().policies().setLockdownWhitelist(whitelist)
-                self.changes_applied()
-
-    def onContextChanged(self, *args):
-        text = self.contextDialogContextEntry.get_text()
-        if text != "" and functions.checkContext(text):
-            self.contextDialogOkButton.set_sensitive(True)
-        else:
-            self.contextDialogOkButton.set_sensitive(False)
-
-    def onAddCommand(self, button):
-        self.add_edit_command(True)
-
-    def onEditCommand(self, button):
-        self.add_edit_command(False)
-
-    def onCommandClicked(self, widget, event):
-        if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS:
-            self.add_edit_command(False)
-
-    def onRemoveCommand(self, button):
-        selection = self.lockdownCommandView.get_selection()
-        (model, iter) = selection.get_selected()
-        if iter is None:
-            return
-        command = self.lockdownCommandStore.get_value(iter, 0)
-
-        if self.runtime_view:
-            self.fw.removeLockdownWhitelistCommand(command)
-        else:
-            whitelist = self.fw.config().policies().getLockdownWhitelist()
-            whitelist.removeCommand(command)
-            self.fw.config().policies().setLockdownWhitelist(whitelist)
-        self.changes_applied()
-
-    def lockdown_whitelist_command_added_cb(self, command):
-        if not self.show_lockdown_whitelist:
-            return
-        iter = self.lockdownCommandStore.get_iter_first()
-        while iter:
-            if self.lockdownCommandStore.get_value(iter, 0) == command:
-                return
-            iter = self.lockdownCommandStore.iter_next(iter)
-        self.lockdownCommandStore.append([command])
-
-    def lockdown_whitelist_command_removed_cb(self, command):
-        if not self.show_lockdown_whitelist:
-            return
-        iter = self.lockdownCommandStore.get_iter_first()
-        while iter:
-            if self.lockdownCommandStore.get_value(iter, 0) == command:
-                self.lockdownCommandStore.remove(iter)
-                break
-            iter = self.lockdownCommandStore.iter_next(iter)
-
-    def add_edit_command(self, add):
-        if add:
-            old_command = ""
-        else:
-            selection = self.lockdownCommandView.get_selection()
-            (model, iter) = selection.get_selected()
-            if iter is None:
-                return
-            old_command = self.lockdownCommandStore.get_value(iter, 0)
-
-        self.commandDialogCommandEntry.set_text(old_command)
-        self.commandDialogOkButton.set_sensitive(False)
-
-        self.commandDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
-        self.commandDialog.set_transient_for(self.mainWindow)
-        self.commandDialog.show_all()
-        self.add_visible_dialog(self.commandDialog)
-        result = self.commandDialog.run()
-        self.commandDialog.hide()
-        self.remove_visible_dialog(self.commandDialog)
-
-        if result != 1:
-            return
-
-        command = self.commandDialogCommandEntry.get_text()
-        if old_command == command:
-            # nothing to change
-            return
-
-        if self.runtime_view:
-            if not self.fw.queryLockdownWhitelistCommand(command):
-                self.fw.addLockdownWhitelistCommand(command)
-                if not add:
-                    self.fw.removeLockdownWhitelistCommand(old_command)
-                self.changes_applied()
-        else:
-            whitelist = self.fw.config().policies().getLockdownWhitelist()
-            if not whitelist.queryCommand(command):
-                if not add:
-                    whitelist.removeCommand(old_command)
-                whitelist.addCommand(command)
-                self.fw.config().policies().setLockdownWhitelist(whitelist)
-                self.changes_applied()
-
-    def onCommandChanged(self, *args):
-        text = self.commandDialogCommandEntry.get_text()
-        if functions.checkCommand(text):
-            self.commandDialogOkButton.set_sensitive(True)
-        else:
-            self.commandDialogOkButton.set_sensitive(False)
-
-    def onAddUser(self, button):
-        self.add_edit_user(True)
-
-    def onEditUser(self, button):
-        self.add_edit_user(False)
-
-    def onUserClicked(self, widget, event):
-        if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS:
-            self.add_edit_user(False)
-
-    def onRemoveUser(self, button):
-        selection = self.lockdownUserView.get_selection()
-        (model, iter) = selection.get_selected()
-        if iter is None:
-            return
-        user = self.lockdownUserStore.get_value(iter, 0)
-
-        if self.runtime_view:
-            self.fw.removeLockdownWhitelistUser(user)
-        else:
-            whitelist = self.fw.config().policies().getLockdownWhitelist()
-            whitelist.removeUser(user)
-            self.fw.config().policies().setLockdownWhitelist(whitelist)
-        self.changes_applied()
-
-    def lockdown_whitelist_user_added_cb(self, user):
-        if not self.show_lockdown_whitelist:
-            return
-        iter = self.lockdownUserStore.get_iter_first()
-        while iter:
-            if self.lockdownUserStore.get_value(iter, 0) == user:
-                return
-            iter = self.lockdownUserStore.iter_next(iter)
-        self.lockdownUserStore.append([user])
-
-    def lockdown_whitelist_user_removed_cb(self, user):
-        if not self.show_lockdown_whitelist:
-            return
-        iter = self.lockdownUserStore.get_iter_first()
-        while iter:
-            if self.lockdownUserStore.get_value(iter, 0) == user:
-                self.lockdownUserStore.remove(iter)
-                break
-            iter = self.lockdownUserStore.iter_next(iter)
-
-    def add_edit_user(self, add):
-        if add:
-            old_user = ""
-        else:
-            selection = self.lockdownUserView.get_selection()
-            (model, iter) = selection.get_selected()
-            if iter is None:
-                return
-            old_user = self.lockdownUserStore.get_value(iter, 0)
-
-        self.userDialogUserEntry.set_text(old_user)
-        self.userDialogOkButton.set_sensitive(False)
-
-        self.userDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
-        self.userDialog.set_transient_for(self.mainWindow)
-        self.userDialog.show_all()
-        self.add_visible_dialog(self.userDialog)
-        result = self.userDialog.run()
-        self.userDialog.hide()
-        self.remove_visible_dialog(self.userDialog)
-
-        if result != 1:
-            return
-
-        user = self.userDialogUserEntry.get_text()
-        if old_user == user:
-            # nothing to change
-            return
-
-        if self.runtime_view:
-            if not self.fw.queryLockdownWhitelistUser(user):
-                self.fw.addLockdownWhitelistUser(user)
-                if not add:
-                    self.fw.removeLockdownWhitelistUser(old_user)
-                self.changes_applied()
-        else:
-            whitelist = self.fw.config().policies().getLockdownWhitelist()
-            if not whitelist.queryUser(user):
-                if not add:
-                    whitelist.removeUser(old_user)
-                whitelist.addUser(user)
-                self.fw.config().policies().setLockdownWhitelist(whitelist)
-                self.changes_applied()
-
-    def onUserChanged(self, *args):
-        text = self.userDialogUserEntry.get_text()
-        if text != "" and functions.checkUser(text):
-            self.userDialogOkButton.set_sensitive(True)
-        else:
-            self.userDialogOkButton.set_sensitive(False)
-
-    def onAddUid(self, button):
-        self.add_edit_uid(True)
-
-    def onEditUid(self, button):
-        self.add_edit_uid(False)
-
-    def onUidClicked(self, widget, event):
-        if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS:
-            self.add_edit_uid(False)
-
-    def onRemoveUid(self, button):
-        selection = self.lockdownUidView.get_selection()
-        (model, iter) = selection.get_selected()
-        if iter is None:
-            return
-        uid = self.lockdownUidStore.get_value(iter, 0)
-
-        if self.runtime_view:
-            self.fw.removeLockdownWhitelistUid(uid)
-        else:
-            whitelist = self.fw.config().policies().getLockdownWhitelist()
-            whitelist.removeUid(uid)
-            self.fw.config().policies().setLockdownWhitelist(whitelist)
-        self.changes_applied()
-
-    def lockdown_whitelist_uid_added_cb(self, uid):
-        if not self.show_lockdown_whitelist:
-            return
-        iter = self.lockdownUidStore.get_iter_first()
-        while iter:
-            if self.lockdownUidStore.get_value(iter, 0) == uid:
-                return
-            iter = self.lockdownUidStore.iter_next(iter)
-        self.lockdownUidStore.append([uid])
-
-    def lockdown_whitelist_uid_removed_cb(self, uid):
-        if not self.show_lockdown_whitelist:
-            return
-        iter = self.lockdownUidStore.get_iter_first()
-        while iter:
-            if self.lockdownUidStore.get_value(iter, 0) == uid:
-                self.lockdownUidStore.remove(iter)
-                break
-            iter = self.lockdownUidStore.iter_next(iter)
-
-    def add_edit_uid(self, add):
-        if add:
-            old_uid = ""
-        else:
-            selection = self.lockdownUidView.get_selection()
-            (model, iter) = selection.get_selected()
-            if iter is None:
-                return
-            old_uid = self.lockdownUidStore.get_value(iter, 0)
-
-        self.uidDialogUidEntry.set_text("%s" % old_uid)
-        self.uidDialogOkButton.set_sensitive(False)
-
-        self.uidDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
-        self.uidDialog.set_transient_for(self.mainWindow)
-        self.uidDialog.show_all()
-        self.add_visible_dialog(self.uidDialog)
-        result = self.uidDialog.run()
-        self.uidDialog.hide()
-        self.remove_visible_dialog(self.uidDialog)
-
-        if result != 1:
-            return
-
-        uid = int(self.uidDialogUidEntry.get_text())
-        if old_uid == uid:
-            # nothing to change
-            return
-
-        if self.runtime_view:
-            if not self.fw.queryLockdownWhitelistUid(uid):
-                self.fw.addLockdownWhitelistUid(uid)
-                if not add:
-                    self.fw.removeLockdownWhitelistUid(old_uid)
-                self.changes_applied()
-        else:
-            whitelist = self.fw.config().policies().getLockdownWhitelist()
-            if not whitelist.queryUid(uid):
-                if not add:
-                    whitelist.removeUid(old_uid)
-                whitelist.addUid(uid)
-                self.fw.config().policies().setLockdownWhitelist(whitelist)
-                self.changes_applied()
-
-    def onUidChanged(self, *args):
-        text = self.uidDialogUidEntry.get_text()
-        if text != "" and functions.checkUid(text):
-            self.uidDialogOkButton.set_sensitive(True)
-        else:
-            self.uidDialogOkButton.set_sensitive(False)
-
-    def lockdown_whitelist_updated_cb(self):
-        self.load_lockdown_whitelist()
 
     def change_chain_selection_cb(self, selection):
         (model, iter) = selection.get_selected()
