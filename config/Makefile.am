@@ -1,6 +1,6 @@
 sconfdir = $(sysconfdir)/firewalld
 prefixlibdir = ${prefix}/lib/firewalld
-dist_sconf_DATA = firewalld.conf lockdown-whitelist.xml
+dist_sconf_DATA = firewalld.conf
 
 desktop_FILES = firewall-config.desktop.in
 desktopdir = $(datadir)/applications
@@ -406,7 +406,6 @@ EXTRA_DIST = \
 	$(CONFIG_FILES) \
 	$(CONFIG_FILES_TESTS) \
 	$(dist_xmlschema_DATA) \
-	lockdown-whitelist.xml.in \
 	firewalld.init \
 	firewalld.logrotate.in \
 	firewalld-sysctls.conf.in \
