@@ -1276,22 +1276,29 @@ class ip4tables(object):
         if toport and toport != "":
             to += ":%s" % portStr(toport, "-")
 
+        rules = []
         rule_fragment = []
+        port_fragment = ["-p", protocol, "--dport", portStr(port)]
         if rich_rule:
             chain_suffix = self._rich_rule_chain_suffix(rich_rule)
             rule_fragment = self._rich_rule_priority_fragment(rich_rule)
             rule_fragment += self._rich_rule_destination_fragment(rich_rule.destination)
             rule_fragment += self._rich_rule_source_fragment(rich_rule.source)
+
+            rules.append(
+                self._rich_rule_log(
+                    policy, rich_rule, enable, "nat", rule_fragment + port_fragment
+                )
+            )
         else:
             chain_suffix = "allow"
 
-        rules = []
-        if rich_rule:
-            rules.append(self._rich_rule_log(policy, rich_rule, enable, "nat", rule_fragment))
-        rules.append(["-t", "nat", add_del, "%s_%s" % (_policy, chain_suffix)]
-                     + rule_fragment +
-                     ["-p", protocol, "--dport", portStr(port),
-                      "-j", "DNAT", "--to-destination", to])
+        rules.append(
+            ["-t", "nat", add_del, "%s_%s" % (_policy, chain_suffix)]
+            + rule_fragment
+            + port_fragment
+            + ["-j", "DNAT", "--to-destination", to]
+        )
 
         return rules
 
