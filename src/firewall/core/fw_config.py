@@ -29,7 +29,7 @@ class FirewallConfig:
         self.__init_vars()
 
     def __repr__(self):
-        return "%s(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)" % (
+        return "%s(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)" % (
             self.__class__,
             self._ipsets,
             self._icmptypes,
@@ -44,7 +44,6 @@ class FirewallConfig:
             self._builtin_helpers,
             self._builtin_policy_objects,
             self._firewalld_conf,
-            self._policies,
             self._direct,
         )
 
@@ -62,7 +61,6 @@ class FirewallConfig:
         self._builtin_helpers = {}
         self._builtin_policy_objects = {}
         self._firewalld_conf = None
-        self._policies = None
         self._direct = None
 
     def cleanup(self):
@@ -105,11 +103,6 @@ class FirewallConfig:
             self._firewalld_conf.cleanup()
             del self._firewalld_conf
             self._firewalld_conf = None
-
-        if self._policies:
-            self._policies.cleanup()
-            del self._policies
-            self._policies = None
 
         if self._direct:
             self._direct.cleanup()
@@ -163,14 +156,6 @@ class FirewallConfig:
             for name, io_obj in io_objs.items():
                 io_obj.check_config_dict(io_obj.export_config_dict(), all_io_objects)
 
-    # access check
-
-    def lockdown_enabled(self):
-        return self._fw.policies.query_lockdown()
-
-    def access_check(self, key, value):
-        return self._fw.policies.access_check(key, value)
-
     # firewalld_conf
 
     def set_firewalld_conf(self, conf):
@@ -207,20 +192,6 @@ class FirewallConfig:
                 del io_obj_dict[obj_name]
         self._firewalld_conf.set_defaults()
         self._firewalld_conf.write()
-
-    # policies
-
-    def set_policies(self, policies):
-        self._policies = policies
-
-    def get_policies(self):
-        return self._policies
-
-    def update_lockdown_whitelist(self):
-        if not os.path.exists(config.LOCKDOWN_WHITELIST):
-            self._policies.lockdown_whitelist.cleanup()
-        else:
-            self._policies.lockdown_whitelist.read()
 
     # direct
 
