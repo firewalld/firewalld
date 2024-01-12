@@ -9,6 +9,7 @@ import os
 
 import dbus
 import dbus.service
+import collections
 
 from firewall import config
 from firewall.core.base import DEFAULT_ZONE_TARGET
@@ -54,6 +55,34 @@ from firewall.errors import FirewallError
 #
 ############################################################################
 
+ConfigPropertiesTuple = collections.namedtuple(
+    "ConfigPropertiesTuple",
+    [
+        "mode",
+        "is_deprecated",
+        "ignore_set",
+    ],
+)
+
+
+CONFIG_PROPERTIES = {
+    "DefaultZone": ConfigPropertiesTuple("read", False, False),
+    "MinimalMark": ConfigPropertiesTuple("readwrite", True, True),
+    "CleanupOnExit": ConfigPropertiesTuple("readwrite", False, False),
+    "CleanupModulesOnExit": ConfigPropertiesTuple("readwrite", False, False),
+    "IPv6_rpfilter": ConfigPropertiesTuple("readwrite", False, False),
+    "Lockdown": ConfigPropertiesTuple("readwrite", False, False),
+    "IndividualCalls": ConfigPropertiesTuple("readwrite", False, False),
+    "LogDenied": ConfigPropertiesTuple("readwrite", False, False),
+    "AutomaticHelpers": ConfigPropertiesTuple("readwrite", True, True),
+    "FirewallBackend": ConfigPropertiesTuple("readwrite", False, False),
+    "FlushAllOnReload": ConfigPropertiesTuple("readwrite", False, False),
+    "RFC3964_IPv4": ConfigPropertiesTuple("readwrite", False, False),
+    "AllowZoneDrifting": ConfigPropertiesTuple("readwrite", True, True),
+    "NftablesFlowtable": ConfigPropertiesTuple("readwrite", False, False),
+    "NftablesCounters": ConfigPropertiesTuple("readwrite", False, False),
+}
+
 
 class FirewallDConfig(DbusServiceObject):
     """FirewallD main class"""
@@ -96,22 +125,7 @@ class FirewallDConfig(DbusServiceObject):
         dbus_introspection_prepare_properties(
             self,
             config.dbus.DBUS_INTERFACE_CONFIG,
-            {
-                "CleanupOnExit": "readwrite",
-                "CleanupModulesOnExit": "readwrite",
-                "IPv6_rpfilter": "readwrite",
-                "Lockdown": "readwrite",
-                "MinimalMark": "readwrite",
-                "IndividualCalls": "readwrite",
-                "LogDenied": "readwrite",
-                "AutomaticHelpers": "readwrite",
-                "FirewallBackend": "readwrite",
-                "FlushAllOnReload": "readwrite",
-                "RFC3964_IPv4": "readwrite",
-                "AllowZoneDrifting": "readwrite",
-                "NftablesFlowtable": "readwrite",
-                "NftablesCounters": "readwrite",
-            },
+            {prop: d.mode for prop, d in CONFIG_PROPERTIES.items()},
         )
 
     @handle_exceptions
@@ -718,23 +732,7 @@ class FirewallDConfig(DbusServiceObject):
 
         ret = {}
         if interface_name == config.dbus.DBUS_INTERFACE_CONFIG:
-            for x in [
-                "DefaultZone",
-                "MinimalMark",
-                "CleanupOnExit",
-                "CleanupModulesOnExit",
-                "Lockdown",
-                "IPv6_rpfilter",
-                "IndividualCalls",
-                "LogDenied",
-                "AutomaticHelpers",
-                "FirewallBackend",
-                "FlushAllOnReload",
-                "RFC3964_IPv4",
-                "AllowZoneDrifting",
-                "NftablesFlowtable",
-                "NftablesCounters",
-            ]:
+            for x in CONFIG_PROPERTIES:
                 ret[x] = self._get_property(x)
         elif interface_name in [
             config.dbus.DBUS_INTERFACE_CONFIG_DIRECT,
@@ -762,19 +760,16 @@ class FirewallDConfig(DbusServiceObject):
         self.accessCheck(sender)
 
         if interface_name == config.dbus.DBUS_INTERFACE_CONFIG:
-            if property_name in [
-                "CleanupOnExit",
-                "CleanupModulesOnExit",
-                "Lockdown",
-                "IPv6_rpfilter",
-                "IndividualCalls",
-                "LogDenied",
-                "FirewallBackend",
-                "FlushAllOnReload",
-                "RFC3964_IPv4",
-                "NftablesFlowtable",
-                "NftablesCounters",
-            ]:
+            pdata = CONFIG_PROPERTIES.get(property_name)
+            if pdata is None or pdata.mode != "readwrite":
+                raise dbus.exceptions.DBusException(
+                    "org.freedesktop.DBus.Error.InvalidArgs: "
+                    "Property '%s' does not exist" % property_name
+                )
+            if pdata.ignore_set:
+                # deprecated fields. Ignore setting them.
+                pass
+            else:
                 if property_name in [
                     "CleanupOnExit",
                     "CleanupModulesOnExit",
@@ -803,26 +798,11 @@ class FirewallDConfig(DbusServiceObject):
                             "'%s' for %s" % (new_value, property_name),
                         )
                 else:
-                    raise dbus.exceptions.DBusException(
-                        "org.freedesktop.DBus.Error.InvalidArgs: "
-                        "Property '%s' does not exist" % property_name
-                    )
+                    raise errors.BugError(f'Unhandled property_name "{property_name}"')
 
                 self.config.get_firewalld_conf().set(property_name, new_value)
                 self.config.get_firewalld_conf().write()
                 self.PropertiesChanged(interface_name, {property_name: new_value}, [])
-            elif property_name in [
-                "MinimalMark",
-                "AutomaticHelpers",
-                "AllowZoneDrifting",
-            ]:
-                # deprecated fields. Ignore setting them.
-                pass
-            else:
-                raise dbus.exceptions.DBusException(
-                    "org.freedesktop.DBus.Error.InvalidArgs: "
-                    "Property '%s' does not exist" % property_name
-                )
         elif interface_name in [
             config.dbus.DBUS_INTERFACE_CONFIG_DIRECT,
             config.dbus.DBUS_INTERFACE_CONFIG_POLICIES,
