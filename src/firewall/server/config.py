@@ -34,7 +34,6 @@ from firewall.server.config_helper import FirewallDConfigHelper
 from firewall.core.io.icmptype import IcmpType
 from firewall.core.io.ipset import IPSet
 from firewall.core.io.helper import Helper
-from firewall.core.io.lockdown_whitelist import LockdownWhitelist
 from firewall.core.io.direct import Direct
 from firewall.dbus_utils import (
     dbus_to_python,
@@ -864,7 +863,7 @@ class FirewallDConfig(DbusServiceObject):
 
     @dbus_service_method(
         config.dbus.DBUS_INTERFACE_CONFIG_POLICIES,
-        out_signature=LockdownWhitelist.DBUS_SIGNATURE,
+        out_signature="(asasasai)",
         is_deprecated=True,
     )
     def getLockdownWhitelist(self, sender=None):  # pylint: disable=W0613
@@ -872,7 +871,7 @@ class FirewallDConfig(DbusServiceObject):
 
     @dbus_service_method(
         config.dbus.DBUS_INTERFACE_CONFIG_POLICIES,
-        in_signature=LockdownWhitelist.DBUS_SIGNATURE,
+        in_signature="(asasasai)",
         is_deprecated=True,
     )
     def setLockdownWhitelist(self, settings, sender=None):  # pylint: disable=W0613

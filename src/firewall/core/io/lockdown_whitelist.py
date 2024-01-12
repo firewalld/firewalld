@@ -80,7 +80,6 @@ class LockdownWhitelist(IO_Object):
         "users": [""],  # as
         "uids": [0],  # ai
     }
-    DBUS_SIGNATURE = "(asasasai)"
     ADDITIONAL_ALNUM_CHARS = ["_"]
     PARSER_REQUIRED_ELEMENT_ATTRS = {
         "whitelist": None,
