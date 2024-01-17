@@ -6,34 +6,9 @@
 # Thomas Woerner <twoerner@redhat.com>
 
 import dbus
-import pwd
 import xml.etree.ElementTree as ET
 
 from firewall.core.logger import log
-
-
-def command_of_pid(pid):
-    """Get command for pid from /proc"""
-    try:
-        with open("/proc/%d/cmdline" % pid, "r") as f:
-            cmd = f.readlines()[0].replace("\0", " ").strip()
-    except Exception:
-        return None
-    return cmd
-
-
-def pid_of_sender(bus, sender):
-    """Get pid from sender string using
-    org.freedesktop.DBus.GetConnectionUnixProcessID"""
-
-    dbus_obj = bus.get_object("org.freedesktop.DBus", "/org/freedesktop/DBus")
-    dbus_iface = dbus.Interface(dbus_obj, "org.freedesktop.DBus")
-
-    try:
-        pid = int(dbus_iface.GetConnectionUnixProcessID(sender))
-    except ValueError:
-        return None
-    return pid
 
 
 def uid_of_sender(bus, sender):
@@ -48,41 +23,6 @@ def uid_of_sender(bus, sender):
     except ValueError:
         return None
     return uid
-
-
-def user_of_uid(uid):
-    """Get user for uid from pwd"""
-
-    try:
-        pws = pwd.getpwuid(uid)
-    except Exception:
-        return None
-    return pws[0]
-
-
-def context_of_sender(bus, sender):
-    """Get SELinux context from sender string using
-    org.freedesktop.DBus.GetConnectionSELinuxSecurityContext"""
-
-    dbus_obj = bus.get_object("org.freedesktop.DBus", "/org/freedesktop/DBus")
-    dbus_iface = dbus.Interface(dbus_obj, "org.freedesktop.DBus")
-
-    try:
-        context = dbus_iface.GetConnectionSELinuxSecurityContext(sender)
-    except Exception:
-        return None
-
-    return "".join(map(chr, dbus_to_python(context)))
-
-
-def command_of_sender(bus, sender):
-    """Return command of D-Bus sender"""
-
-    return command_of_pid(pid_of_sender(bus, sender))
-
-
-def user_of_sender(bus, sender):
-    return user_of_uid(uid_of_sender(bus, sender))
 
 
 def dbus_to_python(obj, expected_type=None):
