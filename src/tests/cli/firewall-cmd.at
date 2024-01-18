@@ -2089,6 +2089,18 @@ WARNING: INVALID_ENTRY: invalid mac address '12:34:56:78:90' in '12:34:56:78:90'
     FWD_CHECK([--check-config], 119, ignore, ignore)
     AT_CHECK([rm ./ipsets/foobar.xml])
 
+AT_DATA([./ipsets/foobar.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<ipset type="hash:net">
+    <option name="maxelem" value="2"/>
+    <entry>10.0.0.1</entry>
+    <entry>10.0.0.2</entry>
+    <entry>10.0.0.3</entry>
+</ipset>
+])
+    FWD_CHECK([--check-config], 135, ignore, ignore)
+    AT_CHECK([rm ./ipsets/foobar.xml])
+
     dnl helpers
     AT_CHECK([mkdir -p ./helpers])
     AT_DATA([./helpers/foobar.xml], [dnl
