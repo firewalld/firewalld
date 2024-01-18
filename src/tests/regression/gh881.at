@@ -15,7 +15,7 @@ NS_CHECK([echo "10.254.0.0/16" >> ./deny_cidr])
 
 dnl verify non-overlapping does not error
 dnl
-FWD_CHECK([--permanent --new-ipset=deny_set --type=hash:net --option=family=inet --option=hashsize=16384 --option=maxelem=20000], 0, [ignore])
+FWD_CHECK([--permanent --new-ipset=deny_set --type=hash:net --option=family=inet --option=hashsize=16384 --option=maxelem=62503], 0, [ignore])
 NS_CHECK([time firewall-cmd --permanent --ipset=deny_set --add-entries-from-file=./deny_cidr], 0, [ignore], [ignore])
 
 dnl still no overlap
