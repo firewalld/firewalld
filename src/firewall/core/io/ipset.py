@@ -287,6 +287,12 @@ class IPSet(IO_Object):
                             errors.INVALID_VALUE,
                             "Option '%s': Value '%s' is negative" % \
                             (key, config[key]))
+                    if key == "maxelem" and len(self.entries) > int_value:
+                        raise FirewallError(
+                            errors.INVALID_IPSET,
+                            "the number of ipset entries exceeds the maximum set size of %d"
+                            % int_value,
+                        )
                 elif key == "family" and \
                      config[key] not in [ "inet", "inet6" ]:
                     raise FirewallError(errors.INVALID_FAMILY, config[key])
