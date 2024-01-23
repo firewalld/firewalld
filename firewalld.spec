@@ -116,7 +116,7 @@ desktop-file-install --delete-original \
 %systemd_preun firewalld.service
 
 %postun
-%systemd_postun_with_restart firewalld.service
+%systemd_postun firewalld.service
 
 
 %post -n firewall-applet
