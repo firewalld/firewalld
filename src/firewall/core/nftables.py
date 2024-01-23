@@ -286,57 +286,54 @@ class nftables:
             if verb in rule:
                 break
 
-        token = "%%RICH_RULE_PRIORITY%%"
+        rule_verb_rule_dict = rule[verb]["rule"]
 
-        if token in rule[verb]["rule"]:
-            priority = rule[verb]["rule"][token]
-            del rule[verb]["rule"][token]
-            if not isinstance(priority, int):
+        priority = rule_verb_rule_dict.pop("%%RICH_RULE_PRIORITY%%", None)
+        if priority is None:
+            return
+
+        if not isinstance(priority, int):
+            raise FirewallError(INVALID_RULE, "priority must be followed by a number")
+
+        chain_key = (rule_verb_rule_dict["family"], rule_verb_rule_dict["chain"])
+
+        # Add the rule to the priority counts. We don't need to store the
+        # rule, just bump the ref count for the priority value.
+        chain_prios = priority_counts.get(chain_key)
+
+        if verb == "delete":
+            if chain_prios is None or chain_prios.get(priority, 1) <= 0:
                 raise FirewallError(
-                    INVALID_RULE, "priority must be followed by a number"
+                    UNKNOWN_ERROR, "nonexistent or underflow of priority count"
                 )
-            chain = (
-                rule[verb]["rule"]["family"],
-                rule[verb]["rule"]["chain"],
-            )  # family, chain
-            # Add the rule to the priority counts. We don't need to store the
-            # rule, just bump the ref count for the priority value.
-            if verb == "delete":
-                if (
-                    chain not in priority_counts
-                    or priority not in priority_counts[chain]
-                    or priority_counts[chain][priority] <= 0
-                ):
-                    raise FirewallError(
-                        UNKNOWN_ERROR, "nonexistent or underflow of priority count"
-                    )
+            chain_prios[priority] -= 1
+            return
 
-                priority_counts[chain][priority] -= 1
-            else:
-                if chain not in priority_counts:
-                    priority_counts[chain] = {}
-                if priority not in priority_counts[chain]:
-                    priority_counts[chain][priority] = 0
+        if chain_prios is None:
+            chain_prios = {}
+            priority_counts[chain_key] = chain_prios
+        if priority not in chain_prios:
+            chain_prios[priority] = 0
 
-                # calculate index of new rule
-                index = 0
-                for p in sorted(priority_counts[chain].keys()):
-                    if p == priority and verb == "insert":
-                        break
-                    index += priority_counts[chain][p]
-                    if p == priority and verb == "add":
-                        break
+        # calculate index of new rule
+        index = 0
+        for p in sorted(chain_prios):
+            if p == priority and verb == "insert":
+                break
+            index += chain_prios[p]
+            if p == priority and verb == "add":
+                break
 
-                priority_counts[chain][priority] += 1
+        chain_prios[priority] += 1
 
-                _verb_snippet = rule[verb]
-                del rule[verb]
-                if index == 0:
-                    rule["insert"] = _verb_snippet
-                else:
-                    index -= 1  # point to the rule before insertion point
-                    rule["add"] = _verb_snippet
-                    rule["add"]["rule"]["index"] = index
+        _verb_snippet = rule[verb]
+        del rule[verb]
+        if index == 0:
+            rule["insert"] = _verb_snippet
+        else:
+            index -= 1  # point to the rule before insertion point
+            rule["add"] = _verb_snippet
+            rule["add"]["rule"]["index"] = index
 
     def _get_rule_key(self, rule):
         for verb in ["add", "insert", "delete"]:
