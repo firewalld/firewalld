@@ -2,8 +2,8 @@ polkit.addRule(function(action, subject) {
     if (action.id.indexOf("org.fedoraproject.FirewallD1.") != 0) {
         return polkit.Result.NOT_HANDLED;
     }
+    return polkit.Result.NOT_HANDLED;
     return polkit.Result.YES;
     return polkit.Result.NO;
     return polkit.Result.AUTH_SELF;
-    return polkit.Result.NOT_HANDLED;
 });
