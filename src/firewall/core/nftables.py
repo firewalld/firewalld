@@ -1654,10 +1654,9 @@ class nftables:
         else:
             return "post"
 
-    def _rich_rule_priority_fragment(self, rich_rule):
-        if not rich_rule or rich_rule.priority == 0:
-            return {}
-        return {"%%RICH_RULE_PRIORITY%%": rich_rule.priority}
+    def _rule_set_rich_rule_priority(self, rule, rich_rule):
+        if rich_rule and rich_rule.priority != 0:
+            rule["%%RICH_RULE_PRIORITY%%"] = rich_rule.priority
 
     def _rich_rule_log(self, policy, rich_rule, enable, table, expr_fragments):
         if not rich_rule.log:
@@ -1698,7 +1697,7 @@ class nftables:
                 {"log": log_options},
             ],
         }
-        rule.update(self._rich_rule_priority_fragment(rich_rule))
+        self._rule_set_rich_rule_priority(rule, rich_rule)
         return {add_del: {"rule": rule}}
 
     def _rich_rule_audit(self, policy, rich_rule, enable, table, expr_fragments):
@@ -1722,7 +1721,7 @@ class nftables:
                 {"log": {"level": "audit"}},
             ],
         }
-        rule.update(self._rich_rule_priority_fragment(rich_rule))
+        self._rule_set_rich_rule_priority(rule, rich_rule)
         return {add_del: {"rule": rule}}
 
     def _rich_rule_action(self, policy, rich_rule, enable, table, expr_fragments):
@@ -1782,7 +1781,7 @@ class nftables:
             "expr": expr_fragments
             + [self._rich_rule_limit_fragment(rich_rule.action.limit), rule_action],
         }
-        rule.update(self._rich_rule_priority_fragment(rich_rule))
+        self._rule_set_rich_rule_priority(rule, rich_rule)
         return {add_del: {"rule": rule}}
 
     def _rule_addr_fragment(self, addr_field, address, invert=False):
@@ -2239,7 +2238,7 @@ class nftables:
                 {"masquerade": None},
             ],
         }
-        rule.update(self._rich_rule_priority_fragment(rich_rule))
+        self._rule_set_rich_rule_priority(rule, rich_rule)
         rules.append({add_del: {"rule": rule}})
 
         return rules
@@ -2310,7 +2309,7 @@ class nftables:
             "chain": "nat_%s_%s" % (_policy, chain_suffix),
             "expr": expr_fragments,
         }
-        rule.update(self._rich_rule_priority_fragment(rich_rule))
+        self._rule_set_rich_rule_priority(rule, rich_rule)
         rules.append({add_del: {"rule": rule}})
 
         return rules
@@ -2386,7 +2385,7 @@ class nftables:
                         "chain": "%s_%s_%s" % (table, _policy, chain_suffix),
                         "expr": expr_fragments + [self._reject_fragment()],
                     }
-                    rule.update(self._rich_rule_priority_fragment(rich_rule))
+                    self._rule_set_rich_rule_priority(rule, rich_rule)
                     rules.append({add_del: {"rule": rule}})
             else:
                 if (
