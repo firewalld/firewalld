@@ -2911,5 +2911,4 @@ class nftables:
                 self.set_rules(rules, self._fw.get_log_denied())
                 rules.clear()
                 chunk = 0
-        else:
-            self.set_rules(rules, self._fw.get_log_denied())
+        self.set_rules(rules, self._fw.get_log_denied())
