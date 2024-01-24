@@ -1,0 +1,40 @@
+FWD_START_TEST([policy dispatch update if active])
+AT_KEYWORDS(source policy gh1278)
+
+dnl test using ANY to ANY
+
+FWD_CHECK([--permanent --new-policy host_fwd], 0, [ignore])
+FWD_CHECK([--permanent --policy host_fwd --add-ingress-zone HOST], 0, [ignore])
+FWD_CHECK([--permanent --policy host_fwd --add-egress-zone ANY], 0, [ignore])
+
+FWD_CHECK([--permanent --new-policy fwd_out], 0, [ignore])
+FWD_CHECK([--permanent --policy fwd_out --add-ingress-zone internal], 0, [ignore])
+FWD_CHECK([--permanent --policy fwd_out --add-egress-zone ANY], 0, [ignore])
+
+FWD_CHECK([--permanent --new-policy port_fwd], 0, [ignore])
+FWD_CHECK([--permanent --policy port_fwd --add-ingress-zone ANY], 0, [ignore])
+FWD_CHECK([--permanent --policy port_fwd --add-egress-zone ANY], 0, [ignore])
+
+FWD_RELOAD()
+
+FWD_CHECK([--zone internal --add-source 10.88.0.0/16], 0, [ignore])
+FWD_CHECK([--zone internal --remove-source 10.88.0.0/16], 0, [ignore])
+
+dnl test using zone to zone
+
+FWD_CHECK([--permanent --new-policy many_zones], 0, [ignore])
+FWD_CHECK([--permanent --policy many_zones --add-ingress-zone trusted], 0, [ignore])
+FWD_CHECK([--permanent --policy many_zones --add-ingress-zone dmz], 0, [ignore])
+FWD_CHECK([--permanent --policy many_zones --add-egress-zone external], 0, [ignore])
+FWD_CHECK([--permanent --policy many_zones --add-egress-zone home], 0, [ignore])
+
+FWD_CHECK([--permanent --zone trusted --add-interface dummy0], 0, [ignore])
+FWD_CHECK([--permanent --zone external --add-interface dummy1], 0, [ignore])
+FWD_RELOAD()
+
+FWD_CHECK([--zone home --add-interface dummy2], 0, [ignore])
+FWD_CHECK([--zone dmz --add-source 10.10.10.0/24], 0, [ignore])
+FWD_CHECK([--zone dmz --remove-source 10.10.10.0/24], 0, [ignore])
+FWD_CHECK([--zone home --remove-interface dummy2], 0, [ignore])
+
+FWD_END_TEST()
