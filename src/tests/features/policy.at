@@ -6296,3 +6296,19 @@ IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES], 0, [dnl
 ])
 
 FWD_END_TEST()
+
+FWD_START_TEST([policy - multiple using same zone source])
+AT_KEYWORDS(policy source)
+
+FWD_CHECK([--permanent --new-policy foobar], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar --add-ingress-zone ANY], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar --add-egress-zone internal], 0, [ignore])
+FWD_CHECK([--permanent --new-policy raboof], 0, [ignore])
+FWD_CHECK([--permanent --policy raboof --add-ingress-zone internal], 0, [ignore])
+FWD_CHECK([--permanent --policy raboof --add-egress-zone ANY], 0, [ignore])
+FWD_RELOAD()
+
+FWD_CHECK([--zone internal --add-source 10.88.0.0/16], 0, [ignore])
+FWD_CHECK([--zone internal --remove-source 10.88.0.0/16], 0, [ignore])
+
+FWD_END_TEST()
