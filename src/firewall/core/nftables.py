@@ -259,42 +259,49 @@ class nftables:
     def _set_rule_sort_policy_dispatch(rule, policy_dispatch_index_cache):
         verb = nftables._detect_rule_verb(rule)
 
-        try:
-            sort_tuple = rule[verb]["rule"].pop("%%POLICY_SORT_KEY%%")
-        except KeyError:
+        rule_verb_dict = rule[verb]
+
+        rule_verb_rule_dict = rule_verb_dict["rule"]
+
+        sort_tuple = rule_verb_rule_dict.pop("%%POLICY_SORT_KEY%%", None)
+        if sort_tuple is None:
             return
 
-        chain = (rule[verb]["rule"]["family"], rule[verb]["rule"]["chain"])
+        chain_key = (rule_verb_rule_dict["family"], rule_verb_rule_dict["chain"])
+
+        cache_entry = policy_dispatch_index_cache.get(chain_key)
 
         if verb == "delete":
-            if (
-                chain in policy_dispatch_index_cache
-                and sort_tuple in policy_dispatch_index_cache[chain]
-            ):
-                policy_dispatch_index_cache[chain].remove(sort_tuple)
+            if cache_entry is not None:
+                try:
+                    cache_entry.remove(sort_tuple)
+                except ValueError:
+                    pass
+            return
+
+        if cache_entry is None:
+            cache_entry = []
+            policy_dispatch_index_cache[chain_key] = cache_entry
+
+        # We only have to track the sort key as it's unique. The actual
+        # rule/json is not necessary.
+        #
+        # We only insert the tuple if it's not present. This is because we
+        # do rule de-duplication in set_rules().
+        if sort_tuple not in cache_entry:
+            cache_entry.append(sort_tuple)
+            cache_entry.sort()
+
+        index = cache_entry.index(sort_tuple)
+
+        del rule[verb]
+
+        if index == 0:
+            rule["insert"] = rule_verb_dict
         else:
-            if chain not in policy_dispatch_index_cache:
-                policy_dispatch_index_cache[chain] = []
-
-            # We only have to track the sort key as it's unique. The actual
-            # rule/json is not necessary.
-            #
-            # We only insert the tuple if it's not present. This is because we
-            # do rule de-duplication in set_rules().
-            if sort_tuple not in policy_dispatch_index_cache[chain]:
-                policy_dispatch_index_cache[chain].append(sort_tuple)
-                policy_dispatch_index_cache[chain].sort()
-
-            index = policy_dispatch_index_cache[chain].index(sort_tuple)
-
-            _verb_snippet = rule[verb]
-            del rule[verb]
-            if index == 0:
-                rule["insert"] = _verb_snippet
-            else:
-                index -= 1  # point to the rule before insertion point
-                rule["add"] = _verb_snippet
-                rule["add"]["rule"]["index"] = index
+            index -= 1  # point to the rule before insertion point
+            rule["add"] = rule_verb_dict
+            rule_verb_rule_dict["index"] = index
 
     @staticmethod
     def _set_rule_replace_priority(rule, priority_counts):
