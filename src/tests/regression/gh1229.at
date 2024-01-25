@@ -143,6 +143,7 @@ IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES], 0, [dnl
     FWD_internal 0 -- 0.0.0.0/0 0.0.0.0/0
     REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
     FWD_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_raboof 0 -- 0.0.0.0/0 0.0.0.0/0
     FWD_internal 0 -- 0.0.0.0/0 0.0.0.0/0
     REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
     FWD_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
@@ -211,6 +212,7 @@ IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES], 0, [dnl
     FWD_internal 0 -- ::/0 ::/0
     REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
     FWD_foobar 0 -- ::/0 ::/0
+    FWD_raboof 0 -- ::/0 ::/0
     FWD_internal 0 -- ::/0 ::/0
     REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
     FWD_foobar 0 -- ::/0 ::/0
