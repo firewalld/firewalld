@@ -1683,10 +1683,21 @@ class FirewallPolicy(object):
                              egressInterface=None,  egressSource=None):
         if ingress_zone == "ANY":
             _ingress_zones = self._fw.zone.get_active_zones()
+
+            # include the zone currently being activated
+            if egress_zone not in ["HOST", "ANY"] and egress_zone not in _ingress_zones:
+                _ingress_zones.append(egress_zone)
         else:
             _ingress_zones = [ingress_zone]
         if egress_zone == "ANY":
             _egress_zones = self._fw.zone.get_active_zones()
+
+            # include the zone currently being activated
+            if (
+                ingress_zone not in ["HOST", "ANY"]
+                and ingress_zone not in _egress_zones
+            ):
+                _egress_zones.append(ingress_zone)
         else:
             _egress_zones = [egress_zone]
 
@@ -1736,6 +1747,19 @@ class FirewallPolicy(object):
                         if _egress_zone == self._fw._default_zone and "+" not in _egress_interfaces:
                             _egress_interfaces.append("+")
                         _egress_sources = list(self._fw.zone.list_sources(_egress_zone))
+
+                        # If the currently activating zone is in both ingress
+                        # and egress, then we must include the activating
+                        # interface now as it will not be present in
+                        # zone.list_interfaces().
+                        if _ingress_zone == _egress_zone:
+                            if (
+                                ingressInterface
+                                and ingressInterface not in _egress_interfaces
+                            ):
+                                _egress_interfaces.append(ingressInterface)
+                            if ingressSource and ingressSource not in _egress_sources:
+                                _egress_sources.append(ingressSource)
 
                 for _ingress_interface in _ingress_interfaces:
                     for _egress_interface in _egress_interfaces:
