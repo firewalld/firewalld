@@ -9,6 +9,7 @@ import copy
 import json
 import ipaddress
 
+from firewall import errors
 from firewall.core.logger import log
 from firewall.functions import (
     check_mac,
@@ -238,10 +239,25 @@ class nftables:
         self.nftables.set_handle_output(True)
 
     @staticmethod
+    def _detect_rule_verb(rule, with_flushreplace=False, allow_none=False):
+        if "add" in rule:
+            return "add"
+        if "insert" in rule:
+            return "insert"
+        if "delete" in rule:
+            return "delete"
+        if with_flushreplace:
+            if "flush" in rule:
+                return "flush"
+            if "replace" in rule:
+                return "replace"
+        if allow_none:
+            return None
+        raise errors.BugError()
+
+    @staticmethod
     def _set_rule_sort_policy_dispatch(rule, policy_dispatch_index_cache):
-        for verb in ["add", "insert", "delete"]:
-            if verb in rule:
-                break
+        verb = nftables._detect_rule_verb(rule)
 
         try:
             sort_tuple = rule[verb]["rule"].pop("%%POLICY_SORT_KEY%%")
@@ -282,9 +298,7 @@ class nftables:
 
     @staticmethod
     def _set_rule_replace_priority(rule, priority_counts):
-        for verb in ["add", "insert", "delete"]:
-            if verb in rule:
-                break
+        verb = nftables._detect_rule_verb(rule)
 
         rule_verb_rule_dict = rule[verb]["rule"]
 
@@ -336,18 +350,18 @@ class nftables:
             rule["add"]["rule"]["index"] = index
 
     def _get_rule_key(self, rule):
-        for verb in ["add", "insert", "delete"]:
-            if verb in rule and "rule" in rule[verb]:
+        verb = nftables._detect_rule_verb(rule, allow_none=True)
+        if verb:
+            r = rule[verb].get("rule")
+            if r is not None:
                 # str(rule_key) is insufficient because dictionary order is
                 # not stable.. so abuse the JSON library
-                rule_key = json.dumps(rule[verb]["rule"], sort_keys=True)
+                rule_key = json.dumps(r, sort_keys=True)
                 return rule_key
         # Not a rule (it's a table, chain, etc)
         return None
 
     def set_rules(self, rules, log_denied):
-        _valid_verbs = ["add", "insert", "delete", "flush", "replace"]
-        _valid_add_verbs = ["add", "insert", "replace"]
         _deduplicated_rules = []
         _deduplicated_rules_keys = []
         _executed_rules = []
@@ -360,13 +374,7 @@ class nftables:
                     UNKNOWN_ERROR, "rule must be a dictionary, rule: %s" % (rule)
                 )
 
-            for verb in _valid_verbs:
-                if verb in rule:
-                    break
-            if verb not in rule:
-                raise FirewallError(
-                    INVALID_RULE, "no valid verb found, rule: %s" % (rule)
-                )
+            verb = nftables._detect_rule_verb(rule, with_flushreplace=True)
 
             rule_key = self._get_rule_key(rule)
 
@@ -477,10 +485,10 @@ class nftables:
                 del self.rule_ref_count[rule_key]
                 continue
 
-            for verb in _valid_add_verbs:
-                if verb in output["nftables"][index]:
-                    break
-            else:
+            verb = nftables._detect_rule_verb(
+                output["nftables"][index], allow_none=True
+            )
+            if verb is None:
                 continue
 
             # don't bother tracking handles for the policy table as we simply
