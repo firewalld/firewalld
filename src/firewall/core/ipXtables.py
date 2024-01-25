@@ -946,9 +946,9 @@ class ip4tables:
         suffix = (last_sort_order, priority)
 
         if postrouting:
-            return ["%%POLICY_SORT_KEY%%", egress + ingress + suffix]
+            return ["%%POLICY_SORT_KEY%%", egress + ingress + suffix + (policy,)]
         else:
-            return ["%%POLICY_SORT_KEY%%", ingress + egress + suffix]
+            return ["%%POLICY_SORT_KEY%%", ingress + egress + suffix + (policy,)]
 
     def build_policy_ingress_egress_pair_rules(
         self,
