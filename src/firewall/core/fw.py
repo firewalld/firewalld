@@ -10,6 +10,7 @@ import sys
 import copy
 import time
 import traceback
+import firewall.core.io.firewalld_conf
 from typing import Dict, List
 from firewall import config
 from firewall import functions
@@ -1089,7 +1090,7 @@ class Firewall:
             log.debug1(
                 "Setting policy to '%s'%s",
                 policy,
-                f" (ReloadPolicy={firewalld_conf._unparse_reload_policy(policy_details)})"
+                f" (ReloadPolicy={firewall.core.io.firewalld_conf._unparse_reload_policy(policy_details)})"
                 if policy == "DROP"
                 else "",
             )
@@ -1245,7 +1246,7 @@ class Firewall:
             _ipset_objs.append(self.ipset.get_ipset(_name))
 
         if not _panic:
-            reload_policy = firewalld_conf._parse_reload_policy(
+            reload_policy = firewall.core.io.firewalld_conf._parse_reload_policy(
                 self._firewalld_conf.get("ReloadPolicy")
             )
             self.set_policy("DROP", policy_details=reload_policy)

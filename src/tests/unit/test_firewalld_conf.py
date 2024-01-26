@@ -16,11 +16,7 @@ def test_reload_policy():
             expected[k] = v
 
         try:
-            parsed = (
-                firewall.core.io.firewalld_conf.firewalld_conf._parse_reload_policy(
-                    value
-                )
-            )
+            parsed = firewall.core.io.firewalld_conf._parse_reload_policy(value)
         except ValueError:
             assert not expected_valid
             return
@@ -28,14 +24,8 @@ def test_reload_policy():
         assert parsed == expected
         assert expected_valid
 
-        unparsed = (
-            firewall.core.io.firewalld_conf.firewalld_conf._unparse_reload_policy(
-                parsed
-            )
-        )
-        parsed2 = firewall.core.io.firewalld_conf.firewalld_conf._parse_reload_policy(
-            unparsed
-        )
+        unparsed = firewall.core.io.firewalld_conf._unparse_reload_policy(parsed)
+        parsed2 = firewall.core.io.firewalld_conf._parse_reload_policy(unparsed)
         assert parsed2 == parsed
 
     t(None)
@@ -55,12 +45,8 @@ def test_reload_policy():
     t("forward=REJECT, ACCEPT", expected_valid=False)
 
     def _norm(reload_policy):
-        parsed = firewall.core.io.firewalld_conf.firewalld_conf._parse_reload_policy(
-            reload_policy
-        )
-        return firewall.core.io.firewalld_conf.firewalld_conf._unparse_reload_policy(
-            parsed
-        )
+        parsed = firewall.core.io.firewalld_conf._parse_reload_policy(reload_policy)
+        return firewall.core.io.firewalld_conf._unparse_reload_policy(parsed)
 
     assert firewall.config.FALLBACK_RELOAD_POLICY == _norm(
         firewall.config.FALLBACK_RELOAD_POLICY
