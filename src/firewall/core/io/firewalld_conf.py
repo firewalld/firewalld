@@ -277,6 +277,15 @@ class firewalld_conf:
             config.FALLBACK_ALLOW_ZONE_DRIFTING,
         )
 
+        value = self.get("NftablesFlowtable")
+        if value is None:
+            self.set("NftablesFlowtable", config.FALLBACK_NFTABLES_FLOWTABLE)
+
+        self._normalize_bool(
+            "NftablesCounters",
+            config.FALLBACK_NFTABLES_COUNTERS,
+        )
+
     # save to self.filename if there are key/value changes
     def write(self):
         if len(self._config) < 1:
