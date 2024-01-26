@@ -65,3 +65,16 @@ def test_reload_policy():
     assert firewall.config.FALLBACK_RELOAD_POLICY == _norm(
         firewall.config.FALLBACK_RELOAD_POLICY
     )
+
+
+def test_valid_keys():
+
+    conf = firewall.core.io.firewalld_conf.firewalld_conf("/file/name/nowhere")
+
+    conf.set_defaults()
+
+    keys = sorted(conf._config.keys())
+    valid_keys = sorted(firewall.core.io.firewalld_conf.valid_keys)
+    assert keys == valid_keys
+
+    assert conf.get("AllowZoneDrifting") == "no"
