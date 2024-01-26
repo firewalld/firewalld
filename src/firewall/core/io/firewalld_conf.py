@@ -76,17 +76,14 @@ valid_keys = [
 class firewalld_conf:
     def __init__(self, filename):
         self._config = {}
-        self._deleted = []
         self.filename = filename
         self.clear()
 
     def clear(self):
         self._config = {}
-        self._deleted = []
 
     def cleanup(self):
         self._config.clear()
-        self._deleted = []
 
     def get(self, key):
         return self._config.get(key.strip())
@@ -94,8 +91,6 @@ class firewalld_conf:
     def set(self, key, value):
         _key = key.strip()
         self._config[_key] = value.strip()
-        if _key in self._deleted:
-            self._deleted.remove(_key)
 
     def __str__(self):
         s = ""
@@ -347,8 +342,6 @@ class firewalld_conf:
                         if key in self._config and self._config[key] != value:
                             empty = False
                             temp_file.write("%s=%s\n" % (key, self._config[key]))
-                            modified = True
-                        elif key in self._deleted:
                             modified = True
                         else:
                             empty = False
