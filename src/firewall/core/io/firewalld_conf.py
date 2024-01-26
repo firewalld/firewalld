@@ -10,8 +10,48 @@ import io
 import tempfile
 import shutil
 
+import firewall.errors
+import firewall.functions
 from firewall import config
 from firewall.core.logger import log
+
+
+def _validate_bool(value, default):
+    valid = True
+    try:
+        v = firewall.functions.str_to_bool(value)
+    except ValueError:
+        valid = False
+        v = firewall.functions.str_to_bool(default)
+
+    return ("yes" if v else "no"), valid
+
+
+def _validate_enum(value, enum_values, default):
+
+    for f in enum_values:
+        assert isinstance(f, str)
+        assert f == f.strip()
+        assert f == f.lower()
+
+    assert default in enum_values
+
+    if value is None:
+        return default, True
+
+    # normalize upper case values to lower-case
+    value = value.lower()
+
+    # Enums don't have whitespace. Strip it.
+    value = value.strip()
+
+    try:
+        idx = enum_values.index(value)
+    except ValueError:
+        return default, False
+
+    return enum_values[idx], True
+
 
 valid_keys = [
     "DefaultZone",
@@ -92,6 +132,28 @@ class firewalld_conf:
             "NftablesCounters", "yes" if config.FALLBACK_NFTABLES_COUNTERS else "no"
         )
 
+        self._normalize()
+
+    def _normalize_bool(self, property_name, default):
+        value0 = self.get(property_name)
+        value, valid = _validate_bool(value0, default)
+        if not valid:
+            log.warning(
+                f"{property_name} '{value0}' is not a valid boolean, using default value '{default}'"
+            )
+        if value0 != value:
+            self.set(property_name, value)
+
+    def _normalize_enum(self, property_name, enum_values, default):
+        value0 = self.get(property_name)
+        value, valid = _validate_enum(value0, enum_values, default)
+        if not valid:
+            log.warning(
+                f"{property_name} '{value0}' is invalid, using default value '{default}'"
+            )
+        if value0 != value:
+            self.set(property_name, value)
+
     # load self.filename
     def read(self):
         self.clear()
@@ -125,163 +187,95 @@ class firewalld_conf:
             self._config[pair[0]] = pair[1]
         f.close()
 
-        # check default zone
+        self._normalize()
+
+    def _normalize(self):
+
         if not self.get("DefaultZone"):
             log.error(
                 "DefaultZone is not set, using default value '%s'", config.FALLBACK_ZONE
             )
             self.set("DefaultZone", str(config.FALLBACK_ZONE))
 
-        # check minimal mark
         value = self.get("MinimalMark")
         try:
-            int(value)
+            v = int(value)
         except (ValueError, TypeError):
+            v = int(config.FALLBACK_MINIMAL_MARK)
             if value is not None:
                 log.warning(
-                    "MinimalMark '%s' is not valid, using default " "value '%d'",
-                    value if value else "",
-                    config.FALLBACK_MINIMAL_MARK,
+                    f"MinimalMark '{value}' is not valid, using default value '{v}'",
                 )
-            self.set("MinimalMark", str(config.FALLBACK_MINIMAL_MARK))
+        value2 = str(v)
+        if value != value2:
+            self.set("MinimalMark", value2)
 
-        # check cleanup on exit
-        value = self.get("CleanupOnExit")
-        if not value or value.lower() not in ["no", "false", "yes", "true"]:
-            if value is not None:
-                log.warning(
-                    "CleanupOnExit '%s' is not valid, using default " "value %s",
-                    value if value else "",
-                    config.FALLBACK_CLEANUP_ON_EXIT,
-                )
-            self.set(
-                "CleanupOnExit", "yes" if config.FALLBACK_CLEANUP_ON_EXIT else "no"
-            )
+        self._normalize_bool(
+            "CleanupOnExit",
+            config.FALLBACK_CLEANUP_ON_EXIT,
+        )
 
-        # check module cleanup on exit
-        value = self.get("CleanupModulesOnExit")
-        if not value or value.lower() not in ["no", "false", "yes", "true"]:
-            if value is not None:
-                log.warning(
-                    "CleanupModulesOnExit '%s' is not valid, using default " "value %s",
-                    value if value else "",
-                    config.FALLBACK_CLEANUP_MODULES_ON_EXIT,
-                )
-            self.set(
-                "CleanupModulesOnExit",
-                "yes" if config.FALLBACK_CLEANUP_MODULES_ON_EXIT else "no",
-            )
+        self._normalize_bool(
+            "CleanupModulesOnExit",
+            config.FALLBACK_CLEANUP_MODULES_ON_EXIT,
+        )
 
-        # check lockdown
-        value = self.get("Lockdown")
-        if not value or value.lower() not in ["yes", "true", "no", "false"]:
-            if value is not None:
-                log.warning(
-                    "Lockdown '%s' is not valid, using default " "value %s",
-                    value if value else "",
-                    config.FALLBACK_LOCKDOWN,
-                )
-            self.set("Lockdown", "yes" if config.FALLBACK_LOCKDOWN else "no")
+        self._normalize_bool(
+            "Lockdown",
+            config.FALLBACK_LOCKDOWN,
+        )
 
-        # check ipv6_rpfilter
-        value = self.get("IPv6_rpfilter")
-        if not value or value.lower() not in ["yes", "true", "no", "false"]:
-            if value is not None:
-                log.warning(
-                    "IPv6_rpfilter '%s' is not valid, using default " "value %s",
-                    value if value else "",
-                    config.FALLBACK_IPV6_RPFILTER,
-                )
-            self.set("IPv6_rpfilter", "yes" if config.FALLBACK_IPV6_RPFILTER else "no")
+        self._normalize_bool(
+            "IPv6_rpfilter",
+            config.FALLBACK_IPV6_RPFILTER,
+        )
 
-        # check individual calls
-        value = self.get("IndividualCalls")
-        if not value or value.lower() not in ["yes", "true", "no", "false"]:
-            if value is not None:
-                log.warning(
-                    "IndividualCalls '%s' is not valid, using default " "value %s",
-                    value if value else "",
-                    config.FALLBACK_INDIVIDUAL_CALLS,
-                )
-            self.set(
-                "IndividualCalls", "yes" if config.FALLBACK_INDIVIDUAL_CALLS else "no"
-            )
+        self._normalize_bool(
+            "IndividualCalls",
+            config.FALLBACK_INDIVIDUAL_CALLS,
+        )
 
-        # check log denied
-        value = self.get("LogDenied")
-        if not value or value not in config.LOG_DENIED_VALUES:
-            if value is not None:
-                log.warning(
-                    "LogDenied '%s' is invalid, using default value '%s'",
-                    value,
-                    config.FALLBACK_LOG_DENIED,
-                )
-            self.set("LogDenied", str(config.FALLBACK_LOG_DENIED))
+        self._normalize_enum(
+            "LogDenied",
+            config.LOG_DENIED_VALUES,
+            config.FALLBACK_LOG_DENIED,
+        )
 
-        # check automatic helpers
-        value = self.get("AutomaticHelpers")
-        if not value or value.lower() not in config.AUTOMATIC_HELPERS_VALUES:
-            if value is not None:
-                log.warning(
-                    "AutomaticHelpers '%s' is not valid, using default " "value %s",
-                    value if value else "",
-                    config.FALLBACK_AUTOMATIC_HELPERS,
-                )
-            self.set("AutomaticHelpers", str(config.FALLBACK_AUTOMATIC_HELPERS))
+        self._normalize_enum(
+            "AutomaticHelpers",
+            config.AUTOMATIC_HELPERS_VALUES,
+            config.FALLBACK_AUTOMATIC_HELPERS,
+        )
 
-        value = self.get("FirewallBackend")
-        if not value or value.lower() not in config.FIREWALL_BACKEND_VALUES:
-            if value is not None:
-                log.warning(
-                    "FirewallBackend '%s' is not valid, using default " "value %s",
-                    value if value else "",
-                    config.FALLBACK_FIREWALL_BACKEND,
-                )
-            self.set("FirewallBackend", str(config.FALLBACK_FIREWALL_BACKEND))
+        self._normalize_enum(
+            "FirewallBackend",
+            config.FIREWALL_BACKEND_VALUES,
+            config.FALLBACK_FIREWALL_BACKEND,
+        )
 
-        value = self.get("FlushAllOnReload")
-        if not value or value.lower() not in ["yes", "true", "no", "false"]:
-            if value is not None:
-                log.warning(
-                    "FlushAllOnReload '%s' is not valid, using default " "value %s",
-                    value if value else "",
-                    config.FALLBACK_FLUSH_ALL_ON_RELOAD,
-                )
-            self.set("FlushAllOnReload", str(config.FALLBACK_FLUSH_ALL_ON_RELOAD))
+        self._normalize_bool(
+            "FlushAllOnReload",
+            config.FALLBACK_FLUSH_ALL_ON_RELOAD,
+        )
 
         value = self.get("ReloadPolicy")
         try:
             value = self._parse_reload_policy(value)
         except ValueError:
             log.warning(
-                "ReloadPolicy '%s' is not valid, using default value '%s'",
-                value,
-                config.FALLBACK_RELOAD_POLICY,
+                f"ReloadPolicy '{value}' is not valid, using default value '{config.FALLBACK_RELOAD_POLICY}'"
             )
             self.set("ReloadPolicy", config.FALLBACK_RELOAD_POLICY)
 
-        value = self.get("RFC3964_IPv4")
-        if not value or value.lower() not in ["yes", "true", "no", "false"]:
-            if value is not None:
-                log.warning(
-                    "RFC3964_IPv4 '%s' is not valid, using default " "value %s",
-                    value if value else "",
-                    config.FALLBACK_RFC3964_IPV4,
-                )
-            self.set("RFC3964_IPv4", str(config.FALLBACK_RFC3964_IPV4))
+        self._normalize_bool(
+            "RFC3964_IPv4",
+            config.FALLBACK_RFC3964_IPV4,
+        )
 
-        value = self.get("AllowZoneDrifting")
-        if not value or value.lower() not in ["yes", "true", "no", "false"]:
-            if value is not None:
-                log.warning(
-                    "AllowZoneDrifting '%s' is not valid, using default " "value %s",
-                    value if value else "",
-                    config.FALLBACK_ALLOW_ZONE_DRIFTING,
-                )
-            self.set(
-                "AllowZoneDrifting",
-                "yes" if config.FALLBACK_ALLOW_ZONE_DRIFTING else "no",
-            )
+        self._normalize_bool(
+            "AllowZoneDrifting",
+            config.FALLBACK_ALLOW_ZONE_DRIFTING,
+        )
 
     # save to self.filename if there are key/value changes
     def write(self):
