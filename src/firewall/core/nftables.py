@@ -512,7 +512,7 @@ class nftables:
             ]
 
     def set_rule(self, rule, log_denied):
-        self.set_rules([rule], log_denied)
+        self.set_rules((rule,), log_denied)
         return ""
 
     def get_available_tables(self, table=None):
@@ -2712,7 +2712,7 @@ class nftables:
                 INVALID_TYPE, "ipset type name '%s' is not valid" % type
             )
 
-    def build_set_create_rules(self, name, type, options=None):
+    def _build_set_create_rule(self, name, type, options=None):
         if options and "family" in options and options["family"] == "inet6":
             ipv = "ipv6"
         else:
@@ -2737,11 +2737,13 @@ class nftables:
             if "maxelem" in options:
                 set_dict["size"] = int(options["maxelem"])
 
-        return [{"add": {"set": set_dict}}]
+        return {"add": {"set": set_dict}}
 
     def set_create(self, name, type, options=None):
-        rules = self.build_set_create_rules(name, type, options)
-        self.set_rules(rules, self._fw.get_log_denied())
+        self.set_rule(
+            self._build_set_create_rule(name, type, options),
+            self._fw.get_log_denied(),
+        )
 
     def set_destroy(self, name):
         rule = {
@@ -2854,26 +2856,21 @@ class nftables:
                 fragment.append(entry_tokens[i])
         return [{"concat": fragment}] if len(type_format) > 1 else fragment
 
-    def build_set_add_rules(self, name, entry):
-        rules = []
+    def _build_set_add_rule(self, name, entry):
         element = self._set_entry_fragment(name, entry)
-        rules.append(
-            {
-                "add": {
-                    "element": {
-                        "family": "inet",
-                        "table": TABLE_NAME,
-                        "name": name,
-                        "elem": element,
-                    }
+        return {
+            "add": {
+                "element": {
+                    "family": "inet",
+                    "table": TABLE_NAME,
+                    "name": name,
+                    "elem": element,
                 }
             }
-        )
-        return rules
+        }
 
     def set_add(self, name, entry):
-        rules = self.build_set_add_rules(name, entry)
-        self.set_rules(rules, self._fw.get_log_denied())
+        self.set_rule(self._build_set_add_rule(name, entry), self._fw.get_log_denied())
 
     def set_delete(self, name, entry):
         element = self._set_entry_fragment(name, entry)
@@ -2889,14 +2886,11 @@ class nftables:
         }
         self.set_rule(rule, self._fw.get_log_denied())
 
-    def build_set_flush_rules(self, name):
-        return [
-            {"flush": {"set": {"family": "inet", "table": TABLE_NAME, "name": name}}}
-        ]
+    def _build_set_flush_rule(self, name):
+        return {"flush": {"set": {"family": "inet", "table": TABLE_NAME, "name": name}}}
 
     def set_flush(self, name):
-        rules = self.build_set_flush_rules(name)
-        self.set_rules(rules, self._fw.get_log_denied())
+        self.set_rule(self._build_set_flush_rule(name), self._fw.get_log_denied())
 
     def _ipset_get_family(self, name):
         family = self._fw.ipset.get_family(name, applied=False, honor_ether=True)
@@ -2912,14 +2906,15 @@ class nftables:
     def set_restore(
         self, set_name, type_name, entries, create_options=None, entry_options=None
     ):
-        rules = []
-        rules.extend(self.build_set_create_rules(set_name, type_name, create_options))
-        rules.extend(self.build_set_flush_rules(set_name))
+        rules = [
+            self._build_set_create_rule(set_name, type_name, create_options),
+            self._build_set_flush_rule(set_name),
+        ]
 
         # avoid large memory usage by chunking the entries
         chunk = 0
         for entry in entries:
-            rules.extend(self.build_set_add_rules(set_name, entry))
+            rules.append(self._build_set_add_rule(set_name, entry))
             chunk += 1
             if chunk >= 1000:
                 self.set_rules(rules, self._fw.get_log_denied())
