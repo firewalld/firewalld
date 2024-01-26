@@ -372,7 +372,9 @@ class nftables:
         # Not a rule (it's a table, chain, etc)
         return None
 
-    def set_rules(self, rules, log_denied):
+    def set_rules(self, rules, log_denied=None):
+        if log_denied is None:
+            log_denied = self._fw.get_log_denied()
         _deduplicated_rules = []
         _deduplicated_rules_keys = []
         _executed_rules = []
@@ -511,8 +513,8 @@ class nftables:
                 "handle"
             ]
 
-    def set_rule(self, rule, log_denied):
-        self.set_rules((rule,), log_denied)
+    def set_rule(self, rule, log_denied=None):
+        self.set_rules((rule,), log_denied=log_denied)
         return ""
 
     def get_available_tables(self, table=None):
@@ -2740,16 +2742,12 @@ class nftables:
         return {"add": {"set": set_dict}}
 
     def set_create(self, name, type, options=None):
-        self.set_rule(
-            self._build_set_create_rule(name, type, options),
-            self._fw.get_log_denied(),
-        )
+        self.set_rule(self._build_set_create_rule(name, type, options))
 
     def set_destroy(self, name):
-        rule = {
-            "delete": {"set": {"family": "inet", "table": TABLE_NAME, "name": name}}
-        }
-        self.set_rule(rule, self._fw.get_log_denied())
+        self.set_rule(
+            {"delete": {"set": {"family": "inet", "table": TABLE_NAME, "name": name}}}
+        )
 
     def _set_match_fragment(self, name, match_dest, invert=False):
         type_format = self._fw.ipset.get_ipset(name).type.split(":")[1].split(",")
@@ -2870,27 +2868,28 @@ class nftables:
         }
 
     def set_add(self, name, entry):
-        self.set_rule(self._build_set_add_rule(name, entry), self._fw.get_log_denied())
+        self.set_rule(self._build_set_add_rule(name, entry))
 
     def set_delete(self, name, entry):
         element = self._set_entry_fragment(name, entry)
-        rule = {
-            "delete": {
-                "element": {
-                    "family": "inet",
-                    "table": TABLE_NAME,
-                    "name": name,
-                    "elem": element,
+        self.set_rule(
+            {
+                "delete": {
+                    "element": {
+                        "family": "inet",
+                        "table": TABLE_NAME,
+                        "name": name,
+                        "elem": element,
+                    }
                 }
             }
-        }
-        self.set_rule(rule, self._fw.get_log_denied())
+        )
 
     def _build_set_flush_rule(self, name):
         return {"flush": {"set": {"family": "inet", "table": TABLE_NAME, "name": name}}}
 
     def set_flush(self, name):
-        self.set_rule(self._build_set_flush_rule(name), self._fw.get_log_denied())
+        self.set_rule(self._build_set_flush_rule(name))
 
     def _ipset_get_family(self, name):
         family = self._fw.ipset.get_family(name, applied=False, honor_ether=True)
@@ -2917,7 +2916,7 @@ class nftables:
             rules.append(self._build_set_add_rule(set_name, entry))
             chunk += 1
             if chunk >= 1000:
-                self.set_rules(rules, self._fw.get_log_denied())
+                self.set_rules(rules)
                 rules.clear()
                 chunk = 0
-        self.set_rules(rules, self._fw.get_log_denied())
+        self.set_rules(rules)
