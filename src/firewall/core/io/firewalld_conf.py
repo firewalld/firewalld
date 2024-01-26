@@ -58,6 +58,10 @@ def _unparse_reload_policy(value):
     return ",".join(f"{k}:{v}" for k, v in value.items())
 
 
+def _normalize_reload_policy(value):
+    return _unparse_reload_policy(_parse_reload_policy(value))
+
+
 def _validate_bool(value, default):
     valid = True
     try:
@@ -70,13 +74,6 @@ def _validate_bool(value, default):
 
 
 def _validate_enum(value, enum_values, default):
-
-    for f in enum_values:
-        assert isinstance(f, str)
-        assert f == f.strip()
-        assert f == f.lower()
-
-    assert default in enum_values
 
     if value is None:
         return default, True
@@ -95,24 +92,153 @@ def _validate_enum(value, enum_values, default):
     return enum_values[idx], True
 
 
+class KeyType:
+    def __init__(
+        self,
+        key,
+        key_type,
+        default,
+        *,
+        enum_values=None,
+    ):
+        self.key = key
+        self.key_type = key_type
+        self._default = default
+        self._enum_values = tuple(enum_values) if enum_values is not None else None
+
+    @property
+    def default(self):
+        if self.key_type is bool:
+            v = firewall.functions.str_to_bool(self._default)
+            return "yes" if v else "no"
+        if self.key_type is int:
+            v = int(self._default)
+            return str(v)
+        return str(self._default)
+
+    def _error_invalid_value(self, value):
+        return firewall.errors.FirewallError(
+            firewall.errors.INVALID_VALUE,
+            "'%s' for %s" % (value, self.key),
+        )
+
+    def normalize(self, value, strict=True, log_warn=True):
+
+        if value is None and strict:
+            raise self._error_invalid_value(value)
+
+        if self.key_type is bool:
+            v, valid = _validate_bool(value, self._default)
+            if not valid:
+                if strict:
+                    raise self._error_invalid_value(value)
+                if log_warn:
+                    log.warning(
+                        f"{self.key} '{value}' is not a valid boolean, using default value '{v}'"
+                    )
+            return v
+        if self.key_type is str:
+            if value and isinstance(value, str):
+                v = value.strip()
+                if v:
+                    return v
+            if strict:
+                raise self._error_invalid_value(value)
+            v = self.default
+            assert v and isinstance(v, str)
+            if value is not None:
+                if log_warn:
+                    log.warning(f"{self.key} is empty, using default value '{v}'")
+            return v
+        if self.key_type is int:
+            try:
+                v = int(value)
+            except (ValueError, TypeError):
+                if strict:
+                    raise self._error_invalid_value(value)
+                v = int(self._default)
+                if value is not None:
+                    if log_warn:
+                        log.warning(
+                            f"MinimalMark '{value}' is not valid, using default value '{v}'",
+                        )
+            return str(v)
+        if self.key_type is _validate_enum:
+            v, valid = _validate_enum(value, self._enum_values, self._default)
+            if not valid:
+                if strict:
+                    raise self._error_invalid_value(value)
+                if log_warn:
+                    log.warning(
+                        f"{self.key} '{value}' is invalid, using default value '{v}'"
+                    )
+            assert v
+            return v
+        if self.key_type in (_normalize_reload_policy,):
+            try:
+                v = self.key_type(value)
+            except ValueError:
+                v = self.key_type(self.default)
+                if log_warn:
+                    log.warning(
+                        f"{self.key} '{value}' is not valid, using default value '{v}'"
+                    )
+            return value
+
+        raise firewall.errors.BugError()
+
+
 valid_keys = [
-    "DefaultZone",
-    "MinimalMark",
-    "CleanupOnExit",
-    "CleanupModulesOnExit",
-    "Lockdown",
-    "IPv6_rpfilter",
-    "IndividualCalls",
-    "LogDenied",
-    "AutomaticHelpers",
-    "FirewallBackend",
-    "FlushAllOnReload",
-    "ReloadPolicy",
-    "RFC3964_IPv4",
-    "AllowZoneDrifting",
-    "NftablesFlowtable",
-    "NftablesCounters",
+    KeyType("DefaultZone", key_type=str, default=config.FALLBACK_ZONE),
+    KeyType("MinimalMark", key_type=int, default=config.FALLBACK_MINIMAL_MARK),
+    KeyType("CleanupOnExit", key_type=bool, default=config.FALLBACK_CLEANUP_ON_EXIT),
+    KeyType(
+        "CleanupModulesOnExit",
+        key_type=bool,
+        default=config.FALLBACK_CLEANUP_MODULES_ON_EXIT,
+    ),
+    KeyType("Lockdown", key_type=bool, default=config.FALLBACK_LOCKDOWN),
+    KeyType("IPv6_rpfilter", key_type=bool, default=config.FALLBACK_IPV6_RPFILTER),
+    KeyType("IndividualCalls", key_type=bool, default=config.FALLBACK_INDIVIDUAL_CALLS),
+    KeyType(
+        "LogDenied",
+        key_type=_validate_enum,
+        default=config.FALLBACK_LOG_DENIED,
+        enum_values=config.LOG_DENIED_VALUES,
+    ),
+    KeyType(
+        "AutomaticHelpers",
+        key_type=_validate_enum,
+        default=config.FALLBACK_AUTOMATIC_HELPERS,
+        enum_values=config.AUTOMATIC_HELPERS_VALUES,
+    ),
+    KeyType(
+        "FirewallBackend",
+        key_type=_validate_enum,
+        default=config.FALLBACK_FIREWALL_BACKEND,
+        enum_values=config.FIREWALL_BACKEND_VALUES,
+    ),
+    KeyType(
+        "FlushAllOnReload", key_type=bool, default=config.FALLBACK_FLUSH_ALL_ON_RELOAD
+    ),
+    KeyType(
+        "ReloadPolicy",
+        key_type=_normalize_reload_policy,
+        default=config.FALLBACK_RELOAD_POLICY,
+    ),
+    KeyType("RFC3964_IPv4", key_type=bool, default=config.FALLBACK_RFC3964_IPV4),
+    KeyType(
+        "AllowZoneDrifting", key_type=bool, default=config.FALLBACK_ALLOW_ZONE_DRIFTING
+    ),
+    KeyType(
+        "NftablesFlowtable", key_type=str, default=config.FALLBACK_NFTABLES_FLOWTABLE
+    ),
+    KeyType(
+        "NftablesCounters", key_type=bool, default=config.FALLBACK_NFTABLES_COUNTERS
+    ),
 ]
+
+valid_keys = {t.key: t for t in valid_keys}
 
 
 class firewalld_conf:
@@ -143,53 +269,9 @@ class firewalld_conf:
         return s
 
     def set_defaults(self):
-        self.set("DefaultZone", config.FALLBACK_ZONE)
-        self.set("MinimalMark", str(config.FALLBACK_MINIMAL_MARK))
-        self.set("CleanupOnExit", "yes" if config.FALLBACK_CLEANUP_ON_EXIT else "no")
-        self.set(
-            "CleanupModulesOnExit",
-            "yes" if config.FALLBACK_CLEANUP_MODULES_ON_EXIT else "no",
-        )
-        self.set("Lockdown", "yes" if config.FALLBACK_LOCKDOWN else "no")
-        self.set("IPv6_rpfilter", "yes" if config.FALLBACK_IPV6_RPFILTER else "no")
-        self.set("IndividualCalls", "yes" if config.FALLBACK_INDIVIDUAL_CALLS else "no")
-        self.set("LogDenied", config.FALLBACK_LOG_DENIED)
-        self.set("AutomaticHelpers", config.FALLBACK_AUTOMATIC_HELPERS)
-        self.set("FirewallBackend", config.FALLBACK_FIREWALL_BACKEND)
-        self.set(
-            "FlushAllOnReload", "yes" if config.FALLBACK_FLUSH_ALL_ON_RELOAD else "no"
-        )
-        self.set("ReloadPolicy", config.FALLBACK_RELOAD_POLICY)
-        self.set("RFC3964_IPv4", "yes" if config.FALLBACK_RFC3964_IPV4 else "no")
-        self.set(
-            "AllowZoneDrifting", "yes" if config.FALLBACK_ALLOW_ZONE_DRIFTING else "no"
-        )
-        self.set("NftablesFlowtable", config.FALLBACK_NFTABLES_FLOWTABLE)
-        self.set(
-            "NftablesCounters", "yes" if config.FALLBACK_NFTABLES_COUNTERS else "no"
-        )
-
+        for keytype in valid_keys.values():
+            self.set(keytype.key, keytype.default)
         self._normalize()
-
-    def _normalize_bool(self, property_name, default):
-        value0 = self.get(property_name)
-        value, valid = _validate_bool(value0, default)
-        if not valid:
-            log.warning(
-                f"{property_name} '{value0}' is not a valid boolean, using default value '{default}'"
-            )
-        if value0 != value:
-            self.set(property_name, value)
-
-    def _normalize_enum(self, property_name, enum_values, default):
-        value0 = self.get(property_name)
-        value, valid = _validate_enum(value0, enum_values, default)
-        if not valid:
-            log.warning(
-                f"{property_name} '{value0}' is invalid, using default value '{default}'"
-            )
-        if value0 != value:
-            self.set(property_name, value)
 
     # load self.filename
     def read(self):
@@ -227,101 +309,11 @@ class firewalld_conf:
         self._normalize()
 
     def _normalize(self):
-
-        if not self.get("DefaultZone"):
-            log.error(
-                "DefaultZone is not set, using default value '%s'", config.FALLBACK_ZONE
-            )
-            self.set("DefaultZone", str(config.FALLBACK_ZONE))
-
-        value = self.get("MinimalMark")
-        try:
-            v = int(value)
-        except (ValueError, TypeError):
-            v = int(config.FALLBACK_MINIMAL_MARK)
-            if value is not None:
-                log.warning(
-                    f"MinimalMark '{value}' is not valid, using default value '{v}'",
-                )
-        value2 = str(v)
-        if value != value2:
-            self.set("MinimalMark", value2)
-
-        self._normalize_bool(
-            "CleanupOnExit",
-            config.FALLBACK_CLEANUP_ON_EXIT,
-        )
-
-        self._normalize_bool(
-            "CleanupModulesOnExit",
-            config.FALLBACK_CLEANUP_MODULES_ON_EXIT,
-        )
-
-        self._normalize_bool(
-            "Lockdown",
-            config.FALLBACK_LOCKDOWN,
-        )
-
-        self._normalize_bool(
-            "IPv6_rpfilter",
-            config.FALLBACK_IPV6_RPFILTER,
-        )
-
-        self._normalize_bool(
-            "IndividualCalls",
-            config.FALLBACK_INDIVIDUAL_CALLS,
-        )
-
-        self._normalize_enum(
-            "LogDenied",
-            config.LOG_DENIED_VALUES,
-            config.FALLBACK_LOG_DENIED,
-        )
-
-        self._normalize_enum(
-            "AutomaticHelpers",
-            config.AUTOMATIC_HELPERS_VALUES,
-            config.FALLBACK_AUTOMATIC_HELPERS,
-        )
-
-        self._normalize_enum(
-            "FirewallBackend",
-            config.FIREWALL_BACKEND_VALUES,
-            config.FALLBACK_FIREWALL_BACKEND,
-        )
-
-        self._normalize_bool(
-            "FlushAllOnReload",
-            config.FALLBACK_FLUSH_ALL_ON_RELOAD,
-        )
-
-        value = self.get("ReloadPolicy")
-        try:
-            value = _parse_reload_policy(value)
-        except ValueError:
-            log.warning(
-                f"ReloadPolicy '{value}' is not valid, using default value '{config.FALLBACK_RELOAD_POLICY}'"
-            )
-            self.set("ReloadPolicy", config.FALLBACK_RELOAD_POLICY)
-
-        self._normalize_bool(
-            "RFC3964_IPv4",
-            config.FALLBACK_RFC3964_IPV4,
-        )
-
-        self._normalize_bool(
-            "AllowZoneDrifting",
-            config.FALLBACK_ALLOW_ZONE_DRIFTING,
-        )
-
-        value = self.get("NftablesFlowtable")
-        if value is None:
-            self.set("NftablesFlowtable", config.FALLBACK_NFTABLES_FLOWTABLE)
-
-        self._normalize_bool(
-            "NftablesCounters",
-            config.FALLBACK_NFTABLES_COUNTERS,
-        )
+        for keytype in valid_keys.values():
+            value = self.get(keytype.key)
+            value2 = keytype.normalize(value, strict=False)
+            if value != value2:
+                self.set(keytype.key, value2)
 
     # save to self.filename if there are key/value changes
     def write(self):
