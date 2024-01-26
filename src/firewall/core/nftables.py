@@ -2768,7 +2768,7 @@ class nftables:
                 fragments.append(
                     {
                         "payload": {
-                            "protocol": self._set_get_family(name),
+                            "protocol": self._ipset_get_family(name),
                             "field": "daddr" if match_dest else "saddr",
                         }
                     }
@@ -2898,18 +2898,13 @@ class nftables:
         rules = self.build_set_flush_rules(name)
         self.set_rules(rules, self._fw.get_log_denied())
 
-    def _set_get_family(self, name):
-        ipset = self._fw.ipset.get_ipset(name)
+    def _ipset_get_family(self, name):
+        family = self._fw.ipset.get_family(name, applied=False, honor_ether=True)
 
-        if ipset.type == "hash:mac":
-            family = "ether"
-        elif (
-            ipset.options
-            and "family" in ipset.options
-            and ipset.options["family"] == "inet6"
-        ):
+        # Remap the different forms for the address family.
+        if family == "ipv6":
             family = "ip6"
-        else:
+        elif family == "ipv4":
             family = "ip"
 
         return family

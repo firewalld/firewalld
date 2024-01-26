@@ -176,12 +176,9 @@ class FirewallIPSet:
 
     # OPTIONS
 
-    def get_family(self, name, applied=True):
+    def get_family(self, name, applied=True, honor_ether=False):
         obj = self.get_ipset(name, applied=applied)
-        if "family" in obj.options:
-            if obj.options["family"] == "inet6":
-                return "ipv6"
-        return "ipv4"
+        return obj.get_family(honor_ether=honor_ether)
 
     # ENTRIES
 
