@@ -239,6 +239,10 @@ class nftables:
         self.nftables.set_handle_output(True)
 
     @staticmethod
+    def _add_del(enable):
+        return "add" if enable else "delete"
+
+    @staticmethod
     def _detect_rule_verb(rule, with_flushreplace=False, allow_none=False):
         if "add" in rule:
             return "add"
@@ -535,7 +539,7 @@ class nftables:
         return self._build_delete_table_rules(TABLE_NAME)
 
     def _build_set_policy_rules_ct_rule(self, enable, hook):
-        add_del = {True: "add", False: "delete"}[enable]
+        add_del = nftables._add_del(enable)
         return {
             add_del: {
                 "rule": {
@@ -1295,7 +1299,7 @@ class nftables:
         egress_source,
         last=False,
     ):
-        add_del = {True: "add", False: "delete"}[enable]
+        add_del = nftables._add_del(enable)
         p_obj = self._fw.policy.get_policy(policy)
         isSNAT = True if (table == "nat" and chain == "POSTROUTING") else False
         _policy = self._fw.policy.policy_base_chain_name(
@@ -1418,7 +1422,7 @@ class nftables:
         return rules
 
     def build_policy_chain_rules(self, enable, policy, table, chain):
-        add_del = {True: "add", False: "delete"}[enable]
+        add_del = nftables._add_del(enable)
         isSNAT = True if (table == "nat" and chain == "POSTROUTING") else False
         _policy = self._fw.policy.policy_base_chain_name(
             policy, table, POLICY_CHAIN_PREFIX, isSNAT=isSNAT
@@ -1682,7 +1686,7 @@ class nftables:
             policy, table, POLICY_CHAIN_PREFIX
         )
 
-        add_del = {True: "add", False: "delete"}[enable]
+        add_del = nftables._add_del(enable)
 
         chain_suffix = self._rich_rule_chain_suffix_from_log(rich_rule)
 
@@ -1724,7 +1728,7 @@ class nftables:
             policy, table, POLICY_CHAIN_PREFIX
         )
 
-        add_del = {True: "add", False: "delete"}[enable]
+        add_del = nftables._add_del(enable)
 
         chain_suffix = self._rich_rule_chain_suffix_from_log(rich_rule)
         rule = {
@@ -1748,7 +1752,7 @@ class nftables:
             policy, table, POLICY_CHAIN_PREFIX
         )
 
-        add_del = {True: "add", False: "delete"}[enable]
+        add_del = nftables._add_del(enable)
 
         chain_suffix = self._rich_rule_chain_suffix(rich_rule)
         chain = "%s_%s_%s" % (table, _policy, chain_suffix)
@@ -1891,7 +1895,7 @@ class nftables:
     def build_policy_ports_rules(
         self, enable, policy, proto, port, destination=None, rich_rule=None
     ):
-        add_del = {True: "add", False: "delete"}[enable]
+        add_del = nftables._add_del(enable)
         table = "filter"
         _policy = self._fw.policy.policy_base_chain_name(
             policy, table, POLICY_CHAIN_PREFIX
@@ -1948,7 +1952,7 @@ class nftables:
     def build_policy_protocol_rules(
         self, enable, policy, protocol, destination=None, rich_rule=None
     ):
-        add_del = {True: "add", False: "delete"}[enable]
+        add_del = nftables._add_del(enable)
         table = "filter"
         _policy = self._fw.policy.policy_base_chain_name(
             policy, table, POLICY_CHAIN_PREFIX
@@ -2010,7 +2014,7 @@ class nftables:
         _policy = self._fw.policy.policy_base_chain_name(
             policy, table, POLICY_CHAIN_PREFIX
         )
-        add_del = {True: "add", False: "delete"}[enable]
+        add_del = nftables._add_del(enable)
 
         expr_fragments = []
         if rich_rule:
@@ -2065,7 +2069,7 @@ class nftables:
     def build_policy_source_ports_rules(
         self, enable, policy, proto, port, destination=None, rich_rule=None
     ):
-        add_del = {True: "add", False: "delete"}[enable]
+        add_del = nftables._add_del(enable)
         table = "filter"
         _policy = self._fw.policy.policy_base_chain_name(
             policy, table, POLICY_CHAIN_PREFIX
@@ -2126,7 +2130,7 @@ class nftables:
         _policy = self._fw.policy.policy_base_chain_name(
             policy, table, POLICY_CHAIN_PREFIX
         )
-        add_del = {True: "add", False: "delete"}[enable]
+        add_del = nftables._add_del(enable)
         rules = []
 
         if enable:
@@ -2175,7 +2179,7 @@ class nftables:
     def build_zone_forward_rules(
         self, enable, zone, policy, table, interface=None, source=None
     ):
-        add_del = {True: "add", False: "delete"}[enable]
+        add_del = nftables._add_del(enable)
         _policy = self._fw.policy.policy_base_chain_name(
             policy, table, POLICY_CHAIN_PREFIX
         )
@@ -2210,7 +2214,7 @@ class nftables:
         return rules
 
     def build_policy_masquerade_rules(self, enable, policy, rich_rule=None):
-        add_del = {True: "add", False: "delete"}[enable]
+        add_del = nftables._add_del(enable)
 
         rules = []
 
@@ -2266,7 +2270,7 @@ class nftables:
         _policy = self._fw.policy.policy_base_chain_name(
             policy, table, POLICY_CHAIN_PREFIX
         )
-        add_del = {True: "add", False: "delete"}[enable]
+        add_del = nftables._add_del(enable)
 
         expr_fragments = []
         if rich_rule:
@@ -2345,7 +2349,7 @@ class nftables:
         _policy = self._fw.policy.policy_base_chain_name(
             policy, table, POLICY_CHAIN_PREFIX
         )
-        add_del = {True: "add", False: "delete"}[enable]
+        add_del = nftables._add_del(enable)
 
         if rich_rule and rich_rule.ipvs:
             ipvs = rich_rule.ipvs
@@ -2454,7 +2458,7 @@ class nftables:
             policy, table, POLICY_CHAIN_PREFIX
         )
         rules = []
-        add_del = {True: "add", False: "delete"}[enable]
+        add_del = nftables._add_del(enable)
 
         if self._fw.policy.query_icmp_block_inversion(policy):
             target_fragment = self._reject_fragment()
