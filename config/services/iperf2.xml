@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>iperf2</short>
+  <description>iperf2 is a TCP and UDP network bandwidth measurement tool. Enable this option if you want to run an iperf2 server on its default port.</description>
+  <port protocol="tcp" port="5001"/>
+  <port protocol="udp" port="5001"/>
+</service>

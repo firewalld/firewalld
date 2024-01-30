@@ -204,6 +204,8 @@ CONFIG_FILES = \
 	services/ident.xml \
 	services/imaps.xml \
 	services/imap.xml \
+	services/iperf2.xml \
+	services/iperf3.xml \
 	services/ipfs.xml \
 	services/ipp-client.xml \
 	services/ipp.xml \
