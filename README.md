@@ -1,6 +1,6 @@
 [![Build status](https://github.com/firewalld/firewalld/workflows/testsuite/badge.svg)](https://github.com/firewalld/firewalld/actions/workflows/testsuite.yml?query=event%3Apush+workflow%3Atestsuite)
-[![Integration status](https://github.com/firewalld/firewalld/workflows/integration%20testsuite/badge.svg)](https://github.com/firewalld/firewalld/actions?query=event%3Apush+branch%3Amaster+workflow%3Aintegration-testsuite)
-[![Source status](https://github.com/firewalld/firewalld/workflows/source%20code%20and%20build%20checks/badge.svg)](https://github.com/firewalld/firewalld/actions?query=event%3Apush+branch%3Amaster+workflow%3Asource-checks)
+[![Integration status](https://github.com/firewalld/firewalld/workflows/integration%20testsuite/badge.svg)](https://github.com/firewalld/firewalld/actions?query=event%3Apush+workflow%3Aintegration-testsuite)
+[![Source status](https://github.com/firewalld/firewalld/workflows/source%20code%20and%20build%20checks/badge.svg)](https://github.com/firewalld/firewalld/actions?query=event%3Apush+workflow%3Asource-checks)
 
 
 FirewallD - A firewall daemon with D-Bus interface providing a dynamic firewall
