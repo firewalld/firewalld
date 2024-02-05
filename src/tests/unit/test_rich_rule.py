@@ -98,6 +98,9 @@ EXP_RULE_LIST = [
         'rule family="ipv6" source address="1:2:3:4:6::" port port="4011" protocol="tcp" log prefix="port 4011: " level="info" limit value="4/m" drop'
     ),
     ExpRule(
+        'rule family="ipv6" source address="1:2:3:4:6::" port port="4011" protocol="tcp" log prefix="port 4011: " level="info" limit value="4000000/m" drop',
+    ),
+    ExpRule(
         'rule family="ipv6" source address="1:2:3:4:6::" forward-port port="4011" protocol="tcp" to-port="4012" to-addr="1::2:3:4:7"'
     ),
     ExpRule(
