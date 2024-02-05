@@ -580,6 +580,10 @@ def common_check_config(obj, config, item, all_config, all_io_objects):
                     )
 
 
+def _handler_add_rich_limit(handler, limit):
+    handler.simpleElement("limit", {"value": limit.value})
+
+
 def common_writer(obj, handler):
     # short
     if obj.short and obj.short != "":
@@ -742,15 +746,14 @@ def common_writer(obj, handler):
                     attrs["prefix"] = rule.log.prefix
                 if rule.log.level:
                     attrs["level"] = rule.log.level
+                handler.ignorableWhitespace("    ")
                 if rule.log.limit:
-                    handler.ignorableWhitespace("    ")
                     handler.startElement("log", attrs)
                     handler.ignorableWhitespace("\n      ")
-                    handler.simpleElement("limit", {"value": rule.log.limit.value})
+                    _handler_add_rich_limit(handler, rule.log.limit)
                     handler.ignorableWhitespace("\n    ")
                     handler.endElement("log")
                 else:
-                    handler.ignorableWhitespace("    ")
                     handler.simpleElement("log", attrs)
                 handler.ignorableWhitespace("\n")
             else:
@@ -761,30 +764,28 @@ def common_writer(obj, handler):
                     attrs["prefix"] = rule.log.prefix
                 if rule.log.threshold:
                     attrs["queue-size"] = rule.log.threshold
+                handler.ignorableWhitespace("    ")
                 if rule.log.limit:
-                    handler.ignorableWhitespace("    ")
                     handler.startElement("nflog", attrs)
                     handler.ignorableWhitespace("\n      ")
-                    handler.simpleElement("limit", {"value": rule.log.limit.value})
+                    _handler_add_rich_limit(handler, rule.log.limit)
                     handler.ignorableWhitespace("\n    ")
                     handler.endElement("nflog")
                 else:
-                    handler.ignorableWhitespace("    ")
                     handler.simpleElement("nflog", attrs)
                 handler.ignorableWhitespace("\n")
 
         # audit
         if rule.audit:
             attrs = {}
+            handler.ignorableWhitespace("    ")
             if rule.audit.limit:
-                handler.ignorableWhitespace("    ")
                 handler.startElement("audit", {})
                 handler.ignorableWhitespace("\n      ")
-                handler.simpleElement("limit", {"value": rule.audit.limit.value})
+                _handler_add_rich_limit(handler, rule.audit.limit)
                 handler.ignorableWhitespace("\n    ")
                 handler.endElement("audit")
             else:
-                handler.ignorableWhitespace("    ")
                 handler.simpleElement("audit", attrs)
             handler.ignorableWhitespace("\n")
 
@@ -805,15 +806,14 @@ def common_writer(obj, handler):
                 attrs["set"] = rule.action.set
             else:
                 log.warning("Unknown action '%s'", type(rule.action))
+            handler.ignorableWhitespace("    ")
             if rule.action.limit:
-                handler.ignorableWhitespace("    ")
                 handler.startElement(action, attrs)
                 handler.ignorableWhitespace("\n      ")
-                handler.simpleElement("limit", {"value": rule.action.limit.value})
+                _handler_add_rich_limit(handler, rule.action.limit)
                 handler.ignorableWhitespace("\n    ")
                 handler.endElement(action)
             else:
-                handler.ignorableWhitespace("    ")
                 handler.simpleElement(action, attrs)
             handler.ignorableWhitespace("\n")
 
