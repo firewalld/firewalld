@@ -318,7 +318,7 @@ class Rich_Limit(object):
         elif duration == "d":
             mult = 24*60*60
 
-        if 10000 * mult / rate == 0:
+        if 10000 * mult // rate == 0:
             raise FirewallError(errors.INVALID_LIMIT,
                                 "%s too fast" % self.value)
 
