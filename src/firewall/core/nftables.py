@@ -236,6 +236,14 @@ class nftables:
         self._nft_ctx = Nftables()
         self._nft_ctx.set_echo_output(True)
         self._nft_ctx.set_handle_output(True)
+        self._nft_ctx.set_json_output(True)
+
+    def nft_cmd(self, json_root):
+        json_root_str = json.dumps(json_root)
+        rc, output, error = self._nft_ctx.cmd(json_root_str)
+        if len(output):
+            output = json.loads(output)
+        return (rc, output, error)
 
     def _set_rule_sort_policy_dispatch(self, rule, policy_dispatch_index_cache):
         for verb in ["add", "insert", "delete"]:
@@ -460,7 +468,7 @@ class nftables:
                 self.__class__,
                 json.dumps(json_blob),
             )
-        rc, output, error = self._nft_ctx.json_cmd(json_blob)
+        rc, output, error = self.nft_cmd(json_blob)
         if rc != 0:
             raise ValueError(
                 "'%s' failed: %s\nJSON blob:\n%s"
