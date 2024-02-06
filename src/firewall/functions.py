@@ -458,13 +458,20 @@ def firewalld_is_active():
     return False
 
 
-def tempFile():
-    try:
-        if not os.path.exists(FIREWALLD_TEMPDIR):
-            os.mkdir(FIREWALLD_TEMPDIR, 0o750)
+def tempDir():
+    if not os.path.exists(FIREWALLD_TEMPDIR):
+        os.mkdir(FIREWALLD_TEMPDIR, 0o750)
+    return FIREWALLD_TEMPDIR
 
+
+def tempFile(*, mode="wt", prefix="temp.", delete=False):
+    try:
+        d = tempDir()
         return tempfile.NamedTemporaryFile(
-            mode="wt", prefix="temp.", dir=FIREWALLD_TEMPDIR, delete=False
+            mode=mode,
+            prefix=prefix,
+            dir=d,
+            delete=delete,
         )
     except Exception as msg:
         log.error("Failed to create temporary file: %s" % msg)
