@@ -237,7 +237,8 @@ class nftables:
         self.nftables.set_echo_output(True)
         self.nftables.set_handle_output(True)
 
-    def _set_rule_sort_policy_dispatch(self, rule, policy_dispatch_index_cache):
+    @staticmethod
+    def _set_rule_sort_policy_dispatch(rule, policy_dispatch_index_cache):
         for verb in ["add", "insert", "delete"]:
             if verb in rule:
                 break
@@ -279,10 +280,13 @@ class nftables:
                 rule["add"] = _verb_snippet
                 rule["add"]["rule"]["index"] = index
 
-    def _set_rule_replace_priority(self, rule, priority_counts, token):
+    @staticmethod
+    def _set_rule_replace_priority(rule, priority_counts):
         for verb in ["add", "insert", "delete"]:
             if verb in rule:
                 break
+
+        token = "%%RICH_RULE_PRIORITY%%"
 
         if token in rule[verb]["rule"]:
             priority = rule[verb]["rule"][token]
@@ -422,10 +426,10 @@ class nftables:
                     # -1 inserts just before the verdict
                     rule[verb]["rule"]["expr"].insert(-1, {"counter": None})
 
-                self._set_rule_replace_priority(
-                    rule, rich_rule_priority_counts, "%%RICH_RULE_PRIORITY%%"
+                nftables._set_rule_replace_priority(rule, rich_rule_priority_counts)
+                nftables._set_rule_sort_policy_dispatch(
+                    rule, policy_dispatch_index_cache
                 )
-                self._set_rule_sort_policy_dispatch(rule, policy_dispatch_index_cache)
 
                 # delete using rule handle
                 if verb == "delete":

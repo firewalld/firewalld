@@ -9,7 +9,7 @@ def test_set_rule_replace_priority():
         rule2 = copy.deepcopy(rule)
 
         x = firewall.core.nftables.nftables._set_rule_replace_priority(
-            None, rule2, priority_counts2, "%%RICH_RULE_PRIORITY%%"
+            rule2, priority_counts2
         )
 
         assert x is None
@@ -78,7 +78,7 @@ def test_set_rule_sort_policy_dispatch():
         policy_dispatch_index_cache2 = copy.deepcopy(policy_dispatch_index_cache)
 
         x = firewall.core.nftables.nftables._set_rule_sort_policy_dispatch(
-            None, rule2, policy_dispatch_index_cache2
+            rule2, policy_dispatch_index_cache2
         )
         assert x is None
         assert rule2 == expected_rule
