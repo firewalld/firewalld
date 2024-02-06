@@ -9,6 +9,7 @@ import copy
 import json
 import ipaddress
 
+import firewall.functions
 from firewall.core.logger import log
 from firewall.functions import (
     check_mac,
@@ -238,17 +239,37 @@ class nftables:
         self._nft_ctx.set_handle_output(True)
         self._nft_ctx.set_json_output(True)
 
-    def nft_cmd(self, json_root):
+    def nft_cmd(self, json_root, is_large=False):
         if isinstance(json_root, list):
             # The caller gave us the JSON in a list, so we can drop the
             # reference to the memory. Unpack the list, and delete the entry.
             l = json_root
             (json_root,) = l
             del l[0]
-        json_root_str = json.dumps(json_root)
-        del json_root
-        json_root_str = json_root_str.encode("utf-8")
-        rc, output, error = self._nft_ctx.cmd(json_root_str)
+
+        if is_large and hasattr(self._nft_ctx, "cmd_from_file"):
+            filename = None
+            try:
+                with firewall.functions.tempFile(
+                    prefix="temp.nft-json.", delete=False
+                ) as file:
+                    filename = file.name
+                    json.dump(json_root, file)
+
+                del json_root
+
+                rc, output, error = self._nft_ctx.cmd_from_file(
+                    filename.encode("utf-8")
+                )
+            finally:
+                if filename is not None:
+                    firewall.functions.removeFile(filename)
+        else:
+            json_root_str = json.dumps(json_root)
+            del json_root
+            json_root_str = json_root_str.encode("utf-8")
+            rc, output, error = self._nft_ctx.cmd(json_root_str)
+
         return (rc, output, error)
 
     @staticmethod
@@ -368,7 +389,7 @@ class nftables:
         # Not a rule (it's a table, chain, etc)
         return None
 
-    def set_rules(self, rules, log_denied, *, rules_clear=False):
+    def set_rules(self, rules, log_denied, *, rules_clear=False, is_large=False):
         _valid_verbs = ["add", "insert", "delete", "flush", "replace"]
         _valid_add_verbs = ["add", "insert", "replace"]
         _deduplicated_rules = []
@@ -478,6 +499,8 @@ class nftables:
             "nftables": [{"metainfo": {"json_schema_version": 1}}] + _executed_rules
         }
 
+        is_large = is_large or len(_executed_rules) > 100
+
         del _executed_rules
 
         if log.getDebugLogLevel() >= 3:
@@ -488,7 +511,7 @@ class nftables:
                 json.dumps(json_blob),
             )
 
-        rc, output, error = self.nft_cmd(json_blob)
+        rc, output, error = self.nft_cmd(json_blob, is_large=is_large)
 
         if rc != 0:
             raise ValueError(
