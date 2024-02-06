@@ -458,6 +458,13 @@ def firewalld_is_active():
     return False
 
 
+def removeFile(filename):
+    try:
+        os.remove(filename)
+    except OSError:
+        pass
+
+
 def tempDir():
     if not os.path.exists(FIREWALLD_TEMPDIR):
         os.mkdir(FIREWALLD_TEMPDIR, 0o750)
