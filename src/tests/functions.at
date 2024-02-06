@@ -97,6 +97,12 @@ m4_define([FWD_RESTART], [
 m4_define([FWD_START_TEST], [
     AT_SETUP([$1])
     AT_KEYWORDS(FIREWALL_BACKEND)
+    AT_KEYWORDS(__file__:__line__)
+    AT_KEYWORDS(__file__)
+    AT_KEYWORDS(AT_LINE)
+    AT_KEYWORDS([m4_bregexp(__file__, [^.*/\([^/]*\)$], [\1])])
+    AT_KEYWORDS([m4_bregexp(__file__, [^.*/\([^/]*\)\.at$], [\1])])
+    AT_KEYWORDS([m4_bregexp(__file__, [^\(.*\)/[^/]*$], [\1])])
 
     dnl Default values for things that should be defined in atlocal. If atlocal
     dnl can't be found it's likely because the testsuite is run "standalone" and
