@@ -250,6 +250,7 @@ CONFIG_FILES = \
 	services/minecraft.xml \
 	services/memcache.xml \
 	services/minidlna.xml \
+	services/mndp.xml \
 	services/mongodb.xml \
 	services/mosh.xml \
 	services/mountd.xml \
