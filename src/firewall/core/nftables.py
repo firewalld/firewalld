@@ -233,9 +233,9 @@ class nftables:
         self.rich_rule_priority_counts = {}
         self.policy_dispatch_index_cache = {}
 
-        self.nftables = Nftables()
-        self.nftables.set_echo_output(True)
-        self.nftables.set_handle_output(True)
+        self._nft_ctx = Nftables()
+        self._nft_ctx.set_echo_output(True)
+        self._nft_ctx.set_handle_output(True)
 
     def _set_rule_sort_policy_dispatch(self, rule, policy_dispatch_index_cache):
         for verb in ["add", "insert", "delete"]:
@@ -460,7 +460,7 @@ class nftables:
                 self.__class__,
                 json.dumps(json_blob),
             )
-        rc, output, error = self.nftables.json_cmd(json_blob)
+        rc, output, error = self._nft_ctx.json_cmd(json_blob)
         if rc != 0:
             raise ValueError(
                 "'%s' failed: %s\nJSON blob:\n%s"
