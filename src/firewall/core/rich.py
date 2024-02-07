@@ -5,6 +5,9 @@
 # Authors:
 # Thomas Woerner <twoerner@redhat.com>
 
+from typing import Union
+from dataclasses import dataclass, field, InitVar
+
 from firewall import functions
 from firewall.core.ipset import check_ipset_name
 from firewall.core.base import REJECT_TYPES
@@ -433,54 +436,24 @@ DURATION_TO_MULT = {
 }
 
 
+@dataclass(frozen=True)
 class Rich_Limit(_Rich_Entry):
-    def __init__(self, value, burst=None):
-        self.value = value
-        self.burst = burst
+    """This object only holds data and is read-only after init. It is also
+    hashable and can be used as a dictionary key."""
 
-    def check(self, family=None):
-        self.value_parse()
-        self.burst_parse()
+    value: InitVar[str]  # init only, use rate and duration
+    burst: Union[int, None] = None
+    rate: int = field(init=False)
+    duration: str = field(init=False)
 
-    @property
-    def value(self):
-        return self._value
+    def __post_init__(self, value):
+        rate, duration = self._value_parse(value)
+        object.__setattr__(self, "rate", rate)
+        object.__setattr__(self, "duration", duration)
+        object.__setattr__(self, "burst", self._burst_parse(self.burst))
+        object.__setattr__(self, "value", f"{self.rate}/{self.duration}")
 
-    @value.setter
-    def value(self, value):
-        if value is None:
-            self._value = None
-            return
-        try:
-            rate, duration = self._value_parse(value)
-        except FirewallError:
-            # The value is invalid. We cannot normalize it.
-            v = value
-        else:
-            v = f"{rate}/{duration}"
-        if getattr(self, "_value", None) != v:
-            self._value = v
-
-    @property
-    def burst(self):
-        return self._burst
-
-    @burst.setter
-    def burst(self, burst):
-        if burst is None:
-            self._burst = None
-            return
-        try:
-            b = self._burst_parse(burst)
-        except FirewallError:
-            b = burst
-        else:
-            b = str(burst)
-        if getattr(self, "_burst", None) != b:
-            self._burst = b
-
-    @staticmethod
-    def _value_parse(value):
+    def _value_parse(self, value):
         splits = None
         if "/" in value:
             splits = value.split("/")
@@ -492,6 +465,8 @@ class Rich_Limit(_Rich_Entry):
         except:
             raise FirewallError(errors.INVALID_LIMIT, value)
 
+        duration = duration.strip()
+
         if duration in ["second", "minute", "hour", "day"]:
             duration = duration[:1]
 
@@ -499,21 +474,18 @@ class Rich_Limit(_Rich_Entry):
             raise FirewallError(errors.INVALID_LIMIT, value)
 
         if 10000 * DURATION_TO_MULT[duration] // rate == 0:
-            raise FirewallError(errors.INVALID_LIMIT, "%s too fast" % (value,))
+            raise FirewallError(errors.INVALID_LIMIT, f"{value} too fast")
 
         if rate == 1 and duration == "d":
             # iptables (v1.4.21) doesn't accept 1/d
-            raise FirewallError(errors.INVALID_LIMIT, "%s too slow" % (value,))
+            raise FirewallError(errors.INVALID_LIMIT, f"{value} too slow")
 
         return rate, duration
 
-    def value_parse(self):
-        return self._value_parse(self._value)
-
-    @staticmethod
-    def _burst_parse(burst):
+    def _burst_parse(self, burst):
         if burst is None:
             return None
+
         try:
             b = int(burst)
         except:
@@ -524,13 +496,10 @@ class Rich_Limit(_Rich_Entry):
 
         return b
 
-    def burst_parse(self):
-        return self._burst_parse(self._burst)
-
     def __str__(self):
-        s = f'limit value="{self._value}"'
-        if self._burst is not None:
-            s += f" burst={self._burst}"
+        s = f'limit value="{self.value}"'
+        if self.burst is not None:
+            s += f" burst={self.burst}"
         return s
 
 

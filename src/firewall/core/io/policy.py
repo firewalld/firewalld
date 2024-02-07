@@ -584,7 +584,7 @@ def _handler_add_rich_limit(handler, limit):
     d = {"value": limit.value}
     burst = limit.burst
     if burst is not None:
-        d["burst"] = burst
+        d["burst"] = str(burst)
     handler.simpleElement("limit", d)
 
 
