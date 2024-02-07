@@ -3443,11 +3443,12 @@ class FirewallConfig:
 
                 if old_obj.action.limit:
                     self.richRuleDialogActionLimitCheck.set_active(True)
-                    (rate, duration) = old_obj.action.limit.value_parse()
-                    self.richRuleDialogActionLimitRateEntry.set_text(str(rate))
+                    self.richRuleDialogActionLimitRateEntry.set_text(
+                        str(old_obj.action.limit.rate)
+                    )
                     combobox_select_text(
                         self.richRuleDialogActionLimitDurationCombobox,
-                        smhd[duration],
+                        smhd[old_obj.action.limit.duration],
                         insensitive=True,
                     )
 
@@ -3484,11 +3485,12 @@ class FirewallConfig:
                 )
                 if old_obj.log.limit:
                     self.richRuleDialogLogLimitCheck.set_active(True)
-                    (rate, duration) = old_obj.log.limit.value_parse()
-                    self.richRuleDialogLogLimitRateEntry.set_text(str(rate))
+                    self.richRuleDialogLogLimitRateEntry.set_text(
+                        str(old_obj.log.limit.rate)
+                    )
                     combobox_select_text(
                         self.richRuleDialogLogLimitDurationCombobox,
-                        smhd[duration],
+                        smhd[old_obj.log.limit.duration],
                         insensitive=True,
                     )
 
@@ -3497,11 +3499,12 @@ class FirewallConfig:
                 self.richRuleDialogAuditCheck.set_active(True)
                 if old_obj.audit.limit:
                     self.richRuleDialogAuditLimitCheck.set_active(True)
-                    (rate, duration) = old_obj.audit.limit.value_parse()
-                    self.richRuleDialogAuditLimitRateEntry.set_text(str(rate))
+                    self.richRuleDialogAuditLimitRateEntry.set_text(
+                        str(old_obj.audit.limit.rate)
+                    )
                     combobox_select_text(
                         self.richRuleDialogAuditLimitDurationCombobox,
-                        smhd[duration],
+                        smhd[old_obj.audit.limit.duration],
                         insensitive=True,
                     )
 

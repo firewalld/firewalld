@@ -1958,7 +1958,7 @@ FWD_START_TEST([rich rules bad])
     rich_rule_test([rule protocol value="igmp" log level="eror"], 125) dnl bad log level
     IF_HOST_SUPPORTS_IPV6_RULES([
     rich_rule_test([family="ipv6" accept], 122) dnl no rule
-    rich_rule_test([rule source address="1:2:3:4:6::" icmp-block name="redirect" log level="info" limit value="1/2m"], 207) dnl missing family
+    rich_rule_test([rule source address="1:2:3:4:6::" icmp-block name="redirect" log level="info" limit value="1/m"], 207) dnl missing family
     rich_rule_test([rule family="ipv6" source address="1:2:3:4:6::" icmp-block name="redirect" log level="info" limit value="1/2m"], 123) dnl bad limit
     ])
     rich_rule_test([rule protocol value="esp"], 122) dnl no action/log/audit
@@ -2336,11 +2336,7 @@ WARNING: Invalid source: No address no ipset.
 </rule>
 </zone>
 ])
-    FWD_CHECK([--check-config], 0, ignore, [dnl
-m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [dnl
-WARNING: INVALID_LIMIT: none: rule family="ipv4" source address="10.0.0.1/24" accept limit value="none"
-WARNING: INVALID_LIMIT: none: rule family="ipv4" source address="10.0.0.1/24" accept limit value="none"
-])])
+    FWD_CHECK([--check-config], 123, [ignore], [ignore])
 
     AT_DATA([./zones/foobar.xml], [dnl
 <?xml version="1.0" encoding="utf-8"?>

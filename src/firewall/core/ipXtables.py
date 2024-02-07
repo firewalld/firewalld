@@ -1166,7 +1166,7 @@ class ip4tables:
             return []
         s = ["-m", "limit", "--limit", limit.value]
         if limit.burst is not None:
-            s += ["--limit-burst", limit.burst]
+            s += ["--limit-burst", str(limit.burst)]
         return s
 
     def _rich_rule_chain_suffix(self, rich_rule):

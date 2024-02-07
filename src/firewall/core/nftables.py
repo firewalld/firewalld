@@ -1594,14 +1594,12 @@ class nftables:
             "d": "day",
         }
 
-        rate, duration = limit.value_parse()
-
         d = {
-            "rate": rate,
-            "per": rich_to_nft[duration],
+            "rate": limit.rate,
+            "per": rich_to_nft[limit.duration],
         }
 
-        burst = limit.burst_parse()
+        burst = limit.burst
         if burst is not None:
             d["burst"] = burst
 
