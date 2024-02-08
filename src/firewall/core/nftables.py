@@ -344,7 +344,7 @@ class nftables:
         # Not a rule (it's a table, chain, etc)
         return None
 
-    def set_rules(self, rules, log_denied):
+    def set_rules(self, rules, log_denied, *, rules_clear=False):
         _valid_verbs = ["add", "insert", "delete", "flush", "replace"]
         _valid_add_verbs = ["add", "insert", "replace"]
         _deduplicated_rules = []
@@ -441,6 +441,14 @@ class nftables:
                     }
 
             _executed_rules.append(rule)
+
+        if rules_clear:
+            # The caller indicates that they don't need the list of rules anymore.
+            # Clear the list now, so that maybe this can free some memory earlier.
+            # That's because next we will allocate also a lot of memory. It's good
+            # if we free memory we no longer need earlier.
+            rules.clear()
+        del rules
 
         json_blob = {
             "nftables": [{"metainfo": {"json_schema_version": 1}}] + _executed_rules
