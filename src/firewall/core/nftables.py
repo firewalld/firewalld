@@ -239,10 +239,26 @@ class nftables:
         self._nft_ctx.set_json_output(True)
 
     def nft_cmd(self, json_root):
+        if isinstance(json_root, list):
+            # The caller gave us the JSON in a list, so we can drop the
+            # reference to the memory. Unpack the list, and delete the entry.
+            l = json_root
+            (json_root,) = l
+            del l[0]
         json_root_str = json.dumps(json_root)
+        del json_root
+        json_root_str = json_root_str.encode("utf-8")
         rc, output, error = self._nft_ctx.cmd(json_root_str)
-        if len(output):
+        return (rc, output, error)
+
+    @staticmethod
+    def nft_cmd_post(rc, output, error):
+        output = output.decode("utf-8", errors="replace")
+        error = error.decode("utf-8", errors="replace")
+        try:
             output = json.loads(output)
+        except:
+            output = {}
         return (rc, output, error)
 
     def _set_rule_sort_policy_dispatch(self, rule, policy_dispatch_index_cache):
@@ -461,6 +477,9 @@ class nftables:
         json_blob = {
             "nftables": [{"metainfo": {"json_schema_version": 1}}] + _executed_rules
         }
+
+        del _executed_rules
+
         if log.getDebugLogLevel() >= 3:
             # guarded with if statement because json.dumps() is expensive.
             log.debug3(
@@ -468,12 +487,18 @@ class nftables:
                 self.__class__,
                 json.dumps(json_blob),
             )
+
         rc, output, error = self.nft_cmd(json_blob)
+
         if rc != 0:
             raise ValueError(
                 "'%s' failed: %s\nJSON blob:\n%s"
                 % ("python-nftables", error, json.dumps(json_blob))
             )
+
+        del json_blob
+
+        (rc, output, error) = self.nft_cmd_post(rc, output, error)
 
         self.rich_rule_priority_counts = rich_rule_priority_counts
         self.policy_dispatch_index_cache = policy_dispatch_index_cache
