@@ -515,17 +515,15 @@ class nftables:
                 json.dumps(json_blob),
             )
 
+        json_blob_list = [json_blob]
+        del json_blob
+
         rc, output, error = self.nft_cmd(
-            json_blob, is_large=is_large, request_handles=has_real_rules
+            json_blob_list, is_large=is_large, request_handles=has_real_rules
         )
 
         if rc != 0:
-            raise ValueError(
-                "'%s' failed: %s\nJSON blob:\n%s"
-                % ("python-nftables", error, json.dumps(json_blob))
-            )
-
-        del json_blob
+            raise ValueError("'%s' failed: %s" % ("python-nftables", error))
 
         self.rich_rule_priority_counts = rich_rule_priority_counts
         self.policy_dispatch_index_cache = policy_dispatch_index_cache
