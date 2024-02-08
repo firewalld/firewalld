@@ -255,7 +255,10 @@ class nftables:
                     prefix="temp.nft-json.", delete=False
                 ) as file:
                     filename = file.name
-                    json.dump(json_root, file)
+                    if isinstance(json_root, str):
+                        file.write(json_root)
+                    else:
+                        json.dump(json_root, file)
 
                 del json_root
 
@@ -266,7 +269,10 @@ class nftables:
                 if filename is not None:
                     firewall.functions.removeFile(filename)
         else:
-            json_root_str = json.dumps(json_root)
+            if isinstance(json_root, str):
+                json_root_str = json_root
+            else:
+                json_root_str = json.dumps(json_root)
             del json_root
             json_root_str = json_root_str.encode("utf-8")
             rc, output, error = self._nft_ctx.cmd(json_root_str)
@@ -509,10 +515,11 @@ class nftables:
 
         if log.getDebugLogLevel() >= 3:
             # guarded with if statement because json.dumps() is expensive.
+            json_blob = json.dumps(json_blob)
             log.debug3(
                 "%s: calling python-nftables with JSON blob: %s",
                 self.__class__,
-                json.dumps(json_blob),
+                json_blob,
             )
 
         json_blob_list = [json_blob]
