@@ -235,17 +235,18 @@ class nftables:
         self.policy_dispatch_index_cache = {}
 
         self._nft_ctx = Nftables()
-        self._nft_ctx.set_echo_output(True)
-        self._nft_ctx.set_handle_output(True)
         self._nft_ctx.set_json_output(True)
 
-    def nft_cmd(self, json_root, is_large=False):
+    def nft_cmd(self, json_root, is_large=False, request_handles=True):
         if isinstance(json_root, list):
             # The caller gave us the JSON in a list, so we can drop the
             # reference to the memory. Unpack the list, and delete the entry.
             l = json_root
             (json_root,) = l
             del l[0]
+
+        self._nft_ctx.set_echo_output(request_handles)
+        self._nft_ctx.set_handle_output(request_handles)
 
         if is_large and hasattr(self._nft_ctx, "cmd_from_file"):
             filename = None
@@ -273,9 +274,10 @@ class nftables:
         return (rc, output, error)
 
     @staticmethod
-    def nft_cmd_post(rc, output, error):
+    def nft_cmd_post(rc, output, error=None):
         output = output.decode("utf-8", errors="replace")
-        error = error.decode("utf-8", errors="replace")
+        if error is not None:
+            error = error.decode("utf-8", errors="replace")
         try:
             output = json.loads(output)
         except:
@@ -398,6 +400,7 @@ class nftables:
         rich_rule_priority_counts = copy.deepcopy(self.rich_rule_priority_counts)
         policy_dispatch_index_cache = copy.deepcopy(self.policy_dispatch_index_cache)
         rule_ref_count = self.rule_ref_count.copy()
+        has_real_rules = False
         for rule in rules:
             if not isinstance(rule, dict):
                 raise FirewallError(
@@ -456,6 +459,7 @@ class nftables:
             _deduplicated_rules_keys.append(rule_key)
 
             if rule_key:
+                has_real_rules = True
                 # filter empty rule expressions. Rich rules add quite a bit of
                 # them, but it makes the rest of the code simpler. libnftables
                 # does not tolerate them.
@@ -511,7 +515,9 @@ class nftables:
                 json.dumps(json_blob),
             )
 
-        rc, output, error = self.nft_cmd(json_blob, is_large=is_large)
+        rc, output, error = self.nft_cmd(
+            json_blob, is_large=is_large, request_handles=has_real_rules
+        )
 
         if rc != 0:
             raise ValueError(
@@ -521,11 +527,14 @@ class nftables:
 
         del json_blob
 
-        (rc, output, error) = self.nft_cmd_post(rc, output, error)
-
         self.rich_rule_priority_counts = rich_rule_priority_counts
         self.policy_dispatch_index_cache = policy_dispatch_index_cache
         self.rule_ref_count = rule_ref_count
+
+        if not has_real_rules:
+            return
+
+        (rc, output, error) = self.nft_cmd_post(rc, output)
 
         index = 0
         for rule in _deduplicated_rules:
