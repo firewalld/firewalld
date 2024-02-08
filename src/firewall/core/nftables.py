@@ -2974,14 +2974,16 @@ class nftables:
     def set_restore(
         self, set_name, type_name, entries, create_options=None, entry_options=None
     ):
+        entries = firewall.functions.iter_reiterable(entries)
+        is_large = len(entries) > 1000
         rules = []
         rules.extend(self.build_set_create_rules(set_name, type_name, create_options))
         rules.extend(self.build_set_flush_rules(set_name))
-
-        # avoid large memory usage by chunking the entries
-        for entries in firewall.functions.iter_split_every(entries, 1000):
-            rules.extend(self.build_set_add_rules(set_name, entries))
-            self.set_rules(rules, self._fw.get_log_denied(), rules_clear=True)
-            rules.clear()
-        if rules:
-            self.set_rules(rules, self._fw.get_log_denied(), rules_clear=True)
+        rules.extend(self.build_set_add_rules(set_name, entries))
+        del entries
+        self.set_rules(
+            rules,
+            self._fw.get_log_denied(),
+            rules_clear=True,
+            is_large=is_large,
+        )
