@@ -69,6 +69,15 @@ class FirewallTransaction:
             self.remove_module(module)
 
     def execute(self, enable, clear=True):
+        if (
+            not self.rules
+            and not self.pre_funcs
+            and not self.post_funcs
+            and not self.fail_funcs
+        ):
+            # empty transaction. Don't do anything.
+            return
+
         log.debug4("%s.execute(%s)" % (type(self), enable))
 
         rules = self.rules
