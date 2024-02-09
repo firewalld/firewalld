@@ -30,7 +30,6 @@ from firewall.core.rich import (
     Rich_IcmpType,
     Rich_Tcp_Mss_Clamp,
 )
-from firewall.core.fw_transaction import FirewallTransaction
 from firewall import errors
 from firewall.errors import FirewallError
 from firewall.core.base import SOURCE_IPSET_TYPES
@@ -51,10 +50,11 @@ class FirewallPolicy:
 
     # transaction
 
-    def new_transaction(self):
-        t = FirewallTransaction(self._fw)
-        t.add_pre(self._fw.full_check_config)
-        return t
+    def with_transaction(self, *args, **kwargs):
+        ctx = self._fw.with_transaction(*args, **kwargs)
+        if ctx.is_temporary:
+            ctx.transaction.add_pre(self._fw.full_check_config)
+        return ctx
 
     # policies
 
@@ -118,82 +118,80 @@ class FirewallPolicy:
         if enable:
             obj.applied = True
 
-        if use_transaction is None:
-            transaction = self.new_transaction()
-        else:
-            transaction = use_transaction
+        with self.with_transaction(use_transaction, enable=enable) as transaction:
 
-        if enable:
-            # build the base chain layout of the policy
-            for table, chain in (
-                self._get_table_chains_for_policy_dispatch(policy)
-                if not obj.derived_from_zone
-                else self._get_table_chains_for_zone_dispatch(policy)
-            ):
-                self.gen_chain_rules(policy, True, table, chain, transaction)
+            if enable:
+                # build the base chain layout of the policy
+                for table, chain in (
+                    self._get_table_chains_for_policy_dispatch(policy)
+                    if not obj.derived_from_zone
+                    else self._get_table_chains_for_zone_dispatch(policy)
+                ):
+                    self.gen_chain_rules(policy, True, table, chain, transaction)
 
-        for key in [
-            "services",
-            "ports",
-            "masquerade",
-            "forward_ports",
-            "source_ports",
-            "icmp_blocks",
-            "rules_str",
-            "protocols",
-            "icmp_block_inversion",
-            "ingress_zones",
-            "egress_zones",
-        ]:
-            args_list = getattr(self.get_policy(policy), key)
-            if isinstance(args_list, bool):
-                if not ((enable and args_list) or (not enable and args_list)):
-                    continue
-                args_list = [args_list]
-            for args in args_list:
-                if key == "icmp_blocks":
-                    self._icmp_block(enable, _policy, args, transaction)
-                elif key == "icmp_block_inversion":
-                    continue
-                elif key == "forward_ports":
-                    self._forward_port(enable, _policy, transaction, *args)
-                elif key == "services":
-                    self._service(enable, _policy, args, transaction)
-                elif key == "ports":
-                    self._port(enable, _policy, args[0], args[1], transaction)
-                elif key == "protocols":
-                    self._protocol(enable, _policy, args, transaction)
-                elif key == "source_ports":
-                    self._source_port(enable, _policy, args[0], args[1], transaction)
-                elif key == "masquerade":
-                    self._masquerade(enable, _policy, transaction)
-                elif key == "rules_str":
-                    self.__rule(enable, _policy, Rich_Rule(rule_str=args), transaction)
-                elif key == "ingress_zones":
-                    if not obj.derived_from_zone:
-                        self._ingress_zone(enable, _policy, args, transaction)
-                elif key == "egress_zones":
-                    # key off ingress zones, which also considers egress zones
-                    continue
-                else:
-                    log.warning(
-                        "Policy '%s': Unknown setting '%s:%s', " "unable to apply",
-                        policy,
-                        key,
-                        args,
-                    )
+            for key in [
+                "services",
+                "ports",
+                "masquerade",
+                "forward_ports",
+                "source_ports",
+                "icmp_blocks",
+                "rules_str",
+                "protocols",
+                "icmp_block_inversion",
+                "ingress_zones",
+                "egress_zones",
+            ]:
+                args_list = getattr(self.get_policy(policy), key)
+                if isinstance(args_list, bool):
+                    if not ((enable and args_list) or (not enable and args_list)):
+                        continue
+                    args_list = [args_list]
+                for args in args_list:
+                    if key == "icmp_blocks":
+                        self._icmp_block(enable, _policy, args, transaction)
+                    elif key == "icmp_block_inversion":
+                        continue
+                    elif key == "forward_ports":
+                        self._forward_port(enable, _policy, transaction, *args)
+                    elif key == "services":
+                        self._service(enable, _policy, args, transaction)
+                    elif key == "ports":
+                        self._port(enable, _policy, args[0], args[1], transaction)
+                    elif key == "protocols":
+                        self._protocol(enable, _policy, args, transaction)
+                    elif key == "source_ports":
+                        self._source_port(
+                            enable, _policy, args[0], args[1], transaction
+                        )
+                    elif key == "masquerade":
+                        self._masquerade(enable, _policy, transaction)
+                    elif key == "rules_str":
+                        self.__rule(
+                            enable, _policy, Rich_Rule(rule_str=args), transaction
+                        )
+                    elif key == "ingress_zones":
+                        if not obj.derived_from_zone:
+                            self._ingress_zone(enable, _policy, args, transaction)
+                    elif key == "egress_zones":
+                        # key off ingress zones, which also considers egress zones
+                        continue
+                    else:
+                        log.warning(
+                            "Policy '%s': Unknown setting '%s:%s', " "unable to apply",
+                            policy,
+                            key,
+                            args,
+                        )
 
-        if not enable:
-            for table, chain in (
-                self._get_table_chains_for_policy_dispatch(policy)
-                if not obj.derived_from_zone
-                else self._get_table_chains_for_zone_dispatch(policy)
-            ):
-                self.gen_chain_rules(policy, False, table, chain, transaction)
-            obj.applied = False
-
-        if use_transaction is None:
-            transaction.execute(enable)
+            if not enable:
+                for table, chain in (
+                    self._get_table_chains_for_policy_dispatch(policy)
+                    if not obj.derived_from_zone
+                    else self._get_table_chains_for_zone_dispatch(policy)
+                ):
+                    self.gen_chain_rules(policy, False, table, chain, transaction)
+                obj.applied = False
 
     def apply_policy_settings(self, policy, use_transaction=None):
         self._policy_settings(True, policy, use_transaction=use_transaction)
@@ -295,22 +293,16 @@ class FirewallPolicy:
                 errors.ALREADY_ENABLED, "'%s' already in '%s'" % (zone, _policy)
             )
 
-        if use_transaction is None:
-            transaction = self.new_transaction()
-        else:
-            transaction = use_transaction
+        with self.with_transaction(use_transaction) as transaction:
 
-        if _obj.applied:
-            self._ingress_zone(True, _policy, zone, transaction)
+            if _obj.applied:
+                self._ingress_zone(True, _policy, zone, transaction)
 
-        self.__register_ingress_zone(_obj, zone_id, timeout, sender)
-        transaction.add_fail(self.__unregister_ingress_zone, _obj, zone_id)
+            self.__register_ingress_zone(_obj, zone_id, timeout, sender)
+            transaction.add_fail(self.__unregister_ingress_zone, _obj, zone_id)
 
-        if not _obj.applied:
-            self.try_apply_policy_settings(policy, use_transaction=transaction)
-
-        if use_transaction is None:
-            transaction.execute(True)
+            if not _obj.applied:
+                self.try_apply_policy_settings(policy, use_transaction=transaction)
 
     def __register_ingress_zone(self, _obj, zone_id, timeout, sender):
         _obj.ingress_zones.append(zone_id)
@@ -326,21 +318,15 @@ class FirewallPolicy:
                 errors.NOT_ENABLED, "'%s' not in '%s'" % (zone, _policy)
             )
 
-        if use_transaction is None:
-            transaction = self.new_transaction()
-        else:
-            transaction = use_transaction
+        with self.with_transaction(use_transaction) as transaction:
 
-        if _obj.applied:
-            if len(_obj.ingress_zones) <= 1:
-                self.unapply_policy_settings(policy, use_transaction=transaction)
-            else:
-                self._ingress_zone(False, _policy, zone, transaction)
+            if _obj.applied:
+                if len(_obj.ingress_zones) <= 1:
+                    self.unapply_policy_settings(policy, use_transaction=transaction)
+                else:
+                    self._ingress_zone(False, _policy, zone, transaction)
 
-        transaction.add_post(self.__unregister_ingress_zone, _obj, zone_id)
-
-        if use_transaction is None:
-            transaction.execute(True)
+            transaction.add_post(self.__unregister_ingress_zone, _obj, zone_id)
 
         return _policy
 
@@ -380,22 +366,16 @@ class FirewallPolicy:
                 errors.ALREADY_ENABLED, "'%s' already in '%s'" % (zone, _policy)
             )
 
-        if use_transaction is None:
-            transaction = self.new_transaction()
-        else:
-            transaction = use_transaction
+        with self.with_transaction(use_transaction) as transaction:
 
-        if _obj.applied:
-            self._egress_zone(True, _policy, zone, transaction)
+            if _obj.applied:
+                self._egress_zone(True, _policy, zone, transaction)
 
-        self.__register_egress_zone(_obj, zone_id, timeout, sender)
-        transaction.add_fail(self.__unregister_egress_zone, _obj, zone_id)
+            self.__register_egress_zone(_obj, zone_id, timeout, sender)
+            transaction.add_fail(self.__unregister_egress_zone, _obj, zone_id)
 
-        if not _obj.applied:
-            self.try_apply_policy_settings(policy, use_transaction=transaction)
-
-        if use_transaction is None:
-            transaction.execute(True)
+            if not _obj.applied:
+                self.try_apply_policy_settings(policy, use_transaction=transaction)
 
     def __register_egress_zone(self, _obj, zone_id, timeout, sender):
         _obj.egress_zones.append(zone_id)
@@ -411,21 +391,15 @@ class FirewallPolicy:
                 errors.NOT_ENABLED, "'%s' not in '%s'" % (zone, _policy)
             )
 
-        if use_transaction is None:
-            transaction = self.new_transaction()
-        else:
-            transaction = use_transaction
+        with self.with_transaction(use_transaction) as transaction:
 
-        if _obj.applied:
-            if len(_obj.egress_zones) <= 1:
-                self.unapply_policy_settings(policy, use_transaction=transaction)
-            else:
-                self._egress_zone(False, _policy, zone, transaction)
+            if _obj.applied:
+                if len(_obj.egress_zones) <= 1:
+                    self.unapply_policy_settings(policy, use_transaction=transaction)
+                else:
+                    self._egress_zone(False, _policy, zone, transaction)
 
-        transaction.add_post(self.__unregister_egress_zone, _obj, zone_id)
-
-        if use_transaction is None:
-            transaction.execute(True)
+            transaction.add_post(self.__unregister_egress_zone, _obj, zone_id)
 
         return _policy
 
@@ -482,19 +456,13 @@ class FirewallPolicy:
                 errors.ALREADY_ENABLED, "'%s' already in '%s'" % (rule, _name)
             )
 
-        if use_transaction is None:
-            transaction = self.new_transaction()
-        else:
-            transaction = use_transaction
+        with self.with_transaction(use_transaction) as transaction:
 
-        if _obj.applied:
-            self.__rule(True, _policy, rule, transaction)
+            if _obj.applied:
+                self.__rule(True, _policy, rule, transaction)
 
-        self.__register_rule(_obj, rule_id, timeout, sender)
-        transaction.add_fail(self.__unregister_rule, _obj, rule_id)
-
-        if use_transaction is None:
-            transaction.execute(True)
+            self.__register_rule(_obj, rule_id, timeout, sender)
+            transaction.add_fail(self.__unregister_rule, _obj, rule_id)
 
         return _policy
 
@@ -511,18 +479,12 @@ class FirewallPolicy:
             _name = _obj.derived_from_zone if _obj.derived_from_zone else _policy
             raise FirewallError(errors.NOT_ENABLED, "'%s' not in '%s'" % (rule, _name))
 
-        if use_transaction is None:
-            transaction = self.new_transaction()
-        else:
-            transaction = use_transaction
+        with self.with_transaction(use_transaction) as transaction:
 
-        if _obj.applied:
-            self.__rule(False, _policy, rule, transaction)
+            if _obj.applied:
+                self.__rule(False, _policy, rule, transaction)
 
-        transaction.add_post(self.__unregister_rule, _obj, rule_id)
-
-        if use_transaction is None:
-            transaction.execute(True)
+            transaction.add_post(self.__unregister_rule, _obj, rule_id)
 
         return _policy
 
@@ -560,19 +522,13 @@ class FirewallPolicy:
                 errors.ALREADY_ENABLED, "'%s' already in '%s'" % (service, _name)
             )
 
-        if use_transaction is None:
-            transaction = self.new_transaction()
-        else:
-            transaction = use_transaction
+        with self.with_transaction(use_transaction) as transaction:
 
-        if _obj.applied:
-            self._service(True, _policy, service, transaction)
+            if _obj.applied:
+                self._service(True, _policy, service, transaction)
 
-        self.__register_service(_obj, service_id, timeout, sender)
-        transaction.add_fail(self.__unregister_service, _obj, service_id)
-
-        if use_transaction is None:
-            transaction.execute(True)
+            self.__register_service(_obj, service_id, timeout, sender)
+            transaction.add_fail(self.__unregister_service, _obj, service_id)
 
         return _policy
 
@@ -591,18 +547,12 @@ class FirewallPolicy:
                 errors.NOT_ENABLED, "'%s' not in '%s'" % (service, _name)
             )
 
-        if use_transaction is None:
-            transaction = self.new_transaction()
-        else:
-            transaction = use_transaction
+        with self.with_transaction(use_transaction) as transaction:
 
-        if _obj.applied:
-            self._service(False, _policy, service, transaction)
+            if _obj.applied:
+                self._service(False, _policy, service, transaction)
 
-        transaction.add_post(self.__unregister_service, _obj, service_id)
-
-        if use_transaction is None:
-            transaction.execute(True)
+            transaction.add_post(self.__unregister_service, _obj, service_id)
 
         return _policy
 
@@ -680,27 +630,25 @@ class FirewallPolicy:
             port, [_port for (_port, _protocol) in existing_port_ids]
         )
 
-        if use_transaction is None:
-            transaction = self.new_transaction()
-        else:
-            transaction = use_transaction
+        with self.with_transaction(use_transaction) as transaction:
 
-        if _obj.applied:
+            if _obj.applied:
+                for range in added_ranges:
+                    self._port(
+                        True, _policy, portStr(range, "-"), protocol, transaction
+                    )
+                for range in removed_ranges:
+                    self._port(
+                        False, _policy, portStr(range, "-"), protocol, transaction
+                    )
+
             for range in added_ranges:
-                self._port(True, _policy, portStr(range, "-"), protocol, transaction)
+                port_id = self.__port_id(range, protocol)
+                self.__register_port(_obj, port_id, timeout, sender)
+                transaction.add_fail(self.__unregister_port, _obj, port_id)
             for range in removed_ranges:
-                self._port(False, _policy, portStr(range, "-"), protocol, transaction)
-
-        for range in added_ranges:
-            port_id = self.__port_id(range, protocol)
-            self.__register_port(_obj, port_id, timeout, sender)
-            transaction.add_fail(self.__unregister_port, _obj, port_id)
-        for range in removed_ranges:
-            port_id = self.__port_id(range, protocol)
-            transaction.add_post(self.__unregister_port, _obj, port_id)
-
-        if use_transaction is None:
-            transaction.execute(True)
+                port_id = self.__port_id(range, protocol)
+                transaction.add_post(self.__unregister_port, _obj, port_id)
 
         return _policy
 
@@ -726,27 +674,25 @@ class FirewallPolicy:
             port, [_port for (_port, _protocol) in existing_port_ids]
         )
 
-        if use_transaction is None:
-            transaction = self.new_transaction()
-        else:
-            transaction = use_transaction
+        with self.with_transaction(use_transaction) as transaction:
 
-        if _obj.applied:
+            if _obj.applied:
+                for range in added_ranges:
+                    self._port(
+                        True, _policy, portStr(range, "-"), protocol, transaction
+                    )
+                for range in removed_ranges:
+                    self._port(
+                        False, _policy, portStr(range, "-"), protocol, transaction
+                    )
+
             for range in added_ranges:
-                self._port(True, _policy, portStr(range, "-"), protocol, transaction)
+                port_id = self.__port_id(range, protocol)
+                self.__register_port(_obj, port_id, 0, None)
+                transaction.add_fail(self.__unregister_port, _obj, port_id)
             for range in removed_ranges:
-                self._port(False, _policy, portStr(range, "-"), protocol, transaction)
-
-        for range in added_ranges:
-            port_id = self.__port_id(range, protocol)
-            self.__register_port(_obj, port_id, 0, None)
-            transaction.add_fail(self.__unregister_port, _obj, port_id)
-        for range in removed_ranges:
-            port_id = self.__port_id(range, protocol)
-            transaction.add_post(self.__unregister_port, _obj, port_id)
-
-        if use_transaction is None:
-            transaction.execute(True)
+                port_id = self.__port_id(range, protocol)
+                transaction.add_post(self.__unregister_port, _obj, port_id)
 
         return _policy
 
@@ -797,19 +743,13 @@ class FirewallPolicy:
                 errors.ALREADY_ENABLED, "'%s' already in '%s'" % (protocol, _name)
             )
 
-        if use_transaction is None:
-            transaction = self.new_transaction()
-        else:
-            transaction = use_transaction
+        with self.with_transaction(use_transaction) as transaction:
 
-        if _obj.applied:
-            self._protocol(True, _policy, protocol, transaction)
+            if _obj.applied:
+                self._protocol(True, _policy, protocol, transaction)
 
-        self.__register_protocol(_obj, protocol_id, timeout, sender)
-        transaction.add_fail(self.__unregister_protocol, _obj, protocol_id)
-
-        if use_transaction is None:
-            transaction.execute(True)
+            self.__register_protocol(_obj, protocol_id, timeout, sender)
+            transaction.add_fail(self.__unregister_protocol, _obj, protocol_id)
 
         return _policy
 
@@ -828,18 +768,12 @@ class FirewallPolicy:
                 errors.NOT_ENABLED, "'%s' not in '%s'" % (protocol, _name)
             )
 
-        if use_transaction is None:
-            transaction = self.new_transaction()
-        else:
-            transaction = use_transaction
+        with self.with_transaction(use_transaction) as transaction:
 
-        if _obj.applied:
-            self._protocol(False, _policy, protocol, transaction)
+            if _obj.applied:
+                self._protocol(False, _policy, protocol, transaction)
 
-        transaction.add_post(self.__unregister_protocol, _obj, protocol_id)
-
-        if use_transaction is None:
-            transaction.execute(True)
+            transaction.add_post(self.__unregister_protocol, _obj, protocol_id)
 
         return _policy
 
@@ -880,31 +814,25 @@ class FirewallPolicy:
             port, [_port for (_port, _protocol) in existing_port_ids]
         )
 
-        if use_transaction is None:
-            transaction = self.new_transaction()
-        else:
-            transaction = use_transaction
+        with self.with_transaction(use_transaction) as transaction:
 
-        if _obj.applied:
+            if _obj.applied:
+                for range in added_ranges:
+                    self._source_port(
+                        True, _policy, portStr(range, "-"), protocol, transaction
+                    )
+                for range in removed_ranges:
+                    self._source_port(
+                        False, _policy, portStr(range, "-"), protocol, transaction
+                    )
+
             for range in added_ranges:
-                self._source_port(
-                    True, _policy, portStr(range, "-"), protocol, transaction
-                )
+                port_id = self.__source_port_id(range, protocol)
+                self.__register_source_port(_obj, port_id, timeout, sender)
+                transaction.add_fail(self.__unregister_source_port, _obj, port_id)
             for range in removed_ranges:
-                self._source_port(
-                    False, _policy, portStr(range, "-"), protocol, transaction
-                )
-
-        for range in added_ranges:
-            port_id = self.__source_port_id(range, protocol)
-            self.__register_source_port(_obj, port_id, timeout, sender)
-            transaction.add_fail(self.__unregister_source_port, _obj, port_id)
-        for range in removed_ranges:
-            port_id = self.__source_port_id(range, protocol)
-            transaction.add_post(self.__unregister_source_port, _obj, port_id)
-
-        if use_transaction is None:
-            transaction.execute(True)
+                port_id = self.__source_port_id(range, protocol)
+                transaction.add_post(self.__unregister_source_port, _obj, port_id)
 
         return _policy
 
@@ -930,31 +858,25 @@ class FirewallPolicy:
             port, [_port for (_port, _protocol) in existing_port_ids]
         )
 
-        if use_transaction is None:
-            transaction = self.new_transaction()
-        else:
-            transaction = use_transaction
+        with self.with_transaction(use_transaction) as transaction:
 
-        if _obj.applied:
+            if _obj.applied:
+                for range in added_ranges:
+                    self._source_port(
+                        True, _policy, portStr(range, "-"), protocol, transaction
+                    )
+                for range in removed_ranges:
+                    self._source_port(
+                        False, _policy, portStr(range, "-"), protocol, transaction
+                    )
+
             for range in added_ranges:
-                self._source_port(
-                    True, _policy, portStr(range, "-"), protocol, transaction
-                )
+                port_id = self.__source_port_id(range, protocol)
+                self.__register_source_port(_obj, port_id, 0, None)
+                transaction.add_fail(self.__unregister_source_port, _obj, port_id)
             for range in removed_ranges:
-                self._source_port(
-                    False, _policy, portStr(range, "-"), protocol, transaction
-                )
-
-        for range in added_ranges:
-            port_id = self.__source_port_id(range, protocol)
-            self.__register_source_port(_obj, port_id, 0, None)
-            transaction.add_fail(self.__unregister_source_port, _obj, port_id)
-        for range in removed_ranges:
-            port_id = self.__source_port_id(range, protocol)
-            transaction.add_post(self.__unregister_source_port, _obj, port_id)
-
-        if use_transaction is None:
-            transaction.execute(True)
+                port_id = self.__source_port_id(range, protocol)
+                transaction.add_post(self.__unregister_source_port, _obj, port_id)
 
         return _policy
 
@@ -986,19 +908,13 @@ class FirewallPolicy:
                 errors.ALREADY_ENABLED, "masquerade already enabled in '%s'" % _name
             )
 
-        if use_transaction is None:
-            transaction = self.new_transaction()
-        else:
-            transaction = use_transaction
+        with self.with_transaction(use_transaction) as transaction:
 
-        if _obj.applied:
-            self._masquerade(True, _policy, transaction)
+            if _obj.applied:
+                self._masquerade(True, _policy, transaction)
 
-        self.__register_masquerade(_obj, timeout, sender)
-        transaction.add_fail(self.__unregister_masquerade, _obj)
-
-        if use_transaction is None:
-            transaction.execute(True)
+            self.__register_masquerade(_obj, timeout, sender)
+            transaction.add_fail(self.__unregister_masquerade, _obj)
 
         return _policy
 
@@ -1016,18 +932,12 @@ class FirewallPolicy:
                 errors.NOT_ENABLED, "masquerade not enabled in '%s'" % _name
             )
 
-        if use_transaction is None:
-            transaction = self.new_transaction()
-        else:
-            transaction = use_transaction
+        with self.with_transaction(use_transaction) as transaction:
 
-        if _obj.applied:
-            self._masquerade(False, _policy, transaction)
+            if _obj.applied:
+                self._masquerade(False, _policy, transaction)
 
-        transaction.add_post(self.__unregister_masquerade, _obj)
-
-        if use_transaction is None:
-            transaction.execute(True)
+            transaction.add_post(self.__unregister_masquerade, _obj)
 
         return _policy
 
@@ -1084,21 +994,15 @@ class FirewallPolicy:
                 % (port, protocol, toport, toaddr, _name),
             )
 
-        if use_transaction is None:
-            transaction = self.new_transaction()
-        else:
-            transaction = use_transaction
+        with self.with_transaction(use_transaction) as transaction:
 
-        if _obj.applied:
-            self._forward_port(
-                True, _policy, transaction, port, protocol, toport, toaddr
-            )
+            if _obj.applied:
+                self._forward_port(
+                    True, _policy, transaction, port, protocol, toport, toaddr
+                )
 
-        self.__register_forward_port(_obj, forward_id, timeout, sender)
-        transaction.add_fail(self.__unregister_forward_port, _obj, forward_id)
-
-        if use_transaction is None:
-            transaction.execute(True)
+            self.__register_forward_port(_obj, forward_id, timeout, sender)
+            transaction.add_fail(self.__unregister_forward_port, _obj, forward_id)
 
         return _policy
 
@@ -1120,20 +1024,14 @@ class FirewallPolicy:
                 "'%s:%s:%s:%s' not in '%s'" % (port, protocol, toport, toaddr, _name),
             )
 
-        if use_transaction is None:
-            transaction = self.new_transaction()
-        else:
-            transaction = use_transaction
+        with self.with_transaction(use_transaction) as transaction:
 
-        if _obj.applied:
-            self._forward_port(
-                False, _policy, transaction, port, protocol, toport, toaddr
-            )
+            if _obj.applied:
+                self._forward_port(
+                    False, _policy, transaction, port, protocol, toport, toaddr
+                )
 
-        transaction.add_post(self.__unregister_forward_port, _obj, forward_id)
-
-        if use_transaction is None:
-            transaction.execute(True)
+            transaction.add_post(self.__unregister_forward_port, _obj, forward_id)
 
         return _policy
 
@@ -1172,19 +1070,13 @@ class FirewallPolicy:
                 errors.ALREADY_ENABLED, "'%s' already in '%s'" % (icmp, _name)
             )
 
-        if use_transaction is None:
-            transaction = self.new_transaction()
-        else:
-            transaction = use_transaction
+        with self.with_transaction(use_transaction) as transaction:
 
-        if _obj.applied:
-            self._icmp_block(True, _policy, icmp, transaction)
+            if _obj.applied:
+                self._icmp_block(True, _policy, icmp, transaction)
 
-        self.__register_icmp_block(_obj, icmp_id, timeout, sender)
-        transaction.add_fail(self.__unregister_icmp_block, _obj, icmp_id)
-
-        if use_transaction is None:
-            transaction.execute(True)
+            self.__register_icmp_block(_obj, icmp_id, timeout, sender)
+            transaction.add_fail(self.__unregister_icmp_block, _obj, icmp_id)
 
         return _policy
 
@@ -1201,18 +1093,12 @@ class FirewallPolicy:
             _name = _obj.derived_from_zone if _obj.derived_from_zone else _policy
             raise FirewallError(errors.NOT_ENABLED, "'%s' not in '%s'" % (icmp, _name))
 
-        if use_transaction is None:
-            transaction = self.new_transaction()
-        else:
-            transaction = use_transaction
+        with self.with_transaction(use_transaction) as transaction:
 
-        if _obj.applied:
-            self._icmp_block(False, _policy, icmp, transaction)
+            if _obj.applied:
+                self._icmp_block(False, _policy, icmp, transaction)
 
-        transaction.add_post(self.__unregister_icmp_block, _obj, icmp_id)
-
-        if use_transaction is None:
-            transaction.execute(True)
+            transaction.add_post(self.__unregister_icmp_block, _obj, icmp_id)
 
         return _policy
 
@@ -1240,30 +1126,24 @@ class FirewallPolicy:
                 "icmp-block-inversion already enabled in '%s'" % _name,
             )
 
-        if use_transaction is None:
-            transaction = self.new_transaction()
-        else:
-            transaction = use_transaction
+        with self.with_transaction(use_transaction) as transaction:
 
-        if _obj.applied:
-            # undo icmp blocks
-            for args in _obj.icmp_blocks:
-                self._icmp_block(False, _policy, args, transaction)
+            if _obj.applied:
+                # undo icmp blocks
+                for args in _obj.icmp_blocks:
+                    self._icmp_block(False, _policy, args, transaction)
 
-            self._icmp_block_inversion(False, _policy, transaction)
+                self._icmp_block_inversion(False, _policy, transaction)
 
-        self.__register_icmp_block_inversion(_obj, sender)
-        transaction.add_fail(self.__undo_icmp_block_inversion, _policy, _obj)
+            self.__register_icmp_block_inversion(_obj, sender)
+            transaction.add_fail(self.__undo_icmp_block_inversion, _policy, _obj)
 
-        # redo icmp blocks
-        if _obj.applied:
-            for args in _obj.icmp_blocks:
-                self._icmp_block(True, _policy, args, transaction)
+            # redo icmp blocks
+            if _obj.applied:
+                for args in _obj.icmp_blocks:
+                    self._icmp_block(True, _policy, args, transaction)
 
-            self._icmp_block_inversion(True, _policy, transaction)
-
-        if use_transaction is None:
-            transaction.execute(True)
+                self._icmp_block_inversion(True, _policy, transaction)
 
         return _policy
 
@@ -1271,21 +1151,19 @@ class FirewallPolicy:
         _obj.icmp_block_inversion = True
 
     def __undo_icmp_block_inversion(self, _policy, _obj):
-        transaction = self.new_transaction()
+        with self.with_transaction() as transaction:
 
-        # undo icmp blocks
-        if _obj.applied:
-            for args in _obj.icmp_blocks:
-                self._icmp_block(False, _policy, args, transaction)
+            # undo icmp blocks
+            if _obj.applied:
+                for args in _obj.icmp_blocks:
+                    self._icmp_block(False, _policy, args, transaction)
 
-        _obj.icmp_block_inversion = False
+            _obj.icmp_block_inversion = False
 
-        # redo icmp blocks
-        if _obj.applied:
-            for args in _obj.icmp_blocks:
-                self._icmp_block(True, _policy, args, transaction)
-
-        transaction.execute(True)
+            # redo icmp blocks
+            if _obj.applied:
+                for args in _obj.icmp_blocks:
+                    self._icmp_block(True, _policy, args, transaction)
 
     def remove_icmp_block_inversion(self, policy, use_transaction=None):
         _policy = self._fw.check_policy(policy)
@@ -1298,30 +1176,24 @@ class FirewallPolicy:
                 errors.NOT_ENABLED, "icmp-block-inversion not enabled in '%s'" % _name
             )
 
-        if use_transaction is None:
-            transaction = self.new_transaction()
-        else:
-            transaction = use_transaction
+        with self.with_transaction(use_transaction) as transaction:
 
-        if _obj.applied:
-            # undo icmp blocks
-            for args in _obj.icmp_blocks:
-                self._icmp_block(False, _policy, args, transaction)
+            if _obj.applied:
+                # undo icmp blocks
+                for args in _obj.icmp_blocks:
+                    self._icmp_block(False, _policy, args, transaction)
 
-            self._icmp_block_inversion(False, _policy, transaction)
+                self._icmp_block_inversion(False, _policy, transaction)
 
-        self.__unregister_icmp_block_inversion(_obj)
-        transaction.add_fail(self.__register_icmp_block_inversion, _obj, None)
+            self.__unregister_icmp_block_inversion(_obj)
+            transaction.add_fail(self.__register_icmp_block_inversion, _obj, None)
 
-        # redo icmp blocks
-        if _obj.applied:
-            for args in _obj.icmp_blocks:
-                self._icmp_block(True, _policy, args, transaction)
+            # redo icmp blocks
+            if _obj.applied:
+                for args in _obj.icmp_blocks:
+                    self._icmp_block(True, _policy, args, transaction)
 
-            self._icmp_block_inversion(True, _policy, transaction)
-
-        if use_transaction is None:
-            transaction.execute(True)
+                self._icmp_block_inversion(True, _policy, transaction)
 
         return _policy
 
