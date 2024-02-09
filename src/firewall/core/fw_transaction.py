@@ -68,7 +68,7 @@ class FirewallTransaction:
         for module in modules:
             self.remove_module(module)
 
-    def execute(self, enable):
+    def execute(self, enable, clear=True):
         log.debug4("%s.execute(%s)" % (type(self), enable))
 
         rules = self.rules
@@ -118,6 +118,9 @@ class FirewallTransaction:
 
         # post
         self.post()
+
+        if clear:
+            self.clear()
 
     def pre(self):
         log.debug4("%s.pre()" % type(self))
