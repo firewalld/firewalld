@@ -500,7 +500,7 @@ class nftables:
             ]
 
     def set_rule(self, rule, log_denied):
-        self.set_rules([rule], log_denied)
+        self.set_rules([rule], log_denied, rules_clear=True)
         return ""
 
     def get_available_tables(self, table=None):
@@ -2730,7 +2730,7 @@ class nftables:
 
     def set_create(self, name, type, options=None):
         rules = self.build_set_create_rules(name, type, options)
-        self.set_rules(rules, self._fw.get_log_denied())
+        self.set_rules(rules, self._fw.get_log_denied(), rules_clear=True)
 
     def set_destroy(self, name):
         rule = {
@@ -2862,7 +2862,7 @@ class nftables:
 
     def set_add(self, name, entry):
         rules = self.build_set_add_rules(name, entry)
-        self.set_rules(rules, self._fw.get_log_denied())
+        self.set_rules(rules, self._fw.get_log_denied(), rules_clear=True)
 
     def set_delete(self, name, entry):
         element = self._set_entry_fragment(name, entry)
@@ -2885,7 +2885,7 @@ class nftables:
 
     def set_flush(self, name):
         rules = self.build_set_flush_rules(name)
-        self.set_rules(rules, self._fw.get_log_denied())
+        self.set_rules(rules, self._fw.get_log_denied(), rules_clear=True)
 
     def _set_get_family(self, name):
         ipset = self._fw.ipset.get_ipset(name)
@@ -2916,7 +2916,7 @@ class nftables:
             rules.extend(self.build_set_add_rules(set_name, entry))
             chunk += 1
             if chunk >= 1000:
-                self.set_rules(rules, self._fw.get_log_denied())
+                self.set_rules(rules, self._fw.get_log_denied(), rules_clear=True)
                 rules.clear()
                 chunk = 0
         else:
