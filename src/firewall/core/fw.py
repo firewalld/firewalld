@@ -572,7 +572,6 @@ class Firewall:
             self.ipset.backends() and self.ipset.has_ipsets()
         ):
             transaction.execute(True)
-            transaction.clear()
 
         # complete reload: unload modules also
         if reload and complete_reload:
@@ -581,7 +580,6 @@ class Firewall:
 
         self.apply_default_tables(use_transaction=transaction)
         transaction.execute(True)
-        transaction.clear()
 
         # apply settings for loaded ipsets while reloading here
         if (self.ipset.backends()) and self.ipset.has_ipsets():
@@ -602,7 +600,6 @@ class Firewall:
         self.policy.apply_policies(use_transaction=transaction)
 
         transaction.execute(True)
-        transaction.clear()
 
     def _start_apply_direct_rules(self):
         transaction = FirewallTransaction(self)
@@ -616,14 +613,12 @@ class Firewall:
             # the cause if the transaction fails.
             try:
                 transaction.execute(True)
-                transaction.clear()
             except FirewallError as e:
                 raise FirewallError(e.code, "Direct: %s" % (e.msg if e.msg else ""))
             except Exception:
                 raise
 
         transaction.execute(True)
-        transaction.clear()
 
     def _start_check(self):
         # check minimum required zones
