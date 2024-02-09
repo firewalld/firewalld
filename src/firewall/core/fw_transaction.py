@@ -25,9 +25,9 @@ class FirewallTransaction:
 
     def clear(self):
         self.rules.clear()
-        del self.pre_funcs[:]
-        del self.post_funcs[:]
-        del self.fail_funcs[:]
+        self.pre_funcs.clear()
+        self.post_funcs.clear()
+        self.fail_funcs.clear()
 
     def add_rule(self, backend, rule):
         self.rules.setdefault(backend.name, []).append(rule)
