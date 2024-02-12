@@ -344,3 +344,42 @@ def test_rich_rule_parse_2():
 
     e = firewall.core.rich._Rich_Log(limit=5)
     assert e.limit == 5
+
+
+###############################################################################
+
+
+def test_rich_limit():
+    def _Limit(*args, **kwargs):
+        l = firewall.core.rich.Rich_Limit(*args, **kwargs)
+        l2 = firewall.core.rich.Rich_Limit(l.value, l.burst)
+        assert l == l2
+        assert hash(l) == hash(l2), "Rich_Limit must be hashable"
+        assert set([l, l2]) == set([l]), "Rich_Limit must be hashable"
+        return l
+
+    with pytest.raises(TypeError):
+        firewall.core.rich.Rich_Limit()
+    with pytest.raises(TypeError):
+        firewall.core.rich.Rich_Limit(value=None)
+    with pytest.raises(firewall.errors.FirewallError):
+        firewall.core.rich.Rich_Limit("")
+    l = _Limit("  5  / minute")
+    assert l.value == "5/m"
+    assert l.rate == 5
+    assert l.duration == "m"
+    assert l.burst is None
+    l = _Limit("  543  / day  ", burst=" 667   ")
+    assert l.value == "543/d"
+    assert l.rate == 543
+    assert l.duration == "d"
+    assert l.burst == 667
+    l = _Limit("  10000  / s  ", burst=10_000_000)
+    assert l.value == "10000/s"
+    assert l.rate == 10000
+    assert l.duration == "s"
+    assert l.burst == 10_000_000
+    with pytest.raises(firewall.errors.FirewallError):
+        firewall.core.rich.Rich_Limit("  10001  / s  ", burst=54)
+    with pytest.raises(firewall.errors.FirewallError):
+        firewall.core.rich.Rich_Limit("  10000  / s  ", burst=10_000_001)
