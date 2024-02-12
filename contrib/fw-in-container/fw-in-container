@@ -17,6 +17,8 @@ set -e
 # Options:
 #  --no-cleanup: don't delete the CONTAINERFILE and other artifacts
 #  --stop: only has effect with "run". It will stop the container afterwards.
+#  -S|--setup-host: bump sysctl values of host to run tests inside rootless
+#    container. Requires root.
 #  -- [EXTRA_ARGS]:
 #    - with command "exec", provide a command and arguments to run in the container.
 #      Defaults to "bash".
@@ -101,6 +103,29 @@ trap cleanup EXIT
 
 ###############################################################################
 
+sysctl_bump() {
+    local sysctl="$1"
+    local val="$2"
+    local cur;
+
+    cur="$(cat "$sysctl" 2>/dev/null)" || :
+    if [ -n "$cur" -a "$cur" -ge "$val" ] ; then
+        echo "# Skip: echo $val > $sysctl (current value $cur)"
+        return 0
+    fi
+    echo "    echo $val > $sysctl (previous value $cur)"
+    echo "$val" > "$sysctl"
+}
+
+setup_host() {
+    echo "Setting up host for running as rootless (requires root)."
+    sysctl_bump /proc/sys/net/core/rmem_max $((4000*1024)) || return $?
+    sysctl_bump /proc/sys/net/core/wmem_max $((4000*1024)) || return $?
+    sysctl_bump /proc/sys/net/core/wmem_default $((4000*1024)) || return $?
+}
+
+###############################################################################
+
 tmp_file() {
     cat > "$1"
     CLEANUP_FILES+=( "$1" )
@@ -115,6 +140,9 @@ bind_files() {
 
     ARR+=( -v "$BASEDIR_FW:$BASEDIR_FW" )
     ARR+=( -v "/:/Host" )
+
+    # Make /proc/sys/net/core available, so we can check it.
+    ARR+=( -v "/proc/sys/net/core:/.host/proc/sys/net/core" )
 
     for i in $(seq 1 ${#SYMLINK_TARGET[@]}) ; do
         j=$((i - 1))
@@ -607,6 +635,10 @@ for (( i=1 ; i<="$#" ; )) ; do
         --)
             EXTRA_ARGS=( "${@:$i}" )
             break
+            ;;
+        -S|--setup-host)
+            setup_host
+            exit $?
             ;;
         -h|--help)
             usage
