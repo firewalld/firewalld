@@ -2908,25 +2908,28 @@ class nftables:
                 fragment.append(entry_tokens[i])
         return [{"concat": fragment}] if len(type_format) > 1 else fragment
 
-    def build_set_add_rules(self, name, entry):
+    def build_set_add_rules(self, name, entries):
         rules = []
-        element = self._set_entry_fragment(name, entry)
-        rules.append(
-            {
-                "add": {
-                    "element": {
-                        "family": "inet",
-                        "table": TABLE_NAME,
-                        "name": name,
-                        "elem": element,
+        elements = []
+        for entry in entries:
+            elements.extend(self._set_entry_fragment(name, entry))
+        if elements:
+            rules.append(
+                {
+                    "add": {
+                        "element": {
+                            "family": "inet",
+                            "table": TABLE_NAME,
+                            "name": name,
+                            "elem": elements,
+                        }
                     }
                 }
-            }
-        )
+            )
         return rules
 
     def set_add(self, name, entry):
-        rules = self.build_set_add_rules(name, entry)
+        rules = self.build_set_add_rules(name, (entry,))
         self.set_rules(rules, self._fw.get_log_denied(), rules_clear=True)
 
     def set_delete(self, name, entry):
@@ -2976,13 +2979,9 @@ class nftables:
         rules.extend(self.build_set_flush_rules(set_name))
 
         # avoid large memory usage by chunking the entries
-        chunk = 0
-        for entry in entries:
-            rules.extend(self.build_set_add_rules(set_name, entry))
-            chunk += 1
-            if chunk >= 1000:
-                self.set_rules(rules, self._fw.get_log_denied(), rules_clear=True)
-                rules.clear()
-                chunk = 0
-        else:
-            self.set_rules(rules, self._fw.get_log_denied())
+        for entries in firewall.functions.iter_split_every(entries, 1000):
+            rules.extend(self.build_set_add_rules(set_name, entries))
+            self.set_rules(rules, self._fw.get_log_denied(), rules_clear=True)
+            rules.clear()
+        if rules:
+            self.set_rules(rules, self._fw.get_log_denied(), rules_clear=True)
