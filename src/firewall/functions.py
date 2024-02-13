@@ -5,6 +5,7 @@
 # Authors:
 # Thomas Woerner <twoerner@redhat.com>
 
+import itertools
 import socket
 import os
 import os.path
@@ -670,3 +671,12 @@ def wrong_args_for_callable(fcn, *a, **kw):
     except TypeError:
         return False
     return True
+
+
+def iter_split_every(iterable, n):
+    i = iter(iterable)
+    while True:
+        part = list(itertools.islice(i, n))
+        if not part:
+            return
+        yield part
