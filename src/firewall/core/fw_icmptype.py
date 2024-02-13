@@ -27,12 +27,13 @@ class FirewallIcmpType:
         return sorted(self._icmptypes.keys())
 
     def check_icmptype(self, icmptype):
-        if icmptype not in self._icmptypes:
-            raise FirewallError(errors.INVALID_ICMPTYPE, icmptype)
+        return self.get_icmptype(icmptype).name
 
-    def get_icmptype(self, icmptype):
-        self.check_icmptype(icmptype)
-        return self._icmptypes[icmptype]
+    def get_icmptype(self, icmptype, required=True):
+        v = self._icmptypes.get(icmptype)
+        if v is None and required:
+            raise FirewallError(errors.INVALID_ICMPTYPE, icmptype)
+        return v
 
     def add_icmptype(self, obj):
         orig_ipvs = obj.destination

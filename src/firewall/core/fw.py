@@ -159,7 +159,7 @@ class Firewall:
         }
         conf_dict["policies"] = {
             policy: self.policy.get_policy(policy)
-            for policy in self.policy.get_policies_not_derived_from_zone()
+            for policy in self.policy.get_policies()
         }
 
         conf_dict["conf"] = {}
@@ -628,24 +628,21 @@ class Firewall:
     def _start_check(self):
         # check minimum required zones
         for z in ["block", "drop", "trusted"]:
-            if z not in self.zone.get_zones():
+            if not self.zone.has_zone(z):
                 raise FirewallError(
                     errors.INVALID_ZONE, "Zone '{}' is not available.".format(z)
                 )
 
         # check if default_zone is a valid zone
-        if self._default_zone not in self.zone.get_zones():
-            if "public" in self.zone.get_zones():
-                zone = "public"
-            elif "external" in self.zone.get_zones():
-                zone = "external"
-            else:
-                zone = "block"  # block is a base zone, therefore it has to exist
-
+        for z in (self._default_zone, "public", "external", "block"):
+            if self.zone.has_zone(z):
+                break
+        if z != self._default_zone:
+            # "block" is a base zone, therefore it has to exist (which we checked above)
             log.error(
-                "Default zone '%s' is not valid. Using '%s'.", self._default_zone, zone
+                "Default zone '%s' is not valid. Using '%s'.", self._default_zone, z
             )
-            self._default_zone = zone
+            self._default_zone = z
         else:
             log.debug1("Using default zone '%s'", self._default_zone)
 
@@ -1184,25 +1181,14 @@ class Firewall:
             raise FirewallError(errors.PANIC_MODE)
 
     def check_policy(self, policy):
-        _policy = policy
-        if _policy not in self.policy.get_policies():
-            raise FirewallError(errors.INVALID_POLICY, _policy)
-        return _policy
+        return self.policy.check_policy(policy)
 
     def check_zone(self, zone):
-        _zone = zone
-        if not _zone or _zone == "":
-            _zone = self.get_default_zone()
-        if _zone not in self.zone.get_zones():
-            raise FirewallError(errors.INVALID_ZONE, _zone)
-        return _zone
+        return self.zone.check_zone(zone)
 
     def check_interface(self, interface):
         if not functions.checkInterface(interface):
             raise FirewallError(errors.INVALID_INTERFACE, interface)
-
-    def check_service(self, service):
-        self.service.check_service(service)
 
     def check_port(self, port):
         if not functions.check_port(port):
@@ -1230,9 +1216,6 @@ class Firewall:
                 raise FirewallError(errors.INVALID_ADDR, source)
         else:
             raise FirewallError(errors.INVALID_IPV, "'%s' not in {'ipv4'|'ipv6'}")
-
-    def check_icmptype(self, icmp):
-        self.icmptype.check_icmptype(icmp)
 
     def check_timeout(self, timeout):
         if not isinstance(timeout, int):

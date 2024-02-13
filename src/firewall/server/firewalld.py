@@ -538,7 +538,7 @@ class FirewallD(DbusServiceObject):
         # policies
 
         config_names = self.config.getPolicyNames()
-        for name in self.fw.policy.get_policies_not_derived_from_zone():
+        for name in self.fw.policy.get_policies():
             conf = self.getPolicySettings(name)
             try:
                 if name in config_names:
@@ -1295,7 +1295,7 @@ class FirewallD(DbusServiceObject):
     @dbus_handle_exceptions
     def getPolicies(self, sender=None):
         log.debug1("policy.getPolicies()")
-        return self.fw.policy.get_policies_not_derived_from_zone()
+        return self.fw.policy.get_policies()
 
     @dbus_polkit_require_auth(config.dbus.PK_ACTION_INFO)
     @dbus_service_method(
@@ -1305,7 +1305,7 @@ class FirewallD(DbusServiceObject):
     def getActivePolicies(self, sender=None):
         log.debug1("policy.getActivePolicies()")
         policies = {}
-        for policy in self.fw.policy.get_active_policies_not_derived_from_zone():
+        for policy in self.fw.policy.get_policies(require_active=True):
             policies[policy] = {}
             policies[policy]["ingress_zones"] = self.fw.policy.list_ingress_zones(
                 policy
