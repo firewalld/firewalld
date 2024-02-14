@@ -94,23 +94,24 @@ class FirewallPolicy:
     def remove_policy(self, policy):
         obj = self._policies[policy]
         if obj.applied:
-            self.unapply_policy_settings(policy)
+            with self.with_transaction() as transaction:
+                self.unapply_policy_settings(policy, transaction)
         del self._policies[policy]
 
-    def apply_policies(self, use_transaction=None):
+    def apply_policies(self, transaction):
         for policy in self.get_policies():
             p_obj = self._policies[policy]
             if p_obj.derived_from_zone:
                 continue
             if policy in self.get_active_policies_not_derived_from_zone():
                 log.debug1("Applying policy '%s'", policy)
-                self.apply_policy_settings(policy, use_transaction=use_transaction)
+                self.apply_policy_settings(policy, transaction)
 
     def set_policy_applied(self, policy, applied):
         obj = self._policies[policy]
         obj.applied = applied
 
-    def _policy_settings(self, enable, policy, use_transaction=None):
+    def _policy_settings(self, enable, policy, transaction):
         _policy = self._fw.check_policy(policy)
         obj = self._policies[_policy]
         if (enable and obj.applied) or (not enable and not obj.applied):
@@ -118,94 +119,90 @@ class FirewallPolicy:
         if enable:
             obj.applied = True
 
-        with self.with_transaction(use_transaction, enable=enable) as transaction:
+        if enable:
+            # build the base chain layout of the policy
+            for table, chain in (
+                self._get_table_chains_for_policy_dispatch(policy)
+                if not obj.derived_from_zone
+                else self._get_table_chains_for_zone_dispatch(policy)
+            ):
+                self.gen_chain_rules(policy, True, table, chain, transaction)
 
-            if enable:
-                # build the base chain layout of the policy
-                for table, chain in (
-                    self._get_table_chains_for_policy_dispatch(policy)
-                    if not obj.derived_from_zone
-                    else self._get_table_chains_for_zone_dispatch(policy)
-                ):
-                    self.gen_chain_rules(policy, True, table, chain, transaction)
+        for key in [
+            "services",
+            "ports",
+            "masquerade",
+            "forward_ports",
+            "source_ports",
+            "icmp_blocks",
+            "rules_str",
+            "protocols",
+            "icmp_block_inversion",
+            "ingress_zones",
+            "egress_zones",
+        ]:
+            args_list = getattr(self.get_policy(policy), key)
+            if isinstance(args_list, bool):
+                if not ((enable and args_list) or (not enable and args_list)):
+                    continue
+                args_list = [args_list]
+            for args in args_list:
+                if key == "icmp_blocks":
+                    self._icmp_block(enable, _policy, args, transaction)
+                elif key == "icmp_block_inversion":
+                    continue
+                elif key == "forward_ports":
+                    self._forward_port(enable, _policy, transaction, *args)
+                elif key == "services":
+                    self._service(enable, _policy, args, transaction)
+                elif key == "ports":
+                    self._port(enable, _policy, args[0], args[1], transaction)
+                elif key == "protocols":
+                    self._protocol(enable, _policy, args, transaction)
+                elif key == "source_ports":
+                    self._source_port(enable, _policy, args[0], args[1], transaction)
+                elif key == "masquerade":
+                    self._masquerade(enable, _policy, transaction)
+                elif key == "rules_str":
+                    self.__rule(enable, _policy, Rich_Rule(rule_str=args), transaction)
+                elif key == "ingress_zones":
+                    if not obj.derived_from_zone:
+                        self._ingress_zone(enable, _policy, args, transaction)
+                elif key == "egress_zones":
+                    # key off ingress zones, which also considers egress zones
+                    continue
+                else:
+                    log.warning(
+                        "Policy '%s': Unknown setting '%s:%s', " "unable to apply",
+                        policy,
+                        key,
+                        args,
+                    )
 
-            for key in [
-                "services",
-                "ports",
-                "masquerade",
-                "forward_ports",
-                "source_ports",
-                "icmp_blocks",
-                "rules_str",
-                "protocols",
-                "icmp_block_inversion",
-                "ingress_zones",
-                "egress_zones",
-            ]:
-                args_list = getattr(self.get_policy(policy), key)
-                if isinstance(args_list, bool):
-                    if not ((enable and args_list) or (not enable and args_list)):
-                        continue
-                    args_list = [args_list]
-                for args in args_list:
-                    if key == "icmp_blocks":
-                        self._icmp_block(enable, _policy, args, transaction)
-                    elif key == "icmp_block_inversion":
-                        continue
-                    elif key == "forward_ports":
-                        self._forward_port(enable, _policy, transaction, *args)
-                    elif key == "services":
-                        self._service(enable, _policy, args, transaction)
-                    elif key == "ports":
-                        self._port(enable, _policy, args[0], args[1], transaction)
-                    elif key == "protocols":
-                        self._protocol(enable, _policy, args, transaction)
-                    elif key == "source_ports":
-                        self._source_port(
-                            enable, _policy, args[0], args[1], transaction
-                        )
-                    elif key == "masquerade":
-                        self._masquerade(enable, _policy, transaction)
-                    elif key == "rules_str":
-                        self.__rule(
-                            enable, _policy, Rich_Rule(rule_str=args), transaction
-                        )
-                    elif key == "ingress_zones":
-                        if not obj.derived_from_zone:
-                            self._ingress_zone(enable, _policy, args, transaction)
-                    elif key == "egress_zones":
-                        # key off ingress zones, which also considers egress zones
-                        continue
-                    else:
-                        log.warning(
-                            "Policy '%s': Unknown setting '%s:%s', " "unable to apply",
-                            policy,
-                            key,
-                            args,
-                        )
+        if not enable:
+            for table, chain in (
+                self._get_table_chains_for_policy_dispatch(policy)
+                if not obj.derived_from_zone
+                else self._get_table_chains_for_zone_dispatch(policy)
+            ):
+                self.gen_chain_rules(policy, False, table, chain, transaction)
+            obj.applied = False
 
-            if not enable:
-                for table, chain in (
-                    self._get_table_chains_for_policy_dispatch(policy)
-                    if not obj.derived_from_zone
-                    else self._get_table_chains_for_zone_dispatch(policy)
-                ):
-                    self.gen_chain_rules(policy, False, table, chain, transaction)
-                obj.applied = False
-
-    def apply_policy_settings(self, policy, use_transaction=None):
-        self._policy_settings(True, policy, use_transaction=use_transaction)
+    def apply_policy_settings(self, policy, transaction):
+        self._policy_settings(True, policy, transaction)
 
     def try_apply_policy_settings(self, policy, use_transaction=None):
         if policy in self.get_active_policies_not_derived_from_zone():
-            self.apply_policy_settings(policy, use_transaction=use_transaction)
+            with self.with_transaction(use_transaction) as transaction:
+                self.apply_policy_settings(policy, transaction)
 
-    def unapply_policy_settings(self, policy, use_transaction=None):
-        self._policy_settings(False, policy, use_transaction=use_transaction)
+    def unapply_policy_settings(self, policy, transaction):
+        self._policy_settings(False, policy, transaction)
 
     def try_unapply_policy_settings(self, policy, use_transaction=None):
         if policy not in self.get_active_policies_not_derived_from_zone():
-            self.unapply_policy_settings(policy, use_transaction=use_transaction)
+            with self.with_transaction(use_transaction) as transaction:
+                self.unapply_policy_settings(policy, transaction)
 
     def get_config_with_settings_dict(self, policy):
         return self.get_policy(policy).export_config_dict()
@@ -322,7 +319,7 @@ class FirewallPolicy:
 
             if _obj.applied:
                 if len(_obj.ingress_zones) <= 1:
-                    self.unapply_policy_settings(policy, use_transaction=transaction)
+                    self.unapply_policy_settings(policy, transaction)
                 else:
                     self._ingress_zone(False, _policy, zone, transaction)
 
@@ -395,7 +392,7 @@ class FirewallPolicy:
 
             if _obj.applied:
                 if len(_obj.egress_zones) <= 1:
-                    self.unapply_policy_settings(policy, use_transaction=transaction)
+                    self.unapply_policy_settings(policy, transaction)
                 else:
                     self._egress_zone(False, _policy, zone, transaction)
 
