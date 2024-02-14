@@ -410,7 +410,7 @@ class FirewallZone:
         self.check_interface(interface)
         return interface
 
-    def add_interface(self, zone, interface, sender=None, allow_apply=True):
+    def add_interface(self, zone, interface, sender=None):
         self._fw.check_panic()
         _zone = self._fw.check_zone(zone)
         _obj = self._zones[_zone]
@@ -432,12 +432,11 @@ class FirewallZone:
 
         with self.with_transaction() as transaction:
 
-            if not _obj.applied and allow_apply:
+            if not _obj.applied:
                 self.apply_zone_settings(zone, transaction)
                 transaction.add_fail(self.set_zone_applied, _zone, False)
 
-            if allow_apply:
-                self._interface(True, _zone, interface, transaction)
+            self._interface(True, _zone, interface, transaction)
 
             self.__register_interface(_obj, interface_id, zone, sender)
             transaction.add_fail(self.__unregister_interface, _obj, interface_id)
@@ -524,7 +523,7 @@ class FirewallZone:
         self.check_source(source, applied=applied)
         return source
 
-    def add_source(self, zone, source, sender=None, allow_apply=True):
+    def add_source(self, zone, source, sender=None):
         self._fw.check_panic()
         _zone = self._fw.check_zone(zone)
         _obj = self._zones[_zone]
@@ -532,8 +531,8 @@ class FirewallZone:
         if check_mac(source):
             source = source.upper()
 
-        ipv = self.check_source(source, applied=allow_apply)
-        source_id = self.__source_id(source, applied=allow_apply)
+        ipv = self.check_source(source, applied=True)
+        source_id = self.__source_id(source, applied=True)
 
         if source_id in _obj.sources:
             raise FirewallError(
@@ -546,12 +545,11 @@ class FirewallZone:
 
         with self.with_transaction() as transaction:
 
-            if not _obj.applied and allow_apply:
+            if not _obj.applied:
                 self.apply_zone_settings(zone, transaction)
                 transaction.add_fail(self.set_zone_applied, _zone, False)
 
-            if allow_apply:
-                self._source(True, _zone, ipv, source_id, transaction)
+            self._source(True, _zone, ipv, source_id, transaction)
 
             self.__register_source(_obj, source_id, zone, sender)
             transaction.add_fail(self.__unregister_source, _obj, source_id)
