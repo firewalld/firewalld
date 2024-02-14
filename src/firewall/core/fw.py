@@ -606,7 +606,7 @@ class Firewall:
                 self.ipset.apply_ipsets()
 
             log.debug1("Applying default rule set")
-            self.apply_default_rules(use_transaction=transaction)
+            self.apply_default_rules(transaction)
 
             log.debug1("Applying default zone")
             self.zone.apply_zone_settings(self._default_zone, transaction)
@@ -1029,24 +1029,21 @@ class Firewall:
         for backend in self.enabled_backends():
             transaction.add_rules(backend, backend.build_default_tables())
 
-    def apply_default_rules(self, use_transaction=None):
+    def apply_default_rules(self, transaction):
+        for backend in self.enabled_backends():
+            rules = backend.build_default_rules(self._log_denied)
+            transaction.add_rules(backend, rules)
 
-        with self.with_transaction(use_transaction) as transaction:
+        if self.is_ipv_enabled("ipv6"):
+            ipv6_backend = self.get_backend_by_ipv("ipv6")
+            if "raw" in ipv6_backend.get_available_tables():
+                if self.ipv6_rpfilter_enabled:
+                    rules = ipv6_backend.build_rpfilter_rules(self._log_denied)
+                    transaction.add_rules(ipv6_backend, rules)
 
-            for backend in self.enabled_backends():
-                rules = backend.build_default_rules(self._log_denied)
-                transaction.add_rules(backend, rules)
-
-            if self.is_ipv_enabled("ipv6"):
-                ipv6_backend = self.get_backend_by_ipv("ipv6")
-                if "raw" in ipv6_backend.get_available_tables():
-                    if self.ipv6_rpfilter_enabled:
-                        rules = ipv6_backend.build_rpfilter_rules(self._log_denied)
-                        transaction.add_rules(ipv6_backend, rules)
-
-            if self.is_ipv_enabled("ipv6") and self._rfc3964_ipv4:
-                rules = ipv6_backend.build_rfc3964_ipv4_rules()
-                transaction.add_rules(ipv6_backend, rules)
+        if self.is_ipv_enabled("ipv6") and self._rfc3964_ipv4:
+            rules = ipv6_backend.build_rfc3964_ipv4_rules()
+            transaction.add_rules(ipv6_backend, rules)
 
     def may_skip_flush_direct_backends(self):
         if self.nftables_enabled and not self.direct.has_runtime_configuration():
