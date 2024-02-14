@@ -534,7 +534,9 @@ class FirewallDirect:
             if ipv in ["ipv4", "ipv6"]:
                 table, chain = backend.passthrough_parse_table_chain(args)
                 if table and chain:
-                    self._fw.zone.create_zone_base_by_chain(ipv, table, chain)
+                    self._fw.zone.create_zone_base_by_chain(
+                        ipv, table, chain, transaction
+                    )
             _args = args
         else:
             _args = backend.reverse_passthrough(args)
