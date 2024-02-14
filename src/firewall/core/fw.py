@@ -597,7 +597,7 @@ class Firewall:
                 log.debug1("Unloading firewall modules")
                 self.modules_backend.unload_firewall_modules()
 
-            self.apply_default_tables(use_transaction=transaction)
+            self.apply_default_tables(transaction)
             transaction.execute(True)
 
             # apply settings for loaded ipsets while reloading here
@@ -1025,10 +1025,9 @@ class Firewall:
             backends.append(self.nftables_backend)
         return backends
 
-    def apply_default_tables(self, use_transaction=None):
-        with self.with_transaction(use_transaction) as transaction:
-            for backend in self.enabled_backends():
-                transaction.add_rules(backend, backend.build_default_tables())
+    def apply_default_tables(self, transaction):
+        for backend in self.enabled_backends():
+            transaction.add_rules(backend, backend.build_default_tables())
 
     def apply_default_rules(self, use_transaction=None):
 
