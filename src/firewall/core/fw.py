@@ -613,7 +613,7 @@ class Firewall:
             self.zone._interface(True, self._default_zone, "+", transaction)
 
             log.debug1("Applying used zones")
-            self.zone.apply_zones(use_transaction=transaction)
+            self.zone.apply_zones(transaction)
 
             log.debug1("Applying used policies")
             self.policy.apply_policies(transaction)

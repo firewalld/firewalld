@@ -178,16 +178,17 @@ class FirewallZone:
     def remove_zone(self, zone):
         obj = self._zones[zone]
         if obj.applied:
-            self.unapply_zone_settings(zone)
+            with self.with_transaction() as transaction:
+                self.unapply_zone_settings(zone, transaction)
         del self._zones[zone]
         del self._zone_policies[zone]
 
-    def apply_zones(self, use_transaction=None):
+    def apply_zones(self, transaction):
         for zone in self.get_zones():
             z_obj = self._zones[zone]
             if len(z_obj.interfaces) > 0 or len(z_obj.sources) > 0:
                 log.debug1("Applying zone '%s'", zone)
-                self.apply_zone_settings(zone, use_transaction=use_transaction)
+                self.apply_zone_settings(zone, transaction)
 
     def set_zone_applied(self, zone, applied):
         obj = self._zones[zone]
@@ -279,33 +280,29 @@ class FirewallZone:
         if enable:
             self._icmp_block_inversion(enable, zone, transaction)
 
-    def apply_zone_settings(self, zone, use_transaction=None):
+    def apply_zone_settings(self, zone, transaction):
         _zone = self._fw.check_zone(zone)
         obj = self._zones[_zone]
         if obj.applied:
             return
         obj.applied = True
 
-        with self.with_transaction(use_transaction) as transaction:
+        for policy in self._zone_policies[_zone]:
+            log.debug1("Applying policy (%s) derived from zone '%s'", policy, zone)
+            self._fw.policy.apply_policy_settings(policy, transaction)
 
-            for policy in self._zone_policies[_zone]:
-                log.debug1("Applying policy (%s) derived from zone '%s'", policy, zone)
-                self._fw.policy.apply_policy_settings(policy, transaction)
+        self._zone_settings(True, _zone, transaction)
 
-            self._zone_settings(True, _zone, transaction)
-
-    def unapply_zone_settings(self, zone, use_transaction=None):
+    def unapply_zone_settings(self, zone, transaction):
         _zone = self._fw.check_zone(zone)
         obj = self._zones[_zone]
         if not obj.applied:
             return
 
-        with self.with_transaction(use_transaction) as transaction:
+        for policy in self._zone_policies[_zone]:
+            self._fw.policy.unapply_policy_settings(policy, transaction)
 
-            for policy in self._zone_policies[_zone]:
-                self._fw.policy.unapply_policy_settings(policy, transaction)
-
-            self._zone_settings(False, _zone, transaction)
+        self._zone_settings(False, _zone, transaction)
 
     def get_config_with_settings(self, zone):
         """
@@ -439,7 +436,7 @@ class FirewallZone:
         with self.with_transaction(use_transaction) as transaction:
 
             if not _obj.applied and allow_apply:
-                self.apply_zone_settings(zone, use_transaction=transaction)
+                self.apply_zone_settings(zone, transaction)
                 transaction.add_fail(self.set_zone_applied, _zone, False)
 
             if allow_apply:
@@ -555,7 +552,7 @@ class FirewallZone:
         with self.with_transaction(use_transaction) as transaction:
 
             if not _obj.applied and allow_apply:
-                self.apply_zone_settings(zone, use_transaction=transaction)
+                self.apply_zone_settings(zone, transaction)
                 transaction.add_fail(self.set_zone_applied, _zone, False)
 
             if allow_apply:
