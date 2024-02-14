@@ -64,20 +64,18 @@ class FirewallDirect:
             return True
         return False
 
-    def apply_direct(self, use_transaction=None):
-        with self._fw.with_transaction(use_transaction) as transaction:
-
-            # Apply permanent configuration and save the obj to be able to
-            # remove permanent configuration settings within get_runtime_config
-            # for use in firewalld reload.
-            self.set_config(
-                (
-                    self._obj.get_all_chains(),
-                    self._obj.get_all_rules(),
-                    self._obj.get_all_passthroughs(),
-                ),
-                transaction,
-            )
+    def apply_direct(self, transaction):
+        # Apply permanent configuration and save the obj to be able to
+        # remove permanent configuration settings within get_runtime_config
+        # for use in firewalld reload.
+        self.set_config(
+            (
+                self._obj.get_all_chains(),
+                self._obj.get_all_rules(),
+                self._obj.get_all_passthroughs(),
+            ),
+            transaction,
+        )
 
     def get_runtime_config(self):
         # Return only runtime changes
