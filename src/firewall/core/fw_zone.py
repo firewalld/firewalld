@@ -241,16 +241,15 @@ class FirewallZone:
 
         return (self.policy_name_from_zones(fromZone, toZone), _chain)
 
-    def create_zone_base_by_chain(self, ipv, table, chain, use_transaction=None):
+    def create_zone_base_by_chain(self, ipv, table, chain, transaction):
         # Create zone base chains if the chain is reserved for a zone
         if ipv in ["ipv4", "ipv6"]:
             x = self.policy_from_chain(chain)
             if x is not None:
                 (policy, _chain) = self.policy_from_chain(chain)
-                with self.with_transaction(use_transaction) as transaction:
-                    self._fw.policy.gen_chain_rules(
-                        policy, True, table, _chain, transaction
-                    )
+                self._fw.policy.gen_chain_rules(
+                    policy, True, table, _chain, transaction
+                )
 
     def _zone_settings(self, enable, zone, transaction):
         for key in ["interfaces", "sources", "forward", "icmp_block_inversion"]:
