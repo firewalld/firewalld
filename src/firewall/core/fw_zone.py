@@ -290,9 +290,7 @@ class FirewallZone:
 
             for policy in self._zone_policies[_zone]:
                 log.debug1("Applying policy (%s) derived from zone '%s'", policy, zone)
-                self._fw.policy.apply_policy_settings(
-                    policy, use_transaction=transaction
-                )
+                self._fw.policy.apply_policy_settings(policy, transaction)
 
             self._zone_settings(True, _zone, transaction)
 
@@ -305,9 +303,7 @@ class FirewallZone:
         with self.with_transaction(use_transaction) as transaction:
 
             for policy in self._zone_policies[_zone]:
-                self._fw.policy.unapply_policy_settings(
-                    policy, use_transaction=transaction
-                )
+                self._fw.policy.unapply_policy_settings(policy, transaction)
 
             self._zone_settings(False, _zone, transaction)
 

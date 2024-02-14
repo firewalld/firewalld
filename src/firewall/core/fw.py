@@ -616,7 +616,7 @@ class Firewall:
             self.zone.apply_zones(use_transaction=transaction)
 
             log.debug1("Applying used policies")
-            self.policy.apply_policies(use_transaction=transaction)
+            self.policy.apply_policies(transaction)
 
     def _start_apply_direct_rules(self):
         with self.with_transaction() as transaction:
