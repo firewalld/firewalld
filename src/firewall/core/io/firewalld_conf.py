@@ -254,11 +254,10 @@ class firewalld_conf:
         self._config.clear()
 
     def get(self, key):
-        return self._config.get(key.strip())
+        return self._config.get(key)
 
     def set(self, key, value):
-        _key = key.strip()
-        self._config[_key] = value.strip()
+        self._config[key] = value.strip()
 
     def __str__(self):
         s = ""
