@@ -84,6 +84,7 @@ CONFIG_PROPERTIES = {
     "AllowZoneDrifting": ConfigPropertiesTuple("readwrite", True, True, dbus.String),
     "NftablesFlowtable": ConfigPropertiesTuple("readwrite", False, False, dbus.String),
     "NftablesCounters": ConfigPropertiesTuple("readwrite", False, False, dbus.String),
+    "ReloadPolicy": ConfigPropertiesTuple("read", False, False, dbus.String),
 }
 
 

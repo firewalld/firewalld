@@ -1,7 +1,8 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
-import firewall.core.io.firewalld_conf
 import firewall.config
+import firewall.core.io.firewalld_conf
+import firewall.server.config
 
 
 def get_valid_key(key):
@@ -94,6 +95,10 @@ def test_config_keys():
             assert type(keytype._default) is str
 
         assert keytype.default == keytype.normalize(keytype._default, strict=True)
+
+    assert sorted(firewall.server.config.CONFIG_PROPERTIES.keys()) == sorted(
+        firewall.core.io.firewalld_conf.valid_keys
+    )
 
 
 def test_config_normalize():
