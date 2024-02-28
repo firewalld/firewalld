@@ -2,7 +2,6 @@
 
 import firewall.config
 import firewall.core.io.firewalld_conf
-import firewall.server.config
 
 
 def get_valid_key(key):
@@ -96,9 +95,7 @@ def test_config_keys():
 
         assert keytype.default == keytype.normalize(keytype._default, strict=True)
 
-    assert sorted(firewall.server.config.CONFIG_PROPERTIES.keys()) == sorted(
-        firewall.core.io.firewalld_conf.valid_keys
-    )
+        assert keytype.dbus_mode in ("read", "readwrite")
 
 
 def test_config_normalize():

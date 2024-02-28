@@ -9,6 +9,7 @@ import os.path
 import io
 import tempfile
 import shutil
+import dbus
 
 import firewall.errors
 import firewall.functions
@@ -99,11 +100,19 @@ class KeyType:
         key_type,
         default,
         *,
+        is_deprecated=False,
+        dbus_mode="read",
+        dbus_type=dbus.String,
+        dbus_ignore_set=False,
         enum_values=None,
     ):
         self.key = key
         self.key_type = key_type
         self._default = default
+        self.is_deprecated = is_deprecated
+        self.dbus_ignore_set = dbus_ignore_set
+        self.dbus_mode = dbus_mode
+        self.dbus_type = dbus_type
         self._enum_values = tuple(enum_values) if enum_values is not None else None
 
     @property
@@ -189,52 +198,109 @@ class KeyType:
 
 
 valid_keys = [
-    KeyType("DefaultZone", key_type=str, default=config.FALLBACK_ZONE),
-    KeyType("MinimalMark", key_type=int, default=config.FALLBACK_MINIMAL_MARK),
-    KeyType("CleanupOnExit", key_type=bool, default=config.FALLBACK_CLEANUP_ON_EXIT),
+    KeyType(
+        "DefaultZone",
+        key_type=str,
+        default=config.FALLBACK_ZONE,
+    ),
+    KeyType(
+        "MinimalMark",
+        key_type=int,
+        default=config.FALLBACK_MINIMAL_MARK,
+        is_deprecated=True,
+        dbus_ignore_set=True,
+        dbus_mode="readwrite",
+        dbus_type=dbus.Int32,
+    ),
+    KeyType(
+        "CleanupOnExit",
+        key_type=bool,
+        default=config.FALLBACK_CLEANUP_ON_EXIT,
+        dbus_mode="readwrite",
+    ),
     KeyType(
         "CleanupModulesOnExit",
         key_type=bool,
         default=config.FALLBACK_CLEANUP_MODULES_ON_EXIT,
+        dbus_mode="readwrite",
     ),
-    KeyType("Lockdown", key_type=bool, default=config.FALLBACK_LOCKDOWN),
-    KeyType("IPv6_rpfilter", key_type=bool, default=config.FALLBACK_IPV6_RPFILTER),
-    KeyType("IndividualCalls", key_type=bool, default=config.FALLBACK_INDIVIDUAL_CALLS),
+    KeyType(
+        "Lockdown",
+        key_type=bool,
+        default=config.FALLBACK_LOCKDOWN,
+        dbus_mode="readwrite",
+    ),
+    KeyType(
+        "IPv6_rpfilter",
+        key_type=bool,
+        default=config.FALLBACK_IPV6_RPFILTER,
+        dbus_mode="readwrite",
+    ),
+    KeyType(
+        "IndividualCalls",
+        key_type=bool,
+        default=config.FALLBACK_INDIVIDUAL_CALLS,
+        dbus_mode="readwrite",
+    ),
     KeyType(
         "LogDenied",
         key_type=_validate_enum,
         default=config.FALLBACK_LOG_DENIED,
         enum_values=config.LOG_DENIED_VALUES,
+        dbus_mode="readwrite",
     ),
     KeyType(
         "AutomaticHelpers",
         key_type=_validate_enum,
         default=config.FALLBACK_AUTOMATIC_HELPERS,
         enum_values=config.AUTOMATIC_HELPERS_VALUES,
+        is_deprecated=True,
+        dbus_ignore_set=True,
+        dbus_mode="readwrite",
     ),
     KeyType(
         "FirewallBackend",
         key_type=_validate_enum,
         default=config.FALLBACK_FIREWALL_BACKEND,
         enum_values=config.FIREWALL_BACKEND_VALUES,
+        dbus_mode="readwrite",
     ),
     KeyType(
-        "FlushAllOnReload", key_type=bool, default=config.FALLBACK_FLUSH_ALL_ON_RELOAD
+        "FlushAllOnReload",
+        key_type=bool,
+        default=config.FALLBACK_FLUSH_ALL_ON_RELOAD,
+        dbus_mode="readwrite",
     ),
     KeyType(
         "ReloadPolicy",
         key_type=_normalize_reload_policy,
         default=config.FALLBACK_RELOAD_POLICY,
     ),
-    KeyType("RFC3964_IPv4", key_type=bool, default=config.FALLBACK_RFC3964_IPV4),
     KeyType(
-        "AllowZoneDrifting", key_type=bool, default=config.FALLBACK_ALLOW_ZONE_DRIFTING
+        "RFC3964_IPv4",
+        key_type=bool,
+        default=config.FALLBACK_RFC3964_IPV4,
+        dbus_mode="readwrite",
     ),
     KeyType(
-        "NftablesFlowtable", key_type=str, default=config.FALLBACK_NFTABLES_FLOWTABLE
+        "AllowZoneDrifting",
+        key_type=bool,
+        default=config.FALLBACK_ALLOW_ZONE_DRIFTING,
+        is_deprecated=True,
+        dbus_ignore_set=True,
+        dbus_mode="readwrite",
     ),
     KeyType(
-        "NftablesCounters", key_type=bool, default=config.FALLBACK_NFTABLES_COUNTERS
+        "NftablesFlowtable",
+        key_type=str,
+        default=config.FALLBACK_NFTABLES_FLOWTABLE,
+        dbus_mode="readwrite",
+    ),
+    KeyType(
+        "NftablesCounters",
+        key_type=bool,
+        default=config.FALLBACK_NFTABLES_COUNTERS,
+        dbus_mode="readwrite",
     ),
 ]
 

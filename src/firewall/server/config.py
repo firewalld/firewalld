@@ -9,8 +9,8 @@ import os
 
 import dbus
 import dbus.service
-import collections
 
+import firewall.core.io.firewalld_conf
 from firewall import config
 from firewall.core.base import DEFAULT_ZONE_TARGET
 from firewall.core.watcher import Watcher
@@ -55,38 +55,6 @@ from firewall.errors import FirewallError
 #
 ############################################################################
 
-ConfigPropertiesTuple = collections.namedtuple(
-    "ConfigPropertiesTuple",
-    [
-        "mode",
-        "is_deprecated",
-        "ignore_set",
-        "to_dbus_fcn",
-    ],
-)
-
-
-CONFIG_PROPERTIES = {
-    "DefaultZone": ConfigPropertiesTuple("read", False, False, dbus.String),
-    "MinimalMark": ConfigPropertiesTuple("readwrite", True, True, dbus.Int32),
-    "CleanupOnExit": ConfigPropertiesTuple("readwrite", False, False, dbus.String),
-    "CleanupModulesOnExit": ConfigPropertiesTuple(
-        "readwrite", False, False, dbus.String
-    ),
-    "IPv6_rpfilter": ConfigPropertiesTuple("readwrite", False, False, dbus.String),
-    "Lockdown": ConfigPropertiesTuple("readwrite", False, False, dbus.String),
-    "IndividualCalls": ConfigPropertiesTuple("readwrite", False, False, dbus.String),
-    "LogDenied": ConfigPropertiesTuple("readwrite", False, False, dbus.String),
-    "AutomaticHelpers": ConfigPropertiesTuple("readwrite", True, True, dbus.String),
-    "FirewallBackend": ConfigPropertiesTuple("readwrite", False, False, dbus.String),
-    "FlushAllOnReload": ConfigPropertiesTuple("readwrite", False, False, dbus.String),
-    "RFC3964_IPv4": ConfigPropertiesTuple("readwrite", False, False, dbus.String),
-    "AllowZoneDrifting": ConfigPropertiesTuple("readwrite", True, True, dbus.String),
-    "NftablesFlowtable": ConfigPropertiesTuple("readwrite", False, False, dbus.String),
-    "NftablesCounters": ConfigPropertiesTuple("readwrite", False, False, dbus.String),
-    "ReloadPolicy": ConfigPropertiesTuple("read", False, False, dbus.String),
-}
-
 
 class FirewallDConfig(DbusServiceObject):
     """FirewallD main class"""
@@ -129,7 +97,10 @@ class FirewallDConfig(DbusServiceObject):
         dbus_introspection_prepare_properties(
             self,
             config.dbus.DBUS_INTERFACE_CONFIG,
-            {prop: d.mode for prop, d in CONFIG_PROPERTIES.items()},
+            {
+                prop_meta.key: prop_meta.dbus_mode
+                for prop_meta in firewall.core.io.firewalld_conf.valid_keys.values()
+            },
         )
 
     @handle_exceptions
@@ -633,9 +604,9 @@ class FirewallDConfig(DbusServiceObject):
     # P R O P E R T I E S
 
     @dbus_handle_exceptions
-    def _get_property(self, property_name, prop_meta):
-        value = self.config.get_firewalld_conf().get(property_name)
-        return prop_meta.to_dbus_fcn(value)
+    def _get_property(self, prop_meta):
+        value = self.config.get_firewalld_conf().get(prop_meta.key)
+        return prop_meta.dbus_type(value)
 
     @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature="ss", out_signature="v")
     @dbus_handle_exceptions
@@ -646,13 +617,13 @@ class FirewallDConfig(DbusServiceObject):
         log.debug1("config.Get('%s', '%s')", interface_name, property_name)
 
         if interface_name == config.dbus.DBUS_INTERFACE_CONFIG:
-            prop_meta = CONFIG_PROPERTIES.get(property_name)
+            prop_meta = firewall.core.io.firewalld_conf.valid_keys.get(property_name)
             if prop_meta is None:
                 raise dbus.exceptions.DBusException(
                     "org.freedesktop.DBus.Error.InvalidArgs: "
                     f"Property '{property_name}' does not exist"
                 )
-            return self._get_property(property_name, prop_meta)
+            return self._get_property(prop_meta)
         elif interface_name in [
             config.dbus.DBUS_INTERFACE_CONFIG_DIRECT,
             config.dbus.DBUS_INTERFACE_CONFIG_POLICIES,
@@ -675,8 +646,8 @@ class FirewallDConfig(DbusServiceObject):
 
         ret = {}
         if interface_name == config.dbus.DBUS_INTERFACE_CONFIG:
-            for property_name, prop_meta in CONFIG_PROPERTIES.items():
-                ret[property_name] = self._get_property(property_name, prop_meta)
+            for prop_meta in firewall.core.io.firewalld_conf.valid_keys.values():
+                ret[prop_meta.key] = self._get_property(prop_meta)
         elif interface_name in [
             config.dbus.DBUS_INTERFACE_CONFIG_DIRECT,
             config.dbus.DBUS_INTERFACE_CONFIG_POLICIES,
@@ -703,13 +674,13 @@ class FirewallDConfig(DbusServiceObject):
         self.accessCheck(sender)
 
         if interface_name == config.dbus.DBUS_INTERFACE_CONFIG:
-            pdata = CONFIG_PROPERTIES.get(property_name)
-            if pdata is None or pdata.mode != "readwrite":
+            prop_meta = firewall.core.io.firewalld_conf.valid_keys.get(property_name)
+            if prop_meta is None or prop_meta.dbus_mode != "readwrite":
                 raise dbus.exceptions.DBusException(
                     "org.freedesktop.DBus.Error.InvalidArgs: "
                     "Property '%s' does not exist" % property_name
                 )
-            if pdata.ignore_set:
+            if prop_meta.dbus_ignore_set:
                 # deprecated fields. Ignore setting them.
                 pass
             else:
