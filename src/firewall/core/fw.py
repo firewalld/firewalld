@@ -106,17 +106,21 @@ class Firewall:
         self._module_refcount = {}
         self._marks = []
         # fallback settings will be overloaded by firewalld.conf
-        self.cleanup_on_exit = config.FALLBACK_CLEANUP_ON_EXIT
-        self.cleanup_modules_on_exit = config.FALLBACK_CLEANUP_MODULES_ON_EXIT
-        self.ipv6_rpfilter_enabled = config.FALLBACK_IPV6_RPFILTER
-        self._individual_calls = config.FALLBACK_INDIVIDUAL_CALLS
+        valid_keys = firewall.core.io.firewalld_conf.valid_keys
+
+        self.cleanup_on_exit = valid_keys["CleanupOnExit"].default_as(bool)
+        self.cleanup_modules_on_exit = valid_keys["CleanupModulesOnExit"].default_as(
+            bool
+        )
+        self.ipv6_rpfilter_enabled = valid_keys["IPv6_rpfilter"].default_as(bool)
+        self._individual_calls = valid_keys["IndividualCalls"].default_as(bool)
         self._log_denied = config.FALLBACK_LOG_DENIED
         self._firewall_backend = config.FALLBACK_FIREWALL_BACKEND
-        self._flush_all_on_reload = config.FALLBACK_FLUSH_ALL_ON_RELOAD
-        self._rfc3964_ipv4 = config.FALLBACK_RFC3964_IPV4
+        self._flush_all_on_reload = valid_keys["FlushAllOnReload"].default_as(bool)
+        self._rfc3964_ipv4 = valid_keys["RFC3964_IPv4"].default_as(bool)
         self._allow_zone_drifting = config.FALLBACK_ALLOW_ZONE_DRIFTING
         self._nftables_flowtable = config.FALLBACK_NFTABLES_FLOWTABLE
-        self._nftables_counters = config.FALLBACK_NFTABLES_COUNTERS
+        self._nftables_counters = valid_keys["NftablesCounters"].default_as(bool)
 
         if self._offline:
             self.ip4tables_enabled = False
@@ -391,47 +395,32 @@ class Firewall:
             if self._firewalld_conf.get("DefaultZone"):
                 self._default_zone = self._firewalld_conf.get("DefaultZone")
 
-            if self._firewalld_conf.get("CleanupOnExit"):
-                value = self._firewalld_conf.get("CleanupOnExit")
-                if value is not None and value.lower() in ["no", "false"]:
-                    self.cleanup_on_exit = False
-                log.debug1("CleanupOnExit is set to '%s'", self.cleanup_on_exit)
+            self.cleanup_on_exit = self._firewalld_conf.get("CleanupOnExit", bool)
+            log.debug1("CleanupOnExit is set to '%s'", self.cleanup_on_exit)
 
-            if self._firewalld_conf.get("CleanupModulesOnExit"):
-                value = self._firewalld_conf.get("CleanupModulesOnExit")
-                if value is not None and value.lower() in ["yes", "true"]:
-                    self.cleanup_modules_on_exit = True
-                log.debug1(
-                    "CleanupModulesOnExit is set to '%s'", self.cleanup_modules_on_exit
-                )
+            self.cleanup_modules_on_exit = self._firewalld_conf.get(
+                "CleanupModulesOnExit", bool
+            )
+            log.debug1(
+                "CleanupModulesOnExit is set to '%s'", self.cleanup_modules_on_exit
+            )
 
-            if self._firewalld_conf.get("Lockdown"):
-                value = self._firewalld_conf.get("Lockdown")
-                if value is not None and value.lower() in ["yes", "true"]:
-                    log.debug1("Lockdown is enabled")
-                    try:
-                        self.policies.enable_lockdown()
-                    except FirewallError:
-                        # already enabled, this is probably reload
-                        pass
+            if self._firewalld_conf.get("Lockdown", bool):
+                log.debug1("Lockdown is enabled")
+                try:
+                    self.policies.enable_lockdown()
+                except FirewallError:
+                    # already enabled, this is probably reload
+                    pass
 
-            if self._firewalld_conf.get("IPv6_rpfilter"):
-                value = self._firewalld_conf.get("IPv6_rpfilter")
-                if value is not None:
-                    if value.lower() in ["no", "false"]:
-                        self.ipv6_rpfilter_enabled = False
-                    if value.lower() in ["yes", "true"]:
-                        self.ipv6_rpfilter_enabled = True
-            if self.ipv6_rpfilter_enabled:
-                log.debug1("IPv6 rpfilter is enabled")
-            else:
-                log.debug1("IPV6 rpfilter is disabled")
+            self.ipv6_rpfilter_enabled = self._firewalld_conf.get("IPv6_rpfilter", bool)
+            log.debug1(
+                "IPv6 rpfilter is {'enabled' if self.ipv6_rpfilter_enabled else 'disalbed'}"
+            )
 
-            if self._firewalld_conf.get("IndividualCalls"):
-                value = self._firewalld_conf.get("IndividualCalls")
-                if value is not None and value.lower() in ["yes", "true"]:
-                    log.debug1("IndividualCalls is enabled")
-                    self._individual_calls = True
+            self._individual_calls = self._firewalld_conf.get("IndividualCalls", bool)
+            if self._individual_calls:
+                log.debug1("IndividualCalls is enabled")
 
             if self._firewalld_conf.get("LogDenied"):
                 value = self._firewalld_conf.get("LogDenied")
@@ -445,33 +434,20 @@ class Firewall:
                 self._firewall_backend = self._firewalld_conf.get("FirewallBackend")
                 log.debug1("FirewallBackend is set to '%s'", self._firewall_backend)
 
-            if self._firewalld_conf.get("FlushAllOnReload"):
-                value = self._firewalld_conf.get("FlushAllOnReload")
-                if value.lower() in ["no", "false"]:
-                    self._flush_all_on_reload = False
-                else:
-                    self._flush_all_on_reload = True
-                log.debug1("FlushAllOnReload is set to '%s'", self._flush_all_on_reload)
+            self._flush_all_on_reload = self._firewalld_conf.get(
+                "FlushAllOnReload", bool
+            )
+            log.debug1("FlushAllOnReload is set to '%s'", self._flush_all_on_reload)
 
-            if self._firewalld_conf.get("RFC3964_IPv4"):
-                value = self._firewalld_conf.get("RFC3964_IPv4")
-                if value.lower() in ["no", "false"]:
-                    self._rfc3964_ipv4 = False
-                else:
-                    self._rfc3964_ipv4 = True
-                log.debug1("RFC3964_IPv4 is set to '%s'", self._rfc3964_ipv4)
+            self._rfc3964_ipv4 = self._firewalld_conf.get("RFC3964_IPv4", bool)
+            log.debug1("RFC3964_IPv4 is set to '%s'", self._rfc3964_ipv4)
 
             if self._firewalld_conf.get("NftablesFlowtable"):
                 self._nftables_flowtable = self._firewalld_conf.get("NftablesFlowtable")
                 log.debug1("NftablesFlowtable is set to '%s'", self._nftables_flowtable)
 
-            if self._firewalld_conf.get("NftablesCounters"):
-                value = self._firewalld_conf.get("NftablesCounters")
-                if value.lower() in ["no", "false"]:
-                    self._nftables_counters = False
-                else:
-                    self._nftables_counters = True
-                log.debug1("NftablesCounters is set to '%s'", self._nftables_counters)
+            self._nftables_counters = self._firewalld_conf.get("NftablesCounters", bool)
+            log.debug1("NftablesCounters is set to '%s'", self._nftables_counters)
 
         self.config.set_firewalld_conf(copy.deepcopy(self._firewalld_conf))
 
