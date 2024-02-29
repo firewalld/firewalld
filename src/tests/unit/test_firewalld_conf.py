@@ -69,6 +69,11 @@ def test_valid_keys():
 
     assert conf.get("AllowZoneDrifting") == "no"
 
+    assert (
+        conf.get("IndividualCalls", bool) is firewall.config.FALLBACK_INDIVIDUAL_CALLS
+    )
+    assert conf.get("MinimalMark", int) == firewall.config.FALLBACK_MINIMAL_MARK
+
 
 def test_config_keys():
     for name, keytype in firewall.core.io.firewalld_conf.valid_keys.items():
@@ -106,3 +111,11 @@ def test_config_normalize():
     assert get_valid_key("IndividualCalls").normalize(True) == "yes"
     assert get_valid_key("IndividualCalls").normalize("True") == "yes"
     assert get_valid_key("IndividualCalls").normalize("0") == "no"
+
+
+def test_get_as():
+
+    assert (
+        get_valid_key("IndividualCalls").default_as(bool)
+        is firewall.config.FALLBACK_INDIVIDUAL_CALLS
+    )

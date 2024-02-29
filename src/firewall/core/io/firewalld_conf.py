@@ -115,6 +115,17 @@ class KeyType:
         self.dbus_type = dbus_type
         self._enum_values = tuple(enum_values) if enum_values is not None else None
 
+    def get_as(self, value, as_type):
+        if as_type in (bool, int):
+            if self.key_type is not as_type:
+                raise ValueError(f"Cannot request {self.key} as {as_type}")
+            if as_type is bool:
+                return firewall.functions.str_to_bool(value)
+            return int(value)
+        raise ValueError(
+            f'get_as() for "{self.key}" does not support requesting as {as_type}'
+        )
+
     @property
     def default(self):
         if self.key_type is bool:
@@ -124,6 +135,17 @@ class KeyType:
             v = int(self._default)
             return str(v)
         return str(self._default)
+
+    def default_as(self, as_type):
+        if (
+            as_type in (bool, int)
+            and self.key_type is as_type
+            and type(self._default) is as_type
+        ):
+            # Optimize common case. We don't need to first convert to string
+            # and parse.
+            return self._default
+        return self.get_as(self.default, as_type)
 
     def _error_invalid_value(self, value):
         return firewall.errors.FirewallError(
@@ -319,8 +341,12 @@ class firewalld_conf:
     def cleanup(self):
         self._config.clear()
 
-    def get(self, key):
-        return self._config.get(key)
+    def get(self, key, as_type=None):
+        v = self._config.get(key)
+        if as_type is None:
+            return v
+        keytype = valid_keys[key]
+        return keytype.get_as(v, as_type)
 
     def set(self, key, value, strict=True, set_default_on_failure=False):
         keytype = valid_keys[key]
