@@ -1376,8 +1376,10 @@ class Firewall:
         if value == self.get_log_denied():
             raise FirewallError(errors.ALREADY_SET, value)
 
-        self._firewalld_conf.set("LogDenied", value)
+        v = self._firewalld_conf.set("LogDenied", value)
         self._firewalld_conf.write()
+        self._log_denied = v
+        return v
 
     # DEFAULT ZONE
 
