@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
+import pytest
+
 import firewall.config
 import firewall.core.io.firewalld_conf
 
@@ -73,6 +75,7 @@ def test_valid_keys():
         conf.get("IndividualCalls", bool) is firewall.config.FALLBACK_INDIVIDUAL_CALLS
     )
     assert conf.get("MinimalMark", int) == firewall.config.FALLBACK_MINIMAL_MARK
+    assert conf.get("LogDeniedGroup", int) == -1
 
 
 def test_config_keys():
@@ -98,7 +101,15 @@ def test_config_keys():
         else:
             assert type(keytype._default) is str
 
+        if keytype.key_type in (int,):
+            assert keytype._check is None or callable(keytype._check)
+        else:
+            assert keytype._check is None
+
         assert keytype.default == keytype.normalize(keytype._default, strict=True)
+
+        if keytype._check is not None:
+            assert keytype._check(keytype._default)
 
         assert keytype.dbus_mode in ("read", "readwrite")
 
@@ -112,6 +123,13 @@ def test_config_normalize():
     assert get_valid_key("IndividualCalls").normalize("True") == "yes"
     assert get_valid_key("IndividualCalls").normalize("0") == "no"
 
+    assert get_valid_key("LogDeniedGroup").normalize("-1  ") == "-1"
+    with pytest.raises(firewall.errors.FirewallError):
+        get_valid_key("LogDeniedGroup").normalize("-2")
+    assert get_valid_key("LogDeniedGroup").normalize("-2", strict=False) == "-1"
+    assert get_valid_key("LogDeniedGroup").normalize(0xFFFF) == "65535"
+    assert get_valid_key("LogDeniedGroup").normalize("65536", strict=False) == "-1"
+
 
 def test_get_as():
 
@@ -119,3 +137,6 @@ def test_get_as():
         get_valid_key("IndividualCalls").default_as(bool)
         is firewall.config.FALLBACK_INDIVIDUAL_CALLS
     )
+
+    assert get_valid_key("LogDeniedGroup").default == "-1"
+    assert get_valid_key("LogDeniedGroup").default_as(int) == -1

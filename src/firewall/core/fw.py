@@ -115,6 +115,7 @@ class Firewall:
         self.ipv6_rpfilter_enabled = valid_keys["IPv6_rpfilter"].default_as(bool)
         self._individual_calls = valid_keys["IndividualCalls"].default_as(bool)
         self._log_denied = valid_keys["LogDenied"].default
+        self._log_denied_group = valid_keys["LogDeniedGroup"].default_as(int)
         self._firewall_backend = valid_keys["FirewallBackend"].default
         self._flush_all_on_reload = valid_keys["FlushAllOnReload"].default_as(bool)
         self._rfc3964_ipv4 = valid_keys["RFC3964_IPv4"].default_as(bool)
@@ -421,7 +422,14 @@ class Firewall:
                 log.debug1("IndividualCalls is enabled")
 
             self._log_denied = self._firewalld_conf.get("LogDenied")
-            log.debug1("LogDenied is set to '%s'", self._log_denied)
+            self._log_denied_group = self._firewalld_conf.get("LogDeniedGroup", int)
+            log.debug1(
+                "LogDenied is set to '%s'%s",
+                self._log_denied,
+                f" (LogDeniedGroup {self._log_denied_group})"
+                if self._log_denied_group != -1
+                else "",
+            )
 
             self._firewall_backend = self._firewalld_conf.get("FirewallBackend")
             log.debug1("FirewallBackend is set to '%s'", self._firewall_backend)
@@ -1359,6 +1367,9 @@ class Firewall:
         return self._panic
 
     # LOG DENIED
+
+    def get_log_denied_group(self):
+        return self._log_denied_group
 
     def get_log_denied(self):
         return self._log_denied

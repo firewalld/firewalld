@@ -739,9 +739,16 @@ class ip4tables:
         return []
 
     def _log_fragment(self, prefix):
-        rule = ["-j", "LOG"]
+        group = self._fw.get_log_denied_group()
+        if group != -1:
+            rule = ["-j", "NFLOG", "--nflog-group", str(group)]
+        else:
+            rule = ["-j", "LOG"]
         if prefix is not None:
-            rule.append("--log-prefix")
+            if group != -1:
+                rule.append("--nflog-prefix")
+            else:
+                rule.append("--log-prefix")
             rule.append(prefix)
         return rule
 

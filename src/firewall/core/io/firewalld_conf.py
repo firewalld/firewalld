@@ -108,6 +108,7 @@ class KeyType:
         dbus_type=dbus.String,
         dbus_ignore_set=False,
         enum_values=None,
+        check=None,
     ):
         self.key = key
         self.key_type = key_type
@@ -117,6 +118,7 @@ class KeyType:
         self.dbus_mode = dbus_mode
         self.dbus_type = dbus_type
         self._enum_values = tuple(enum_values) if enum_values is not None else None
+        self._check = check
 
     def get_as(self, value, as_type):
         if as_type in (bool, int):
@@ -187,6 +189,8 @@ class KeyType:
         if self.key_type is int:
             try:
                 v = int(value)
+                if self._check is not None and not self._check(v):
+                    raise ValueError(f"check failed for {v}")
             except (ValueError, TypeError):
                 if strict:
                     raise self._error_invalid_value(value)
@@ -272,6 +276,14 @@ valid_keys = [
         key_type=_validate_enum,
         default=config.FALLBACK_LOG_DENIED,
         enum_values=config.LOG_DENIED_VALUES,
+        dbus_mode="readwrite",
+    ),
+    KeyType(
+        "LogDeniedGroup",
+        key_type=int,
+        default=-1,
+        check=lambda v: (v >= -1 and v <= 0xFFFF),
+        dbus_type=dbus.Int32,
         dbus_mode="readwrite",
     ),
     KeyType(

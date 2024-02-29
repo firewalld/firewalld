@@ -26,6 +26,7 @@ string "IPv6_rpfilter" : variant string m4_escape(["${EXPECTED_IPV6_RPFILTER_VAL
 string "IndividualCalls" : variant string m4_escape(["${EXPECTED_INDIVIDUAL_CALLS_VALUE}"])
 string "Lockdown" : variant string "no"
 string "LogDenied" : variant string "off"
+string "LogDeniedGroup" : variant int32 -1
 string "MinimalMark" : variant int32 100
 string "NftablesCounters" : variant string "no"
 string "NftablesFlowtable" : variant string "off"

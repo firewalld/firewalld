@@ -149,6 +149,24 @@
       </varlistentry>
 
       <varlistentry>
+        <term><option>LogDeniedGroup</option></term>
+        <listitem>
+          <para>
+            Configure whether to use LOG or NFLOG target for <literal>LogDenied</literal>. The default value
+            is -1, which means that NFLOG is disabled and denials are logged to kernel
+            log (dmesg(1)). Alternatively, by setting this to a number between 0 and
+            0xffff, the message is logged to the loaded logging backend.
+            This is usually used in  combination with nfnetlink_log as
+            logging backend, which will multicast the packet through a netlink socket to
+            the specified multicast group. One or more userspace processes may subscribe
+            to the group to receive the packets.
+            Use for example ulogd or <literal>tcpdump -i nflog:$GROUP</literal> to capture such logs.
+            This has no effect with <literal>LogDenied=off</literal>.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
 	<term><option>AutomaticHelpers</option></term>
         <listitem>
 	  <para>

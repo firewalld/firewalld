@@ -1502,10 +1502,18 @@ class nftables:
 
     def _log_fragment(self, prefix=None, *, level=None):
         log_options = {}
+
+        group = self._fw.get_log_denied_group()
+        if group != -1:
+            log_options["group"] = group
+
         if prefix is not None:
             log_options["prefix"] = prefix
-        if level is not None:
-            log_options["level"] = level
+
+        if group == -1:
+            if level is not None:
+                log_options["level"] = level
+
         return {"log": log_options}
 
     def _log_fragment_for_rich_rule(self, rich_rule_log):
