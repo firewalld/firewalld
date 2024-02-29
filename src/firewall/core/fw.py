@@ -100,7 +100,6 @@ class Firewall:
     def __init_vars(self):
         self._state = "INIT"
         self._panic = False
-        self._default_zone = config.FALLBACK_ZONE
         self._default_zone_interfaces = []
         self._nm_assigned_interfaces = []
         self._module_refcount = {}
@@ -108,6 +107,7 @@ class Firewall:
         # fallback settings will be overloaded by firewalld.conf
         valid_keys = firewall.core.io.firewalld_conf.valid_keys
 
+        self._default_zone = valid_keys["DefaultZone"].default
         self.cleanup_on_exit = valid_keys["CleanupOnExit"].default_as(bool)
         self.cleanup_modules_on_exit = valid_keys["CleanupModulesOnExit"].default_as(
             bool
@@ -115,10 +115,10 @@ class Firewall:
         self.ipv6_rpfilter_enabled = valid_keys["IPv6_rpfilter"].default_as(bool)
         self._individual_calls = valid_keys["IndividualCalls"].default_as(bool)
         self._log_denied = valid_keys["LogDenied"].default
-        self._firewall_backend = config.FALLBACK_FIREWALL_BACKEND
+        self._firewall_backend = valid_keys["FirewallBackend"].default
         self._flush_all_on_reload = valid_keys["FlushAllOnReload"].default_as(bool)
         self._rfc3964_ipv4 = valid_keys["RFC3964_IPv4"].default_as(bool)
-        self._nftables_flowtable = config.FALLBACK_NFTABLES_FLOWTABLE
+        self._nftables_flowtable = valid_keys["NftablesFlowtable"].default
         self._nftables_counters = valid_keys["NftablesCounters"].default_as(bool)
 
         if self._offline:
@@ -391,8 +391,7 @@ class Firewall:
             log.warning(msg)
             log.warning("Using fallback firewalld configuration settings.")
         else:
-            if self._firewalld_conf.get("DefaultZone"):
-                self._default_zone = self._firewalld_conf.get("DefaultZone")
+            self._default_zone = self._firewalld_conf.get("DefaultZone")
 
             self.cleanup_on_exit = self._firewalld_conf.get("CleanupOnExit", bool)
             log.debug1("CleanupOnExit is set to '%s'", self.cleanup_on_exit)
@@ -424,9 +423,8 @@ class Firewall:
             self._log_denied = self._firewalld_conf.get("LogDenied")
             log.debug1("LogDenied is set to '%s'", self._log_denied)
 
-            if self._firewalld_conf.get("FirewallBackend"):
-                self._firewall_backend = self._firewalld_conf.get("FirewallBackend")
-                log.debug1("FirewallBackend is set to '%s'", self._firewall_backend)
+            self._firewall_backend = self._firewalld_conf.get("FirewallBackend")
+            log.debug1("FirewallBackend is set to '%s'", self._firewall_backend)
 
             self._flush_all_on_reload = self._firewalld_conf.get(
                 "FlushAllOnReload", bool
@@ -436,9 +434,8 @@ class Firewall:
             self._rfc3964_ipv4 = self._firewalld_conf.get("RFC3964_IPv4", bool)
             log.debug1("RFC3964_IPv4 is set to '%s'", self._rfc3964_ipv4)
 
-            if self._firewalld_conf.get("NftablesFlowtable"):
-                self._nftables_flowtable = self._firewalld_conf.get("NftablesFlowtable")
-                log.debug1("NftablesFlowtable is set to '%s'", self._nftables_flowtable)
+            self._nftables_flowtable = self._firewalld_conf.get("NftablesFlowtable")
+            log.debug1("NftablesFlowtable is set to '%s'", self._nftables_flowtable)
 
             self._nftables_counters = self._firewalld_conf.get("NftablesCounters", bool)
             log.debug1("NftablesCounters is set to '%s'", self._nftables_counters)
