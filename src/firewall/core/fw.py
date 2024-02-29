@@ -999,14 +999,14 @@ class Firewall:
 
     def apply_default_rules(self, transaction):
         for backend in self.enabled_backends():
-            rules = backend.build_default_rules(self._log_denied)
+            rules = backend.build_default_rules(self.get_log_denied())
             transaction.add_rules(backend, rules)
 
         if self.is_ipv_enabled("ipv6"):
             ipv6_backend = self.get_backend_by_ipv("ipv6")
             if "raw" in ipv6_backend.get_available_tables():
                 if self.ipv6_rpfilter_enabled:
-                    rules = ipv6_backend.build_rpfilter_rules(self._log_denied)
+                    rules = ipv6_backend.build_rpfilter_rules(self.get_log_denied())
                     transaction.add_rules(ipv6_backend, rules)
 
         if self.is_ipv_enabled("ipv6") and self._rfc3964_ipv4:
@@ -1081,7 +1081,7 @@ class Firewall:
         if not self.is_backend_enabled(backend_name):
             return ""
 
-        return backend.set_rule(rule, self._log_denied)
+        return backend.set_rule(rule, self.get_log_denied())
 
     def rules(self, backend_name, rules):
         _rules = list(filter(None, rules))
@@ -1105,21 +1105,21 @@ class Firewall:
         ):
             for i, rule in enumerate(_rules):
                 try:
-                    backend.set_rule(rule, self._log_denied)
+                    backend.set_rule(rule, self.get_log_denied())
                 except Exception as msg:
                     log.debug1(traceback.format_exc())
                     log.error(msg)
                     for rrule in reversed(_rules[:i]):
                         try:
                             backend.set_rule(
-                                backend.reverse_rule(rrule), self._log_denied
+                                backend.reverse_rule(rrule), self.get_log_denied()
                             )
                         except Exception:
                             # ignore errors here
                             pass
                     raise msg
         else:
-            backend.set_rules(_rules, self._log_denied)
+            backend.set_rules(_rules, self.get_log_denied())
 
     # check functions
 
@@ -1310,17 +1310,17 @@ class Firewall:
                 for rule in self._set_policy_build_rules(
                     self.nftables_backend, "ACCEPT"
                 ):
-                    self.nftables_backend.set_rule(rule, self._log_denied)
+                    self.nftables_backend.set_rule(rule, self.get_log_denied())
             else:
                 for rule in self._set_policy_build_rules(
                     self.ip4tables_backend, "ACCEPT"
                 ):
-                    self.ip4tables_backend.set_rule(rule, self._log_denied)
+                    self.ip4tables_backend.set_rule(rule, self.get_log_denied())
                 if self.ip6tables_enabled:
                     for rule in self._set_policy_build_rules(
                         self.ip6tables_backend, "ACCEPT"
                     ):
-                        self.ip6tables_backend.set_rule(rule, self._log_denied)
+                        self.ip6tables_backend.set_rule(rule, self.get_log_denied())
 
         if start_exception:
             self._state = "FAILED"

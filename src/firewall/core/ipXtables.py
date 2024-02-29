@@ -1874,7 +1874,7 @@ class ip6tables(ip4tables):
                     "addr-unreach",
                 ]
             )
-            if self._fw._log_denied in ["unicast", "all"]:
+            if self._fw.get_log_denied() in ["unicast", "all"]:
                 rules.append(
                     [
                         "-t",

@@ -2586,7 +2586,7 @@ class nftables:
                 }
             }
         ]
-        if self._fw._log_denied in ["unicast", "all"]:
+        if self._fw.get_log_denied() in ["unicast", "all"]:
             expr_fragments.append({"log": {"prefix": "RFC3964_IPv4_REJECT: "}})
         expr_fragments.append(self._reject_types_fragment("addr-unreach"))
 
