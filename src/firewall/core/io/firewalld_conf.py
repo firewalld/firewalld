@@ -454,11 +454,8 @@ class firewalld_conf:
             for key, value in self._config.items():
                 if key in done:
                     continue
-                if key in [
-                    "MinimalMark",
-                    "AutomaticHelpers",
-                    "AllowZoneDrifting",
-                ]:  # omit deprecated from new config
+                if valid_keys[key].is_deprecated:
+                    # omit deprecated from new config
                     continue
                 if not empty:
                     temp_file.write("\n")
