@@ -884,7 +884,7 @@ class ip4tables:
         last=False,
         prerouting=False,
         postrouting=False,
-        log_denied=False,
+        do_log_denied=False,
     ):
         p_obj = self._fw.policy.get_policy(policy)
         ingress_priority = (
@@ -924,7 +924,7 @@ class ip4tables:
 
         last_sort_order = 0
         if last:
-            if log_denied:
+            if do_log_denied:
                 last_sort_order = 1
             else:
                 last_sort_order = 2
@@ -1031,7 +1031,7 @@ class ip4tables:
                         egress_source,
                         p_obj.priority,
                         last=True,
-                        log_denied=True,
+                        do_log_denied=True,
                         postrouting=postrouting,
                         prerouting=prerouting,
                     )
