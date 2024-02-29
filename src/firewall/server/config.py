@@ -684,16 +684,11 @@ class FirewallDConfig(DbusServiceObject):
                 # deprecated fields. Ignore setting them.
                 pass
             else:
-                value2 = prop_meta.normalize(new_value)
-                self.config.get_firewalld_conf().set(property_name, value2)
+                v = self.config.get_firewalld_conf().set(property_name, new_value)
                 self.config.get_firewalld_conf().write()
                 self.PropertiesChanged(
                     interface_name,
-                    {
-                        property_name: self.config.get_firewalld_conf().get(
-                            property_name
-                        )
-                    },
+                    {property_name: v},
                     [],
                 )
         elif interface_name in [

@@ -322,8 +322,22 @@ class firewalld_conf:
     def get(self, key):
         return self._config.get(key)
 
-    def set(self, key, value):
-        self._config[key] = value.strip()
+    def set(self, key, value, strict=True, set_default_on_failure=False):
+        keytype = valid_keys[key]
+
+        try:
+            value2 = keytype.normalize(value, strict=True, log_warn=False)
+        except firewall.errors.FirewallError:
+            if strict:
+                raise
+            if not set_default_on_failure:
+                # On error, we do nothing. Otherwise, proceed and reset the
+                # default value.
+                return None
+            value2 = keytype.normalize(keytype.default, strict=False, log_warn=False)
+
+        self._config[key] = value2
+        return value2
 
     def __str__(self):
         s = ""
