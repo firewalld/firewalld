@@ -684,39 +684,18 @@ class FirewallDConfig(DbusServiceObject):
                 # deprecated fields. Ignore setting them.
                 pass
             else:
-                if property_name in [
-                    "CleanupOnExit",
-                    "CleanupModulesOnExit",
-                    "Lockdown",
-                    "IPv6_rpfilter",
-                    "IndividualCalls",
-                    "FlushAllOnReload",
-                    "RFC3964_IPv4",
-                    "NftablesCounters",
-                ]:
-                    if new_value.lower() not in ["yes", "no", "true", "false"]:
-                        raise FirewallError(
-                            errors.INVALID_VALUE,
-                            "'%s' for %s" % (new_value, property_name),
-                        )
-                elif property_name == "LogDenied":
-                    if new_value not in config.LOG_DENIED_VALUES:
-                        raise FirewallError(
-                            errors.INVALID_VALUE,
-                            "'%s' for %s" % (new_value, property_name),
-                        )
-                elif property_name == "FirewallBackend":
-                    if new_value not in config.FIREWALL_BACKEND_VALUES:
-                        raise FirewallError(
-                            errors.INVALID_VALUE,
-                            "'%s' for %s" % (new_value, property_name),
-                        )
-                else:
-                    raise errors.BugError(f'Unhandled property_name "{property_name}"')
-
-                self.config.get_firewalld_conf().set(property_name, new_value)
+                value2 = prop_meta.normalize(new_value)
+                self.config.get_firewalld_conf().set(property_name, value2)
                 self.config.get_firewalld_conf().write()
-                self.PropertiesChanged(interface_name, {property_name: new_value}, [])
+                self.PropertiesChanged(
+                    interface_name,
+                    {
+                        property_name: self.config.get_firewalld_conf().get(
+                            property_name
+                        )
+                    },
+                    [],
+                )
         elif interface_name in [
             config.dbus.DBUS_INTERFACE_CONFIG_DIRECT,
             config.dbus.DBUS_INTERFACE_CONFIG_POLICIES,
