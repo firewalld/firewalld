@@ -114,7 +114,7 @@ class Firewall:
         )
         self.ipv6_rpfilter_enabled = valid_keys["IPv6_rpfilter"].default_as(bool)
         self._individual_calls = valid_keys["IndividualCalls"].default_as(bool)
-        self._log_denied = config.FALLBACK_LOG_DENIED
+        self._log_denied = valid_keys["LogDenied"].default
         self._firewall_backend = config.FALLBACK_FIREWALL_BACKEND
         self._flush_all_on_reload = valid_keys["FlushAllOnReload"].default_as(bool)
         self._rfc3964_ipv4 = valid_keys["RFC3964_IPv4"].default_as(bool)
@@ -421,13 +421,8 @@ class Firewall:
             if self._individual_calls:
                 log.debug1("IndividualCalls is enabled")
 
-            if self._firewalld_conf.get("LogDenied"):
-                value = self._firewalld_conf.get("LogDenied")
-                if value is None or value.lower() == "no":
-                    self._log_denied = "off"
-                else:
-                    self._log_denied = value.lower()
-                    log.debug1("LogDenied is set to '%s'", self._log_denied)
+            self._log_denied = self._firewalld_conf.get("LogDenied")
+            log.debug1("LogDenied is set to '%s'", self._log_denied)
 
             if self._firewalld_conf.get("FirewallBackend"):
                 self._firewall_backend = self._firewalld_conf.get("FirewallBackend")
@@ -1372,19 +1367,20 @@ class Firewall:
         return self._log_denied
 
     def set_log_denied(self, value):
-        if value not in config.LOG_DENIED_VALUES:
+        valid_key = firewall.core.io.firewalld_conf.valid_keys["LogDenied"]
+        try:
+            value = valid_key.normalize(value, log_warn=False)
+        except FirewallError:
             raise FirewallError(
                 errors.INVALID_VALUE,
-                "'%s', choose from '%s'"
-                % (value, "','".join(config.LOG_DENIED_VALUES)),
+                "'%s', choose from '%s'" % (value, "','".join(valid_key._enum_values)),
             )
 
-        if value != self.get_log_denied():
-            self._log_denied = value
-            self._firewalld_conf.set("LogDenied", value)
-            self._firewalld_conf.write()
-        else:
+        if value == self.get_log_denied():
             raise FirewallError(errors.ALREADY_SET, value)
+
+        self._firewalld_conf.set("LogDenied", value)
+        self._firewalld_conf.write()
 
     # DEFAULT ZONE
 
