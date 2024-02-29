@@ -118,7 +118,6 @@ class Firewall:
         self._firewall_backend = config.FALLBACK_FIREWALL_BACKEND
         self._flush_all_on_reload = valid_keys["FlushAllOnReload"].default_as(bool)
         self._rfc3964_ipv4 = valid_keys["RFC3964_IPv4"].default_as(bool)
-        self._allow_zone_drifting = config.FALLBACK_ALLOW_ZONE_DRIFTING
         self._nftables_flowtable = config.FALLBACK_NFTABLES_FLOWTABLE
         self._nftables_counters = valid_keys["NftablesCounters"].default_as(bool)
 
