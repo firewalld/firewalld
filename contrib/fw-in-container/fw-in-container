@@ -17,8 +17,10 @@ set -e
 # Options:
 #  --no-cleanup: don't delete the CONTAINERFILE and other artifacts
 #  --stop: only has effect with "run". It will stop the container afterwards.
-#  -S|--setup-host: bump sysctl values of host to run tests inside rootless
+#  -S|--setup-host [SIZE]: bump sysctl values of host to run tests inside rootless
 #    container. Requires root.
+#    If [SIZE] is specified, use the selected size. Otherwise it chooses 4000k.
+#    Set SIZE to 0, to reset the value to 212992.
 #  -- [EXTRA_ARGS]:
 #    - with command "exec", provide a command and arguments to run in the container.
 #      Defaults to "bash".
@@ -104,12 +106,23 @@ trap cleanup EXIT
 ###############################################################################
 
 sysctl_bump() {
-    local sysctl="$1"
-    local val="$2"
+    local force="$1"
+    local sysctl="$2"
+    local val="$3"
     local cur;
+    local skip=0
 
     cur="$(cat "$sysctl" 2>/dev/null)" || :
-    if [ -n "$cur" -a "$cur" -ge "$val" ] ; then
+    if [ "$force" = 0 ] ; then
+        if [ -n "$cur" -a "$cur" -ge "$val" ] ; then
+            skip=1
+        fi
+    else
+        if [ -n "$cur" -a "$cur" -eq "$val" ] ; then
+            skip=1
+        fi
+    fi
+    if [ "$skip" = 1 ] ; then
         echo "# Skip: echo $val > $sysctl (current value $cur)"
         return 0
     fi
@@ -118,10 +131,22 @@ sysctl_bump() {
 }
 
 setup_host() {
+    local num="$1"
+    local force=1
+
+    if [ -z "$num" ] ; then
+        num="$((4000*1024))"
+        force=0
+    elif [ "$num" = 0 ] ; then
+        num="212992"
+    fi
     echo "Setting up host for running as rootless (requires root)."
-    sysctl_bump /proc/sys/net/core/rmem_max $((4000*1024)) || return $?
-    sysctl_bump /proc/sys/net/core/wmem_max $((4000*1024)) || return $?
-    sysctl_bump /proc/sys/net/core/wmem_default $((4000*1024)) || return $?
+    if test "$num" != "$((num + 0))" &>/dev/null || test "$num" -le 0 &>/dev/null ; then
+        die "Invalid argument \"$num\". Should be a number."
+    fi
+    sysctl_bump "$force" /proc/sys/net/core/rmem_max "$num" || return $?
+    sysctl_bump "$force" /proc/sys/net/core/wmem_max "$num" || return $?
+    sysctl_bump "$force" /proc/sys/net/core/wmem_default "$num" || return $?
 }
 
 ###############################################################################
@@ -637,7 +662,8 @@ for (( i=1 ; i<="$#" ; )) ; do
             break
             ;;
         -S|--setup-host)
-            setup_host
+            [ "$#" -lt 1 -o "$#" -gt 2 ] && die "\`$c [new-size]\` option must be alone"
+            setup_host "${@:$i:1}"
             exit $?
             ;;
         -h|--help)
