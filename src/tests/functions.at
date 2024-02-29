@@ -759,7 +759,7 @@ m4_define([SKIP_IF_FW_IN_CONTAINER], [
     dnl
     dnl Some test won't pass, because the socket buffer sizes are limited for rootless.
     dnl We skip those tests, except, if we detect that the limits are large.
-    AT_SKIP_IF([test -n "$FW_IN_CONTAINER" -a "(" "$(cat /proc/sys/net/core/rmem_max 2>/dev/null || cat /.host/proc/sys/net/core/rmem_max 2>/dev/null || echo 0)" -lt 4096000 -o "$(cat /proc/sys/net/core/wmem_max 2>/dev/null  || cat /.host/proc/sys/net/core/wmem_max 2>/dev/null || echo 0)" -lt 4096000 -o "$(cat /proc/sys/net/core/wmem_default 2>/dev/null  || cat /.host/proc/sys/net/core/wmem_default 2>/dev/null || echo 0)" -lt 4096000")" ])
+    AT_SKIP_IF([test -n "$FW_IN_CONTAINER" -a "(" "$(cat /proc/sys/net/core/rmem_max 2>/dev/null || cat /.host/proc/sys/net/core/rmem_max 2>/dev/null || echo 0)" -lt 4096000 -o "$(cat /proc/sys/net/core/wmem_max 2>/dev/null  || cat /.host/proc/sys/net/core/wmem_max 2>/dev/null || echo 0)" -lt 4096000 -o "$(cat /proc/sys/net/core/wmem_default 2>/dev/null  || cat /.host/proc/sys/net/core/wmem_default 2>/dev/null || echo 0)" -lt 4096000 ")" ])
 ])
 
 m4_define([SKIP_IF_FW_IN_CONTAINER_WITH_NFTABLES], [
