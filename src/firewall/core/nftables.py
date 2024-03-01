@@ -1347,7 +1347,7 @@ class nftables:
                     "chain": "%s_%s_POLICIES" % (table, chain),
                     "expr": expr_fragments
                     + [
-                        self._pkttype_match_fragment(self._fw.get_log_denied()),
+                        self._pkttype_match_fragment(),
                         self._log_fragment(f"filter_{_policy}_{log_suffix}: "),
                     ],
                 }
@@ -1467,9 +1467,7 @@ class nftables:
                                     "table": TABLE_NAME,
                                     "chain": "%s_%s" % (table, _policy),
                                     "expr": [
-                                        self._pkttype_match_fragment(
-                                            self._fw.get_log_denied()
-                                        ),
+                                        self._pkttype_match_fragment(),
                                         self._log_fragment(
                                             f"filter_{_policy}_{log_suffix}: "
                                         ),
@@ -1530,19 +1528,21 @@ class nftables:
 
         return {"log": log_options}
 
-    def _pkttype_match_fragment(self, pkttype):
-        if pkttype == "all":
+    def _pkttype_match_fragment(self, log_denied=None):
+        if log_denied is None:
+            log_denied = self._fw.get_log_denied()
+        if log_denied == "all":
             return {}
-        elif pkttype in ["unicast", "broadcast", "multicast"]:
+        elif log_denied in ["unicast", "broadcast", "multicast"]:
             return {
                 "match": {
                     "left": {"meta": {"key": "pkttype"}},
                     "op": "==",
-                    "right": pkttype,
+                    "right": log_denied,
                 }
             }
 
-        raise FirewallError(INVALID_RULE, 'Invalid pkttype "%s"', pkttype)
+        raise FirewallError(INVALID_RULE, f'Invalid pkttype "{log_denied}"')
 
     def _reject_types_fragment(self, reject_type):
         frags = {
@@ -2410,9 +2410,7 @@ class nftables:
                                     "expr": (
                                         expr_fragments
                                         + [
-                                            self._pkttype_match_fragment(
-                                                self._fw.get_log_denied()
-                                            ),
+                                            self._pkttype_match_fragment(),
                                             self._log_fragment(
                                                 f"{table}_{policy}_ICMP_BLOCK: "
                                             ),
@@ -2481,7 +2479,7 @@ class nftables:
                             "index": 4,
                             "expr": [
                                 self._icmp_match_fragment(),
-                                self._pkttype_match_fragment(self._fw.get_log_denied()),
+                                self._pkttype_match_fragment(),
                                 self._log_fragment(f"{table}_{policy}_ICMP_BLOCK: "),
                             ],
                         }
