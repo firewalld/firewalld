@@ -7,6 +7,7 @@
 
 import os.path
 import copy
+import shlex
 
 from firewall.core.prog import runProg
 from firewall.core.logger import log
@@ -737,6 +738,35 @@ class ip4tables:
         # nothing to do, they always exist
         return []
 
+    def _log_fragment(self, prefix):
+        rule = ["-j", "LOG"]
+        if prefix is not None:
+            rule.append("--log-prefix")
+            rule.append(prefix)
+        return rule
+
+    def _log_fragment_s(self, *a, **kw):
+        rule = self._log_fragment(*a, **kw)
+        # There is a leading whitespace, so we can concatenate the string.
+        return " " + " ".join(shlex.quote(s) for s in rule)
+
+    def _log_fragment_for_rich_rule(self, rich_rule_log):
+        if isinstance(rich_rule_log, Rich_NFLog):
+            rule = ["-j", "NFLOG"]
+            if rich_rule_log.group:
+                rule += ["--nflog-group", rich_rule_log.group]
+            if rich_rule_log.prefix:
+                rule += ["--nflog-prefix", rich_rule_log.prefix]
+            if rich_rule_log.threshold:
+                rule += ["--nflog-threshold", rich_rule_log.threshold]
+        else:
+            rule = ["-j", "LOG"]
+            if rich_rule_log.prefix:
+                rule += ["--log-prefix", rich_rule_log.prefix]
+            if rich_rule_log.level:
+                rule += ["--log-level", rich_rule_log.level]
+        return rule
+
     def build_default_rules(self, log_denied="off"):
         default_rules = {}
 
@@ -796,7 +826,8 @@ class ip4tables:
         default_rules["filter"].append("-A INPUT -i lo -j ACCEPT")
         if log_denied != "off":
             default_rules["filter"].append(
-                "-A INPUT -m conntrack --ctstate INVALID %%LOGTYPE%% -j LOG --log-prefix 'STATE_INVALID_DROP: '"
+                "-A INPUT -m conntrack --ctstate INVALID %%LOGTYPE%%"
+                + self._log_fragment_s("STATE_INVALID_DROP: ")
             )
         default_rules["filter"].append(
             "-A INPUT -m conntrack --ctstate INVALID -j DROP"
@@ -809,7 +840,7 @@ class ip4tables:
         default_rules["filter"].append("-A INPUT -j INPUT_POLICIES")
         if log_denied != "off":
             default_rules["filter"].append(
-                "-A INPUT %%LOGTYPE%% -j LOG --log-prefix 'FINAL_REJECT: '"
+                "-A INPUT %%LOGTYPE%%" + self._log_fragment_s("FINAL_REJECT: ")
             )
         default_rules["filter"].append("-A INPUT -j %%REJECT%%")
 
@@ -819,7 +850,8 @@ class ip4tables:
         default_rules["filter"].append("-A FORWARD -i lo -j ACCEPT")
         if log_denied != "off":
             default_rules["filter"].append(
-                "-A FORWARD -m conntrack --ctstate INVALID %%LOGTYPE%% -j LOG --log-prefix 'STATE_INVALID_DROP: '"
+                "-A FORWARD -m conntrack --ctstate INVALID %%LOGTYPE%%"
+                + self._log_fragment_s("STATE_INVALID_DROP: ")
             )
         default_rules["filter"].append(
             "-A FORWARD -m conntrack --ctstate INVALID -j DROP"
@@ -832,7 +864,7 @@ class ip4tables:
         default_rules["filter"].append("-A FORWARD -j FORWARD_POLICIES")
         if log_denied != "off":
             default_rules["filter"].append(
-                "-A FORWARD %%LOGTYPE%% -j LOG --log-prefix 'FINAL_REJECT: '"
+                "-A FORWARD %%LOGTYPE%%" + self._log_fragment_s("FINAL_REJECT: ")
             )
         default_rules["filter"].append("-A FORWARD -j %%REJECT%%")
 
@@ -1011,15 +1043,8 @@ class ip4tables:
                 _rule = rule[:]
                 _log_suffix = "DROP" if p_obj.target == "DROP" else "REJECT"
 
-                _rule.extend(
-                    [
-                        "%%LOGTYPE%%",
-                        "-j",
-                        "LOG",
-                        "--log-prefix",
-                        f"{_policy}_{_log_suffix}: ",
-                    ]
-                )
+                _rule.append("%%LOGTYPE%%")
+                _rule.extend(self._log_fragment(f"{_policy}_{_log_suffix}: "))
                 _rule.extend(
                     self._policy_dispatch_sort_key(
                         policy,
@@ -1132,10 +1157,7 @@ class ip4tables:
                             "-t",
                             table,
                             "%%LOGTYPE%%",
-                            "-j",
-                            "LOG",
-                            "--log-prefix",
-                            "%s_REJECT: " % _policy,
+                            *self._log_fragment(f"{_policy}_REJECT: "),
                         ]
                     )
                 elif target == "DROP":
@@ -1146,10 +1168,7 @@ class ip4tables:
                             "-t",
                             table,
                             "%%LOGTYPE%%",
-                            "-j",
-                            "LOG",
-                            "--log-prefix",
-                            "%s_DROP: " % _policy,
+                            *self._log_fragment(f"{_policy}_DROP: "),
                         ]
                     )
 
@@ -1236,20 +1255,8 @@ class ip4tables:
         chain_suffix = self._rich_rule_chain_suffix_from_log(rich_rule)
         rule = ["-t", table, add_del, "%s_%s" % (_policy, chain_suffix)]
         rule += self._rich_rule_priority_fragment(rich_rule)
-        if isinstance(rich_rule.log, Rich_NFLog):
-            rule += rule_fragment + ["-j", "NFLOG"]
-            if rich_rule.log.group:
-                rule += ["--nflog-group", rich_rule.log.group]
-            if rich_rule.log.prefix:
-                rule += ["--nflog-prefix", "%s" % rich_rule.log.prefix]
-            if rich_rule.log.threshold:
-                rule += ["--nflog-threshold", rich_rule.log.threshold]
-        else:
-            rule += rule_fragment + ["-j", "LOG"]
-            if rich_rule.log.prefix:
-                rule += ["--log-prefix", "%s" % rich_rule.log.prefix]
-            if rich_rule.log.level:
-                rule += ["--log-level", "%s" % rich_rule.log.level]
+        rule += rule_fragment
+        rule += self._log_fragment_for_rich_rule(rich_rule.log)
         rule += self._rule_limit(rich_rule.log.limit)
 
         return rule
@@ -1695,10 +1702,7 @@ class ip4tables:
                     + rule_fragment
                     + [
                         "%%LOGTYPE%%",
-                        "-j",
-                        "LOG",
-                        "--log-prefix",
-                        "%s_ICMP_BLOCK: " % policy,
+                        *self._log_fragment(f"{policy}_ICMP_BLOCK: "),
                     ]
                 )
             rules.append(
@@ -1733,10 +1737,7 @@ class ip4tables:
                     "-p",
                     "%%ICMP%%",
                     "%%LOGTYPE%%",
-                    "-j",
-                    "LOG",
-                    "--log-prefix",
-                    "%s_ICMP_BLOCK: " % _policy,
+                    *self._log_fragment(f"{_policy}_ICMP_BLOCK: "),
                 ]
                 rules.append(rule)
                 rule_idx += 1
@@ -1807,10 +1808,7 @@ class ip6tables(ip4tables):
                     "rpfilter",
                     "--invert",
                     "--validmark",
-                    "-j",
-                    "LOG",
-                    "--log-prefix",
-                    "rpfilter_DROP: ",
+                    *self._log_fragment("rpfilter_DROP: "),
                 ]
             )
         rules.append(
@@ -1883,10 +1881,7 @@ class ip6tables(ip4tables):
                         chain_name,
                         "-d",
                         daddr,
-                        "-j",
-                        "LOG",
-                        "--log-prefix",
-                        "RFC3964_IPv4_REJECT: ",
+                        *self._log_fragment("RFC3964_IPv4_REJECT: "),
                     ]
                 )
 
