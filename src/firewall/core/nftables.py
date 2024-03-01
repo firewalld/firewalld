@@ -824,7 +824,7 @@ class nftables:
                                     }
                                 },
                                 self._pkttype_match_fragment(log_denied),
-                                {"log": {"prefix": "STATE_INVALID_DROP: "}},
+                                self._log_fragment("STATE_INVALID_DROP: "),
                             ],
                         }
                     }
@@ -884,7 +884,7 @@ class nftables:
                             "chain": "filter_%s" % "INPUT",
                             "expr": [
                                 self._pkttype_match_fragment(log_denied),
-                                {"log": {"prefix": "FINAL_REJECT: "}},
+                                self._log_fragment("FINAL_REJECT: "),
                             ],
                         }
                     }
@@ -1029,7 +1029,7 @@ class nftables:
                                     }
                                 },
                                 self._pkttype_match_fragment(log_denied),
-                                {"log": {"prefix": "STATE_INVALID_DROP: "}},
+                                self._log_fragment("STATE_INVALID_DROP: "),
                             ],
                         }
                     }
@@ -1089,7 +1089,7 @@ class nftables:
                             "chain": "filter_%s" % "FORWARD",
                             "expr": [
                                 self._pkttype_match_fragment(log_denied),
-                                {"log": {"prefix": "FINAL_REJECT: "}},
+                                self._log_fragment("FINAL_REJECT: "),
                             ],
                         }
                     }
@@ -1340,8 +1340,7 @@ class nftables:
                 "REJECT",
                 "DROP",
             ]:
-                _log_suffix = "DROP" if p_obj.target == "DROP" else "REJECT"
-
+                log_suffix = "DROP" if p_obj.target == "DROP" else "REJECT"
                 rule = {
                     "family": "inet",
                     "table": TABLE_NAME,
@@ -1349,7 +1348,7 @@ class nftables:
                     "expr": expr_fragments
                     + [
                         self._pkttype_match_fragment(self._fw.get_log_denied()),
-                        {"log": {"prefix": "filter_%s_%s: " % (_policy, _log_suffix)}},
+                        self._log_fragment(f"filter_{_policy}_{log_suffix}: "),
                     ],
                 }
                 rule.update(
@@ -1471,12 +1470,9 @@ class nftables:
                                         self._pkttype_match_fragment(
                                             self._fw.get_log_denied()
                                         ),
-                                        {
-                                            "log": {
-                                                "prefix": "filter_%s_%s: "
-                                                % (_policy, log_suffix)
-                                            }
-                                        },
+                                        self._log_fragment(
+                                            f"filter_{_policy}_{log_suffix}: "
+                                        ),
                                     ],
                                 }
                             }
@@ -1505,6 +1501,34 @@ class nftables:
             rules.reverse()
 
         return rules
+
+    def _log_fragment(self, prefix=None, *, level=None):
+        log_options = {}
+        if prefix is not None:
+            log_options["prefix"] = prefix
+        if level is not None:
+            log_options["level"] = level
+        return {"log": log_options}
+
+    def _log_fragment_for_rich_rule(self, rich_rule_log):
+        log_options = {}
+        if isinstance(rich_rule_log, Rich_NFLog):
+            log_options["group"] = (
+                int(rich_rule_log.group) if rich_rule_log.group else 0
+            )
+            if rich_rule_log.threshold:
+                log_options["queue-threshold"] = int(rich_rule_log.threshold)
+        else:
+            if rich_rule_log.level:
+                level = rich_rule_log.level
+                if level == "warning":
+                    level = "warn"
+                log_options["level"] = level
+
+        if rich_rule_log.prefix:
+            log_options["prefix"] = rich_rule_log.prefix
+
+        return {"log": log_options}
 
     def _pkttype_match_fragment(self, pkttype):
         if pkttype == "all":
@@ -1671,23 +1695,6 @@ class nftables:
 
         chain_suffix = self._rich_rule_chain_suffix_from_log(rich_rule)
 
-        log_options = {}
-        if isinstance(rich_rule.log, Rich_NFLog):
-            log_options["group"] = (
-                int(rich_rule.log.group) if rich_rule.log.group else 0
-            )
-            if rich_rule.log.threshold:
-                log_options["queue-threshold"] = int(rich_rule.log.threshold)
-        else:
-            if rich_rule.log.level:
-                level = (
-                    "warn" if "warning" == rich_rule.log.level else rich_rule.log.level
-                )
-                log_options["level"] = "%s" % level
-
-        if rich_rule.log.prefix:
-            log_options["prefix"] = "%s" % rich_rule.log.prefix
-
         rule = {
             "family": "inet",
             "table": TABLE_NAME,
@@ -1695,7 +1702,7 @@ class nftables:
             "expr": expr_fragments
             + [
                 self._rich_rule_limit_fragment(rich_rule.log.limit),
-                {"log": log_options},
+                self._log_fragment_for_rich_rule(rich_rule.log),
             ],
         }
         rule.update(self._rich_rule_priority_fragment(rich_rule))
@@ -1719,7 +1726,7 @@ class nftables:
             "expr": expr_fragments
             + [
                 self._rich_rule_limit_fragment(rich_rule.audit.limit),
-                {"log": {"level": "audit"}},
+                self._log_fragment(level="audit"),
             ],
         }
         rule.update(self._rich_rule_priority_fragment(rich_rule))
@@ -2406,12 +2413,9 @@ class nftables:
                                             self._pkttype_match_fragment(
                                                 self._fw.get_log_denied()
                                             ),
-                                            {
-                                                "log": {
-                                                    "prefix": "%s_%s_ICMP_BLOCK: "
-                                                    % (table, policy)
-                                                }
-                                            },
+                                            self._log_fragment(
+                                                f"{table}_{policy}_ICMP_BLOCK: "
+                                            ),
                                         ]
                                     ),
                                 }
@@ -2478,11 +2482,7 @@ class nftables:
                             "expr": [
                                 self._icmp_match_fragment(),
                                 self._pkttype_match_fragment(self._fw.get_log_denied()),
-                                {
-                                    "log": {
-                                        "prefix": "%s_%s_ICMP_BLOCK: " % (table, policy)
-                                    }
-                                },
+                                self._log_fragment(f"{table}_{policy}_ICMP_BLOCK: "),
                             ],
                         }
                     }
@@ -2511,7 +2511,7 @@ class nftables:
             },
         ]
         if log_denied != "off":
-            expr_fragments.append({"log": {"prefix": "rpfilter_DROP: "}})
+            expr_fragments.append(self._log_fragment("rpfilter_DROP: "))
         expr_fragments.append({"drop": None})
 
         rules.append(
@@ -2587,7 +2587,7 @@ class nftables:
             }
         ]
         if self._fw.get_log_denied() in ["unicast", "all"]:
-            expr_fragments.append({"log": {"prefix": "RFC3964_IPv4_REJECT: "}})
+            expr_fragments.append(self._log_fragment("RFC3964_IPv4_REJECT: "))
         expr_fragments.append(self._reject_types_fragment("addr-unreach"))
 
         rules = []
