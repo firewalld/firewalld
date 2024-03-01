@@ -1,8 +1,8 @@
 FWD_START_TEST([log prefix])
 AT_KEYWORDS(policy gh940)
 
-AT_CHECK([sed -i 's/^IndividualCalls.*/IndividualCalls=yes/' ./firewalld.conf])
-AT_CHECK([sed -i 's/^LogDenied.*/LogDenied=all/' ./firewalld.conf])
+AT_CHECK([sed -i 's/^IndividualCalls=.*/IndividualCalls=yes/' ./firewalld.conf])
+AT_CHECK([sed -i 's/^LogDenied=.*/LogDenied=all/' ./firewalld.conf])
 
 FWD_CHECK([--permanent --zone public --add-interface foobar0], 0, [ignore])
 

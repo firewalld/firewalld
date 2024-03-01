@@ -12,7 +12,7 @@ echo "mv ${IPTABLES_PATH}.broken ${IPTABLES_PATH}" >> ./cleanup
 echo "mv ${IPTABLES_RESTORE_PATH}.broken ${IPTABLES_RESTORE_PATH}" >> ./cleanup
 AT_CHECK([mv ${IPTABLES_PATH} ${IPTABLES_PATH}.broken])
 AT_CHECK([mv ${IPTABLES_RESTORE_PATH} ${IPTABLES_RESTORE_PATH}.broken])
-AT_CHECK([sed -i 's/^FirewallBackend.*/FirewallBackend=iptables/' ./firewalld.conf])
+AT_CHECK([sed -i 's/^FirewallBackend=.*/FirewallBackend=iptables/' ./firewalld.conf])
 FWD_START_FIREWALLD([251])
 FWD_CHECK([-q --state], 251, [ignore])
 

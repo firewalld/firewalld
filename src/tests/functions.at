@@ -143,13 +143,13 @@ m4_define([FWD_START_TEST], [
     m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [
     ], [
         dnl set the appropriate backend
-        AT_CHECK([sed -i 's/^FirewallBackend.*/FirewallBackend=FIREWALL_BACKEND/' ./firewalld.conf])
+        AT_CHECK([sed -i 's/^FirewallBackend=.*/FirewallBackend=FIREWALL_BACKEND/' ./firewalld.conf])
 
         dnl fib matching is pretty new in nftables. Don't use rpfilter on older
         dnl kernels.
         m4_if(nftables, FIREWALL_BACKEND, [
             IF_HOST_SUPPORTS_NFT_FIB([], [
-                sed -i 's/^IPv6_rpfilter.*/IPv6_rpfilter=no/' ./firewalld.conf
+                sed -i 's/^IPv6_rpfilter=.*/IPv6_rpfilter=no/' ./firewalld.conf
             ])
         ])
 
@@ -269,7 +269,7 @@ m4_define([FWD_START_TEST], [
         ])
 
         IF_HOST_SUPPORTS_NFT_RULE_INDEX([], [
-            AT_CHECK([sed -i 's/^IndividualCalls.*/IndividualCalls=yes/' ./firewalld.conf])
+            AT_CHECK([sed -i 's/^IndividualCalls=.*/IndividualCalls=yes/' ./firewalld.conf])
         ])
 
         FWD_START_FIREWALLD
