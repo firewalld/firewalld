@@ -1,0 +1,116 @@
+FWD_START_TEST([log denied group])
+AT_KEYWORDS(log nflog)
+
+AT_CHECK([sed -i 's/^IndividualCalls=.*/IndividualCalls=yes/' ./firewalld.conf])
+AT_CHECK([sed -i 's/^LogDenied=.*/LogDenied=all/' ./firewalld.conf])
+
+FWD_CHECK([--permanent --zone public --add-interface foobar0], 0, [ignore])
+
+AT_CHECK([mkdir -p ./policies])
+AT_DATA([./policies/log-denied.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<policy target="DROP" priority="1">
+<short>log-denied</short>
+<description>log denied policy</description>
+<ingress-zone name="ANY" />
+<egress-zone name="HOST" />
+<icmp-block name="echo-request" />
+<rule>
+    <port port="6667" protocol="tcp" />
+    <log prefix="Dropped IRC Packet: " level="warning" />
+    <drop />
+</rule>
+</policy>
+])
+FWD_CHECK([--check-config], 0, [ignore], [ignore])
+FWD_RELOAD
+
+
+NFT_LIST_RULES([inet], [filter_IN_policy_log-denied], 0, [dnl
+    table inet firewalld {
+        chain filter_IN_policy_log-denied {
+            jump filter_IN_policy_log-denied_pre
+            jump filter_IN_policy_log-denied_log
+            jump filter_IN_policy_log-denied_deny
+            jump filter_IN_policy_log-denied_allow
+            jump filter_IN_policy_log-denied_post
+            log prefix "filter_IN_policy_log-denied_DROP: "
+            drop
+        }
+    }
+])
+NFT_LIST_RULES([inet], [filter_INPUT_POLICIES], 0, [dnl
+    table inet firewalld {
+        chain filter_INPUT_POLICIES {
+            iifname "foobar0" jump filter_IN_policy_allow-host-ipv6
+            iifname "foobar0" jump filter_IN_public
+            iifname "foobar0" jump filter_IN_policy_log-denied
+            iifname "foobar0" log prefix "filter_IN_public_REJECT: "
+            iifname "foobar0" reject with icmpx admin-prohibited
+            jump filter_IN_policy_allow-host-ipv6
+            jump filter_IN_public
+            jump filter_IN_policy_log-denied
+            log prefix "filter_IN_public_REJECT: "
+            reject with icmpx admin-prohibited
+        }
+    }
+])
+
+IPTABLES_LIST_RULES([filter], [IN_log-denied], 0, [dnl
+    IN_log-denied_pre 0 -- 0.0.0.0/0 0.0.0.0/0
+    IN_log-denied_log 0 -- 0.0.0.0/0 0.0.0.0/0
+    IN_log-denied_deny 0 -- 0.0.0.0/0 0.0.0.0/0
+    IN_log-denied_allow 0 -- 0.0.0.0/0 0.0.0.0/0
+    IN_log-denied_post 0 -- 0.0.0.0/0 0.0.0.0/0
+    LOG 0 -- 0.0.0.0/0 0.0.0.0/0 LOG flags 0 level 4 prefix "IN_log-denied_DROP: "
+    DROP 0 -- 0.0.0.0/0 0.0.0.0/0
+])
+IP6TABLES_LIST_RULES([filter], [IN_log-denied], 0, [dnl
+    IN_log-denied_pre 0 -- ::/0 ::/0
+    IN_log-denied_log 0 -- ::/0 ::/0
+    IN_log-denied_deny 0 -- ::/0 ::/0
+    IN_log-denied_allow 0 -- ::/0 ::/0
+    IN_log-denied_post 0 -- ::/0 ::/0
+    LOG 0 -- ::/0 ::/0 LOG flags 0 level 4 prefix "IN_log-denied_DROP: "
+    DROP 0 -- ::/0 ::/0
+])
+
+NFT_LIST_RULES([inet], [filter_IN_policy_log-denied_deny], 0, [dnl
+    table inet firewalld {
+        chain filter_IN_policy_log-denied_deny {
+            icmp echo-request log prefix "filter_log-denied_ICMP_BLOCK: "
+            icmp echo-request reject with icmpx admin-prohibited
+            icmpv6 echo-request log prefix "filter_log-denied_ICMP_BLOCK: "
+            icmpv6 echo-request reject with icmpx admin-prohibited
+            tcp dport 6667 drop
+        }
+    }
+])
+
+IPTABLES_LIST_RULES([filter], [IN_log-denied_deny], 0, [dnl
+    LOG 1 -- 0.0.0.0/0 0.0.0.0/0 icmptype 8 LOG flags 0 level 4 prefix "log-denied_ICMP_BLOCK: "
+    REJECT 1 -- 0.0.0.0/0 0.0.0.0/0 icmptype 8 reject-with icmp-host-prohibited
+    DROP 6 -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:6667
+])
+IP6TABLES_LIST_RULES([filter], [IN_log-denied_deny], 0, [dnl
+    LOG 58 -- ::/0 ::/0 ipv6-icmptype 128 LOG flags 0 level 4 prefix "log-denied_ICMP_BLOCK: "
+    REJECT 58 -- ::/0 ::/0 ipv6-icmptype 128 reject-with icmp6-adm-prohibited
+    DROP 6 -- ::/0 ::/0 tcp dpt:6667
+])
+
+NFT_LIST_RULES([inet], [filter_IN_policy_log-denied_log], 0, [dnl
+    table inet firewalld {
+        chain filter_IN_policy_log-denied_log {
+            tcp dport 6667 log prefix "Dropped IRC Packet: "
+        }
+    }
+])
+
+IPTABLES_LIST_RULES([filter], [IN_log-denied_log], 0, [dnl
+    LOG 6 -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:6667 LOG flags 0 level 4 prefix "Dropped IRC Packet: "
+])
+IP6TABLES_LIST_RULES([filter], [IN_log-denied_log], 0, [dnl
+    LOG 6 -- ::/0 ::/0 tcp dpt:6667 LOG flags 0 level 4 prefix "Dropped IRC Packet: "
+])
+
+FWD_END_TEST
