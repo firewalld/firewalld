@@ -16,7 +16,6 @@ tags
 /config/firewalld-sysctls.conf
 /config/firewalld.logrotate
 /config/firewalld.service
-/config/lockdown-whitelist.xml
 /config/org.fedoraproject.FirewallApplet.gschema.valid
 /config/org.fedoraproject.FirewallApplet.gschema.xml
 /config/org.fedoraproject.FirewallConfig.gschema.valid
@@ -57,3 +56,7 @@ tags
 /src/tests/integration/testsuite
 /src/tests/package.m4
 /src/tests/testsuite*
+
+# Graveyard. These files existed on older versions, but no longer
+# do. They are here for when we switch branches.
+/config/lockdown-whitelist.xml

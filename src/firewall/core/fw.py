@@ -23,7 +23,6 @@ from firewall.core.fw_service import FirewallService
 from firewall.core.fw_zone import FirewallZone
 from firewall.core.fw_direct import FirewallDirect
 from firewall.core.fw_config import FirewallConfig
-from firewall.core.fw_policies import FirewallPolicies
 from firewall.core.fw_ipset import FirewallIPSet
 from firewall.core.fw_transaction import FirewallTransaction
 from firewall.core.fw_helper import FirewallHelper
@@ -70,7 +69,6 @@ class Firewall:
         self.zone = FirewallZone(self)
         self.direct = FirewallDirect(self)
         self.config = FirewallConfig(self)
-        self.policies = FirewallPolicies()
         self.ipset = FirewallIPSet(self)
         self.helper = FirewallHelper(self)
         self.policy = FirewallPolicy(self)
@@ -404,16 +402,6 @@ class Firewall:
                     "CleanupModulesOnExit is set to '%s'", self.cleanup_modules_on_exit
                 )
 
-            if self._firewalld_conf.get("Lockdown"):
-                value = self._firewalld_conf.get("Lockdown")
-                if value is not None and value.lower() in ["yes", "true"]:
-                    log.debug1("Lockdown is enabled")
-                    try:
-                        self.policies.enable_lockdown()
-                    except FirewallError:
-                        # already enabled, this is probably reload
-                        pass
-
             if self._firewalld_conf.get("IPv6_rpfilter"):
                 value = self._firewalld_conf.get("IPv6_rpfilter")
                 if value is not None:
@@ -473,28 +461,6 @@ class Firewall:
                 log.debug1("NftablesCounters is set to '%s'", self._nftables_counters)
 
         self.config.set_firewalld_conf(copy.deepcopy(self._firewalld_conf))
-
-    def _start_load_lockdown_whitelist(self):
-        # load lockdown whitelist
-        log.debug1("Loading lockdown whitelist")
-        try:
-            self.policies.lockdown_whitelist.read()
-        except Exception as msg:
-            if self.policies.query_lockdown():
-                log.error(
-                    "Failed to load lockdown whitelist '%s': %s",
-                    self.policies.lockdown_whitelist.filename,
-                    msg,
-                )
-            else:
-                log.debug1(
-                    "Failed to load lockdown whitelist '%s': %s",
-                    self.policies.lockdown_whitelist.filename,
-                    msg,
-                )
-
-        # copy policies to config interface
-        self.config.set_policies(copy.deepcopy(self.policies))
 
     def _start_load_stock_config(self):
         self._loader_ipsets(config.FIREWALLD_IPSETS)
@@ -678,7 +644,6 @@ class Firewall:
 
     def _start(self, reload=False, complete_reload=False):
         self._start_load_firewalld_conf()
-        self._start_load_lockdown_whitelist()
 
         self._select_firewall_backend(self._firewall_backend)
 
@@ -711,7 +676,6 @@ class Firewall:
         """
         This is basically _start() with at least the following differences:
             - built-in defaults for firewalld.conf
-            - no lockdown list
             - no user config (/etc/firewalld)
             - no direct rules
         """
@@ -896,7 +860,6 @@ class Firewall:
         self.helper.cleanup()
         self.config.cleanup()
         self.direct.cleanup()
-        self.policies.cleanup()
         self.policy.cleanup()
         self._firewalld_conf.cleanup()
         self.__init_vars()

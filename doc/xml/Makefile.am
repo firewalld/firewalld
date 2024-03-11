@@ -24,7 +24,6 @@ man5_MANS = \
 	../man/man5/firewalld.helper.5 \
 	../man/man5/firewalld.icmptype.5 \
 	../man/man5/firewalld.ipset.5 \
-	../man/man5/firewalld.lockdown-whitelist.5 \
 	../man/man5/firewalld.richlanguage.5 \
 	../man/man5/firewalld.service.5 \
 	../man/man5/firewalld.zone.5 \
