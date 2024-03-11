@@ -34,6 +34,7 @@ AC_PATH_PROG([KILL], [kill], [/usr/bin/kill])
 AC_PATH_PROG([MODPROBE], [modprobe], [/sbin/modprobe])
 AC_PATH_PROG([RMMOD], [rmmod], [/sbin/rmmod])
 AC_PATH_PROG([SYSCTL], [sysctl], [/sbin/sysctl])
+AC_PATH_PROG([SYSTEMD_RUN], [systemd-run], [/bin/systemd-run])
 
 AC_CONFIG_TESTDIR([src/tests])
 AC_PATH_PROGS([PODMAN], [podman docker], [/bin/false])

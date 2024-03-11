@@ -168,6 +168,7 @@ fi
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld
 %config(noreplace) %{_sysconfdir}/firewalld/firewalld.conf
 %config(noreplace) %{_sysconfdir}/firewalld/lockdown-whitelist.xml
+%attr(0750,root,root) %dir %{_sysconfdir}/firewalld/dispatcher.d
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld/helpers
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld/icmptypes
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld/ipsets
@@ -212,6 +213,7 @@ fi
 
 %files -n firewalld-filesystem
 %dir %{_prefix}/lib/firewalld
+%dir %{_prefix}/lib/firewalld/dispatcher.d
 %dir %{_prefix}/lib/firewalld/helpers
 %dir %{_prefix}/lib/firewalld/icmptypes
 %dir %{_prefix}/lib/firewalld/ipsets

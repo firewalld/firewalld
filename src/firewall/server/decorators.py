@@ -7,6 +7,8 @@
 
 """This module contains decorators for use with and without D-Bus"""
 
+from gi.repository import GLib
+
 import dbus
 import dbus.service
 import traceback
@@ -18,6 +20,7 @@ from firewall.errors import FirewallError
 from firewall import errors
 from firewall.core.logger import log
 from firewall.server.dbus import FirewallDBusException, NotAuthorizedException
+from firewall.server.dispatcher import run_dispatcher
 from firewall.dbus_utils import uid_of_sender
 
 ############################################################################
@@ -126,13 +129,18 @@ def dbus_service_signal(
         if is_deprecated:
             dbus_service_signal_deprecated.register(dbus_interface, func.__name__)
 
-        dbus_decorator = dbus.service.signal(
+        @dbus.service.signal(
             dbus_interface,
             *args,
             signature=signature,
             **kwargs,
         )
-        return dbus_decorator(func)
+        @functools.wraps(func)
+        def _impl(*args, **kwargs):
+            GLib.idle_add(run_dispatcher, dbus_interface, func.__name__, (args[1:]))
+            return func(*args, **kwargs)
+
+        return _impl
 
     return decorator
 
