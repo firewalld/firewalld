@@ -9,6 +9,7 @@ import copy
 import json
 import ipaddress
 
+from firewall import errors
 from firewall.core.logger import log
 from firewall.functions import (
     check_mac,
@@ -237,116 +238,143 @@ class nftables:
         self.nftables.set_echo_output(True)
         self.nftables.set_handle_output(True)
 
-    def _set_rule_sort_policy_dispatch(self, rule, policy_dispatch_index_cache):
-        for verb in ["add", "insert", "delete"]:
-            if verb in rule:
-                break
+    @staticmethod
+    def _add_del(enable):
+        return "add" if enable else "delete"
 
-        try:
-            sort_tuple = rule[verb]["rule"].pop("%%POLICY_SORT_KEY%%")
-        except KeyError:
+    @staticmethod
+    def _detect_rule_verb(rule, with_flushreplace=False, allow_none=False):
+        if "add" in rule:
+            return "add"
+        if "insert" in rule:
+            return "insert"
+        if "delete" in rule:
+            return "delete"
+        if with_flushreplace:
+            if "flush" in rule:
+                return "flush"
+            if "replace" in rule:
+                return "replace"
+        if allow_none:
+            return None
+        raise errors.BugError()
+
+    @staticmethod
+    def _set_rule_sort_policy_dispatch(rule, policy_dispatch_index_cache):
+        verb = nftables._detect_rule_verb(rule)
+
+        rule_verb_dict = rule[verb]
+
+        rule_verb_rule_dict = rule_verb_dict["rule"]
+
+        sort_tuple = rule_verb_rule_dict.pop("%%POLICY_SORT_KEY%%", None)
+        if sort_tuple is None:
             return
 
-        chain = (rule[verb]["rule"]["family"], rule[verb]["rule"]["chain"])
+        chain_key = (rule_verb_rule_dict["family"], rule_verb_rule_dict["chain"])
+
+        cache_entry = policy_dispatch_index_cache.get(chain_key)
 
         if verb == "delete":
-            if (
-                chain in policy_dispatch_index_cache
-                and sort_tuple in policy_dispatch_index_cache[chain]
-            ):
-                policy_dispatch_index_cache[chain].remove(sort_tuple)
+            if cache_entry is not None:
+                try:
+                    cache_entry.remove(sort_tuple)
+                except ValueError:
+                    pass
+            return
+
+        if cache_entry is None:
+            cache_entry = []
+            policy_dispatch_index_cache[chain_key] = cache_entry
+
+        # We only have to track the sort key as it's unique. The actual
+        # rule/json is not necessary.
+        #
+        # We only insert the tuple if it's not present. This is because we
+        # do rule de-duplication in set_rules().
+        if sort_tuple not in cache_entry:
+            cache_entry.append(sort_tuple)
+            cache_entry.sort()
+
+        index = cache_entry.index(sort_tuple)
+
+        del rule[verb]
+
+        if index == 0:
+            rule["insert"] = rule_verb_dict
         else:
-            if chain not in policy_dispatch_index_cache:
-                policy_dispatch_index_cache[chain] = []
+            index -= 1  # point to the rule before insertion point
+            rule["add"] = rule_verb_dict
+            rule_verb_rule_dict["index"] = index
 
-            # We only have to track the sort key as it's unique. The actual
-            # rule/json is not necessary.
-            #
-            # We only insert the tuple if it's not present. This is because we
-            # do rule de-duplication in set_rules().
-            if sort_tuple not in policy_dispatch_index_cache[chain]:
-                policy_dispatch_index_cache[chain].append(sort_tuple)
-                policy_dispatch_index_cache[chain].sort()
+    @staticmethod
+    def _set_rule_replace_priority(rule, priority_counts):
+        verb = nftables._detect_rule_verb(rule)
 
-            index = policy_dispatch_index_cache[chain].index(sort_tuple)
+        rule_verb_rule_dict = rule[verb]["rule"]
 
-            _verb_snippet = rule[verb]
-            del rule[verb]
-            if index == 0:
-                rule["insert"] = _verb_snippet
-            else:
-                index -= 1  # point to the rule before insertion point
-                rule["add"] = _verb_snippet
-                rule["add"]["rule"]["index"] = index
+        priority = rule_verb_rule_dict.pop("%%RICH_RULE_PRIORITY%%", None)
+        if priority is None:
+            return
 
-    def _set_rule_replace_priority(self, rule, priority_counts, token):
-        for verb in ["add", "insert", "delete"]:
-            if verb in rule:
+        if not isinstance(priority, int):
+            raise FirewallError(INVALID_RULE, "priority must be followed by a number")
+
+        chain_key = (rule_verb_rule_dict["family"], rule_verb_rule_dict["chain"])
+
+        # Add the rule to the priority counts. We don't need to store the
+        # rule, just bump the ref count for the priority value.
+        chain_prios = priority_counts.get(chain_key)
+
+        if verb == "delete":
+            if chain_prios is None or chain_prios.get(priority, 1) <= 0:
+                raise FirewallError(
+                    UNKNOWN_ERROR, "nonexistent or underflow of priority count"
+                )
+            chain_prios[priority] -= 1
+            return
+
+        if chain_prios is None:
+            chain_prios = {}
+            priority_counts[chain_key] = chain_prios
+        if priority not in chain_prios:
+            chain_prios[priority] = 0
+
+        # calculate index of new rule
+        index = 0
+        for p in sorted(chain_prios):
+            if p == priority and verb == "insert":
+                break
+            index += chain_prios[p]
+            if p == priority and verb == "add":
                 break
 
-        if token in rule[verb]["rule"]:
-            priority = rule[verb]["rule"][token]
-            del rule[verb]["rule"][token]
-            if not isinstance(priority, int):
-                raise FirewallError(
-                    INVALID_RULE, "priority must be followed by a number"
-                )
-            chain = (
-                rule[verb]["rule"]["family"],
-                rule[verb]["rule"]["chain"],
-            )  # family, chain
-            # Add the rule to the priority counts. We don't need to store the
-            # rule, just bump the ref count for the priority value.
-            if verb == "delete":
-                if (
-                    chain not in priority_counts
-                    or priority not in priority_counts[chain]
-                    or priority_counts[chain][priority] <= 0
-                ):
-                    raise FirewallError(
-                        UNKNOWN_ERROR, "nonexistent or underflow of priority count"
-                    )
+        chain_prios[priority] += 1
 
-                priority_counts[chain][priority] -= 1
-            else:
-                if chain not in priority_counts:
-                    priority_counts[chain] = {}
-                if priority not in priority_counts[chain]:
-                    priority_counts[chain][priority] = 0
-
-                # calculate index of new rule
-                index = 0
-                for p in sorted(priority_counts[chain].keys()):
-                    if p == priority and verb == "insert":
-                        break
-                    index += priority_counts[chain][p]
-                    if p == priority and verb == "add":
-                        break
-
-                priority_counts[chain][priority] += 1
-
-                _verb_snippet = rule[verb]
-                del rule[verb]
-                if index == 0:
-                    rule["insert"] = _verb_snippet
-                else:
-                    index -= 1  # point to the rule before insertion point
-                    rule["add"] = _verb_snippet
-                    rule["add"]["rule"]["index"] = index
+        _verb_snippet = rule[verb]
+        del rule[verb]
+        if index == 0:
+            rule["insert"] = _verb_snippet
+        else:
+            index -= 1  # point to the rule before insertion point
+            rule["add"] = _verb_snippet
+            rule["add"]["rule"]["index"] = index
 
     def _get_rule_key(self, rule):
-        for verb in ["add", "insert", "delete"]:
-            if verb in rule and "rule" in rule[verb]:
+        verb = nftables._detect_rule_verb(rule, allow_none=True)
+        if verb:
+            r = rule[verb].get("rule")
+            if r is not None:
                 # str(rule_key) is insufficient because dictionary order is
                 # not stable.. so abuse the JSON library
-                rule_key = json.dumps(rule[verb]["rule"], sort_keys=True)
+                rule_key = json.dumps(r, sort_keys=True)
                 return rule_key
         # Not a rule (it's a table, chain, etc)
         return None
 
-    def set_rules(self, rules, log_denied):
-        _valid_verbs = ["add", "insert", "delete", "flush", "replace"]
-        _valid_add_verbs = ["add", "insert", "replace"]
+    def set_rules(self, rules, log_denied=None):
+        if log_denied is None:
+            log_denied = self._fw.get_log_denied()
         _deduplicated_rules = []
         _deduplicated_rules_keys = []
         _executed_rules = []
@@ -359,13 +387,7 @@ class nftables:
                     UNKNOWN_ERROR, "rule must be a dictionary, rule: %s" % (rule)
                 )
 
-            for verb in _valid_verbs:
-                if verb in rule:
-                    break
-            if verb not in rule:
-                raise FirewallError(
-                    INVALID_RULE, "no valid verb found, rule: %s" % (rule)
-                )
+            verb = nftables._detect_rule_verb(rule, with_flushreplace=True)
 
             rule_key = self._get_rule_key(rule)
 
@@ -422,10 +444,10 @@ class nftables:
                     # -1 inserts just before the verdict
                     rule[verb]["rule"]["expr"].insert(-1, {"counter": None})
 
-                self._set_rule_replace_priority(
-                    rule, rich_rule_priority_counts, "%%RICH_RULE_PRIORITY%%"
+                nftables._set_rule_replace_priority(rule, rich_rule_priority_counts)
+                nftables._set_rule_sort_policy_dispatch(
+                    rule, policy_dispatch_index_cache
                 )
-                self._set_rule_sort_policy_dispatch(rule, policy_dispatch_index_cache)
 
                 # delete using rule handle
                 if verb == "delete":
@@ -476,10 +498,10 @@ class nftables:
                 del self.rule_ref_count[rule_key]
                 continue
 
-            for verb in _valid_add_verbs:
-                if verb in output["nftables"][index]:
-                    break
-            else:
+            verb = nftables._detect_rule_verb(
+                output["nftables"][index], allow_none=True
+            )
+            if verb is None:
                 continue
 
             # don't bother tracking handles for the policy table as we simply
@@ -491,8 +513,8 @@ class nftables:
                 "handle"
             ]
 
-    def set_rule(self, rule, log_denied):
-        self.set_rules([rule], log_denied)
+    def set_rule(self, rule, log_denied=None):
+        self.set_rules((rule,), log_denied=log_denied)
         return ""
 
     def get_available_tables(self, table=None):
@@ -519,7 +541,7 @@ class nftables:
         return self._build_delete_table_rules(TABLE_NAME)
 
     def _build_set_policy_rules_ct_rule(self, enable, hook):
-        add_del = {True: "add", False: "delete"}[enable]
+        add_del = nftables._add_del(enable)
         return {
             add_del: {
                 "rule": {
@@ -1279,7 +1301,7 @@ class nftables:
         egress_source,
         last=False,
     ):
-        add_del = {True: "add", False: "delete"}[enable]
+        add_del = nftables._add_del(enable)
         p_obj = self._fw.policy.get_policy(policy)
         isSNAT = True if (table == "nat" and chain == "POSTROUTING") else False
         _policy = self._fw.policy.policy_base_chain_name(
@@ -1402,7 +1424,7 @@ class nftables:
         return rules
 
     def build_policy_chain_rules(self, enable, policy, table, chain):
-        add_del = {True: "add", False: "delete"}[enable]
+        add_del = nftables._add_del(enable)
         isSNAT = True if (table == "nat" and chain == "POSTROUTING") else False
         _policy = self._fw.policy.policy_base_chain_name(
             policy, table, POLICY_CHAIN_PREFIX, isSNAT=isSNAT
@@ -1654,10 +1676,9 @@ class nftables:
         else:
             return "post"
 
-    def _rich_rule_priority_fragment(self, rich_rule):
-        if not rich_rule or rich_rule.priority == 0:
-            return {}
-        return {"%%RICH_RULE_PRIORITY%%": rich_rule.priority}
+    def _rule_set_rich_rule_priority(self, rule, rich_rule):
+        if rich_rule and rich_rule.priority != 0:
+            rule["%%RICH_RULE_PRIORITY%%"] = rich_rule.priority
 
     def _rich_rule_log(self, policy, rich_rule, enable, table, expr_fragments):
         if not rich_rule.log:
@@ -1667,7 +1688,7 @@ class nftables:
             policy, table, POLICY_CHAIN_PREFIX
         )
 
-        add_del = {True: "add", False: "delete"}[enable]
+        add_del = nftables._add_del(enable)
 
         chain_suffix = self._rich_rule_chain_suffix_from_log(rich_rule)
 
@@ -1698,7 +1719,7 @@ class nftables:
                 {"log": log_options},
             ],
         }
-        rule.update(self._rich_rule_priority_fragment(rich_rule))
+        self._rule_set_rich_rule_priority(rule, rich_rule)
         return {add_del: {"rule": rule}}
 
     def _rich_rule_audit(self, policy, rich_rule, enable, table, expr_fragments):
@@ -1709,7 +1730,7 @@ class nftables:
             policy, table, POLICY_CHAIN_PREFIX
         )
 
-        add_del = {True: "add", False: "delete"}[enable]
+        add_del = nftables._add_del(enable)
 
         chain_suffix = self._rich_rule_chain_suffix_from_log(rich_rule)
         rule = {
@@ -1722,7 +1743,7 @@ class nftables:
                 {"log": {"level": "audit"}},
             ],
         }
-        rule.update(self._rich_rule_priority_fragment(rich_rule))
+        self._rule_set_rich_rule_priority(rule, rich_rule)
         return {add_del: {"rule": rule}}
 
     def _rich_rule_action(self, policy, rich_rule, enable, table, expr_fragments):
@@ -1733,7 +1754,7 @@ class nftables:
             policy, table, POLICY_CHAIN_PREFIX
         )
 
-        add_del = {True: "add", False: "delete"}[enable]
+        add_del = nftables._add_del(enable)
 
         chain_suffix = self._rich_rule_chain_suffix(rich_rule)
         chain = "%s_%s_%s" % (table, _policy, chain_suffix)
@@ -1782,7 +1803,7 @@ class nftables:
             "expr": expr_fragments
             + [self._rich_rule_limit_fragment(rich_rule.action.limit), rule_action],
         }
-        rule.update(self._rich_rule_priority_fragment(rich_rule))
+        self._rule_set_rich_rule_priority(rule, rich_rule)
         return {add_del: {"rule": rule}}
 
     def _rule_addr_fragment(self, addr_field, address, invert=False):
@@ -1876,7 +1897,7 @@ class nftables:
     def build_policy_ports_rules(
         self, enable, policy, proto, port, destination=None, rich_rule=None
     ):
-        add_del = {True: "add", False: "delete"}[enable]
+        add_del = nftables._add_del(enable)
         table = "filter"
         _policy = self._fw.policy.policy_base_chain_name(
             policy, table, POLICY_CHAIN_PREFIX
@@ -1933,7 +1954,7 @@ class nftables:
     def build_policy_protocol_rules(
         self, enable, policy, protocol, destination=None, rich_rule=None
     ):
-        add_del = {True: "add", False: "delete"}[enable]
+        add_del = nftables._add_del(enable)
         table = "filter"
         _policy = self._fw.policy.policy_base_chain_name(
             policy, table, POLICY_CHAIN_PREFIX
@@ -1995,7 +2016,7 @@ class nftables:
         _policy = self._fw.policy.policy_base_chain_name(
             policy, table, POLICY_CHAIN_PREFIX
         )
-        add_del = {True: "add", False: "delete"}[enable]
+        add_del = nftables._add_del(enable)
 
         expr_fragments = []
         if rich_rule:
@@ -2050,7 +2071,7 @@ class nftables:
     def build_policy_source_ports_rules(
         self, enable, policy, proto, port, destination=None, rich_rule=None
     ):
-        add_del = {True: "add", False: "delete"}[enable]
+        add_del = nftables._add_del(enable)
         table = "filter"
         _policy = self._fw.policy.policy_base_chain_name(
             policy, table, POLICY_CHAIN_PREFIX
@@ -2111,7 +2132,7 @@ class nftables:
         _policy = self._fw.policy.policy_base_chain_name(
             policy, table, POLICY_CHAIN_PREFIX
         )
-        add_del = {True: "add", False: "delete"}[enable]
+        add_del = nftables._add_del(enable)
         rules = []
 
         if enable:
@@ -2160,7 +2181,7 @@ class nftables:
     def build_zone_forward_rules(
         self, enable, zone, policy, table, interface=None, source=None
     ):
-        add_del = {True: "add", False: "delete"}[enable]
+        add_del = nftables._add_del(enable)
         _policy = self._fw.policy.policy_base_chain_name(
             policy, table, POLICY_CHAIN_PREFIX
         )
@@ -2195,7 +2216,7 @@ class nftables:
         return rules
 
     def build_policy_masquerade_rules(self, enable, policy, rich_rule=None):
-        add_del = {True: "add", False: "delete"}[enable]
+        add_del = nftables._add_del(enable)
 
         rules = []
 
@@ -2239,7 +2260,7 @@ class nftables:
                 {"masquerade": None},
             ],
         }
-        rule.update(self._rich_rule_priority_fragment(rich_rule))
+        self._rule_set_rich_rule_priority(rule, rich_rule)
         rules.append({add_del: {"rule": rule}})
 
         return rules
@@ -2251,7 +2272,7 @@ class nftables:
         _policy = self._fw.policy.policy_base_chain_name(
             policy, table, POLICY_CHAIN_PREFIX
         )
-        add_del = {True: "add", False: "delete"}[enable]
+        add_del = nftables._add_del(enable)
 
         expr_fragments = []
         if rich_rule:
@@ -2310,7 +2331,7 @@ class nftables:
             "chain": "nat_%s_%s" % (_policy, chain_suffix),
             "expr": expr_fragments,
         }
-        rule.update(self._rich_rule_priority_fragment(rich_rule))
+        self._rule_set_rich_rule_priority(rule, rich_rule)
         rules.append({add_del: {"rule": rule}})
 
         return rules
@@ -2330,7 +2351,7 @@ class nftables:
         _policy = self._fw.policy.policy_base_chain_name(
             policy, table, POLICY_CHAIN_PREFIX
         )
-        add_del = {True: "add", False: "delete"}[enable]
+        add_del = nftables._add_del(enable)
 
         if rich_rule and rich_rule.ipvs:
             ipvs = rich_rule.ipvs
@@ -2386,7 +2407,7 @@ class nftables:
                         "chain": "%s_%s_%s" % (table, _policy, chain_suffix),
                         "expr": expr_fragments + [self._reject_fragment()],
                     }
-                    rule.update(self._rich_rule_priority_fragment(rich_rule))
+                    self._rule_set_rich_rule_priority(rule, rich_rule)
                     rules.append({add_del: {"rule": rule}})
             else:
                 if (
@@ -2439,7 +2460,7 @@ class nftables:
             policy, table, POLICY_CHAIN_PREFIX
         )
         rules = []
-        add_del = {True: "add", False: "delete"}[enable]
+        add_del = nftables._add_del(enable)
 
         if self._fw.policy.query_icmp_block_inversion(policy):
             target_fragment = self._reject_fragment()
@@ -2693,7 +2714,7 @@ class nftables:
                 INVALID_TYPE, "ipset type name '%s' is not valid" % type
             )
 
-    def build_set_create_rules(self, name, type, options=None):
+    def _build_set_create_rule(self, name, type, options=None):
         if options and "family" in options and options["family"] == "inet6":
             ipv = "ipv6"
         else:
@@ -2718,17 +2739,15 @@ class nftables:
             if "maxelem" in options:
                 set_dict["size"] = int(options["maxelem"])
 
-        return [{"add": {"set": set_dict}}]
+        return {"add": {"set": set_dict}}
 
     def set_create(self, name, type, options=None):
-        rules = self.build_set_create_rules(name, type, options)
-        self.set_rules(rules, self._fw.get_log_denied())
+        self.set_rule(self._build_set_create_rule(name, type, options))
 
     def set_destroy(self, name):
-        rule = {
-            "delete": {"set": {"family": "inet", "table": TABLE_NAME, "name": name}}
-        }
-        self.set_rule(rule, self._fw.get_log_denied())
+        self.set_rule(
+            {"delete": {"set": {"family": "inet", "table": TABLE_NAME, "name": name}}}
+        )
 
     def _set_match_fragment(self, name, match_dest, invert=False):
         type_format = self._fw.ipset.get_ipset(name).type.split(":")[1].split(",")
@@ -2749,7 +2768,7 @@ class nftables:
                 fragments.append(
                     {
                         "payload": {
-                            "protocol": self._set_get_family(name),
+                            "protocol": self._ipset_get_family(name),
                             "field": "daddr" if match_dest else "saddr",
                         }
                     }
@@ -2835,12 +2854,27 @@ class nftables:
                 fragment.append(entry_tokens[i])
         return [{"concat": fragment}] if len(type_format) > 1 else fragment
 
-    def build_set_add_rules(self, name, entry):
-        rules = []
+    def _build_set_add_rule(self, name, entry):
         element = self._set_entry_fragment(name, entry)
-        rules.append(
+        return {
+            "add": {
+                "element": {
+                    "family": "inet",
+                    "table": TABLE_NAME,
+                    "name": name,
+                    "elem": element,
+                }
+            }
+        }
+
+    def set_add(self, name, entry):
+        self.set_rule(self._build_set_add_rule(name, entry))
+
+    def set_delete(self, name, entry):
+        element = self._set_entry_fragment(name, entry)
+        self.set_rule(
             {
-                "add": {
+                "delete": {
                     "element": {
                         "family": "inet",
                         "table": TABLE_NAME,
@@ -2850,47 +2884,20 @@ class nftables:
                 }
             }
         )
-        return rules
 
-    def set_add(self, name, entry):
-        rules = self.build_set_add_rules(name, entry)
-        self.set_rules(rules, self._fw.get_log_denied())
-
-    def set_delete(self, name, entry):
-        element = self._set_entry_fragment(name, entry)
-        rule = {
-            "delete": {
-                "element": {
-                    "family": "inet",
-                    "table": TABLE_NAME,
-                    "name": name,
-                    "elem": element,
-                }
-            }
-        }
-        self.set_rule(rule, self._fw.get_log_denied())
-
-    def build_set_flush_rules(self, name):
-        return [
-            {"flush": {"set": {"family": "inet", "table": TABLE_NAME, "name": name}}}
-        ]
+    def _build_set_flush_rule(self, name):
+        return {"flush": {"set": {"family": "inet", "table": TABLE_NAME, "name": name}}}
 
     def set_flush(self, name):
-        rules = self.build_set_flush_rules(name)
-        self.set_rules(rules, self._fw.get_log_denied())
+        self.set_rule(self._build_set_flush_rule(name))
 
-    def _set_get_family(self, name):
-        ipset = self._fw.ipset.get_ipset(name)
+    def _ipset_get_family(self, name):
+        family = self._fw.ipset.get_family(name, applied=False, honor_ether=True)
 
-        if ipset.type == "hash:mac":
-            family = "ether"
-        elif (
-            ipset.options
-            and "family" in ipset.options
-            and ipset.options["family"] == "inet6"
-        ):
+        # Remap the different forms for the address family.
+        if family == "ipv6":
             family = "ip6"
-        else:
+        elif family == "ipv4":
             family = "ip"
 
         return family
@@ -2898,18 +2905,18 @@ class nftables:
     def set_restore(
         self, set_name, type_name, entries, create_options=None, entry_options=None
     ):
-        rules = []
-        rules.extend(self.build_set_create_rules(set_name, type_name, create_options))
-        rules.extend(self.build_set_flush_rules(set_name))
+        rules = [
+            self._build_set_create_rule(set_name, type_name, create_options),
+            self._build_set_flush_rule(set_name),
+        ]
 
         # avoid large memory usage by chunking the entries
         chunk = 0
         for entry in entries:
-            rules.extend(self.build_set_add_rules(set_name, entry))
+            rules.append(self._build_set_add_rule(set_name, entry))
             chunk += 1
             if chunk >= 1000:
-                self.set_rules(rules, self._fw.get_log_denied())
+                self.set_rules(rules)
                 rules.clear()
                 chunk = 0
-        else:
-            self.set_rules(rules, self._fw.get_log_denied())
+        self.set_rules(rules)
