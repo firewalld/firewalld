@@ -665,8 +665,10 @@ def wrong_args_for_callable(fcn, *a, **kw):
     # Check whether fcn(*a, **kw) will fail due to invalid
     # arguments.
 
+    sig = inspect.signature(fcn)
+
     try:
-        inspect.bind(fcn, *a, **kw)
+        sig.bind(*a, **kw)
     except TypeError:
         return False
     return True
