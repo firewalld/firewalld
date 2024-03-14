@@ -66,9 +66,12 @@ def _normalize_reload_policy(value):
 def _validate_bool(value, default):
     valid = True
     try:
-        v = firewall.functions.str_to_bool(value)
+        v = firewall.functions.str_to_bool(value, on_default=None)
     except ValueError:
         valid = False
+        v = None
+
+    if v is None:
         v = firewall.functions.str_to_bool(default)
 
     return ("yes" if v else "no"), valid
