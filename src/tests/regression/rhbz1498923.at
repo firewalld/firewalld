@@ -3,7 +3,7 @@ AT_KEYWORDS(direct reload rhbz1498923)
 CHECK_IPTABLES
 
 dnl Verify runtime interface to zone assignment is gone after reload
-AT_CHECK([sed -i 's/^FlushAllOnReload.*/FlushAllOnReload=yes/' ./firewalld.conf])
+AT_CHECK([sed -i 's/^FlushAllOnReload=.*/FlushAllOnReload=yes/' ./firewalld.conf])
 FWD_RELOAD
 FWD_CHECK([-q --zone=public --add-interface=foobar0])
 FWD_CHECK([--get-zone-of-interface=foobar0], 0, [dnl
@@ -15,7 +15,7 @@ no zone
 ])
 
 dnl Below we test retention of some items applicable to FlushAllOnReload=no
-AT_CHECK([sed -i 's/^FlushAllOnReload.*/FlushAllOnReload=no/' ./firewalld.conf])
+AT_CHECK([sed -i 's/^FlushAllOnReload=.*/FlushAllOnReload=no/' ./firewalld.conf])
 FWD_RELOAD
 
 FWD_CHECK([-q --permanent --direct --add-rule ipv4 filter INPUT 0 -p tcp --dport 8080 -j ACCEPT])

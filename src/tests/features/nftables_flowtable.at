@@ -50,7 +50,7 @@ NS_CHECK([ip addr add 10.20.20.1/24 dev fwd-test-fwd-1])
 NS_CHECK([ip link set fwd-test-fwd-0 up])
 NS_CHECK([ip link set fwd-test-fwd-1 up])
 
-NS_CHECK([sed -i 's/^NftablesFlowtable.*/NftablesFlowtable=$1/' ./firewalld.conf])
+NS_CHECK([sed -i 's/^NftablesFlowtable=.*/NftablesFlowtable=$1/' ./firewalld.conf])
 FWD_RELOAD()
 NS_CHECK([sysctl -w net.ipv4.conf.all.forwarding=1], 0, [ignore])
 FWD_CHECK([--zone trusted --add-interface fwd-test-fwd-0], 0, [ignore])

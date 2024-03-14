@@ -3,7 +3,7 @@ FWD_START_TEST([switch backend to iptables and reload])
 AT_KEYWORDS(gh1129)
 AT_SKIP_IF([! NS_CMD([command -v nft >/dev/null 2>&1])])
 
-AT_CHECK([sed -i 's/^FirewallBackend.*/FirewallBackend=iptables/' ./firewalld.conf])
+AT_CHECK([sed -i 's/^FirewallBackend=.*/FirewallBackend=iptables/' ./firewalld.conf])
 FWD_RELOAD()
 
 dnl verify the temporary drop policy is gone, should not be any rules left
@@ -18,7 +18,7 @@ FWD_START_TEST([switch backend to nftables and reload])
 AT_KEYWORDS(gh1129)
 AT_SKIP_IF([! NS_CMD([command -v iptables-save >/dev/null 2>&1])])
 
-AT_CHECK([sed -i 's/^FirewallBackend.*/FirewallBackend=nftables/' ./firewalld.conf])
+AT_CHECK([sed -i 's/^FirewallBackend=.*/FirewallBackend=nftables/' ./firewalld.conf])
 FWD_RELOAD()
 
 dnl verify the temporary drop policy is gone, should not be any rules left
