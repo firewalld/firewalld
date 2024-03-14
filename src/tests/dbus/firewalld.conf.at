@@ -30,6 +30,7 @@ string "MinimalMark" : variant int32 100
 string "NftablesCounters" : variant string "no"
 string "NftablesFlowtable" : variant string "off"
 string "RFC3964_IPv4" : variant string "yes"
+string "ReloadPolicy" : variant string "INPUT:DROP,FORWARD:DROP,OUTPUT:DROP"
 ])
 
 m4_define([_helper], [
