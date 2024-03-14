@@ -5,6 +5,7 @@
 # Authors:
 # Thomas Woerner <twoerner@redhat.com>
 
+import itertools
 import socket
 import os
 import os.path
@@ -457,13 +458,27 @@ def firewalld_is_active():
     return False
 
 
-def tempFile():
+def removeFile(filename):
     try:
-        if not os.path.exists(FIREWALLD_TEMPDIR):
-            os.mkdir(FIREWALLD_TEMPDIR, 0o750)
+        os.remove(filename)
+    except OSError:
+        pass
 
+
+def tempDir():
+    if not os.path.exists(FIREWALLD_TEMPDIR):
+        os.mkdir(FIREWALLD_TEMPDIR, 0o750)
+    return FIREWALLD_TEMPDIR
+
+
+def tempFile(*, mode="wt", prefix="temp.", delete=False):
+    try:
+        d = tempDir()
         return tempfile.NamedTemporaryFile(
-            mode="wt", prefix="temp.", dir=FIREWALLD_TEMPDIR, delete=False
+            mode=mode,
+            prefix=prefix,
+            dir=d,
+            delete=delete,
         )
     except Exception as msg:
         log.error("Failed to create temporary file: %s" % msg)
@@ -670,3 +685,25 @@ def wrong_args_for_callable(fcn, *a, **kw):
     except TypeError:
         return False
     return True
+
+
+def iter_reiterable(iterable):
+    # Some iterables can only be iterated once. So, we want to
+    # have functions that can accept arbitrary iterables, but
+    # we also want them to work with such iterables.
+    #
+    # This creates a list from iterable, so that the list
+    # can be re-iterated multiple times. If @iterable is
+    # already a list/tuple, it returns the iterable itself.
+    if isinstance(iterable, (list, tuple)):
+        return iterable
+    return list(iterable)
+
+
+def iter_split_every(iterable, n):
+    i = iter(iterable)
+    while True:
+        part = list(itertools.islice(i, n))
+        if not part:
+            return
+        yield part

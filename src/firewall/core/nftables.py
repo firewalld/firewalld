@@ -9,6 +9,7 @@ import copy
 import json
 import ipaddress
 
+import firewall.functions
 from firewall.core.logger import log
 from firewall.functions import (
     check_mac,
@@ -233,9 +234,61 @@ class nftables:
         self.rich_rule_priority_counts = {}
         self.policy_dispatch_index_cache = {}
 
-        self.nftables = Nftables()
-        self.nftables.set_echo_output(True)
-        self.nftables.set_handle_output(True)
+        self._nft_ctx = Nftables()
+        self._nft_ctx.set_json_output(True)
+
+    def nft_cmd(self, json_root, is_large=False, request_handles=True):
+        if isinstance(json_root, list):
+            # The caller gave us the JSON in a list, so we can drop the
+            # reference to the memory. Unpack the list, and delete the entry.
+            l = json_root
+            (json_root,) = l
+            del l[0]
+
+        self._nft_ctx.set_echo_output(request_handles)
+        self._nft_ctx.set_handle_output(request_handles)
+
+        if is_large and hasattr(self._nft_ctx, "cmd_from_file"):
+            filename = None
+            try:
+                with firewall.functions.tempFile(
+                    prefix="temp.nft-json.", delete=False
+                ) as file:
+                    filename = file.name
+                    if isinstance(json_root, str):
+                        file.write(json_root)
+                    else:
+                        json.dump(json_root, file)
+
+                del json_root
+
+                rc, output, error = self._nft_ctx.cmd_from_file(
+                    filename.encode("utf-8")
+                )
+            finally:
+                if filename is not None:
+                    firewall.functions.removeFile(filename)
+        else:
+            if isinstance(json_root, str):
+                json_root_str = json_root
+            else:
+                json_root_str = json.dumps(json_root)
+            del json_root
+            json_root_str = json_root_str.encode("utf-8")
+            rc, output, error = self._nft_ctx.cmd(json_root_str)
+
+        return (rc, output, error)
+
+    @staticmethod
+    def nft_cmd_post(rc, output, error=None):
+        output = output.decode("utf-8", errors="replace")
+        if error is not None:
+            error = error.decode("utf-8", errors="replace")
+        try:
+            output = json.loads(output)
+        except:
+            output = {}
+        return (rc, output, error)
 
     def _set_rule_sort_policy_dispatch(self, rule, policy_dispatch_index_cache):
         for verb in ["add", "insert", "delete"]:
@@ -344,7 +397,7 @@ class nftables:
         # Not a rule (it's a table, chain, etc)
         return None
 
-    def set_rules(self, rules, log_denied):
+    def set_rules(self, rules, log_denied, *, rules_clear=False, is_large=False):
         _valid_verbs = ["add", "insert", "delete", "flush", "replace"]
         _valid_add_verbs = ["add", "insert", "replace"]
         _deduplicated_rules = []
@@ -353,6 +406,7 @@ class nftables:
         rich_rule_priority_counts = copy.deepcopy(self.rich_rule_priority_counts)
         policy_dispatch_index_cache = copy.deepcopy(self.policy_dispatch_index_cache)
         rule_ref_count = self.rule_ref_count.copy()
+        has_real_rules = False
         for rule in rules:
             if not isinstance(rule, dict):
                 raise FirewallError(
@@ -411,6 +465,7 @@ class nftables:
             _deduplicated_rules_keys.append(rule_key)
 
             if rule_key:
+                has_real_rules = True
                 # filter empty rule expressions. Rich rules add quite a bit of
                 # them, but it makes the rest of the code simpler. libnftables
                 # does not tolerate them.
@@ -442,26 +497,49 @@ class nftables:
 
             _executed_rules.append(rule)
 
+        if rules_clear:
+            # The caller indicates that they don't need the list of rules anymore.
+            # Clear the list now, so that maybe this can free some memory earlier.
+            # That's because next we will allocate also a lot of memory. It's good
+            # if we free memory we no longer need earlier.
+            rules.clear()
+        del rules
+
         json_blob = {
             "nftables": [{"metainfo": {"json_schema_version": 1}}] + _executed_rules
         }
+
+        is_large = is_large or len(_executed_rules) > 100
+
+        del _executed_rules
+
         if log.getDebugLogLevel() >= 3:
             # guarded with if statement because json.dumps() is expensive.
+            json_blob = json.dumps(json_blob)
             log.debug3(
                 "%s: calling python-nftables with JSON blob: %s",
                 self.__class__,
-                json.dumps(json_blob),
+                json_blob,
             )
-        rc, output, error = self.nftables.json_cmd(json_blob)
+
+        json_blob_list = [json_blob]
+        del json_blob
+
+        rc, output, error = self.nft_cmd(
+            json_blob_list, is_large=is_large, request_handles=has_real_rules
+        )
+
         if rc != 0:
-            raise ValueError(
-                "'%s' failed: %s\nJSON blob:\n%s"
-                % ("python-nftables", error, json.dumps(json_blob))
-            )
+            raise ValueError("'%s' failed: %s" % ("python-nftables", error))
 
         self.rich_rule_priority_counts = rich_rule_priority_counts
         self.policy_dispatch_index_cache = policy_dispatch_index_cache
         self.rule_ref_count = rule_ref_count
+
+        if not has_real_rules:
+            return
+
+        (rc, output, error) = self.nft_cmd_post(rc, output)
 
         index = 0
         for rule in _deduplicated_rules:
@@ -492,7 +570,7 @@ class nftables:
             ]
 
     def set_rule(self, rule, log_denied):
-        self.set_rules([rule], log_denied)
+        self.set_rules([rule], log_denied, rules_clear=True)
         return ""
 
     def get_available_tables(self, table=None):
@@ -2722,7 +2800,7 @@ class nftables:
 
     def set_create(self, name, type, options=None):
         rules = self.build_set_create_rules(name, type, options)
-        self.set_rules(rules, self._fw.get_log_denied())
+        self.set_rules(rules, self._fw.get_log_denied(), rules_clear=True)
 
     def set_destroy(self, name):
         rule = {
@@ -2835,26 +2913,29 @@ class nftables:
                 fragment.append(entry_tokens[i])
         return [{"concat": fragment}] if len(type_format) > 1 else fragment
 
-    def build_set_add_rules(self, name, entry):
+    def build_set_add_rules(self, name, entries):
         rules = []
-        element = self._set_entry_fragment(name, entry)
-        rules.append(
-            {
-                "add": {
-                    "element": {
-                        "family": "inet",
-                        "table": TABLE_NAME,
-                        "name": name,
-                        "elem": element,
+        elements = []
+        for entry in entries:
+            elements.extend(self._set_entry_fragment(name, entry))
+        if elements:
+            rules.append(
+                {
+                    "add": {
+                        "element": {
+                            "family": "inet",
+                            "table": TABLE_NAME,
+                            "name": name,
+                            "elem": elements,
+                        }
                     }
                 }
-            }
-        )
+            )
         return rules
 
     def set_add(self, name, entry):
-        rules = self.build_set_add_rules(name, entry)
-        self.set_rules(rules, self._fw.get_log_denied())
+        rules = self.build_set_add_rules(name, (entry,))
+        self.set_rules(rules, self._fw.get_log_denied(), rules_clear=True)
 
     def set_delete(self, name, entry):
         element = self._set_entry_fragment(name, entry)
@@ -2877,7 +2958,7 @@ class nftables:
 
     def set_flush(self, name):
         rules = self.build_set_flush_rules(name)
-        self.set_rules(rules, self._fw.get_log_denied())
+        self.set_rules(rules, self._fw.get_log_denied(), rules_clear=True)
 
     def _set_get_family(self, name):
         ipset = self._fw.ipset.get_ipset(name)
@@ -2898,18 +2979,16 @@ class nftables:
     def set_restore(
         self, set_name, type_name, entries, create_options=None, entry_options=None
     ):
+        entries = firewall.functions.iter_reiterable(entries)
+        is_large = len(entries) > 1000
         rules = []
         rules.extend(self.build_set_create_rules(set_name, type_name, create_options))
         rules.extend(self.build_set_flush_rules(set_name))
-
-        # avoid large memory usage by chunking the entries
-        chunk = 0
-        for entry in entries:
-            rules.extend(self.build_set_add_rules(set_name, entry))
-            chunk += 1
-            if chunk >= 1000:
-                self.set_rules(rules, self._fw.get_log_denied())
-                rules.clear()
-                chunk = 0
-        else:
-            self.set_rules(rules, self._fw.get_log_denied())
+        rules.extend(self.build_set_add_rules(set_name, entries))
+        del entries
+        self.set_rules(
+            rules,
+            self._fw.get_log_denied(),
+            rules_clear=True,
+            is_large=is_large,
+        )
