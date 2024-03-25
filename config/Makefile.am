@@ -250,6 +250,7 @@ CONFIG_FILES = \
 	services/minecraft.xml \
 	services/memcache.xml \
 	services/minidlna.xml \
+	services/mndp.xml \
 	services/mongodb.xml \
 	services/mosh.xml \
 	services/mountd.xml \
@@ -357,6 +358,7 @@ CONFIG_FILES = \
 	services/wbem-https.xml \
 	services/wireguard.xml \
 	services/ws-discovery-client.xml \
+	services/ws-discovery-host.xml \
 	services/ws-discovery-tcp.xml \
 	services/ws-discovery-udp.xml \
 	services/ws-discovery.xml \
