@@ -919,22 +919,21 @@ class Policy(IO_Object):
                                 raise FirewallError(errors.INVALID_ZONE, "Policy '{}': 'masquerade' cannot be used because ingress zone '{}' has assigned interfaces. ".format(self.name, zone))
                 elif obj.element and isinstance(obj.element, rich.Rich_ForwardPort):
                     if "egress_zones" in all_config:
-                        if "HOST" in all_config["egress_zones"]:
-                            if obj.element.to_address:
-                                raise FirewallError(errors.INVALID_FORWARD,
-                                        "Policy '{}': A 'forward-port' with 'to-addr' is invalid for egress zone 'HOST'".format(
-                                            self.name))
-                        elif all_config["egress_zones"]:
-                            if not obj.element.to_address:
+                        if all_config["egress_zones"]:
+                            if (
+                                "HOST" not in all_config["egress_zones"]
+                                and not obj.element.to_address
+                            ):
                                 raise FirewallError(errors.INVALID_FORWARD,
                                         "Policy '{}': 'forward-port' requires 'to-addr' if egress zone is 'ANY' or a zone".format(
                                             self.name))
-                            if "ANY" not in all_config["egress_zones"]:
-                                for zone in all_config["egress_zones"]:
-                                    if zone not in all_io_objects["zones"]:
-                                        raise FirewallError(errors.INVALID_ZONE, "Policy '{}': Zone '{}' does not exist.".format(self.name, zone))
-                                    if all_io_objects["zones"][zone].interfaces:
-                                        raise FirewallError(errors.INVALID_ZONE, "Policy '{}': 'forward-port' cannot be used because egress zone '{}' has assigned interfaces".format(self.name, zone))
+                            for zone in all_config["egress_zones"]:
+                                if zone in ("HOST", "ANY"):
+                                    continue
+                                if zone not in all_io_objects["zones"]:
+                                    raise FirewallError(errors.INVALID_ZONE, "Policy '{}': Zone '{}' does not exist.".format(self.name, zone))
+                                if all_io_objects["zones"][zone].interfaces:
+                                    raise FirewallError(errors.INVALID_ZONE, "Policy '{}': 'forward-port' cannot be used because egress zone '{}' has assigned interfaces".format(self.name, zone))
                 elif obj.action and isinstance(obj.action, rich.Rich_Mark):
                     if "egress_zones" in all_config:
                         for zone in all_config["egress_zones"]:
@@ -947,22 +946,18 @@ class Policy(IO_Object):
         elif item == "forward_ports":
             for fwd_port in config:
                 if "egress_zones" in all_config:
-                    if "HOST" in all_config["egress_zones"]:
-                        if fwd_port[3]:
-                            raise FirewallError(errors.INVALID_FORWARD,
-                                    "Policy '{}': A 'forward-port' with 'to-addr' is invalid for egress zone 'HOST'".format(
-                                        self.name))
-                    elif all_config["egress_zones"]:
-                        if not fwd_port[3]:
+                    if all_config["egress_zones"]:
+                        if "HOST" not in all_config["egress_zones"] and not fwd_port[3]:
                             raise FirewallError(errors.INVALID_FORWARD,
                                     "Policy '{}': 'forward-port' requires 'to-addr' if egress zone is 'ANY' or a zone".format(
                                         self.name))
-                        if "ANY" not in all_config["egress_zones"]:
-                            for zone in all_config["egress_zones"]:
-                                if zone not in all_io_objects["zones"]:
-                                    raise FirewallError(errors.INVALID_ZONE, "Policy '{}': Zone '{}' does not exist.".format(self.name, zone))
-                                if all_io_objects["zones"][zone].interfaces:
-                                    raise FirewallError(errors.INVALID_ZONE, "Policy '{}': 'forward-port' cannot be used because egress zone '{}' has assigned interfaces".format(self.name, zone))
+                        for zone in all_config["egress_zones"]:
+                            if zone in ("HOST", "ANY"):
+                                continue
+                            if zone not in all_io_objects["zones"]:
+                                raise FirewallError(errors.INVALID_ZONE, "Policy '{}': Zone '{}' does not exist.".format(self.name, zone))
+                            if all_io_objects["zones"][zone].interfaces:
+                                raise FirewallError(errors.INVALID_ZONE, "Policy '{}': 'forward-port' cannot be used because egress zone '{}' has assigned interfaces".format(self.name, zone))
 
     def check_name(self, name):
         super(Policy, self).check_name(name)
