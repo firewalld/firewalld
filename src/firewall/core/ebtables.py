@@ -21,7 +21,6 @@ BUILT_IN_CHAINS = {
 }
 
 DEFAULT_RULES = {}
-LOG_RULES = {}
 OUR_CHAINS = {}  # chains created by firewalld
 
 for table in BUILT_IN_CHAINS.keys():
@@ -242,11 +241,8 @@ class ebtables:
         for table in DEFAULT_RULES:
             if table not in self.get_available_tables():
                 continue
-            _default_rules = DEFAULT_RULES[table][:]
-            if log_denied != "off" and table in LOG_RULES:
-                _default_rules.extend(LOG_RULES[table])
             prefix = ["-t", table]
-            for rule in _default_rules:
+            for rule in DEFAULT_RULES[table]:
                 if isinstance(rule, list):
                     default_rules.append(prefix + rule)
                 else:

@@ -14,6 +14,13 @@ import tempfile
 from firewall.core.logger import log
 from firewall.config import FIREWALLD_TEMPDIR, FIREWALLD_PIDFILE
 
+# This is used as default value for some arguments, to recognize that the
+# caller didn't specify the argument. This is useful, when we want to
+# explicitly distinguish between having an argument unset or set to any value.
+# The caller would never pass this value, but the implementation would check
+# whether the argument is still left at the default.
+UNSET_ARGUMENT = object()
+
 NOPRINT_TRANS_TABLE = {
     # Limit to C0 and C1 code points. Building entries for all unicode code
     # points requires too much memory.
@@ -24,6 +31,46 @@ NOPRINT_TRANS_TABLE = {
     for i in range(0, 160)
     if not (i > 31 and i < 127)
 }
+
+
+def bool_to_str(val, format="yes"):
+    if format == "yes":
+        return "yes" if val else "no"
+    raise ValueError(f'Invalid format "{format}"')
+
+
+def str_to_bool(val, on_error=UNSET_ARGUMENT, *, on_default=UNSET_ARGUMENT):
+
+    is_default = False
+
+    if isinstance(val, str):
+        val2 = val.lower().strip()
+        if val2 in ("1", "y", "yes", "true", "on"):
+            return True
+        if val2 in ("0", "n", "no", "false", "off"):
+            return False
+        if val2 in ("", "default", "-1"):
+            is_default = True
+    elif val is None:
+        # None is (maybe) accepted as default value.
+        is_default = True
+    elif isinstance(val, bool):
+        # For convenience, also accept that the value is already a boolean.
+        return val
+
+    if is_default and on_default is not UNSET_ARGUMENT:
+        # The value is explicitly set to one of the recognized default values
+        # (None, "default", "-1" or "").
+        #
+        # By setting @on_default, the caller can use str_to_bool() to not only
+        # parse boolean values, but ternary values.
+        return on_default
+
+    if on_error is not UNSET_ARGUMENT:
+        # On failure, we return the fallback value.
+        return on_error
+
+    raise ValueError(f"Value {val} is not a boolean")
 
 
 def getPortID(port):
