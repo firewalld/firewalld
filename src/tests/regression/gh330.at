@@ -1,7 +1,7 @@
 FWD_START_TEST([ipset cleanup on reload/stop])
 AT_KEYWORDS(ipset reload gh330 rhbz1682913 rhbz1790948 rhbz1809225)
 
-AT_CHECK([sed -i 's/^FlushAllOnReload.*/FlushAllOnReload=yes/' ./firewalld.conf])
+AT_CHECK([sed -i 's/^FlushAllOnReload=.*/FlushAllOnReload=yes/' ./firewalld.conf])
 FWD_CHECK([-q --permanent --new-ipset foobar --type hash:ip])
 FWD_CHECK([-q --permanent --ipset foobar --add-entry 1.2.3.4])
 FWD_RELOAD
@@ -27,7 +27,7 @@ dnl make sure reload removed ipset from system
 IPSET_LIST_SET([foobar], 1, [ignore], [ignore])
 NFT_LIST_SET([foobar], 1, [ignore], [ignore])
 
-AT_CHECK([sed -i 's/^FlushAllOnReload.*/FlushAllOnReload=no/' ./firewalld.conf])
+AT_CHECK([sed -i 's/^FlushAllOnReload=.*/FlushAllOnReload=no/' ./firewalld.conf])
 FWD_CHECK([-q --permanent --new-ipset foobar --type hash:ip])
 FWD_CHECK([-q --permanent --ipset foobar --add-entry 1.2.3.4])
 FWD_RELOAD
@@ -117,7 +117,7 @@ NFT_LIST_SET([foobar], 0, [dnl
 FWD_CHECK([-q --permanent --delete-ipset foobar])
 
 dnl do all again, but with CleanupOnExit=no and stop
-AT_CHECK([sed -i 's/^CleanupOnExit.*/CleanupOnExit=no/' ./firewalld.conf])
+AT_CHECK([sed -i 's/^CleanupOnExit=.*/CleanupOnExit=no/' ./firewalld.conf])
 FWD_CHECK([-q --permanent --new-ipset foobar --type hash:ip])
 FWD_CHECK([-q --permanent --ipset foobar --add-entry 1.2.3.4])
 FWD_RESTART

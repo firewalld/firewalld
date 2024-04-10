@@ -17,7 +17,7 @@ NS_CHECK([iptables-save | wc -l], 0, [dnl
 dnl --------------------------
 dnl --------------------------
 
-AT_CHECK([sed -i 's/^CleanupOnExit.*/CleanupOnExit=yes/' ./firewalld.conf])
+AT_CHECK([sed -i 's/^CleanupOnExit=.*/CleanupOnExit=yes/' ./firewalld.conf])
 FWD_RELOAD()
 
 check_rule_count()
@@ -29,7 +29,7 @@ FWD_RELOAD()
 check_rule_count()
 
 dnl Now do it again, but with CleanupOnExit=no
-AT_CHECK([sed -i 's/^CleanupOnExit.*/CleanupOnExit=no/' ./firewalld.conf])
+AT_CHECK([sed -i 's/^CleanupOnExit=.*/CleanupOnExit=no/' ./firewalld.conf])
 FWD_RELOAD()
 
 check_rule_count()

@@ -10,6 +10,7 @@ import sys
 import copy
 import time
 import traceback
+import firewall.core.io.firewalld_conf
 from typing import Dict, List
 from firewall import config
 from firewall import functions
@@ -99,23 +100,27 @@ class Firewall:
     def __init_vars(self):
         self._state = "INIT"
         self._panic = False
-        self._default_zone = config.FALLBACK_ZONE
         self._default_zone_interfaces = []
         self._nm_assigned_interfaces = []
         self._module_refcount = {}
         self._marks = []
         # fallback settings will be overloaded by firewalld.conf
-        self.cleanup_on_exit = config.FALLBACK_CLEANUP_ON_EXIT
-        self.cleanup_modules_on_exit = config.FALLBACK_CLEANUP_MODULES_ON_EXIT
-        self.ipv6_rpfilter_enabled = config.FALLBACK_IPV6_RPFILTER
-        self._individual_calls = config.FALLBACK_INDIVIDUAL_CALLS
-        self._log_denied = config.FALLBACK_LOG_DENIED
-        self._firewall_backend = config.FALLBACK_FIREWALL_BACKEND
-        self._flush_all_on_reload = config.FALLBACK_FLUSH_ALL_ON_RELOAD
-        self._rfc3964_ipv4 = config.FALLBACK_RFC3964_IPV4
-        self._allow_zone_drifting = config.FALLBACK_ALLOW_ZONE_DRIFTING
-        self._nftables_flowtable = config.FALLBACK_NFTABLES_FLOWTABLE
-        self._nftables_counters = config.FALLBACK_NFTABLES_COUNTERS
+        valid_keys = firewall.core.io.firewalld_conf.valid_keys
+
+        self._default_zone = valid_keys["DefaultZone"].default
+        self.cleanup_on_exit = valid_keys["CleanupOnExit"].default_as(bool)
+        self.cleanup_modules_on_exit = valid_keys["CleanupModulesOnExit"].default_as(
+            bool
+        )
+        self.ipv6_rpfilter_enabled = valid_keys["IPv6_rpfilter"].default_as(bool)
+        self._individual_calls = valid_keys["IndividualCalls"].default_as(bool)
+        self._log_denied = valid_keys["LogDenied"].default
+        self._log_denied_group = valid_keys["LogDeniedGroup"].default_as(int)
+        self._firewall_backend = valid_keys["FirewallBackend"].default
+        self._flush_all_on_reload = valid_keys["FlushAllOnReload"].default_as(bool)
+        self._rfc3964_ipv4 = valid_keys["RFC3964_IPv4"].default_as(bool)
+        self._nftables_flowtable = valid_keys["NftablesFlowtable"].default
+        self._nftables_counters = valid_keys["NftablesCounters"].default_as(bool)
 
         if self._offline:
             self.ip4tables_enabled = False
@@ -387,90 +392,61 @@ class Firewall:
             log.warning(msg)
             log.warning("Using fallback firewalld configuration settings.")
         else:
-            if self._firewalld_conf.get("DefaultZone"):
-                self._default_zone = self._firewalld_conf.get("DefaultZone")
+            self._default_zone = self._firewalld_conf.get("DefaultZone")
 
-            if self._firewalld_conf.get("CleanupOnExit"):
-                value = self._firewalld_conf.get("CleanupOnExit")
-                if value is not None and value.lower() in ["no", "false"]:
-                    self.cleanup_on_exit = False
-                log.debug1("CleanupOnExit is set to '%s'", self.cleanup_on_exit)
+            self.cleanup_on_exit = self._firewalld_conf.get("CleanupOnExit", bool)
+            log.debug1("CleanupOnExit is set to '%s'", self.cleanup_on_exit)
 
-            if self._firewalld_conf.get("CleanupModulesOnExit"):
-                value = self._firewalld_conf.get("CleanupModulesOnExit")
-                if value is not None and value.lower() in ["yes", "true"]:
-                    self.cleanup_modules_on_exit = True
-                log.debug1(
-                    "CleanupModulesOnExit is set to '%s'", self.cleanup_modules_on_exit
-                )
+            self.cleanup_modules_on_exit = self._firewalld_conf.get(
+                "CleanupModulesOnExit", bool
+            )
+            log.debug1(
+                "CleanupModulesOnExit is set to '%s'", self.cleanup_modules_on_exit
+            )
 
-            if self._firewalld_conf.get("Lockdown"):
-                value = self._firewalld_conf.get("Lockdown")
-                if value is not None and value.lower() in ["yes", "true"]:
-                    log.debug1("Lockdown is enabled")
-                    try:
-                        self.policies.enable_lockdown()
-                    except FirewallError:
-                        # already enabled, this is probably reload
-                        pass
+            if self._firewalld_conf.get("Lockdown", bool):
+                log.debug1("Lockdown is enabled")
+                try:
+                    self.policies.enable_lockdown()
+                except FirewallError:
+                    # already enabled, this is probably reload
+                    pass
 
-            if self._firewalld_conf.get("IPv6_rpfilter"):
-                value = self._firewalld_conf.get("IPv6_rpfilter")
-                if value is not None:
-                    if value.lower() in ["no", "false"]:
-                        self.ipv6_rpfilter_enabled = False
-                    if value.lower() in ["yes", "true"]:
-                        self.ipv6_rpfilter_enabled = True
-            if self.ipv6_rpfilter_enabled:
-                log.debug1("IPv6 rpfilter is enabled")
-            else:
-                log.debug1("IPV6 rpfilter is disabled")
+            self.ipv6_rpfilter_enabled = self._firewalld_conf.get("IPv6_rpfilter", bool)
+            log.debug1(
+                "IPv6 rpfilter is {'enabled' if self.ipv6_rpfilter_enabled else 'disalbed'}"
+            )
 
-            if self._firewalld_conf.get("IndividualCalls"):
-                value = self._firewalld_conf.get("IndividualCalls")
-                if value is not None and value.lower() in ["yes", "true"]:
-                    log.debug1("IndividualCalls is enabled")
-                    self._individual_calls = True
+            self._individual_calls = self._firewalld_conf.get("IndividualCalls", bool)
+            if self._individual_calls:
+                log.debug1("IndividualCalls is enabled")
 
-            if self._firewalld_conf.get("LogDenied"):
-                value = self._firewalld_conf.get("LogDenied")
-                if value is None or value.lower() == "no":
-                    self._log_denied = "off"
-                else:
-                    self._log_denied = value.lower()
-                    log.debug1("LogDenied is set to '%s'", self._log_denied)
+            self._log_denied = self._firewalld_conf.get("LogDenied")
+            self._log_denied_group = self._firewalld_conf.get("LogDeniedGroup", int)
+            log.debug1(
+                "LogDenied is set to '%s'%s",
+                self._log_denied,
+                f" (LogDeniedGroup {self._log_denied_group})"
+                if self._log_denied_group != -1
+                else "",
+            )
 
-            if self._firewalld_conf.get("FirewallBackend"):
-                self._firewall_backend = self._firewalld_conf.get("FirewallBackend")
-                log.debug1("FirewallBackend is set to '%s'", self._firewall_backend)
+            self._firewall_backend = self._firewalld_conf.get("FirewallBackend")
+            log.debug1("FirewallBackend is set to '%s'", self._firewall_backend)
 
-            if self._firewalld_conf.get("FlushAllOnReload"):
-                value = self._firewalld_conf.get("FlushAllOnReload")
-                if value.lower() in ["no", "false"]:
-                    self._flush_all_on_reload = False
-                else:
-                    self._flush_all_on_reload = True
-                log.debug1("FlushAllOnReload is set to '%s'", self._flush_all_on_reload)
+            self._flush_all_on_reload = self._firewalld_conf.get(
+                "FlushAllOnReload", bool
+            )
+            log.debug1("FlushAllOnReload is set to '%s'", self._flush_all_on_reload)
 
-            if self._firewalld_conf.get("RFC3964_IPv4"):
-                value = self._firewalld_conf.get("RFC3964_IPv4")
-                if value.lower() in ["no", "false"]:
-                    self._rfc3964_ipv4 = False
-                else:
-                    self._rfc3964_ipv4 = True
-                log.debug1("RFC3964_IPv4 is set to '%s'", self._rfc3964_ipv4)
+            self._rfc3964_ipv4 = self._firewalld_conf.get("RFC3964_IPv4", bool)
+            log.debug1("RFC3964_IPv4 is set to '%s'", self._rfc3964_ipv4)
 
-            if self._firewalld_conf.get("NftablesFlowtable"):
-                self._nftables_flowtable = self._firewalld_conf.get("NftablesFlowtable")
-                log.debug1("NftablesFlowtable is set to '%s'", self._nftables_flowtable)
+            self._nftables_flowtable = self._firewalld_conf.get("NftablesFlowtable")
+            log.debug1("NftablesFlowtable is set to '%s'", self._nftables_flowtable)
 
-            if self._firewalld_conf.get("NftablesCounters"):
-                value = self._firewalld_conf.get("NftablesCounters")
-                if value.lower() in ["no", "false"]:
-                    self._nftables_counters = False
-                else:
-                    self._nftables_counters = True
-                log.debug1("NftablesCounters is set to '%s'", self._nftables_counters)
+            self._nftables_counters = self._firewalld_conf.get("NftablesCounters", bool)
+            log.debug1("NftablesCounters is set to '%s'", self._nftables_counters)
 
         self.config.set_firewalld_conf(copy.deepcopy(self._firewalld_conf))
 
@@ -1031,14 +1007,14 @@ class Firewall:
 
     def apply_default_rules(self, transaction):
         for backend in self.enabled_backends():
-            rules = backend.build_default_rules(self._log_denied)
+            rules = backend.build_default_rules(self.get_log_denied())
             transaction.add_rules(backend, rules)
 
         if self.is_ipv_enabled("ipv6"):
             ipv6_backend = self.get_backend_by_ipv("ipv6")
             if "raw" in ipv6_backend.get_available_tables():
                 if self.ipv6_rpfilter_enabled:
-                    rules = ipv6_backend.build_rpfilter_rules(self._log_denied)
+                    rules = ipv6_backend.build_rpfilter_rules(self.get_log_denied())
                     transaction.add_rules(ipv6_backend, rules)
 
         if self.is_ipv_enabled("ipv6") and self._rfc3964_ipv4:
@@ -1089,7 +1065,7 @@ class Firewall:
             log.debug1(
                 "Setting policy to '%s'%s",
                 policy,
-                f" (ReloadPolicy={firewalld_conf._unparse_reload_policy(policy_details)})"
+                f" (ReloadPolicy={firewall.core.io.firewalld_conf._unparse_reload_policy(policy_details)})"
                 if policy == "DROP"
                 else "",
             )
@@ -1113,7 +1089,7 @@ class Firewall:
         if not self.is_backend_enabled(backend_name):
             return ""
 
-        return backend.set_rule(rule, self._log_denied)
+        return backend.set_rule(rule, self.get_log_denied())
 
     def rules(self, backend_name, rules):
         _rules = list(filter(None, rules))
@@ -1137,21 +1113,21 @@ class Firewall:
         ):
             for i, rule in enumerate(_rules):
                 try:
-                    backend.set_rule(rule, self._log_denied)
+                    backend.set_rule(rule, self.get_log_denied())
                 except Exception as msg:
                     log.debug1(traceback.format_exc())
                     log.error(msg)
                     for rrule in reversed(_rules[:i]):
                         try:
                             backend.set_rule(
-                                backend.reverse_rule(rrule), self._log_denied
+                                backend.reverse_rule(rrule), self.get_log_denied()
                             )
                         except Exception:
                             # ignore errors here
                             pass
                     raise msg
         else:
-            backend.set_rules(_rules, self._log_denied)
+            backend.set_rules(_rules, self.get_log_denied())
 
     # check functions
 
@@ -1245,7 +1221,7 @@ class Firewall:
             _ipset_objs.append(self.ipset.get_ipset(_name))
 
         if not _panic:
-            reload_policy = firewalld_conf._parse_reload_policy(
+            reload_policy = firewall.core.io.firewalld_conf._parse_reload_policy(
                 self._firewalld_conf.get("ReloadPolicy")
             )
             self.set_policy("DROP", policy_details=reload_policy)
@@ -1342,17 +1318,17 @@ class Firewall:
                 for rule in self._set_policy_build_rules(
                     self.nftables_backend, "ACCEPT"
                 ):
-                    self.nftables_backend.set_rule(rule, self._log_denied)
+                    self.nftables_backend.set_rule(rule, self.get_log_denied())
             else:
                 for rule in self._set_policy_build_rules(
                     self.ip4tables_backend, "ACCEPT"
                 ):
-                    self.ip4tables_backend.set_rule(rule, self._log_denied)
+                    self.ip4tables_backend.set_rule(rule, self.get_log_denied())
                 if self.ip6tables_enabled:
                     for rule in self._set_policy_build_rules(
                         self.ip6tables_backend, "ACCEPT"
                     ):
-                        self.ip6tables_backend.set_rule(rule, self._log_denied)
+                        self.ip6tables_backend.set_rule(rule, self.get_log_denied())
 
         if start_exception:
             self._state = "FAILED"
@@ -1392,23 +1368,29 @@ class Firewall:
 
     # LOG DENIED
 
+    def get_log_denied_group(self):
+        return self._log_denied_group
+
     def get_log_denied(self):
         return self._log_denied
 
     def set_log_denied(self, value):
-        if value not in config.LOG_DENIED_VALUES:
+        valid_key = firewall.core.io.firewalld_conf.valid_keys["LogDenied"]
+        try:
+            value = valid_key.normalize(value, log_warn=False)
+        except FirewallError:
             raise FirewallError(
                 errors.INVALID_VALUE,
-                "'%s', choose from '%s'"
-                % (value, "','".join(config.LOG_DENIED_VALUES)),
+                "'%s', choose from '%s'" % (value, "','".join(valid_key._enum_values)),
             )
 
-        if value != self.get_log_denied():
-            self._log_denied = value
-            self._firewalld_conf.set("LogDenied", value)
-            self._firewalld_conf.write()
-        else:
+        if value == self.get_log_denied():
             raise FirewallError(errors.ALREADY_SET, value)
+
+        v = self._firewalld_conf.set("LogDenied", value)
+        self._firewalld_conf.write()
+        self._log_denied = v
+        return v
 
     # DEFAULT ZONE
 

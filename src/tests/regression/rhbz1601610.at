@@ -86,7 +86,7 @@ Members:
 ])
 
 dnl rhbz 1644834, again with IndividualCalls=yes
-AT_CHECK([sed -i 's/^IndividualCalls.*/IndividualCalls=yes/' ./firewalld.conf])
+AT_CHECK([sed -i 's/^IndividualCalls=.*/IndividualCalls=yes/' ./firewalld.conf])
 FWD_RELOAD
 NFT_LIST_SET([foobar], 0, [dnl
 table inet firewalld {

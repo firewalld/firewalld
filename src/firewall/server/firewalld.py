@@ -1209,8 +1209,8 @@ class FirewallD(DbusServiceObject):
         value = dbus_to_python(value, str)
         log.debug1("setLogDenied('%s')" % value)
         self.accessCheck(sender)
-        self.fw.set_log_denied(value)
-        self.LogDeniedChanged(value)
+        v = self.fw.set_log_denied(value)
+        self.LogDeniedChanged(v)
         # must reload the firewall as well
         self.fw.reload()
         self.config.reload()

@@ -9,53 +9,376 @@ import os.path
 import io
 import tempfile
 import shutil
+import dbus
 
+import firewall.errors
+import firewall.functions
 from firewall import config
 from firewall.core.logger import log
 
+
+def _parse_reload_policy(value):
+    valid = True
+    result = {
+        "INPUT": "DROP",
+        "FORWARD": "DROP",
+        "OUTPUT": "DROP",
+    }
+    if value:
+        value = value.strip()
+        v = value.upper()
+        if v in ("ACCEPT", "REJECT", "DROP"):
+            for k in result:
+                result[k] = v
+        else:
+            for a in value.replace(";", ",").split(","):
+                a = a.strip()
+                if not a:
+                    continue
+                a2 = a.replace("=", ":").split(":", 2)
+                if len(a2) != 2:
+                    valid = False
+                    continue
+                k = a2[0].strip().upper()
+                if k not in result:
+                    valid = False
+                    continue
+                v = a2[1].strip().upper()
+                if v not in ("ACCEPT", "REJECT", "DROP"):
+                    valid = False
+                    continue
+                result[k] = v
+
+    if not valid:
+        raise ValueError("Invalid ReloadPolicy")
+
+    return result
+
+
+def _unparse_reload_policy(value):
+    return ",".join(f"{k}:{v}" for k, v in value.items())
+
+
+def _normalize_reload_policy(value):
+    return _unparse_reload_policy(_parse_reload_policy(value))
+
+
+def _validate_bool(value, default):
+    valid = True
+    try:
+        v = firewall.functions.str_to_bool(value, on_default=None)
+    except ValueError:
+        valid = False
+        v = None
+
+    if v is None:
+        v = firewall.functions.str_to_bool(default)
+
+    return ("yes" if v else "no"), valid
+
+
+def _validate_enum(value, enum_values, default):
+
+    if value is None:
+        return default, True
+
+    # normalize upper case values to lower-case
+    value = value.lower()
+
+    # Enums don't have whitespace. Strip it.
+    value = value.strip()
+
+    try:
+        idx = enum_values.index(value)
+    except ValueError:
+        return default, False
+
+    return enum_values[idx], True
+
+
+class KeyType:
+    def __init__(
+        self,
+        key,
+        key_type,
+        default,
+        *,
+        is_deprecated=False,
+        dbus_mode="read",
+        dbus_type=dbus.String,
+        dbus_ignore_set=False,
+        enum_values=None,
+        check=None,
+    ):
+        self.key = key
+        self.key_type = key_type
+        self._default = default
+        self.is_deprecated = is_deprecated
+        self.dbus_ignore_set = dbus_ignore_set
+        self.dbus_mode = dbus_mode
+        self.dbus_type = dbus_type
+        self._enum_values = tuple(enum_values) if enum_values is not None else None
+        self._check = check
+
+    def get_as(self, value, as_type):
+        if as_type in (bool, int):
+            if self.key_type is not as_type:
+                raise ValueError(f"Cannot request {self.key} as {as_type}")
+            if as_type is bool:
+                return firewall.functions.str_to_bool(value)
+            return int(value)
+        raise ValueError(
+            f'get_as() for "{self.key}" does not support requesting as {as_type}'
+        )
+
+    @property
+    def default(self):
+        if self.key_type is bool:
+            v = firewall.functions.str_to_bool(self._default)
+            return "yes" if v else "no"
+        if self.key_type is int:
+            v = int(self._default)
+            return str(v)
+        return str(self._default)
+
+    def default_as(self, as_type):
+        if (
+            as_type in (bool, int)
+            and self.key_type is as_type
+            and type(self._default) is as_type
+        ):
+            # Optimize common case. We don't need to first convert to string
+            # and parse.
+            return self._default
+        return self.get_as(self.default, as_type)
+
+    def _error_invalid_value(self, value):
+        return firewall.errors.FirewallError(
+            firewall.errors.INVALID_VALUE,
+            "'%s' for %s" % (value, self.key),
+        )
+
+    def normalize(self, value, strict=True, log_warn=True):
+
+        if value is None and strict:
+            raise self._error_invalid_value(value)
+
+        if self.key_type is bool:
+            v, valid = _validate_bool(value, self._default)
+            if not valid:
+                if strict:
+                    raise self._error_invalid_value(value)
+                if log_warn:
+                    log.warning(
+                        f"{self.key} '{value}' is not a valid boolean, using default value '{v}'"
+                    )
+            return v
+        if self.key_type is str:
+            if value and isinstance(value, str):
+                v = value.strip()
+                if v:
+                    return v
+            if strict:
+                raise self._error_invalid_value(value)
+            v = self.default
+            assert v and isinstance(v, str)
+            if value is not None:
+                if log_warn:
+                    log.warning(f"{self.key} is empty, using default value '{v}'")
+            return v
+        if self.key_type is int:
+            try:
+                v = int(value)
+                if self._check is not None and not self._check(v):
+                    raise ValueError(f"check failed for {v}")
+            except (ValueError, TypeError):
+                if strict:
+                    raise self._error_invalid_value(value)
+                v = int(self._default)
+                if value is not None:
+                    if log_warn:
+                        log.warning(
+                            f"MinimalMark '{value}' is not valid, using default value '{v}'",
+                        )
+            return str(v)
+        if self.key_type is _validate_enum:
+            v, valid = _validate_enum(value, self._enum_values, self._default)
+            if not valid:
+                if strict:
+                    raise self._error_invalid_value(value)
+                if log_warn:
+                    log.warning(
+                        f"{self.key} '{value}' is invalid, using default value '{v}'"
+                    )
+            assert v
+            return v
+        if self.key_type in (_normalize_reload_policy,):
+            try:
+                v = self.key_type(value)
+            except ValueError:
+                v = self.key_type(self.default)
+                if log_warn:
+                    log.warning(
+                        f"{self.key} '{value}' is not valid, using default value '{v}'"
+                    )
+            return value
+
+        raise firewall.errors.BugError()
+
+
 valid_keys = [
-    "DefaultZone",
-    "MinimalMark",
-    "CleanupOnExit",
-    "CleanupModulesOnExit",
-    "Lockdown",
-    "IPv6_rpfilter",
-    "IndividualCalls",
-    "LogDenied",
-    "AutomaticHelpers",
-    "FirewallBackend",
-    "FlushAllOnReload",
-    "ReloadPolicy",
-    "RFC3964_IPv4",
-    "AllowZoneDrifting",
-    "NftablesFlowtable",
-    "NftablesCounters",
+    KeyType(
+        "DefaultZone",
+        key_type=str,
+        default=config.FALLBACK_ZONE,
+    ),
+    KeyType(
+        "MinimalMark",
+        key_type=int,
+        default=config.FALLBACK_MINIMAL_MARK,
+        is_deprecated=True,
+        dbus_ignore_set=True,
+        dbus_mode="readwrite",
+        dbus_type=dbus.Int32,
+    ),
+    KeyType(
+        "CleanupOnExit",
+        key_type=bool,
+        default=config.FALLBACK_CLEANUP_ON_EXIT,
+        dbus_mode="readwrite",
+    ),
+    KeyType(
+        "CleanupModulesOnExit",
+        key_type=bool,
+        default=config.FALLBACK_CLEANUP_MODULES_ON_EXIT,
+        dbus_mode="readwrite",
+    ),
+    KeyType(
+        "Lockdown",
+        key_type=bool,
+        default=config.FALLBACK_LOCKDOWN,
+        dbus_mode="readwrite",
+    ),
+    KeyType(
+        "IPv6_rpfilter",
+        key_type=bool,
+        default=config.FALLBACK_IPV6_RPFILTER,
+        dbus_mode="readwrite",
+    ),
+    KeyType(
+        "IndividualCalls",
+        key_type=bool,
+        default=config.FALLBACK_INDIVIDUAL_CALLS,
+        dbus_mode="readwrite",
+    ),
+    KeyType(
+        "LogDenied",
+        key_type=_validate_enum,
+        default=config.FALLBACK_LOG_DENIED,
+        enum_values=config.LOG_DENIED_VALUES,
+        dbus_mode="readwrite",
+    ),
+    KeyType(
+        "LogDeniedGroup",
+        key_type=int,
+        default=-1,
+        check=lambda v: (v >= -1 and v <= 0xFFFF),
+        dbus_type=dbus.Int32,
+        dbus_mode="readwrite",
+    ),
+    KeyType(
+        "AutomaticHelpers",
+        key_type=_validate_enum,
+        default=config.FALLBACK_AUTOMATIC_HELPERS,
+        enum_values=config.AUTOMATIC_HELPERS_VALUES,
+        is_deprecated=True,
+        dbus_ignore_set=True,
+        dbus_mode="readwrite",
+    ),
+    KeyType(
+        "FirewallBackend",
+        key_type=_validate_enum,
+        default=config.FALLBACK_FIREWALL_BACKEND,
+        enum_values=config.FIREWALL_BACKEND_VALUES,
+        dbus_mode="readwrite",
+    ),
+    KeyType(
+        "FlushAllOnReload",
+        key_type=bool,
+        default=config.FALLBACK_FLUSH_ALL_ON_RELOAD,
+        dbus_mode="readwrite",
+    ),
+    KeyType(
+        "ReloadPolicy",
+        key_type=_normalize_reload_policy,
+        default=config.FALLBACK_RELOAD_POLICY,
+    ),
+    KeyType(
+        "RFC3964_IPv4",
+        key_type=bool,
+        default=config.FALLBACK_RFC3964_IPV4,
+        dbus_mode="readwrite",
+    ),
+    KeyType(
+        "AllowZoneDrifting",
+        key_type=bool,
+        default=config.FALLBACK_ALLOW_ZONE_DRIFTING,
+        is_deprecated=True,
+        dbus_ignore_set=True,
+        dbus_mode="readwrite",
+    ),
+    KeyType(
+        "NftablesFlowtable",
+        key_type=str,
+        default=config.FALLBACK_NFTABLES_FLOWTABLE,
+        dbus_mode="readwrite",
+    ),
+    KeyType(
+        "NftablesCounters",
+        key_type=bool,
+        default=config.FALLBACK_NFTABLES_COUNTERS,
+        dbus_mode="readwrite",
+    ),
 ]
+
+valid_keys = {t.key: t for t in valid_keys}
 
 
 class firewalld_conf:
     def __init__(self, filename):
         self._config = {}
-        self._deleted = []
         self.filename = filename
         self.clear()
 
     def clear(self):
         self._config = {}
-        self._deleted = []
 
     def cleanup(self):
         self._config.clear()
-        self._deleted = []
 
-    def get(self, key):
-        return self._config.get(key.strip())
+    def get(self, key, as_type=None):
+        v = self._config.get(key)
+        if as_type is None:
+            return v
+        keytype = valid_keys[key]
+        return keytype.get_as(v, as_type)
 
-    def set(self, key, value):
-        _key = key.strip()
-        self._config[_key] = value.strip()
-        if _key in self._deleted:
-            self._deleted.remove(_key)
+    def set(self, key, value, strict=True, set_default_on_failure=False):
+        keytype = valid_keys[key]
+
+        try:
+            value2 = keytype.normalize(value, strict=True, log_warn=False)
+        except firewall.errors.FirewallError:
+            if strict:
+                raise
+            if not set_default_on_failure:
+                # On error, we do nothing. Otherwise, proceed and reset the
+                # default value.
+                return None
+            value2 = keytype.normalize(keytype.default, strict=False, log_warn=False)
+
+        self._config[key] = value2
+        return value2
 
     def __str__(self):
         s = ""
@@ -66,31 +389,9 @@ class firewalld_conf:
         return s
 
     def set_defaults(self):
-        self.set("DefaultZone", config.FALLBACK_ZONE)
-        self.set("MinimalMark", str(config.FALLBACK_MINIMAL_MARK))
-        self.set("CleanupOnExit", "yes" if config.FALLBACK_CLEANUP_ON_EXIT else "no")
-        self.set(
-            "CleanupModulesOnExit",
-            "yes" if config.FALLBACK_CLEANUP_MODULES_ON_EXIT else "no",
-        )
-        self.set("Lockdown", "yes" if config.FALLBACK_LOCKDOWN else "no")
-        self.set("IPv6_rpfilter", "yes" if config.FALLBACK_IPV6_RPFILTER else "no")
-        self.set("IndividualCalls", "yes" if config.FALLBACK_INDIVIDUAL_CALLS else "no")
-        self.set("LogDenied", config.FALLBACK_LOG_DENIED)
-        self.set("AutomaticHelpers", config.FALLBACK_AUTOMATIC_HELPERS)
-        self.set("FirewallBackend", config.FALLBACK_FIREWALL_BACKEND)
-        self.set(
-            "FlushAllOnReload", "yes" if config.FALLBACK_FLUSH_ALL_ON_RELOAD else "no"
-        )
-        self.set("ReloadPolicy", config.FALLBACK_RELOAD_POLICY)
-        self.set("RFC3964_IPv4", "yes" if config.FALLBACK_RFC3964_IPV4 else "no")
-        self.set(
-            "AllowZoneDrifting", "yes" if config.FALLBACK_ALLOW_ZONE_DRIFTING else "no"
-        )
-        self.set("NftablesFlowtable", config.FALLBACK_NFTABLES_FLOWTABLE)
-        self.set(
-            "NftablesCounters", "yes" if config.FALLBACK_NFTABLES_COUNTERS else "no"
-        )
+        for keytype in valid_keys.values():
+            self.set(keytype.key, keytype.default)
+        self._normalize()
 
     # load self.filename
     def read(self):
@@ -125,163 +426,14 @@ class firewalld_conf:
             self._config[pair[0]] = pair[1]
         f.close()
 
-        # check default zone
-        if not self.get("DefaultZone"):
-            log.error(
-                "DefaultZone is not set, using default value '%s'", config.FALLBACK_ZONE
-            )
-            self.set("DefaultZone", str(config.FALLBACK_ZONE))
+        self._normalize()
 
-        # check minimal mark
-        value = self.get("MinimalMark")
-        try:
-            int(value)
-        except (ValueError, TypeError):
-            if value is not None:
-                log.warning(
-                    "MinimalMark '%s' is not valid, using default " "value '%d'",
-                    value if value else "",
-                    config.FALLBACK_MINIMAL_MARK,
-                )
-            self.set("MinimalMark", str(config.FALLBACK_MINIMAL_MARK))
-
-        # check cleanup on exit
-        value = self.get("CleanupOnExit")
-        if not value or value.lower() not in ["no", "false", "yes", "true"]:
-            if value is not None:
-                log.warning(
-                    "CleanupOnExit '%s' is not valid, using default " "value %s",
-                    value if value else "",
-                    config.FALLBACK_CLEANUP_ON_EXIT,
-                )
-            self.set(
-                "CleanupOnExit", "yes" if config.FALLBACK_CLEANUP_ON_EXIT else "no"
-            )
-
-        # check module cleanup on exit
-        value = self.get("CleanupModulesOnExit")
-        if not value or value.lower() not in ["no", "false", "yes", "true"]:
-            if value is not None:
-                log.warning(
-                    "CleanupModulesOnExit '%s' is not valid, using default " "value %s",
-                    value if value else "",
-                    config.FALLBACK_CLEANUP_MODULES_ON_EXIT,
-                )
-            self.set(
-                "CleanupModulesOnExit",
-                "yes" if config.FALLBACK_CLEANUP_MODULES_ON_EXIT else "no",
-            )
-
-        # check lockdown
-        value = self.get("Lockdown")
-        if not value or value.lower() not in ["yes", "true", "no", "false"]:
-            if value is not None:
-                log.warning(
-                    "Lockdown '%s' is not valid, using default " "value %s",
-                    value if value else "",
-                    config.FALLBACK_LOCKDOWN,
-                )
-            self.set("Lockdown", "yes" if config.FALLBACK_LOCKDOWN else "no")
-
-        # check ipv6_rpfilter
-        value = self.get("IPv6_rpfilter")
-        if not value or value.lower() not in ["yes", "true", "no", "false"]:
-            if value is not None:
-                log.warning(
-                    "IPv6_rpfilter '%s' is not valid, using default " "value %s",
-                    value if value else "",
-                    config.FALLBACK_IPV6_RPFILTER,
-                )
-            self.set("IPv6_rpfilter", "yes" if config.FALLBACK_IPV6_RPFILTER else "no")
-
-        # check individual calls
-        value = self.get("IndividualCalls")
-        if not value or value.lower() not in ["yes", "true", "no", "false"]:
-            if value is not None:
-                log.warning(
-                    "IndividualCalls '%s' is not valid, using default " "value %s",
-                    value if value else "",
-                    config.FALLBACK_INDIVIDUAL_CALLS,
-                )
-            self.set(
-                "IndividualCalls", "yes" if config.FALLBACK_INDIVIDUAL_CALLS else "no"
-            )
-
-        # check log denied
-        value = self.get("LogDenied")
-        if not value or value not in config.LOG_DENIED_VALUES:
-            if value is not None:
-                log.warning(
-                    "LogDenied '%s' is invalid, using default value '%s'",
-                    value,
-                    config.FALLBACK_LOG_DENIED,
-                )
-            self.set("LogDenied", str(config.FALLBACK_LOG_DENIED))
-
-        # check automatic helpers
-        value = self.get("AutomaticHelpers")
-        if not value or value.lower() not in config.AUTOMATIC_HELPERS_VALUES:
-            if value is not None:
-                log.warning(
-                    "AutomaticHelpers '%s' is not valid, using default " "value %s",
-                    value if value else "",
-                    config.FALLBACK_AUTOMATIC_HELPERS,
-                )
-            self.set("AutomaticHelpers", str(config.FALLBACK_AUTOMATIC_HELPERS))
-
-        value = self.get("FirewallBackend")
-        if not value or value.lower() not in config.FIREWALL_BACKEND_VALUES:
-            if value is not None:
-                log.warning(
-                    "FirewallBackend '%s' is not valid, using default " "value %s",
-                    value if value else "",
-                    config.FALLBACK_FIREWALL_BACKEND,
-                )
-            self.set("FirewallBackend", str(config.FALLBACK_FIREWALL_BACKEND))
-
-        value = self.get("FlushAllOnReload")
-        if not value or value.lower() not in ["yes", "true", "no", "false"]:
-            if value is not None:
-                log.warning(
-                    "FlushAllOnReload '%s' is not valid, using default " "value %s",
-                    value if value else "",
-                    config.FALLBACK_FLUSH_ALL_ON_RELOAD,
-                )
-            self.set("FlushAllOnReload", str(config.FALLBACK_FLUSH_ALL_ON_RELOAD))
-
-        value = self.get("ReloadPolicy")
-        try:
-            value = self._parse_reload_policy(value)
-        except ValueError:
-            log.warning(
-                "ReloadPolicy '%s' is not valid, using default value '%s'",
-                value,
-                config.FALLBACK_RELOAD_POLICY,
-            )
-            self.set("ReloadPolicy", config.FALLBACK_RELOAD_POLICY)
-
-        value = self.get("RFC3964_IPv4")
-        if not value or value.lower() not in ["yes", "true", "no", "false"]:
-            if value is not None:
-                log.warning(
-                    "RFC3964_IPv4 '%s' is not valid, using default " "value %s",
-                    value if value else "",
-                    config.FALLBACK_RFC3964_IPV4,
-                )
-            self.set("RFC3964_IPv4", str(config.FALLBACK_RFC3964_IPV4))
-
-        value = self.get("AllowZoneDrifting")
-        if not value or value.lower() not in ["yes", "true", "no", "false"]:
-            if value is not None:
-                log.warning(
-                    "AllowZoneDrifting '%s' is not valid, using default " "value %s",
-                    value if value else "",
-                    config.FALLBACK_ALLOW_ZONE_DRIFTING,
-                )
-            self.set(
-                "AllowZoneDrifting",
-                "yes" if config.FALLBACK_ALLOW_ZONE_DRIFTING else "no",
-            )
+    def _normalize(self):
+        for keytype in valid_keys.values():
+            value = self.get(keytype.key)
+            value2 = keytype.normalize(value, strict=False)
+            if value != value2:
+                self.set(keytype.key, value2)
 
     # save to self.filename if there are key/value changes
     def write(self):
@@ -345,8 +497,6 @@ class firewalld_conf:
                             empty = False
                             temp_file.write("%s=%s\n" % (key, self._config[key]))
                             modified = True
-                        elif key in self._deleted:
-                            modified = True
                         else:
                             empty = False
                             temp_file.write(line + "\n")
@@ -359,11 +509,8 @@ class firewalld_conf:
             for key, value in self._config.items():
                 if key in done:
                     continue
-                if key in [
-                    "MinimalMark",
-                    "AutomaticHelpers",
-                    "AllowZoneDrifting",
-                ]:  # omit deprecated from new config
+                if valid_keys[key].is_deprecated:
+                    # omit deprecated from new config
                     continue
                 if not empty:
                     temp_file.write("\n")
@@ -394,45 +541,3 @@ class firewalld_conf:
             raise IOError("Failed to create '%s': %s" % (self.filename, msg))
         else:
             os.chmod(self.filename, 0o600)
-
-    @staticmethod
-    def _parse_reload_policy(value):
-        valid = True
-        result = {
-            "INPUT": "DROP",
-            "FORWARD": "DROP",
-            "OUTPUT": "DROP",
-        }
-        if value:
-            value = value.strip()
-            v = value.upper()
-            if v in ("ACCEPT", "REJECT", "DROP"):
-                for k in result:
-                    result[k] = v
-            else:
-                for a in value.replace(";", ",").split(","):
-                    a = a.strip()
-                    if not a:
-                        continue
-                    a2 = a.replace("=", ":").split(":", 2)
-                    if len(a2) != 2:
-                        valid = False
-                        continue
-                    k = a2[0].strip().upper()
-                    if k not in result:
-                        valid = False
-                        continue
-                    v = a2[1].strip().upper()
-                    if v not in ("ACCEPT", "REJECT", "DROP"):
-                        valid = False
-                        continue
-                    result[k] = v
-
-        if not valid:
-            raise ValueError("Invalid ReloadPolicy")
-
-        return result
-
-    @staticmethod
-    def _unparse_reload_policy(value):
-        return ",".join(f"{k}:{v}" for k, v in value.items())
