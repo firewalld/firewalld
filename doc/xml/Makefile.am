@@ -19,6 +19,7 @@ man1_MANS = \
 
 man5_MANS = \
 	../man/man5/firewalld.conf.5 \
+	../man/man5/firewalld.dispatcher.5 \
 	../man/man5/firewalld.dbus.5 \
 	../man/man5/firewalld.direct.5 \
 	../man/man5/firewalld.helper.5 \

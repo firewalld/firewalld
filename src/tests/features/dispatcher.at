@@ -1,0 +1,69 @@
+IF_BACKEND_IS_DEFAULT([
+
+FWD_START_TEST([dispatcher scripts])
+AT_KEYWORDS(dispatcher gh1241)
+AT_SKIP_IF([! NS_CMD([command -v systemd-run >/dev/null 2>&1])])
+
+AT_CHECK([mkdir -p ./dispatcher.d])
+
+AT_DATA([./dispatcher.d/one], [dnl
+#!/bin/sh
+
+test "$1" != "org.fedoraproject.FirewallD1" && exit 0
+test "$2" != "Reloaded" && exit 0
+])
+AT_CHECK([echo "echo one >> \"${at_suite_dir}/${at_group_normalized}/dispatcher.output\"" >> ./dispatcher.d/one], 0, [ignore])
+AT_CHECK([chmod +x ./dispatcher.d/one])
+
+AT_DATA([./dispatcher.d/two], [dnl
+#!/bin/sh
+
+test "$1" != "org.fedoraproject.FirewallD1" && exit 0
+test "$2" != "Reloaded" && exit 0
+])
+AT_CHECK([echo "echo two >> \"${at_suite_dir}/${at_group_normalized}/dispatcher.output\"" >> ./dispatcher.d/two], 0, [ignore])
+AT_CHECK([chmod +x ./dispatcher.d/two])
+
+dnl trigger a dbus/dispatcher signal
+FWD_RELOAD()
+
+dnl The dispatchers run simultaneously, so there is no guarantee about order
+GREP([one], [${at_suite_dir}/${at_group_normalized}/dispatcher.output])
+GREP([two], [${at_suite_dir}/${at_group_normalized}/dispatcher.output])
+
+dnl ###############################
+dnl do another test on a runtime config object
+dnl ###############################
+
+AT_DATA([./dispatcher.d/three], [dnl
+#!/bin/sh
+
+test "$1" != "org.fedoraproject.FirewallD1.zone" && exit 0
+test "$2" != "ServiceAdded" && exit 0
+shift; shift
+])
+AT_CHECK([echo "echo three \$@ >> \"${at_suite_dir}/${at_group_normalized}/dispatcher.output\"" >> ./dispatcher.d/three], 0, [ignore])
+AT_CHECK([chmod +x ./dispatcher.d/three])
+
+FWD_CHECK([--zone internal --add-service https], 0, [ignore])
+GREP([three internal https 0], [${at_suite_dir}/${at_group_normalized}/dispatcher.output])
+
+dnl ###############################
+dnl do another test on a permanent config object
+dnl ###############################
+
+AT_DATA([./dispatcher.d/four], [dnl
+#!/bin/sh
+
+test "$1" != "org.fedoraproject.FirewallD1.config.zone" && exit 0
+test "$2" != "Updated" && exit 0
+shift; shift
+])
+AT_CHECK([echo "echo four \$@ >> \"${at_suite_dir}/${at_group_normalized}/dispatcher.output\"" >> ./dispatcher.d/four], 0, [ignore])
+AT_CHECK([chmod +x ./dispatcher.d/four])
+
+FWD_CHECK([--permanent --zone internal --add-service https], 0, [ignore])
+GREP([four internal], [${at_suite_dir}/${at_group_normalized}/dispatcher.output])
+
+FWD_END_TEST()
+])
