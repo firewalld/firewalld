@@ -9,7 +9,7 @@ FWD_RELOAD
 NFT_LIST_RULES([inet], [mangle_PRE_public_allow], 0, [dnl
     table inet firewalld {
         chain mangle_PRE_public_allow {
-            icmpv6 parameter-problem icmpv6 code no-route mark set mark & 0x00000086 ^ 0x00000086
+            icmpv6 parameter-problem icmpv6 code 0 mark set mark & 0x00000086 ^ 0x00000086
         }
     }
 ])
