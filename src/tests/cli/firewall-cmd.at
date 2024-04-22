@@ -5,12 +5,37 @@ m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
 FWD_START_TEST([basic options])
     AT_KEYWORDS(panic reload gh808)
 
-    FWD_CHECK([], 2, ignore, [dnl
-State: running
+    FWD_CHECK([], 0, [dnl
+ActiveZones:
+  public (default)
+ActivePolicies:
+  allow-host-ipv6
+    ingress-zones: ANY
+    egress-zones:  HOST
 
-No options specified
 usage: 'firewall-cmd --help' for usage information or see firewall-cmd(1) man page
-])
+], [])
+    FWD_CHECK([-v | sed 's/^Version: .*/Version: XXXX/'], 0, [dnl
+State: running
+Version: XXXX
+ActiveZones:
+  public (default)
+Zones:
+  block
+  dmz
+  drop
+  external
+  home
+  internal
+  trusted
+  work
+ActivePolicies:
+  allow-host-ipv6
+    ingress-zones: ANY
+    egress-zones:  HOST
+
+usage: 'firewall-cmd --help' for usage information or see firewall-cmd(1) man page
+], [])
     FWD_CHECK([-h], 0, ignore)
     FWD_CHECK([--help], 0, ignore)
     FWD_CHECK([-V], 0, ignore)
