@@ -317,6 +317,7 @@ CONFIG_FILES = \
 	services/settlers-history-collection.xml \
 	services/sips.xml \
 	services/sip.xml \
+	services/slimevr.xml \
 	services/slp.xml \
 	services/smtp-submission.xml \
 	services/smtps.xml \
