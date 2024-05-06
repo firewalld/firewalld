@@ -108,6 +108,10 @@
 	                verifies that the in ingress interface is the same interface
 	                that would be used to send a packet reply to the source. That
 	                is, ingress == egress.      
+	      - loose: Performs "loose" filtering as per RFC 3704. This check only
+	               verifies that there is a route back to the source through any
+	               interface; even if it's not the same one on which the packet
+	               arrived.
 	      - no: RPF is completely disabled.
 
 	    The rp_filter for IPv4 is controlled using sysctl.

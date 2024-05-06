@@ -409,6 +409,8 @@ class Firewall:
                         self._ipv6_rpfilter = "no"
                     elif value.lower() in ["yes", "true", "strict"]:
                         self._ipv6_rpfilter = "strict"
+                    elif value.lower() in ["loose"]:
+                        self._ipv6_rpfilter = "loose"
                 log.debug1(f"IPv6_rpfilter is set to '{self._ipv6_rpfilter}'")
 
             if self._firewalld_conf.get("IndividualCalls"):

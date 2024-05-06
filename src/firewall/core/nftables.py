@@ -2492,6 +2492,12 @@ class nftables:
 
     def build_rpfilter_rules(self, log_denied=False):
         rules = []
+
+        if self._fw._ipv6_rpfilter == "loose":
+            fib_flags = ["saddr", "mark"]
+        else:
+            fib_flags = ["saddr", "mark", "iif"]
+
         expr_fragments = [
             {
                 "match": {
@@ -2502,9 +2508,7 @@ class nftables:
             },
             {
                 "match": {
-                    "left": {
-                        "fib": {"flags": ["saddr", "iif", "mark"], "result": "oif"}
-                    },
+                    "left": {"fib": {"flags": fib_flags, "result": "oif"}},
                     "op": "==",
                     "right": False,
                 }
