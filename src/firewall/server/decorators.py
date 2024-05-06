@@ -181,7 +181,8 @@ class dbus_polkit_require_auth:
                 if type(self)._interface_polkit:
                     (result, _, _) = type(self)._interface_polkit.CheckAuthorization(
                                                                     ("system-bus-name", {"name": sender}),
-                                                                    action_id, {}, 1, "")
+                                                                    action_id, {}, 1, "",
+                                                                    timeout=60)
                     if not result:
                         raise NotAuthorizedException(action_id, "polkit")
                 # fallback to checking UID
