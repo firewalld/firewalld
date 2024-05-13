@@ -22,4 +22,20 @@ IP6TABLES_LIST_RULES([mangle], [PREROUTING], 0, [dnl
     PREROUTING_POLICIES 0 -- ::/0 ::/0
 ])
 
-FWD_END_TEST
+FWD_END_TEST()
+
+FWD_START_TEST([rpfilter - config values])
+AT_KEYWORDS(rpfilter)
+CHECK_NFTABLES_FIB()
+
+dnl Verify other/deprecated configuration values are accepted.
+dnl
+m4_foreach([VALUE], [[no], [yes], [false], [true]], [
+    AT_CHECK([sed -i 's/^IPv6_rpfilter.*/IPv6_rpfilter=VALUE/' ./firewalld.conf])
+    FWD_RELOAD()
+])
+dnl And a bogus one.
+AT_CHECK([sed -i 's/^IPv6_rpfilter.*/IPv6_rpfilter=bogus/' ./firewalld.conf])
+FWD_RELOAD()
+
+FWD_END_TEST([-e "/^WARNING: IPv6_rpfilter 'bogus' is not valid/d"])
