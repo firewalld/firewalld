@@ -787,3 +787,9 @@ m4_define([SKIP_IF_FW_IN_CONTAINER_WITH_NFTABLES], [
         SKIP_IF_FW_IN_CONTAINER
     ])
 ])
+
+m4_define([CHECK_NFTABLES_FIB], [
+    m4_if(nftables, FIREWALL_BACKEND, [
+        IF_HOST_SUPPORTS_NFT_FIB([], [AT_SKIP_IF([:])])
+    ])
+])
