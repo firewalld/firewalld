@@ -793,3 +793,12 @@ m4_define([CHECK_NFTABLES_FIB], [
         IF_HOST_SUPPORTS_NFT_FIB([], [AT_SKIP_IF([:])])
     ])
 ])
+
+m4_define([CHECK_NFTABLES_FIB_IN_FORWARD], [
+    m4_if(nftables, FIREWALL_BACKEND, [
+        NS_CHECK([nft add table inet firewalld_check])
+        NS_CHECK([nft add chain inet firewalld_check foobar { type filter hook forward priority 0 \; }])
+        AT_SKIP_IF([! NS_CMD([nft add rule inet firewalld_check foobar meta nfproto ipv6 fib saddr . mark . iif oif missing drop >/dev/null 2>&1])])
+        NS_CHECK([nft delete table inet firewalld_check])
+    ])
+])
