@@ -1,22 +1,17 @@
-FWD_START_TEST([rpfilter])
+FWD_START_TEST([rpfilter - strict])
 AT_KEYWORDS(rpfilter)
+CHECK_NFTABLES_FIB()
 
-IF_HOST_SUPPORTS_NFT_FIB([
-    NFT_LIST_RULES([inet], [filter_PREROUTING], 0, [dnl
-        table inet firewalld {
-            chain filter_PREROUTING {
-                icmpv6 type { nd-router-advert, nd-neighbor-solicit } accept
-                meta nfproto ipv6 fib saddr . mark . iif oif missing drop
-            }
+AT_CHECK([sed -i 's/^IPv6_rpfilter.*/IPv6_rpfilter=yes/' ./firewalld.conf])
+FWD_RELOAD()
+
+NFT_LIST_RULES([inet], [filter_PREROUTING], 0, [dnl
+    table inet firewalld {
+        chain filter_PREROUTING {
+            icmpv6 type { nd-router-advert, nd-neighbor-solicit } accept
+            meta nfproto ipv6 fib saddr . mark . iif oif missing drop
         }
-    ])
-], [
-    NFT_LIST_RULES([inet], [filter_PREROUTING], 0, [dnl
-        table inet firewalld {
-            chain filter_PREROUTING {
-            }
-        }
-    ])
+    }
 ])
 
 IP6TABLES_LIST_RULES([mangle], [PREROUTING], 0, [dnl
