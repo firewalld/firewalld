@@ -12,6 +12,7 @@ import shutil
 
 from firewall import config
 from firewall.core.logger import log
+from firewall import errors
 
 valid_keys = [
     "DefaultZone",
@@ -91,6 +92,18 @@ class firewalld_conf:
         self.set(
             "NftablesCounters", "yes" if config.FALLBACK_NFTABLES_COUNTERS else "no"
         )
+
+    def sanity_check(self):
+        if (
+            self.get("FirewallBackend") == "iptables"
+            and self.get("IPv6_rpfilter") == "loose-forward"
+        ):
+            raise errors.FirewallError(
+                errors.INVALID_VALUE,
+                "IPv6_rpfilter=loose-forward is incompatible "
+                "with FirewallBackend=iptables. This is a limitation "
+                "of the iptables backend.",
+            )
 
     # load self.filename
     def read(self):
@@ -275,6 +288,8 @@ class firewalld_conf:
                 "AllowZoneDrifting",
                 "yes" if config.FALLBACK_ALLOW_ZONE_DRIFTING else "no",
             )
+
+        self.sanity_check()
 
     # save to self.filename if there are key/value changes
     def write(self):
