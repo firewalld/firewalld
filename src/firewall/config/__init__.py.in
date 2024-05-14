@@ -111,7 +111,15 @@ COMMANDS = {
 LOG_DENIED_VALUES = ["all", "unicast", "broadcast", "multicast", "off"]
 AUTOMATIC_HELPERS_VALUES = ["yes", "no", "system"]
 FIREWALL_BACKEND_VALUES = ["nftables", "iptables"]
-IPV6_RPFILTER_VALUES = ["yes", "true", "no", "false", "strict", "loose"]
+IPV6_RPFILTER_VALUES = [
+    "yes",
+    "true",
+    "no",
+    "false",
+    "strict",
+    "loose",
+    "loose-forward",
+]
 
 # fallbacks: will be overloaded by firewalld.conf
 FALLBACK_ZONE = "public"

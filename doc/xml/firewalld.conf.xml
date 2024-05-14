@@ -112,6 +112,8 @@
 	               verifies that there is a route back to the source through any
 	               interface; even if it's not the same one on which the packet
 	               arrived.
+	      - loose-forward: This is almost identical to "loose", but does not perform
+	                       RPF for packets targeted to the host (INPUT).
 	      - no: RPF is completely disabled.
 
 	    The rp_filter for IPv4 is controlled using sysctl.
