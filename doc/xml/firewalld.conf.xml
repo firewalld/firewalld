@@ -102,9 +102,15 @@
 	<term><option>IPv6_rpfilter</option></term>
         <listitem>
 	  <para>
-	    If this option is enabled (it is by default), reverse path filter test on a packet for IPv6 is performed.
-	    If a reply to the packet would be sent via the same interface that the packet arrived on, the packet will match and be accepted, otherwise dropped.
-            For IPv4 the rp_filter is controlled using sysctl.
+	    Performs reverse path filtering (RPF) on IPv6 packets as per RFC 3704.
+	    Possible values:
+	      - strict: Performs "strict" filtering as per RFC 3704. This check
+	                verifies that the in ingress interface is the same interface
+	                that would be used to send a packet reply to the source. That
+	                is, ingress == egress.      
+	      - no: RPF is completely disabled.
+
+	    The rp_filter for IPv4 is controlled using sysctl.
 	  </para>
       <para>
         <emphasis role="bold">Note</emphasis>: This feature has a performance

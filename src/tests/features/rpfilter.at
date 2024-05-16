@@ -2,7 +2,7 @@ FWD_START_TEST([rpfilter - strict])
 AT_KEYWORDS(rpfilter)
 CHECK_NFTABLES_FIB()
 
-AT_CHECK([sed -i 's/^IPv6_rpfilter.*/IPv6_rpfilter=yes/' ./firewalld.conf])
+AT_CHECK([sed -i 's/^IPv6_rpfilter.*/IPv6_rpfilter=strict/' ./firewalld.conf])
 FWD_RELOAD()
 
 NFT_LIST_RULES([inet], [filter_PREROUTING], 0, [dnl
