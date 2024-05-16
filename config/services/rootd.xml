@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>rootd</short>
+  <description>The (x)rootd server was developed for the root analysis framework to serve root files. However, the server is agnostic to file types and provides POSIX-like access to any type of file.</description>
+  <port protocol="tcp" port="1094"/>
+</service>

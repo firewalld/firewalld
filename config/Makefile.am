@@ -301,6 +301,7 @@ CONFIG_FILES = \
 	services/RH-Satellite-6.xml \
 	services/RH-Satellite-6-capsule.xml \
 	services/rpc-bind.xml \
+	services/rootd.xml \
 	services/rquotad.xml \
 	services/rsh.xml \
 	services/rsyncd.xml \
