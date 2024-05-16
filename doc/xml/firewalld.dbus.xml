@@ -2545,8 +2545,12 @@
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.config.Properties.IPv6_rpfilter">
-            <term><parameter>IPv6_rpfilter</parameter> - s - (rw)</term>
-            <listitem><para>Indicates whether the reverse path filter test on a packet for IPv6 is enabled. If a reply to the packet would be sent via the same interface that the packet arrived on, the packet will match and be accepted, otherwise dropped.</para></listitem>
+            <term><parameter>IPv6_rpfilter</parameter> - b - (rw)</term>
+            <listitem><para>Deprecated. See <link linkend="FirewallD1.config.Properties.IPv6_rpfilter2">org.fedoraproject.FirewallD1.config.Properties.IPv6_rpfilter2</link>.</para></listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.Properties.IPv6_rpfilter2">
+            <term><parameter>IPv6_rpfilter2</parameter> - s - (rw)</term>
+            <listitem><para>Indicates whether the reverse path filter (RFE 3704) test on a packet for IPv6 is enabled.</para></listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.config.Properties.IndividualCalls">
             <term><parameter>IndividualCalls</parameter> - s - (ro)</term>

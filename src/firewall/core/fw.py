@@ -88,7 +88,7 @@ class Firewall:
             self._marks,
             self.cleanup_on_exit,
             self.cleanup_modules_on_exit,
-            self.ipv6_rpfilter_enabled,
+            self._ipv6_rpfilter,
             self.ipset_enabled,
             self._individual_calls,
             self._log_denied,
@@ -105,7 +105,7 @@ class Firewall:
         # fallback settings will be overloaded by firewalld.conf
         self.cleanup_on_exit = config.FALLBACK_CLEANUP_ON_EXIT
         self.cleanup_modules_on_exit = config.FALLBACK_CLEANUP_MODULES_ON_EXIT
-        self.ipv6_rpfilter_enabled = config.FALLBACK_IPV6_RPFILTER
+        self._ipv6_rpfilter = config.FALLBACK_IPV6_RPFILTER
         self._individual_calls = config.FALLBACK_INDIVIDUAL_CALLS
         self._log_denied = config.FALLBACK_LOG_DENIED
         self._firewall_backend = config.FALLBACK_FIREWALL_BACKEND
@@ -406,13 +406,10 @@ class Firewall:
                 value = self._firewalld_conf.get("IPv6_rpfilter")
                 if value is not None:
                     if value.lower() in ["no", "false"]:
-                        self.ipv6_rpfilter_enabled = False
-                    if value.lower() in ["yes", "true"]:
-                        self.ipv6_rpfilter_enabled = True
-            if self.ipv6_rpfilter_enabled:
-                log.debug1("IPv6 rpfilter is enabled")
-            else:
-                log.debug1("IPV6 rpfilter is disabled")
+                        self._ipv6_rpfilter = "no"
+                    elif value.lower() in ["yes", "true", "strict"]:
+                        self._ipv6_rpfilter = "strict"
+                log.debug1(f"IPv6_rpfilter is set to '{self._ipv6_rpfilter}'")
 
             if self._firewalld_conf.get("IndividualCalls"):
                 value = self._firewalld_conf.get("IndividualCalls")
@@ -1000,7 +997,7 @@ class Firewall:
         if self.is_ipv_enabled("ipv6"):
             ipv6_backend = self.get_backend_by_ipv("ipv6")
             if "raw" in ipv6_backend.get_available_tables():
-                if self.ipv6_rpfilter_enabled:
+                if self._ipv6_rpfilter != "no":
                     rules = ipv6_backend.build_rpfilter_rules(self._log_denied)
                     transaction.add_rules(ipv6_backend, rules)
 

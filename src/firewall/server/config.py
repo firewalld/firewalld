@@ -65,7 +65,8 @@ CONFIG_PROPERTIES = {
     "MinimalMark": ConfigPropertiesTuple("readwrite", True, True),
     "CleanupOnExit": ConfigPropertiesTuple("readwrite", False, False),
     "CleanupModulesOnExit": ConfigPropertiesTuple("readwrite", False, False),
-    "IPv6_rpfilter": ConfigPropertiesTuple("readwrite", False, False),
+    "IPv6_rpfilter": ConfigPropertiesTuple("readwrite", True, False),
+    "IPv6_rpfilter2": ConfigPropertiesTuple("readwrite", False, False),
     "Lockdown": ConfigPropertiesTuple("readwrite", True, True),
     "IndividualCalls": ConfigPropertiesTuple("readwrite", False, False),
     "LogDenied": ConfigPropertiesTuple("readwrite", False, False),
@@ -619,8 +620,13 @@ class FirewallDConfig(DbusServiceObject):
             # Deprecated and dropped.
             return dbus.String("no")
         elif prop == "IPv6_rpfilter":
+            if value is None or value != "no":
+                return dbus.String("yes")
+            else:
+                return dbus.String("no")
+        elif prop == "IPv6_rpfilter2":
             if value is None:
-                value = "yes" if config.FALLBACK_IPV6_RPFILTER else "no"
+                value = config.FALLBACK_IPV6_RPFILTER
             return dbus.String(value)
         elif prop == "IndividualCalls":
             if value is None:
@@ -756,6 +762,12 @@ class FirewallDConfig(DbusServiceObject):
                         )
                 elif property_name == "FirewallBackend":
                     if new_value not in config.FIREWALL_BACKEND_VALUES:
+                        raise FirewallError(
+                            errors.INVALID_VALUE,
+                            "'%s' for %s" % (new_value, property_name),
+                        )
+                elif property_name == "IPv6_rpfilter2":
+                    if new_value not in config.IPV6_RPFILTER_VALUES:
                         raise FirewallError(
                             errors.INVALID_VALUE,
                             "'%s' for %s" % (new_value, property_name),

@@ -74,7 +74,7 @@ class firewalld_conf:
             "CleanupModulesOnExit",
             "yes" if config.FALLBACK_CLEANUP_MODULES_ON_EXIT else "no",
         )
-        self.set("IPv6_rpfilter", "yes" if config.FALLBACK_IPV6_RPFILTER else "no")
+        self.set("IPv6_rpfilter", config.FALLBACK_IPV6_RPFILTER)
         self.set("IndividualCalls", "yes" if config.FALLBACK_INDIVIDUAL_CALLS else "no")
         self.set("LogDenied", config.FALLBACK_LOG_DENIED)
         self.set("AutomaticHelpers", config.FALLBACK_AUTOMATIC_HELPERS)
@@ -178,14 +178,14 @@ class firewalld_conf:
 
         # check ipv6_rpfilter
         value = self.get("IPv6_rpfilter")
-        if not value or value.lower() not in ["yes", "true", "no", "false"]:
+        if not value or value.lower() not in config.IPV6_RPFILTER_VALUES:
             if value is not None:
                 log.warning(
                     "IPv6_rpfilter '%s' is not valid, using default " "value %s",
                     value if value else "",
                     config.FALLBACK_IPV6_RPFILTER,
                 )
-            self.set("IPv6_rpfilter", "yes" if config.FALLBACK_IPV6_RPFILTER else "no")
+            self.set("IPv6_rpfilter", config.FALLBACK_IPV6_RPFILTER)
 
         # check individual calls
         value = self.get("IndividualCalls")

@@ -111,13 +111,14 @@ COMMANDS = {
 LOG_DENIED_VALUES = ["all", "unicast", "broadcast", "multicast", "off"]
 AUTOMATIC_HELPERS_VALUES = ["yes", "no", "system"]
 FIREWALL_BACKEND_VALUES = ["nftables", "iptables"]
+IPV6_RPFILTER_VALUES = ["yes", "true", "no", "false", "strict"]
 
 # fallbacks: will be overloaded by firewalld.conf
 FALLBACK_ZONE = "public"
 FALLBACK_MINIMAL_MARK = 100
 FALLBACK_CLEANUP_ON_EXIT = True
 FALLBACK_CLEANUP_MODULES_ON_EXIT = False
-FALLBACK_IPV6_RPFILTER = True
+FALLBACK_IPV6_RPFILTER = "strict"
 FALLBACK_INDIVIDUAL_CALLS = False
 FALLBACK_LOG_DENIED = "off"
 FALLBACK_AUTOMATIC_HELPERS = "no"

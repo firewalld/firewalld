@@ -143,7 +143,7 @@ class FirewallD(DbusServiceObject):
             return dbus.Boolean(self.fw.is_ipv_enabled("ipv6"))
 
         elif prop == "IPv6_rpfilter":
-            return dbus.Boolean(self.fw.ipv6_rpfilter_enabled)
+            return dbus.Boolean(False if self.fw._ipv6_rpfilter == "no" else True)
 
         elif prop == "IPv6ICMPTypes":
             return dbus.Array(self.fw.ipv6_supported_icmp_types, "s")
