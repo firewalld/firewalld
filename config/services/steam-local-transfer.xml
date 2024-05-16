@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>Steam Local Network Game Transfers</short>
+  <description>Local network game transfers allow for Steam users to copy existing Steam game installation and update files from one PC to another over a local area network, without having to download and install from a Steam content server on the internet. This helps you stay below your ISP monthly transfer limits and can speed up installs or updates.</description>
+  <port protocol="tcp" port="27040"/>
+  <port protocol="udp" port="27031-27036"/>
+</service>
