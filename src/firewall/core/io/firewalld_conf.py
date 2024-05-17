@@ -94,13 +94,13 @@ class firewalld_conf:
         )
 
     def sanity_check(self):
-        if (
-            self.get("FirewallBackend") == "iptables"
-            and self.get("IPv6_rpfilter") == "loose-forward"
+        if self.get("FirewallBackend") == "iptables" and self.get("IPv6_rpfilter") in (
+            "loose-forward",
+            "strict-forward",
         ):
             raise errors.FirewallError(
                 errors.INVALID_VALUE,
-                "IPv6_rpfilter=loose-forward is incompatible "
+                f"IPv6_rpfilter={self.get('IPv6_rpfilter')} is incompatible "
                 "with FirewallBackend=iptables. This is a limitation "
                 "of the iptables backend.",
             )
