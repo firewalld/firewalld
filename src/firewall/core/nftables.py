@@ -2499,6 +2499,9 @@ class nftables:
         elif self._fw._ipv6_rpfilter == "loose-forward":
             fib_flags = ["saddr", "mark"]
             rpfilter_chain = "filter_FORWARD"
+        elif self._fw._ipv6_rpfilter == "strict-forward":
+            fib_flags = ["saddr", "mark", "iif"]
+            rpfilter_chain = "filter_FORWARD"
         else:
             fib_flags = ["saddr", "mark", "iif"]
 
@@ -2535,7 +2538,7 @@ class nftables:
             }
         )
         # RHBZ#1058505, RHBZ#1575431 (bug in kernel 4.16-4.17)
-        if self._fw._ipv6_rpfilter != "loose-forward":
+        if self._fw._ipv6_rpfilter not in ("loose-forward", "strict-forward"):
             # this rule doesn't make sense for forwarded packets
             rules.append(
                 {
@@ -2620,7 +2623,7 @@ class nftables:
             forward_index += 1
         if self._fw.get_log_denied() != "off":
             forward_index += 1
-        if self._fw._ipv6_rpfilter == "loose-forward":
+        if self._fw._ipv6_rpfilter in ("loose-forward", "strict-forward"):
             forward_index += 1
         rules.append(
             {

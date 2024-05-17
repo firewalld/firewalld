@@ -413,6 +413,8 @@ class Firewall:
                         self._ipv6_rpfilter = "loose"
                     elif value.lower() in ["loose-forward"]:
                         self._ipv6_rpfilter = "loose-forward"
+                    elif value.lower() in ["strict-forward"]:
+                        self._ipv6_rpfilter = "strict-forward"
                 log.debug1(f"IPv6_rpfilter is set to '{self._ipv6_rpfilter}'")
 
             if self._firewalld_conf.get("IndividualCalls"):
