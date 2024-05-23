@@ -339,6 +339,17 @@ class IPSet(IO_Object):
             IPSet.check_entry(entry, config[4], config[3])
         super(IPSet, self).import_config(config, all_io_objects)
 
+    def get_family(self, honor_ether=False):
+        if honor_ether:
+            if self.type == "hash:mac":
+                return "ether"
+
+        f = self.options.get("family")
+        if f == "inet6":
+            return "ipv6"
+
+        return "ipv4"
+
 
 # PARSER
 
