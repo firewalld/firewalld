@@ -18,7 +18,6 @@ from firewall.core.io.icmptype import icmptype_reader
 from firewall.core.io.helper import helper_reader
 from firewall.core.io.policy import policy_reader
 from firewall.core.io.direct import Direct
-from firewall.core.io.lockdown_whitelist import LockdownWhitelist
 from firewall.core.io.firewalld_conf import firewalld_conf
 
 
@@ -90,14 +89,3 @@ def check_on_disk_config(fw):
             )
         except Exception as msg:
             raise Exception("'%s': %s" % (config.FIREWALLD_DIRECT, msg))
-    if os.path.isfile(config.LOCKDOWN_WHITELIST):
-        try:
-            obj = LockdownWhitelist(config.LOCKDOWN_WHITELIST)
-            obj.read()
-            obj.check_config(obj.export_config())
-        except FirewallError as error:
-            raise FirewallError(
-                error.code, "'%s': %s" % (config.LOCKDOWN_WHITELIST, error.msg)
-            )
-        except Exception as msg:
-            raise Exception("'%s': %s" % (config.LOCKDOWN_WHITELIST, msg))

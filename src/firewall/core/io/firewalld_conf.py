@@ -12,13 +12,13 @@ import shutil
 
 from firewall import config
 from firewall.core.logger import log
+from firewall import errors
 
 valid_keys = [
     "DefaultZone",
     "MinimalMark",
     "CleanupOnExit",
     "CleanupModulesOnExit",
-    "Lockdown",
     "IPv6_rpfilter",
     "IndividualCalls",
     "LogDenied",
@@ -30,6 +30,8 @@ valid_keys = [
     "AllowZoneDrifting",
     "NftablesFlowtable",
     "NftablesCounters",
+    # Deprecated keys:
+    "Lockdown",
 ]
 
 
@@ -73,8 +75,7 @@ class firewalld_conf:
             "CleanupModulesOnExit",
             "yes" if config.FALLBACK_CLEANUP_MODULES_ON_EXIT else "no",
         )
-        self.set("Lockdown", "yes" if config.FALLBACK_LOCKDOWN else "no")
-        self.set("IPv6_rpfilter", "yes" if config.FALLBACK_IPV6_RPFILTER else "no")
+        self.set("IPv6_rpfilter", config.FALLBACK_IPV6_RPFILTER)
         self.set("IndividualCalls", "yes" if config.FALLBACK_INDIVIDUAL_CALLS else "no")
         self.set("LogDenied", config.FALLBACK_LOG_DENIED)
         self.set("AutomaticHelpers", config.FALLBACK_AUTOMATIC_HELPERS)
@@ -91,6 +92,18 @@ class firewalld_conf:
         self.set(
             "NftablesCounters", "yes" if config.FALLBACK_NFTABLES_COUNTERS else "no"
         )
+
+    def sanity_check(self):
+        if self.get("FirewallBackend") == "iptables" and self.get("IPv6_rpfilter") in (
+            "loose-forward",
+            "strict-forward",
+        ):
+            raise errors.FirewallError(
+                errors.INVALID_VALUE,
+                f"IPv6_rpfilter={self.get('IPv6_rpfilter')} is incompatible "
+                "with FirewallBackend=iptables. This is a limitation "
+                "of the iptables backend.",
+            )
 
     # load self.filename
     def read(self):
@@ -172,27 +185,20 @@ class firewalld_conf:
                 "yes" if config.FALLBACK_CLEANUP_MODULES_ON_EXIT else "no",
             )
 
-        # check lockdown
         value = self.get("Lockdown")
-        if not value or value.lower() not in ["yes", "true", "no", "false"]:
-            if value is not None:
-                log.warning(
-                    "Lockdown '%s' is not valid, using default " "value %s",
-                    value if value else "",
-                    config.FALLBACK_LOCKDOWN,
-                )
-            self.set("Lockdown", "yes" if config.FALLBACK_LOCKDOWN else "no")
+        if value and value.lower() not in ["no", "false"]:
+            log.warning('"Lockdown" option is deprecated and has no effect')
 
         # check ipv6_rpfilter
         value = self.get("IPv6_rpfilter")
-        if not value or value.lower() not in ["yes", "true", "no", "false"]:
+        if not value or value.lower() not in config.IPV6_RPFILTER_VALUES:
             if value is not None:
                 log.warning(
                     "IPv6_rpfilter '%s' is not valid, using default " "value %s",
                     value if value else "",
                     config.FALLBACK_IPV6_RPFILTER,
                 )
-            self.set("IPv6_rpfilter", "yes" if config.FALLBACK_IPV6_RPFILTER else "no")
+            self.set("IPv6_rpfilter", config.FALLBACK_IPV6_RPFILTER)
 
         # check individual calls
         value = self.get("IndividualCalls")
@@ -282,6 +288,8 @@ class firewalld_conf:
                 "AllowZoneDrifting",
                 "yes" if config.FALLBACK_ALLOW_ZONE_DRIFTING else "no",
             )
+
+        self.sanity_check()
 
     # save to self.filename if there are key/value changes
     def write(self):

@@ -3,8 +3,10 @@ AT_KEYWORDS(dbus)
 
 IF_HOST_SUPPORTS_NFT_FIB([
    EXPECTED_IPV6_RPFILTER_VALUE=yes
+   EXPECTED_IPV6_RPFILTER2_VALUE=strict
 ], [
    EXPECTED_IPV6_RPFILTER_VALUE=no
+   EXPECTED_IPV6_RPFILTER2_VALUE=no
 ])
 
 IF_HOST_SUPPORTS_NFT_RULE_INDEX([
@@ -23,6 +25,7 @@ string "DefaultZone" : variant string "public"
 string "FirewallBackend" : variant string "nftables"
 string "FlushAllOnReload" : variant string "yes"
 string "IPv6_rpfilter" : variant string m4_escape(["${EXPECTED_IPV6_RPFILTER_VALUE}"])
+string "IPv6_rpfilter2" : variant string m4_escape(["${EXPECTED_IPV6_RPFILTER2_VALUE}"])
 string "IndividualCalls" : variant string m4_escape(["${EXPECTED_INDIVIDUAL_CALLS_VALUE}"])
 string "Lockdown" : variant string "no"
 string "LogDenied" : variant string "off"
@@ -42,9 +45,11 @@ $3
 dnl Test individual Set/Get
 _helper([MinimalMark], [int32:1234], [variant int32 100])
 _helper([AutomaticHelpers], [string:"yes"], [variant string "no"])
-_helper([Lockdown], [string:"yes"], [variant string "yes"])
+_helper([Lockdown], [string:"no"], [variant string "no"])
+_helper([Lockdown], [string:"yes"], [variant string "no"])
 _helper([LogDenied], [string:"all"], [variant string "all"])
 _helper([IPv6_rpfilter], [string:"yes"], [variant string "yes"])
+_helper([IPv6_rpfilter2], [string:"no"], [variant string "no"])
 _helper([IndividualCalls], [string:"yes"], [variant string "yes"])
 _helper([FirewallBackend], [string:"iptables"], [variant string "iptables"])
 _helper([FlushAllOnReload], [string:"no"], [variant string "no"])

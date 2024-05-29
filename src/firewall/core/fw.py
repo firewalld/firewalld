@@ -23,7 +23,6 @@ from firewall.core.fw_service import FirewallService
 from firewall.core.fw_zone import FirewallZone
 from firewall.core.fw_direct import FirewallDirect
 from firewall.core.fw_config import FirewallConfig
-from firewall.core.fw_policies import FirewallPolicies
 from firewall.core.fw_ipset import FirewallIPSet
 from firewall.core.fw_transaction import FirewallTransaction
 from firewall.core.fw_helper import FirewallHelper
@@ -70,7 +69,6 @@ class Firewall:
         self.zone = FirewallZone(self)
         self.direct = FirewallDirect(self)
         self.config = FirewallConfig(self)
-        self.policies = FirewallPolicies()
         self.ipset = FirewallIPSet(self)
         self.helper = FirewallHelper(self)
         self.policy = FirewallPolicy(self)
@@ -90,7 +88,7 @@ class Firewall:
             self._marks,
             self.cleanup_on_exit,
             self.cleanup_modules_on_exit,
-            self.ipv6_rpfilter_enabled,
+            self._ipv6_rpfilter,
             self.ipset_enabled,
             self._individual_calls,
             self._log_denied,
@@ -107,7 +105,7 @@ class Firewall:
         # fallback settings will be overloaded by firewalld.conf
         self.cleanup_on_exit = config.FALLBACK_CLEANUP_ON_EXIT
         self.cleanup_modules_on_exit = config.FALLBACK_CLEANUP_MODULES_ON_EXIT
-        self.ipv6_rpfilter_enabled = config.FALLBACK_IPV6_RPFILTER
+        self._ipv6_rpfilter = config.FALLBACK_IPV6_RPFILTER
         self._individual_calls = config.FALLBACK_INDIVIDUAL_CALLS
         self._log_denied = config.FALLBACK_LOG_DENIED
         self._firewall_backend = config.FALLBACK_FIREWALL_BACKEND
@@ -404,27 +402,20 @@ class Firewall:
                     "CleanupModulesOnExit is set to '%s'", self.cleanup_modules_on_exit
                 )
 
-            if self._firewalld_conf.get("Lockdown"):
-                value = self._firewalld_conf.get("Lockdown")
-                if value is not None and value.lower() in ["yes", "true"]:
-                    log.debug1("Lockdown is enabled")
-                    try:
-                        self.policies.enable_lockdown()
-                    except FirewallError:
-                        # already enabled, this is probably reload
-                        pass
-
             if self._firewalld_conf.get("IPv6_rpfilter"):
                 value = self._firewalld_conf.get("IPv6_rpfilter")
                 if value is not None:
                     if value.lower() in ["no", "false"]:
-                        self.ipv6_rpfilter_enabled = False
-                    if value.lower() in ["yes", "true"]:
-                        self.ipv6_rpfilter_enabled = True
-            if self.ipv6_rpfilter_enabled:
-                log.debug1("IPv6 rpfilter is enabled")
-            else:
-                log.debug1("IPV6 rpfilter is disabled")
+                        self._ipv6_rpfilter = "no"
+                    elif value.lower() in ["yes", "true", "strict"]:
+                        self._ipv6_rpfilter = "strict"
+                    elif value.lower() in ["loose"]:
+                        self._ipv6_rpfilter = "loose"
+                    elif value.lower() in ["loose-forward"]:
+                        self._ipv6_rpfilter = "loose-forward"
+                    elif value.lower() in ["strict-forward"]:
+                        self._ipv6_rpfilter = "strict-forward"
+                log.debug1(f"IPv6_rpfilter is set to '{self._ipv6_rpfilter}'")
 
             if self._firewalld_conf.get("IndividualCalls"):
                 value = self._firewalld_conf.get("IndividualCalls")
@@ -473,28 +464,6 @@ class Firewall:
                 log.debug1("NftablesCounters is set to '%s'", self._nftables_counters)
 
         self.config.set_firewalld_conf(copy.deepcopy(self._firewalld_conf))
-
-    def _start_load_lockdown_whitelist(self):
-        # load lockdown whitelist
-        log.debug1("Loading lockdown whitelist")
-        try:
-            self.policies.lockdown_whitelist.read()
-        except Exception as msg:
-            if self.policies.query_lockdown():
-                log.error(
-                    "Failed to load lockdown whitelist '%s': %s",
-                    self.policies.lockdown_whitelist.filename,
-                    msg,
-                )
-            else:
-                log.debug1(
-                    "Failed to load lockdown whitelist '%s': %s",
-                    self.policies.lockdown_whitelist.filename,
-                    msg,
-                )
-
-        # copy policies to config interface
-        self.config.set_policies(copy.deepcopy(self.policies))
 
     def _start_load_stock_config(self):
         self._loader_ipsets(config.FIREWALLD_IPSETS)
@@ -678,7 +647,6 @@ class Firewall:
 
     def _start(self, reload=False, complete_reload=False):
         self._start_load_firewalld_conf()
-        self._start_load_lockdown_whitelist()
 
         self._select_firewall_backend(self._firewall_backend)
 
@@ -711,7 +679,6 @@ class Firewall:
         """
         This is basically _start() with at least the following differences:
             - built-in defaults for firewalld.conf
-            - no lockdown list
             - no user config (/etc/firewalld)
             - no direct rules
         """
@@ -896,7 +863,6 @@ class Firewall:
         self.helper.cleanup()
         self.config.cleanup()
         self.direct.cleanup()
-        self.policies.cleanup()
         self.policy.cleanup()
         self._firewalld_conf.cleanup()
         self.__init_vars()
@@ -1037,7 +1003,7 @@ class Firewall:
         if self.is_ipv_enabled("ipv6"):
             ipv6_backend = self.get_backend_by_ipv("ipv6")
             if "raw" in ipv6_backend.get_available_tables():
-                if self.ipv6_rpfilter_enabled:
+                if self._ipv6_rpfilter != "no":
                     rules = ipv6_backend.build_rpfilter_rules(self._log_denied)
                     transaction.add_rules(ipv6_backend, rules)
 

@@ -473,6 +473,9 @@ m4_define([NFT_LIST_RULES_NORMALIZE], [dnl
         -e ['s/reject$/reject with icmp port-unreachable/g'] dnl
         dnl newer nft always outputs the default value of "burst"
         -e ['s/burst 5 packets //g'] dnl
+        dnl newer nft replace ICMP reject aliases with code values
+        dnl nftables commit 5fecd2a6ef61 ("src: disentangle ICMP code types")
+        -e ['s/\(icmp\|icmpv6\|icmpx\) code no-route/\1 code 0/g'] dnl
 ])
 
 m4_define([NFT_LIST_RULES_ALWAYS], [
@@ -782,5 +785,20 @@ m4_define([SKIP_IF_FW_IN_CONTAINER_WITH_NFTABLES], [
         dnl certain root permissions or increase systemwide buffer sizes. Try to
         dnl `unset FW_IN_CONTAINER` and re-run the test.
         SKIP_IF_FW_IN_CONTAINER
+    ])
+])
+
+m4_define([CHECK_NFTABLES_FIB], [
+    m4_if(nftables, FIREWALL_BACKEND, [
+        IF_HOST_SUPPORTS_NFT_FIB([], [AT_SKIP_IF([:])])
+    ])
+])
+
+m4_define([CHECK_NFTABLES_FIB_IN_FORWARD], [
+    m4_if(nftables, FIREWALL_BACKEND, [
+        NS_CHECK([nft add table inet firewalld_check])
+        NS_CHECK([nft add chain inet firewalld_check foobar { type filter hook forward priority 0 \; }])
+        AT_SKIP_IF([! NS_CMD([nft add rule inet firewalld_check foobar meta nfproto ipv6 fib saddr . mark . iif oif missing drop >/dev/null 2>&1])])
+        NS_CHECK([nft delete table inet firewalld_check])
     ])
 ])

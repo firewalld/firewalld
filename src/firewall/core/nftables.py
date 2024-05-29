@@ -2492,6 +2492,19 @@ class nftables:
 
     def build_rpfilter_rules(self, log_denied=False):
         rules = []
+        rpfilter_chain = "filter_PREROUTING"
+
+        if self._fw._ipv6_rpfilter == "loose":
+            fib_flags = ["saddr", "mark"]
+        elif self._fw._ipv6_rpfilter == "loose-forward":
+            fib_flags = ["saddr", "mark"]
+            rpfilter_chain = "filter_FORWARD"
+        elif self._fw._ipv6_rpfilter == "strict-forward":
+            fib_flags = ["saddr", "mark", "iif"]
+            rpfilter_chain = "filter_FORWARD"
+        else:
+            fib_flags = ["saddr", "mark", "iif"]
+
         expr_fragments = [
             {
                 "match": {
@@ -2502,9 +2515,7 @@ class nftables:
             },
             {
                 "match": {
-                    "left": {
-                        "fib": {"flags": ["saddr", "iif", "mark"], "result": "oif"}
-                    },
+                    "left": {"fib": {"flags": fib_flags, "result": "oif"}},
                     "op": "==",
                     "right": False,
                 }
@@ -2520,44 +2531,46 @@ class nftables:
                     "rule": {
                         "family": "inet",
                         "table": TABLE_NAME,
-                        "chain": "filter_PREROUTING",
+                        "chain": rpfilter_chain,
                         "expr": expr_fragments,
                     }
                 }
             }
         )
         # RHBZ#1058505, RHBZ#1575431 (bug in kernel 4.16-4.17)
-        rules.append(
-            {
-                "insert": {
-                    "rule": {
-                        "family": "inet",
-                        "table": TABLE_NAME,
-                        "chain": "filter_PREROUTING",
-                        "expr": [
-                            {
-                                "match": {
-                                    "left": {
-                                        "payload": {
-                                            "protocol": "icmpv6",
-                                            "field": "type",
-                                        }
-                                    },
-                                    "op": "==",
-                                    "right": {
-                                        "set": [
-                                            "nd-router-advert",
-                                            "nd-neighbor-solicit",
-                                        ]
-                                    },
-                                }
-                            },
-                            {"accept": None},
-                        ],
+        if self._fw._ipv6_rpfilter not in ("loose-forward", "strict-forward"):
+            # this rule doesn't make sense for forwarded packets
+            rules.append(
+                {
+                    "insert": {
+                        "rule": {
+                            "family": "inet",
+                            "table": TABLE_NAME,
+                            "chain": rpfilter_chain,
+                            "expr": [
+                                {
+                                    "match": {
+                                        "left": {
+                                            "payload": {
+                                                "protocol": "icmpv6",
+                                                "field": "type",
+                                            }
+                                        },
+                                        "op": "==",
+                                        "right": {
+                                            "set": [
+                                                "nd-router-advert",
+                                                "nd-neighbor-solicit",
+                                            ]
+                                        },
+                                    }
+                                },
+                                {"accept": None},
+                            ],
+                        }
                     }
                 }
-            }
-        )
+            )
         return rules
 
     def build_rfc3964_ipv4_rules(self):
@@ -2609,6 +2622,8 @@ class nftables:
         if self._fw._nftables_flowtable != "off":
             forward_index += 1
         if self._fw.get_log_denied() != "off":
+            forward_index += 1
+        if self._fw._ipv6_rpfilter in ("loose-forward", "strict-forward"):
             forward_index += 1
         rules.append(
             {

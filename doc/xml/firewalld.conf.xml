@@ -99,24 +99,26 @@
       </varlistentry>
 
       <varlistentry>
-	<term><option>Lockdown</option></term>
-        <listitem>
-	  <para>
-	    If this option is enabled, firewall changes with the D-Bus interface will be limited to applications that are listed in the lockdown whitelist (see <citerefentry><refentrytitle>firewalld.lockdown-whitelist</refentrytitle><manvolnum>5</manvolnum></citerefentry>). The default value is no or false.
-	  </para>
-	  <para>
-	    The Lockdown feature is deprecated and will be removed in a future release.
-	  </para>
-	</listitem>
-      </varlistentry>
-
-      <varlistentry>
 	<term><option>IPv6_rpfilter</option></term>
         <listitem>
 	  <para>
-	    If this option is enabled (it is by default), reverse path filter test on a packet for IPv6 is performed.
-	    If a reply to the packet would be sent via the same interface that the packet arrived on, the packet will match and be accepted, otherwise dropped.
-            For IPv4 the rp_filter is controlled using sysctl.
+	    Performs reverse path filtering (RPF) on IPv6 packets as per RFC 3704.
+	    Possible values:
+	      - strict: Performs "strict" filtering as per RFC 3704. This check
+	                verifies that the in ingress interface is the same interface
+	                that would be used to send a packet reply to the source. That
+	                is, ingress == egress.      
+	      - loose: Performs "loose" filtering as per RFC 3704. This check only
+	               verifies that there is a route back to the source through any
+	               interface; even if it's not the same one on which the packet
+	               arrived.
+	      - strict-forward: This is almost identical to "loose", but does not perform
+	                        RPF for packets targeted to the host (INPUT).
+	      - loose-forward: This is almost identical to "loose", but does not perform
+	                       RPF for packets targeted to the host (INPUT).
+	      - no: RPF is completely disabled.
+
+	    The rp_filter for IPv4 is controlled using sysctl.
 	  </para>
       <para>
         <emphasis role="bold">Note</emphasis>: This feature has a performance
@@ -125,7 +127,8 @@
         the established connections fast path. As such it can have a
         significant performance impact if there is a lot of traffic. It's
         enabled by default for security, but can be disabled if performance is
-        a concern.
+	a concern. Alternatively one of the variants that only does RPF on
+	forwarded packets may be used.
       </para>
 	</listitem>
       </varlistentry>

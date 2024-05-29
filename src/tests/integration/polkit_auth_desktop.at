@@ -42,11 +42,11 @@ NS_CHECK([sudo -u nobody env PATH="$PATH" PYTHONPATH="$PYTHONPATH" firewall-cmd 
 NS_CHECK([firewall-cmd --direct --get-all-rules], 0, [ignore], [ignore])
 
 dnl org.fedoraproject.FirewallD1.policies
-NS_CHECK([sudo -u nobody env PATH="$PATH" PYTHONPATH="$PYTHONPATH" firewall-cmd --add-lockdown-whitelist-command="/usr/bin/firewall-cmd"], 253, [ignore], [ignore])
+NS_CHECK([sudo -u nobody env PATH="$PATH" PYTHONPATH="$PYTHONPATH" firewall-cmd --add-lockdown-whitelist-command="/usr/bin/firewall-cmd"], 0, [ignore], [ignore])
 NS_CHECK([firewall-cmd --add-lockdown-whitelist-command="/usr/bin/firewall-cmd"], 0, [ignore], [ignore])
 
 dnl org.fedoraproject.FirewallD1.policies.info
-NS_CHECK([sudo -u nobody env PATH="$PATH" PYTHONPATH="$PYTHONPATH" firewall-cmd --query-lockdown], 1, [ignore], [ignore])
-NS_CHECK([firewall-cmd --query-lockdown], 1, [ignore], [ignore])
+NS_CHECK([sudo -u nobody env PATH="$PATH" PYTHONPATH="$PYTHONPATH" firewall-cmd --query-lockdown], 0, [ignore], [ignore])
+NS_CHECK([firewall-cmd --query-lockdown], 0, [ignore], [ignore])
 
 FWD_END_TEST

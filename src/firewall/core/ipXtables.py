@@ -1782,16 +1782,19 @@ class ip6tables(ip4tables):
 
     def build_rpfilter_rules(self, log_denied=False):
         rules = []
+        rpfilter_fragment = ["-m", "rpfilter", "--invert", "--validmark"]
+        if self._fw._ipv6_rpfilter == "loose":
+            rpfilter_fragment += ["--loose"]
+
         rules.append(
             [
                 "-I",
                 "PREROUTING",
                 "-t",
                 "mangle",
-                "-m",
-                "rpfilter",
-                "--invert",
-                "--validmark",
+            ]
+            + rpfilter_fragment
+            + [
                 "-j",
                 "DROP",
             ]
@@ -1803,10 +1806,9 @@ class ip6tables(ip4tables):
                     "PREROUTING",
                     "-t",
                     "mangle",
-                    "-m",
-                    "rpfilter",
-                    "--invert",
-                    "--validmark",
+                ]
+                + rpfilter_fragment
+                + [
                     "-j",
                     "LOG",
                     "--log-prefix",

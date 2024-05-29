@@ -1274,58 +1274,86 @@ FWD_END_TEST
 FWD_START_TEST([lockdown])
     AT_KEYWORDS(lockdown)
 
-    FWD_CHECK([--add-lockdown-whitelist-command /usr/bin/command], 0, ignore)
-    FWD_CHECK([--query-lockdown-whitelist-command /usr/bin/command], 0, ignore)
-    FWD_CHECK([--list-lockdown-whitelist-commands | grep "/usr/bin/command"], 0, ignore)
-    FWD_CHECK([--remove-lockdown-whitelist-command /usr/bin/command], 0, ignore)
-    FWD_CHECK([--query-lockdown-whitelist-command /usr/bin/command], 1, ignore)
-    FWD_CHECK([--permanent --add-lockdown-whitelist-command /usr/bin/command], 0, ignore)
-    FWD_CHECK([--permanent --query-lockdown-whitelist-command /usr/bin/command], 0, ignore)
-    FWD_CHECK([--permanent --list-lockdown-whitelist-commands | grep "/usr/bin/command"], 0, ignore)
-    FWD_CHECK([--permanent --remove-lockdown-whitelist-command /usr/bin/command], 0, ignore)
-    FWD_CHECK([--permanent --query-lockdown-whitelist-command /usr/bin/command], 1, ignore)
+    FWD_CHECK([--add-lockdown-whitelist-command /usr/bin/command], 0, [], [Lockdown feature is deprecated and removed.
+])
+    FWD_CHECK([--query-lockdown-whitelist-command /usr/bin/command], 0, [], [Lockdown feature is deprecated and removed.
+])
+    FWD_CHECK([--remove-lockdown-whitelist-command /usr/bin/command], 0, [], [Lockdown feature is deprecated and removed.
+])
+    FWD_CHECK([--query-lockdown-whitelist-command /usr/bin/command], 0, [], [Lockdown feature is deprecated and removed.
+])
+    FWD_CHECK([--permanent --add-lockdown-whitelist-command /usr/bin/command], 0, [], [Lockdown feature is deprecated and removed.
+])
+    FWD_CHECK([--permanent --query-lockdown-whitelist-command /usr/bin/command], 0, [], [Lockdown feature is deprecated and removed.
+])
+    FWD_CHECK([--permanent --remove-lockdown-whitelist-command /usr/bin/command], 0, [], [Lockdown feature is deprecated and removed.
+])
+    FWD_CHECK([--permanent --query-lockdown-whitelist-command /usr/bin/command], 0, [], [Lockdown feature is deprecated and removed.
+])
 
-    FWD_CHECK([--add-lockdown-whitelist-context system_u:system_r:MadDaemon_t:s0], 0, ignore)
-    FWD_CHECK([--query-lockdown-whitelist-context system_u:system_r:MadDaemon_t:s0], 0, ignore)
-    FWD_CHECK([--list-lockdown-whitelist-contexts | grep "system_u:system_r:MadDaemon_t:s0"], 0, ignore)
-    FWD_CHECK([--remove-lockdown-whitelist-context system_u:system_r:MadDaemon_t:s0], 0, ignore)
-    FWD_CHECK([--query-lockdown-whitelist-context system_u:system_r:MadDaemon_t:s0], 1, ignore)
-    FWD_CHECK([--permanent --add-lockdown-whitelist-context system_u:system_r:MadDaemon_t:s0], 0, ignore)
-    FWD_CHECK([--permanent --query-lockdown-whitelist-context system_u:system_r:MadDaemon_t:s0], 0, ignore)
-    FWD_CHECK([--permanent --list-lockdown-whitelist-contexts | grep "system_u:system_r:MadDaemon_t:s0"], 0, ignore)
-    FWD_CHECK([--permanent --remove-lockdown-whitelist-context system_u:system_r:MadDaemon_t:s0], 0, ignore)
-    FWD_CHECK([--permanent --query-lockdown-whitelist-context system_u:system_r:MadDaemon_t:s0], 1, ignore)
+    FWD_CHECK([--add-lockdown-whitelist-context system_u:system_r:MadDaemon_t:s0], 0, [], [Lockdown feature is deprecated and removed.
+])
+    FWD_CHECK([--query-lockdown-whitelist-context system_u:system_r:MadDaemon_t:s0], 0, [], [Lockdown feature is deprecated and removed.
+])
+    FWD_CHECK([--remove-lockdown-whitelist-context system_u:system_r:MadDaemon_t:s0], 0, [], [Lockdown feature is deprecated and removed.
+])
+    FWD_CHECK([--query-lockdown-whitelist-context system_u:system_r:MadDaemon_t:s0], 0, [], [Lockdown feature is deprecated and removed.
+])
+    FWD_CHECK([--permanent --add-lockdown-whitelist-context system_u:system_r:MadDaemon_t:s0], 0, [], [Lockdown feature is deprecated and removed.
+])
+    FWD_CHECK([--permanent --query-lockdown-whitelist-context system_u:system_r:MadDaemon_t:s0], 0, [], [Lockdown feature is deprecated and removed.
+])
+    FWD_CHECK([--permanent --remove-lockdown-whitelist-context system_u:system_r:MadDaemon_t:s0], 0, [], [Lockdown feature is deprecated and removed.
+])
+    FWD_CHECK([--permanent --query-lockdown-whitelist-context system_u:system_r:MadDaemon_t:s0], 0, [], [Lockdown feature is deprecated and removed.
+])
 
-    FWD_CHECK([--add-lockdown-whitelist-uid 6666], 0, ignore)
-    FWD_CHECK([--query-lockdown-whitelist-uid 6666], 0, ignore)
-    FWD_CHECK([--list-lockdown-whitelist-uids | grep "6666"], 0, ignore)
-    FWD_CHECK([--remove-lockdown-whitelist-uid 6666], 0, ignore)
-    FWD_CHECK([--query-lockdown-whitelist-uid 6666], 1, ignore)
+    FWD_CHECK([--add-lockdown-whitelist-uid 6666], 0, [], [Lockdown feature is deprecated and removed.
+])
+    FWD_CHECK([--query-lockdown-whitelist-uid 6666], 0, [], [Lockdown feature is deprecated and removed.
+])
+    FWD_CHECK([--remove-lockdown-whitelist-uid 6666], 0, [], [Lockdown feature is deprecated and removed.
+])
+    FWD_CHECK([--query-lockdown-whitelist-uid 6666], 0, [], [Lockdown feature is deprecated and removed.
+])
     FWD_CHECK([--add-lockdown-whitelist-uid 6666x], 2, ignore, ignore)
-    FWD_CHECK([--permanent --add-lockdown-whitelist-uid 6666], 0, ignore)
-    FWD_CHECK([--permanent --query-lockdown-whitelist-uid 6666], 0, ignore)
-    FWD_CHECK([--permanent --list-lockdown-whitelist-uids | grep "6666"], 0, ignore)
-    FWD_CHECK([--permanent --remove-lockdown-whitelist-uid 6666], 0, ignore)
-    FWD_CHECK([--permanent --query-lockdown-whitelist-uid 6666], 1, ignore)
+    FWD_CHECK([--permanent --add-lockdown-whitelist-uid 6666], 0, [], [Lockdown feature is deprecated and removed.
+])
+    FWD_CHECK([--permanent --query-lockdown-whitelist-uid 6666], 0, [], [Lockdown feature is deprecated and removed.
+])
+    FWD_CHECK([--permanent --remove-lockdown-whitelist-uid 6666], 0, [], [Lockdown feature is deprecated and removed.
+])
+    FWD_CHECK([--permanent --query-lockdown-whitelist-uid 6666], 0, [], [Lockdown feature is deprecated and removed.
+])
     FWD_CHECK([--permanent --add-lockdown-whitelist-uid 6666x], 2, ignore, ignore)
-
-    FWD_CHECK([--add-lockdown-whitelist-user theboss], 0, ignore)
-    FWD_CHECK([--query-lockdown-whitelist-user theboss], 0, ignore)
-    FWD_CHECK([--list-lockdown-whitelist-users | grep "theboss"], 0, ignore)
-    FWD_CHECK([--remove-lockdown-whitelist-user theboss], 0, ignore)
-    FWD_CHECK([--query-lockdown-whitelist-user theboss], 1, ignore)
-    FWD_CHECK([--permanent --add-lockdown-whitelist-user theboss], 0, ignore)
-    FWD_CHECK([--permanent --query-lockdown-whitelist-user theboss], 0, ignore)
-    FWD_CHECK([--permanent --list-lockdown-whitelist-users | grep "theboss"], 0, ignore)
-    FWD_CHECK([--permanent --remove-lockdown-whitelist-user theboss], 0, ignore)
-    FWD_CHECK([--permanent --query-lockdown-whitelist-user theboss], 1, ignore)
+    FWD_CHECK([--add-lockdown-whitelist-user theboss], 0, [], [Lockdown feature is deprecated and removed.
+])
+    FWD_CHECK([--query-lockdown-whitelist-user theboss], 0, [], [Lockdown feature is deprecated and removed.
+])
+    FWD_CHECK([--remove-lockdown-whitelist-user theboss], 0, [], [Lockdown feature is deprecated and removed.
+])
+    FWD_CHECK([--query-lockdown-whitelist-user theboss], 0, [], [Lockdown feature is deprecated and removed.
+])
+    FWD_CHECK([--permanent --add-lockdown-whitelist-user theboss], 0, [], [Lockdown feature is deprecated and removed.
+])
+    FWD_CHECK([--permanent --query-lockdown-whitelist-user theboss], 0, [], [Lockdown feature is deprecated and removed.
+])
+    FWD_CHECK([--permanent --remove-lockdown-whitelist-user theboss], 0, [], [Lockdown feature is deprecated and removed.
+])
+    FWD_CHECK([--permanent --query-lockdown-whitelist-user theboss], 0, [], [Lockdown feature is deprecated and removed.
+])
 
     AT_SKIP_IF([test `whoami` != 'root'])
-    FWD_CHECK([--add-lockdown-whitelist-user root], 0, ignore)
-    FWD_CHECK([--lockdown-on], 0, ignore)
-    FWD_CHECK([--query-lockdown], 0, ignore)
-    FWD_CHECK([--lockdown-off], 0, ignore)
-    FWD_CHECK([--query-lockdown], 1, ignore)
+    FWD_CHECK([--add-lockdown-whitelist-user root], 0, [], [Lockdown feature is deprecated and removed.
+])
+    FWD_CHECK([--lockdown-on], 0, [], [Lockdown feature is deprecated and removed.
+])
+    FWD_CHECK([--query-lockdown], 0, [], [Lockdown feature is deprecated and removed.
+])
+    FWD_CHECK([--lockdown-off], 0, [], [Lockdown feature is deprecated and removed.
+])
+    FWD_CHECK([--query-lockdown], 0, [], [Lockdown feature is deprecated and removed.
+])
 FWD_END_TEST
 
 m4_define([rich_rule_test], [
@@ -2040,7 +2068,7 @@ ERROR: Invalid option: 'SomeBogusField=yes'
     <user uid="666"/>
 </whitelist>
 ])
-    FWD_CHECK([--check-config], 28, ignore, ignore)
+    FWD_CHECK([--check-config], 0, ignore, ignore)
 
     AT_DATA([./lockdown-whitelist.xml], [dnl
 <?xml version="1.0" encoding="utf-8"?>
@@ -2048,7 +2076,7 @@ ERROR: Invalid option: 'SomeBogusField=yes'
     <uid id="666"/>
 </whitelist>
 ])
-    FWD_CHECK([--check-config], 28, ignore, ignore)
+    FWD_CHECK([--check-config], 0, ignore, ignore)
 
     AT_DATA([./lockdown-whitelist.xml], [dnl
 <?xml version="1.0" encoding="utf-8"?>
@@ -2056,7 +2084,7 @@ ERROR: Invalid option: 'SomeBogusField=yes'
     <group name="foobar" />
 </whitelist>
 ])
-    FWD_CHECK([--check-config], 28, ignore, ignore)
+    FWD_CHECK([--check-config], 0, ignore, ignore)
     AT_CHECK([rm ./lockdown-whitelist.xml])
 
     dnl ipset
