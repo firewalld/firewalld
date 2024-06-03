@@ -331,6 +331,8 @@ CONFIG_FILES = \
 	services/steam-lan-transfer.xml \
 	services/stellaris.xml \
 	services/stronghold-crusader.xml \
+	services/stun.xml \
+	services/stuns.xml \
 	services/submission.xml \
 	services/supertuxkart.xml \
 	services/svdrp.xml \
@@ -350,6 +352,8 @@ CONFIG_FILES = \
 	services/tinc.xml \
 	services/tor-socks.xml \
 	services/transmission-client.xml \
+	services/turn.xml \
+	services/turns.xml \
 	services/upnp-client.xml \
 	services/vdsm.xml \
 	services/vnc-server.xml \
