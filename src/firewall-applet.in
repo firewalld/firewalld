@@ -450,13 +450,16 @@ class TrayApplet(QtWidgets.QSystemTrayIcon):
         self.name = _("Firewall Applet")
         self.prog = "firewall-applet"
         self.icon_name = "firewall-applet"
+        self.normal_icon = QtGui.QIcon.fromTheme(self.icon_name)
         self.icons = {
-            "normal": QtGui.QIcon.fromTheme(self.icon_name),
+            "normal": self.normal_icon,
             "error": QtGui.QIcon.fromTheme(self.icon_name + "-error"),
             "panic": QtGui.QIcon.fromTheme(self.icon_name + "-panic"),
-            "normal-shields_up": QtGui.QIcon.fromTheme(self.icon_name + "-shields_up"),
+            "normal-shields_up": QtGui.QIcon.fromTheme(
+                self.icon_name + "-shields_up", self.normal_icon
+            ),
             "normal-shields_down": QtGui.QIcon.fromTheme(
-                self.icon_name + "-shields_down"
+                self.icon_name + "-shields_down", self.normal_icon
             ),
         }
         self.timer = None
