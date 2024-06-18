@@ -1,0 +1,38 @@
+m4_if(nftables, FIREWALL_BACKEND, [
+FWD_START_TEST([nftables table owner])
+AT_KEYWORDS(RHEL-17002)
+
+AT_CHECK([sed -i 's/^NftablesTableOwner=.*/NftablesTableOwner=yes/' ./firewalld.conf])
+FWD_RELOAD()
+
+AT_SKIP_IF([grep "Configuration has NftablesTableOwner=True, but it's not supported by nftables." ./firewalld.log])
+
+NS_CHECK([nft list table inet firewalld | TRIM_WHITESPACE | head -n 2], 0, [m4_strip([dnl
+  table inet firewalld { # progname firewalld
+    flags owner,persist
+])])
+
+dnl Test the transitions from On to Off
+dnl
+
+AT_CHECK([sed -i 's/^NftablesTableOwner=.*/NftablesTableOwner=no/' ./firewalld.conf])
+FWD_RELOAD()
+
+NS_CHECK([nft list table inet firewalld | TRIM_WHITESPACE | head -n 2], 0, [m4_strip([dnl
+  table inet firewalld {
+    chain mangle_PREROUTING {
+])])
+
+dnl Test the transitions from Off to On
+dnl
+
+AT_CHECK([sed -i 's/^NftablesTableOwner=.*/NftablesTableOwner=yes/' ./firewalld.conf])
+FWD_RELOAD()
+
+NS_CHECK([nft list table inet firewalld | TRIM_WHITESPACE | head -n 2], 0, [m4_strip([dnl
+  table inet firewalld { # progname firewalld
+    flags owner,persist
+])])
+
+FWD_END_TEST()
+])
