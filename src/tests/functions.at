@@ -9,7 +9,7 @@ m4_define([FWD_STOP_FIREWALLD], [
 ])
 
 m4_define([FWD_START_FIREWALLD], [
-    FIREWALLD_ARGS="--nofork --nopid --log-file ./firewalld.log --system-config ./"
+    FIREWALLD_ARGS="--nofork --nopid --log-file ./firewalld.log --log-target file --system-config ./"
     dnl if testsuite ran with debug flag, add debug output
     ${at_debug_p} && FIREWALLD_ARGS="--debug=9 ${FIREWALLD_ARGS}"
     if test "x${FIREWALLD_DEFAULT_CONFIG}" != x ; then
