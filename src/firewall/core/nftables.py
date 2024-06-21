@@ -42,6 +42,7 @@ from nftables.nftables import Nftables
 
 TABLE_NAME = "firewalld"
 TABLE_NAME_POLICY = TABLE_NAME + "_" + "policy_drop"
+TABLE_NAME_PROBE = TABLE_NAME + "_" + "probe"
 POLICY_CHAIN_PREFIX = "policy_"
 
 # Map iptables (table, chain) to hooks and priorities.
@@ -227,6 +228,7 @@ class nftables:
     def __init__(self, fw):
         self._fw = fw
         self.restore_command_exists = True
+        self.supports_table_owner = False
         self.available_tables = []
         self.rule_to_handle = {}
         self.rule_ref_count = {}
@@ -236,6 +238,57 @@ class nftables:
         self.nftables = Nftables()
         self.nftables.set_echo_output(True)
         self.nftables.set_handle_output(True)
+
+    def _probe_support_table_owner(self):
+        try:
+            rules = {
+                "nftables": [
+                    {"metainfo": {"json_schema_version": 1}},
+                    {
+                        "add": {
+                            "table": {
+                                "family": "inet",
+                                "name": TABLE_NAME_PROBE,
+                                "flags": ["owner", "persist"],
+                            }
+                        }
+                    },
+                ]
+            }
+
+            rc, output, _ = self.nftables.json_cmd(rules)
+            if rc:
+                raise ValueError("nftables probe table owner failed")
+
+            # old nftables versions would ignore table flags in JSON, so we
+            # must parse back and verify the flags are set.
+            rules = {
+                "nftables": [
+                    {"metainfo": {"json_schema_version": 1}},
+                    {"list": {"table": {"family": "inet", "name": TABLE_NAME_PROBE}}},
+                ]
+            }
+            self.nftables.set_echo_output(False)
+            rc, output, _ = self.nftables.json_cmd(rules)
+            self.nftables.set_echo_output(True)
+            flags = output["nftables"][1]["table"]["flags"]
+
+            self.set_rule(
+                {"delete": {"table": {"family": "inet", "name": TABLE_NAME_PROBE}}},
+                self._fw.get_log_denied(),
+            )
+
+            if "owner" not in flags or "persist" not in flags:
+                raise ValueError("nftables probe table owner failed")
+
+            log.debug2("nftables: probe_support(): owner flag is supported.")
+            self.supports_table_owner = True
+        except:
+            log.debug2("nftables: probe_support(): owner flag is NOT supported.")
+            self.supports_table_owner = False
+
+    def probe_support(self):
+        self._probe_support_table_owner()
 
     def _set_rule_sort_policy_dispatch(self, rule, policy_dispatch_index_cache):
         for verb in ["add", "insert", "delete"]:
@@ -499,14 +552,25 @@ class nftables:
         # Tables always exist in nftables
         return [table] if table else IPTABLES_TO_NFT_HOOK.keys()
 
+    def _build_add_table_rules(self, table):
+        rule = {"add": {"table": {"family": "inet", "name": table}}}
+
+        if (
+            table == TABLE_NAME
+            and self._fw._nftables_table_owner
+            and self.supports_table_owner
+        ):
+            rule["add"]["table"]["flags"] = ["owner", "persist"]
+
+        return [rule]
+
     def _build_delete_table_rules(self, table):
         # To avoid nftables returning ENOENT we always add the table before
         # deleting to guarantee it will exist.
         #
         # In the future, this add+delete should be replaced with "destroy", but
         # that verb is too new to rely upon.
-        return [
-            {"add": {"table": {"family": "inet", "name": table}}},
+        return self._build_add_table_rules(table) + [
             {"delete": {"table": {"family": "inet", "name": table}}},
         ]
 
@@ -546,9 +610,7 @@ class nftables:
         # a higher priority than our base chains is sufficient.
         rules = []
         if policy == "PANIC":
-            rules.append(
-                {"add": {"table": {"family": "inet", "name": TABLE_NAME_POLICY}}}
-            )
+            rules.extend(self._build_add_table_rules(TABLE_NAME_POLICY))
 
             # Use "raw" priority for panic mode. This occurs before
             # conntrack, mangle, nat, etc
@@ -569,9 +631,7 @@ class nftables:
                     }
                 )
         elif policy == "DROP":
-            rules.append(
-                {"add": {"table": {"family": "inet", "name": TABLE_NAME_POLICY}}}
-            )
+            rules.extend(self._build_add_table_rules(TABLE_NAME_POLICY))
 
             # To drop everything except existing connections we use
             # "filter" because it occurs _after_ conntrack.
@@ -638,11 +698,7 @@ class nftables:
         return list(supported)
 
     def build_default_tables(self):
-        default_tables = []
-        default_tables.append(
-            {"add": {"table": {"family": "inet", "name": TABLE_NAME}}}
-        )
-        return default_tables
+        return self._build_add_table_rules(TABLE_NAME)
 
     def build_default_rules(self, log_denied="off"):
         default_rules = []

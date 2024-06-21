@@ -30,6 +30,7 @@ valid_keys = [
     "AllowZoneDrifting",
     "NftablesFlowtable",
     "NftablesCounters",
+    "NftablesTableOwner",
     # Deprecated keys:
     "Lockdown",
 ]
@@ -91,6 +92,10 @@ class firewalld_conf:
         self.set("NftablesFlowtable", config.FALLBACK_NFTABLES_FLOWTABLE)
         self.set(
             "NftablesCounters", "yes" if config.FALLBACK_NFTABLES_COUNTERS else "no"
+        )
+        self.set(
+            "NftablesTableOwner",
+            "yes" if config.FALLBACK_NFTABLES_TABLE_OWNER else "no",
         )
 
     def sanity_check(self):
