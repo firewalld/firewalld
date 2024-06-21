@@ -2604,6 +2604,17 @@
               </para>
             </listitem>
           </varlistentry>
+          <varlistentry id="FirewallD1.config.Properties.NftablesTableOwner">
+            <term>NftablesTableOwner - s - (rw)</term>
+            <listitem>
+              <para>
+                If set to yes, the generated nftables rule set will be owned exclusively by
+                firewalld. This prevents other entities from mistakenly (or maliciously)
+                modifying firewalld's rule set. If you intentionally modify firewalld's
+                rules, then you will have to set this to "no".
+              </para>
+            </listitem>
+          </varlistentry>
         </variablelist>
       </refsect3>
     </refsect2>
