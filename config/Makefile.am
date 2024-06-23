@@ -254,6 +254,7 @@ CONFIG_FILES = \
 	services/mongodb.xml \
 	services/mosh.xml \
 	services/mountd.xml \
+	services/mpd.xml \
 	services/mqtt.xml \
 	services/mqtt-tls.xml \
 	services/mssql.xml \
