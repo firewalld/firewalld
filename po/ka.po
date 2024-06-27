@@ -5,13 +5,13 @@
 # Translators:
 # George Machitidze <giomac@gmail.com>, 2013
 # Thomas Woerner <twoerner@redhat.com>, 2016. #zanata
-# Temuri Doghonadze <temuri.doghonadze@gmail.com>, 2022.
+# Temuri Doghonadze <temuri.doghonadze@gmail.com>, 2022, 2024.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-01-05 15:54-0500\n"
-"PO-Revision-Date: 2022-07-31 08:19+0000\n"
+"PO-Revision-Date: 2024-01-26 13:36+0000\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <https://translate.fedoraproject.org/projects/"
 "firewalld/master/ka/>\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.13\n"
+"X-Generator: Weblate 5.3.1\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:450
 msgid "Firewall Applet"
@@ -1074,6 +1074,9 @@ msgid ""
 "configuration. Permanent configuration will be active after service or "
 "system reload or restart."
 msgstr ""
+"ამჟამად ხილული კონფიგურაცია. გაშვებული კონფიგურაცია მიმდინარე აქტიური "
+"კონფიგურაციაა. მუდმივი კონფიგურაცია სერვისის ან სისტემის გადატვირთვის შემდეგ "
+"გააქტიურდება."
 
 #: ../src/firewall-config.glade.h:88
 msgid ""
@@ -1083,6 +1086,11 @@ msgid ""
 "filters and rich rules. The zone can be bound to interfaces and source "
 "addresses."
 msgstr ""
+"Firewalld-ის ზონა აღწერს ნდობის დონეს ქსელურ მიერთებებისთვის, "
+"ინტერფეისებისთვის და ზონაზე მიბმული წყაროს მისამართებისთვის. ზონა შეიცავს "
+"სერვისებს, პორტებს, პროტოკოლებს, მასკარადს, პორტის/პაკეტის გადამისამართებას, "
+"ICMP ფილტრებს და მდიდარ წესებს. ზონა, შეიძლება, ინტერფეისებზე და წყაროს "
+"მისამართებზე იყოს მიბმული."
 
 #: ../src/firewall-config.glade.h:90
 msgid "Add Zone"
@@ -1106,6 +1114,9 @@ msgid ""
 "are accessible from all hosts and networks that can reach the machine from "
 "connections, interfaces and sources bound to this zone."
 msgstr ""
+"აქ შეგიძლიათ აღწეროთ, რომელი სერვისებია სანდო ამ ზონაში. სანდო სერვისები "
+"წვდომადია ყველა ჰოსტისა და ქსელისთვის, რომელსაც მანქანაზე მიერთება შეუძლია, "
+"ინტერფეისებზე და წყაროებზე, რომლებიც ამ ზონაზეა მიბმული."
 
 #: ../src/firewall-config.glade.h:95
 msgid "Services"
@@ -1116,6 +1127,8 @@ msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks that can connect to the machine."
 msgstr ""
+"დაამატეთ დამატებითი პორტები ან პორტის შუალედები, რომლებიც წვდომადია ყველა "
+"ჰოსტის ან ქსელისთვის, რომლებსაც ამ მანქანასთან მიერთება შეუძლია."
 
 #: ../src/firewall-config.glade.h:97
 msgid "Add Port"
@@ -1160,6 +1173,8 @@ msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks that can connect to the machine."
 msgstr ""
+"დაამატეთ დამატებითი საწყისი პორტები ან პორტის შუალედები, რომლებიც წვდომადია "
+"ყველა ჰოსტის ან ქსელისთვის, რომლებსაც ამ მანქანასთან მიერთება შეუძლია."
 
 #: ../src/firewall-config.glade.h:107
 msgid "Source Ports"
@@ -1171,6 +1186,10 @@ msgid ""
 "network to the internet. Your local network will not be visible and the "
 "hosts appear as a single address on the internet. Masquerading is IPv4 only."
 msgstr ""
+"მასკარადი საშუალებას გაძლევთ, ააწყოთ ჰოსტი ან რაუტერი, რომელიც თქვენს "
+"ლოკალურ ქსელს ინტერნეტთან მიერთების საშუალებას მისცემს. თქვენი ლოკალური "
+"ქსელი ინტერნეტში არ გამოჩნდება და ხილული იქნება, როგორც ერთი მისამართი. "
+"მასკარადი, მხოლოდ, IPv4-ზ მუშაობს."
 
 #: ../src/firewall-config.glade.h:109
 msgid "Masquerade zone"
@@ -1195,6 +1214,10 @@ msgid ""
 "system is only useful if the interface is masqueraded. Port forwarding is "
 "IPv4 only."
 msgstr ""
+"დაამატეთ ჩანაწერები, რომ გადაამისამართოთ პორტები ან ერთი პორტიდან სხვაზე "
+"ლოკალური სისტემისგან ან ლოკალური სისტემიდან სხვა სისტემამდე. სხვა სისტემამდე "
+"გადამისამართება, მხოლოდ, მაშინაა სასარგებლო, თუ ინტერფეისზე მასკარადია "
+"ჩართული. პორტის გადამისამართება, მხოლოდ IPv4-ზე მუშაობს."
 
 #: ../src/firewall-config.glade.h:113
 msgid "Add Forward Port"
@@ -1214,18 +1237,27 @@ msgid ""
 "messages between networked computers, but additionally for informational "
 "messages like ping requests and replies."
 msgstr ""
+"ინტერნეტის საკონტროლო შეტყობინებების პროტოკოლი (ICMP) ძირითადად გამოიყენება "
+"ქსელში არსებულ კომპიუტერებს შორის შეცდომების მიმოსაცვლელად. მაგრამ, "
+"დამატებით, საინფორმაციო შეტყობინებებისთვისაც, როგორიცაა, მაგალითად, ping."
 
 #: ../src/firewall-config.glade.h:117
 msgid ""
 "Mark the ICMP types in the list, which should be rejected. All other ICMP "
 "types are allowed to pass the firewall. The default is no limitation."
 msgstr ""
+"მონიშნეთ ის ICMP ტიპები სიიდან, რომლებიც გნებავთ, უარყოთ. ყველა სხვა ICMP "
+"ტიპი დაშვებული იქნება, რომ გასცდეს ბრანდმაუერს. ნაგულისხმევად ლიმიტი "
+"დაყენებული არაა."
 
 #: ../src/firewall-config.glade.h:118
 msgid ""
 "If Invert Filter is enabled, marked ICMP entries are accepted and the others "
 "are rejected. In a zone with the target DROP, they are dropped."
 msgstr ""
+"თუ ინვერსიული ფილტრი ჩართულია, მონიშნული ICMP შეტყობინებები მისაღებია და "
+"სხვები უარყოფილი. ზონაში, რომელსაც სამიზნე DROP-ზე აქვს დაყენებული, ისინი "
+"გამოტოვებულია."
 
 #: ../src/firewall-config.glade.h:119
 msgid "Invert Filter"
@@ -1260,6 +1292,9 @@ msgid ""
 "Add entries to bind interfaces to the zone. If the interface will be used by "
 "a connection, the zone will be set to the zone specified in the connection."
 msgstr ""
+"დაამატეთ ჩანაწერები, რომ ინტერფეისები ზონას მიაბათ. თუ ინტერფეისი მიერთების "
+"მიერ იქნება გამოყენებული, ზონა მიერთებაში მითითებულ მნიშვნელობაზე იქნება "
+"დაყენებული."
 
 #: ../src/firewall-config.glade.h:127
 msgid "Add Interface"
@@ -1279,6 +1314,9 @@ msgid ""
 "to a MAC source address, but with limitations. Port forwarding and "
 "masquerading will not work for MAC source bindings."
 msgstr ""
+"დაამატეთ ჩანაწერები, რომ დაამატოთ წყაროს მისამართები ან შუალედები ზონაში. "
+"ასევე, შეგიძლიათ მიამაგროთ MAC წყაროს მისამართები, მაგრამ შეზღუდვებით. "
+"პორტის გადამისამართება და მასკარადი არ იმუშავებს MAC წყაროს მიმაგრებებზე."
 
 #: ../src/firewall-config.glade.h:132
 msgid "Add Source"
@@ -1362,6 +1400,8 @@ msgid ""
 "the destination address and type. If both entries are empty, there is no "
 "limitation."
 msgstr ""
+"თუ მიუთითებთ სამიზნე მისამართებს, სერვისის ჩანაწერი ამ სამიზნე მისამართზე და "
+"ტიპზე შეიზღუდება. თუ ორივე ჩანაწერი ცარიელია, შეზღუდვა არ იარსებებს."
 
 #: ../src/firewall-config.glade.h:151
 msgid "IPv4:"
@@ -1376,12 +1416,16 @@ msgid ""
 "Services can only be changed in the permanent configuration view. The "
 "runtime configuration of services is fixed."
 msgstr ""
+"სერვისები, მხოლოდ, მუდმივი კონფიგურაციის ხედში შეგიძლიათ, შეცვალოთ. "
+"სერვისების გაშვების დროის კონფიგურაცია უცვლელია."
 
 #: ../src/firewall-config.glade.h:154
 msgid ""
 "An IPSet can be used to create white or black lists and is able to store for "
 "example IP addresses, port numbers or MAC addresses. "
 msgstr ""
+"IPSet შეგიძლიათ გამოიყენოთ თეთრი ან შავი სიების შესაქმნელად და შეიძლება "
+"შეიცავდეს, მაგალითად, IP მისამართებს, პორტის ნომრებს და MAC მისამართებს. "
 
 #: ../src/firewall-config.glade.h:155
 msgid "IPSet"
@@ -1410,12 +1454,18 @@ msgid ""
 "added by firewalld. Entries, that have been directly added with the ipset "
 "command wil not be listed here."
 msgstr ""
+"IPSet-ის ჩანაწერები. თქვენ, მხოლოდ, მაშინ შეგეძლებათ, ipset-ების ჩანაწერები "
+"დაინახოთ, თუ timeout პარამეტრს არ იყენებთ. ასევე, მხოლოდ იმ ჩანაწერებს "
+"დაინახავთ, რომლებიც firewalld-მა დაამატა. ჩანაწერები, რომლებიც ipset "
+"ბრძანებით დაემატა, აქ ნაჩვენები არ იქნება."
 
 #: ../src/firewall-config.glade.h:161
 msgid ""
 "This IPSet uses the timeout option, therefore no entries are visible here. "
 "The entries should be taken care directly with the ipset command."
 msgstr ""
+"IPSet იყენებს პარამეტრს timeout, ამიტომ აქ ჩანაწერები ხელმისაწვდომი არაა. "
+"ჩანაწერებს შეგიძლიათ პირდაპირ ipset ბრძანებიდან მიხედოთ."
 
 #: ../src/firewall-config.glade.h:162
 msgid "Add"
@@ -1436,6 +1486,8 @@ msgid ""
 "A firewalld icmptype provides the information for an Internet Control "
 "Message Protocol (ICMP) type for firewalld."
 msgstr ""
+"Firewalld-ის icmptype მოგაწოდებთ ინფორმაციას ინტერნეტის საკონტროლო "
+"შეტყობინებების პროტოკოლის (ICMP) ტიპს."
 
 #: ../src/firewall-config.glade.h:167
 msgid "Add ICMP Type"
@@ -1463,6 +1515,8 @@ msgid ""
 "ICMP Types can only be changed in the permanent configuration view. The "
 "runtime configuration of ICMP Types is fixed."
 msgstr ""
+"ICMP ტიპები, მხოლოდ, მუდმივი კონფიგურაციის ხედში შეგიძლიათ, შეცვალოთ, "
+"გაშვებულ კონფიგურაციაში ICMP ტიპები არ იცვლება."
 
 #: ../src/firewall-config.glade.h:173
 msgid ""
@@ -1471,6 +1525,11 @@ msgid ""
 "are using ports that are unrelated to the signaling connection and are "
 "therefore blocked by the firewall without the helper."
 msgstr ""
+"მიერთებების ტრეკერის დამხმარე დაგეხმარებათ აამუშაოთ პროტოკოლები, რომლებიც "
+"სიგნალებისთვის და მონაცემების გადასაცემად განსხვავებულ დინებას იყენებენ. "
+"მონაცემების გადაცემა იყენებს პორტებს, რომლებიც სიგნალის გადაცემის მიერთების "
+"პორტებისგან განსხვავდება და ამიტომ, ამ დამხმარის გარეშე, იბლოკება "
+"ბრანდმაუერის მიერ."
 
 #: ../src/firewall-config.glade.h:174
 msgid "Define ports or port ranges, which are monitored by the helper."
@@ -1497,6 +1556,9 @@ msgid ""
 "will be for iptables, with ipv6 for ip6tables and with eb for ethernet "
 "bridges (ebtables)."
 msgstr ""
+"თითოეული პარამეტრის ipv არგუმენტი ipv4, ipv6 ან eb უნდა იყოს. ipv4-ის "
+"შემთხვევაში ეს იქნება ipbtales, ipv6 - ip6tables და 'eb' ethernet "
+"ხიდებისთვის (ebtables)."
 
 #: ../src/firewall-config.glade.h:177
 msgid "Additional chains for use with rules."
@@ -1522,6 +1584,8 @@ msgstr "ჯაჭვები"
 msgid ""
 "Add a rule with the arguments args to a chain in a table with a priority."
 msgstr ""
+"დაამატეთ წესი არგუმენტებით ჯაჭვში, ცხრილში. განსაზღვრეთ არგუმენტები და "
+"პრიორიტეტი."
 
 #: ../src/firewall-config.glade.h:183
 msgid ""
@@ -1532,6 +1596,12 @@ msgid ""
 "after another one, use a low priority for the first and a higher for the "
 "following."
 msgstr ""
+"წესების დასალაგებლად მათი პრიორიტეტი გამოიყენება. პრიორიტეტი 0 ნიშნავს, რომ "
+"ის ჯაჭვის თავში იქნება. რაც უფრო მაღალია პრიორიტეტი, მით უფრო დაბლა "
+"დაემატება ის. წესები, რომლებსაც ტოლი პრიორიტეტი აქვთ, ერთ დონეზე არიან და "
+"ამნაირი წესების მქონე მიმდევრობა ფიქსირებული არაა და შეიძლება, შეიცვალოს. თუ "
+"გნებავთ, დარწმუნდეთ, რომ წესი გარკვეული წესის შემდეგ დაემატება, გამოიყენეთ "
+"დაბალი პრიორიტეტი პირველისთვის და უფრო მაღალი დანარჩენებისთვის."
 
 #: ../src/firewall-config.glade.h:184
 msgid "Add Rule"
@@ -1555,10 +1625,12 @@ msgid ""
 "not placed in special chains. All iptables, ip6tables and ebtables options "
 "can be used."
 msgstr ""
+"გამჭოლი წესები პირდაპირ გაივლიან ბრანდმაუერს და ჯაჭვებში არ მოხვდებიან. "
+"შეგიძლიათ გამოიყენოთ სამივე, iptables, ip6tables და ebtables-ის პარამეტრები."
 
 #: ../src/firewall-config.glade.h:189
 msgid "Please be careful with passthrough rules to not damage the firewall."
-msgstr ""
+msgstr "ფრთხილად, რადგან გამჭოლ წესებს ბრანდმაუერის დაზიანება შეუძლიათ."
 
 #: ../src/firewall-config.glade.h:190
 msgid "Add Passthrough"
@@ -1582,6 +1654,10 @@ msgid ""
 "firewalld. It limits changes to the firewall. The lockdown whitelist can "
 "contain commands, contexts, users and user ids."
 msgstr ""
+"დაბლოკვის ფუნქცია firewalld-ის მომხმარებლის და აპლიკაციის პოლიტიკების "
+"მსუბუქი ფუნქციაა. ის ბრანდმაუერის ცვლილებებს ზღუდავს. დაბლოკვის თეთრი სია, "
+"შეიძლება, შეიცავდეს ბრძანებებს, კონტექსტებს, მომხმარებლებს და მომხმარებლის "
+"ID-ებს."
 
 #: ../src/firewall-config.glade.h:195
 msgid ""
@@ -1589,6 +1665,9 @@ msgid ""
 "service. To get the context of a running application use <tt>ps -e --"
 "context</tt>."
 msgstr ""
+"კონტექსტი გაშვებული აპლიკაციის ან სერვისის უსაფრთხოების (SELinux) "
+"კონტექსტია. იმისათვის, რომ გაშვებული აპლიკაციის კონტექსტი მიიღოთ, გამოიყენეთ "
+"<tt>ps -e --context</tt>."
 
 #: ../src/firewall-config.glade.h:196
 msgid "Add Context"
@@ -1612,6 +1691,10 @@ msgid ""
 "command lines starting with the command will match. If the '*' is not there "
 "the absolute command inclusive arguments must match."
 msgstr ""
+"თუ თეთრი სიის ბრძანების ჩანაწერი მთავრდება ვარსკვლავით '*'. მაშინ ყველა "
+"ბრძანების სტრიქონი, რომელიც მითითებული ბრძანებით იწყება, დაშვებული იქნება.თუ "
+"'*' არ გიწერიათ, უნდა შეიყვანოთ ზუსტად მითითებული ბრძანებები, არგუმენტების "
+"ჩათვლით."
 
 #: ../src/firewall-config.glade.h:201
 msgid "Add Command Line"
@@ -1826,6 +1909,7 @@ msgstr "შეიყვანეთ მდიდარი წესი."
 #: ../src/firewall-config.glade.h:255
 msgid "For host or network allow or denylisting deactivate the element."
 msgstr ""
+"ჰოსტის ან ქსელის დაშვების ან აკრძალვის სიების ჩასართავად გათიშეთ ელემენტი."
 
 #: ../src/firewall-config.glade.h:256
 msgid "Source:"
@@ -1856,6 +1940,8 @@ msgid ""
 "To enable this Action has to be 'reject' and Family either 'ipv4' or "
 "'ipv6' (not both)."
 msgstr ""
+"ამის ჩასართავად ქმედება უნდა იყოს 'reject' და ოჯახი უნდა იყოს 'ipv4' ან "
+"'ipv6' (არა ორივე)."
 
 #: ../src/firewall-config.glade.h:267
 msgid "with Type:"
