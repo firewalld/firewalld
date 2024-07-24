@@ -273,11 +273,6 @@ class nftables:
             self.nftables.set_echo_output(True)
             flags = output["nftables"][1]["table"]["flags"]
 
-            self.set_rule(
-                {"delete": {"table": {"family": "inet", "name": TABLE_NAME_PROBE}}},
-                self._fw.get_log_denied(),
-            )
-
             if "owner" not in flags or "persist" not in flags:
                 raise ValueError("nftables probe table owner failed")
 
@@ -286,6 +281,14 @@ class nftables:
         except:
             log.debug2("nftables: probe_support(): owner flag is NOT supported.")
             self.supports_table_owner = False
+
+        try:
+            self.set_rule(
+                {"delete": {"table": {"family": "inet", "name": TABLE_NAME_PROBE}}},
+                self._fw.get_log_denied(),
+            )
+        except:
+            pass
 
     def probe_support(self):
         self._probe_support_table_owner()
