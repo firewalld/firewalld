@@ -137,6 +137,7 @@ CONFIG_FILES = \
 	services/anno-1602.xml \
 	services/anno-1800.xml \
 	services/apcupsd.xml \
+	services/aseqnet.xml \
 	services/audit.xml \
 	services/ausweisapp2.xml \
 	services/bacula-client.xml \
