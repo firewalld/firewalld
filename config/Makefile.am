@@ -295,6 +295,7 @@ CONFIG_FILES = \
 	services/puppetmaster.xml \
 	services/quassel.xml \
 	services/radius.xml \
+	services/radsec.xml \
 	services/rdp.xml \
 	services/redis-sentinel.xml \
 	services/redis.xml \
