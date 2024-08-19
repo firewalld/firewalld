@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>Radsec</short>
+  <description>Radsec (RFC6614) is a protocol for transporting Remote Authentication Dial In User Service (RADIUS) datagrams over TCP and TLS. If you plan to provide a Radsec service (e.g. with FreeRADIUS, radsecproxy or Radiator), enable this option.</description>
+  <port protocol="tcp" port="2083"/>
+</service>
