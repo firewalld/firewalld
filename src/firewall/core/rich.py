@@ -232,20 +232,23 @@ class Rich_IcmpType(_Rich_Element):
         return 'icmp-type name="%s"' % (self.name)
 
 
+@dataclass(frozen=True)
 class Rich_Tcp_Mss_Clamp(_Rich_Element):
-    def __init__(self, value):
-        self.value = value
+    """This object only holds data and is read-only after init. It is also
+    hashable and can be used as a dictionary key."""
+
+    value: str = None
+
+    def __post_init__(self):
+        if self.value:
+            if not functions.checkTcpMssClamp(self.value):
+                raise FirewallError(errors.INVALID_RULE, str(self))
 
     def __str__(self):
         if self.value:
             return 'tcp-mss-clamp value="%s"' % (self.value)
         else:
             return "tcp-mss-clamp"
-
-    def check(self, family=None):
-        if self.value:
-            if not functions.checkTcpMssClamp(self.value):
-                raise FirewallError(errors.INVALID_RULE, self.value)
 
 
 class Rich_ForwardPort(_Rich_Element):
