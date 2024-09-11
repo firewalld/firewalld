@@ -492,9 +492,12 @@ class Rich_Reject(_Rich_Entry):
                 )
 
 
-class Rich_Drop(_Rich_Action):
-    def __init__(self, limit=None):
-        super().__init__(limit=limit)
+@dataclass(frozen=True)
+class Rich_Drop(_Rich_Entry):
+    """This object only holds data and is read-only after init. It is also
+    hashable and can be used as a dictionary key."""
+
+    limit: Rich_Limit = None
 
     def __str__(self):
         return "drop%s" % (" %s" % self.limit if self.limit else "")
