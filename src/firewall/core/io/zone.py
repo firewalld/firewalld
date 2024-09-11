@@ -9,6 +9,7 @@ import xml.sax as sax
 import os
 import io
 import shutil
+import dataclasses
 
 from firewall import config
 from firewall.functions import (
@@ -396,7 +397,9 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                     mac = attrs["mac"]
                 if "ipset" in attrs:
                     ipset = attrs["ipset"]
-                self._rule.source = rich.Rich_Source(addr, mac, ipset, invert=invert)
+                self._rule = dataclasses.replace(
+                    self._rule, source=rich.Rich_Source(addr, mac, ipset, invert=invert)
+                )
                 return
             # zone bound to source
             if "address" not in attrs and "ipset" not in attrs:
