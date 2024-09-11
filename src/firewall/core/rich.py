@@ -251,17 +251,31 @@ class Rich_Tcp_Mss_Clamp(_Rich_Element):
             return "tcp-mss-clamp"
 
 
+@dataclass(frozen=True)
 class Rich_ForwardPort(_Rich_Element):
-    def __init__(self, port, protocol, to_port, to_address):
-        self.port = port
-        self.protocol = protocol
-        self.to_port = to_port
-        self.to_address = to_address
-        # replace None with "" in to_port and/or to_address
+    """This object only holds data and is read-only after init. It is also
+    hashable and can be used as a dictionary key."""
+
+    port: str
+    protocol: str
+    to_port: str
+    to_address: str
+
+    def __post_init__(self):
+        # FIXME: callers should just pass an empty string instead of None.
         if self.to_port is None:
-            self.to_port = ""
+            object.__setattr__(self, "to_port", "")
         if self.to_address is None:
-            self.to_address = ""
+            object.__setattr__(self, "to_address", "")
+
+        if not functions.check_port(self.port):
+            raise FirewallError(errors.INVALID_PORT, self.port)
+        if self.protocol not in ["tcp", "udp", "sctp", "dccp"]:
+            raise FirewallError(errors.INVALID_PROTOCOL, self.protocol)
+        if not self.to_port and not self.to_address:
+            raise FirewallError(errors.INVALID_PORT, self.to_port)
+        if self.to_port and not functions.check_port(self.to_port):
+            raise FirewallError(errors.INVALID_PORT, self.to_port)
 
     def __str__(self):
         return 'forward-port port="%s" protocol="%s"%s%s' % (
@@ -272,14 +286,6 @@ class Rich_ForwardPort(_Rich_Element):
         )
 
     def check(self, family=None):
-        if not functions.check_port(self.port):
-            raise FirewallError(errors.INVALID_PORT, self.port)
-        if self.protocol not in ["tcp", "udp", "sctp", "dccp"]:
-            raise FirewallError(errors.INVALID_PROTOCOL, self.protocol)
-        if self.to_port == "" and self.to_address == "":
-            raise FirewallError(errors.INVALID_PORT, self.to_port)
-        if self.to_port != "" and not functions.check_port(self.to_port):
-            raise FirewallError(errors.INVALID_PORT, self.to_port)
         if self.to_address != "" and not functions.check_single_address(
             family, self.to_address
         ):
