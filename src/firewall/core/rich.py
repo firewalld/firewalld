@@ -452,9 +452,12 @@ class Rich_Audit(_Rich_Entry):
         return "audit%s" % (" %s" % self.limit if self.limit else "")
 
 
-class Rich_Accept(_Rich_Action):
-    def __init__(self, limit=None):
-        super().__init__(limit=limit)
+@dataclass(frozen=True)
+class Rich_Accept(_Rich_Entry):
+    """This object only holds data and is read-only after init. It is also
+    hashable and can be used as a dictionary key."""
+
+    limit: Rich_Limit = None
 
     def __str__(self):
         return "accept%s" % (" %s" % self.limit if self.limit else "")
