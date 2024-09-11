@@ -503,15 +503,15 @@ class Rich_Drop(_Rich_Entry):
         return "drop%s" % (" %s" % self.limit if self.limit else "")
 
 
-class Rich_Mark(_Rich_Action):
-    def __init__(self, _set, limit=None):
-        super().__init__(limit=limit)
-        self.set = _set
+@dataclass(frozen=True)
+class Rich_Mark(_Rich_Entry):
+    """This object only holds data and is read-only after init. It is also
+    hashable and can be used as a dictionary key."""
 
-    def __str__(self):
-        return "mark set=%s%s" % (self.set, " %s" % self.limit if self.limit else "")
+    set: str
+    limit: Rich_Limit = None
 
-    def check(self, family=None):
+    def __post_init__(self):
         if self.set is not None:
             x = self.set
         else:
@@ -531,7 +531,8 @@ class Rich_Mark(_Rich_Action):
                 # value is uint32
                 raise FirewallError(errors.INVALID_MARK, x)
 
-        super().check(family=family)
+    def __str__(self):
+        return "mark set=%s%s" % (self.set, " %s" % self.limit if self.limit else "")
 
 
 class Rich_Rule:
