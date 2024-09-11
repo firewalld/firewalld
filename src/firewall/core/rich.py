@@ -160,19 +160,22 @@ class Rich_Port(_Rich_Element):
         return 'port port="%s" protocol="%s"' % (self.port, self.protocol)
 
 
+@dataclass(frozen=True)
 class Rich_SourcePort(_Rich_Element):
-    def __init__(self, port, protocol):
-        self.port = port
-        self.protocol = protocol
+    """This object only holds data and is read-only after init. It is also
+    hashable and can be used as a dictionary key."""
 
-    def __str__(self):
-        return 'source-port port="%s" protocol="%s"' % (self.port, self.protocol)
+    port: str
+    protocol: str
 
-    def check(self, family=None):
+    def __post_init__(self):
         if not functions.check_port(self.port):
             raise FirewallError(errors.INVALID_PORT, self.port)
         if self.protocol not in ["tcp", "udp", "sctp", "dccp"]:
             raise FirewallError(errors.INVALID_PROTOCOL, self.protocol)
+
+    def __str__(self):
+        return 'source-port port="%s" protocol="%s"' % (self.port, self.protocol)
 
 
 class Rich_Protocol(_Rich_Element):
