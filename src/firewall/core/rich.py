@@ -131,16 +131,15 @@ class Rich_Destination(_Rich_Entry):
                 raise FirewallError(errors.INVALID_ADDR, str(self.addr))
 
 
+@dataclass(frozen=True)
 class Rich_Service(_Rich_Element):
-    def __init__(self, name):
-        self.name = name
+    """This object only holds data and is read-only after init. It is also
+    hashable and can be used as a dictionary key."""
+
+    name: str
 
     def __str__(self):
         return 'service name="%s"' % (self.name)
-
-    def check(self, family=None):
-        if self.name is None or len(self.name) < 1:
-            raise FirewallError(errors.INVALID_SERVICE, str(self.name))
 
 
 class Rich_Port(_Rich_Element):

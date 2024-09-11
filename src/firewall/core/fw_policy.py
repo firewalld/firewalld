@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
 import copy
+import dataclasses
 
 from firewall.core.logger import log
 from firewall.functions import (
@@ -1261,12 +1262,10 @@ class FirewallPolicy:
                     continue
                 self.check_service(include)
                 included_services.append(include)
-                _rule = copy.deepcopy(rule)
-                _rule.element.name = include
                 self._rule_prepare(
                     enable,
                     policy,
-                    _rule,
+                    dataclasses.replace(rule, element=Rich_Service(name=include)),
                     transaction,
                     included_services=included_services,
                 )
