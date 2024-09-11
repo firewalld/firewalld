@@ -98,39 +98,37 @@ class Rich_Source(_Rich_Entry):
                 raise FirewallError(errors.INVALID_ADDR, str(self.addr))
 
 
+@dataclass(frozen=True)
 class Rich_Destination(_Rich_Entry):
-    def __init__(self, addr, ipset, invert=False):
-        self.addr = addr
-        if self.addr == "":
-            self.addr = None
-        self.ipset = ipset
-        if self.ipset == "":
-            self.ipset = None
-        self.invert = invert
-        if self.addr is None and self.ipset is None:
-            raise FirewallError(errors.INVALID_RULE, "no address and ipset")
+    """This object only holds data and is read-only after init. It is also
+    hashable and can be used as a dictionary key."""
+
+    addr: Union[str, None]
+    ipset: Union[str, None]
+    invert: bool = False
+
+    def __post_init__(self):
+        if not any([self.addr, self.ipset]):
+            raise FirewallError(errors.INVALID_DESTINATION, "no address or ipset")
+
+        if self.addr:
+            if self.ipset:
+                raise FirewallError(errors.INVALID_DESTINATION, "address and ipset")
+        elif self.ipset:
+            if not check_ipset_name(self.ipset):
+                raise FirewallError(errors.INVALID_IPSET, str(self.ipset))
 
     def __str__(self):
         ret = "destination%s " % (" NOT" if self.invert else "")
-        if self.addr is not None:
+        if self.addr:
             return ret + 'address="%s"' % self.addr
-        elif self.ipset is not None:
+        elif self.ipset:
             return ret + 'ipset="%s"' % self.ipset
-        raise FirewallError(errors.INVALID_RULE, "no address and ipset")
 
     def check(self, family=None):
-        if self.addr is not None:
-            if family is None:
-                raise FirewallError(errors.INVALID_FAMILY)
-            if self.ipset is not None:
-                raise FirewallError(errors.INVALID_DESTINATION, "address and ipset")
+        if self.addr:
             if not functions.check_address(family, self.addr):
                 raise FirewallError(errors.INVALID_ADDR, str(self.addr))
-        elif self.ipset is not None:
-            if not check_ipset_name(self.ipset):
-                raise FirewallError(errors.INVALID_IPSET, str(self.ipset))
-        else:
-            raise FirewallError(errors.INVALID_RULE, "invalid destination")
 
 
 class Rich_Service(_Rich_Element):
