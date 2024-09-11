@@ -441,10 +441,12 @@ class Rich_NFLog(_Rich_Entry):
         )
 
 
-class Rich_Audit(_Rich_EntryWithLimit):
-    def __init__(self, limit=None):
-        # TODO check default level in iptables
-        super().__init__(limit=limit)
+@dataclass(frozen=True)
+class Rich_Audit(_Rich_Entry):
+    """This object only holds data and is read-only after init. It is also
+    hashable and can be used as a dictionary key."""
+
+    limit: Rich_Limit = None
 
     def __str__(self):
         return "audit%s" % (" %s" % self.limit if self.limit else "")
