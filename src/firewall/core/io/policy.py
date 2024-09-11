@@ -52,7 +52,9 @@ def common_startElement(obj, name, attrs):
                 )
                 obj._rule_error = True
                 return True
-            obj._rule.element = rich.Rich_Service(attrs["name"])
+            obj._rule = dataclasses.replace(
+                obj._rule, element=rich.Rich_Service(attrs["name"])
+            )
             return True
         if attrs["name"] not in obj.item.services:
             obj.item.services.append(attrs["name"])
@@ -68,7 +70,9 @@ def common_startElement(obj, name, attrs):
                 )
                 obj._rule_error = True
                 return True
-            obj._rule.element = rich.Rich_Port(attrs["port"], attrs["protocol"])
+            obj._rule = dataclasses.replace(
+                obj._rule, element=rich.Rich_Port(attrs["port"], attrs["protocol"])
+            )
             return True
         check_port(attrs["port"])
         check_tcpudp(attrs["protocol"])
@@ -116,7 +120,9 @@ def common_startElement(obj, name, attrs):
                 )
                 obj._rule_error = True
                 return True
-            obj._rule.element = rich.Rich_Protocol(attrs["value"])
+            obj._rule = dataclasses.replace(
+                obj._rule, element=rich.Rich_Protocol(attrs["value"])
+            )
         else:
             check_protocol(attrs["value"])
             if attrs["value"] not in obj.item.protocols:
@@ -136,7 +142,9 @@ def common_startElement(obj, name, attrs):
             _value = "pmtu"
             if "value" in attrs and attrs["value"] not in [None, "None"]:
                 _value = attrs["value"]
-            obj._rule.element = rich.Rich_Tcp_Mss_Clamp(_value)
+            obj._rule = dataclasses.replace(
+                obj._rule, element=rich.Rich_Tcp_Mss_Clamp(_value)
+            )
         else:
             s = ""
             if "value" in attrs:
@@ -152,7 +160,9 @@ def common_startElement(obj, name, attrs):
                 )
                 obj._rule_error = True
                 return True
-            obj._rule.element = rich.Rich_IcmpBlock(attrs["name"])
+            obj._rule = dataclasses.replace(
+                obj._rule, element=rich.Rich_IcmpBlock(attrs["name"])
+            )
             return True
         if attrs["name"] not in obj.item.icmp_blocks:
             obj.item.icmp_blocks.append(attrs["name"])
@@ -168,7 +178,9 @@ def common_startElement(obj, name, attrs):
                 )
                 obj._rule_error = True
                 return True
-            obj._rule.element = rich.Rich_IcmpType(attrs["name"])
+            obj._rule = dataclasses.replace(
+                obj._rule, element=rich.Rich_IcmpType(attrs["name"])
+            )
             return True
         else:
             log.warning("Invalid rule: icmp-block '%s' outside of rule", attrs["name"])
@@ -182,7 +194,7 @@ def common_startElement(obj, name, attrs):
                 )
                 obj._rule_error = True
                 return True
-            obj._rule.element = rich.Rich_Masquerade()
+            obj._rule = dataclasses.replace(obj._rule, element=rich.Rich_Masquerade())
         else:
             if obj.item.masquerade:
                 log.warning("Masquerade already set, ignoring.")
@@ -205,8 +217,11 @@ def common_startElement(obj, name, attrs):
                 )
                 obj._rule_error = True
                 return True
-            obj._rule.element = rich.Rich_ForwardPort(
-                attrs["port"], attrs["protocol"], to_port, to_addr
+            obj._rule = dataclasses.replace(
+                obj._rule,
+                element=rich.Rich_ForwardPort(
+                    attrs["port"], attrs["protocol"], to_port, to_addr
+                ),
             )
             return True
 
@@ -245,7 +260,10 @@ def common_startElement(obj, name, attrs):
                 )
                 obj._rule_error = True
                 return True
-            obj._rule.element = rich.Rich_SourcePort(attrs["port"], attrs["protocol"])
+            obj._rule = dataclasses.replace(
+                obj._rule,
+                element=rich.Rich_SourcePort(attrs["port"], attrs["protocol"]),
+            )
             return True
         check_port(attrs["port"])
         check_tcpudp(attrs["protocol"])
@@ -304,7 +322,9 @@ def common_startElement(obj, name, attrs):
             ipset = attrs["ipset"]
         if "invert" in attrs and attrs["invert"].lower() in ["yes", "true"]:
             invert = True
-        obj._rule.destination = rich.Rich_Destination(address, ipset, invert)
+        obj._rule = dataclasses.replace(
+            obj._rule, destination=rich.Rich_Destination(address, ipset, invert)
+        )
 
     elif name in ["accept", "reject", "drop", "mark"]:
         if not obj._rule:
@@ -316,17 +336,17 @@ def common_startElement(obj, name, attrs):
             obj._rule_error = True
             return True
         if name == "accept":
-            obj._rule.action = rich.Rich_Accept()
+            obj._rule = dataclasses.replace(obj._rule, action=rich.Rich_Accept())
         elif name == "reject":
             _type = None
             if "type" in attrs:
                 _type = attrs["type"]
-            obj._rule.action = rich.Rich_Reject(_type)
+            obj._rule = dataclasses.replace(obj._rule, action=rich.Rich_Reject(_type))
         elif name == "drop":
-            obj._rule.action = rich.Rich_Drop()
+            obj._rule = dataclasses.replace(obj._rule, action=rich.Rich_Drop())
         elif name == "mark":
             _set = attrs["set"]
-            obj._rule.action = rich.Rich_Mark(_set)
+            obj._rule = dataclasses.replace(obj._rule, action=rich.Rich_Mark(_set))
         obj._limit_ok = obj._rule.action
 
     elif name == "log":
@@ -359,7 +379,7 @@ def common_startElement(obj, name, attrs):
                 log.warning("Invalid rule: Invalid log prefix")
                 obj._rule_error = True
                 return True
-        obj._rule.log = rich.Rich_Log(prefix, level)
+        obj._rule = dataclasses.replace(obj._rule, log=rich.Rich_Log(prefix, level))
         obj._limit_ok = obj._rule.log
 
     elif name == "nflog":
@@ -390,7 +410,9 @@ def common_startElement(obj, name, attrs):
                 log.warning("Invalid rule: Invalid nflog queue-size")
                 obj._rule_error = True
                 return True
-        obj._rule.log = rich.Rich_NFLog(group, prefix, threshold)
+        obj._rule = dataclasses.replace(
+            obj._rule, log=rich.Rich_NFLog(group, prefix, threshold)
+        )
         obj._limit_ok = obj._rule.log
 
     elif name == "audit":
@@ -404,7 +426,7 @@ def common_startElement(obj, name, attrs):
             )
             obj._rule_error = True
             return True
-        obj._rule.audit = rich.Rich_Audit()
+        obj._rule = dataclasses.replace(obj._rule, audit=rich.Rich_Audit())
         obj._limit_ok = obj._rule.audit
 
     elif name == "rule":
@@ -437,14 +459,14 @@ def common_startElement(obj, name, attrs):
             obj._limit_ok, limit=rich.Rich_Limit(value, attrs.get("burst"))
         )
         if isinstance(obj._limit_ok, rich.Rich_Audit):
-            obj._rule.audit = obj._limit_ok
+            obj._rule = dataclasses.replace(obj._rule, audit=obj._limit_ok)
         elif isinstance(obj._limit_ok, (rich.Rich_Log, rich.Rich_NFLog)):
-            obj._rule.log = obj._limit_ok
+            obj._rule = dataclasses.replace(obj._rule, log=obj._limit_ok)
         elif isinstance(
             obj._limit_ok,
             (rich.Rich_Accept, rich.Rich_Reject, rich.Rich_Drop, rich.Rich_Mark),
         ):
-            obj._rule.action = obj._limit_ok
+            obj._rule = dataclasses.replace(obj._rule, action=obj._limit_ok)
     else:
         return False
 
@@ -1279,7 +1301,9 @@ class policy_ContentHandler(IO_Object_ContentHandler):
                 mac = attrs["mac"]
             if "ipset" in attrs:
                 ipset = attrs["ipset"]
-            self._rule.source = rich.Rich_Source(addr, mac, ipset, invert=invert)
+            self._rule = dataclasses.replace(
+                self._rule, source=rich.Rich_Source(addr, mac, ipset, invert=invert)
+            )
             return
 
         else:

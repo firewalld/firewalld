@@ -5,7 +5,7 @@
 # Authors:
 # Thomas Woerner <twoerner@redhat.com>
 
-from typing import Union
+from typing import Union, ClassVar
 from dataclasses import dataclass, field, InitVar
 
 from firewall import functions
@@ -535,34 +535,37 @@ class Rich_Mark(_Rich_Entry):
         return "mark set=%s%s" % (self.set, " %s" % self.limit if self.limit else "")
 
 
+@dataclass(frozen=True)
 class Rich_Rule:
-    priority_min = -32768
-    priority_max = 32767
+    """This object only holds data and is read-only after init. It is also
+    hashable and can be used as a dictionary key."""
 
-    def __init__(self, family=None, rule_str=None, priority=None):
-        self.family = None
-        self.priority = 0
-        self.source = None
-        self.destination = None
-        self.element = None
-        self.log = None
-        self.audit = None
-        self.action = None
+    priority_min: ClassVar[int] = -32768
+    priority_max: ClassVar[int] = 32767
 
+    rule_str: InitVar[str] = None
+    family: str = ""
+    priority: int = 0
+    source: Rich_Source = None
+    destination: Rich_Destination = None
+    element: [
+        Rich_Protocol,
+        Rich_Tcp_Mss_Clamp,
+        Rich_Service,
+        Rich_Port,
+        Rich_SourcePort,
+        Rich_ForwardPort,
+        Rich_IcmpBlock,
+        Rich_IcmpType,
+        Rich_Masquerade,
+    ] = None
+    log: Rich_Log = None
+    audit: Rich_Audit = None
+    action: [Rich_Accept, Rich_Reject, Rich_Drop, Rich_Mark] = None
+
+    def __post_init__(self, rule_str):
         if rule_str is not None:
             self._import_from_string(rule_str)
-
-        if priority is not None:
-            self.priority = priority
-
-        if family is not None:
-            family = str(family)
-            if self.family is None:
-                self.family = family
-            elif self.family != family:
-                raise FirewallError(errors.INVALID_FAMILY, family)
-
-        if rule_str is not None:
             self.check()
 
     @staticmethod
@@ -598,7 +601,7 @@ class Rich_Rule:
         in_elements = []  # stack with elements we are in
         index = 0  # index into tokens
         while not (tokens[index].get("element") is EOL and in_elements == ["rule"]):
-            element = tokens[index].get("element")
+            current_element = tokens[index].get("element")
             attr_name = tokens[index].get("attr_name")
             attr_value = tokens[index].get("attr_value")
             # print ("in_elements: ", in_elements)
@@ -629,7 +632,7 @@ class Rich_Rule:
                         errors.INVALID_RULE, "bad attribute '%s'" % attr_name
                     )
             else:  # element
-                if element in [
+                if current_element in [
                     "rule",
                     "source",
                     "destination",
@@ -654,16 +657,16 @@ class Rich_Rule:
                     EOL,
                     "tcp-mss-clamp",
                 ]:
-                    if element == "source" and self.source:
+                    if current_element == "source" and self.source:
                         raise FirewallError(
                             errors.INVALID_RULE, "more than one 'source' element"
                         )
-                    elif element == "destination" and self.destination:
+                    elif current_element == "destination" and self.destination:
                         raise FirewallError(
                             errors.INVALID_RULE, "more than one 'destination' element"
                         )
                     elif (
-                        element
+                        current_element
                         in [
                             "protocol",
                             "service",
@@ -679,27 +682,28 @@ class Rich_Rule:
                         raise FirewallError(
                             errors.INVALID_RULE,
                             "more than one element. There cannot be both '%s' and '%s' in one rule."
-                            % (element, self.element),
+                            % (current_element, self.element),
                         )
-                    elif element in ["log", "nflog"] and self.log:
+                    elif current_element in ["log", "nflog"] and self.log:
                         raise FirewallError(
                             errors.INVALID_RULE, "more than one logging element"
                         )
-                    elif element == "audit" and self.audit:
+                    elif current_element == "audit" and self.audit:
                         raise FirewallError(
                             errors.INVALID_RULE, "more than one 'audit' element"
                         )
                     elif (
-                        element in ["accept", "drop", "reject", "mark"] and self.action
+                        current_element in ["accept", "drop", "reject", "mark"]
+                        and self.action
                     ):
                         raise FirewallError(
                             errors.INVALID_RULE,
                             "more than one 'action' element. There cannot be both '%s' and '%s' in one rule."
-                            % (element, self.action),
+                            % (current_element, self.action),
                         )
                 else:
                     raise FirewallError(
-                        errors.INVALID_RULE, "unknown element %s" % element
+                        errors.INVALID_RULE, "unknown element %s" % current_element
                     )
 
             in_element = (
@@ -707,7 +711,7 @@ class Rich_Rule:
             )
 
             if in_element == "":
-                if not element and attr_name:
+                if not current_element and attr_name:
                     if attr_name == "family":
                         raise FirewallError(
                             errors.INVALID_RULE,
@@ -724,11 +728,11 @@ class Rich_Rule:
                             "'%s' outside of any element. Use 'rule <element> %s= ...'."
                             % (attr_name, attr_name),
                         )
-                elif "rule" not in element:
+                elif "rule" not in current_element:
                     raise FirewallError(
                         errors.INVALID_RULE,
                         "'%s' outside of rule. Use 'rule ... %s ...'."
-                        % (element, element),
+                        % (current_element, current_element),
                     )
                 else:
                     in_elements.append("rule")  # push into stack
@@ -740,10 +744,10 @@ class Rich_Rule:
                             "'family' attribute cannot have '%s' value. Use 'ipv4' or 'ipv6' instead."
                             % attr_value,
                         )
-                    self.family = attr_value
+                    object.__setattr__(self, "family", attr_value)
                 elif attr_name == "priority":
                     try:
-                        self.priority = int(attr_value)
+                        object.__setattr__(self, "priority", int(attr_value))
                     except ValueError:
                         raise FirewallError(
                             errors.INVALID_PRIORITY,
@@ -759,18 +763,22 @@ class Rich_Rule:
                         )
                     raise FirewallError(errors.INVALID_RULE, err_msg)
                 else:
-                    in_elements.append(element)  # push into stack
+                    in_elements.append(current_element)  # push into stack
             elif in_element == "source":
                 if attr_name in ["address", "mac", "ipset", "invert"]:
                     attrs[attr_name] = attr_value
-                elif element in ["not", "NOT"]:
+                elif current_element in ["not", "NOT"]:
                     attrs["invert"] = True
                 else:
-                    self.source = Rich_Source(
-                        attrs.get("address"),
-                        attrs.get("mac"),
-                        attrs.get("ipset"),
-                        attrs.get("invert", False),
+                    object.__setattr__(
+                        self,
+                        "source",
+                        Rich_Source(
+                            attrs.get("address"),
+                            attrs.get("mac"),
+                            attrs.get("ipset"),
+                            attrs.get("invert", False),
+                        ),
                     )
                     in_elements.pop()  # source
                     attrs.clear()
@@ -778,20 +786,24 @@ class Rich_Rule:
             elif in_element == "destination":
                 if attr_name in ["address", "ipset", "invert"]:
                     attrs[attr_name] = attr_value
-                elif element in ["not", "NOT"]:
+                elif current_element in ["not", "NOT"]:
                     attrs["invert"] = True
                 else:
-                    self.destination = Rich_Destination(
-                        attrs.get("address"),
-                        attrs.get("ipset"),
-                        attrs.get("invert", False),
+                    object.__setattr__(
+                        self,
+                        "destination",
+                        Rich_Destination(
+                            attrs.get("address"),
+                            attrs.get("ipset"),
+                            attrs.get("invert", False),
+                        ),
                     )
                     in_elements.pop()  # destination
                     attrs.clear()
                     index = index - 1  # return token to input
             elif in_element == "protocol":
                 if attr_name == "value":
-                    self.element = Rich_Protocol(attr_value)
+                    object.__setattr__(self, "element", Rich_Protocol(attr_value))
                     in_elements.pop()  # protocol
                 else:
                     raise FirewallError(
@@ -801,13 +813,15 @@ class Rich_Rule:
                 if attr_name == "value":
                     attrs[attr_name] = attr_value
                 else:
-                    self.element = Rich_Tcp_Mss_Clamp(attrs.get("value"))
+                    object.__setattr__(
+                        self, "element", Rich_Tcp_Mss_Clamp(attrs.get("value"))
+                    )
                     in_elements.pop()
                     attrs.clear()
                     index = index - 1
             elif in_element == "service":
                 if attr_name == "name":
-                    self.element = Rich_Service(attr_value)
+                    object.__setattr__(self, "element", Rich_Service(attr_value))
                     in_elements.pop()  # service
                 else:
                     raise FirewallError(
@@ -817,13 +831,17 @@ class Rich_Rule:
                 if attr_name in ["port", "protocol"]:
                     attrs[attr_name] = attr_value
                 else:
-                    self.element = Rich_Port(attrs.get("port"), attrs.get("protocol"))
+                    object.__setattr__(
+                        self,
+                        "element",
+                        Rich_Port(attrs.get("port"), attrs.get("protocol")),
+                    )
                     in_elements.pop()  # port
                     attrs.clear()
                     index = index - 1  # return token to input
             elif in_element == "icmp-block":
                 if attr_name == "name":
-                    self.element = Rich_IcmpBlock(attr_value)
+                    object.__setattr__(self, "element", Rich_IcmpBlock(attr_value))
                     in_elements.pop()  # icmp-block
                 else:
                     raise FirewallError(
@@ -831,14 +849,14 @@ class Rich_Rule:
                     )
             elif in_element == "icmp-type":
                 if attr_name == "name":
-                    self.element = Rich_IcmpType(attr_value)
+                    object.__setattr__(self, "element", Rich_IcmpType(attr_value))
                     in_elements.pop()  # icmp-type
                 else:
                     raise FirewallError(
                         errors.INVALID_RULE, "invalid 'icmp-type' element"
                     )
             elif in_element == "masquerade":
-                self.element = Rich_Masquerade()
+                object.__setattr__(self, "element", Rich_Masquerade())
                 in_elements.pop()
                 attrs.clear()
                 index = index - 1  # return token to input
@@ -846,11 +864,15 @@ class Rich_Rule:
                 if attr_name in ["port", "protocol", "to-port", "to-addr"]:
                     attrs[attr_name] = attr_value
                 else:
-                    self.element = Rich_ForwardPort(
-                        attrs.get("port"),
-                        attrs.get("protocol"),
-                        attrs.get("to-port"),
-                        attrs.get("to-addr"),
+                    object.__setattr__(
+                        self,
+                        "element",
+                        Rich_ForwardPort(
+                            attrs.get("port"),
+                            attrs.get("protocol"),
+                            attrs.get("to-port"),
+                            attrs.get("to-addr"),
+                        ),
                     )
                     in_elements.pop()  # forward-port
                     attrs.clear()
@@ -859,8 +881,10 @@ class Rich_Rule:
                 if attr_name in ["port", "protocol"]:
                     attrs[attr_name] = attr_value
                 else:
-                    self.element = Rich_SourcePort(
-                        attrs.get("port"), attrs.get("protocol")
+                    object.__setattr__(
+                        self,
+                        "element",
+                        Rich_SourcePort(attrs.get("port"), attrs.get("protocol")),
                     )
                     in_elements.pop()  # source-port
                     attrs.clear()
@@ -868,11 +892,15 @@ class Rich_Rule:
             elif in_element == "log":
                 if attr_name in ["prefix", "level"]:
                     attrs[attr_name] = attr_value
-                elif element == "limit":
+                elif current_element == "limit":
                     in_elements.append("limit")
                 else:
-                    self.log = Rich_Log(
-                        attrs.get("prefix"), attrs.get("level"), attrs.get("limit")
+                    object.__setattr__(
+                        self,
+                        "log",
+                        Rich_Log(
+                            attrs.get("prefix"), attrs.get("level"), attrs.get("limit")
+                        ),
                     )
                     in_elements.pop()  # log
                     attrs.clear()
@@ -880,59 +908,69 @@ class Rich_Rule:
             elif in_element == "nflog":
                 if attr_name in ["group", "prefix", "queue-size"]:
                     attrs[attr_name] = attr_value
-                elif element == "limit":
+                elif current_element == "limit":
                     in_elements.append("limit")
                 else:
-                    self.log = Rich_NFLog(
-                        attrs.get("group"),
-                        attrs.get("prefix"),
-                        attrs.get("queue-size"),
-                        attrs.get("limit"),
+                    object.__setattr__(
+                        self,
+                        "log",
+                        Rich_NFLog(
+                            attrs.get("group"),
+                            attrs.get("prefix"),
+                            attrs.get("queue-size"),
+                            attrs.get("limit"),
+                        ),
                     )
                     in_elements.pop()  # nflog
                     attrs.clear()
                     index = index - 1  # return token to input
             elif in_element == "audit":
-                if element == "limit":
+                if current_element == "limit":
                     in_elements.append("limit")
                 else:
-                    self.audit = Rich_Audit(attrs.get("limit"))
+                    object.__setattr__(self, "audit", Rich_Audit(attrs.get("limit")))
                     in_elements.pop()  # audit
                     attrs.clear()
                     index = index - 1  # return token to input
             elif in_element == "accept":
-                if element == "limit":
+                if current_element == "limit":
                     in_elements.append("limit")
                 else:
-                    self.action = Rich_Accept(attrs.get("limit"))
+                    object.__setattr__(self, "action", Rich_Accept(attrs.get("limit")))
                     in_elements.pop()  # accept
                     attrs.clear()
                     index = index - 1  # return token to input
             elif in_element == "drop":
-                if element == "limit":
+                if current_element == "limit":
                     in_elements.append("limit")
                 else:
-                    self.action = Rich_Drop(attrs.get("limit"))
+                    object.__setattr__(self, "action", Rich_Drop(attrs.get("limit")))
                     in_elements.pop()  # drop
                     attrs.clear()
                     index = index - 1  # return token to input
             elif in_element == "reject":
                 if attr_name == "type":
                     attrs[attr_name] = attr_value
-                elif element == "limit":
+                elif current_element == "limit":
                     in_elements.append("limit")
                 else:
-                    self.action = Rich_Reject(attrs.get("type"), attrs.get("limit"))
+                    object.__setattr__(
+                        self,
+                        "action",
+                        Rich_Reject(attrs.get("type"), attrs.get("limit")),
+                    )
                     in_elements.pop()  # accept
                     attrs.clear()
                     index = index - 1  # return token to input
             elif in_element == "mark":
                 if attr_name == "set":
                     attrs[attr_name] = attr_value
-                elif element == "limit":
+                elif current_element == "limit":
                     in_elements.append("limit")
                 else:
-                    self.action = Rich_Mark(attrs.get("set"), attrs.get("limit"))
+                    object.__setattr__(
+                        self, "action", Rich_Mark(attrs.get("set"), attrs.get("limit"))
+                    )
                     in_elements.pop()  # accept
                     attrs.clear()
                     index = index - 1  # return token to input
@@ -1048,8 +1086,3 @@ class Rich_Rule:
             ret += " %s" % self.action
 
         return ret
-
-
-# class Rich_RawRule:
-# class Rich_RuleSet:
-# class Rich_AddressList:
