@@ -178,16 +178,19 @@ class Rich_SourcePort(_Rich_Element):
         return 'source-port port="%s" protocol="%s"' % (self.port, self.protocol)
 
 
+@dataclass(frozen=True)
 class Rich_Protocol(_Rich_Element):
-    def __init__(self, value):
-        self.value = value
+    """This object only holds data and is read-only after init. It is also
+    hashable and can be used as a dictionary key."""
+
+    value: str
+
+    def __post_init__(self):
+        if not functions.checkProtocol(self.value):
+            raise FirewallError(errors.INVALID_PROTOCOL, self.value)
 
     def __str__(self):
         return 'protocol value="%s"' % (self.value)
-
-    def check(self, family=None):
-        if not functions.checkProtocol(self.value):
-            raise FirewallError(errors.INVALID_PROTOCOL, self.value)
 
 
 class Rich_Masquerade(_Rich_Element):
