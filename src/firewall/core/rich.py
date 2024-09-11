@@ -463,10 +463,13 @@ class Rich_Accept(_Rich_Entry):
         return "accept%s" % (" %s" % self.limit if self.limit else "")
 
 
-class Rich_Reject(_Rich_Action):
-    def __init__(self, _type=None, limit=None):
-        super().__init__(limit=limit)
-        self.type = _type
+@dataclass(frozen=True)
+class Rich_Reject(_Rich_Entry):
+    """This object only holds data and is read-only after init. It is also
+    hashable and can be used as a dictionary key."""
+
+    type: str = None
+    limit: Rich_Limit = None
 
     def __str__(self):
         return "reject%s%s" % (
@@ -487,8 +490,6 @@ class Rich_Reject(_Rich_Action):
                     errors.INVALID_RULE,
                     "Wrong reject type %s.\nUse one of: %s." % (self.type, valid_types),
                 )
-
-        super().check(family=family)
 
 
 class Rich_Drop(_Rich_Action):
