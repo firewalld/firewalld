@@ -193,7 +193,11 @@ class Rich_Protocol(_Rich_Element):
         return 'protocol value="%s"' % (self.value)
 
 
+@dataclass(frozen=True)
 class Rich_Masquerade(_Rich_Element):
+    """This object only holds data and is read-only after init. It is also
+    hashable and can be used as a dictionary key."""
+
     def __str__(self):
         return "masquerade"
 
