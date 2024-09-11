@@ -294,6 +294,81 @@ class Rich_ForwardPort(_Rich_Element):
             raise FirewallError(errors.INVALID_FAMILY)
 
 
+DURATION_TO_MULT = {
+    "s": 1,
+    "m": 60,
+    "h": 60 * 60,
+    "d": 24 * 60 * 60,
+}
+
+
+@dataclass(frozen=True)
+class Rich_Limit(_Rich_Entry):
+    """This object only holds data and is read-only after init. It is also
+    hashable and can be used as a dictionary key."""
+
+    value: InitVar[str]  # init only, use rate and duration
+    burst: Union[int, None] = None
+    rate: int = field(init=False)
+    duration: str = field(init=False)
+
+    def __post_init__(self, value):
+        rate, duration = self._value_parse(value)
+        object.__setattr__(self, "rate", rate)
+        object.__setattr__(self, "duration", duration)
+        object.__setattr__(self, "burst", self._burst_parse(self.burst))
+        object.__setattr__(self, "value", f"{self.rate}/{self.duration}")
+
+    def _value_parse(self, value):
+        splits = None
+        if "/" in value:
+            splits = value.split("/")
+        if not splits or len(splits) != 2:
+            raise FirewallError(errors.INVALID_LIMIT, value)
+        (rate, duration) = splits
+        try:
+            rate = int(rate)
+        except:
+            raise FirewallError(errors.INVALID_LIMIT, value)
+
+        duration = duration.strip()
+
+        if duration in ["second", "minute", "hour", "day"]:
+            duration = duration[:1]
+
+        if rate < 1 or duration not in ["s", "m", "h", "d"]:
+            raise FirewallError(errors.INVALID_LIMIT, value)
+
+        if 10000 * DURATION_TO_MULT[duration] // rate == 0:
+            raise FirewallError(errors.INVALID_LIMIT, f"{value} too fast")
+
+        if rate == 1 and duration == "d":
+            # iptables (v1.4.21) doesn't accept 1/d
+            raise FirewallError(errors.INVALID_LIMIT, f"{value} too slow")
+
+        return rate, duration
+
+    def _burst_parse(self, burst):
+        if burst is None:
+            return None
+
+        try:
+            b = int(burst)
+        except:
+            raise FirewallError(errors.INVALID_LIMIT, burst)
+
+        if b < 1 or b > 10_000_000:
+            raise FirewallError(errors.INVALID_LIMIT, burst)
+
+        return b
+
+    def __str__(self):
+        s = f'limit value="{self.value}"'
+        if self.burst is not None:
+            s += f" burst={self.burst}"
+        return s
+
+
 class Rich_Log(_Rich_Log):
     def __init__(self, prefix=None, level=None, limit=None):
         super().__init__(limit=limit)
@@ -447,81 +522,6 @@ class Rich_Mark(_Rich_Action):
                 raise FirewallError(errors.INVALID_MARK, x)
 
         super().check(family=family)
-
-
-DURATION_TO_MULT = {
-    "s": 1,
-    "m": 60,
-    "h": 60 * 60,
-    "d": 24 * 60 * 60,
-}
-
-
-@dataclass(frozen=True)
-class Rich_Limit(_Rich_Entry):
-    """This object only holds data and is read-only after init. It is also
-    hashable and can be used as a dictionary key."""
-
-    value: InitVar[str]  # init only, use rate and duration
-    burst: Union[int, None] = None
-    rate: int = field(init=False)
-    duration: str = field(init=False)
-
-    def __post_init__(self, value):
-        rate, duration = self._value_parse(value)
-        object.__setattr__(self, "rate", rate)
-        object.__setattr__(self, "duration", duration)
-        object.__setattr__(self, "burst", self._burst_parse(self.burst))
-        object.__setattr__(self, "value", f"{self.rate}/{self.duration}")
-
-    def _value_parse(self, value):
-        splits = None
-        if "/" in value:
-            splits = value.split("/")
-        if not splits or len(splits) != 2:
-            raise FirewallError(errors.INVALID_LIMIT, value)
-        (rate, duration) = splits
-        try:
-            rate = int(rate)
-        except:
-            raise FirewallError(errors.INVALID_LIMIT, value)
-
-        duration = duration.strip()
-
-        if duration in ["second", "minute", "hour", "day"]:
-            duration = duration[:1]
-
-        if rate < 1 or duration not in ["s", "m", "h", "d"]:
-            raise FirewallError(errors.INVALID_LIMIT, value)
-
-        if 10000 * DURATION_TO_MULT[duration] // rate == 0:
-            raise FirewallError(errors.INVALID_LIMIT, f"{value} too fast")
-
-        if rate == 1 and duration == "d":
-            # iptables (v1.4.21) doesn't accept 1/d
-            raise FirewallError(errors.INVALID_LIMIT, f"{value} too slow")
-
-        return rate, duration
-
-    def _burst_parse(self, burst):
-        if burst is None:
-            return None
-
-        try:
-            b = int(burst)
-        except:
-            raise FirewallError(errors.INVALID_LIMIT, burst)
-
-        if b < 1 or b > 10_000_000:
-            raise FirewallError(errors.INVALID_LIMIT, burst)
-
-        return b
-
-    def __str__(self):
-        s = f'limit value="{self.value}"'
-        if self.burst is not None:
-            s += f" burst={self.burst}"
-        return s
 
 
 class Rich_Rule:
