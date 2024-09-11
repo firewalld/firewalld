@@ -404,22 +404,17 @@ class Rich_Log(_Rich_Entry):
         )
 
 
-class Rich_NFLog(_Rich_Log):
-    def __init__(self, group=None, prefix=None, queue_size=None, limit=None):
-        super().__init__(limit=limit)
-        self.group = group
-        self.prefix = prefix
-        self.threshold = queue_size
+@dataclass(frozen=True)
+class Rich_NFLog(_Rich_Entry):
+    """This object only holds data and is read-only after init. It is also
+    hashable and can be used as a dictionary key."""
 
-    def __str__(self):
-        return "nflog%s%s%s%s" % (
-            ' group="%s"' % (self.group) if self.group else "",
-            ' prefix="%s"' % (self.prefix) if self.prefix else "",
-            ' queue-size="%s"' % (self.threshold) if self.threshold else "",
-            " %s" % self.limit if self.limit else "",
-        )
+    group: str = None
+    prefix: str = None
+    threshold: str = None
+    limit: Rich_Limit = None
 
-    def check(self, family=None):
+    def __post_init__(self):
         if self.group and not functions.checkUINT16(self.group):
             raise FirewallError(
                 errors.INVALID_NFLOG_GROUP,
@@ -437,7 +432,13 @@ class Rich_NFLog(_Rich_Log):
                 "nflog 'queue-size' must be an integer between 0 and 65535.",
             )
 
-        super().check(family=family)
+    def __str__(self):
+        return "nflog%s%s%s%s" % (
+            ' group="%s"' % (self.group) if self.group else "",
+            ' prefix="%s"' % (self.prefix) if self.prefix else "",
+            ' queue-size="%s"' % (self.threshold) if self.threshold else "",
+            " %s" % self.limit if self.limit else "",
+        )
 
 
 class Rich_Audit(_Rich_EntryWithLimit):
