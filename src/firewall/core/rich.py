@@ -369,21 +369,16 @@ class Rich_Limit(_Rich_Entry):
         return s
 
 
-class Rich_Log(_Rich_Log):
-    def __init__(self, prefix=None, level=None, limit=None):
-        super().__init__(limit=limit)
-        # TODO check default level in iptables
-        self.prefix = prefix
-        self.level = level
+@dataclass(frozen=True)
+class Rich_Log(_Rich_Entry):
+    """This object only holds data and is read-only after init. It is also
+    hashable and can be used as a dictionary key."""
 
-    def __str__(self):
-        return "log%s%s%s" % (
-            ' prefix="%s"' % (self.prefix) if self.prefix else "",
-            ' level="%s"' % (self.level) if self.level else "",
-            " %s" % self.limit if self.limit else "",
-        )
+    prefix: str = None
+    level: str = None
+    limit: Rich_Limit = None
 
-    def check(self, family=None):
+    def __post_init__(self):
         if self.prefix and len(self.prefix) > 127:
             raise FirewallError(
                 errors.INVALID_LOG_PREFIX, "maximum accepted length of 'prefix' is 127."
@@ -401,7 +396,12 @@ class Rich_Log(_Rich_Log):
         ]:
             raise FirewallError(errors.INVALID_LOG_LEVEL, self.level)
 
-        super().check(family=family)
+    def __str__(self):
+        return "log%s%s%s" % (
+            ' prefix="%s"' % (self.prefix) if self.prefix else "",
+            ' level="%s"' % (self.level) if self.level else "",
+            " %s" % self.limit if self.limit else "",
+        )
 
 
 class Rich_NFLog(_Rich_Log):

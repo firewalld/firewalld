@@ -5,6 +5,7 @@ import xml.sax as sax
 import os
 import io
 import shutil
+import dataclasses
 
 from firewall import config
 from firewall.functions import (
@@ -432,7 +433,18 @@ def common_startElement(obj, name, attrs):
             obj._rule_error = True
             return True
         value = attrs["value"]
-        obj._limit_ok.limit = rich.Rich_Limit(value, attrs.get("burst"))
+        obj._limit_ok = dataclasses.replace(
+            obj._limit_ok, limit=rich.Rich_Limit(value, attrs.get("burst"))
+        )
+        if isinstance(obj._limit_ok, rich.Rich_Audit):
+            obj._rule.audit = obj._limit_ok
+        elif isinstance(obj._limit_ok, (rich.Rich_Log, rich.Rich_NFLog)):
+            obj._rule.log = obj._limit_ok
+        elif isinstance(
+            obj._limit_ok,
+            (rich.Rich_Accept, rich.Rich_Reject, rich.Rich_Drop, rich.Rich_Mark),
+        ):
+            obj._rule.action = obj._limit_ok
     else:
         return False
 
