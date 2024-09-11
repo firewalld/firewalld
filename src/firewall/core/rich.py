@@ -202,16 +202,19 @@ class Rich_Masquerade(_Rich_Element):
         return "masquerade"
 
 
+@dataclass(frozen=True)
 class Rich_IcmpBlock(_Rich_Element):
-    def __init__(self, name):
-        self.name = name
+    """This object only holds data and is read-only after init. It is also
+    hashable and can be used as a dictionary key."""
+
+    name: str
+
+    def __post_init__(self):
+        if self.name is None or len(self.name) < 1:
+            raise FirewallError(errors.INVALID_ICMPTYPE, str(self.name))
 
     def __str__(self):
         return 'icmp-block name="%s"' % (self.name)
-
-    def check(self, family=None):
-        if self.name is None or len(self.name) < 1:
-            raise FirewallError(errors.INVALID_ICMPTYPE, str(self.name))
 
 
 class Rich_IcmpType(_Rich_Element):
