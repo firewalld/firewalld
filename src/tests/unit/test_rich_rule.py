@@ -339,10 +339,10 @@ def test_rich_rule_parse_2():
             rule_str='rule family="ipv4" port port="3333" protocol="udp" nflog prefix="port-3333: " queue-size=65535 accept',
         )
 
-    e = firewall.core.rich._Rich_Log()
+    e = firewall.core.rich.Rich_Log()
     assert e.limit is None
 
-    e = firewall.core.rich._Rich_Log(limit=5)
+    e = firewall.core.rich.Rich_Log(limit=5)
     assert e.limit == 5
 
 

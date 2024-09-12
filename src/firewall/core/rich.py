@@ -27,34 +27,8 @@ class _EOLType:
 EOL = _EOLType()
 
 
-class _Rich_Entry:
-    def check(self, family=None):
-        pass
-
-
-class _Rich_EntryWithLimit(_Rich_Entry):
-    def __init__(self, limit=None):
-        self.limit = limit
-
-    def check(self, family=None):
-        if self.limit is not None:
-            self.limit.check(family=family)
-
-
-class _Rich_Element(_Rich_Entry):
-    pass
-
-
-class _Rich_Action(_Rich_EntryWithLimit):
-    pass
-
-
-class _Rich_Log(_Rich_EntryWithLimit):
-    pass
-
-
 @dataclass(frozen=True)
-class Rich_Source(_Rich_Entry):
+class Rich_Source:
     """This object only holds data and is read-only after init. It is also
     hashable and can be used as a dictionary key."""
 
@@ -92,7 +66,7 @@ class Rich_Source(_Rich_Entry):
 
 
 @dataclass(frozen=True)
-class Rich_Destination(_Rich_Entry):
+class Rich_Destination:
     """This object only holds data and is read-only after init. It is also
     hashable and can be used as a dictionary key."""
 
@@ -120,7 +94,7 @@ class Rich_Destination(_Rich_Entry):
 
 
 @dataclass(frozen=True)
-class Rich_Service(_Rich_Element):
+class Rich_Service:
     """This object only holds data and is read-only after init. It is also
     hashable and can be used as a dictionary key."""
 
@@ -131,7 +105,7 @@ class Rich_Service(_Rich_Element):
 
 
 @dataclass(frozen=True)
-class Rich_Port(_Rich_Element):
+class Rich_Port:
     """This object only holds data and is read-only after init. It is also
     hashable and can be used as a dictionary key."""
 
@@ -149,7 +123,7 @@ class Rich_Port(_Rich_Element):
 
 
 @dataclass(frozen=True)
-class Rich_SourcePort(_Rich_Element):
+class Rich_SourcePort:
     """This object only holds data and is read-only after init. It is also
     hashable and can be used as a dictionary key."""
 
@@ -167,7 +141,7 @@ class Rich_SourcePort(_Rich_Element):
 
 
 @dataclass(frozen=True)
-class Rich_Protocol(_Rich_Element):
+class Rich_Protocol:
     """This object only holds data and is read-only after init. It is also
     hashable and can be used as a dictionary key."""
 
@@ -182,7 +156,7 @@ class Rich_Protocol(_Rich_Element):
 
 
 @dataclass(frozen=True)
-class Rich_Masquerade(_Rich_Element):
+class Rich_Masquerade:
     """This object only holds data and is read-only after init. It is also
     hashable and can be used as a dictionary key."""
 
@@ -191,7 +165,7 @@ class Rich_Masquerade(_Rich_Element):
 
 
 @dataclass(frozen=True)
-class Rich_IcmpBlock(_Rich_Element):
+class Rich_IcmpBlock:
     """This object only holds data and is read-only after init. It is also
     hashable and can be used as a dictionary key."""
 
@@ -206,7 +180,7 @@ class Rich_IcmpBlock(_Rich_Element):
 
 
 @dataclass(frozen=True)
-class Rich_IcmpType(_Rich_Element):
+class Rich_IcmpType:
     """This object only holds data and is read-only after init. It is also
     hashable and can be used as a dictionary key."""
 
@@ -221,7 +195,7 @@ class Rich_IcmpType(_Rich_Element):
 
 
 @dataclass(frozen=True)
-class Rich_Tcp_Mss_Clamp(_Rich_Element):
+class Rich_Tcp_Mss_Clamp:
     """This object only holds data and is read-only after init. It is also
     hashable and can be used as a dictionary key."""
 
@@ -240,7 +214,7 @@ class Rich_Tcp_Mss_Clamp(_Rich_Element):
 
 
 @dataclass(frozen=True)
-class Rich_ForwardPort(_Rich_Element):
+class Rich_ForwardPort:
     """This object only holds data and is read-only after init. It is also
     hashable and can be used as a dictionary key."""
 
@@ -283,7 +257,7 @@ DURATION_TO_MULT = {
 
 
 @dataclass(frozen=True)
-class Rich_Limit(_Rich_Entry):
+class Rich_Limit:
     """This object only holds data and is read-only after init. It is also
     hashable and can be used as a dictionary key."""
 
@@ -350,7 +324,7 @@ class Rich_Limit(_Rich_Entry):
 
 
 @dataclass(frozen=True)
-class Rich_Log(_Rich_Entry):
+class Rich_Log:
     """This object only holds data and is read-only after init. It is also
     hashable and can be used as a dictionary key."""
 
@@ -385,7 +359,7 @@ class Rich_Log(_Rich_Entry):
 
 
 @dataclass(frozen=True)
-class Rich_NFLog(_Rich_Entry):
+class Rich_NFLog:
     """This object only holds data and is read-only after init. It is also
     hashable and can be used as a dictionary key."""
 
@@ -422,7 +396,7 @@ class Rich_NFLog(_Rich_Entry):
 
 
 @dataclass(frozen=True)
-class Rich_Audit(_Rich_Entry):
+class Rich_Audit:
     """This object only holds data and is read-only after init. It is also
     hashable and can be used as a dictionary key."""
 
@@ -433,7 +407,7 @@ class Rich_Audit(_Rich_Entry):
 
 
 @dataclass(frozen=True)
-class Rich_Accept(_Rich_Entry):
+class Rich_Accept:
     """This object only holds data and is read-only after init. It is also
     hashable and can be used as a dictionary key."""
 
@@ -444,7 +418,7 @@ class Rich_Accept(_Rich_Entry):
 
 
 @dataclass(frozen=True)
-class Rich_Reject(_Rich_Entry):
+class Rich_Reject:
     """This object only holds data and is read-only after init. It is also
     hashable and can be used as a dictionary key."""
 
@@ -459,7 +433,7 @@ class Rich_Reject(_Rich_Entry):
 
 
 @dataclass(frozen=True)
-class Rich_Drop(_Rich_Entry):
+class Rich_Drop:
     """This object only holds data and is read-only after init. It is also
     hashable and can be used as a dictionary key."""
 
@@ -470,7 +444,7 @@ class Rich_Drop(_Rich_Entry):
 
 
 @dataclass(frozen=True)
-class Rich_Mark(_Rich_Entry):
+class Rich_Mark:
     """This object only holds data and is read-only after init. It is also
     hashable and can be used as a dictionary key."""
 
