@@ -90,13 +90,6 @@ class Rich_Source(_Rich_Entry):
         elif self.ipset:
             return ret + 'ipset="%s"' % self.ipset
 
-    def check(self, family=None):
-        if self.addr:
-            if not family:
-                raise FirewallError(errors.INVALID_FAMILY)
-            if not functions.check_address(family, self.addr):
-                raise FirewallError(errors.INVALID_ADDR, str(self.addr))
-
 
 @dataclass(frozen=True)
 class Rich_Destination(_Rich_Entry):
@@ -124,11 +117,6 @@ class Rich_Destination(_Rich_Entry):
             return ret + 'address="%s"' % self.addr
         elif self.ipset:
             return ret + 'ipset="%s"' % self.ipset
-
-    def check(self, family=None):
-        if self.addr:
-            if not functions.check_address(family, self.addr):
-                raise FirewallError(errors.INVALID_ADDR, str(self.addr))
 
 
 @dataclass(frozen=True)
@@ -284,14 +272,6 @@ class Rich_ForwardPort(_Rich_Element):
             ' to-port="%s"' % self.to_port if self.to_port != "" else "",
             ' to-addr="%s"' % self.to_address if self.to_address != "" else "",
         )
-
-    def check(self, family=None):
-        if self.to_address != "" and not functions.check_single_address(
-            family, self.to_address
-        ):
-            raise FirewallError(errors.INVALID_ADDR, self.to_address)
-        if family is None:
-            raise FirewallError(errors.INVALID_FAMILY)
 
 
 DURATION_TO_MULT = {
@@ -476,20 +456,6 @@ class Rich_Reject(_Rich_Entry):
             ' type="%s"' % self.type if self.type else "",
             " %s" % self.limit if self.limit else "",
         )
-
-    def check(self, family=None):
-        if self.type:
-            if family not in ["ipv4", "ipv6"]:
-                raise FirewallError(
-                    errors.INVALID_RULE,
-                    "When using reject type you must specify also rule family.",
-                )
-            if self.type not in REJECT_TYPES[family]:
-                valid_types = ", ".join(REJECT_TYPES[family])
-                raise FirewallError(
-                    errors.INVALID_RULE,
-                    "Wrong reject type %s.\nUse one of: %s." % (self.type, valid_types),
-                )
 
 
 @dataclass(frozen=True)
@@ -992,10 +958,6 @@ class Rich_Rule:
 
             index = index + 1
 
-    def _check_entry(self, entry):
-        if entry is not None:
-            entry.check(family=self.family)
-
     def check(self):
         if self.family is not None:
             if self.family not in ["ipv4", "ipv6"]:
@@ -1034,10 +996,15 @@ class Rich_Rule:
             if self.log is None and self.audit is None and self.action is None:
                 raise FirewallError(errors.INVALID_RULE, "no action, no log, no audit")
 
-        self._check_entry(self.source)
-        self._check_entry(self.destination)
+        if self.source and self.source.addr:
+            if not self.family:
+                raise FirewallError(errors.INVALID_FAMILY)
+            if not functions.check_address(self.family, self.source.addr):
+                raise FirewallError(errors.INVALID_ADDR, str(self.source.addr))
 
-        self._check_entry(self.element)
+        if self.destination and self.destination.addr:
+            if not functions.check_address(self.family, self.destination.addr):
+                raise FirewallError(errors.INVALID_ADDR, str(self.destination.addr))
 
         if isinstance(self.element, Rich_Masquerade):
             if self.action is not None:
@@ -1048,6 +1015,12 @@ class Rich_Rule:
             if self.action:
                 raise FirewallError(errors.INVALID_RULE, "icmp-block and action")
         elif isinstance(self.element, Rich_ForwardPort):
+            if self.element.to_address != "" and not functions.check_single_address(
+                self.family, self.element.to_address
+            ):
+                raise FirewallError(errors.INVALID_ADDR, self.element.to_address)
+            if self.family is None:
+                raise FirewallError(errors.INVALID_FAMILY)
             if self.action is not None:
                 raise FirewallError(errors.INVALID_RULE, "forward-port and action")
         elif isinstance(self.element, Rich_Tcp_Mss_Clamp):
@@ -1057,14 +1030,24 @@ class Rich_Rule:
                     "tcp-mss-clamp and %s are mutually exclusive" % self.action,
                 )
 
-        self._check_entry(self.log)
-
         if self.audit is not None:
             if type(self.action) not in [Rich_Accept, Rich_Reject, Rich_Drop]:
                 raise FirewallError(errors.INVALID_AUDIT_TYPE, type(self.action))
 
-        self._check_entry(self.audit)
-        self._check_entry(self.action)
+        if isinstance(self.action, Rich_Reject):
+            if self.action.type:
+                if self.family not in ["ipv4", "ipv6"]:
+                    raise FirewallError(
+                        errors.INVALID_RULE,
+                        "When using reject type you must specify also rule family.",
+                    )
+                if self.action.type not in REJECT_TYPES[self.family]:
+                    valid_types = ", ".join(REJECT_TYPES[self.family])
+                    raise FirewallError(
+                        errors.INVALID_RULE,
+                        "Wrong reject type %s.\nUse one of: %s."
+                        % (self.action.type, valid_types),
+                    )
 
     def __str__(self):
         ret = "rule"
