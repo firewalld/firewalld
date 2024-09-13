@@ -136,7 +136,7 @@ class FirewallPolicy:
             "forward_ports",
             "source_ports",
             "icmp_blocks",
-            "rules_str",
+            "rules",
             "protocols",
             "icmp_block_inversion",
             "ingress_zones",
@@ -164,8 +164,8 @@ class FirewallPolicy:
                     self._source_port(enable, _policy, args[0], args[1], transaction)
                 elif key == "masquerade":
                     self._masquerade(enable, _policy, transaction)
-                elif key == "rules_str":
-                    self.__rule(enable, _policy, Rich_Rule(rule_str=args), transaction)
+                elif key == "rules":
+                    self.__rule(enable, _policy, args, transaction)
                 elif key == "ingress_zones":
                     if not obj.derived_from_zone:
                         self._ingress_zone(enable, _policy, args, transaction)
@@ -210,8 +210,6 @@ class FirewallPolicy:
 
     def set_config_with_settings_dict(self, policy, settings, sender):
         # stupid wrappers to convert rich rule string to rich rule object
-        from firewall.core.rich import Rich_Rule
-
         def add_rule_wrapper(policy, rule_str, timeout=0, sender=None):
             self.add_rule(
                 policy, Rich_Rule(rule_str=rule_str), timeout=timeout, sender=sender
@@ -409,13 +407,6 @@ class FirewallPolicy:
 
     # RICH LANGUAGE
 
-    def check_rule(self, rule):
-        rule.check()
-
-    def __rule_id(self, rule):
-        self.check_rule(rule)
-        return str(rule)
-
     def _rule_source_ipv(self, source):
         if not source:
             return None
@@ -443,8 +434,7 @@ class FirewallPolicy:
         self._fw.check_panic()
         _obj = self._policies[_policy]
 
-        rule_id = self.__rule_id(rule)
-        if rule_id in _obj.rules_str:
+        if rule in _obj.rules:
             _name = _obj.derived_from_zone if _obj.derived_from_zone else _policy
             raise FirewallError(
                 errors.ALREADY_ENABLED, "'%s' already in '%s'" % (rule, _name)
@@ -455,21 +445,20 @@ class FirewallPolicy:
             if _obj.applied:
                 self.__rule(True, _policy, rule, transaction)
 
-            self.__register_rule(_obj, rule_id, timeout, sender)
-            transaction.add_fail(self.__unregister_rule, _obj, rule_id)
+            self.__register_rule(_obj, rule, timeout, sender)
+            transaction.add_fail(self.__unregister_rule, _obj, rule)
 
         return _policy
 
-    def __register_rule(self, _obj, rule_id, timeout, sender):
-        _obj.rules_str.append(rule_id)
+    def __register_rule(self, _obj, rule, timeout, sender):
+        _obj.rules.append(rule)
 
     def remove_rule(self, policy, rule):
         _policy = self._fw.check_policy(policy)
         self._fw.check_panic()
         _obj = self._policies[_policy]
 
-        rule_id = self.__rule_id(rule)
-        if rule_id not in _obj.rules_str:
+        if rule not in _obj.rules:
             _name = _obj.derived_from_zone if _obj.derived_from_zone else _policy
             raise FirewallError(errors.NOT_ENABLED, "'%s' not in '%s'" % (rule, _name))
 
@@ -478,19 +467,19 @@ class FirewallPolicy:
             if _obj.applied:
                 self.__rule(False, _policy, rule, transaction)
 
-            transaction.add_post(self.__unregister_rule, _obj, rule_id)
+            transaction.add_post(self.__unregister_rule, _obj, rule)
 
         return _policy
 
-    def __unregister_rule(self, _obj, rule_id):
-        if rule_id in _obj.rules_str:
-            _obj.rules_str.remove(rule_id)
+    def __unregister_rule(self, _obj, rule):
+        if rule in _obj.rules:
+            _obj.rules.remove(rule)
 
     def query_rule(self, policy, rule):
-        return self.__rule_id(rule) in self.get_policy(policy).rules_str
+        return rule in self.get_policy(policy).rules
 
     def list_rules(self, policy):
-        return self.get_policy(policy).rules_str
+        return [str(r) for r in self.get_policy(policy).rules]
 
     # SERVICES
 

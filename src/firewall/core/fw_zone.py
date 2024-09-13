@@ -106,7 +106,7 @@ class FirewallZone:
             "source_ports",
             "icmp_blocks",
             "icmp_block_inversion",
-            "rules_str",
+            "rules",
             "protocols",
         ]:
             if (
@@ -136,17 +136,14 @@ class FirewallZone:
             ):
                 # zone --> any zone
                 setattr(p_obj, setting, copy.deepcopy(getattr(z_obj, setting)))
-            elif setting in ["rules_str"]:
-                p_obj.rules_str = []
+            elif setting in ["rules"]:
                 p_obj.rules = []
-                for rule_str in z_obj.rules_str:
+                for rule in z_obj.rules:
                     current_policy = self.policy_name_from_zones(fromZone, toZone)
 
-                    rule = Rich_Rule(rule_str=rule_str)
                     if current_policy == self._get_policy_for_rich_rule(
                         z_obj.name, rule
                     ):
-                        p_obj.rules_str.append(rule_str)
                         p_obj.rules.append(rule)
 
         return p_obj

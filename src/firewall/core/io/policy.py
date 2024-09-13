@@ -481,9 +481,8 @@ def common_endElement(obj, name):
             except Exception as e:
                 log.warning("%s: %s", e, str(obj._rule))
             else:
-                if str(obj._rule) not in obj.item.rules_str:
+                if obj._rule not in obj.item.rules:
                     obj.item.rules.append(obj._rule)
-                    obj.item.rules_str.append(str(obj._rule))
                 else:
                     log.warning("Rule '%s' already set, ignoring.", str(obj._rule))
         obj._rule = None
@@ -938,7 +937,6 @@ class Policy(IO_Object):
         self.forward_ports = []
         self.source_ports = []
         self.rules = []
-        self.rules_str = []
         self.applied = False
         self.priority = self.priority_default
         self.derived_from_zone = None
@@ -959,7 +957,6 @@ class Policy(IO_Object):
         del self.forward_ports[:]
         del self.source_ports[:]
         del self.rules[:]
-        del self.rules_str[:]
         self.applied = False
         self.priority = self.priority_default
         del self.ingress_zones[:]
@@ -967,15 +964,13 @@ class Policy(IO_Object):
 
     def __getattr__(self, name):
         if name == "rich_rules":
-            return self.rules_str
+            return [str(r) for r in self.rules]
         else:
             return getattr(super(Policy, self), name)
 
     def __setattr__(self, name, value):
         if name == "rich_rules":
             self.rules = [rich.Rich_Rule(rule_str=s) for s in value]
-            # must convert back to string to get the canonical string.
-            self.rules_str = [str(s) for s in self.rules]
         else:
             super(Policy, self).__setattr__(name, value)
 
