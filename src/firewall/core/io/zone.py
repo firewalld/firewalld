@@ -139,7 +139,6 @@ class Zone(IO_Object):
         self.interfaces = []
         self.sources = []
         self.rules = []
-        self.rules_str = []
         self.icmp_block_inversion = False
         self.combined = False
         self.applied = False
@@ -163,18 +162,21 @@ class Zone(IO_Object):
         del self.interfaces[:]
         del self.sources[:]
         del self.rules[:]
-        del self.rules_str[:]
         self.icmp_block_inversion = False
         self.combined = False
         self.applied = False
         self.ingress_priority = self.priority_default
         self.egress_priority = self.priority_default
 
+    def __getattr__(self, name):
+        if name == "rules_str":
+            return [str(r) for r in self.rules]
+        else:
+            return getattr(super(Zone, self), name)
+
     def __setattr__(self, name, value):
         if name == "rules_str":
             self.rules = [rich.Rich_Rule(rule_str=s) for s in value]
-            # must convert back to string to get the canonical string.
-            super(Zone, self).__setattr__(name, [str(s) for s in self.rules])
         else:
             super(Zone, self).__setattr__(name, value)
 
@@ -312,7 +314,6 @@ class Zone(IO_Object):
                 self.source_ports.append(port)
         for rule in zone.rules:
             self.rules.append(rule)
-            self.rules_str.append(str(rule))
         if zone.icmp_block_inversion:
             self.icmp_block_inversion = True
 
