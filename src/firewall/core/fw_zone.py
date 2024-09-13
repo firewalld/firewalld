@@ -338,7 +338,9 @@ class FirewallZone:
     def set_config_with_settings_dict(self, zone, settings, sender):
         # stupid wrappers to convert rich rule string to rich rule object
         def add_rule_wrapper(zone, rule_str, timeout=0, sender=None):
-            self.add_rule(zone, Rich_Rule(rule_str=rule_str), timeout=0, sender=sender)
+            self.add_rule(
+                zone, Rich_Rule(rule_str=rule_str), timeout=timeout, sender=sender
+            )
 
         def remove_rule_wrapper(zone, rule_str):
             self.remove_rule(zone, Rich_Rule(rule_str=rule_str))
