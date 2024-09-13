@@ -218,7 +218,7 @@ class FirewallPolicy:
 
         def add_rule_wrapper(policy, rule_str, timeout=0, sender=None):
             self.add_rule(
-                policy, Rich_Rule(rule_str=rule_str), timeout=0, sender=sender
+                policy, Rich_Rule(rule_str=rule_str), timeout=timeout, sender=sender
             )
 
         def remove_rule_wrapper(policy, rule_str):
