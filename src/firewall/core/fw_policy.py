@@ -1302,9 +1302,6 @@ class FirewallPolicy:
         # clamp ipvs to those that are actually enabled.
         ipvs = [ipv for ipv in ipvs if self._fw.is_ipv_enabled(ipv)]
 
-        # add an element to object to allow backends to know what ipvs this applies to
-        rule.ipvs = ipvs
-
         for backend in set([self._fw.get_backend_by_ipv(x) for x in ipvs]):
             # SERVICE
             if isinstance(rule.element, Rich_Service):
@@ -1476,7 +1473,9 @@ class FirewallPolicy:
                         errors.INVALID_RULE, "IcmpBlock not usable with accept action"
                     )
 
-                rules = backend.build_policy_icmp_block_rules(enable, policy, ict, rule)
+                rules = backend.build_policy_icmp_block_rules(
+                    enable, policy, ict, rule, ipvs=ipvs
+                )
                 transaction.add_rules(backend, rules)
 
             elif rule.element is None:
@@ -1623,22 +1622,20 @@ class FirewallPolicy:
     def _icmp_block(self, enable, policy, icmp, transaction):
         ict = self._fw.config.get_icmptype(icmp)
 
-        for backend in self._fw.enabled_backends():
+        ipvs = ["ipv4", "ipv6"]
+        if ict.destination:
+            ipvs = [ipv for ipv in ["ipv4", "ipv6"] if ipv in ict.destination]
+
+        # clamp ipvs to those that are actually enabled.
+        ipvs = [ipv for ipv in ipvs if self._fw.is_ipv_enabled(ipv)]
+
+        for backend in set([self._fw.get_backend_by_ipv(x) for x in ipvs]):
             if not backend.policies_supported:
                 continue
-            skip_backend = False
 
-            if ict.destination:
-                for ipv in ["ipv4", "ipv6"]:
-                    if ipv in ict.destination:
-                        if not backend.is_ipv_supported(ipv):
-                            skip_backend = True
-                            break
-
-            if skip_backend:
-                continue
-
-            rules = backend.build_policy_icmp_block_rules(enable, policy, ict)
+            rules = backend.build_policy_icmp_block_rules(
+                enable, policy, ict, ipvs=ipvs
+            )
             transaction.add_rules(backend, rules)
 
     def _icmp_block_inversion(self, enable, policy, transaction):

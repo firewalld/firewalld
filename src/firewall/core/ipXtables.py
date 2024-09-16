@@ -1639,7 +1639,9 @@ class ip4tables:
 
         return rules
 
-    def build_policy_icmp_block_rules(self, enable, policy, ict, rich_rule=None):
+    def build_policy_icmp_block_rules(
+        self, enable, policy, ict, rich_rule=None, ipvs=None
+    ):
         table = "filter"
         _policy = self._fw.policy.policy_base_chain_name(
             policy, table, POLICY_CHAIN_PREFIX
