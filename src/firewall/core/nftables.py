@@ -2384,23 +2384,14 @@ class nftables:
                 % (icmp_type, self.name, ipv),
             )
 
-    def build_policy_icmp_block_rules(self, enable, policy, ict, rich_rule=None):
+    def build_policy_icmp_block_rules(
+        self, enable, policy, ict, rich_rule=None, ipvs=["ipv4", "ipv6"]
+    ):
         table = "filter"
         _policy = self._fw.policy.policy_base_chain_name(
             policy, table, POLICY_CHAIN_PREFIX
         )
         add_del = {True: "add", False: "delete"}[enable]
-
-        if rich_rule and rich_rule.ipvs:
-            ipvs = rich_rule.ipvs
-        elif ict.destination:
-            ipvs = []
-            if "ipv4" in ict.destination:
-                ipvs.append("ipv4")
-            if "ipv6" in ict.destination:
-                ipvs.append("ipv6")
-        else:
-            ipvs = ["ipv4", "ipv6"]
 
         rules = []
         for ipv in ipvs:
