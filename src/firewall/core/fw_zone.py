@@ -137,14 +137,14 @@ class FirewallZone:
                 # zone --> any zone
                 setattr(p_obj, setting, copy.deepcopy(getattr(z_obj, setting)))
             elif setting in ["rules"]:
-                p_obj.rules = []
+                p_obj.rules = set()
                 for rule in z_obj.rules:
                     current_policy = self.policy_name_from_zones(fromZone, toZone)
 
                     if current_policy == self._get_policy_for_rich_rule(
                         z_obj.name, rule
                     ):
-                        p_obj.rules.append(rule)
+                        p_obj.rules.add(rule)
 
         return p_obj
 

@@ -125,8 +125,8 @@ allow-host-ipv6 (active)
   rich rules:
        rule family="ipv6" icmp-type name="neighbour-advertisement" accept
        rule family="ipv6" icmp-type name="neighbour-solicitation" accept
-       rule family="ipv6" icmp-type name="router-advertisement" accept
        rule family="ipv6" icmp-type name="redirect" accept
+       rule family="ipv6" icmp-type name="router-advertisement" accept
 ])])
 FWD_CHECK([--permanent --info-policy allow-host-ipv6 | TRIM_WHITESPACE], 0, [m4_strip([dnl
 allow-host-ipv6
@@ -144,8 +144,8 @@ allow-host-ipv6
   rich rules:
        rule family="ipv6" icmp-type name="neighbour-advertisement" accept
        rule family="ipv6" icmp-type name="neighbour-solicitation" accept
-       rule family="ipv6" icmp-type name="router-advertisement" accept
        rule family="ipv6" icmp-type name="redirect" accept
+       rule family="ipv6" icmp-type name="router-advertisement" accept
 ])])
 
 FWD_CHECK([--list-all-policies | TRIM_WHITESPACE], 0, [m4_strip([dnl
@@ -164,8 +164,8 @@ allow-host-ipv6 (active)
   rich rules:
        rule family="ipv6" icmp-type name="neighbour-advertisement" accept
        rule family="ipv6" icmp-type name="neighbour-solicitation" accept
-       rule family="ipv6" icmp-type name="router-advertisement" accept
        rule family="ipv6" icmp-type name="redirect" accept
+       rule family="ipv6" icmp-type name="router-advertisement" accept
 ])])
 FWD_CHECK([--permanent --list-all-policies | TRIM_WHITESPACE], 0, [m4_strip([dnl
 allow-host-ipv6
@@ -183,8 +183,8 @@ allow-host-ipv6
   rich rules:
        rule family="ipv6" icmp-type name="neighbour-advertisement" accept
        rule family="ipv6" icmp-type name="neighbour-solicitation" accept
-       rule family="ipv6" icmp-type name="router-advertisement" accept
        rule family="ipv6" icmp-type name="redirect" accept
+       rule family="ipv6" icmp-type name="router-advertisement" accept
 ])])
 
 FWD_CHECK([--policy allow-host-ipv6 --list-all | TRIM_WHITESPACE], 0, [m4_strip([dnl
@@ -203,8 +203,8 @@ allow-host-ipv6 (active)
   rich rules:
        rule family="ipv6" icmp-type name="neighbour-advertisement" accept
        rule family="ipv6" icmp-type name="neighbour-solicitation" accept
-       rule family="ipv6" icmp-type name="router-advertisement" accept
        rule family="ipv6" icmp-type name="redirect" accept
+       rule family="ipv6" icmp-type name="router-advertisement" accept
 ])])
 FWD_CHECK([--permanent --policy allow-host-ipv6 --list-all | TRIM_WHITESPACE], 0, [m4_strip([dnl
 allow-host-ipv6
@@ -222,8 +222,8 @@ allow-host-ipv6
   rich rules:
        rule family="ipv6" icmp-type name="neighbour-advertisement" accept
        rule family="ipv6" icmp-type name="neighbour-solicitation" accept
-       rule family="ipv6" icmp-type name="router-advertisement" accept
        rule family="ipv6" icmp-type name="redirect" accept
+       rule family="ipv6" icmp-type name="router-advertisement" accept
 ])])
 
 FWD_END_TEST

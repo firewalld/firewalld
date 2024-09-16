@@ -138,7 +138,7 @@ class Zone(IO_Object):
         self.source_ports = []
         self.interfaces = []
         self.sources = []
-        self.rules = []
+        self.rules = set()
         self.icmp_block_inversion = False
         self.combined = False
         self.applied = False
@@ -161,7 +161,7 @@ class Zone(IO_Object):
         del self.source_ports[:]
         del self.interfaces[:]
         del self.sources[:]
-        del self.rules[:]
+        self.rules.clear()
         self.icmp_block_inversion = False
         self.combined = False
         self.applied = False
@@ -170,13 +170,13 @@ class Zone(IO_Object):
 
     def __getattr__(self, name):
         if name == "rules_str":
-            return [str(r) for r in self.rules]
+            return [str(r) for r in sorted(self.rules)]
         else:
             return getattr(super(Zone, self), name)
 
     def __setattr__(self, name, value):
         if name == "rules_str":
-            self.rules = [rich.Rich_Rule(rule_str=s) for s in value]
+            self.rules = set([rich.Rich_Rule(rule_str=s) for s in value])
         else:
             super(Zone, self).__setattr__(name, value)
 
@@ -313,7 +313,7 @@ class Zone(IO_Object):
             if port not in self.source_ports:
                 self.source_ports.append(port)
         for rule in zone.rules:
-            self.rules.append(rule)
+            self.rules.add(rule)
         if zone.icmp_block_inversion:
             self.icmp_block_inversion = True
 

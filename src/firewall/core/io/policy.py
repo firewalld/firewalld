@@ -409,8 +409,7 @@ def common_startElement(obj, name, attrs):
 def common_endElement(obj, name):
     if name == "rule":
         obj._rule.check()
-        if obj._rule not in obj.item.rules:
-            obj.item.rules.append(obj._rule)
+        obj.item.rules.add(obj._rule)
         obj._rule = None
     elif name in ["accept", "reject", "drop", "mark", "log", "audit"]:
         obj._limit_ok = None
@@ -611,7 +610,8 @@ def common_writer(obj, handler):
         handler.ignorableWhitespace("\n")
 
     # rules
-    for rule in obj.rules:
+    # Use sorted() to stabilize the XML, i.e. diffable
+    for rule in sorted(obj.rules):
         attrs = {}
         if rule.family:
             attrs["family"] = rule.family
@@ -863,7 +863,7 @@ class Policy(IO_Object):
         self.masquerade = False
         self.forward_ports = []
         self.source_ports = []
-        self.rules = []
+        self.rules = set()
         self.applied = False
         self.priority = self.priority_default
         self.derived_from_zone = None
@@ -883,7 +883,7 @@ class Policy(IO_Object):
         self.masquerade = False
         del self.forward_ports[:]
         del self.source_ports[:]
-        del self.rules[:]
+        self.rules.clear()
         self.applied = False
         self.priority = self.priority_default
         del self.ingress_zones[:]
@@ -891,13 +891,13 @@ class Policy(IO_Object):
 
     def __getattr__(self, name):
         if name == "rich_rules":
-            return [str(r) for r in self.rules]
+            return [str(r) for r in sorted(self.rules)]
         else:
             return getattr(super(Policy, self), name)
 
     def __setattr__(self, name, value):
         if name == "rich_rules":
-            self.rules = [rich.Rich_Rule(rule_str=s) for s in value]
+            self.rules = set([rich.Rich_Rule(rule_str=s) for s in value])
         else:
             super(Policy, self).__setattr__(name, value)
 
