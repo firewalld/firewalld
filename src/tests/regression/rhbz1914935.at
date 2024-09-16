@@ -12,8 +12,6 @@ AT_DATA([./zones/foobar.xml], [dnl
 </zone>
 ])
 FWD_RELOAD
-FWD_GREP_LOG([WARNING: ALREADY_ENABLED: '1234:tcp' already in 'foobar'])
-FWD_GREP_LOG([WARNING: ALREADY_ENABLED: '2000-3000:tcp' already in 'foobar'])
 FWD_CHECK([--zone foobar --list-ports], 0, [dnl
 1024-65535/tcp
 ])
@@ -27,13 +25,10 @@ AT_DATA([./zones/foobar.xml], [dnl
 </zone>
 ])
 FWD_RELOAD
-FWD_GREP_LOG([WARNING: ALREADY_ENABLED: '1234:tcp' already in 'foobar'])
-FWD_GREP_LOG([WARNING: ALREADY_ENABLED: '2000-3000:tcp' already in 'foobar'])
 FWD_CHECK([--zone foobar --list-source-ports], 0, [dnl
 1024-65535/tcp
 ])
 
-dnl this one partially overlaps so it should not throw a warning.
 AT_DATA([./zones/foobar.xml], [dnl
 <?xml version="1.0" encoding="utf-8"?>
 <zone>
@@ -42,12 +37,10 @@ AT_DATA([./zones/foobar.xml], [dnl
 </zone>
 ])
 FWD_RELOAD
-FWD_GREP_LOG([WARNING: ALREADY_ENABLED: '1500-2500:tcp' already in 'foobar'], 1)
 FWD_CHECK([--zone foobar --list-ports], 0, [dnl
 1024-2500/tcp
 ])
 
-dnl this one partially overlaps so it should not throw a warning.
 AT_DATA([./zones/foobar.xml], [dnl
 <?xml version="1.0" encoding="utf-8"?>
 <zone>
@@ -56,7 +49,6 @@ AT_DATA([./zones/foobar.xml], [dnl
 </zone>
 ])
 FWD_RELOAD
-FWD_GREP_LOG([WARNING: ALREADY_ENABLED: '1500-2500:tcp' already in 'foobar'], 1)
 FWD_CHECK([--zone foobar --list-source-ports], 0, [dnl
 1024-2500/tcp
 ])

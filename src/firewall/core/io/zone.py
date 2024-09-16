@@ -325,13 +325,10 @@ class zone_ContentHandler(IO_Object_ContentHandler):
     def __init__(self, item):
         IO_Object_ContentHandler.__init__(self, item)
         self._rule = None
-        self._rule_error = False
         self._limit_ok = None
 
     def startElement(self, name, attrs):
         IO_Object_ContentHandler.startElement(self, name, attrs)
-        if self._rule_error:
-            return
 
         self.item.parser_check_element_attrs(name, attrs)
 
@@ -359,35 +356,24 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                 self.item.egress_priority = int(attrs["egress-priority"])
 
         elif name == "forward":
-            if self.item.forward:
-                log.warning("Forward already set, ignoring.")
-            else:
-                self.item.forward = True
+            self.item.forward = True
 
         elif name == "interface":
             if self._rule:
-                log.warning("Invalid rule: interface use in rule.")
-                self._rule_error = True
-                return
-            # zone bound to interface
-            if "name" not in attrs:
-                log.warning("Invalid interface: Name missing.")
-                self._rule_error = True
-                return
+                raise FirewallError(
+                    errors.INVALID_RULE,
+                    f"Interface is not valid in rule '{str(self._rule)}'.",
+                )
             if attrs["name"] not in self.item.interfaces:
                 self.item.interfaces.append(attrs["name"])
-            else:
-                log.warning("Interface '%s' already set, ignoring.", attrs["name"])
 
         elif name == "source":
             if self._rule:
                 if self._rule.source:
-                    log.warning(
-                        "Invalid rule: More than one source in rule '%s', ignoring.",
-                        str(self._rule),
+                    raise FirewallError(
+                        errors.INVALID_RULE,
+                        f"More than one source in rule '{str(self._rule)}'.",
                     )
-                    self._rule_error = True
-                    return
                 invert = False
                 if "invert" in attrs and attrs["invert"].lower() in ["yes", "true"]:
                     invert = True
@@ -404,17 +390,19 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                 return
             # zone bound to source
             if "address" not in attrs and "ipset" not in attrs:
-                log.warning("Invalid source: No address no ipset.")
-                return
+                raise FirewallError(
+                    errors.INVALID_SOURCE, "No address or ipset specified."
+                )
             if "address" in attrs and "ipset" in attrs:
-                log.warning("Invalid source: Address and ipset.")
-                return
+                raise FirewallError(
+                    errors.INVALID_SOURCE, "Both address and ipset (can only use one)."
+                )
             if "family" in attrs:
                 log.warning(
                     "Ignoring deprecated attribute family='%s'", attrs["family"]
                 )
             if "invert" in attrs:
-                log.warning("Invalid source: Invertion not allowed here.")
+                raise FirewallError(errors.INVALID_SOURCE, "Invert not allowed.")
                 return
             if "address" in attrs:
                 if (
@@ -427,23 +415,16 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                 entry = "ipset:%s" % attrs["ipset"]
                 if entry not in self.item.sources:
                     self.item.sources.append(entry)
-                else:
-                    log.warning("Source '%s' already set, ignoring.", attrs["address"])
             if "address" in attrs:
                 entry = attrs["address"]
                 if entry not in self.item.sources:
                     self.item.sources.append(entry)
-                else:
-                    log.warning("Source '%s' already set, ignoring.", attrs["address"])
 
         elif name == "icmp-block-inversion":
-            if self.item.icmp_block_inversion:
-                log.warning("Icmp-Block-Inversion already set, ignoring.")
-            else:
-                self.item.icmp_block_inversion = True
+            self.item.icmp_block_inversion = True
 
         else:
-            log.warning("Unknown XML element '%s'", name)
+            raise FirewallError(errors.INVALID_ZONE, f"Unknown XML element '{name}'.")
             return
 
     def endElement(self, name):
