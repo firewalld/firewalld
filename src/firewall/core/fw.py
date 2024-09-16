@@ -711,15 +711,11 @@ class Firewall:
 
         self._select_firewall_backend(self._firewall_backend)
 
-        if not self._offline:
-            self._start_probe_backends()
+        self._start_probe_backends()
 
         self._start_load_stock_config()
         self._start_copy_config_to_runtime()
         self._start_check()
-
-        if self._offline:
-            return
 
         self._start_apply_objects(reload=reload, complete_reload=complete_reload)
 
@@ -727,6 +723,9 @@ class Firewall:
         try:
             self._start()
         except Exception as original_ex:
+            if self._offline:
+                raise
+
             log.error(
                 "Failed to load user configuration. Falling back to "
                 "full stock configuration."
