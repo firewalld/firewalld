@@ -147,6 +147,8 @@ class FirewallPolicy:
                 if not ((enable and args_list) or (not enable and args_list)):
                     continue
                 args_list = [args_list]
+            if key == "rules":
+                args_list = sorted(args_list)
             for args in args_list:
                 if key == "icmp_blocks":
                     self._icmp_block(enable, _policy, args, transaction)
@@ -451,7 +453,7 @@ class FirewallPolicy:
         return _policy
 
     def __register_rule(self, _obj, rule, timeout, sender):
-        _obj.rules.append(rule)
+        _obj.rules.add(rule)
 
     def remove_rule(self, policy, rule):
         _policy = self._fw.check_policy(policy)

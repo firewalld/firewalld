@@ -64,14 +64,14 @@ IPTABLES_LIST_RULES([filter], [IN_foobar_pre], 0, [dnl
 NFT_LIST_RULES([inet], [filter_IN_policy_foobar_log], 0, [dnl
     table inet firewalld {
         chain filter_IN_policy_foobar_log {
-            ip saddr 10.10.10.11 log
             ip saddr 10.10.10.11 log level audit
+            ip saddr 10.10.10.11 log
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [IN_foobar_log], 0, [dnl
-    LOG 0 -- 10.10.10.11 0.0.0.0/0 LOG flags 0 level 4
     AUDIT 0 -- 10.10.10.11 0.0.0.0/0 AUDIT accept
+    LOG 0 -- 10.10.10.11 0.0.0.0/0 LOG flags 0 level 4
 ])
 NFT_LIST_RULES([inet], [filter_IN_policy_foobar_deny], 0, [dnl
     table inet firewalld {
@@ -147,19 +147,19 @@ NFT_LIST_RULES([inet], [filter_IN_policy_foobar_pre], 0, [dnl
         chain filter_IN_policy_foobar_pre {
             ip6 daddr 1234::4444 ip6 saddr 1234::4321 drop
             ip daddr 10.20.20.23 ip saddr 10.20.20.22 drop
-            ip daddr 10.20.20.21 accept
             icmp echo-request accept
             icmpv6 echo-request accept
+            ip daddr 10.20.20.21 accept
+            icmpv6 nd-neighbor-advert accept
             ip saddr 10.10.10.14 accept
             ip saddr 10.20.20.20 accept
-            icmpv6 nd-neighbor-advert accept
         }
     }
 ])
 IPTABLES_LIST_RULES([filter], [IN_foobar_pre], 0, [dnl
     DROP 0 -- 10.20.20.22 10.20.20.23
-    ACCEPT 0 -- 0.0.0.0/0 10.20.20.21
     ACCEPT 1 -- 0.0.0.0/0 0.0.0.0/0 icmptype 8
+    ACCEPT 0 -- 0.0.0.0/0 10.20.20.21
     ACCEPT 0 -- 10.10.10.14 0.0.0.0/0
     ACCEPT 0 -- 10.20.20.20 0.0.0.0/0
 ])
