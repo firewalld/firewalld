@@ -317,22 +317,18 @@ def test_rich_rule_parse():
 
 def test_rich_rule_parse_2():
     rule1 = firewall.core.rich.Rich_Rule(
-        family="ipv4",
-        priority=44,
         rule_str='rule family="ipv4" port port="3333" protocol="udp" nflog prefix="port-3333: " queue-size=65535 accept priority=5',
     )
     assert rule1.family == "ipv4"
-    assert rule1.priority == 44
+    assert rule1.priority == 5
 
     rule1 = firewall.core.rich.Rich_Rule(
-        family="ipv4",
-        priority=44,
-        rule_str='rule family="ipv4" port port="3333" protocol="udp" nflog prefix="port-3333: " queue-size=65535 accept',
+        rule_str='rule family="ipv4" priority=44 port port="3333" protocol="udp" nflog prefix="port-3333: " queue-size=65535 accept',
     )
     assert rule1.family == "ipv4"
     assert rule1.priority == 44
 
-    with pytest.raises(firewall.errors.FirewallError):
+    with pytest.raises(firewall.errors.BugError):
         rule1 = firewall.core.rich.Rich_Rule(
             family="ipv6",
             priority=44,

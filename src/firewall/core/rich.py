@@ -12,7 +12,7 @@ from firewall import functions
 from firewall.core.ipset import check_ipset_name
 from firewall.core.base import REJECT_TYPES
 from firewall import errors
-from firewall.errors import FirewallError
+from firewall.errors import FirewallError, BugError
 
 
 # Dummy class for EOL singleton instance. It's a class, so we
@@ -639,6 +639,24 @@ class Rich_Rule:
             object.__setattr__(self, "priority", 0)
 
         if rule_str is not None:
+            # If we're being built from a rule_str then we should not be passed
+            # other arguments.
+            if any(
+                [
+                    self.family,
+                    self.priority,
+                    self.source,
+                    self.destination,
+                    self.element,
+                    self.log,
+                    self.audit,
+                    self.action,
+                ]
+            ):
+                raise BugError(
+                    "May not specify other arguments if constructing object using 'rule_str'."
+                )
+
             self._import_from_string(rule_str)
             self.check()
 
