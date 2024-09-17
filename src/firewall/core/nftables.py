@@ -1732,11 +1732,9 @@ class nftables:
 
         log_options = {}
         if isinstance(rich_rule.log, Rich_NFLog):
-            log_options["group"] = (
-                int(rich_rule.log.group) if rich_rule.log.group else 0
-            )
+            log_options["group"] = rich_rule.log.group
             if rich_rule.log.threshold:
-                log_options["queue-threshold"] = int(rich_rule.log.threshold)
+                log_options["queue-threshold"] = rich_rule.log.threshold
         else:
             if rich_rule.log.level:
                 level = (
@@ -2074,7 +2072,7 @@ class nftables:
             }
         )
 
-        if tcp_mss_clamp_value == "pmtu" or tcp_mss_clamp_value is None:
+        if tcp_mss_clamp_value == "pmtu" or not tcp_mss_clamp_value:
             expr_fragments.append(
                 {
                     "mangle": {

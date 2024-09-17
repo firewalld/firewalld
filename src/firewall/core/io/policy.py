@@ -721,11 +721,11 @@ def common_writer(obj, handler):
             else:
                 attrs = {}
                 if rule.log.group:
-                    attrs["group"] = rule.log.group
+                    attrs["group"] = str(rule.log.group)
                 if rule.log.prefix:
                     attrs["prefix"] = rule.log.prefix
                 if rule.log.threshold:
-                    attrs["queue-size"] = rule.log.threshold
+                    attrs["queue-size"] = str(rule.log.threshold)
                 handler.ignorableWhitespace("    ")
                 if rule.log.limit:
                     handler.startElement("nflog", attrs)
