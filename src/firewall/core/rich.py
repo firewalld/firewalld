@@ -5,7 +5,7 @@
 # Authors:
 # Thomas Woerner <twoerner@redhat.com>
 
-from typing import Union, ClassVar
+from typing import ClassVar
 from dataclasses import dataclass, field, InitVar
 
 from firewall import functions
@@ -27,19 +27,71 @@ class _EOLType:
 EOL = _EOLType()
 
 
-@dataclass(frozen=True)
+def lt_objects(left, right):
+    if left is None and right is not None:
+        return True
+    elif left is not None and right is None:
+        return False
+    elif left is None and right is None:
+        return False
+    elif type(left) is type(right):
+        return left < right
+    else:
+        return type(left).__name__ < type(right).__name__
+
+
+def lt_family(left, right):
+    return left.family < right.family
+
+
+def lt_priority(left, right):
+    return left.priority < right.priority
+
+
+def lt_source(left, right):
+    return lt_objects(left.source, right.source)
+
+
+def lt_destination(left, right):
+    return lt_objects(left.destination, right.destination)
+
+
+def lt_element(left, right):
+    return lt_objects(left.element, right.element)
+
+
+def lt_log(left, right):
+    return lt_objects(left.log, right.log)
+
+
+def lt_audit(left, right):
+    return lt_objects(left.audit, right.audit)
+
+
+def lt_action(left, right):
+    return lt_objects(left.action, right.action)
+
+
+@dataclass(frozen=True, order=True)
 class Rich_Source:
     """This object only holds data and is read-only after init. It is also
     hashable and can be used as a dictionary key."""
 
-    addr: Union[str, None]
-    mac: Union[str, None]
-    ipset: Union[str, None]
+    addr: str
+    mac: str
+    ipset: str
     invert: bool = False
 
     def __post_init__(self):
         if not any([self.addr, self.mac, self.ipset]):
             raise FirewallError(errors.INVALID_RULE, "no address, mac and ipset")
+
+        if self.addr is None:
+            object.__setattr__(self, "addr", "")
+        if self.mac is None:
+            object.__setattr__(self, "mac", "")
+        if self.ipset is None:
+            object.__setattr__(self, "ipset", "")
 
         if self.addr:
             if self.mac:
@@ -65,18 +117,23 @@ class Rich_Source:
             return ret + 'ipset="%s"' % self.ipset
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, order=True)
 class Rich_Destination:
     """This object only holds data and is read-only after init. It is also
     hashable and can be used as a dictionary key."""
 
-    addr: Union[str, None]
-    ipset: Union[str, None]
+    addr: str
+    ipset: str
     invert: bool = False
 
     def __post_init__(self):
         if not any([self.addr, self.ipset]):
             raise FirewallError(errors.INVALID_DESTINATION, "no address or ipset")
+
+        if self.addr is None:
+            object.__setattr__(self, "addr", "")
+        if self.ipset is None:
+            object.__setattr__(self, "ipset", "")
 
         if self.addr:
             if self.ipset:
@@ -93,7 +150,7 @@ class Rich_Destination:
             return ret + 'ipset="%s"' % self.ipset
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, order=True)
 class Rich_Service:
     """This object only holds data and is read-only after init. It is also
     hashable and can be used as a dictionary key."""
@@ -104,7 +161,7 @@ class Rich_Service:
         return 'service name="%s"' % (self.name)
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, order=True)
 class Rich_Port:
     """This object only holds data and is read-only after init. It is also
     hashable and can be used as a dictionary key."""
@@ -122,7 +179,7 @@ class Rich_Port:
         return 'port port="%s" protocol="%s"' % (self.port, self.protocol)
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, order=True)
 class Rich_SourcePort:
     """This object only holds data and is read-only after init. It is also
     hashable and can be used as a dictionary key."""
@@ -140,7 +197,7 @@ class Rich_SourcePort:
         return 'source-port port="%s" protocol="%s"' % (self.port, self.protocol)
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, order=True)
 class Rich_Protocol:
     """This object only holds data and is read-only after init. It is also
     hashable and can be used as a dictionary key."""
@@ -164,7 +221,7 @@ class Rich_Masquerade:
         return "masquerade"
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, order=True)
 class Rich_IcmpBlock:
     """This object only holds data and is read-only after init. It is also
     hashable and can be used as a dictionary key."""
@@ -179,7 +236,7 @@ class Rich_IcmpBlock:
         return 'icmp-block name="%s"' % (self.name)
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, order=True)
 class Rich_IcmpType:
     """This object only holds data and is read-only after init. It is also
     hashable and can be used as a dictionary key."""
@@ -194,14 +251,17 @@ class Rich_IcmpType:
         return 'icmp-type name="%s"' % (self.name)
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, order=True)
 class Rich_Tcp_Mss_Clamp:
     """This object only holds data and is read-only after init. It is also
     hashable and can be used as a dictionary key."""
 
-    value: str = None
+    value: str
 
     def __post_init__(self):
+        if self.value is None:
+            object.__setattr__(self, "value", "")
+
         if self.value:
             if not functions.checkTcpMssClamp(self.value):
                 raise FirewallError(errors.INVALID_RULE, str(self))
@@ -213,7 +273,7 @@ class Rich_Tcp_Mss_Clamp:
             return "tcp-mss-clamp"
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, order=True)
 class Rich_ForwardPort:
     """This object only holds data and is read-only after init. It is also
     hashable and can be used as a dictionary key."""
@@ -224,7 +284,6 @@ class Rich_ForwardPort:
     to_address: str
 
     def __post_init__(self):
-        # FIXME: callers should just pass an empty string instead of None.
         if self.to_port is None:
             object.__setattr__(self, "to_port", "")
         if self.to_address is None:
@@ -256,13 +315,13 @@ DURATION_TO_MULT = {
 }
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, order=True)
 class Rich_Limit:
     """This object only holds data and is read-only after init. It is also
     hashable and can be used as a dictionary key."""
 
     value: InitVar[str]  # init only, use rate and duration
-    burst: Union[int, None] = None
+    burst: int = 0
     rate: int = field(init=False)
     duration: str = field(init=False)
 
@@ -304,21 +363,21 @@ class Rich_Limit:
 
     def _burst_parse(self, burst):
         if burst is None:
-            return None
+            return 0
 
         try:
             b = int(burst)
         except:
             raise FirewallError(errors.INVALID_LIMIT, burst)
 
-        if b < 1 or b > 10_000_000:
+        if b < 0 or b > 10_000_000:
             raise FirewallError(errors.INVALID_LIMIT, burst)
 
         return b
 
     def __str__(self):
         s = f'limit value="{self.value}"'
-        if self.burst is not None:
+        if self.burst:
             s += f" burst={self.burst}"
         return s
 
@@ -328,11 +387,16 @@ class Rich_Log:
     """This object only holds data and is read-only after init. It is also
     hashable and can be used as a dictionary key."""
 
-    prefix: str = None
-    level: str = None
+    prefix: str = ""
+    level: str = ""
     limit: Rich_Limit = None
 
     def __post_init__(self):
+        if self.prefix is None:
+            object.__setattr__(self, "prefix", "")
+        if self.level is None:
+            object.__setattr__(self, "level", "")
+
         if self.prefix and len(self.prefix) > 127:
             raise FirewallError(
                 errors.INVALID_LOG_PREFIX, "maximum accepted length of 'prefix' is 127."
@@ -350,6 +414,16 @@ class Rich_Log:
         ]:
             raise FirewallError(errors.INVALID_LOG_LEVEL, self.level)
 
+    def __lt__(self, other):
+        if self.prefix < other.prefix:
+            return True
+        elif self.level < other.level:
+            return True
+        elif lt_objects(self.limit, other.limit):
+            return True
+
+        return False
+
     def __str__(self):
         return "log%s%s%s" % (
             ' prefix="%s"' % (self.prefix) if self.prefix else "",
@@ -363,17 +437,25 @@ class Rich_NFLog:
     """This object only holds data and is read-only after init. It is also
     hashable and can be used as a dictionary key."""
 
-    group: str = None
-    prefix: str = None
-    threshold: str = None
+    group: int
+    prefix: str
+    threshold: int
     limit: Rich_Limit = None
 
     def __post_init__(self):
+        if self.group is None:
+            object.__setattr__(self, "group", 0)
+        if self.prefix is None:
+            object.__setattr__(self, "prefix", "")
+        if self.threshold is None:
+            object.__setattr__(self, "threshold", 0)
+
         if self.group and not functions.checkUINT16(self.group):
             raise FirewallError(
                 errors.INVALID_NFLOG_GROUP,
                 "nflog 'group' must be an integer between 0 and 65535.",
             )
+        object.__setattr__(self, "group", int(str(self.group), 0))
 
         if self.prefix and len(self.prefix) > 127:
             raise FirewallError(
@@ -385,6 +467,19 @@ class Rich_NFLog:
                 errors.INVALID_NFLOG_QUEUE,
                 "nflog 'queue-size' must be an integer between 0 and 65535.",
             )
+        object.__setattr__(self, "threshold", int(str(self.threshold), 0))
+
+    def __lt__(self, other):
+        if self.group < other.group:
+            return True
+        elif self.prefix < other.prefix:
+            return True
+        elif self.threshold < other.threshold:
+            return True
+        elif lt_objects(self.limit, other.limit):
+            return True
+
+        return False
 
     def __str__(self):
         return "nflog%s%s%s%s" % (
@@ -402,6 +497,12 @@ class Rich_Audit:
 
     limit: Rich_Limit = None
 
+    def __lt__(self, other):
+        if lt_objects(self.limit, other.limit):
+            return True
+
+        return False
+
     def __str__(self):
         return "audit%s" % (" %s" % self.limit if self.limit else "")
 
@@ -413,6 +514,12 @@ class Rich_Accept:
 
     limit: Rich_Limit = None
 
+    def __lt__(self, other):
+        if lt_objects(self.limit, other.limit):
+            return True
+
+        return False
+
     def __str__(self):
         return "accept%s" % (" %s" % self.limit if self.limit else "")
 
@@ -422,8 +529,16 @@ class Rich_Reject:
     """This object only holds data and is read-only after init. It is also
     hashable and can be used as a dictionary key."""
 
-    type: str = None
+    type: str = ""
     limit: Rich_Limit = None
+
+    def __lt__(self, other):
+        if self.type < other.type:
+            return True
+        elif lt_objects(self.limit, other.limit):
+            return True
+
+        return False
 
     def __str__(self):
         return "reject%s%s" % (
@@ -438,6 +553,12 @@ class Rich_Drop:
     hashable and can be used as a dictionary key."""
 
     limit: Rich_Limit = None
+
+    def __lt__(self, other):
+        if lt_objects(self.limit, other.limit):
+            return True
+
+        return False
 
     def __str__(self):
         return "drop%s" % (" %s" % self.limit if self.limit else "")
@@ -470,6 +591,14 @@ class Rich_Mark:
             if not functions.checkUINT32(x):
                 # value is uint32
                 raise FirewallError(errors.INVALID_MARK, x)
+
+    def __lt__(self, other):
+        if self.set < other.set:
+            return True
+        elif lt_objects(self.limit, other.limit):
+            return True
+
+        return False
 
     def __str__(self):
         return "mark set=%s%s" % (self.set, " %s" % self.limit if self.limit else "")
@@ -504,9 +633,34 @@ class Rich_Rule:
     action: [Rich_Accept, Rich_Reject, Rich_Drop, Rich_Mark] = None
 
     def __post_init__(self, rule_str):
+        if self.family is None:
+            object.__setattr__(self, "family", "")
+        if self.priority is None:
+            object.__setattr__(self, "priority", 0)
+
         if rule_str is not None:
             self._import_from_string(rule_str)
             self.check()
+
+    def __lt__(self, other):
+        lt_functions = [
+            lt_priority,
+            lt_family,
+            lt_source,
+            lt_destination,
+            lt_element,
+            lt_log,
+            lt_audit,
+            lt_action,
+        ]
+
+        for _lt in lt_functions:
+            if _lt(self, other):
+                return True
+            elif _lt(other, self):
+                return False
+
+        return False
 
     @staticmethod
     def _lexer(rule_str):
@@ -925,20 +1079,20 @@ class Rich_Rule:
                     attrs["limit"] = Rich_Limit(
                         attrs["limit.value"], attrs.get("limit.burst")
                     )
-                    attrs.pop("limit.value", None)
-                    attrs.pop("limit.burst", None)
+                    attrs.pop("limit.value", "")
+                    attrs.pop("limit.burst", "")
                     in_elements.pop()  # limit
                     index = index - 1  # return token to input
 
             index = index + 1
 
     def check(self):
-        if self.family is not None:
+        if self.family:
             if self.family not in ["ipv4", "ipv6"]:
                 raise FirewallError(errors.INVALID_FAMILY, self.family)
         else:
             if (
-                self.source is not None and self.source.addr is not None
+                self.source is not None and self.source.addr
             ) or self.destination is not None:
                 raise FirewallError(errors.MISSING_FAMILY)
             if isinstance(self.element, Rich_ForwardPort):
@@ -983,7 +1137,7 @@ class Rich_Rule:
         if isinstance(self.element, Rich_Masquerade):
             if self.action is not None:
                 raise FirewallError(errors.INVALID_RULE, "masquerade and action")
-            if self.source is not None and self.source.mac is not None:
+            if self.source is not None and self.source.mac:
                 raise FirewallError(errors.INVALID_RULE, "masquerade and mac source")
         elif isinstance(self.element, Rich_IcmpBlock):
             if self.action:
@@ -993,7 +1147,7 @@ class Rich_Rule:
                 self.family, self.element.to_address
             ):
                 raise FirewallError(errors.INVALID_ADDR, self.element.to_address)
-            if self.family is None:
+            if not self.family:
                 raise FirewallError(errors.INVALID_FAMILY)
             if self.action is not None:
                 raise FirewallError(errors.INVALID_RULE, "forward-port and action")
