@@ -2371,7 +2371,7 @@ AT_DATA([./ipsets/foobar.xml], [dnl
 </rule>
 </zone>
 ])
-    FWD_CHECK([--check-config], 122, ignore, ignore)
+    FWD_CHECK([--check-config], 141, ignore, ignore)
 
     AT_DATA([./zones/foobar.xml], [dnl
 <?xml version="1.0" encoding="utf-8"?>
@@ -2382,7 +2382,7 @@ AT_DATA([./ipsets/foobar.xml], [dnl
 </rule>
 </zone>
 ])
-    FWD_CHECK([--check-config], 122, ignore, ignore)
+    FWD_CHECK([--check-config], 125, ignore, ignore)
 
     AT_DATA([./zones/foobar.xml], [dnl
 <?xml version="1.0" encoding="utf-8"?>
@@ -2393,7 +2393,7 @@ AT_DATA([./ipsets/foobar.xml], [dnl
 </rule>
 </zone>
 ])
-    FWD_CHECK([--check-config], 122, ignore, ignore)
+    FWD_CHECK([--check-config], 142, ignore, ignore)
 
     AT_DATA([./zones/foobar.xml], [dnl
 <?xml version="1.0" encoding="utf-8"?>
@@ -2404,7 +2404,7 @@ AT_DATA([./ipsets/foobar.xml], [dnl
 </rule>
 </zone>
 ])
-    FWD_CHECK([--check-config], 122, ignore, ignore)
+    FWD_CHECK([--check-config], 143, ignore, ignore)
 
     AT_DATA([./zones/foobar.xml], [dnl
 <?xml version="1.0" encoding="utf-8"?>
