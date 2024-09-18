@@ -11,7 +11,6 @@ from firewall import config
 from firewall.functions import (
     checkIP,
     checkIP6,
-    checkUINT16,
     coalescePortRange,
     max_policy_name_len,
     portInPortRange,
@@ -294,28 +293,9 @@ def common_startElement(obj, name, attrs):
         level = None
         if "level" in attrs:
             level = attrs["level"]
-            if level not in [
-                "emerg",
-                "alert",
-                "crit",
-                "error",
-                "warning",
-                "notice",
-                "info",
-                "debug",
-            ]:
-                raise FirewallError(
-                    errors.INVALID_RULE,
-                    f"Invalid log level in rule '{str(obj._rule)}'.",
-                )
         prefix = None
         if "prefix" in attrs:
             prefix = attrs["prefix"]
-            if not prefix or len(prefix) > 127:
-                raise FirewallError(
-                    errors.INVALID_RULE,
-                    f"Invalid (or too long) log prefix in rule '{str(obj._rule)}'.",
-                )
         obj._rule = dataclasses.replace(obj._rule, log=rich.Rich_Log(prefix, level))
         obj._limit_ok = obj._rule.log
 
@@ -329,27 +309,12 @@ def common_startElement(obj, name, attrs):
         group = None
         if "group" in attrs:
             group = attrs["group"]
-            if not checkUINT16(group):
-                raise FirewallError(
-                    errors.INVALID_RULE,
-                    f"Invalid nflog group value in rule '{str(obj._rule)}'.",
-                )
         prefix = None
         if "prefix" in attrs:
             prefix = attrs["prefix"]
-            if not prefix or len(prefix) > 127:
-                raise FirewallError(
-                    errors.INVALID_RULE,
-                    f"Invalid (or too long) log prefix in rule '{str(obj._rule)}'.",
-                )
         threshold = None
         if "queue-size" in attrs:
             threshold = attrs["queue-size"]
-            if not checkUINT16(threshold):
-                raise FirewallError(
-                    errors.INVALID_RULE,
-                    f"Invalid nflog queue-size in rule '{str(obj._rule)}'.",
-                )
         obj._rule = dataclasses.replace(
             obj._rule, log=rich.Rich_NFLog(group, prefix, threshold)
         )
@@ -370,10 +335,6 @@ def common_startElement(obj, name, attrs):
         priority = 0
         if "family" in attrs:
             family = attrs["family"]
-            if family not in ["ipv4", "ipv6"]:
-                raise FirewallError(
-                    errors.INVALID_RULE, f"Invalid family in rule '{str(obj._rule)}'."
-                )
         if "priority" in attrs:
             priority = int(attrs["priority"])
         obj._rule = rich.Rich_Rule(family=family, priority=priority)
