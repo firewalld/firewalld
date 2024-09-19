@@ -43,7 +43,7 @@ These are the runtime dependencies:
 
 ```
   linux >= 5.3
-  python >= 3.7
+  python >= 3.8
   python3-dbus
   python3-gobject
   python3-nftables >= 0.9.4
