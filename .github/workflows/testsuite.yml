@@ -23,7 +23,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.7]
+        python-version: [3.8]
         libnftnl-version: [libnftnl-1.2.3]
         nftables-version: [v1.0.5]
         keyword: [offline, nftables, iptables]
@@ -40,7 +40,7 @@ jobs:
             no-iptables: true
             no-ip6tables: true
         include:
-          - python-version: 3.7
+          - python-version: 3.8
             libnftnl-version: master
             nftables-version: master
             keyword: nftables
