@@ -48,7 +48,7 @@ BUILT_SOURCES = \
 
 @INTLTOOL_DESKTOP_RULE@
 @INTLTOOL_POLICY_RULE@
-@INTLTOOL_XML_NOMERGE_RULE@
+@INTLTOOL_XML_RULE@
 @GSETTINGS_RULES@
 
 all: $(desktop_DATA) $(appdata_DATA) $(applet_desktop_DATA) $(polkit1_action_DATA) $(gsettings_SCHEMAS)
