@@ -116,6 +116,7 @@ m4_define([FWD_START_TEST], [
     test -z "$IP6TABLES" && export IP6TABLES="ip6tables"
     test -z "$IP6TABLES_RESTORE" && export IP6TABLES_RESTORE="ip6tables-restore"
     test -z "$IPSET" && export IPSET="ipset"
+    test -z "$PODMAN" && export PODMAN="podman"
 
     dnl We test some unicode strings and autotest overrides LC_ALL=C, so set it
     dnl again for every test.
