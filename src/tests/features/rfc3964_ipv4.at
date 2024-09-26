@@ -24,6 +24,7 @@ NFT_LIST_RULES([inet], [filter_OUTPUT], 0, [dnl
     table inet firewalld {
     chain filter_OUTPUT {
     ct state established,related accept
+    ct status dnat accept
     oifname "lo" accept
     ip6 daddr { ::/96, ::ffff:0.0.0.0/96, 2002::/24, 2002:a00::/24, 2002:7f00::/24, 2002:a9fe::/32, 2002:ac10::/28, 2002:c0a8::/32, 2002:e000::/19 } log prefix "RFC3964_IPv4_REJECT: " reject with icmpv6 addr-unreachable
     jump filter_OUTPUT_POLICIES
@@ -62,7 +63,7 @@ IP6TABLES_LIST_RULES([filter], [FORWARD], 0, [dnl
     REJECT 0 -- ::/0 ::/0 reject-with icmp6-adm-prohibited
 ])
 IP6TABLES_LIST_RULES([filter], [OUTPUT], 0, [dnl
-    ACCEPT 0 -- ::/0 ::/0 ctstate RELATED,ESTABLISHED
+    ACCEPT 0 -- ::/0 ::/0 ctstate RELATED,ESTABLISHED,DNAT
     ACCEPT 0 -- ::/0 ::/0
     OUTPUT_direct 0 -- ::/0 ::/0
     RFC3964_IPv4 0 -- ::/0 ::/0
@@ -90,6 +91,7 @@ NFT_LIST_RULES([inet], [filter_OUTPUT], 0, [dnl
     table inet firewalld {
     chain filter_OUTPUT {
     ct state established,related accept
+    ct status dnat accept
     oifname "lo" accept
     jump filter_OUTPUT_POLICIES
     }
@@ -108,7 +110,7 @@ IP6TABLES_LIST_RULES([filter], [FORWARD], 0, [dnl
     REJECT 0 -- ::/0 ::/0 reject-with icmp6-adm-prohibited
 ])
 IP6TABLES_LIST_RULES([filter], [OUTPUT], 0, [dnl
-    ACCEPT 0 -- ::/0 ::/0 ctstate RELATED,ESTABLISHED
+    ACCEPT 0 -- ::/0 ::/0 ctstate RELATED,ESTABLISHED,DNAT
     ACCEPT 0 -- ::/0 ::/0
     OUTPUT_direct 0 -- ::/0 ::/0
     OUTPUT_POLICIES 0 -- ::/0 ::/0

@@ -220,6 +220,22 @@
         </varlistentry>
 
         <varlistentry>
+            <term><option>StrictForwardPorts</option></term>
+            <listitem>
+                <para>
+                  If set to yes, the generated destination NAT (DNAT) rules will
+                  NOT accept traffic that was DNAT'd by other entities, e.g.
+                  docker. Firewalld will be strict and not allow published
+                  container ports until they're explicitly allowed via firewalld.
+                  If set to no, then docker (and podman) integrates seamlessly
+                  with firewalld. Published container ports are implicitly
+                  allowed.
+                  Defaults to "no".
+                </para>
+            </listitem>
+        </varlistentry>
+
+        <varlistentry>
             <term><option>AllowZoneDrifting</option></term>
             <listitem>
                 <para>
