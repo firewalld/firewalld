@@ -737,6 +737,16 @@ class ip4tables:
         # nothing to do, they always exist
         return []
 
+    def _build_default_rules_dnat(self, chain):
+        dnat_rules = []
+        if self._fw._strict_forward_ports:
+            self.our_chains["filter"].add(f"{chain}_dnat")
+            dnat_rules.append(f"-N {chain}_dnat")
+            dnat_rules.append(f"-A {chain}_dnat -j %%REJECT%%")
+            dnat_rules.append(f"-A {chain} -m conntrack --ctstate DNAT -j {chain}_dnat")
+
+        return dnat_rules
+
     def build_default_rules(self, log_denied="off"):
         default_rules = {}
 
@@ -790,9 +800,14 @@ class ip4tables:
 
         default_rules["filter"] = []
         self.our_chains["filter"] = set()
+
         default_rules["filter"].append(
-            "-A INPUT -m conntrack --ctstate RELATED,ESTABLISHED,DNAT -j ACCEPT"
+            "-A INPUT -m conntrack --ctstate RELATED,ESTABLISHED{} -j ACCEPT".format(
+                "" if self._fw._strict_forward_ports else ",DNAT"
+            )
         )
+        default_rules["filter"].extend(self._build_default_rules_dnat("INPUT"))
+
         default_rules["filter"].append("-A INPUT -i lo -j ACCEPT")
         if log_denied != "off":
             default_rules["filter"].append(
@@ -814,8 +829,12 @@ class ip4tables:
         default_rules["filter"].append("-A INPUT -j %%REJECT%%")
 
         default_rules["filter"].append(
-            "-A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED,DNAT -j ACCEPT"
+            "-A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED{} -j ACCEPT".format(
+                "" if self._fw._strict_forward_ports else ",DNAT"
+            )
         )
+        default_rules["filter"].extend(self._build_default_rules_dnat("FORWARD"))
+
         default_rules["filter"].append("-A FORWARD -i lo -j ACCEPT")
         if log_denied != "off":
             default_rules["filter"].append(
@@ -836,9 +855,16 @@ class ip4tables:
             )
         default_rules["filter"].append("-A FORWARD -j %%REJECT%%")
 
+        default_rules["filter"] += ["-N OUTPUT_direct"]
+
+        default_rules["filter"].append(
+            "-A OUTPUT -m conntrack --ctstate RELATED,ESTABLISHED{} -j ACCEPT".format(
+                "" if self._fw._strict_forward_ports else ",DNAT"
+            )
+        )
+        default_rules["filter"].extend(self._build_default_rules_dnat("OUTPUT"))
+
         default_rules["filter"] += [
-            "-N OUTPUT_direct",
-            "-A OUTPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT",
             "-A OUTPUT -o lo -j ACCEPT",
             "-A OUTPUT -j OUTPUT_direct",
         ]
@@ -1602,6 +1628,7 @@ class ip4tables:
         _policy = self._fw.policy.policy_base_chain_name(
             policy, table, POLICY_CHAIN_PREFIX
         )
+        p_obj = self._fw.policy.get_policy(policy)
         add_del = {True: "-A", False: "-D"}[enable]
 
         to = ""
@@ -1636,6 +1663,28 @@ class ip4tables:
             + port_fragment
             + ["-j", "DNAT", "--to-destination", to]
         )
+
+        if self._fw._strict_forward_ports:
+            if "HOST" in p_obj.ingress_zones:
+                chain = "OUTPUT"
+            elif toaddr:
+                chain = "FORWARD"
+            else:
+                chain = "INPUT"
+            rules.append(
+                ["-t", "filter", "-I" if enable else "-D", f"{chain}_dnat"]
+                + [
+                    "-m",
+                    "conntrack",
+                    "--ctstate",
+                    "DNAT",
+                    "--ctdir",
+                    "ORIGINAL",
+                    "--ctorigdstport",
+                    portStr(port),
+                ]
+                + ["-j", "ACCEPT"]
+            )
 
         return rules
 
@@ -1895,14 +1944,21 @@ class ip6tables(ip4tables):
                 )
 
         # Inject into FORWARD and OUTPUT chains
-        rules.append(["-t", "filter", "-I", "OUTPUT", "4", "-j", chain_name])
+        index = 4
+        if self._fw._strict_forward_ports:
+            index += 1
+        rules.append(["-t", "filter", "-I", "OUTPUT", str(index), "-j", chain_name])
+
+        index += 1
+        if self._fw.get_log_denied() != "off":
+            index += 1
         rules.append(
             [
                 "-t",
                 "filter",
                 "-I",
                 "FORWARD",
-                "6" if self._fw.get_log_denied() != "off" else "5",
+                str(index),
                 "-j",
                 chain_name,
             ]
