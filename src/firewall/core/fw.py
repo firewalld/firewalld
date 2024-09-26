@@ -115,6 +115,7 @@ class Firewall:
         self._nftables_flowtable = config.FALLBACK_NFTABLES_FLOWTABLE
         self._nftables_counters = config.FALLBACK_NFTABLES_COUNTERS
         self._nftables_table_owner = config.FALLBACK_NFTABLES_TABLE_OWNER
+        self._strict_forward_ports = config.FALLBACK_STRICT_FORWARD_PORTS
 
         if self._offline:
             self.ip4tables_enabled = False
@@ -483,6 +484,16 @@ class Firewall:
                     self._nftables_table_owner = True
                 log.debug1(
                     "NftablesTableOwner is set to '%s'", self._nftables_table_owner
+                )
+
+            if self._firewalld_conf.get("StrictForwardPorts"):
+                value = self._firewalld_conf.get("StrictForwardPorts")
+                if value.lower() in ["no", "false"]:
+                    self._strict_forward_ports = False
+                else:
+                    self._strict_forward_ports = True
+                log.debug1(
+                    "StrictForwardPorts is set to '%s'", self._strict_forward_ports
                 )
 
         self.config.set_firewalld_conf(copy.deepcopy(self._firewalld_conf))

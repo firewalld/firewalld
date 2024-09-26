@@ -11,7 +11,7 @@ dnl rules have not changed so rule count should not change
 m4_define([check_rule_count], [
 m4_if(nftables, FIREWALL_BACKEND, [
 NS_CHECK([nft list table inet firewalld | wc -l], 0, [dnl
-331
+332
 ])
 ], [ dnl iptables
 NS_CHECK([iptables-save | wc -l], 0, [dnl

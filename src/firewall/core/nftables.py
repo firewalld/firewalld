@@ -703,6 +703,90 @@ class nftables:
     def build_default_tables(self):
         return self._build_add_table_rules(TABLE_NAME)
 
+    def _build_default_rules_dnat(self, chain):
+        dnat_rules = []
+        if self._fw._strict_forward_ports:
+            # Use a dedicated chain to check for DNAT'd packets on expected ports.
+            # Drop all other DNAT'd ports.
+            #
+            dnat_rules.append(
+                {
+                    "add": {
+                        "chain": {
+                            "family": "inet",
+                            "table": TABLE_NAME,
+                            "name": f"filter_{chain}_dnat",
+                        }
+                    }
+                }
+            )
+            dnat_rules.append(
+                {
+                    "add": {
+                        "rule": {
+                            "family": "inet",
+                            "table": TABLE_NAME,
+                            "chain": f"filter_{chain}_dnat",
+                            "expr": [
+                                {
+                                    "reject": {
+                                        "type": "icmpx",
+                                        "expr": "admin-prohibited",
+                                    }
+                                }
+                            ],
+                        }
+                    }
+                }
+            )
+            dnat_rules.append(
+                {
+                    "add": {
+                        "rule": {
+                            "family": "inet",
+                            "table": TABLE_NAME,
+                            "chain": f"filter_{chain}",
+                            "expr": [
+                                {
+                                    "match": {
+                                        "left": {"ct": {"key": "status"}},
+                                        "op": "in",
+                                        "right": "dnat",
+                                    }
+                                },
+                                {"jump": {"target": f"filter_{chain}_dnat"}},
+                            ],
+                        }
+                    }
+                }
+            )
+        else:
+            # Generic accept of all DNAT'd packets.
+            #
+            dnat_rules.append(
+                {
+                    "add": {
+                        "rule": {
+                            "family": "inet",
+                            "table": TABLE_NAME,
+                            "chain": f"filter_{chain}",
+                            "expr": [
+                                {
+                                    "match": {
+                                        "left": {"ct": {"key": "status"}},
+                                        "op": "in",
+                                        "right": "dnat",
+                                    }
+                                },
+                                {"accept": None},
+                            ],
+                        }
+                    }
+                }
+            )
+
+        return dnat_rules
+
     def build_default_rules(self, log_denied="off"):
         default_rules = []
         for chain in IPTABLES_TO_NFT_HOOK["mangle"].keys():
@@ -824,27 +908,9 @@ class nftables:
                 }
             }
         )
-        default_rules.append(
-            {
-                "add": {
-                    "rule": {
-                        "family": "inet",
-                        "table": TABLE_NAME,
-                        "chain": "filter_%s" % "INPUT",
-                        "expr": [
-                            {
-                                "match": {
-                                    "left": {"ct": {"key": "status"}},
-                                    "op": "in",
-                                    "right": "dnat",
-                                }
-                            },
-                            {"accept": None},
-                        ],
-                    }
-                }
-            }
-        )
+
+        default_rules.extend(self._build_default_rules_dnat("INPUT"))
+
         default_rules.append(
             {
                 "add": {
@@ -1029,27 +1095,9 @@ class nftables:
                 }
             }
         )
-        default_rules.append(
-            {
-                "add": {
-                    "rule": {
-                        "family": "inet",
-                        "table": TABLE_NAME,
-                        "chain": "filter_%s" % "FORWARD",
-                        "expr": [
-                            {
-                                "match": {
-                                    "left": {"ct": {"key": "status"}},
-                                    "op": "in",
-                                    "right": "dnat",
-                                }
-                            },
-                            {"accept": None},
-                        ],
-                    }
-                }
-            }
-        )
+
+        default_rules.extend(self._build_default_rules_dnat("FORWARD"))
+
         default_rules.append(
             {
                 "add": {
@@ -1191,6 +1239,9 @@ class nftables:
                 }
             }
         )
+
+        default_rules.extend(self._build_default_rules_dnat("OUTPUT"))
+
         default_rules.append(
             {
                 "add": {
@@ -2308,6 +2359,7 @@ class nftables:
         _policy = self._fw.policy.policy_base_chain_name(
             policy, table, POLICY_CHAIN_PREFIX
         )
+        p_obj = self._fw.policy.get_policy(policy)
         add_del = {True: "add", False: "delete"}[enable]
 
         expr_fragments = []
@@ -2369,6 +2421,30 @@ class nftables:
         }
         rule.update(self._rich_rule_priority_fragment(rich_rule))
         rules.append({add_del: {"rule": rule}})
+
+        if self._fw._strict_forward_ports:
+            if "HOST" in p_obj.ingress_zones:
+                chain = "OUTPUT"
+            elif toaddr:
+                chain = "FORWARD"
+            else:
+                chain = "INPUT"
+            rule = {
+                "family": "inet",
+                "table": TABLE_NAME,
+                "chain": f"filter_{chain}_dnat",
+                "expr": [
+                    {
+                        "match": {
+                            "left": {"ct": {"key": "proto-dst", "dir": "original"}},
+                            "op": "==",
+                            "right": self._port_fragment(port),
+                        },
+                    },
+                    {"accept": None},
+                ],
+            }
+            rules.append({"insert" if enable else "delete": {"rule": rule}})
 
         return rules
 
@@ -2660,7 +2736,7 @@ class nftables:
                         "family": "inet",
                         "table": TABLE_NAME,
                         "chain": "filter_OUTPUT",
-                        "index": 1,
+                        "index": 2,
                         "expr": expr_fragments,
                     }
                 }
