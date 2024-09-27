@@ -290,6 +290,7 @@ CONFIG_FILES = \
 	services/prometheus-node-exporter.xml \
 	services/prometheus.xml \
 	services/proxy-dhcp.xml \
+	services/proxy.xml \
 	services/ps2link.xml \
 	services/ps3netsrv.xml \
 	services/ptp.xml \
@@ -326,6 +327,7 @@ CONFIG_FILES = \
 	services/snmp.xml \
 	services/snmptls-trap.xml \
 	services/snmptls.xml \
+	services/socks.xml \
 	services/spideroak-lansync.xml \
 	services/spotify-sync.xml \
 	services/squid.xml \
