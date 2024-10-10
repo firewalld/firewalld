@@ -7,14 +7,14 @@ jobs:
       apt-dependencies: |
         autoconf automake ebtables intltool ipset iptables libdbus-1-dev \
         libgirepository1.0-dev libglib2.0-dev libxml2-utils network-manager \
-        pkg-config policykit-1 gir1.2-nm-1.0 libnm0
+        pkg-config policykit-1 gir1.2-nm-1.0 libnm0 libcairo2-dev
       pip-dependencies: |
         dbus-python PyGObject
 
     name: >-
       python-${{ matrix.python-version }}
       nftables-${{ matrix.nftables-version }}
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
 
     strategy:
       fail-fast: false
@@ -96,6 +96,12 @@ jobs:
       - name: restart polkit
         run: |
           sudo systemctl restart polkit
+
+      # Some tests use "sudo -u nobody". Make sure user nobody can access our
+      # home directory.
+      - name: chmod $HOME
+        run: |
+          chmod o+x $HOME
 
       - name: run integration testsuite
         run: |
