@@ -195,6 +195,7 @@ CONFIG_FILES = \
 	services/ganglia-client.xml \
 	services/ganglia-master.xml \
 	services/git.xml \
+	services/gitea.xml \
 	services/gpsd.xml \
 	services/grafana.xml \
 	services/gre.xml \
