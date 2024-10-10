@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>syslog-ng</short>
+  <description>Syslog-ng is a versatile and highly scalable system logging service that collects, filters, parses, and forwards logs from various sources over TCP and UDP on standard and secure ports. It supports advanced log management and is often used for centralizing logs in distributed environments.</description>
+  <port protocol="tcp" port="514"/>
+  <port protocol="udp" port="514"/>
+  <port protocol="tcp" port="601"/>
+  <port protocol="tcp" port="6514"/>
+</service>
