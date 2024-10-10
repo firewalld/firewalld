@@ -14,7 +14,7 @@ jobs:
         iptables libdbus-1-dev libgirepository1.0-dev libglib2.0-dev \
         libxml2-utils nftables pkg-config python3-nftables xsltproc
 
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     permissions:
       contents: write
 
