@@ -16,8 +16,8 @@ jobs:
     strategy:
       matrix:
         python-version: [3.8]
-        libnftnl-version: [libnftnl-1.2.3]
-        nftables-version: [v1.0.5]
+        libnftnl-version: [libnftnl-1.2.5]
+        nftables-version: [v1.0.7]
 
     steps:
       - name: checkout
