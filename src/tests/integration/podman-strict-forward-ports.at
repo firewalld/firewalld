@@ -68,6 +68,10 @@ echo hello world > index.html && dnl
 python3 -m http.server 80"], 0, [ignore])
 sleep 10
 
+# FIXME: debug CI
+nft list ruleset
+iptables-save
+
 dnl verify access is blocked: local to HOST_IP
 AT_CHECK([curl --max-time 10 "http://10.10.10.1:55080/index.html"], 7, [ignore], [ignore])
 dnl verify access is blocked: remote (namespace) to HOST_IP
