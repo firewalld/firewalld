@@ -75,7 +75,7 @@ jobs:
       - name: build firewalld
         run: |
           ./autogen.sh
-          ./configure --disable-docs ${{ matrix.configure_args }}
+          ./configure --disable-docs ${{ matrix.configure_args }} ac_cv_path_PODMAN=docker
           make -j $(nproc)
 
       - name: stop NetworkManager
