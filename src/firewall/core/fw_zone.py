@@ -106,7 +106,7 @@ class FirewallZone:
             "source_ports",
             "icmp_blocks",
             "icmp_block_inversion",
-            "rules_str",
+            "rules",
             "protocols",
         ]:
             if (
@@ -136,18 +136,15 @@ class FirewallZone:
             ):
                 # zone --> any zone
                 setattr(p_obj, setting, copy.deepcopy(getattr(z_obj, setting)))
-            elif setting in ["rules_str"]:
-                p_obj.rules_str = []
-                p_obj.rules = []
-                for rule_str in z_obj.rules_str:
+            elif setting in ["rules"]:
+                p_obj.rules = set()
+                for rule in z_obj.rules:
                     current_policy = self.policy_name_from_zones(fromZone, toZone)
 
-                    rule = Rich_Rule(rule_str=rule_str)
                     if current_policy == self._get_policy_for_rich_rule(
                         z_obj.name, rule
                     ):
-                        p_obj.rules_str.append(rule_str)
-                        p_obj.rules.append(rule)
+                        p_obj.rules.add(rule)
 
         return p_obj
 
@@ -338,7 +335,9 @@ class FirewallZone:
     def set_config_with_settings_dict(self, zone, settings, sender):
         # stupid wrappers to convert rich rule string to rich rule object
         def add_rule_wrapper(zone, rule_str, timeout=0, sender=None):
-            self.add_rule(zone, Rich_Rule(rule_str=rule_str), timeout=0, sender=sender)
+            self.add_rule(
+                zone, Rich_Rule(rule_str=rule_str), timeout=timeout, sender=sender
+            )
 
         def remove_rule_wrapper(zone, rule_str):
             self.remove_rule(zone, Rich_Rule(rule_str=rule_str))

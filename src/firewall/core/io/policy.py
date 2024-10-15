@@ -5,12 +5,12 @@ import xml.sax as sax
 import os
 import io
 import shutil
+import dataclasses
 
 from firewall import config
 from firewall.functions import (
     checkIP,
     checkIP6,
-    checkUINT16,
     coalescePortRange,
     max_policy_name_len,
     portInPortRange,
@@ -45,29 +45,27 @@ def common_startElement(obj, name, attrs):
     elif name == "service":
         if obj._rule:
             if obj._rule.element:
-                log.warning(
-                    "Invalid rule: More than one element in rule '%s', ignoring.",
-                    str(obj._rule),
+                raise FirewallError(
+                    errors.INVALID_RULE,
+                    f"More than one element in rule '{str(obj._rule)}'.",
                 )
-                obj._rule_error = True
-                return True
-            obj._rule.element = rich.Rich_Service(attrs["name"])
+            obj._rule = dataclasses.replace(
+                obj._rule, element=rich.Rich_Service(attrs["name"])
+            )
             return True
         if attrs["name"] not in obj.item.services:
             obj.item.services.append(attrs["name"])
-        else:
-            log.warning("Service '%s' already set, ignoring.", attrs["name"])
 
     elif name == "port":
         if obj._rule:
             if obj._rule.element:
-                log.warning(
-                    "Invalid rule: More than one element in rule '%s', ignoring.",
-                    str(obj._rule),
+                raise FirewallError(
+                    errors.INVALID_RULE,
+                    f"More than one element in rule '{str(obj._rule)}'.",
                 )
-                obj._rule_error = True
-                return True
-            obj._rule.element = rich.Rich_Port(attrs["port"], attrs["protocol"])
+            obj._rule = dataclasses.replace(
+                obj._rule, element=rich.Rich_Port(attrs["port"], attrs["protocol"])
+            )
             return True
         check_port(attrs["port"])
         check_tcpudp(attrs["protocol"])
@@ -79,19 +77,7 @@ def common_startElement(obj, name, attrs):
         )
         for port_id in existing_port_ids:
             if portInPortRange(new_port_id[0], port_id[0]):
-                # the range is wholly contained already, so just warn
-                _name = (
-                    obj.item.derived_from_zone
-                    if isinstance(obj.item, Policy)
-                    else obj.item.name
-                )
-                log.warning(
-                    FirewallError(
-                        errors.ALREADY_ENABLED,
-                        "'%s:%s' already in '%s'"
-                        % (new_port_id[0], attrs["protocol"], _name),
-                    )
-                )
+                # the range is wholly contained already; ignore
                 break  # for
         else:
             # the range can be coalesced into the existing set
@@ -109,84 +95,72 @@ def common_startElement(obj, name, attrs):
     elif name == "protocol":
         if obj._rule:
             if obj._rule.element:
-                log.warning(
-                    "Invalid rule: More than one element in rule '%s', ignoring.",
-                    str(obj._rule),
+                raise FirewallError(
+                    errors.INVALID_RULE,
+                    f"More than one element in rule '{str(obj._rule)}'.",
                 )
-                obj._rule_error = True
-                return True
-            obj._rule.element = rich.Rich_Protocol(attrs["value"])
+            obj._rule = dataclasses.replace(
+                obj._rule, element=rich.Rich_Protocol(attrs["value"])
+            )
         else:
             check_protocol(attrs["value"])
             if attrs["value"] not in obj.item.protocols:
                 obj.item.protocols.append(attrs["value"])
-            else:
-                log.warning("Protocol '%s' already set, ignoring.", attrs["value"])
 
     elif name == "tcp-mss-clamp":
         if obj._rule:
             if obj._rule.element:
-                log.warning(
-                    "Invalid rule: More than one element in rule '%s', ignoring.",
-                    str(obj._rule),
+                raise FirewallError(
+                    errors.INVALID_RULE,
+                    f"More than one element in rule '{str(obj._rule)}'.",
                 )
-                obj._rule_error = True
-                return True
             _value = "pmtu"
             if "value" in attrs and attrs["value"] not in [None, "None"]:
                 _value = attrs["value"]
-            obj._rule.element = rich.Rich_Tcp_Mss_Clamp(_value)
+            obj._rule = dataclasses.replace(
+                obj._rule, element=rich.Rich_Tcp_Mss_Clamp(_value)
+            )
         else:
-            s = ""
-            if "value" in attrs:
-                s = f" (value='{attrs['value']})'"
-            log.warning("Invalid rule: tcp-mss-clamp%s outside of rule", s)
+            raise FirewallError(errors.INVALID_RULE, "tcp-mss-clamp outside of rule.")
 
     elif name == "icmp-block":
         if obj._rule:
             if obj._rule.element:
-                log.warning(
-                    "Invalid rule: More than one element in rule '%s', ignoring.",
-                    str(obj._rule),
+                raise FirewallError(
+                    errors.INVALID_RULE,
+                    f"More than one element in rule '{str(obj._rule)}'.",
                 )
-                obj._rule_error = True
-                return True
-            obj._rule.element = rich.Rich_IcmpBlock(attrs["name"])
+            obj._rule = dataclasses.replace(
+                obj._rule, element=rich.Rich_IcmpBlock(attrs["name"])
+            )
             return True
         if attrs["name"] not in obj.item.icmp_blocks:
             obj.item.icmp_blocks.append(attrs["name"])
-        else:
-            log.warning("icmp-block '%s' already set, ignoring.", attrs["name"])
 
     elif name == "icmp-type":
         if obj._rule:
             if obj._rule.element:
-                log.warning(
-                    "Invalid rule: More than one element in rule '%s', ignoring.",
-                    str(obj._rule),
+                raise FirewallError(
+                    errors.INVALID_RULE,
+                    f"More than one element in rule '{str(obj._rule)}'.",
                 )
-                obj._rule_error = True
-                return True
-            obj._rule.element = rich.Rich_IcmpType(attrs["name"])
+            obj._rule = dataclasses.replace(
+                obj._rule, element=rich.Rich_IcmpType(attrs["name"])
+            )
             return True
         else:
-            log.warning("Invalid rule: icmp-block '%s' outside of rule", attrs["name"])
+            raise FirewallError(errors.INVALID_RULE, "icmp-block outside of rule.")
 
     elif name == "masquerade":
         if obj._rule:
             if obj._rule.element:
-                log.warning(
-                    "Invalid rule: More than one element in rule '%s', ignoring.",
-                    str(obj._rule),
+                raise FirewallError(
+                    errors.INVALID_RULE,
+                    f"More than one element in rule '{str(obj._rule)}'.",
                 )
-                obj._rule_error = True
-                return True
-            obj._rule.element = rich.Rich_Masquerade()
+            obj._rule = dataclasses.replace(obj._rule, element=rich.Rich_Masquerade())
         else:
-            if obj.item.masquerade:
-                log.warning("Masquerade already set, ignoring.")
-            else:
-                obj.item.masquerade = True
+            obj.item.masquerade = True
 
     elif name == "forward-port":
         to_port = ""
@@ -198,14 +172,15 @@ def common_startElement(obj, name, attrs):
 
         if obj._rule:
             if obj._rule.element:
-                log.warning(
-                    "Invalid rule: More than one element in rule '%s', ignoring.",
-                    str(obj._rule),
+                raise FirewallError(
+                    errors.INVALID_RULE,
+                    f"More than one element in rule '{str(obj._rule)}'.",
                 )
-                obj._rule_error = True
-                return True
-            obj._rule.element = rich.Rich_ForwardPort(
-                attrs["port"], attrs["protocol"], to_port, to_addr
+            obj._rule = dataclasses.replace(
+                obj._rule,
+                element=rich.Rich_ForwardPort(
+                    attrs["port"], attrs["protocol"], to_port, to_addr
+                ),
             )
             return True
 
@@ -226,25 +201,18 @@ def common_startElement(obj, name, attrs):
         )
         if entry not in obj.item.forward_ports:
             obj.item.forward_ports.append(entry)
-        else:
-            log.warning(
-                "Forward port %s/%s%s%s already set, ignoring.",
-                attrs["port"],
-                attrs["protocol"],
-                " >%s" % to_port if to_port else "",
-                " @%s" % to_addr if to_addr else "",
-            )
 
     elif name == "source-port":
         if obj._rule:
             if obj._rule.element:
-                log.warning(
-                    "Invalid rule: More than one element in rule '%s', ignoring.",
-                    str(obj._rule),
+                raise FirewallError(
+                    errors.INVALID_RULE,
+                    f"More than one element in rule '{str(obj._rule)}'.",
                 )
-                obj._rule_error = True
-                return True
-            obj._rule.element = rich.Rich_SourcePort(attrs["port"], attrs["protocol"])
+            obj._rule = dataclasses.replace(
+                obj._rule,
+                element=rich.Rich_SourcePort(attrs["port"], attrs["protocol"]),
+            )
             return True
         check_port(attrs["port"])
         check_tcpudp(attrs["protocol"])
@@ -256,19 +224,7 @@ def common_startElement(obj, name, attrs):
         )
         for port_id in existing_port_ids:
             if portInPortRange(new_port_id[0], port_id[0]):
-                # the range is wholly contained already, so just warn
-                _name = (
-                    obj.item.derived_from_zone
-                    if isinstance(obj.item, Policy)
-                    else obj.item.name
-                )
-                log.warning(
-                    FirewallError(
-                        errors.ALREADY_ENABLED,
-                        "'%s:%s' already in '%s'"
-                        % (new_port_id[0], attrs["protocol"], _name),
-                    )
-                )
+                # the range is wholly contained already; ignore
                 break  # for
         else:
             # the range can be coalesced into the existing set
@@ -285,15 +241,14 @@ def common_startElement(obj, name, attrs):
 
     elif name == "destination":
         if not obj._rule:
-            log.warning("Invalid rule: Destination outside of rule")
-            obj._rule_error = True
-            return True
-        if obj._rule.destination:
-            log.warning(
-                "Invalid rule: More than one destination in rule '%s', ignoring.",
-                str(obj._rule),
+            raise FirewallError(
+                errors.INVALID_RULE, "Destination outside of rich rule."
             )
-            return True
+        if obj._rule.destination:
+            raise FirewallError(
+                errors.INVALID_RULE,
+                f"More than one destination in rule '{str(obj._rule)}'.",
+            )
         invert = False
         address = None
         if "address" in attrs:
@@ -303,107 +258,76 @@ def common_startElement(obj, name, attrs):
             ipset = attrs["ipset"]
         if "invert" in attrs and attrs["invert"].lower() in ["yes", "true"]:
             invert = True
-        obj._rule.destination = rich.Rich_Destination(address, ipset, invert)
+        obj._rule = dataclasses.replace(
+            obj._rule, destination=rich.Rich_Destination(address, ipset, invert)
+        )
 
     elif name in ["accept", "reject", "drop", "mark"]:
         if not obj._rule:
-            log.warning("Invalid rule: Action outside of rule")
-            obj._rule_error = True
-            return True
+            raise FirewallError(errors.INVALID_RULE, "Action outside of rich rule.")
         if obj._rule.action:
-            log.warning("Invalid rule: More than one action")
-            obj._rule_error = True
-            return True
+            raise FirewallError(
+                errors.INVALID_RULE, f"More than one action in rule '{str(obj._rule)}'."
+            )
         if name == "accept":
-            obj._rule.action = rich.Rich_Accept()
+            obj._rule = dataclasses.replace(obj._rule, action=rich.Rich_Accept())
         elif name == "reject":
             _type = None
             if "type" in attrs:
                 _type = attrs["type"]
-            obj._rule.action = rich.Rich_Reject(_type)
+            obj._rule = dataclasses.replace(obj._rule, action=rich.Rich_Reject(_type))
         elif name == "drop":
-            obj._rule.action = rich.Rich_Drop()
+            obj._rule = dataclasses.replace(obj._rule, action=rich.Rich_Drop())
         elif name == "mark":
             _set = attrs["set"]
-            obj._rule.action = rich.Rich_Mark(_set)
+            obj._rule = dataclasses.replace(obj._rule, action=rich.Rich_Mark(_set))
         obj._limit_ok = obj._rule.action
 
     elif name == "log":
         if not obj._rule:
-            log.warning("Invalid rule: Log outside of rule")
-            return True
+            raise FirewallError(errors.INVALID_RULE, "Log outside of rich rule.")
         if obj._rule.log:
-            log.warning("Invalid rule: More than one log")
-            return True
+            raise FirewallError(
+                errors.INVALID_RULE, f"More than one log in rule '{str(obj._rule)}'."
+            )
         level = None
         if "level" in attrs:
             level = attrs["level"]
-            if level not in [
-                "emerg",
-                "alert",
-                "crit",
-                "error",
-                "warning",
-                "notice",
-                "info",
-                "debug",
-            ]:
-                log.warning("Invalid rule: Invalid log level")
-                obj._rule_error = True
-                return True
         prefix = None
         if "prefix" in attrs:
             prefix = attrs["prefix"]
-            if not prefix or len(prefix) > 127:
-                log.warning("Invalid rule: Invalid log prefix")
-                obj._rule_error = True
-                return True
-        obj._rule.log = rich.Rich_Log(prefix, level)
+        obj._rule = dataclasses.replace(obj._rule, log=rich.Rich_Log(prefix, level))
         obj._limit_ok = obj._rule.log
 
     elif name == "nflog":
         if not obj._rule:
-            log.warning("Invalid rule: Log outside of rule")
-            return True
+            raise FirewallError(errors.INVALID_RULE, "Log outside of rule.")
         if obj._rule.log:
-            log.warning("Invalid rule: More than one log")
-            return True
+            raise FirewallError(
+                errors.INVALID_RULE, f"More than one log in rule '{str(obj._rule)}'."
+            )
         group = None
         if "group" in attrs:
             group = attrs["group"]
-            if not checkUINT16(group):
-                log.warning("Invalid rule: Invalid nflog group value")
-                obj._rule_error = True
-                return True
         prefix = None
         if "prefix" in attrs:
             prefix = attrs["prefix"]
-            if not prefix or len(prefix) > 127:
-                log.warning("Invalid rule: Invalid nflog prefix")
-                obj._rule_error = True
-                return True
         threshold = None
         if "queue-size" in attrs:
             threshold = attrs["queue-size"]
-            if not checkUINT16(threshold):
-                log.warning("Invalid rule: Invalid nflog queue-size")
-                obj._rule_error = True
-                return True
-        obj._rule.log = rich.Rich_NFLog(group, prefix, threshold)
+        obj._rule = dataclasses.replace(
+            obj._rule, log=rich.Rich_NFLog(group, prefix, threshold)
+        )
         obj._limit_ok = obj._rule.log
 
     elif name == "audit":
         if not obj._rule:
-            log.warning("Invalid rule: Audit outside of rule")
-            return True
+            raise FirewallError(errors.INVALID_RULE, "Audit outside of rule.")
         if obj._rule.audit:
-            log.warning(
-                "Invalid rule: More than one audit in rule '%s', ignoring.",
-                str(obj._rule),
+            raise FirewallError(
+                errors.INVALID_RULE, f"More than one audit in rule '{str(obj._rule)}'."
             )
-            obj._rule_error = True
-            return True
-        obj._rule.audit = rich.Rich_Audit()
+        obj._rule = dataclasses.replace(obj._rule, audit=rich.Rich_Audit())
         obj._limit_ok = obj._rule.audit
 
     elif name == "rule":
@@ -411,28 +335,32 @@ def common_startElement(obj, name, attrs):
         priority = 0
         if "family" in attrs:
             family = attrs["family"]
-            if family not in ["ipv4", "ipv6"]:
-                log.warning('Invalid rule: Rule family "%s" invalid', attrs["family"])
-                obj._rule_error = True
-                return True
         if "priority" in attrs:
             priority = int(attrs["priority"])
         obj._rule = rich.Rich_Rule(family=family, priority=priority)
 
     elif name == "limit":
         if not obj._limit_ok:
-            log.warning("Invalid rule: Limit outside of action, log and audit")
-            obj._rule_error = True
-            return True
-        if obj._limit_ok.limit:
-            log.warning(
-                "Invalid rule: More than one limit in rule '%s', ignoring.",
-                str(obj._rule),
+            raise FirewallError(
+                errors.INVALID_RULE, "Limit outside of action, log and audit."
             )
-            obj._rule_error = True
-            return True
+        if obj._limit_ok.limit:
+            raise FirewallError(
+                errors.INVALID_RULE, f"More than one limit in rule '{str(obj._rule)}'."
+            )
         value = attrs["value"]
-        obj._limit_ok.limit = rich.Rich_Limit(value, attrs.get("burst"))
+        obj._limit_ok = dataclasses.replace(
+            obj._limit_ok, limit=rich.Rich_Limit(value, attrs.get("burst"))
+        )
+        if isinstance(obj._limit_ok, rich.Rich_Audit):
+            obj._rule = dataclasses.replace(obj._rule, audit=obj._limit_ok)
+        elif isinstance(obj._limit_ok, (rich.Rich_Log, rich.Rich_NFLog)):
+            obj._rule = dataclasses.replace(obj._rule, log=obj._limit_ok)
+        elif isinstance(
+            obj._limit_ok,
+            (rich.Rich_Accept, rich.Rich_Reject, rich.Rich_Drop, rich.Rich_Mark),
+        ):
+            obj._rule = dataclasses.replace(obj._rule, action=obj._limit_ok)
     else:
         return False
 
@@ -441,19 +369,9 @@ def common_startElement(obj, name, attrs):
 
 def common_endElement(obj, name):
     if name == "rule":
-        if not obj._rule_error:
-            try:
-                obj._rule.check()
-            except Exception as e:
-                log.warning("%s: %s", e, str(obj._rule))
-            else:
-                if str(obj._rule) not in obj.item.rules_str:
-                    obj.item.rules.append(obj._rule)
-                    obj.item.rules_str.append(str(obj._rule))
-                else:
-                    log.warning("Rule '%s' already set, ignoring.", str(obj._rule))
+        obj._rule.check()
+        obj.item.rules.add(obj._rule)
         obj._rule = None
-        obj._rule_error = False
     elif name in ["accept", "reject", "drop", "mark", "log", "audit"]:
         obj._limit_ok = None
 
@@ -653,7 +571,8 @@ def common_writer(obj, handler):
         handler.ignorableWhitespace("\n")
 
     # rules
-    for rule in obj.rules:
+    # Use sorted() to stabilize the XML, i.e. diffable
+    for rule in sorted(obj.rules):
         attrs = {}
         if rule.family:
             attrs["family"] = rule.family
@@ -763,11 +682,11 @@ def common_writer(obj, handler):
             else:
                 attrs = {}
                 if rule.log.group:
-                    attrs["group"] = rule.log.group
+                    attrs["group"] = str(rule.log.group)
                 if rule.log.prefix:
                     attrs["prefix"] = rule.log.prefix
                 if rule.log.threshold:
-                    attrs["queue-size"] = rule.log.threshold
+                    attrs["queue-size"] = str(rule.log.threshold)
                 handler.ignorableWhitespace("    ")
                 if rule.log.limit:
                     handler.startElement("nflog", attrs)
@@ -809,7 +728,9 @@ def common_writer(obj, handler):
                 action = "mark"
                 attrs["set"] = rule.action.set
             else:
-                log.warning("Unknown action '%s'", type(rule.action))
+                raise FirewallError(
+                    errors.INVALID_RULE, f"Unknown action in rule '{str(obj._rule)}'."
+                )
             handler.ignorableWhitespace("    ")
             if rule.action.limit:
                 handler.startElement(action, attrs)
@@ -903,8 +824,7 @@ class Policy(IO_Object):
         self.masquerade = False
         self.forward_ports = []
         self.source_ports = []
-        self.rules = []
-        self.rules_str = []
+        self.rules = set()
         self.applied = False
         self.priority = self.priority_default
         self.derived_from_zone = None
@@ -924,8 +844,7 @@ class Policy(IO_Object):
         self.masquerade = False
         del self.forward_ports[:]
         del self.source_ports[:]
-        del self.rules[:]
-        del self.rules_str[:]
+        self.rules.clear()
         self.applied = False
         self.priority = self.priority_default
         del self.ingress_zones[:]
@@ -933,15 +852,13 @@ class Policy(IO_Object):
 
     def __getattr__(self, name):
         if name == "rich_rules":
-            return self.rules_str
+            return [str(r) for r in sorted(self.rules)]
         else:
             return getattr(super(Policy, self), name)
 
     def __setattr__(self, name, value):
         if name == "rich_rules":
-            self.rules = [rich.Rich_Rule(rule_str=s) for s in value]
-            # must convert back to string to get the canonical string.
-            self.rules_str = [str(s) for s in self.rules]
+            self.rules = set([rich.Rich_Rule(rule_str=s) for s in value])
         else:
             super(Policy, self).__setattr__(name, value)
 
@@ -1207,13 +1124,10 @@ class policy_ContentHandler(IO_Object_ContentHandler):
     def __init__(self, item):
         IO_Object_ContentHandler.__init__(self, item)
         self._rule = None
-        self._rule_error = False
         self._limit_ok = None
 
     def startElement(self, name, attrs):
         IO_Object_ContentHandler.startElement(self, name, attrs)
-        if self._rule_error:
-            return
 
         self.item.parser_check_element_attrs(name, attrs)
 
@@ -1235,28 +1149,20 @@ class policy_ContentHandler(IO_Object_ContentHandler):
         elif name == "ingress-zone":
             if attrs["name"] not in self.item.ingress_zones:
                 self.item.ingress_zones.append(attrs["name"])
-            else:
-                log.warning("Ingress zone '%s' already set, ignoring.", attrs["name"])
 
         elif name == "egress-zone":
             if attrs["name"] not in self.item.egress_zones:
                 self.item.egress_zones.append(attrs["name"])
-            else:
-                log.warning("Egress zone '%s' already set, ignoring.", attrs["name"])
 
         elif name == "source":
             if not self._rule:
-                log.warning("Invalid rule: Source outside of rule")
-                self._rule_error = True
-                return
+                raise FirewallError(errors.INVALID_RULE, "Source outside of rule.")
 
             if self._rule.source:
-                log.warning(
-                    "Invalid rule: More than one source in rule '%s', ignoring.",
-                    str(self._rule),
+                raise FirewallError(
+                    errors.INVALID_RULE,
+                    f"More than one source in rule '{str(self._rule)}'.",
                 )
-                self._rule_error = True
-                return
             invert = False
             if "invert" in attrs and attrs["invert"].lower() in ["yes", "true"]:
                 invert = True
@@ -1267,12 +1173,13 @@ class policy_ContentHandler(IO_Object_ContentHandler):
                 mac = attrs["mac"]
             if "ipset" in attrs:
                 ipset = attrs["ipset"]
-            self._rule.source = rich.Rich_Source(addr, mac, ipset, invert=invert)
+            self._rule = dataclasses.replace(
+                self._rule, source=rich.Rich_Source(addr, mac, ipset, invert=invert)
+            )
             return
 
         else:
-            log.warning("Unknown XML element '%s'", name)
-            return
+            raise FirewallError(errors.INVALID_POLICY, f"Unknown XML element '{name}'.")
 
     def endElement(self, name):
         IO_Object_ContentHandler.endElement(self, name)

@@ -64,7 +64,6 @@ $(TESTSUITE) $(TESTSUITE_INTEGRATION): $(TESTSUITE_FILES) $(srcdir)/package.m4
 
 CONTAINER_TARGETS = check-container-debian-sid \
                     check-container-fedora-rawhide \
-                    check-container-centos8-stream \
                     check-container-centos9-stream
 
 check-container-debian-sid-image: check-container-%-image:
@@ -107,28 +106,6 @@ check-container-fedora-rawhide-image: check-container-%-image:
 	echo "WORKDIR /root/firewalld" && \
 	echo "RUN ./autogen.sh" && \
 	echo "RUN ./configure PYTHON=\"/usr/bin/python3\"" && \
-	echo "RUN make" && \
-	echo "RUN make install" ; \
-	} | $(PODMAN) build -t firewalld-testsuite-$* -f - . )
-
-check-container-centos8-stream-image: check-container-%-image:
-	(cd $(abs_top_srcdir) && { \
-	echo "FROM centos:stream8" && \
-	echo "RUN dnf -y makecache" && \
-	echo "RUN dnf -y install autoconf automake conntrack-tools desktop-file-utils \
-	                 docbook-style-xsl file gettext glib2-devel intltool ipset \
-	                 iptables iptables-ebtables nftables libtool libxml2 \
-	                 libxslt make nftables python3-nftables python3-dbus \
-	                 python3-gobject-base diffutils procps-ng iproute which dbus-daemon \
-	                 NetworkManager NetworkManager-ovs time polkit systemd sudo" && \
-	echo "ENV container docker" && \
-	echo "VOLUME [ \"/sys/fs/cgroup\" ]" && \
-	echo "CMD [\"/usr/sbin/init\"]" && \
-	echo "RUN mkdir -p /run/dbus" && \
-	echo "COPY . /root/firewalld" && \
-	echo "WORKDIR /root/firewalld" && \
-	echo "RUN ./autogen.sh" && \
-	echo "RUN ./configure PYTHON=\"/usr/libexec/platform-python\"" && \
 	echo "RUN make" && \
 	echo "RUN make install" ; \
 	} | $(PODMAN) build -t firewalld-testsuite-$* -f - . )

@@ -1165,7 +1165,7 @@ class ip4tables:
         if not limit:
             return []
         s = ["-m", "limit", "--limit", limit.value]
-        if limit.burst is not None:
+        if limit.burst:
             s += ["--limit-burst", str(limit.burst)]
         return s
 
@@ -1239,11 +1239,11 @@ class ip4tables:
         if isinstance(rich_rule.log, Rich_NFLog):
             rule += rule_fragment + ["-j", "NFLOG"]
             if rich_rule.log.group:
-                rule += ["--nflog-group", rich_rule.log.group]
+                rule += ["--nflog-group", str(rich_rule.log.group)]
             if rich_rule.log.prefix:
                 rule += ["--nflog-prefix", "%s" % rich_rule.log.prefix]
             if rich_rule.log.threshold:
-                rule += ["--nflog-threshold", rich_rule.log.threshold]
+                rule += ["--nflog-threshold", str(rich_rule.log.threshold)]
         else:
             rule += rule_fragment + ["-j", "LOG"]
             if rich_rule.log.prefix:
@@ -1470,7 +1470,7 @@ class ip4tables:
             rule_fragment += self._rich_rule_destination_fragment(rich_rule.destination)
             rule_fragment += self._rich_rule_source_fragment(rich_rule.source)
 
-        if tcp_mss_clamp_value == "pmtu" or tcp_mss_clamp_value is None:
+        if tcp_mss_clamp_value == "pmtu" or not tcp_mss_clamp_value:
             rule_fragment += ["-j", "TCPMSS", "--clamp-mss-to-pmtu"]
         else:
             rule_fragment += ["-j", "TCPMSS", "--set-mss", tcp_mss_clamp_value]
@@ -1639,7 +1639,9 @@ class ip4tables:
 
         return rules
 
-    def build_policy_icmp_block_rules(self, enable, policy, ict, rich_rule=None):
+    def build_policy_icmp_block_rules(
+        self, enable, policy, ict, rich_rule=None, ipvs=None
+    ):
         table = "filter"
         _policy = self._fw.policy.policy_base_chain_name(
             policy, table, POLICY_CHAIN_PREFIX

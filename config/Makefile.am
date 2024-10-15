@@ -137,6 +137,7 @@ CONFIG_FILES = \
 	services/anno-1602.xml \
 	services/anno-1800.xml \
 	services/apcupsd.xml \
+	services/aseqnet.xml \
 	services/audit.xml \
 	services/ausweisapp2.xml \
 	services/bacula-client.xml \
@@ -254,6 +255,7 @@ CONFIG_FILES = \
 	services/mongodb.xml \
 	services/mosh.xml \
 	services/mountd.xml \
+	services/mpd.xml \
 	services/mqtt.xml \
 	services/mqtt-tls.xml \
 	services/mssql.xml \
@@ -295,12 +297,14 @@ CONFIG_FILES = \
 	services/puppetmaster.xml \
 	services/quassel.xml \
 	services/radius.xml \
+	services/radsec.xml \
 	services/rdp.xml \
 	services/redis-sentinel.xml \
 	services/redis.xml \
 	services/RH-Satellite-6.xml \
 	services/RH-Satellite-6-capsule.xml \
 	services/rpc-bind.xml \
+	services/rootd.xml \
 	services/rquotad.xml \
 	services/rsh.xml \
 	services/rsyncd.xml \
@@ -313,6 +317,7 @@ CONFIG_FILES = \
 	services/settlers-history-collection.xml \
 	services/sips.xml \
 	services/sip.xml \
+	services/slimevr.xml \
 	services/slp.xml \
 	services/smtp-submission.xml \
 	services/smtps.xml \
@@ -328,8 +333,11 @@ CONFIG_FILES = \
 	services/ssh.xml \
 	services/statsrv.xml \
 	services/steam-streaming.xml \
+	services/steam-lan-transfer.xml \
 	services/stellaris.xml \
 	services/stronghold-crusader.xml \
+	services/stun.xml \
+	services/stuns.xml \
 	services/submission.xml \
 	services/supertuxkart.xml \
 	services/svdrp.xml \
@@ -349,6 +357,8 @@ CONFIG_FILES = \
 	services/tinc.xml \
 	services/tor-socks.xml \
 	services/transmission-client.xml \
+	services/turn.xml \
+	services/turns.xml \
 	services/upnp-client.xml \
 	services/vdsm.xml \
 	services/vnc-server.xml \

@@ -2336,11 +2336,7 @@ AT_DATA([./ipsets/foobar.xml], [dnl
 <source />
 </zone>
 ])
-    FWD_CHECK([--check-config], 0, ignore, [dnl
-m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [dnl
-WARNING: Invalid source: No address no ipset.
-WARNING: Invalid source: No address no ipset.
-])])
+    FWD_CHECK([--check-config], 144, ignore, ignore)
 
     AT_DATA([./zones/foobar.xml], [dnl
 <?xml version="1.0" encoding="utf-8"?>
@@ -2375,11 +2371,7 @@ WARNING: Invalid source: No address no ipset.
 </rule>
 </zone>
 ])
-    FWD_CHECK([--check-config], 0, ignore, [dnl
-m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [dnl
-WARNING: Invalid rule: Invalid log prefix
-WARNING: Invalid rule: Invalid log prefix
-])])
+    FWD_CHECK([--check-config], 141, ignore, ignore)
 
     AT_DATA([./zones/foobar.xml], [dnl
 <?xml version="1.0" encoding="utf-8"?>
@@ -2390,11 +2382,7 @@ WARNING: Invalid rule: Invalid log prefix
 </rule>
 </zone>
 ])
-    FWD_CHECK([--check-config], 0, ignore, [dnl
-m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [dnl
-WARNING: Invalid rule: Invalid log level
-WARNING: Invalid rule: Invalid log level
-])])
+    FWD_CHECK([--check-config], 125, ignore, ignore)
 
     AT_DATA([./zones/foobar.xml], [dnl
 <?xml version="1.0" encoding="utf-8"?>
@@ -2405,11 +2393,7 @@ WARNING: Invalid rule: Invalid log level
 </rule>
 </zone>
 ])
-    FWD_CHECK([--check-config], 0, ignore, [dnl
-m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [dnl
-WARNING: Invalid rule: Invalid nflog group value
-WARNING: Invalid rule: Invalid nflog group value
-])])
+    FWD_CHECK([--check-config], 142, ignore, ignore)
 
     AT_DATA([./zones/foobar.xml], [dnl
 <?xml version="1.0" encoding="utf-8"?>
@@ -2420,11 +2404,7 @@ WARNING: Invalid rule: Invalid nflog group value
 </rule>
 </zone>
 ])
-    FWD_CHECK([--check-config], 0, ignore, [dnl
-m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [dnl
-WARNING: Invalid rule: Invalid nflog queue-size
-WARNING: Invalid rule: Invalid nflog queue-size
-])])
+    FWD_CHECK([--check-config], 143, ignore, ignore)
 
     AT_DATA([./zones/foobar.xml], [dnl
 <?xml version="1.0" encoding="utf-8"?>
@@ -2447,11 +2427,7 @@ WARNING: Invalid rule: Invalid nflog queue-size
 </rule>
 </zone>
 ])
-    FWD_CHECK([--check-config], 0, ignore, [dnl
-m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [dnl
-WARNING: INVALID_ADDR: 10.0.0.1/24: rule family="ipv6" source address="10.0.0.1/24" accept
-WARNING: INVALID_ADDR: 10.0.0.1/24: rule family="ipv6" source address="10.0.0.1/24" accept
-])])
+    FWD_CHECK([--check-config], 105, ignore, ignore)
     ])
     AT_CHECK([rm ./zones/foobar.xml])
 

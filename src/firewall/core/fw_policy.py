@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
 import copy
+import dataclasses
 
 from firewall.core.logger import log
 from firewall.functions import (
@@ -135,7 +136,7 @@ class FirewallPolicy:
             "forward_ports",
             "source_ports",
             "icmp_blocks",
-            "rules_str",
+            "rules",
             "protocols",
             "icmp_block_inversion",
             "ingress_zones",
@@ -146,6 +147,8 @@ class FirewallPolicy:
                 if not ((enable and args_list) or (not enable and args_list)):
                     continue
                 args_list = [args_list]
+            if key == "rules":
+                args_list = sorted(args_list)
             for args in args_list:
                 if key == "icmp_blocks":
                     self._icmp_block(enable, _policy, args, transaction)
@@ -163,8 +166,8 @@ class FirewallPolicy:
                     self._source_port(enable, _policy, args[0], args[1], transaction)
                 elif key == "masquerade":
                     self._masquerade(enable, _policy, transaction)
-                elif key == "rules_str":
-                    self.__rule(enable, _policy, Rich_Rule(rule_str=args), transaction)
+                elif key == "rules":
+                    self.__rule(enable, _policy, args, transaction)
                 elif key == "ingress_zones":
                     if not obj.derived_from_zone:
                         self._ingress_zone(enable, _policy, args, transaction)
@@ -209,11 +212,9 @@ class FirewallPolicy:
 
     def set_config_with_settings_dict(self, policy, settings, sender):
         # stupid wrappers to convert rich rule string to rich rule object
-        from firewall.core.rich import Rich_Rule
-
         def add_rule_wrapper(policy, rule_str, timeout=0, sender=None):
             self.add_rule(
-                policy, Rich_Rule(rule_str=rule_str), timeout=0, sender=sender
+                policy, Rich_Rule(rule_str=rule_str), timeout=timeout, sender=sender
             )
 
         def remove_rule_wrapper(policy, rule_str):
@@ -408,13 +409,6 @@ class FirewallPolicy:
 
     # RICH LANGUAGE
 
-    def check_rule(self, rule):
-        rule.check()
-
-    def __rule_id(self, rule):
-        self.check_rule(rule)
-        return str(rule)
-
     def _rule_source_ipv(self, source):
         if not source:
             return None
@@ -442,8 +436,7 @@ class FirewallPolicy:
         self._fw.check_panic()
         _obj = self._policies[_policy]
 
-        rule_id = self.__rule_id(rule)
-        if rule_id in _obj.rules_str:
+        if rule in _obj.rules:
             _name = _obj.derived_from_zone if _obj.derived_from_zone else _policy
             raise FirewallError(
                 errors.ALREADY_ENABLED, "'%s' already in '%s'" % (rule, _name)
@@ -454,21 +447,20 @@ class FirewallPolicy:
             if _obj.applied:
                 self.__rule(True, _policy, rule, transaction)
 
-            self.__register_rule(_obj, rule_id, timeout, sender)
-            transaction.add_fail(self.__unregister_rule, _obj, rule_id)
+            self.__register_rule(_obj, rule, timeout, sender)
+            transaction.add_fail(self.__unregister_rule, _obj, rule)
 
         return _policy
 
-    def __register_rule(self, _obj, rule_id, timeout, sender):
-        _obj.rules_str.append(rule_id)
+    def __register_rule(self, _obj, rule, timeout, sender):
+        _obj.rules.add(rule)
 
     def remove_rule(self, policy, rule):
         _policy = self._fw.check_policy(policy)
         self._fw.check_panic()
         _obj = self._policies[_policy]
 
-        rule_id = self.__rule_id(rule)
-        if rule_id not in _obj.rules_str:
+        if rule not in _obj.rules:
             _name = _obj.derived_from_zone if _obj.derived_from_zone else _policy
             raise FirewallError(errors.NOT_ENABLED, "'%s' not in '%s'" % (rule, _name))
 
@@ -477,19 +469,19 @@ class FirewallPolicy:
             if _obj.applied:
                 self.__rule(False, _policy, rule, transaction)
 
-            transaction.add_post(self.__unregister_rule, _obj, rule_id)
+            transaction.add_post(self.__unregister_rule, _obj, rule)
 
         return _policy
 
-    def __unregister_rule(self, _obj, rule_id):
-        if rule_id in _obj.rules_str:
-            _obj.rules_str.remove(rule_id)
+    def __unregister_rule(self, _obj, rule):
+        if rule in _obj.rules:
+            _obj.rules.remove(rule)
 
     def query_rule(self, policy, rule):
-        return self.__rule_id(rule) in self.get_policy(policy).rules_str
+        return rule in self.get_policy(policy).rules
 
     def list_rules(self, policy):
-        return self.get_policy(policy).rules_str
+        return [str(r) for r in self.get_policy(policy).rules]
 
     # SERVICES
 
@@ -1261,12 +1253,10 @@ class FirewallPolicy:
                     continue
                 self.check_service(include)
                 included_services.append(include)
-                _rule = copy.deepcopy(rule)
-                _rule.element.name = include
                 self._rule_prepare(
                     enable,
                     policy,
-                    _rule,
+                    dataclasses.replace(rule, element=Rich_Service(name=include)),
                     transaction,
                     included_services=included_services,
                 )
@@ -1301,9 +1291,6 @@ class FirewallPolicy:
 
         # clamp ipvs to those that are actually enabled.
         ipvs = [ipv for ipv in ipvs if self._fw.is_ipv_enabled(ipv)]
-
-        # add an element to object to allow backends to know what ipvs this applies to
-        rule.ipvs = ipvs
 
         for backend in set([self._fw.get_backend_by_ipv(x) for x in ipvs]):
             # SERVICE
@@ -1476,7 +1463,9 @@ class FirewallPolicy:
                         errors.INVALID_RULE, "IcmpBlock not usable with accept action"
                     )
 
-                rules = backend.build_policy_icmp_block_rules(enable, policy, ict, rule)
+                rules = backend.build_policy_icmp_block_rules(
+                    enable, policy, ict, rule, ipvs=ipvs
+                )
                 transaction.add_rules(backend, rules)
 
             elif rule.element is None:
@@ -1623,22 +1612,20 @@ class FirewallPolicy:
     def _icmp_block(self, enable, policy, icmp, transaction):
         ict = self._fw.config.get_icmptype(icmp)
 
-        for backend in self._fw.enabled_backends():
+        ipvs = ["ipv4", "ipv6"]
+        if ict.destination:
+            ipvs = [ipv for ipv in ["ipv4", "ipv6"] if ipv in ict.destination]
+
+        # clamp ipvs to those that are actually enabled.
+        ipvs = [ipv for ipv in ipvs if self._fw.is_ipv_enabled(ipv)]
+
+        for backend in set([self._fw.get_backend_by_ipv(x) for x in ipvs]):
             if not backend.policies_supported:
                 continue
-            skip_backend = False
 
-            if ict.destination:
-                for ipv in ["ipv4", "ipv6"]:
-                    if ipv in ict.destination:
-                        if not backend.is_ipv_supported(ipv):
-                            skip_backend = True
-                            break
-
-            if skip_backend:
-                continue
-
-            rules = backend.build_policy_icmp_block_rules(enable, policy, ict)
+            rules = backend.build_policy_icmp_block_rules(
+                enable, policy, ict, ipvs=ipvs
+            )
             transaction.add_rules(backend, rules)
 
     def _icmp_block_inversion(self, enable, policy, transaction):

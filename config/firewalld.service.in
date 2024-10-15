@@ -4,7 +4,7 @@ Before=network-pre.target
 Wants=network-pre.target
 After=dbus.service
 After=polkit.service
-Conflicts=iptables.service ip6tables.service ebtables.service ipset.service nftables.service
+Conflicts=iptables.service ip6tables.service ebtables.service ipset.service
 Documentation=man:firewalld(1)
 
 [Service]
@@ -21,7 +21,6 @@ DevicePolicy=closed
 KeyringMode=private
 LockPersonality=yes
 MemoryDenyWriteExecute=yes
-NoNewPrivileges=yes
 PrivateDevices=yes
 ProtectClock=yes
 ProtectControlGroups=yes

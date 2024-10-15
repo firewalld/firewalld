@@ -114,6 +114,7 @@ class Firewall:
         self._allow_zone_drifting = config.FALLBACK_ALLOW_ZONE_DRIFTING
         self._nftables_flowtable = config.FALLBACK_NFTABLES_FLOWTABLE
         self._nftables_counters = config.FALLBACK_NFTABLES_COUNTERS
+        self._nftables_table_owner = config.FALLBACK_NFTABLES_TABLE_OWNER
 
         if self._offline:
             self.ip4tables_enabled = False
@@ -376,6 +377,17 @@ class Firewall:
                 "option, will therefore not be used"
             )
 
+        self.nftables_backend.probe_support()
+
+        if (
+            self._nftables_table_owner
+            and not self.nftables_backend.supports_table_owner
+        ):
+            log.info1(
+                "Configuration has NftablesTableOwner=True, but it's "
+                "not supported by nftables. Table ownership will be disabled."
+            )
+
     def _start_load_firewalld_conf(self):
         # load firewalld config
         log.debug1("Loading firewalld config file '%s'", config.FIREWALLD_CONF)
@@ -462,6 +474,16 @@ class Firewall:
                 else:
                     self._nftables_counters = True
                 log.debug1("NftablesCounters is set to '%s'", self._nftables_counters)
+
+            if self._firewalld_conf.get("NftablesTableOwner"):
+                value = self._firewalld_conf.get("NftablesTableOwner")
+                if value.lower() in ["no", "false"]:
+                    self._nftables_table_owner = False
+                else:
+                    self._nftables_table_owner = True
+                log.debug1(
+                    "NftablesTableOwner is set to '%s'", self._nftables_table_owner
+                )
 
         self.config.set_firewalld_conf(copy.deepcopy(self._firewalld_conf))
 
@@ -688,15 +710,11 @@ class Firewall:
 
         self._select_firewall_backend(self._firewall_backend)
 
-        if not self._offline:
-            self._start_probe_backends()
+        self._start_probe_backends()
 
         self._start_load_stock_config()
         self._start_copy_config_to_runtime()
         self._start_check()
-
-        if self._offline:
-            return
 
         self._start_apply_objects(reload=reload, complete_reload=complete_reload)
 
@@ -704,6 +722,9 @@ class Firewall:
         try:
             self._start()
         except Exception as original_ex:
+            if self._offline:
+                raise
+
             log.error(
                 "Failed to load user configuration. Falling back to "
                 "full stock configuration."

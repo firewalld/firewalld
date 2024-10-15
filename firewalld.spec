@@ -1,6 +1,6 @@
 Summary: A firewall daemon with D-Bus interface providing a dynamic firewall
 Name: firewalld
-Version: 2.1.999
+Version: 2.2.999
 Release: 1%{?dist}
 URL:     http://firewalld.org
 License: GPL-2.0-or-later
@@ -175,7 +175,6 @@ fi
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld/zones
 %defattr(0644,root,root)
 %config(noreplace) %{_sysconfdir}/sysconfig/firewalld
-#%attr(0755,root,root) %{_initrddir}/firewalld
 %{_unitdir}/firewalld.service
 %config(noreplace) %{_datadir}/dbus-1/system.d/FirewallD.conf
 %{_datadir}/polkit-1/actions/org.fedoraproject.FirewallD1.desktop.policy.choice
@@ -254,5 +253,5 @@ fi
 %{_mandir}/man1/firewall-config*.1*
 
 %changelog
-* Fri Jan 05 2024 Eric Garver <eric@garver.life> - 2.1.999-1
+* Thu Jul 11 2024 Eric Garver <eric@garver.life> - 2.2.999-1
 - bump package version to development version

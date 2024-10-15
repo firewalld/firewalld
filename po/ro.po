@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-05 15:54-0500\n"
+"POT-Creation-Date: 2024-07-11 13:41-0400\n"
 "PO-Revision-Date: 2023-12-25 09:37+0000\n"
 "Last-Translator: Remus-Gabriel Chelu <remusgabriel.chelu@disroot.org>\n"
 "Language-Team: Romanian <https://translate.fedoraproject.org/projects/"
@@ -27,7 +27,7 @@ msgstr "Mini-aplicație Paravan de protecție"
 msgid "Firewall"
 msgstr "Paravan de protecție"
 
-#: ../config/firewall-config.desktop.in.h:2 ../src/firewall-config.glade.h:55
+#: ../config/firewall-config.desktop.in.h:2 ../src/firewall-config.glade.h:51
 msgid "Firewall Configuration"
 msgstr "Configurarea Paravanului de protecție"
 
@@ -36,24 +36,24 @@ msgstr "Configurarea Paravanului de protecție"
 msgid "firewall;network;security;iptables;netfilter;"
 msgstr "paravan de protecție;rețea;securitate;iptables;netfilter;"
 
-#: ../src/firewall-applet.in:91 ../src/firewall-config.in:8306
+#: ../src/firewall-applet.in:91 ../src/firewall-config.in:7683
 #, c-format
 msgid "Select zone for interface '%s'"
 msgstr "Selectați zona pentru interfața „%s”"
 
 #: ../src/firewall-applet.in:132 ../src/firewall-applet.in:139
-#: ../src/firewall-applet.in:145 ../src/firewall-config.in:2587
-#: ../src/firewall-config.in:8352 ../src/firewall-config.in:8360
-#: ../src/firewall-config.in:8394 ../src/firewall-config.glade.h:8
+#: ../src/firewall-applet.in:145 ../src/firewall-config.in:2440
+#: ../src/firewall-config.in:7729 ../src/firewall-config.in:7737
+#: ../src/firewall-config.in:7771 ../src/firewall-config.glade.h:4
 msgid "Default Zone"
 msgstr "Zona implicită"
 
-#: ../src/firewall-applet.in:168 ../src/firewall-config.in:8387
+#: ../src/firewall-applet.in:168 ../src/firewall-config.in:7764
 #, c-format
 msgid "Select zone for connection '%s'"
 msgstr "Selectați zona pentru conexiunea „%s”"
 
-#: ../src/firewall-applet.in:178 ../src/firewall-config.in:4176
+#: ../src/firewall-applet.in:178 ../src/firewall-config.in:4030
 msgid "Failed to set zone {zone} for connection {connection_name}"
 msgstr "Nu s-a putut stabili zona {zone} pentru conexiunea {connection_name}"
 
@@ -106,94 +106,94 @@ msgstr "Autori"
 msgid "License"
 msgstr "Licența"
 
-#: ../src/firewall-applet.in:512
+#: ../src/firewall-applet.in:515
 msgid "Shields Up"
 msgstr "Scuturi ridicate"
 
-#: ../src/firewall-applet.in:517
+#: ../src/firewall-applet.in:520
 msgid "Enable Notifications"
 msgstr "Activare notificări"
 
-#: ../src/firewall-applet.in:522
+#: ../src/firewall-applet.in:525
 msgid "Edit Firewall Settings..."
 msgstr "Editați parametrii Paravanului de protecție..."
 
-#: ../src/firewall-applet.in:526 ../src/firewall-config.glade.h:61
+#: ../src/firewall-applet.in:529 ../src/firewall-config.glade.h:57
 msgid "Change Zones of Connections..."
 msgstr "Modificarea zonelor de conexiuni..."
 
-#: ../src/firewall-applet.in:531
+#: ../src/firewall-applet.in:534
 msgid "Configure Shields UP/Down Zones..."
 msgstr "Configurați zonele protejate/neprotejate de Scuturi..."
 
-#: ../src/firewall-applet.in:535
+#: ../src/firewall-applet.in:538
 msgid "Block all network traffic"
 msgstr "Blocarea întregului trafic de rețea"
 
-#: ../src/firewall-applet.in:540
+#: ../src/firewall-applet.in:543
 msgid "About"
 msgstr "Despre"
 
-#: ../src/firewall-applet.in:548 ../src/firewall-config.in:641
-#: ../src/firewall-config.in:2519 ../src/firewall-config.in:2859
-#: ../src/firewall-config.in:2885
+#: ../src/firewall-applet.in:551 ../src/firewall-config.in:562
+#: ../src/firewall-config.in:2372 ../src/firewall-config.in:2712
+#: ../src/firewall-config.in:2738
 msgid "Connections"
 msgstr "Conexiuni"
 
-#: ../src/firewall-applet.in:553 ../src/firewall-config.in:644
-#: ../src/firewall-config.in:2642 ../src/firewall-config.in:2862
-#: ../src/firewall-config.in:2889 ../src/firewall-config.glade.h:130
+#: ../src/firewall-applet.in:556 ../src/firewall-config.in:565
+#: ../src/firewall-config.in:2495 ../src/firewall-config.in:2715
+#: ../src/firewall-config.in:2742 ../src/firewall-config.glade.h:123
 msgid "Interfaces"
 msgstr "Interfețe"
 
-#: ../src/firewall-applet.in:558 ../src/firewall-config.in:647
-#: ../src/firewall-config.in:2682 ../src/firewall-config.in:2865
-#: ../src/firewall-config.in:2891 ../src/firewall-config.glade.h:135
+#: ../src/firewall-applet.in:561 ../src/firewall-config.in:568
+#: ../src/firewall-config.in:2535 ../src/firewall-config.in:2718
+#: ../src/firewall-config.in:2744 ../src/firewall-config.glade.h:128
 msgid "Sources"
 msgstr "Surse"
 
-#: ../src/firewall-applet.in:629 ../src/firewall-config.in:2421
+#: ../src/firewall-applet.in:632 ../src/firewall-config.in:2275
 msgid "Authorization failed."
 msgstr "Autorizarea a eșuat."
 
-#: ../src/firewall-applet.in:631 ../src/firewall-config.in:2423
+#: ../src/firewall-applet.in:634 ../src/firewall-config.in:2277
 msgid "Invalid name"
 msgstr "Nume nevalid"
 
-#: ../src/firewall-applet.in:634 ../src/firewall-config.in:2426
+#: ../src/firewall-applet.in:637 ../src/firewall-config.in:2280
 msgid "Name already exists"
 msgstr "Numele există deja"
 
-#: ../src/firewall-applet.in:723
+#: ../src/firewall-applet.in:726
 msgid "{entry} (Zone: {zone})"
 msgstr "{entry} (Zona: {zone})"
 
-#: ../src/firewall-applet.in:730
+#: ../src/firewall-applet.in:733
 msgid "{entry} (Default Zone: {default_zone})"
 msgstr "{entry} (Zona implicită: {default_zone})"
 
-#: ../src/firewall-applet.in:816 ../src/firewall-config.in:1672
+#: ../src/firewall-applet.in:819 ../src/firewall-config.in:1536
 msgid "Failed to get connections from NetworkManager"
 msgstr "Nu s-a reușit să se obțină conexiuni de la NetworkManager"
 
-#: ../src/firewall-applet.in:828 ../src/firewall-config.in:1487
+#: ../src/firewall-applet.in:831 ../src/firewall-config.in:1368
 msgid "No NetworkManager imports available"
 msgstr "Nu sunt disponibile importuri NetworkManager"
 
-#: ../src/firewall-applet.in:904
+#: ../src/firewall-applet.in:907
 msgid "No connection to firewall daemon"
 msgstr "Fără conexiune cu demonul de paravan de protecție"
 
-#: ../src/firewall-applet.in:910 ../src/firewall-applet.in:1067
+#: ../src/firewall-applet.in:913 ../src/firewall-applet.in:1070
 msgid "All network traffic is blocked."
 msgstr "Tot traficul din rețea este blocat."
 
-#: ../src/firewall-applet.in:913
+#: ../src/firewall-applet.in:916
 #, c-format
 msgid "Default Zone: '%s'"
 msgstr "Zona implicită: „%s”"
 
-#: ../src/firewall-applet.in:920
+#: ../src/firewall-applet.in:923
 msgid ""
 "Default Zone '{default_zone}' active for connection '{connection}' on "
 "interface '{interface}'"
@@ -201,55 +201,55 @@ msgstr ""
 "Zona implicită „{default_zone}” este activă pentru conexiunea „{connection}” "
 "pe interfața „{interface}”"
 
-#: ../src/firewall-applet.in:925
+#: ../src/firewall-applet.in:928
 msgid ""
 "Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
 msgstr ""
 "Zona „{zone}” este activă pentru conexiunea „{connection}” pe interfața "
 "„{interface}”"
 
-#: ../src/firewall-applet.in:943
+#: ../src/firewall-applet.in:946
 msgid "Zone '{zone}' active for interface '{interface}'"
 msgstr "Zona „{zone}” este activă pentru interfața „{interface}”"
 
-#: ../src/firewall-applet.in:955
+#: ../src/firewall-applet.in:958
 msgid "Zone '{zone}' active for source {source}"
 msgstr "Zona „{zone}” este activă pentru sursa {source}"
 
-#: ../src/firewall-applet.in:959
+#: ../src/firewall-applet.in:962
 msgid "No Active Zones."
 msgstr "Nu există zone active."
 
-#: ../src/firewall-applet.in:1025
+#: ../src/firewall-applet.in:1028
 msgid "Connection to FirewallD established."
 msgstr "Conexiunea cu demonul «Paravanului de protecție» a fost stabilită."
 
-#: ../src/firewall-applet.in:1037
+#: ../src/firewall-applet.in:1040
 msgid "Connection to FirewallD lost."
 msgstr "Conexiunea cu demonul «Paravanului de protecție» a fost pierdută."
 
-#: ../src/firewall-applet.in:1042
+#: ../src/firewall-applet.in:1045
 msgid "FirewallD has been reloaded."
 msgstr "Demonul «Paravanului de protecție» a fost reîncărcat."
 
-#: ../src/firewall-applet.in:1049
+#: ../src/firewall-applet.in:1052
 #, c-format
 msgid "Default zone changed to '%s'."
 msgstr "Zona implicită a fost schimbată cu „%s”."
 
-#: ../src/firewall-applet.in:1068
+#: ../src/firewall-applet.in:1071
 msgid "Network traffic is not blocked anymore."
 msgstr "Traficul din rețea nu mai este blocat."
 
-#: ../src/firewall-applet.in:1095 ../src/firewall-applet.in:1161
+#: ../src/firewall-applet.in:1098 ../src/firewall-applet.in:1164
 msgid "activated"
 msgstr "activat"
 
-#: ../src/firewall-applet.in:1095 ../src/firewall-applet.in:1161
+#: ../src/firewall-applet.in:1098 ../src/firewall-applet.in:1164
 msgid "deactivated"
 msgstr "dezactivat"
 
-#: ../src/firewall-applet.in:1101
+#: ../src/firewall-applet.in:1104
 msgid ""
 "Default zone '{default_zone}' {activated_deactivated} for connection "
 "'{connection}' on interface '{interface}'"
@@ -257,7 +257,7 @@ msgstr ""
 "Zona implicită „{default_zone}” este {activated_deactivated} pentru "
 "conexiunea „{connection}” pe interfața „{interface}”"
 
-#: ../src/firewall-applet.in:1108
+#: ../src/firewall-applet.in:1111
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
@@ -265,21 +265,21 @@ msgstr ""
 "Zona „{zone}” este {activated_deactivated} pentru conexiunea „{connection}” "
 "pe interfața „{interface}”"
 
-#: ../src/firewall-applet.in:1115
+#: ../src/firewall-applet.in:1118
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
 msgstr ""
 "Zona „{zone}” este {activated_deactivated} pentru interfața „{interface}”"
 
-#: ../src/firewall-applet.in:1146
+#: ../src/firewall-applet.in:1149
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
 msgstr "Zona „%s” a fost activată pentru interfața „%s”"
 
-#: ../src/firewall-applet.in:1162
+#: ../src/firewall-applet.in:1165
 msgid "Zone '{zone}' {activated_deactivated} for source '{source}'"
 msgstr "Zona „{zone}” este {activated_deactivated} pentru sursa „{source}”"
 
-#: ../src/firewall-applet.in:1191
+#: ../src/firewall-applet.in:1194
 #, c-format
 msgid "Zone '%s' activated for source '%s'"
 msgstr "Zona „%s” a fost activată pentru sursa „%s”"
@@ -326,328 +326,312 @@ msgstr "dezactivat"
 msgid "Failed to load icons."
 msgstr "Nu s-a reușit încărcarea pictogramelor."
 
-#: ../src/firewall-config.in:184 ../src/firewall-config.glade.h:6
-msgid "Context"
-msgstr "Context"
-
-#: ../src/firewall-config.in:203 ../src/firewall-config.glade.h:4
-msgid "Command line"
-msgstr "Linia de comandă"
-
-#: ../src/firewall-config.in:222 ../src/firewall-config.glade.h:300
-msgid "User name"
-msgstr "Numele utilizatorului"
-
-#: ../src/firewall-config.in:239
-msgid "User id"
-msgstr "ID utilizator"
-
-#: ../src/firewall-config.in:277 ../src/firewall-config.in:318
+#: ../src/firewall-config.in:198 ../src/firewall-config.in:239
 msgid "Table"
 msgstr "Tabel"
 
-#: ../src/firewall-config.in:280 ../src/firewall-config.in:321
+#: ../src/firewall-config.in:201 ../src/firewall-config.in:242
 msgid "Chain"
 msgstr "Lanț"
 
-#: ../src/firewall-config.in:324 ../src/firewall-config.in:863
+#: ../src/firewall-config.in:245 ../src/firewall-config.in:784
 msgid "Priority"
 msgstr "Prioritate"
 
-#: ../src/firewall-config.in:327 ../src/firewall-config.in:368
+#: ../src/firewall-config.in:248 ../src/firewall-config.in:289
 msgid "Args"
 msgstr "Argumente"
 
-#: ../src/firewall-config.in:415 ../src/firewall-config.in:2468
+#: ../src/firewall-config.in:336 ../src/firewall-config.in:2322
 msgid "Runtime"
 msgstr "În timp de execuție"
 
-#: ../src/firewall-config.in:416
+#: ../src/firewall-config.in:337
 msgid "Permanent"
 msgstr "Permanent"
 
-#: ../src/firewall-config.in:499 ../src/firewall-config.glade.h:138
+#: ../src/firewall-config.in:420 ../src/firewall-config.glade.h:131
 msgid "Service"
 msgstr "Servici"
 
-#: ../src/firewall-config.in:507 ../src/firewall-config.in:554
-#: ../src/firewall-config.in:580 ../src/firewall-config.in:835
-#: ../src/firewall-config.in:1075 ../src/firewall-config.in:1114
+#: ../src/firewall-config.in:428 ../src/firewall-config.in:475
+#: ../src/firewall-config.in:501 ../src/firewall-config.in:756
+#: ../src/firewall-config.in:996 ../src/firewall-config.in:1035
 msgid "Port"
 msgstr "Port"
 
-#: ../src/firewall-config.in:510 ../src/firewall-config.in:528
-#: ../src/firewall-config.in:557 ../src/firewall-config.in:583
-#: ../src/firewall-config.in:838 ../src/firewall-config.in:1078
-#: ../src/firewall-config.in:1094 ../src/firewall-config.in:1117
-#: ../src/firewall-config.glade.h:250
+#: ../src/firewall-config.in:431 ../src/firewall-config.in:449
+#: ../src/firewall-config.in:478 ../src/firewall-config.in:504
+#: ../src/firewall-config.in:759 ../src/firewall-config.in:999
+#: ../src/firewall-config.in:1015 ../src/firewall-config.in:1038
+#: ../src/firewall-config.glade.h:221
 msgid "Protocol"
 msgstr "Protocol"
 
-#: ../src/firewall-config.in:586
+#: ../src/firewall-config.in:507
 msgid "To Port"
 msgstr "La portul"
 
-#: ../src/firewall-config.in:589
+#: ../src/firewall-config.in:510
 msgid "To Address"
 msgstr "La adresa"
 
-#: ../src/firewall-config.in:638
+#: ../src/firewall-config.in:559
 msgid "Bindings"
 msgstr "Asocieri"
 
-#: ../src/firewall-config.in:675 ../src/firewall-config.glade.h:233
+#: ../src/firewall-config.in:596 ../src/firewall-config.glade.h:204
 msgid "Entry"
 msgstr "Intrare"
 
-#: ../src/firewall-config.in:806
+#: ../src/firewall-config.in:727
 msgid "Icmp Type"
 msgstr "Tip ICMP"
 
-#: ../src/firewall-config.in:860
+#: ../src/firewall-config.in:781
 msgid "Family"
 msgstr "Familia"
 
-#: ../src/firewall-config.in:866
+#: ../src/firewall-config.in:787
 msgid "Action"
 msgstr "Acțiune"
 
-#: ../src/firewall-config.in:869
+#: ../src/firewall-config.in:790
 msgid "Element"
 msgstr "Element"
 
-#: ../src/firewall-config.in:872
+#: ../src/firewall-config.in:793
 msgid "Src"
 msgstr "Sursa"
 
-#: ../src/firewall-config.in:875
+#: ../src/firewall-config.in:796
 msgid "Dest"
 msgstr "Dest."
 
-#: ../src/firewall-config.in:878
+#: ../src/firewall-config.in:799
 msgid "log"
 msgstr "jurnal"
 
-#: ../src/firewall-config.in:881
+#: ../src/firewall-config.in:802
 msgid "Audit"
 msgstr "Audit"
 
-#: ../src/firewall-config.in:1009 ../src/firewall-config.glade.h:221
+#: ../src/firewall-config.in:930 ../src/firewall-config.glade.h:192
 msgid "Interface"
 msgstr "Interfață"
 
-#: ../src/firewall-config.in:1012
+#: ../src/firewall-config.in:933
 msgid "Comment"
 msgstr "Comentariu"
 
-#: ../src/firewall-config.in:1034 ../src/firewall-config.glade.h:27
+#: ../src/firewall-config.in:955 ../src/firewall-config.glade.h:23
 msgid "Source"
 msgstr "Sursa"
 
-#: ../src/firewall-config.in:1717 ../src/firewall-config.in:3006
-#: ../src/firewall-config.in:3059
+#: ../src/firewall-config.in:1581 ../src/firewall-config.in:2859
+#: ../src/firewall-config.in:2912
 msgid "Warning"
 msgstr "Avertisment"
 
-#: ../src/firewall-config.in:1728 ../src/firewall-config.in:1740
+#: ../src/firewall-config.in:1592 ../src/firewall-config.in:1604
 msgid "Error"
 msgstr "Eroare"
 
-#: ../src/firewall-config.in:2174 ../src/firewall-config.in:3418
-#: ../src/firewall-config.in:3923 ../src/firewall-config.glade.h:262
+#: ../src/firewall-config.in:2028 ../src/firewall-config.in:3271
+#: ../src/firewall-config.in:3779 ../src/firewall-config.glade.h:233
 msgid "accept"
 msgstr "acceptă"
 
-#: ../src/firewall-config.in:2176 ../src/firewall-config.in:3420
-#: ../src/firewall-config.in:3925 ../src/firewall-config.in:4098
-#: ../src/firewall-config.glade.h:263
+#: ../src/firewall-config.in:2030 ../src/firewall-config.in:3273
+#: ../src/firewall-config.in:3781 ../src/firewall-config.in:3954
+#: ../src/firewall-config.glade.h:234
 msgid "reject"
 msgstr "respinge"
 
-#: ../src/firewall-config.in:2180 ../src/firewall-config.in:3437
-#: ../src/firewall-config.in:3932 ../src/firewall-config.glade.h:264
+#: ../src/firewall-config.in:2034 ../src/firewall-config.in:3290
+#: ../src/firewall-config.in:3788 ../src/firewall-config.glade.h:235
 msgid "drop"
 msgstr "lasă"
 
-#: ../src/firewall-config.in:2182 ../src/firewall-config.in:3439
-#: ../src/firewall-config.in:3934 ../src/firewall-config.in:4101
-#: ../src/firewall-config.glade.h:265
+#: ../src/firewall-config.in:2036 ../src/firewall-config.in:3292
+#: ../src/firewall-config.in:3790 ../src/firewall-config.in:3957
+#: ../src/firewall-config.glade.h:236
 msgid "mark"
 msgstr "marcaj"
 
-#: ../src/firewall-config.in:2185 ../src/firewall-config.in:2233
-#: ../src/firewall-config.in:2238
+#: ../src/firewall-config.in:2039 ../src/firewall-config.in:2087
+#: ../src/firewall-config.in:2092
 msgid "limit"
 msgstr "limită"
 
-#: ../src/firewall-config.in:2201 ../src/firewall-config.in:3373
-#: ../src/firewall-config.in:3556 ../src/firewall-config.in:3863
-#: ../src/firewall-config.glade.h:284
+#: ../src/firewall-config.in:2055 ../src/firewall-config.in:3226
+#: ../src/firewall-config.in:3412 ../src/firewall-config.in:3719
+#: ../src/firewall-config.glade.h:255
 msgid "service"
 msgstr "servici"
 
-#: ../src/firewall-config.in:2203 ../src/firewall-config.in:3377
-#: ../src/firewall-config.in:3558 ../src/firewall-config.in:3867
-#: ../src/firewall-config.glade.h:285
+#: ../src/firewall-config.in:2057 ../src/firewall-config.in:3230
+#: ../src/firewall-config.in:3414 ../src/firewall-config.in:3723
+#: ../src/firewall-config.glade.h:256
 msgid "port"
 msgstr "port"
 
-#: ../src/firewall-config.in:2205 ../src/firewall-config.in:3382
-#: ../src/firewall-config.in:3567 ../src/firewall-config.in:3877
-#: ../src/firewall-config.glade.h:286
+#: ../src/firewall-config.in:2059 ../src/firewall-config.in:3235
+#: ../src/firewall-config.in:3423 ../src/firewall-config.in:3733
+#: ../src/firewall-config.glade.h:257
 msgid "protocol"
 msgstr "protocol"
 
-#: ../src/firewall-config.in:2207 ../src/firewall-config.in:3386
-#: ../src/firewall-config.in:3896 ../src/firewall-config.in:4118
-#: ../src/firewall-config.glade.h:291
+#: ../src/firewall-config.in:2061 ../src/firewall-config.in:3239
+#: ../src/firewall-config.in:3752 ../src/firewall-config.in:3974
+#: ../src/firewall-config.glade.h:262
 msgid "masquerade"
 msgstr "mascare"
 
-#: ../src/firewall-config.in:2209 ../src/firewall-config.in:3390
-#: ../src/firewall-config.in:3569 ../src/firewall-config.in:3881
-#: ../src/firewall-config.in:4133 ../src/firewall-config.glade.h:287
+#: ../src/firewall-config.in:2063 ../src/firewall-config.in:3243
+#: ../src/firewall-config.in:3425 ../src/firewall-config.in:3737
+#: ../src/firewall-config.in:3987 ../src/firewall-config.glade.h:258
 msgid "icmp-block"
 msgstr "bloc-icmp"
 
-#: ../src/firewall-config.in:2211 ../src/firewall-config.in:3394
-#: ../src/firewall-config.in:3571 ../src/firewall-config.in:3885
-#: ../src/firewall-config.glade.h:288
+#: ../src/firewall-config.in:2065 ../src/firewall-config.in:3247
+#: ../src/firewall-config.in:3427 ../src/firewall-config.in:3741
+#: ../src/firewall-config.glade.h:259
 msgid "icmp-type"
 msgstr "tip-icmp"
 
-#: ../src/firewall-config.in:2213 ../src/firewall-config.in:3398
-#: ../src/firewall-config.in:3573 ../src/firewall-config.in:3889
-#: ../src/firewall-config.in:4126 ../src/firewall-config.glade.h:289
+#: ../src/firewall-config.in:2067 ../src/firewall-config.in:3251
+#: ../src/firewall-config.in:3429 ../src/firewall-config.in:3745
+#: ../src/firewall-config.in:3982 ../src/firewall-config.glade.h:260
 msgid "forward-port"
 msgstr "port-redirecționare"
 
-#: ../src/firewall-config.in:2220 ../src/firewall-config.in:3408
-#: ../src/firewall-config.in:3575 ../src/firewall-config.in:3898
-#: ../src/firewall-config.glade.h:290
+#: ../src/firewall-config.in:2074 ../src/firewall-config.in:3261
+#: ../src/firewall-config.in:3431 ../src/firewall-config.in:3754
+#: ../src/firewall-config.glade.h:261
 msgid "source-port"
 msgstr "port-sursă"
 
-#: ../src/firewall-config.in:2231
+#: ../src/firewall-config.in:2085
 msgid "level"
 msgstr "nivel"
 
-#: ../src/firewall-config.in:2235 ../src/firewall-config.in:2240
+#: ../src/firewall-config.in:2089 ../src/firewall-config.in:2094
 msgid "yes"
 msgstr "da"
 
-#: ../src/firewall-config.in:2594 ../src/firewall-config.in:2658
-#: ../src/firewall-config.in:2697 ../src/firewall-config.glade.h:89
+#: ../src/firewall-config.in:2447 ../src/firewall-config.in:2511
+#: ../src/firewall-config.in:2550 ../src/firewall-config.glade.h:82
 msgid "Zone"
 msgstr "Zona"
 
-#: ../src/firewall-config.in:2619
+#: ../src/firewall-config.in:2472
 #, c-format
 msgid "Default Zone: %s"
 msgstr "Zona implicită: %s"
 
-#: ../src/firewall-config.in:2633 ../src/firewall-config.in:2674
-#: ../src/firewall-config.in:2711
+#: ../src/firewall-config.in:2486 ../src/firewall-config.in:2527
+#: ../src/firewall-config.in:2564
 #, c-format
 msgid "Zone: %s"
 msgstr "Zona: %s"
 
-#: ../src/firewall-config.in:2999
+#: ../src/firewall-config.in:2852
 #, c-format
 msgid "Zone '%s': Service '%s' is not available."
 msgstr "Zona „%s”: Serviciul „%s” nu este disponibil."
 
-#: ../src/firewall-config.in:3007 ../src/firewall-config.in:3060
-#: ../src/firewall-config.glade.h:163
+#: ../src/firewall-config.in:2860 ../src/firewall-config.in:2913
+#: ../src/firewall-config.glade.h:156
 msgid "Remove"
 msgstr "Elimină"
 
-#: ../src/firewall-config.in:3007 ../src/firewall-config.in:3060
+#: ../src/firewall-config.in:2860 ../src/firewall-config.in:2913
 msgid "Ignore"
 msgstr "Ignoră"
 
-#: ../src/firewall-config.in:3052
+#: ../src/firewall-config.in:2905
 #, c-format
 msgid "Zone '%s': ICMP type '%s' is not available."
 msgstr "Zona „%s”: tipul ICMP „%s” nu este disponibil."
 
-#: ../src/firewall-config.in:3212
+#: ../src/firewall-config.in:3065
 msgid "Built-in zone, rename not supported."
 msgstr "Zonă încorporată, redenumirea nu este acceptată."
 
-#: ../src/firewall-config.in:3335 ../src/firewall-config.in:3834
-#: ../src/firewall-config.glade.h:270
+#: ../src/firewall-config.in:3188 ../src/firewall-config.in:3690
+#: ../src/firewall-config.glade.h:241
 msgid "second"
 msgstr "secundă"
 
-#: ../src/firewall-config.in:3335 ../src/firewall-config.in:3834
-#: ../src/firewall-config.glade.h:271
+#: ../src/firewall-config.in:3188 ../src/firewall-config.in:3690
+#: ../src/firewall-config.glade.h:242
 msgid "minute"
 msgstr "minut"
 
-#: ../src/firewall-config.in:3335 ../src/firewall-config.in:3834
-#: ../src/firewall-config.glade.h:272
+#: ../src/firewall-config.in:3188 ../src/firewall-config.in:3690
+#: ../src/firewall-config.glade.h:243
 msgid "hour"
 msgstr "oră"
 
-#: ../src/firewall-config.in:3335 ../src/firewall-config.in:3834
-#: ../src/firewall-config.glade.h:273
+#: ../src/firewall-config.in:3188 ../src/firewall-config.in:3690
+#: ../src/firewall-config.glade.h:244
 msgid "day"
 msgstr "zi"
 
-#: ../src/firewall-config.in:3337 ../src/firewall-config.in:3836
-#: ../src/firewall-config.glade.h:276
+#: ../src/firewall-config.in:3190 ../src/firewall-config.in:3692
+#: ../src/firewall-config.glade.h:247
 msgid "emergency"
 msgstr "urgență"
 
-#: ../src/firewall-config.in:3338 ../src/firewall-config.in:3837
-#: ../src/firewall-config.glade.h:277
+#: ../src/firewall-config.in:3191 ../src/firewall-config.in:3693
+#: ../src/firewall-config.glade.h:248
 msgid "alert"
 msgstr "alertă"
 
-#: ../src/firewall-config.in:3339 ../src/firewall-config.in:3838
-#: ../src/firewall-config.glade.h:278
+#: ../src/firewall-config.in:3192 ../src/firewall-config.in:3694
+#: ../src/firewall-config.glade.h:249
 msgid "critical"
 msgstr "critică"
 
-#: ../src/firewall-config.in:3340 ../src/firewall-config.in:3839
-#: ../src/firewall-config.glade.h:279
+#: ../src/firewall-config.in:3193 ../src/firewall-config.in:3695
+#: ../src/firewall-config.glade.h:250
 msgid "error"
 msgstr "eroare"
 
-#: ../src/firewall-config.in:3341 ../src/firewall-config.in:3840
-#: ../src/firewall-config.glade.h:280
+#: ../src/firewall-config.in:3194 ../src/firewall-config.in:3696
+#: ../src/firewall-config.glade.h:251
 msgid "warning"
 msgstr "avertisment"
 
-#: ../src/firewall-config.in:3342 ../src/firewall-config.in:3841
-#: ../src/firewall-config.glade.h:281
+#: ../src/firewall-config.in:3195 ../src/firewall-config.in:3697
+#: ../src/firewall-config.glade.h:252
 msgid "notice"
 msgstr "notificare"
 
-#: ../src/firewall-config.in:3343 ../src/firewall-config.in:3842
-#: ../src/firewall-config.glade.h:282
+#: ../src/firewall-config.in:3196 ../src/firewall-config.in:3698
+#: ../src/firewall-config.glade.h:253
 msgid "info"
 msgstr "informație"
 
-#: ../src/firewall-config.in:3344 ../src/firewall-config.in:3843
-#: ../src/firewall-config.glade.h:283
+#: ../src/firewall-config.in:3197 ../src/firewall-config.in:3699
+#: ../src/firewall-config.glade.h:254
 msgid "debug"
 msgstr "depanare"
 
-#: ../src/firewall-config.in:3548 ../src/firewall-config.in:3770
-#: ../src/firewall-config.in:3794 ../src/firewall-config.in:3848
-#: ../src/firewall-config.in:4004 ../src/firewall-config.in:4057
+#: ../src/firewall-config.in:3404 ../src/firewall-config.in:3626
+#: ../src/firewall-config.in:3650 ../src/firewall-config.in:3704
+#: ../src/firewall-config.in:3860 ../src/firewall-config.in:3913
 msgid "ipv4"
 msgstr "ipv4"
 
-#: ../src/firewall-config.in:3550 ../src/firewall-config.in:3772
-#: ../src/firewall-config.in:3796 ../src/firewall-config.in:3850
-#: ../src/firewall-config.in:4006 ../src/firewall-config.in:4059
+#: ../src/firewall-config.in:3406 ../src/firewall-config.in:3628
+#: ../src/firewall-config.in:3652 ../src/firewall-config.in:3706
+#: ../src/firewall-config.in:3862 ../src/firewall-config.in:3915
 msgid "ipv6"
 msgstr "ipv6"
 
-#: ../src/firewall-config.in:5300
+#: ../src/firewall-config.in:5154
 msgid ""
 "Forwarding to another system is only useful if the interface is "
 "masqueraded.\n"
@@ -657,32 +641,32 @@ msgstr ""
 "mascată.\n"
 "Doriți să mascați această zonă?"
 
-#: ../src/firewall-config.in:5658
+#: ../src/firewall-config.in:5512
 msgid "Built-in service, rename not supported."
 msgstr "Serviciu încorporat, redenumirea nu este acceptată."
 
-#: ../src/firewall-config.in:5869
+#: ../src/firewall-config.in:5723
 msgid "Please enter an ipv4 address with the form address[/mask]."
 msgstr "Vă rugăm să introduceți o adresă ipv4 cu formatul adresa[/masca]."
 
-#: ../src/firewall-config.in:5870
+#: ../src/firewall-config.in:5724
 msgid "The mask can be a network mask or a number."
 msgstr "Masca poate fi o mască de rețea sau un număr."
 
-#: ../src/firewall-config.in:5872
+#: ../src/firewall-config.in:5726
 msgid "Please enter an ipv6 address with the form address[/mask]."
 msgstr "Vă rugăm să introduceți o adresă ipv6 cu formatul adresa[/masca]."
 
-#: ../src/firewall-config.in:5873
+#: ../src/firewall-config.in:5727
 msgid "The mask is a number."
 msgstr "Masca este un număr."
 
-#: ../src/firewall-config.in:5876
+#: ../src/firewall-config.in:5730
 msgid "Please enter an ipv4 or ipv6 address with the form address[/mask]."
 msgstr ""
 "Vă rugăm să introduceți o adresă ipv4 sau ipv6 cu formatul adresa[/masca]."
 
-#: ../src/firewall-config.in:5879
+#: ../src/firewall-config.in:5733
 msgid ""
 "The mask can be a network mask or a number for ipv4.\n"
 "The mask is a number for ipv6."
@@ -690,51 +674,51 @@ msgstr ""
 "Masca poate fi o mască de rețea sau un număr pentru ipv4.\n"
 "Masca este un număr pentru ipv6."
 
-#: ../src/firewall-config.in:6061
+#: ../src/firewall-config.in:5915
 msgid "Built-in ipset, rename not supported."
 msgstr "Set-IP încorporat, redenumirea nu este acceptată."
 
-#: ../src/firewall-config.in:6161 ../src/firewall-config.in:6250
+#: ../src/firewall-config.in:6015 ../src/firewall-config.in:6104
 msgid "Please select a file"
 msgstr "Selectați un fișier"
 
-#: ../src/firewall-config.in:6175 ../src/firewall-config.in:6264
+#: ../src/firewall-config.in:6029 ../src/firewall-config.in:6118
 msgid "Text Files"
 msgstr "Fișiere text"
 
-#: ../src/firewall-config.in:6180 ../src/firewall-config.in:6269
+#: ../src/firewall-config.in:6034 ../src/firewall-config.in:6123
 msgid "All Files"
 msgstr "Toate fișierele"
 
-#: ../src/firewall-config.in:6695 ../src/firewall-config.in:6724
-#: ../src/firewall-config.glade.h:40
+#: ../src/firewall-config.in:6549 ../src/firewall-config.in:6578
+#: ../src/firewall-config.glade.h:36
 msgid "All"
 msgstr "Toate"
 
-#: ../src/firewall-config.in:6695 ../src/firewall-config.in:6724
-#: ../src/firewall-config.glade.h:41
+#: ../src/firewall-config.in:6549 ../src/firewall-config.in:6578
+#: ../src/firewall-config.glade.h:37
 msgid "IPv4"
 msgstr "IPv4"
 
-#: ../src/firewall-config.in:6695 ../src/firewall-config.in:6724
-#: ../src/firewall-config.glade.h:42
+#: ../src/firewall-config.in:6549 ../src/firewall-config.in:6578
+#: ../src/firewall-config.glade.h:38
 msgid "IPv6"
 msgstr "IPv6"
 
-#: ../src/firewall-config.in:6701
+#: ../src/firewall-config.in:6555
 msgid "Built-in helper, rename not supported."
 msgstr "Asistent încorporat, redenumirea nu este acceptată."
 
-#: ../src/firewall-config.in:7186
+#: ../src/firewall-config.in:7040
 msgid "Built-in icmp, rename not supported."
 msgstr "ICMP încorporat, redenumirea nu este acceptată."
 
-#: ../src/firewall-config.in:8273
+#: ../src/firewall-config.in:7650
 #, c-format
 msgid "Failed to read file '%s': %s"
 msgstr "Citirea fișierului „%s” a eșuat: %s"
 
-#: ../src/firewall-config.in:8410
+#: ../src/firewall-config.in:7787
 #, c-format
 msgid "Select zone for source %s"
 msgstr "Selectați zona pentru sursa %s"
@@ -753,93 +737,85 @@ msgid "Please select the automatic helpers value:"
 msgstr "Selectați valoarea asistenților automați:"
 
 #: ../src/firewall-config.glade.h:5
-msgid "Please enter the command line."
-msgstr "Introduceți linia de comandă."
-
-#: ../src/firewall-config.glade.h:7
-msgid "Please enter the context."
-msgstr "Introduceți contextul."
-
-#: ../src/firewall-config.glade.h:9
 msgid "Please select default zone from the list below."
 msgstr "Selectați zona implicită din lista de mai jos."
 
-#: ../src/firewall-config.glade.h:10
+#: ../src/firewall-config.glade.h:6
 msgid "Direct Chain"
 msgstr "Lanț direct"
 
-#: ../src/firewall-config.glade.h:11
+#: ../src/firewall-config.glade.h:7
 msgid "Please select ipv and table and enter the chain name."
 msgstr "Selectați protocolul ipv și tabelul și introduceți numele lanțului."
 
-#: ../src/firewall-config.glade.h:12
+#: ../src/firewall-config.glade.h:8
 msgid "ipv:"
 msgstr "ipv:"
 
-#: ../src/firewall-config.glade.h:13
+#: ../src/firewall-config.glade.h:9
 msgid "eb"
 msgstr "eb"
 
-#: ../src/firewall-config.glade.h:14
+#: ../src/firewall-config.glade.h:10
 msgid "Chain:"
 msgstr "Lanț:"
 
-#: ../src/firewall-config.glade.h:15
+#: ../src/firewall-config.glade.h:11
 msgid "nat"
 msgstr "nat"
 
-#: ../src/firewall-config.glade.h:16
+#: ../src/firewall-config.glade.h:12
 msgid "raw"
 msgstr "raw"
 
-#: ../src/firewall-config.glade.h:17
+#: ../src/firewall-config.glade.h:13
 msgid "security"
 msgstr "securitate"
 
-#: ../src/firewall-config.glade.h:18
+#: ../src/firewall-config.glade.h:14
 msgid "Table:"
 msgstr "Tabel:"
 
-#: ../src/firewall-config.glade.h:19
+#: ../src/firewall-config.glade.h:15
 msgid "Direct Passthrough Rule"
 msgstr "Regulă transmisă direct"
 
-#: ../src/firewall-config.glade.h:20
+#: ../src/firewall-config.glade.h:16
 msgid "Please select ipv and enter the args."
 msgstr "Selectați protocolul ipv și tabelul și introduceți argumentele."
 
-#: ../src/firewall-config.glade.h:21
+#: ../src/firewall-config.glade.h:17
 msgid "Args:"
 msgstr "Argumente:"
 
-#: ../src/firewall-config.glade.h:22
+#: ../src/firewall-config.glade.h:18
 msgid "Port Forwarding"
 msgstr "Redirecționarea portului"
 
-#: ../src/firewall-config.glade.h:23
+#: ../src/firewall-config.glade.h:19
 msgid ""
 "Please select the source and destination options according to your needs."
 msgstr ""
 "Selectați opțiunile de sursă și de destinație în funcție de nevoile "
 "dumneavoastră."
 
-#: ../src/firewall-config.glade.h:24
+#: ../src/firewall-config.glade.h:20
 msgid "Port / Port Range:"
 msgstr "Port / Interval de porturi:"
 
-#: ../src/firewall-config.glade.h:25
+#: ../src/firewall-config.glade.h:21
 msgid "IP address:"
 msgstr "Adresa IP:"
 
-#: ../src/firewall-config.glade.h:26
+#: ../src/firewall-config.glade.h:22
 msgid "Protocol:"
 msgstr "Protocol:"
 
-#: ../src/firewall-config.glade.h:28
+#: ../src/firewall-config.glade.h:24
 msgid "Destination"
 msgstr "Destinația"
 
-#: ../src/firewall-config.glade.h:29
+#: ../src/firewall-config.glade.h:25
 msgid ""
 "If you enable local forwarding, you have to specify a port. This port has to "
 "be different to the source port."
@@ -847,109 +823,109 @@ msgstr ""
 "Dacă activați redirecționarea locală, trebuie să specificați un port. Acest "
 "port trebuie să fie diferit de portul sursă."
 
-#: ../src/firewall-config.glade.h:30
+#: ../src/firewall-config.glade.h:26
 msgid "Local forwarding"
 msgstr "Redirecționare locală"
 
-#: ../src/firewall-config.glade.h:31
+#: ../src/firewall-config.glade.h:27
 msgid "Forward to another port"
 msgstr "Redirecționare către un alt port"
 
-#: ../src/firewall-config.glade.h:32
+#: ../src/firewall-config.glade.h:28
 msgid "Base Helper Settings"
 msgstr "Parametrii de bază ai asistenților"
 
-#: ../src/firewall-config.glade.h:33
+#: ../src/firewall-config.glade.h:29
 msgid "Please configure base helper settings:"
 msgstr "Configurați parametrii de bază ai asistenților:"
 
-#: ../src/firewall-config.glade.h:34
+#: ../src/firewall-config.glade.h:30
 msgid "Bold entries are mandatory, all others are optional."
 msgstr ""
 "Rubricile cu caractere aldine sunt obligatorii, toate celelalte sunt "
 "opționale."
 
-#: ../src/firewall-config.glade.h:35
+#: ../src/firewall-config.glade.h:31
 msgid "Name:"
 msgstr "Nume:"
 
-#: ../src/firewall-config.glade.h:36
+#: ../src/firewall-config.glade.h:32
 msgid "Version:"
 msgstr "Versiune:"
 
-#: ../src/firewall-config.glade.h:37
+#: ../src/firewall-config.glade.h:33
 msgid "Short:"
 msgstr "Scurt:"
 
-#: ../src/firewall-config.glade.h:38
+#: ../src/firewall-config.glade.h:34
 msgid "Description:"
 msgstr "Descriere:"
 
-#: ../src/firewall-config.glade.h:39
+#: ../src/firewall-config.glade.h:35
 msgid "Family:"
 msgstr "Familia:"
 
-#: ../src/firewall-config.glade.h:43
+#: ../src/firewall-config.glade.h:39
 msgid "Module:"
 msgstr "Modul:"
 
-#: ../src/firewall-config.glade.h:44
+#: ../src/firewall-config.glade.h:40
 msgid "Helper"
 msgstr "Asistent"
 
-#: ../src/firewall-config.glade.h:45
+#: ../src/firewall-config.glade.h:41
 msgid "Please select a helper:"
 msgstr "Selectați un asistent:"
 
-#: ../src/firewall-config.glade.h:46
+#: ../src/firewall-config.glade.h:42
 msgid "Base ICMP Type Settings"
 msgstr "Parametrii de bază ai tipului ICMP"
 
-#: ../src/firewall-config.glade.h:47
+#: ../src/firewall-config.glade.h:43
 msgid "Please configure base ICMP type settings:"
 msgstr "Configurați parametrii de bază ai tipului ICMP:"
 
-#: ../src/firewall-config.glade.h:48
+#: ../src/firewall-config.glade.h:44
 msgid "ICMP Type"
 msgstr "Tip ICMP"
 
-#: ../src/firewall-config.glade.h:49
+#: ../src/firewall-config.glade.h:45
 msgid "Please select an ICMP type"
 msgstr "Selectați un tip de ICMP"
 
-#: ../src/firewall-config.glade.h:50
+#: ../src/firewall-config.glade.h:46
 msgid "Add Entry"
 msgstr "Adăugați intrare"
 
-#: ../src/firewall-config.glade.h:51
+#: ../src/firewall-config.glade.h:47
 msgid "Add Entries From File"
 msgstr "Adăugați intrări din fișier"
 
-#: ../src/firewall-config.glade.h:52
+#: ../src/firewall-config.glade.h:48
 msgid "Remove Selected Entry"
 msgstr "Eliminați intrarea selectată"
 
-#: ../src/firewall-config.glade.h:53
+#: ../src/firewall-config.glade.h:49
 msgid "Remove All Entries"
 msgstr "Eliminați toate intrările"
 
-#: ../src/firewall-config.glade.h:54
+#: ../src/firewall-config.glade.h:50
 msgid "Remove Entries From File"
 msgstr "Eliminați intrările din fișier"
 
-#: ../src/firewall-config.glade.h:56
+#: ../src/firewall-config.glade.h:52
 msgid "_File"
 msgstr "_Fişier"
 
-#: ../src/firewall-config.glade.h:57
+#: ../src/firewall-config.glade.h:53
 msgid "_Options"
 msgstr "_Opțiuni"
 
-#: ../src/firewall-config.glade.h:58
+#: ../src/firewall-config.glade.h:54
 msgid "Reload Firewalld"
 msgstr "Reîncărcați Paravanul de protecție"
 
-#: ../src/firewall-config.glade.h:59
+#: ../src/firewall-config.glade.h:55
 msgid ""
 "Reloads firewall rules. Current permanent configuration will become new "
 "runtime configuration. i.e. all runtime only changes done until reload are "
@@ -960,122 +936,106 @@ msgstr ""
 "numai în timpul execuției până la reîncărcare se pierd odată cu "
 "reîncărcarea, dacă nu au fost incluse și în configurația permanentă."
 
-#: ../src/firewall-config.glade.h:60
+#: ../src/firewall-config.glade.h:56
 msgid "Change which zone a network connection belongs to."
 msgstr "Schimbați zona de care aparține o conexiune de rețea."
 
-#: ../src/firewall-config.glade.h:62
+#: ../src/firewall-config.glade.h:58
 msgid "Change Default Zone"
 msgstr "Schimbați zona implicită"
 
-#: ../src/firewall-config.glade.h:63
+#: ../src/firewall-config.glade.h:59
 msgid "Change default zone for connections or interfaces."
 msgstr "Schimbați zona implicită pentru conexiuni sau interfețe."
 
-#: ../src/firewall-config.glade.h:64
+#: ../src/firewall-config.glade.h:60
 msgid "Change Log Denied"
 msgstr "Modificați LogDenied"
 
-#: ../src/firewall-config.glade.h:65
+#: ../src/firewall-config.glade.h:61
 msgid "Change LogDenied value."
 msgstr "Modificați valoarea LogDenied."
 
-#: ../src/firewall-config.glade.h:66
+#: ../src/firewall-config.glade.h:62
 msgid "Configure Automatic Helper Assigment"
 msgstr "Configurați atribuirea automată a asistenților"
 
-#: ../src/firewall-config.glade.h:67
+#: ../src/firewall-config.glade.h:63
 msgid "Configure Automatic Helper Assignment setting."
 msgstr "Configurați parametrul de atribuire automată a asistenților."
 
-#: ../src/firewall-config.glade.h:68
+#: ../src/firewall-config.glade.h:64
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
 msgstr ""
 "Modul panică înseamnă că toate pachetele de intrare și ieșire sunt respinse."
 
-#: ../src/firewall-config.glade.h:69
+#: ../src/firewall-config.glade.h:65
 msgid "Panic Mode"
 msgstr "Modul panică"
 
-#: ../src/firewall-config.glade.h:70
-msgid ""
-"Lockdown locks firewall configuration so that only applications on lockdown "
-"whitelist are able to change it."
-msgstr ""
-"Carantina blochează configurația paravanului de protecție, astfel încât "
-"numai aplicațiile de pe lista albă a acesteia să o poată modifica."
-
-#: ../src/firewall-config.glade.h:71
-msgid "Lockdown"
-msgstr "Modul carantină"
-
-#: ../src/firewall-config.glade.h:72
+#: ../src/firewall-config.glade.h:66
 msgid "Make runtime configuration permanent"
 msgstr "Face permanentă configurația din timpul de execuție"
 
-#: ../src/firewall-config.glade.h:73
+#: ../src/firewall-config.glade.h:67
 msgid "Runtime To Permanent"
 msgstr "De la, din timpul de execuție, la permanentă"
 
-#: ../src/firewall-config.glade.h:74
+#: ../src/firewall-config.glade.h:68
 msgid "_View"
 msgstr "_Vizualizare"
 
-#: ../src/firewall-config.glade.h:75
+#: ../src/firewall-config.glade.h:69
 msgid "IPSets"
 msgstr "Seturi de IP"
 
-#: ../src/firewall-config.glade.h:76
+#: ../src/firewall-config.glade.h:70
 msgid "ICMP Types"
 msgstr "Tipuri ICMP"
 
-#: ../src/firewall-config.glade.h:77
+#: ../src/firewall-config.glade.h:71
 msgid "Helpers"
 msgstr "Asistenți"
 
-#: ../src/firewall-config.glade.h:78
+#: ../src/firewall-config.glade.h:72
 msgid "Direct Configuration"
 msgstr "Configurare directă"
 
-#: ../src/firewall-config.glade.h:79
-msgid "Lockdown Whitelist"
-msgstr "Lista albă de carantină"
-
-#: ../src/firewall-config.glade.h:80
+#: ../src/firewall-config.glade.h:73
 msgid "Active Bindings"
 msgstr "Asocieri active"
 
-#: ../src/firewall-config.glade.h:81
+#: ../src/firewall-config.glade.h:74
 msgid "_Help"
 msgstr "_Ajutor"
 
-#: ../src/firewall-config.glade.h:82
+#: ../src/firewall-config.glade.h:75
 msgid "Change Zone"
 msgstr "Schimbă zona"
 
-#: ../src/firewall-config.glade.h:83
+#: ../src/firewall-config.glade.h:76
 msgid "Change zone of binding"
 msgstr "Schimbă zona de asociere"
 
-#: ../src/firewall-config.glade.h:84
+#: ../src/firewall-config.glade.h:77
 msgid ""
 "Hide active runtime bindings of connections, interfaces and sources to zones"
 msgstr ""
 "Ascunde asocierile active în timp de execuție ale conexiunilor, interfețelor "
 "și surselor față de zone"
 
-#: ../src/firewall-config.glade.h:85
+#: ../src/firewall-config.glade.h:78
 msgid ""
 "Show active runtime bindings of connections, interfaces and sources to zones"
 msgstr ""
 "Arată asocierile active în timp de execuție ale conexiunilor, interfețelor "
 "și surselor față de zone"
 
-#: ../src/firewall-config.glade.h:86
+#: ../src/firewall-config.glade.h:79
 msgid "Configuration:"
 msgstr "Configurație:"
 
-#: ../src/firewall-config.glade.h:87
+#: ../src/firewall-config.glade.h:80
 msgid ""
 "Currently visible configuration. Runtime configuration is the actual active "
 "configuration. Permanent configuration will be active after service or "
@@ -1085,7 +1045,7 @@ msgstr ""
 "configurația activă reală. Configurația permanentă va fi activă după "
 "reîncărcarea sau repornirea serviciului sau a sistemului."
 
-#: ../src/firewall-config.glade.h:88
+#: ../src/firewall-config.glade.h:81
 msgid ""
 "A firewalld zone defines the level of trust for network connections, "
 "interfaces and source addresses bound to the zone. The zone combines "
@@ -1099,23 +1059,23 @@ msgstr ""
 "redirecționare de porturi/pachete, filtre icmp și reguli complexe. Zona "
 "poate fi asociată cu interfețe și adrese sursă."
 
-#: ../src/firewall-config.glade.h:90
+#: ../src/firewall-config.glade.h:83
 msgid "Add Zone"
 msgstr "Adăugă o zonă"
 
-#: ../src/firewall-config.glade.h:91
+#: ../src/firewall-config.glade.h:84
 msgid "Edit Zone"
 msgstr "Editează zona"
 
-#: ../src/firewall-config.glade.h:92
+#: ../src/firewall-config.glade.h:85
 msgid "Remove Zone"
 msgstr "Elimină zona"
 
-#: ../src/firewall-config.glade.h:93
+#: ../src/firewall-config.glade.h:86
 msgid "Load Zone Defaults"
 msgstr "Încărcarcă valorile implicite ale zonei"
 
-#: ../src/firewall-config.glade.h:94
+#: ../src/firewall-config.glade.h:87
 msgid ""
 "Here you can define which services are trusted in the zone. Trusted services "
 "are accessible from all hosts and networks that can reach the machine from "
@@ -1126,11 +1086,11 @@ msgstr ""
 "pot ajunge la mașină prin conexiuni, interfețe și surse asociate cu această "
 "zonă."
 
-#: ../src/firewall-config.glade.h:95
+#: ../src/firewall-config.glade.h:88
 msgid "Services"
 msgstr "Servicii"
 
-#: ../src/firewall-config.glade.h:96
+#: ../src/firewall-config.glade.h:89
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks that can connect to the machine."
@@ -1138,45 +1098,45 @@ msgstr ""
 "Adăugați porturi sau intervale de porturi suplimentare, care trebuie să fie "
 "accesibile pentru toate gazdele sau rețelele care se pot conecta la mașină."
 
-#: ../src/firewall-config.glade.h:97
+#: ../src/firewall-config.glade.h:90
 msgid "Add Port"
 msgstr "Adăugă un port"
 
-#: ../src/firewall-config.glade.h:98
+#: ../src/firewall-config.glade.h:91
 msgid "Edit Port"
 msgstr "Editează portul"
 
-#: ../src/firewall-config.glade.h:99
+#: ../src/firewall-config.glade.h:92
 msgid "Remove Port"
 msgstr "Elimină portul"
 
-#: ../src/firewall-config.glade.h:100
+#: ../src/firewall-config.glade.h:93
 msgid "Ports"
 msgstr "Porturi"
 
-#: ../src/firewall-config.glade.h:101
+#: ../src/firewall-config.glade.h:94
 msgid "Add protocols, which need to be accessible for all hosts or networks."
 msgstr ""
 "Adăugați protocoale, care trebuie să fie accesibile pentru toate gazdele sau "
 "rețelele."
 
-#: ../src/firewall-config.glade.h:102
+#: ../src/firewall-config.glade.h:95
 msgid "Add Protocol"
 msgstr "Adaugă protocol"
 
-#: ../src/firewall-config.glade.h:103
+#: ../src/firewall-config.glade.h:96
 msgid "Edit Protocol"
 msgstr "Editează protocolul"
 
-#: ../src/firewall-config.glade.h:104
+#: ../src/firewall-config.glade.h:97
 msgid "Remove Protocol"
 msgstr "Elimină protocolul"
 
-#: ../src/firewall-config.glade.h:105
+#: ../src/firewall-config.glade.h:98
 msgid "Protocols"
 msgstr "Protocoale"
 
-#: ../src/firewall-config.glade.h:106
+#: ../src/firewall-config.glade.h:99
 msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks that can connect to the machine."
@@ -1185,11 +1145,11 @@ msgstr ""
 "să fie accesibile pentru toate gazdele sau rețelele care se pot conecta la "
 "mașină."
 
-#: ../src/firewall-config.glade.h:107
+#: ../src/firewall-config.glade.h:100
 msgid "Source Ports"
 msgstr "Porturi sursă"
 
-#: ../src/firewall-config.glade.h:108
+#: ../src/firewall-config.glade.h:101
 msgid ""
 "Masquerading allows you to set up a host or router that connects your local "
 "network to the internet. Your local network will not be visible and the "
@@ -1200,11 +1160,11 @@ msgstr ""
 "gazdele apar ca o singură adresă în Internet. Mascarea este numai pentru "
 "protocolul IPv4."
 
-#: ../src/firewall-config.glade.h:109
+#: ../src/firewall-config.glade.h:102
 msgid "Masquerade zone"
 msgstr "Zonă mascată"
 
-#: ../src/firewall-config.glade.h:110
+#: ../src/firewall-config.glade.h:103
 msgid ""
 "If you enable masquerading, IP forwarding will be enabled for your IPv4 "
 "networks."
@@ -1212,11 +1172,11 @@ msgstr ""
 "Dacă activați mascarea, va fi activată redirecționarea IP pentru rețelele "
 "dvs. ce utilizează protocolul IPv4."
 
-#: ../src/firewall-config.glade.h:111
+#: ../src/firewall-config.glade.h:104
 msgid "Masquerading"
 msgstr "Mascarea"
 
-#: ../src/firewall-config.glade.h:112
+#: ../src/firewall-config.glade.h:105
 msgid ""
 "Add entries to forward ports either from one port to another on the local "
 "system or from the local system to another system. Forwarding to another "
@@ -1228,19 +1188,19 @@ msgstr ""
 "Redirecționarea către un alt sistem este utilă numai dacă interfața este "
 "mascată. Redirecționarea porturilor este numai pentru protocolul IPv4."
 
-#: ../src/firewall-config.glade.h:113
+#: ../src/firewall-config.glade.h:106
 msgid "Add Forward Port"
 msgstr "Adaugă port de redirecționare"
 
-#: ../src/firewall-config.glade.h:114
+#: ../src/firewall-config.glade.h:107
 msgid "Edit Forward Port"
 msgstr "Editează portul de redirecționare"
 
-#: ../src/firewall-config.glade.h:115
+#: ../src/firewall-config.glade.h:108
 msgid "Remove Forward Port"
 msgstr "Elimină portul de redirecționare"
 
-#: ../src/firewall-config.glade.h:116
+#: ../src/firewall-config.glade.h:109
 msgid ""
 "The Internet Control Message Protocol (ICMP) is mainly used to send error "
 "messages between networked computers, but additionally for informational "
@@ -1251,7 +1211,7 @@ msgstr ""
 "eroare între calculatoarele din rețea, dar și pentru mesaje informative, cum "
 "ar fi cererile și răspunsurile la ping."
 
-#: ../src/firewall-config.glade.h:117
+#: ../src/firewall-config.glade.h:110
 msgid ""
 "Mark the ICMP types in the list, which should be rejected. All other ICMP "
 "types are allowed to pass the firewall. The default is no limitation."
@@ -1260,7 +1220,7 @@ msgstr ""
 "tipuri ICMP pot trece prin paravanul de protecție. Valoarea implicită este "
 "nicio limitare."
 
-#: ../src/firewall-config.glade.h:118
+#: ../src/firewall-config.glade.h:111
 msgid ""
 "If Invert Filter is enabled, marked ICMP entries are accepted and the others "
 "are rejected. In a zone with the target DROP, they are dropped."
@@ -1269,35 +1229,35 @@ msgstr ""
 "acceptate, iar celelalte sunt respinse. Într-o zonă cu țintă DROP, acestea "
 "sunt înlăturate."
 
-#: ../src/firewall-config.glade.h:119
+#: ../src/firewall-config.glade.h:112
 msgid "Invert Filter"
 msgstr "Inversare filtru"
 
-#: ../src/firewall-config.glade.h:120
+#: ../src/firewall-config.glade.h:113
 msgid "ICMP Filter"
 msgstr "Filtru ICMP"
 
-#: ../src/firewall-config.glade.h:121
+#: ../src/firewall-config.glade.h:114
 msgid "Here you can set rich language rules for the zone."
 msgstr "Aici puteți defini reguli complexe pentru zona respectivă."
 
-#: ../src/firewall-config.glade.h:122
+#: ../src/firewall-config.glade.h:115
 msgid "Add Rich Rule"
 msgstr "Adaugă regulă complexă"
 
-#: ../src/firewall-config.glade.h:123
+#: ../src/firewall-config.glade.h:116
 msgid "Edit Rich Rule"
 msgstr "Editează regula complexă"
 
-#: ../src/firewall-config.glade.h:124
+#: ../src/firewall-config.glade.h:117
 msgid "Remove Rich Rule"
 msgstr "Elimină regula complexă"
 
-#: ../src/firewall-config.glade.h:125
+#: ../src/firewall-config.glade.h:118
 msgid "Rich Rules"
 msgstr "Reguli complexe"
 
-#: ../src/firewall-config.glade.h:126
+#: ../src/firewall-config.glade.h:119
 msgid ""
 "Add entries to bind interfaces to the zone. If the interface will be used by "
 "a connection, the zone will be set to the zone specified in the connection."
@@ -1306,19 +1266,19 @@ msgstr ""
 "interfața va fi utilizată de o conexiune, zona va fi stabilită la zona "
 "specificată în conexiune."
 
-#: ../src/firewall-config.glade.h:127
+#: ../src/firewall-config.glade.h:120
 msgid "Add Interface"
 msgstr "Adaugă o interfață"
 
-#: ../src/firewall-config.glade.h:128
+#: ../src/firewall-config.glade.h:121
 msgid "Edit Interface"
 msgstr "Editează interfața"
 
-#: ../src/firewall-config.glade.h:129
+#: ../src/firewall-config.glade.h:122
 msgid "Remove Interface"
 msgstr "Elimină interfața"
 
-#: ../src/firewall-config.glade.h:131
+#: ../src/firewall-config.glade.h:124
 msgid ""
 "Add entries to bind source addresses or areas to the zone. You can also bind "
 "to a MAC source address, but with limitations. Port forwarding and "
@@ -1329,23 +1289,23 @@ msgstr ""
 "Redirecționarea porturilor și mascarea nu vor funcționa pentru asocierile cu "
 "adresa sursă MAC."
 
-#: ../src/firewall-config.glade.h:132
+#: ../src/firewall-config.glade.h:125
 msgid "Add Source"
 msgstr "Adaugă sursa"
 
-#: ../src/firewall-config.glade.h:133
+#: ../src/firewall-config.glade.h:126
 msgid "Edit Source"
 msgstr "Editează sursa"
 
-#: ../src/firewall-config.glade.h:134
+#: ../src/firewall-config.glade.h:127
 msgid "Remove Source"
 msgstr "Elimină sursa"
 
-#: ../src/firewall-config.glade.h:136
+#: ../src/firewall-config.glade.h:129
 msgid "Zones"
 msgstr "Zone"
 
-#: ../src/firewall-config.glade.h:137
+#: ../src/firewall-config.glade.h:130
 msgid ""
 "A firewalld service is a combination of ports, protocols, modules and "
 "destination addresses."
@@ -1353,23 +1313,23 @@ msgstr ""
 "Un serviciu protejat de paravanul de protecție este o combinație de porturi, "
 "protocoale, module și adrese de destinație."
 
-#: ../src/firewall-config.glade.h:139
+#: ../src/firewall-config.glade.h:132
 msgid "Add Service"
 msgstr "Adaugă serviciu"
 
-#: ../src/firewall-config.glade.h:140
+#: ../src/firewall-config.glade.h:133
 msgid "Edit Service"
 msgstr "Editează serviciul"
 
-#: ../src/firewall-config.glade.h:141
+#: ../src/firewall-config.glade.h:134
 msgid "Remove Service"
 msgstr "Elimină serviciul"
 
-#: ../src/firewall-config.glade.h:142
+#: ../src/firewall-config.glade.h:135
 msgid "Load Service Defaults"
 msgstr "Încarcă valorile implicite ale serviciului"
 
-#: ../src/firewall-config.glade.h:143
+#: ../src/firewall-config.glade.h:136
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks."
@@ -1377,15 +1337,15 @@ msgstr ""
 "Adăugați porturi sau intervale de porturi suplimentare, care trebuie să fie "
 "accesibile pentru toate gazdele sau rețelele."
 
-#: ../src/firewall-config.glade.h:144
+#: ../src/firewall-config.glade.h:137
 msgid "Edit Entry"
 msgstr "Editează intrarea"
 
-#: ../src/firewall-config.glade.h:145
+#: ../src/firewall-config.glade.h:138
 msgid "Remove Entry"
 msgstr "Elimină intrarea"
 
-#: ../src/firewall-config.glade.h:146
+#: ../src/firewall-config.glade.h:139
 msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks."
@@ -1393,19 +1353,19 @@ msgstr ""
 "Adăugați porturi sursă sau intervale de porturi suplimentare, care trebuie "
 "să fie accesibile pentru toate gazdele sau rețelele."
 
-#: ../src/firewall-config.glade.h:147
+#: ../src/firewall-config.glade.h:140
 msgid "Source Port"
 msgstr "Port sursă"
 
-#: ../src/firewall-config.glade.h:148
+#: ../src/firewall-config.glade.h:141
 msgid "Netfilter helper modules are needed for some services."
 msgstr "Modulele de asistență Netfilter sunt necesare pentru anumite servicii."
 
-#: ../src/firewall-config.glade.h:149
+#: ../src/firewall-config.glade.h:142
 msgid "Modules"
 msgstr "Module"
 
-#: ../src/firewall-config.glade.h:150
+#: ../src/firewall-config.glade.h:143
 msgid ""
 "If you specify destination addresses, the service entry will be limited to "
 "the destination address and type. If both entries are empty, there is no "
@@ -1415,15 +1375,15 @@ msgstr ""
 "la adresa și tipul de destinație. Dacă ambele intrări sunt goale, nu există "
 "nicio limitare."
 
-#: ../src/firewall-config.glade.h:151
+#: ../src/firewall-config.glade.h:144
 msgid "IPv4:"
 msgstr "IPv4:"
 
-#: ../src/firewall-config.glade.h:152
+#: ../src/firewall-config.glade.h:145
 msgid "IPv6:"
 msgstr "IPv6:"
 
-#: ../src/firewall-config.glade.h:153
+#: ../src/firewall-config.glade.h:146
 msgid ""
 "Services can only be changed in the permanent configuration view. The "
 "runtime configuration of services is fixed."
@@ -1431,7 +1391,7 @@ msgstr ""
 "Serviciile pot fi modificate numai în vizualizarea de configurare "
 "permanentă. Configurația serviciilor în timpul execuției este imuabilă."
 
-#: ../src/firewall-config.glade.h:154
+#: ../src/firewall-config.glade.h:147
 msgid ""
 "An IPSet can be used to create white or black lists and is able to store for "
 "example IP addresses, port numbers or MAC addresses. "
@@ -1439,27 +1399,27 @@ msgstr ""
 "Un Set-IP poate fi utilizat pentru a crea liste albe sau negre și poate "
 "stoca, de exemplu, adrese IP, numere de port sau adrese MAC. "
 
-#: ../src/firewall-config.glade.h:155
+#: ../src/firewall-config.glade.h:148
 msgid "IPSet"
 msgstr "Set-IP"
 
-#: ../src/firewall-config.glade.h:156
+#: ../src/firewall-config.glade.h:149
 msgid "Add IPSet"
 msgstr "Adaugă un Set-IP"
 
-#: ../src/firewall-config.glade.h:157
+#: ../src/firewall-config.glade.h:150
 msgid "Edit IPSet"
 msgstr "Editează Setul-IP"
 
-#: ../src/firewall-config.glade.h:158
+#: ../src/firewall-config.glade.h:151
 msgid "Remove IPSet"
 msgstr "Elimină Setul-IP"
 
-#: ../src/firewall-config.glade.h:159
+#: ../src/firewall-config.glade.h:152
 msgid "Load IPSet Defaults"
 msgstr "Încarcă valorile implicite ale Setului-IP"
 
-#: ../src/firewall-config.glade.h:160
+#: ../src/firewall-config.glade.h:153
 msgid ""
 "Entries of the IPSet. You will only be able to see entries of ipsets that "
 "are not using the timeout option, also only the entries, that have been "
@@ -1471,7 +1431,7 @@ msgstr ""
 "intrările care au fost adăugate de «firewalld». Intrările care au fost "
 "adăugate direct cu comanda «ipset» nu vor fi listate aici."
 
-#: ../src/firewall-config.glade.h:161
+#: ../src/firewall-config.glade.h:154
 msgid ""
 "This IPSet uses the timeout option, therefore no entries are visible here. "
 "The entries should be taken care directly with the ipset command."
@@ -1480,22 +1440,22 @@ msgstr ""
 "vizibile intrări. Intrările trebuie să fie preluate direct cu comanda "
 "«ipset»."
 
-#: ../src/firewall-config.glade.h:162
+#: ../src/firewall-config.glade.h:155
 msgid "Add"
 msgstr "Adaugă"
 
-#: ../src/firewall-config.glade.h:164
+#: ../src/firewall-config.glade.h:157
 msgid "Entries"
 msgstr "Intrări"
 
-#: ../src/firewall-config.glade.h:165
+#: ../src/firewall-config.glade.h:158
 msgid ""
 "IPSets can only be created or deleted in the permanent configuration view."
 msgstr ""
 "Seturile-IP pot fi create sau șterse numai în vizualizarea de configurare "
 "permanentă."
 
-#: ../src/firewall-config.glade.h:166
+#: ../src/firewall-config.glade.h:159
 msgid ""
 "A firewalld icmptype provides the information for an Internet Control "
 "Message Protocol (ICMP) type for firewalld."
@@ -1503,28 +1463,28 @@ msgstr ""
 "Un tip „icmptype: ? de firewalld” oferă informații pentru un tip ICMP "
 "(Internet Control Message Protocol) pentru «firewalld»."
 
-#: ../src/firewall-config.glade.h:167
+#: ../src/firewall-config.glade.h:160
 msgid "Add ICMP Type"
 msgstr "Adaugă un tip ICMP"
 
-#: ../src/firewall-config.glade.h:168
+#: ../src/firewall-config.glade.h:161
 msgid "Edit ICMP Type"
 msgstr "Editează tipul ICMP"
 
-#: ../src/firewall-config.glade.h:169
+#: ../src/firewall-config.glade.h:162
 msgid "Remove ICMP Type"
 msgstr "Elimină tipul ICMP"
 
-#: ../src/firewall-config.glade.h:170
+#: ../src/firewall-config.glade.h:163
 msgid "Load ICMP Type Defaults"
 msgstr "Încarcă valorile implicite ale tipului ICMP"
 
-#: ../src/firewall-config.glade.h:171
+#: ../src/firewall-config.glade.h:164
 msgid "Specify whether this ICMP Type is available for IPv4 and/or IPv6."
 msgstr ""
 "Specificați dacă acest tip ICMP este disponibil pentru IPv4 și/sau IPv6."
 
-#: ../src/firewall-config.glade.h:172
+#: ../src/firewall-config.glade.h:165
 msgid ""
 "ICMP Types can only be changed in the permanent configuration view. The "
 "runtime configuration of ICMP Types is fixed."
@@ -1532,7 +1492,7 @@ msgstr ""
 "Tipurile ICMP pot fi modificate numai în vizualizarea de configurare "
 "permanentă. Configurația în timpul execuției a tipurilor ICMP este imuabilă."
 
-#: ../src/firewall-config.glade.h:173
+#: ../src/firewall-config.glade.h:166
 msgid ""
 "A connection tracking helper is assisting to make protocols work that are "
 "using different flows for signaling and data transfers. The data transfers "
@@ -1545,13 +1505,13 @@ msgstr ""
 "de semnalizare și, prin urmare, sunt blocate de firewall fără ajutorul "
 "acestui asistent."
 
-#: ../src/firewall-config.glade.h:174
+#: ../src/firewall-config.glade.h:167
 msgid "Define ports or port ranges, which are monitored by the helper."
 msgstr ""
 "Definiți porturile sau intervalele de porturi care sunt monitorizate de "
 "către asistent."
 
-#: ../src/firewall-config.glade.h:175
+#: ../src/firewall-config.glade.h:168
 msgid ""
 "The direct configuration gives a more direct access to the firewall. These "
 "options require user to know basic iptables concepts, i.e. tables, chains, "
@@ -1565,7 +1525,7 @@ msgstr ""
 "atunci când nu este posibil să se utilizeze alte caracteristici ale "
 "«firewalld»."
 
-#: ../src/firewall-config.glade.h:176
+#: ../src/firewall-config.glade.h:169
 msgid ""
 "The ipv argument of each option has to be ipv4 or ipv6 or eb. With ipv4 it "
 "will be for iptables, with ipv6 for ip6tables and with eb for ethernet "
@@ -1575,34 +1535,34 @@ msgstr ""
 "ipv4 va fi pentru iptables, cu ipv6 pentru ip6tables și cu eb pentru punți "
 "de acces ethernet (ebtables)."
 
-#: ../src/firewall-config.glade.h:177
+#: ../src/firewall-config.glade.h:170
 msgid "Additional chains for use with rules."
 msgstr "Lanțuri suplimentare pentru utilizare cu reguli."
 
-#: ../src/firewall-config.glade.h:178
+#: ../src/firewall-config.glade.h:171
 msgid "Add Chain"
 msgstr "Adaugă lanț"
 
-#: ../src/firewall-config.glade.h:179
+#: ../src/firewall-config.glade.h:172
 msgid "Edit Chain"
 msgstr "Editează lanțul"
 
-#: ../src/firewall-config.glade.h:180
+#: ../src/firewall-config.glade.h:173
 msgid "Remove Chain"
 msgstr "Elimină lanțul"
 
-#: ../src/firewall-config.glade.h:181
+#: ../src/firewall-config.glade.h:174
 msgid "Chains"
 msgstr "Lanțuri"
 
-#: ../src/firewall-config.glade.h:182
+#: ../src/firewall-config.glade.h:175
 msgid ""
 "Add a rule with the arguments args to a chain in a table with a priority."
 msgstr ""
 "Adăugați o regulă cu argumentele argumente la un lanț dintr-un tabel cu o "
 "prioritate."
 
-#: ../src/firewall-config.glade.h:183
+#: ../src/firewall-config.glade.h:176
 msgid ""
 "The priority is used to order rules. Priority 0 means add rule on top of the "
 "chain, with a higher priority the rule will be added further down. Rules "
@@ -1619,23 +1579,23 @@ msgstr ""
 "utilizați o prioritate scăzută pentru prima și una mai mare pentru "
 "următoarele."
 
-#: ../src/firewall-config.glade.h:184
+#: ../src/firewall-config.glade.h:177
 msgid "Add Rule"
 msgstr "Adaugă regulă"
 
-#: ../src/firewall-config.glade.h:185
+#: ../src/firewall-config.glade.h:178
 msgid "Edit Rule"
 msgstr "Editează regula"
 
-#: ../src/firewall-config.glade.h:186
+#: ../src/firewall-config.glade.h:179
 msgid "Remove Rule"
 msgstr "Elimină regula"
 
-#: ../src/firewall-config.glade.h:187
+#: ../src/firewall-config.glade.h:180
 msgid "Rules"
 msgstr "Reguli"
 
-#: ../src/firewall-config.glade.h:188
+#: ../src/firewall-config.glade.h:181
 msgid ""
 "The passthrough rules are directly passed through to the firewall and are "
 "not placed in special chains. All iptables, ip6tables and ebtables options "
@@ -1645,320 +1605,212 @@ msgstr ""
 "nu sunt plasate în lanțuri speciale. Pot fi utilizate toate opțiunile "
 "iptables, ip6tables și ebtables."
 
-#: ../src/firewall-config.glade.h:189
+#: ../src/firewall-config.glade.h:182
 msgid "Please be careful with passthrough rules to not damage the firewall."
 msgstr ""
 "Vă rugăm să aveți grijă cu regulile transmise direct pentru a nu deteriora "
 "paravanul de protecție."
 
-#: ../src/firewall-config.glade.h:190
+#: ../src/firewall-config.glade.h:183
 msgid "Add Passthrough"
 msgstr "Adaugă regulă transmisă direct"
 
-#: ../src/firewall-config.glade.h:191
+#: ../src/firewall-config.glade.h:184
 msgid "Edit Passthrough"
 msgstr "Editează regula transmisă direct"
 
-#: ../src/firewall-config.glade.h:192
+#: ../src/firewall-config.glade.h:185
 msgid "Remove Passthrough"
 msgstr "Elimină regula transmisă direct"
 
-#: ../src/firewall-config.glade.h:193
+#: ../src/firewall-config.glade.h:186
 msgid "Passthrough"
 msgstr "Regulă transmisă direct"
 
-#: ../src/firewall-config.glade.h:194
-msgid ""
-"The lockdown feature is a light version of user and application policies for "
-"firewalld. It limits changes to the firewall. The lockdown whitelist can "
-"contain commands, contexts, users and user ids."
-msgstr ""
-"Funcția de carantină este o versiune ușoară a politicilor de utilizator și "
-"de aplicație pentru «firewalld». Aceasta limitează modificările aduse "
-"paravanului de protecție. Lista albă de carantină poate conține comenzi, "
-"contexte, utilizatori și ID-uri de utilizator."
-
-#: ../src/firewall-config.glade.h:195
-msgid ""
-"The context is the security (SELinux) context of a running application or "
-"service. To get the context of a running application use <tt>ps -e --"
-"context</tt>."
-msgstr ""
-"Contextul este contextul de securitate (SELinux) al unei aplicații sau al "
-"unui serviciu care rulează. Pentru a obține contextul unei aplicații care "
-"rulează, utilizați <tt>ps -e --context</tt>."
-
-#: ../src/firewall-config.glade.h:196
-msgid "Add Context"
-msgstr "Adaugă context"
-
-#: ../src/firewall-config.glade.h:197
-msgid "Edit Context"
-msgstr "Editează contextul"
-
-#: ../src/firewall-config.glade.h:198
-msgid "Remove Context"
-msgstr "Elimină contextul"
-
-#: ../src/firewall-config.glade.h:199
-msgid "Contexts"
-msgstr "Contexte"
-
-#: ../src/firewall-config.glade.h:200
-msgid ""
-"If a command entry on the whitelist ends with an asterisk '*', then all "
-"command lines starting with the command will match. If the '*' is not there "
-"the absolute command inclusive arguments must match."
-msgstr ""
-"Dacă o intrare de comandă din lista albă se termină cu un asterisc „*”, "
-"atunci toate liniile de comandă care încep cu comanda respectivă se vor "
-"potrivi. Dacă nu există „*”, trebuie să se potrivească comanda absolută, "
-"inclusiv argumentele."
-
-#: ../src/firewall-config.glade.h:201
-msgid "Add Command Line"
-msgstr "Adaugă linia de comandă"
-
-#: ../src/firewall-config.glade.h:202
-msgid "Edit Command Line"
-msgstr "Editează linia de comandă"
-
-#: ../src/firewall-config.glade.h:203
-msgid "Remove Command Line"
-msgstr "Elimină linia de comandă"
-
-#: ../src/firewall-config.glade.h:204
-msgid "Command lines"
-msgstr "Linii de comandă"
-
-#: ../src/firewall-config.glade.h:205
-msgid "User names."
-msgstr "Nume de utilizator."
-
-#: ../src/firewall-config.glade.h:206
-msgid "Add User Name"
-msgstr "Adaugă nume de utilizator"
-
-#: ../src/firewall-config.glade.h:207
-msgid "Edit User Name"
-msgstr "Editează numele de utilizator"
-
-#: ../src/firewall-config.glade.h:208
-msgid "Remove User Name"
-msgstr "Elimină numele de utilizator"
-
-#: ../src/firewall-config.glade.h:209
-msgid "User names"
-msgstr "Nume de utilizator"
-
-#: ../src/firewall-config.glade.h:210
-msgid "User ids."
-msgstr "Id-uri utilizator."
-
-#: ../src/firewall-config.glade.h:211
-msgid "Add User Id"
-msgstr "Adaugă id de utilizator"
-
-#: ../src/firewall-config.glade.h:212
-msgid "Edit User Id"
-msgstr "Editează id-ul utilizatorului"
-
-#: ../src/firewall-config.glade.h:213
-msgid "Remove User Id"
-msgstr "Elimină id-ul utilizatorului"
-
-#: ../src/firewall-config.glade.h:214
-msgid "User Ids"
-msgstr "Id-uri utilizator"
-
-#: ../src/firewall-config.glade.h:215
+#: ../src/firewall-config.glade.h:187
 msgid "Current default zone of the system."
 msgstr "Zona implicită curentă a sistemului."
 
-#: ../src/firewall-config.glade.h:216
+#: ../src/firewall-config.glade.h:188
 msgctxt ""
 "Meaning: Log of denied packets. But this is too long. LogDenied is also the "
 "parameter used in firewalld.conf."
 msgid "Log Denied:"
 msgstr "Jurnal respinse:"
 
-#: ../src/firewall-config.glade.h:217
+#: ../src/firewall-config.glade.h:189
 msgid "Panic Mode:"
 msgstr "Modul panică:"
 
-#: ../src/firewall-config.glade.h:218
+#: ../src/firewall-config.glade.h:190
 msgctxt ""
 "Meaning: Log of denied packets. But this is too long. LogDenied is also the "
 "parameter used in firewalld.conf."
 msgid "Automatic Helpers:"
 msgstr "Asistenți automați:"
 
-#: ../src/firewall-config.glade.h:219
-msgid "Lockdown:"
-msgstr "Modul carantină:"
-
-#: ../src/firewall-config.glade.h:220
+#: ../src/firewall-config.glade.h:191
 msgid "Default Zone:"
 msgstr "Zona implicită:"
 
-#: ../src/firewall-config.glade.h:222
+#: ../src/firewall-config.glade.h:193
 msgid "Please enter an interface name:"
 msgstr "Introduceți un nume de interfață:"
 
-#: ../src/firewall-config.glade.h:223
+#: ../src/firewall-config.glade.h:194
 msgid "Base IPSet Settings"
 msgstr "Parametrii de bază ai Setului-IP"
 
-#: ../src/firewall-config.glade.h:224
+#: ../src/firewall-config.glade.h:195
 msgid "Please configure base ipset settings:"
 msgstr "Configurați parametrii de bază ai Setului-IP:"
 
-#: ../src/firewall-config.glade.h:225
+#: ../src/firewall-config.glade.h:196
 msgid "Type:"
 msgstr "Tip:"
 
-#: ../src/firewall-config.glade.h:226
+#: ../src/firewall-config.glade.h:197
 msgid "Timeout:"
 msgstr "Timpul de așteptare:"
 
-#: ../src/firewall-config.glade.h:227
+#: ../src/firewall-config.glade.h:198
 msgid "Hashsize:"
 msgstr "Dimensiune hash:"
 
-#: ../src/firewall-config.glade.h:228
+#: ../src/firewall-config.glade.h:199
 msgid "Maxelem:"
 msgstr "Nr. max. de elem.:"
 
-#: ../src/firewall-config.glade.h:229
+#: ../src/firewall-config.glade.h:200
 msgid "Timeout value in seconds"
 msgstr "Valoarea timpului de așteptare în secunde"
 
-#: ../src/firewall-config.glade.h:230
+#: ../src/firewall-config.glade.h:201
 msgid "Initial hash size, default 1024"
 msgstr "Dimensiunea inițială a hash-ului, implicit 1024"
 
-#: ../src/firewall-config.glade.h:231
+#: ../src/firewall-config.glade.h:202
 msgid "Max number of elements, default 65536"
 msgstr "Numărul maxim de elemente, implicit 65536"
 
-#: ../src/firewall-config.glade.h:232
+#: ../src/firewall-config.glade.h:203
 msgid "Please select an ipset:"
 msgstr "Selectați un Set-IP:"
 
-#: ../src/firewall-config.glade.h:234
+#: ../src/firewall-config.glade.h:205
 msgid "Please enter an ipset entry:"
 msgstr "Introduceți o intrare de Set-IP:"
 
-#: ../src/firewall-config.glade.h:235
+#: ../src/firewall-config.glade.h:206
 msgid "Log Denied"
 msgstr "Jurnal respinse"
 
-#: ../src/firewall-config.glade.h:236
+#: ../src/firewall-config.glade.h:207
 msgid "Please select the log denied value:"
 msgstr "Selectați valoarea jurnalului de pachete respinsei:"
 
-#: ../src/firewall-config.glade.h:237
+#: ../src/firewall-config.glade.h:208
 msgid "Mark"
 msgstr "Marcaj"
 
-#: ../src/firewall-config.glade.h:238
+#: ../src/firewall-config.glade.h:209
 msgid "Please enter a mark with an optional mask."
 msgstr "Introduceți un marcaj cu o mască opțională."
 
-#: ../src/firewall-config.glade.h:239
+#: ../src/firewall-config.glade.h:210
 msgid "The mark and the mask fields are both 32 bits wide unsigned numbers."
 msgstr ""
 "Câmpurile marcaj și mască sunt amândouă numere fără semn pe 32 de biți."
 
-#: ../src/firewall-config.glade.h:240
+#: ../src/firewall-config.glade.h:211
 msgid "Mark:"
 msgstr "Marcaj:"
 
-#: ../src/firewall-config.glade.h:241
+#: ../src/firewall-config.glade.h:212
 msgid "Mask:"
 msgstr "Mască:"
 
-#: ../src/firewall-config.glade.h:242
+#: ../src/firewall-config.glade.h:213
 msgid "Please select a netfilter conntrack helper:"
 msgstr ""
 "Selectați un asistent de urmărire a conexiunii „conntrack” pentru netfilter:"
 
-#: ../src/firewall-config.glade.h:243
+#: ../src/firewall-config.glade.h:214
 msgid "- Select -"
 msgstr "- Selectați -"
 
-#: ../src/firewall-config.glade.h:244
+#: ../src/firewall-config.glade.h:215
 msgid "Other Module:"
 msgstr "Alt modul:"
 
-#: ../src/firewall-config.glade.h:245
+#: ../src/firewall-config.glade.h:216
 msgid "Port and Protocol"
 msgstr "Port și Protocol"
 
-#: ../src/firewall-config.glade.h:246
+#: ../src/firewall-config.glade.h:217
 msgid "Please enter a port and protocol."
 msgstr "Introduceți un port și un protocol."
 
-#: ../src/firewall-config.glade.h:247
+#: ../src/firewall-config.glade.h:218
 msgid "Direct Rule"
 msgstr "Regulă directă"
 
-#: ../src/firewall-config.glade.h:248
+#: ../src/firewall-config.glade.h:219
 msgid "Please select ipv and table, chain priority and enter the args."
 msgstr ""
 "Selectați ipv și tabelul, prioritatea lanțului și introduceți argumentele."
 
-#: ../src/firewall-config.glade.h:249
+#: ../src/firewall-config.glade.h:220
 msgid "Priority:"
 msgstr "Prioritate:"
 
-#: ../src/firewall-config.glade.h:251
+#: ../src/firewall-config.glade.h:222
 msgid "Please enter a protocol."
 msgstr "Introduceți un protocol."
 
-#: ../src/firewall-config.glade.h:252
+#: ../src/firewall-config.glade.h:223
 msgid "Other Protocol:"
 msgstr "Alt protocol:"
 
-#: ../src/firewall-config.glade.h:253
+#: ../src/firewall-config.glade.h:224
 msgid "Rich Rule"
 msgstr "Regulă complexă"
 
-#: ../src/firewall-config.glade.h:254
+#: ../src/firewall-config.glade.h:225
 msgid "Please enter a rich rule."
 msgstr "Introduceți o regulă complexă."
 
-#: ../src/firewall-config.glade.h:255
+#: ../src/firewall-config.glade.h:226
 msgid "For host or network allow or denylisting deactivate the element."
 msgstr ""
 "Pentru gazdă sau rețea, adăugarea acesteia la lista de permitere sau de "
 "respingere, exclude elementul din regulă."
 
-#: ../src/firewall-config.glade.h:256
+#: ../src/firewall-config.glade.h:227
 msgid "Source:"
 msgstr "Sursa:"
 
-#: ../src/firewall-config.glade.h:257
+#: ../src/firewall-config.glade.h:228
 msgid "Destination:"
 msgstr "Destinația:"
 
-#: ../src/firewall-config.glade.h:258
+#: ../src/firewall-config.glade.h:229
 msgid "Log:"
 msgstr "Jurnal:"
 
-#: ../src/firewall-config.glade.h:259
+#: ../src/firewall-config.glade.h:230
 msgid "Audit:"
 msgstr "Audit:"
 
-#: ../src/firewall-config.glade.h:260
+#: ../src/firewall-config.glade.h:231
 msgid "ipv4 and ipv6"
 msgstr "ipv4 și ipv6"
 
-#: ../src/firewall-config.glade.h:261
+#: ../src/firewall-config.glade.h:232
 msgid "inverted"
 msgstr "inversat"
 
-#: ../src/firewall-config.glade.h:266
+#: ../src/firewall-config.glade.h:237
 msgid ""
 "To enable this Action has to be 'reject' and Family either 'ipv4' or "
 "'ipv6' (not both)."
@@ -1966,78 +1818,192 @@ msgstr ""
 "Pentru a activa acest lucru, «Acțiunea» trebuie să fie „reject” și «Familia» "
 "trebuie să fie, fie „ipv4”, fie „ipv6” (nu ambele)."
 
-#: ../src/firewall-config.glade.h:267
+#: ../src/firewall-config.glade.h:238
 msgid "with Type:"
 msgstr "cu Tipul:"
 
-#: ../src/firewall-config.glade.h:268
+#: ../src/firewall-config.glade.h:239
 msgid "With limit:"
 msgstr "Cu limita:"
 
-#: ../src/firewall-config.glade.h:269
+#: ../src/firewall-config.glade.h:240
 msgid "/"
 msgstr "/"
 
-#: ../src/firewall-config.glade.h:274
+#: ../src/firewall-config.glade.h:245
 msgid "Prefix:"
 msgstr "Prefix:"
 
-#: ../src/firewall-config.glade.h:275
+#: ../src/firewall-config.glade.h:246
 msgid "Level:"
 msgstr "Nivel:"
 
-#: ../src/firewall-config.glade.h:292
+#: ../src/firewall-config.glade.h:263
 msgid "Element:"
 msgstr "Element:"
 
-#: ../src/firewall-config.glade.h:293
+#: ../src/firewall-config.glade.h:264
 msgid "Action:"
 msgstr "Acțiune:"
 
-#: ../src/firewall-config.glade.h:294
+#: ../src/firewall-config.glade.h:265
 msgid "Base Service Settings"
 msgstr "Parametrii de bază serviciului"
 
-#: ../src/firewall-config.glade.h:295
+#: ../src/firewall-config.glade.h:266
 msgid "Please configure base service settings:"
 msgstr "Configurați parametrii de bază ai serviciului:"
 
-#: ../src/firewall-config.glade.h:296
+#: ../src/firewall-config.glade.h:267
 msgid "Please select a service."
 msgstr "Selectați un serviciu."
 
-#: ../src/firewall-config.glade.h:297
+#: ../src/firewall-config.glade.h:268
 msgid "Please enter a source."
 msgstr "Introduceți o sursă."
 
-#: ../src/firewall-config.glade.h:298
-msgid "User ID"
-msgstr "Id utilizator"
-
-#: ../src/firewall-config.glade.h:299
-msgid "Please enter the user id."
-msgstr "Introduceți id-ul utilizatorului."
-
-#: ../src/firewall-config.glade.h:301
-msgid "Please enter the user name."
-msgstr "Introduceți numele utilizatorului."
-
-#: ../src/firewall-config.glade.h:302
+#: ../src/firewall-config.glade.h:269
 msgid "label"
 msgstr "etichetă"
 
-#: ../src/firewall-config.glade.h:303
+#: ../src/firewall-config.glade.h:270
 msgid "Base Zone Settings"
 msgstr "Parametrii de bază ai zonei"
 
-#: ../src/firewall-config.glade.h:304
+#: ../src/firewall-config.glade.h:271
 msgid "Please configure base zone settings:"
 msgstr "Configurați parametrii de bază ai zonei:"
 
-#: ../src/firewall-config.glade.h:305
+#: ../src/firewall-config.glade.h:272
 msgid "Default Target"
 msgstr "Ținta implicită"
 
-#: ../src/firewall-config.glade.h:306
+#: ../src/firewall-config.glade.h:273
 msgid "Target:"
 msgstr "Ținta:"
+
+#~ msgid "Context"
+#~ msgstr "Context"
+
+#~ msgid "Command line"
+#~ msgstr "Linia de comandă"
+
+#~ msgid "User name"
+#~ msgstr "Numele utilizatorului"
+
+#~ msgid "User id"
+#~ msgstr "ID utilizator"
+
+#~ msgid "Please enter the command line."
+#~ msgstr "Introduceți linia de comandă."
+
+#~ msgid "Please enter the context."
+#~ msgstr "Introduceți contextul."
+
+#~ msgid ""
+#~ "Lockdown locks firewall configuration so that only applications on "
+#~ "lockdown whitelist are able to change it."
+#~ msgstr ""
+#~ "Carantina blochează configurația paravanului de protecție, astfel încât "
+#~ "numai aplicațiile de pe lista albă a acesteia să o poată modifica."
+
+#~ msgid "Lockdown"
+#~ msgstr "Modul carantină"
+
+#~ msgid "Lockdown Whitelist"
+#~ msgstr "Lista albă de carantină"
+
+#~ msgid ""
+#~ "The lockdown feature is a light version of user and application policies "
+#~ "for firewalld. It limits changes to the firewall. The lockdown whitelist "
+#~ "can contain commands, contexts, users and user ids."
+#~ msgstr ""
+#~ "Funcția de carantină este o versiune ușoară a politicilor de utilizator "
+#~ "și de aplicație pentru «firewalld». Aceasta limitează modificările aduse "
+#~ "paravanului de protecție. Lista albă de carantină poate conține comenzi, "
+#~ "contexte, utilizatori și ID-uri de utilizator."
+
+#~ msgid ""
+#~ "The context is the security (SELinux) context of a running application or "
+#~ "service. To get the context of a running application use <tt>ps -e --"
+#~ "context</tt>."
+#~ msgstr ""
+#~ "Contextul este contextul de securitate (SELinux) al unei aplicații sau al "
+#~ "unui serviciu care rulează. Pentru a obține contextul unei aplicații care "
+#~ "rulează, utilizați <tt>ps -e --context</tt>."
+
+#~ msgid "Add Context"
+#~ msgstr "Adaugă context"
+
+#~ msgid "Edit Context"
+#~ msgstr "Editează contextul"
+
+#~ msgid "Remove Context"
+#~ msgstr "Elimină contextul"
+
+#~ msgid "Contexts"
+#~ msgstr "Contexte"
+
+#~ msgid ""
+#~ "If a command entry on the whitelist ends with an asterisk '*', then all "
+#~ "command lines starting with the command will match. If the '*' is not "
+#~ "there the absolute command inclusive arguments must match."
+#~ msgstr ""
+#~ "Dacă o intrare de comandă din lista albă se termină cu un asterisc „*”, "
+#~ "atunci toate liniile de comandă care încep cu comanda respectivă se vor "
+#~ "potrivi. Dacă nu există „*”, trebuie să se potrivească comanda absolută, "
+#~ "inclusiv argumentele."
+
+#~ msgid "Add Command Line"
+#~ msgstr "Adaugă linia de comandă"
+
+#~ msgid "Edit Command Line"
+#~ msgstr "Editează linia de comandă"
+
+#~ msgid "Remove Command Line"
+#~ msgstr "Elimină linia de comandă"
+
+#~ msgid "Command lines"
+#~ msgstr "Linii de comandă"
+
+#~ msgid "User names."
+#~ msgstr "Nume de utilizator."
+
+#~ msgid "Add User Name"
+#~ msgstr "Adaugă nume de utilizator"
+
+#~ msgid "Edit User Name"
+#~ msgstr "Editează numele de utilizator"
+
+#~ msgid "Remove User Name"
+#~ msgstr "Elimină numele de utilizator"
+
+#~ msgid "User names"
+#~ msgstr "Nume de utilizator"
+
+#~ msgid "User ids."
+#~ msgstr "Id-uri utilizator."
+
+#~ msgid "Add User Id"
+#~ msgstr "Adaugă id de utilizator"
+
+#~ msgid "Edit User Id"
+#~ msgstr "Editează id-ul utilizatorului"
+
+#~ msgid "Remove User Id"
+#~ msgstr "Elimină id-ul utilizatorului"
+
+#~ msgid "User Ids"
+#~ msgstr "Id-uri utilizator"
+
+#~ msgid "Lockdown:"
+#~ msgstr "Modul carantină:"
+
+#~ msgid "User ID"
+#~ msgstr "Id utilizator"
+
+#~ msgid "Please enter the user id."
+#~ msgstr "Introduceți id-ul utilizatorului."
+
+#~ msgid "Please enter the user name."
+#~ msgstr "Introduceți numele utilizatorului."

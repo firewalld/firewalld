@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>STUN and TURN over TLS</short>
+  <description>Session Traversal Utilities for NAT and Traversal Using Relay NAT protocols to get through firewalls and traverse NATs using socket layer encryption.</description>
+  <port protocol="tcp" port="5349"/>
+  <port protocol="udp" port="5349"/>
+</service>

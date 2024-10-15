@@ -77,6 +77,7 @@ CONFIG_PROPERTIES = {
     "AllowZoneDrifting": ConfigPropertiesTuple("readwrite", True, True),
     "NftablesFlowtable": ConfigPropertiesTuple("readwrite", False, False),
     "NftablesCounters": ConfigPropertiesTuple("readwrite", False, False),
+    "NftablesTableOwner": ConfigPropertiesTuple("readwrite", False, False),
 }
 
 
@@ -664,6 +665,10 @@ class FirewallDConfig(DbusServiceObject):
             if value is None:
                 value = "yes" if config.FALLBACK_NFTABLES_COUNTERS else "no"
             return dbus.String(value)
+        elif prop == "NftablesTableOwner":
+            if value is None:
+                value = "yes" if config.FALLBACK_NFTABLES_TABLE_OWNER else "no"
+            return dbus.String(value)
         else:
             raise dbus.exceptions.DBusException(
                 "org.freedesktop.DBus.Error.InvalidArgs: "
@@ -748,6 +753,7 @@ class FirewallDConfig(DbusServiceObject):
                     "FlushAllOnReload",
                     "RFC3964_IPv4",
                     "NftablesCounters",
+                    "NftablesTableOwner",
                 ]:
                     if new_value.lower() not in ["yes", "no", "true", "false"]:
                         raise FirewallError(

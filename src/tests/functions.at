@@ -9,7 +9,7 @@ m4_define([FWD_STOP_FIREWALLD], [
 ])
 
 m4_define([FWD_START_FIREWALLD], [
-    FIREWALLD_ARGS="--nofork --nopid --log-file ./firewalld.log --system-config ./"
+    FIREWALLD_ARGS="--nofork --nopid --log-file ./firewalld.log --log-target file --system-config ./"
     dnl if testsuite ran with debug flag, add debug output
     ${at_debug_p} && FIREWALLD_ARGS="--debug=9 ${FIREWALLD_ARGS}"
     if test "x${FIREWALLD_DEFAULT_CONFIG}" != x ; then
@@ -414,10 +414,11 @@ m4_define([IPXTABLES_LIST_RULES_NORMALIZE], [dnl
         -e ['s/^\([-a-zA-Z0-9_]\+\)[ ]icmpv6/\1 58 /g'] dnl
         -e ['s/^\([-a-zA-Z0-9_]\+\)[ ]icmp/\1 1/g'] dnl
         -e ['s/^\([-a-zA-Z0-9_]\+\)[ ]sctp/\1 132/g'] dnl
+        -e ['s/^\([-a-zA-Z0-9_]\+\)[ ]dccp/\1 33/g'] dnl
     dnl commit 6e41c2d8747b ("iptables: xshared: Output '--' in the opt field
     dnl in ipv6's fake mode") added "--" to the output of ip6tables. This regex
     dnl adds the "--" for older ip6tables versions.
-        -e ['s/^\([-a-zA-Z0-9_]\+\)[ ]\([^ ]*\)[ ][-]\?[-]\?[ ]\?/\1 \2 -- /g'] dnl
+        -e ['s/^\([-a-zA-Z0-9_]\+\)[ ]\+\([^ ]*\)[ ]\+[-]\?[-]\?[ ]\?/\1 \2 -- /g'] dnl
 ])
 
 m4_define([IPTABLES_LIST_RULES_NORMALIZE], [dnl
