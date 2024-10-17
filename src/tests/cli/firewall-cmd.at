@@ -1031,9 +1031,9 @@ FWD_START_TEST([ipset])
     NFT_LIST_RULES([inet], [filter_INPUT_POLICIES], 0, [dnl
         table inet firewalld {
             chain filter_INPUT_POLICIES {
-                ip saddr . oifname @foobar jump filter_IN_policy_allow-host-ipv6
-                ip saddr . oifname @foobar jump filter_IN_internal
-                ip saddr . oifname @foobar reject with icmpx admin-prohibited
+                ip saddr . iifname @foobar jump filter_IN_policy_allow-host-ipv6
+                ip saddr . iifname @foobar jump filter_IN_internal
+                ip saddr . iifname @foobar reject with icmpx admin-prohibited
                 jump filter_IN_policy_allow-host-ipv6
                 jump filter_IN_public
                 reject with icmpx admin-prohibited

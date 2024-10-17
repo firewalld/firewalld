@@ -2819,7 +2819,7 @@ class nftables:
                 )
             elif format == "iface":
                 fragments.append(
-                    {"meta": {"key": "iifname" if match_dest else "oifname"}}
+                    {"meta": {"key": "oifname" if match_dest else "iifname"}}
                 )
             elif format == "mark":
                 fragments.append({"meta": {"key": "mark"}})
