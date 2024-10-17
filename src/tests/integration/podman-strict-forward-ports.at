@@ -1,0 +1,124 @@
+m4_define([common_init], [dnl
+AT_SKIP_IF([! NS_CMD([command -v $PODMAN >/dev/null 2>&1])])
+AT_SKIP_IF([! NS_CMD([command -v curl >/dev/null 2>&1])])
+AT_SKIP_IF([! NS_CMD([command -v sysctl >/dev/null 2>&1])])
+
+dnl Other tests may restart firewalld and thus blow away podman/docker firewall
+dnl rules. Restart them to make sure they're in good shape.
+FWD_STOP_FIREWALLD()
+test $(basename ${PODMAN}) = "podman" && {
+    podman network reload --all
+}
+test $(basename ${PODMAN}) = "docker" && {
+    systemctl restart docker
+}
+FWD_START_FIREWALLD()
+
+dnl Make sure that even with "allow" rules for the new destination port (DNAT)
+dnl it's still blocked. firewalld should check if it's a DNAT packet that does
+dnl not belong to us and still block it.
+dnl
+dnl With StrictForwardPorts=yes, these are blocked because firewalld blocks
+dnl DNAT packets that it does not expect.
+dnl
+dnl This covers INPUT.
+FWD_CHECK([--permanent --new-policy inputPolicy], 0, [ignore])
+FWD_CHECK([--permanent --policy inputPolicy --add-ingress-zone ANY], 0, [ignore])
+FWD_CHECK([--permanent --policy inputPolicy --add-egress-zone HOST], 0, [ignore])
+FWD_CHECK([--permanent --policy inputPolicy --add-port 80/tcp], 0, [ignore])
+dnl This covers FORWARD.
+FWD_CHECK([--permanent --new-policy forwardPolicy], 0, [ignore])
+FWD_CHECK([--permanent --policy forwardPolicy --add-ingress-zone ANY], 0, [ignore])
+FWD_CHECK([--permanent --policy forwardPolicy --add-egress-zone ANY], 0, [ignore])
+FWD_CHECK([--permanent --policy forwardPolicy --add-port 80/tcp], 0, [ignore])
+dnl This covers OUTPUT.
+FWD_CHECK([--permanent --new-policy outputPolicy], 0, [ignore])
+FWD_CHECK([--permanent --policy outputPolicy --add-ingress-zone HOST], 0, [ignore])
+FWD_CHECK([--permanent --policy outputPolicy --add-egress-zone ANY], 0, [ignore])
+FWD_CHECK([--permanent --policy outputPolicy --add-port 80/tcp], 0, [ignore])
+
+AT_CHECK([sysctl -w net.ipv4.conf.all.forwarding=1], 0, [ignore])
+
+cat <<HERE >> ./cleanup
+ip link delete fwd-test-pod
+ip netns delete fwd-test-ns
+HERE
+
+dnl create a test namespace to simulate external network
+AT_CHECK([ip netns add fwd-test-ns])
+AT_CHECK([ip link add fwd-test-send type veth peer name fwd-test-pod])
+AT_CHECK([ip link set fwd-test-send netns fwd-test-ns])
+AT_CHECK([ip netns exec fwd-test-ns ip link set fwd-test-send up])
+AT_CHECK([ip netns exec fwd-test-ns ip addr add 10.10.10.2/24 dev fwd-test-send])
+AT_CHECK([ip netns exec fwd-test-ns ip route add default via 10.10.10.1 dev fwd-test-send])
+AT_CHECK([ip addr add 10.10.10.1/24 dev fwd-test-pod])
+AT_CHECK([ip link set fwd-test-pod up])
+
+dnl make sure the container is in the cache
+AT_CHECK([$PODMAN run --rm quay.io/centos/centos:stream9 ls], 0, [ignore], [ignore])
+])
+
+dnl ############################
+dnl ##### StrictForwardPorts=yes
+dnl ############################
+
+FWD_START_TEST([podman - StrictForwardPorts=yes], [0])
+AT_KEYWORDS(forward_port gh869 gh1380)
+
+common_init()
+
+AT_CHECK([sed -i 's/^StrictForwardPorts.*/StrictForwardPorts=yes/' ./firewalld.conf])
+FWD_RELOAD()
+
+dnl start a container with --publish
+AT_CHECK([$PODMAN run --rm --detach --publish 10.10.10.1:55080:80 quay.io/centos/centos:stream9 sh -c "dnl
+echo hello world > index.html && dnl
+exec python3 -m http.server 80" > ./pod_name], 0, [ignore])
+echo "$PODMAN stop \$(cat ./pod_name)" >> ./cleanup
+sleep 10
+
+dnl verify access is blocked: local to HOST_IP
+AT_CHECK([curl --max-time 10 "http://10.10.10.1:55080/index.html"], 7, [ignore], [ignore])
+dnl verify access is blocked: remote (namespace) to HOST_IP
+AT_CHECK([ip netns exec fwd-test-ns curl --max-time 10 "http://10.10.10.1:55080/index.html"], 7, [ignore], [ignore])
+
+dnl Now add an explicit forward port via firewalld. This should forward
+dnl properly to the container.
+pod_address=$($PODMAN inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $(cat ./pod_name))
+FWD_CHECK([--policy outputPolicy --add-forward-port=port=55080:proto=tcp:toport=80:toaddr=${pod_address}], 0, [ignore])
+FWD_CHECK([--policy forwardPolicy --add-forward-port=port=55080:proto=tcp:toport=80:toaddr=${pod_address}], 0, [ignore])
+
+dnl verify access is allowed: local to HOST_IP
+AT_CHECK([curl --max-time 10 "http://10.10.10.1:55080/index.html"], 0, [ignore], [ignore])
+dnl verify access is allowed: remote (namespace) to HOST_IP
+AT_CHECK([ip netns exec fwd-test-ns curl --max-time 10 "http://10.10.10.1:55080/index.html"], 0, [ignore], [ignore])
+
+FWD_END_TEST()
+
+dnl ############################
+dnl ##### StrictForwardPorts=no
+dnl ############################
+
+FWD_START_TEST([podman - StrictForwardPorts=no], [0])
+AT_KEYWORDS(forward_port gh869 gh1380)
+
+common_init()
+
+AT_CHECK([sed -i 's/^StrictForwardPorts.*/StrictForwardPorts=no/' ./firewalld.conf])
+FWD_RELOAD()
+
+dnl start a container with --publish
+AT_CHECK([$PODMAN run --rm --detach --publish 10.10.10.1:55081:80 quay.io/centos/centos:stream9 sh -c "dnl
+echo hello world > index.html && dnl
+exec python3 -m http.server 80" > ./pod_name], 0, [ignore])
+echo "$PODMAN stop \$(cat ./pod_name)" >> ./cleanup
+sleep 10
+
+dnl verify access is allowed: local to HOST_IP
+AT_CHECK([curl --max-time 10 "http://10.10.10.1:55081/index.html"], 0, [ignore], [ignore])
+dnl verify access is allowed: remote (namespace) to HOST_IP
+AT_CHECK([ip netns exec fwd-test-ns curl --max-time 10 "http://10.10.10.1:55081/index.html"], 0, [ignore], [ignore])
+
+FWD_END_TEST()
+
+m4_undefine([common_init])

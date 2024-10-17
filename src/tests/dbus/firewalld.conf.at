@@ -34,6 +34,7 @@ string "NftablesCounters" : variant string "no"
 string "NftablesFlowtable" : variant string "off"
 string "NftablesTableOwner" : variant string "yes"
 string "RFC3964_IPv4" : variant string "yes"
+string "StrictForwardPorts" : variant string "no"
 ])
 
 m4_define([_helper], [
@@ -60,6 +61,7 @@ _helper([RFC3964_IPv4], [string:"no"], [variant string "no"])
 _helper([AllowZoneDrifting], [string:"yes"], [variant string "no"])
 _helper([NftablesCounters], [string:"yes"], [variant string "yes"])
 _helper([NftablesTableOwner], [string:"no"], [variant string "no"])
+_helper([StrictForwardPorts], [string:"yes"], [variant string "yes"])
 dnl Note: DefaultZone is RO
 m4_undefine([_helper])
 
