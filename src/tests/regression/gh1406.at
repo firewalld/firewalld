@@ -1,0 +1,62 @@
+FWD_START_TEST([ipset iface])
+AT_KEYWORDS(ipset gh1406)
+
+FWD_CHECK([--permanent --new-ipset foobar --type hash:net,iface], 0, [ignore])
+FWD_CHECK([--permanent --ipset foobar --add-entry 10.10.10.0/24,dummy0], 0, [ignore])
+FWD_CHECK([--permanent --zone internal --add-source ipset:foobar], 0, [ignore])
+
+FWD_CHECK([--permanent --new-policy blah], 0, [ignore])
+FWD_CHECK([--permanent --policy blah --add-ingress-zone HOST], 0, [ignore])
+FWD_CHECK([--permanent --policy blah --add-egress-zone internal], 0, [ignore])
+FWD_RELOAD()
+
+NFT_LIST_RULES([inet], [filter_INPUT_POLICIES], 0, [dnl
+    table inet firewalld {
+        chain filter_INPUT_POLICIES {
+            ip saddr . iifname @foobar jump filter_IN_policy_allow-host-ipv6
+            ip saddr . iifname @foobar jump filter_IN_internal
+            ip saddr . iifname @foobar reject with icmpx admin-prohibited
+            jump filter_IN_policy_allow-host-ipv6
+            jump filter_IN_public
+            reject with icmpx admin-prohibited
+        }
+    }
+])
+NFT_LIST_RULES([inet], [filter_OUTPUT_POLICIES], 0, [dnl
+    table inet firewalld {
+        chain filter_OUTPUT_POLICIES {
+            ip daddr . oifname @foobar jump filter_OUT_policy_blah
+            ip daddr . oifname @foobar jump filter_OUT_internal
+            ip daddr . oifname @foobar return
+            jump filter_OUT_public
+            return
+        }
+    }
+])
+
+IPTABLES_LIST_RULES([filter], [INPUT_POLICIES], 0, [dnl
+    IN_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0 match-set foobar src,src
+    IN_internal 0 -- 0.0.0.0/0 0.0.0.0/0 match-set foobar src,src
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 match-set foobar src,src reject-with icmp-port-unreachable
+    IN_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+    IN_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+])
+IP6TABLES_LIST_RULES([filter], [INPUT_POLICIES], 0, [dnl
+    IN_allow-host-ipv6 0 -- ::/0 ::/0
+    IN_public 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+])
+IPTABLES_LIST_RULES([filter], [OUTPUT_POLICIES], 0, [dnl
+    OUT_blah 0 -- 0.0.0.0/0 0.0.0.0/0 match-set foobar dst,dst
+    OUT_internal 0 -- 0.0.0.0/0 0.0.0.0/0 match-set foobar dst,dst
+    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0 match-set foobar dst,dst
+    OUT_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+])
+IP6TABLES_LIST_RULES([filter], [OUTPUT_POLICIES], 0, [dnl
+    OUT_public 0 -- ::/0 ::/0
+    RETURN 0 -- ::/0 ::/0
+])
+
+FWD_END_TEST()
