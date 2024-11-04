@@ -1,184 +1,179 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
-# Translators:
-# Igor Miletic <grejigl-gnomeprevod@yahoo.ca>, 2008
-# Miloš Komarčević <kmilos@gmail.com>, 2005
-# Milos Mijatovic <mijatix@gmail.com>, 2008
-# Momcilo Medic <medicmomcilo@gmail.com>, 2015. #zanata
-# Thomas Woerner <twoerner@redhat.com>, 2016. #zanata
+# Yaron Shahrabani <sh.yaron@gmail.com>, 2024.
+# Weblate Translation Memory <noreply-mt-weblate-translation-memory@weblate.org>, 2024.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-07-11 13:41-0400\n"
-"PO-Revision-Date: 2016-01-04 12:42+0000\n"
-"Last-Translator: Momcilo Medic <medicmomcilo@gmail.com>\n"
-"Language-Team: Serbian (http://www.transifex.com/projects/p/firewalld/"
-"language/sr/)\n"
-"Language: sr\n"
+"PO-Revision-Date: 2024-05-10 10:36+0000\n"
+"Last-Translator: Weblate Translation Memory <noreply-mt-weblate-translation-"
+"memory@weblate.org>\n"
+"Language-Team: Hebrew <https://translate.fedoraproject.org/projects/"
+"firewalld/master/he/>\n"
+"Language: he\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Zanata 4.6.2\n"
+"Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && "
+"n % 10 == 0) ? 2 : 3));\n"
+"X-Generator: Weblate 5.5.2\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:450
 msgid "Firewall Applet"
-msgstr "Аплет заштитног зида"
+msgstr "יישומון חומת אש"
 
 #: ../config/firewall-config.desktop.in.h:1
 msgid "Firewall"
-msgstr "Заштитни зид"
+msgstr "חומת אש"
 
 #: ../config/firewall-config.desktop.in.h:2 ../src/firewall-config.glade.h:51
 msgid "Firewall Configuration"
-msgstr "Подешавање заштитног зида"
+msgstr "הגדרות חומת אש"
 
 #. Translators: These are searchable keywords for the firewall configuration tool
 #: ../config/firewall-config.desktop.in.h:4
 msgid "firewall;network;security;iptables;netfilter;"
-msgstr "заштитни зид;мрежа;сигурност;iptables;мрежни филтер;"
+msgstr ""
 
 #: ../src/firewall-applet.in:91 ../src/firewall-config.in:7683
 #, c-format
 msgid "Select zone for interface '%s'"
-msgstr "Одаберите зону за интерфејс '%s'"
+msgstr "נא לבחור אזור למנשק ‚%s’"
 
 #: ../src/firewall-applet.in:132 ../src/firewall-applet.in:139
 #: ../src/firewall-applet.in:145 ../src/firewall-config.in:2440
 #: ../src/firewall-config.in:7729 ../src/firewall-config.in:7737
 #: ../src/firewall-config.in:7771 ../src/firewall-config.glade.h:4
 msgid "Default Zone"
-msgstr "Подразумевана зона"
+msgstr "אזור ברירת מחדל"
 
 #: ../src/firewall-applet.in:168 ../src/firewall-config.in:7764
 #, c-format
 msgid "Select zone for connection '%s'"
-msgstr "Одаберите зону за везу '%s'"
+msgstr "בחירת אזור לחיבור ‚%s’"
 
 #: ../src/firewall-applet.in:178 ../src/firewall-config.in:4030
 msgid "Failed to set zone {zone} for connection {connection_name}"
-msgstr ""
+msgstr "הגדרת האזור {zone} לחיבור {connection_name} נכשל"
 
 #: ../src/firewall-applet.in:199
 #, c-format
 msgid "Select zone for source '%s'"
-msgstr "Одаберите зону за извор '%s'"
+msgstr "בחירת אזור למקור ‚%s’"
 
 #: ../src/firewall-applet.in:218
 msgid "Configure Shields Up/Down Zones"
-msgstr "Подеси зоне за подигнуте/спуштене штитове"
+msgstr "הגדרת אזורי הפעלת/כיבוי הגנות"
 
 #: ../src/firewall-applet.in:233
 msgid "Here you can select the zones used for Shields Up and Shields Down."
-msgstr ""
-"Овде можете подесити зоне које се користе за подигнуте и спуштене штитове."
+msgstr "כאן ניתן לבחור את האזורים לשימוש בהפעלת/כיבוי הגנות."
 
 #: ../src/firewall-applet.in:244
 msgid ""
 "This feature is useful for people using the default zones mostly. For users, "
 "that are changing zones of connections, it might be of limited use."
 msgstr ""
-"Ова могућност је корисна људима који највише користе подразумевану зону. За "
-"кориснике, који мењају зоне веза, она може бити делимично корисна."
+"היכולת הזאת שימושית לאלו שמשתמשים בעיקר באזורי ברירת המחדל. למשתמשים שמשנים "
+"אזורים לחיבורים זה יכול להגביל."
 
 #: ../src/firewall-applet.in:256
 msgid "Shields Up Zone:"
-msgstr "Зона подигнутих штитова:"
+msgstr ""
 
 #: ../src/firewall-applet.in:265 ../src/firewall-applet.in:278
 msgid "Reset To Default"
-msgstr ""
+msgstr "איפוס לברירת המחדל"
 
 #: ../src/firewall-applet.in:269
 msgid "Shields Down Zone:"
-msgstr "Зона спуштених штитова:"
+msgstr ""
 
 #: ../src/firewall-applet.in:368
 #, c-format
 msgid "About %s"
-msgstr "О %s"
+msgstr "על %s"
 
 #: ../src/firewall-applet.in:421
 msgid "Authors"
-msgstr ""
+msgstr "יוצרים"
 
 #: ../src/firewall-applet.in:431
 msgid "License"
-msgstr ""
+msgstr "רישיון"
 
 #: ../src/firewall-applet.in:515
 msgid "Shields Up"
-msgstr "Подигни штитове"
+msgstr "הגנה פעילה"
 
 #: ../src/firewall-applet.in:520
 msgid "Enable Notifications"
-msgstr "Омогући обавештења"
+msgstr "הפעלת התראות"
 
 #: ../src/firewall-applet.in:525
 msgid "Edit Firewall Settings..."
-msgstr "Измени подешавања заштитног зида..."
+msgstr "עריכת הגדרות חומת אש…"
 
 #: ../src/firewall-applet.in:529 ../src/firewall-config.glade.h:57
 msgid "Change Zones of Connections..."
-msgstr "Промени зоне веза..."
+msgstr "החלפת אזורים לחיבורים…"
 
 #: ../src/firewall-applet.in:534
 msgid "Configure Shields UP/Down Zones..."
-msgstr "Подеси зоне за подигнуте/спуштене штитове..."
+msgstr "הגדרות אזורים להפעלת/כיבוי הגנות…"
 
 #: ../src/firewall-applet.in:538
 msgid "Block all network traffic"
-msgstr "Заустави сав мрежни саобраћај"
+msgstr "חסימת כל תקשורת הרשת"
 
 #: ../src/firewall-applet.in:543
 msgid "About"
-msgstr "О програму"
+msgstr "על אודות"
 
 #: ../src/firewall-applet.in:551 ../src/firewall-config.in:562
 #: ../src/firewall-config.in:2372 ../src/firewall-config.in:2712
 #: ../src/firewall-config.in:2738
 msgid "Connections"
-msgstr "Везе"
+msgstr "חיבורים"
 
 #: ../src/firewall-applet.in:556 ../src/firewall-config.in:565
 #: ../src/firewall-config.in:2495 ../src/firewall-config.in:2715
 #: ../src/firewall-config.in:2742 ../src/firewall-config.glade.h:123
 msgid "Interfaces"
-msgstr "<спрега>"
+msgstr "מנשקים"
 
 #: ../src/firewall-applet.in:561 ../src/firewall-config.in:568
 #: ../src/firewall-config.in:2535 ../src/firewall-config.in:2718
 #: ../src/firewall-config.in:2744 ../src/firewall-config.glade.h:128
 msgid "Sources"
-msgstr "Извори"
+msgstr "מקורות"
 
 #: ../src/firewall-applet.in:632 ../src/firewall-config.in:2275
 msgid "Authorization failed."
-msgstr "Неуспешно овлашћење."
+msgstr "האימות נכשל."
 
 #: ../src/firewall-applet.in:634 ../src/firewall-config.in:2277
 msgid "Invalid name"
-msgstr "Неисправан аргумент %s"
+msgstr "שם שגוי"
 
 #: ../src/firewall-applet.in:637 ../src/firewall-config.in:2280
 msgid "Name already exists"
-msgstr "Име већ постоји"
+msgstr "השם כבר קיים"
 
 #: ../src/firewall-applet.in:726
 msgid "{entry} (Zone: {zone})"
-msgstr "{entry} (Зона: {zone})"
+msgstr "{entry} (אזור: {zone})"
 
 #: ../src/firewall-applet.in:733
 msgid "{entry} (Default Zone: {default_zone})"
-msgstr ""
+msgstr "{entry} (אזור ברירת מחדל: {default_zone})"
 
 #: ../src/firewall-applet.in:819 ../src/firewall-config.in:1536
 msgid "Failed to get connections from NetworkManager"
-msgstr ""
+msgstr "משיכת החיבורים ממנהל החיבורים/NetworkManager נכשלה"
 
 #: ../src/firewall-applet.in:831 ../src/firewall-config.in:1368
 msgid "No NetworkManager imports available"
@@ -186,16 +181,16 @@ msgstr ""
 
 #: ../src/firewall-applet.in:907
 msgid "No connection to firewall daemon"
-msgstr "Нема везе до сервиса заштитног зида"
+msgstr "אין חיבור לסוכן חומת האש"
 
 #: ../src/firewall-applet.in:913 ../src/firewall-applet.in:1070
 msgid "All network traffic is blocked."
-msgstr "Сав мрежни саобраћај је блокиран."
+msgstr "כל תעבורת הרשת חסומה."
 
 #: ../src/firewall-applet.in:916
 #, c-format
 msgid "Default Zone: '%s'"
-msgstr "Подразумевана зона: '%s'"
+msgstr "אזור ברירת מחדל: ‚%s’"
 
 #: ../src/firewall-applet.in:923
 msgid ""
@@ -207,48 +202,47 @@ msgstr ""
 msgid ""
 "Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
 msgstr ""
-"Зона '{zone}' је активна за везу '{connection}' на интерфејсу '{interface}'"
 
 #: ../src/firewall-applet.in:946
 msgid "Zone '{zone}' active for interface '{interface}'"
-msgstr "Зона '{zone}' је активна за интерфејс '{interface}'"
+msgstr "האזור ‚{zone}’ פעיל למנשק ‚{interface}’"
 
 #: ../src/firewall-applet.in:958
 msgid "Zone '{zone}' active for source {source}"
-msgstr "Зона '{zone}' је активна за извор {source}"
+msgstr "האזור ‚{zone}’ פעיל למקור {source}"
 
 #: ../src/firewall-applet.in:962
 msgid "No Active Zones."
-msgstr "Нема активних зона."
+msgstr "אין אזורים פעילים."
 
 #: ../src/firewall-applet.in:1028
 msgid "Connection to FirewallD established."
-msgstr "Упостављена веза са FirewallD-ом."
+msgstr "הוקם חיבור ל־FirewallD."
 
 #: ../src/firewall-applet.in:1040
 msgid "Connection to FirewallD lost."
-msgstr "Изгубљена веза са FirewallD-ом."
+msgstr "החיבור ל־FirewallD אבד."
 
 #: ../src/firewall-applet.in:1045
 msgid "FirewallD has been reloaded."
-msgstr "FirewallD је поново учитан."
+msgstr "FirewallD נטען מחדש."
 
 #: ../src/firewall-applet.in:1052
 #, c-format
 msgid "Default zone changed to '%s'."
-msgstr "Подразумевана зона промењена на '%s'."
+msgstr "אזור ברירת המחדל השתנה לאזור ‚%s’."
 
 #: ../src/firewall-applet.in:1071
 msgid "Network traffic is not blocked anymore."
-msgstr "Мрежни саобраћај више није блокиран."
+msgstr ""
 
 #: ../src/firewall-applet.in:1098 ../src/firewall-applet.in:1164
 msgid "activated"
-msgstr "активирана"
+msgstr ""
 
 #: ../src/firewall-applet.in:1098 ../src/firewall-applet.in:1164
 msgid "deactivated"
-msgstr "деактивирана"
+msgstr ""
 
 #: ../src/firewall-applet.in:1104
 msgid ""
@@ -261,49 +255,47 @@ msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
-"Зона '{zone}' је {activated_deactivated} за везу '{connection}' на "
-"интерфејсу '{interface}'"
 
 #: ../src/firewall-applet.in:1118
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
-msgstr "Зона '{zone}' је {activated_deactivated} за интерфејс '{interface}'"
+msgstr ""
 
 #: ../src/firewall-applet.in:1149
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
-msgstr "Зона '%s' је активирана за интерфејс '%s'"
+msgstr ""
 
 #: ../src/firewall-applet.in:1165
 msgid "Zone '{zone}' {activated_deactivated} for source '{source}'"
-msgstr "Зона '{zone}' је {activated_deactivated} за извор '{source}'"
+msgstr ""
 
 #: ../src/firewall-applet.in:1194
 #, c-format
 msgid "Zone '%s' activated for source '%s'"
-msgstr "Зона '%s' је активирана за извор '%s'"
+msgstr ""
 
 #: ../src/firewall-config.in:85
 msgid "Connection to firewalld established."
-msgstr ""
+msgstr "הוקם החיבור ל־firewalld."
 
 #: ../src/firewall-config.in:86
 msgid "Trying to connect to firewalld, waiting..."
-msgstr ""
+msgstr "מתבצע ניסיון להתחבר ל־firewalld, בהמתנה…"
 
 #: ../src/firewall-config.in:88
 msgid ""
 "Failed to connect to firewalld. Please make sure that the service has been "
 "started correctly and try again."
-msgstr ""
+msgstr "החיבור ל־firewalld נכשל. נא לוודא שהשירות הופעל כראוי ולנסות שוב."
 
 #: ../src/firewall-config.in:91
 msgid "Changes applied."
-msgstr "Промене су примењене."
+msgstr "השינויים יושמו."
 
 #: ../src/firewall-config.in:92
 #, c-format
 msgid "Used by network connection '%s'"
-msgstr "У употреби на мрежној вези '%s'"
+msgstr "בשימוש חיבור הרשת ‚%s’"
 
 #: ../src/firewall-config.in:94
 #, c-format
@@ -312,49 +304,49 @@ msgstr ""
 
 #: ../src/firewall-config.in:96
 msgid "enabled"
-msgstr "омогућено"
+msgstr ""
 
 #: ../src/firewall-config.in:97
 msgid "disabled"
-msgstr "онемогућено"
+msgstr ""
 
 #: ../src/firewall-config.in:122
 msgid "Failed to load icons."
-msgstr "Неуспешно учитавање иконица."
+msgstr "טעינת הסמלים נכשלה."
 
 #: ../src/firewall-config.in:198 ../src/firewall-config.in:239
 msgid "Table"
-msgstr ""
+msgstr "טבלה"
 
 #: ../src/firewall-config.in:201 ../src/firewall-config.in:242
 msgid "Chain"
-msgstr ""
+msgstr "שרשרת"
 
 #: ../src/firewall-config.in:245 ../src/firewall-config.in:784
 msgid "Priority"
-msgstr ""
+msgstr "עדיפות"
 
 #: ../src/firewall-config.in:248 ../src/firewall-config.in:289
 msgid "Args"
-msgstr ""
+msgstr "ארגומנטים"
 
 #: ../src/firewall-config.in:336 ../src/firewall-config.in:2322
 msgid "Runtime"
-msgstr "У току извршавања"
+msgstr "סביבת ריצה"
 
 #: ../src/firewall-config.in:337
 msgid "Permanent"
-msgstr "Трајно"
+msgstr "קבוע"
 
 #: ../src/firewall-config.in:420 ../src/firewall-config.glade.h:131
 msgid "Service"
-msgstr "Сервис"
+msgstr "שירות"
 
 #: ../src/firewall-config.in:428 ../src/firewall-config.in:475
 #: ../src/firewall-config.in:501 ../src/firewall-config.in:756
 #: ../src/firewall-config.in:996 ../src/firewall-config.in:1035
 msgid "Port"
-msgstr "Порт"
+msgstr "פתחה"
 
 #: ../src/firewall-config.in:431 ../src/firewall-config.in:449
 #: ../src/firewall-config.in:478 ../src/firewall-config.in:504
@@ -362,145 +354,145 @@ msgstr "Порт"
 #: ../src/firewall-config.in:1015 ../src/firewall-config.in:1038
 #: ../src/firewall-config.glade.h:221
 msgid "Protocol"
-msgstr "Протокол"
+msgstr "פרוטוקול"
 
 #: ../src/firewall-config.in:507
 msgid "To Port"
-msgstr "На порт"
+msgstr "לפתחה"
 
 #: ../src/firewall-config.in:510
 msgid "To Address"
-msgstr "На адресу"
+msgstr "לכתובת"
 
 #: ../src/firewall-config.in:559
 msgid "Bindings"
-msgstr ""
+msgstr "איגודים"
 
 #: ../src/firewall-config.in:596 ../src/firewall-config.glade.h:204
 msgid "Entry"
-msgstr ""
+msgstr "רשומה"
 
 #: ../src/firewall-config.in:727
 msgid "Icmp Type"
-msgstr "Icmp врста"
+msgstr "סוג ICMP"
 
 #: ../src/firewall-config.in:781
 msgid "Family"
-msgstr "Породица"
+msgstr "משפחה"
 
 #: ../src/firewall-config.in:787
 msgid "Action"
-msgstr "Акција"
+msgstr "פעולה"
 
 #: ../src/firewall-config.in:790
 msgid "Element"
-msgstr "Елемент"
+msgstr "רכיב"
 
 #: ../src/firewall-config.in:793
 msgid "Src"
-msgstr "Извор"
+msgstr "מקור"
 
 #: ../src/firewall-config.in:796
 msgid "Dest"
-msgstr "Одредиште"
+msgstr "יעד"
 
 #: ../src/firewall-config.in:799
 msgid "log"
-msgstr "запис"
+msgstr "תיעוד"
 
 #: ../src/firewall-config.in:802
 msgid "Audit"
-msgstr "Провера"
+msgstr "פיקוח"
 
 #: ../src/firewall-config.in:930 ../src/firewall-config.glade.h:192
 msgid "Interface"
-msgstr ""
+msgstr "מנשק"
 
 #: ../src/firewall-config.in:933
 msgid "Comment"
-msgstr ""
+msgstr "הערה"
 
 #: ../src/firewall-config.in:955 ../src/firewall-config.glade.h:23
 msgid "Source"
-msgstr "Извор"
+msgstr "מקור"
 
 #: ../src/firewall-config.in:1581 ../src/firewall-config.in:2859
 #: ../src/firewall-config.in:2912
 msgid "Warning"
-msgstr "Упозорење"
+msgstr "אזהרה"
 
 #: ../src/firewall-config.in:1592 ../src/firewall-config.in:1604
 msgid "Error"
-msgstr "Грешка"
+msgstr "שגיאה"
 
 #: ../src/firewall-config.in:2028 ../src/firewall-config.in:3271
 #: ../src/firewall-config.in:3779 ../src/firewall-config.glade.h:233
 msgid "accept"
-msgstr "прихвати"
+msgstr "קבלה"
 
 #: ../src/firewall-config.in:2030 ../src/firewall-config.in:3273
 #: ../src/firewall-config.in:3781 ../src/firewall-config.in:3954
 #: ../src/firewall-config.glade.h:234
 msgid "reject"
-msgstr "одби"
+msgstr "דחייה"
 
 #: ../src/firewall-config.in:2034 ../src/firewall-config.in:3290
 #: ../src/firewall-config.in:3788 ../src/firewall-config.glade.h:235
 msgid "drop"
-msgstr "испусти"
+msgstr "השמטה"
 
 #: ../src/firewall-config.in:2036 ../src/firewall-config.in:3292
 #: ../src/firewall-config.in:3790 ../src/firewall-config.in:3957
 #: ../src/firewall-config.glade.h:236
 msgid "mark"
-msgstr ""
+msgstr "סימון"
 
 #: ../src/firewall-config.in:2039 ../src/firewall-config.in:2087
 #: ../src/firewall-config.in:2092
 msgid "limit"
-msgstr "ограничи"
+msgstr "הגבלה"
 
 #: ../src/firewall-config.in:2055 ../src/firewall-config.in:3226
 #: ../src/firewall-config.in:3412 ../src/firewall-config.in:3719
 #: ../src/firewall-config.glade.h:255
 msgid "service"
-msgstr "сервис"
+msgstr "שירות"
 
 #: ../src/firewall-config.in:2057 ../src/firewall-config.in:3230
 #: ../src/firewall-config.in:3414 ../src/firewall-config.in:3723
 #: ../src/firewall-config.glade.h:256
 msgid "port"
-msgstr "порт"
+msgstr "פתחה"
 
 #: ../src/firewall-config.in:2059 ../src/firewall-config.in:3235
 #: ../src/firewall-config.in:3423 ../src/firewall-config.in:3733
 #: ../src/firewall-config.glade.h:257
 msgid "protocol"
-msgstr "протокол"
+msgstr "פרוטוקול"
 
 #: ../src/firewall-config.in:2061 ../src/firewall-config.in:3239
 #: ../src/firewall-config.in:3752 ../src/firewall-config.in:3974
 #: ../src/firewall-config.glade.h:262
 msgid "masquerade"
-msgstr "маскарада"
+msgstr "מיסוך"
 
 #: ../src/firewall-config.in:2063 ../src/firewall-config.in:3243
 #: ../src/firewall-config.in:3425 ../src/firewall-config.in:3737
 #: ../src/firewall-config.in:3987 ../src/firewall-config.glade.h:258
 msgid "icmp-block"
-msgstr "icmp-block"
+msgstr "חסימת icmp"
 
 #: ../src/firewall-config.in:2065 ../src/firewall-config.in:3247
 #: ../src/firewall-config.in:3427 ../src/firewall-config.in:3741
 #: ../src/firewall-config.glade.h:259
 msgid "icmp-type"
-msgstr ""
+msgstr "סוג icmp"
 
 #: ../src/firewall-config.in:2067 ../src/firewall-config.in:3251
 #: ../src/firewall-config.in:3429 ../src/firewall-config.in:3745
 #: ../src/firewall-config.in:3982 ../src/firewall-config.glade.h:260
 msgid "forward-port"
-msgstr "прослеђивање-порта"
+msgstr ""
 
 #: ../src/firewall-config.in:2074 ../src/firewall-config.in:3261
 #: ../src/firewall-config.in:3431 ../src/firewall-config.in:3754
@@ -510,110 +502,110 @@ msgstr ""
 
 #: ../src/firewall-config.in:2085
 msgid "level"
-msgstr "ниво"
+msgstr "רמה"
 
 #: ../src/firewall-config.in:2089 ../src/firewall-config.in:2094
 msgid "yes"
-msgstr "да"
+msgstr "כן"
 
 #: ../src/firewall-config.in:2447 ../src/firewall-config.in:2511
 #: ../src/firewall-config.in:2550 ../src/firewall-config.glade.h:82
 msgid "Zone"
-msgstr "Зона"
+msgstr "לא"
 
 #: ../src/firewall-config.in:2472
 #, c-format
 msgid "Default Zone: %s"
-msgstr ""
+msgstr "אזור ברירת מחדל: %s"
 
 #: ../src/firewall-config.in:2486 ../src/firewall-config.in:2527
 #: ../src/firewall-config.in:2564
 #, c-format
 msgid "Zone: %s"
-msgstr ""
+msgstr "אזור: %s"
 
 #: ../src/firewall-config.in:2852
 #, c-format
 msgid "Zone '%s': Service '%s' is not available."
-msgstr "Зона '%s': Сервис '%s' није доступан."
+msgstr ""
 
 #: ../src/firewall-config.in:2860 ../src/firewall-config.in:2913
 #: ../src/firewall-config.glade.h:156
 msgid "Remove"
-msgstr "Уклони"
+msgstr ""
 
 #: ../src/firewall-config.in:2860 ../src/firewall-config.in:2913
 msgid "Ignore"
-msgstr "Занемари"
+msgstr "התעלמות"
 
 #: ../src/firewall-config.in:2905
 #, c-format
 msgid "Zone '%s': ICMP type '%s' is not available."
-msgstr "Зона '%s': ICMP врста '%s' није доступна."
+msgstr ""
 
 #: ../src/firewall-config.in:3065
 msgid "Built-in zone, rename not supported."
-msgstr "Уграђена зона, промена имена није подржана."
+msgstr "אזור מובנה, אי אפשר לשנות לו את השם."
 
 #: ../src/firewall-config.in:3188 ../src/firewall-config.in:3690
 #: ../src/firewall-config.glade.h:241
 msgid "second"
-msgstr "секунд"
+msgstr "שנייה"
 
 #: ../src/firewall-config.in:3188 ../src/firewall-config.in:3690
 #: ../src/firewall-config.glade.h:242
 msgid "minute"
-msgstr "минут"
+msgstr "דקה"
 
 #: ../src/firewall-config.in:3188 ../src/firewall-config.in:3690
 #: ../src/firewall-config.glade.h:243
 msgid "hour"
-msgstr "сат"
+msgstr "שעה"
 
 #: ../src/firewall-config.in:3188 ../src/firewall-config.in:3690
 #: ../src/firewall-config.glade.h:244
 msgid "day"
-msgstr "дан"
+msgstr "יום"
 
 #: ../src/firewall-config.in:3190 ../src/firewall-config.in:3692
 #: ../src/firewall-config.glade.h:247
 msgid "emergency"
-msgstr "хитно"
+msgstr "חירום"
 
 #: ../src/firewall-config.in:3191 ../src/firewall-config.in:3693
 #: ../src/firewall-config.glade.h:248
 msgid "alert"
-msgstr "упозорење"
+msgstr "אזעקה"
 
 #: ../src/firewall-config.in:3192 ../src/firewall-config.in:3694
 #: ../src/firewall-config.glade.h:249
 msgid "critical"
-msgstr "критично"
+msgstr ""
 
 #: ../src/firewall-config.in:3193 ../src/firewall-config.in:3695
 #: ../src/firewall-config.glade.h:250
 msgid "error"
-msgstr "грешка"
+msgstr "שגיאה"
 
 #: ../src/firewall-config.in:3194 ../src/firewall-config.in:3696
 #: ../src/firewall-config.glade.h:251
 msgid "warning"
-msgstr "упозорење"
+msgstr "אזהרה"
 
 #: ../src/firewall-config.in:3195 ../src/firewall-config.in:3697
 #: ../src/firewall-config.glade.h:252
 msgid "notice"
-msgstr "обавештење"
+msgstr "הודעה"
 
 #: ../src/firewall-config.in:3196 ../src/firewall-config.in:3698
 #: ../src/firewall-config.glade.h:253
 msgid "info"
-msgstr "информација"
+msgstr "מידע"
 
 #: ../src/firewall-config.in:3197 ../src/firewall-config.in:3699
 #: ../src/firewall-config.glade.h:254
 msgid "debug"
-msgstr "отклањање грешака"
+msgstr "ניפוי שגיאות"
 
 #: ../src/firewall-config.in:3404 ../src/firewall-config.in:3626
 #: ../src/firewall-config.in:3650 ../src/firewall-config.in:3704
@@ -625,7 +617,7 @@ msgstr "ipv4"
 #: ../src/firewall-config.in:3652 ../src/firewall-config.in:3706
 #: ../src/firewall-config.in:3862 ../src/firewall-config.in:3915
 msgid "ipv6"
-msgstr "ipv6"
+msgstr ""
 
 #: ../src/firewall-config.in:5154
 msgid ""
@@ -633,12 +625,10 @@ msgid ""
 "masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
-"Преусмеравање на други систем је корисно само ако је интерфејс маскиран.\n"
-"Да ли желите маскирати ову зону?"
 
 #: ../src/firewall-config.in:5512
 msgid "Built-in service, rename not supported."
-msgstr "Уграђени сервис, промена имена није подржана."
+msgstr ""
 
 #: ../src/firewall-config.in:5723
 msgid "Please enter an ipv4 address with the form address[/mask]."
@@ -654,7 +644,7 @@ msgstr ""
 
 #: ../src/firewall-config.in:5727
 msgid "The mask is a number."
-msgstr ""
+msgstr "המסכה היא מספר."
 
 #: ../src/firewall-config.in:5730
 msgid "Please enter an ipv4 or ipv6 address with the form address[/mask]."
@@ -672,20 +662,20 @@ msgstr ""
 
 #: ../src/firewall-config.in:6015 ../src/firewall-config.in:6104
 msgid "Please select a file"
-msgstr ""
+msgstr "נא לבחור קובץ"
 
 #: ../src/firewall-config.in:6029 ../src/firewall-config.in:6118
 msgid "Text Files"
-msgstr ""
+msgstr "קובצי טקסט"
 
 #: ../src/firewall-config.in:6034 ../src/firewall-config.in:6123
 msgid "All Files"
-msgstr ""
+msgstr "כל הקבצים"
 
 #: ../src/firewall-config.in:6549 ../src/firewall-config.in:6578
 #: ../src/firewall-config.glade.h:36
 msgid "All"
-msgstr ""
+msgstr "הכול"
 
 #: ../src/firewall-config.in:6549 ../src/firewall-config.in:6578
 #: ../src/firewall-config.glade.h:37
@@ -699,30 +689,30 @@ msgstr "IPv6"
 
 #: ../src/firewall-config.in:6555
 msgid "Built-in helper, rename not supported."
-msgstr ""
+msgstr "מסייע מובנה, אין תמיכה בשינוי שמו."
 
 #: ../src/firewall-config.in:7040
 msgid "Built-in icmp, rename not supported."
-msgstr "Уграђени icmp, промена имена није подржана."
+msgstr "icmp מובנה, אין תמיכה בשינוי השם."
 
 #: ../src/firewall-config.in:7650
 #, c-format
 msgid "Failed to read file '%s': %s"
-msgstr ""
+msgstr "קריאת הקובץ ‚%s’ נכשלה: %s"
 
 #: ../src/firewall-config.in:7787
 #, c-format
 msgid "Select zone for source %s"
-msgstr "Одаберите зону за извор %s"
+msgstr ""
 
 #. implies all other actions
 #: ../src/firewall-config.glade.h:1
 msgid "Address"
-msgstr "Адреса"
+msgstr "כתובת"
 
 #: ../src/firewall-config.glade.h:2
 msgid "Automatic Helpers"
-msgstr ""
+msgstr "מסייעים אוטומטיים"
 
 #: ../src/firewall-config.glade.h:3
 msgid "Please select the automatic helpers value:"
@@ -730,27 +720,27 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:5
 msgid "Please select default zone from the list below."
-msgstr "Молим одаберите подразумевану зону са доњег списка."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:6
 msgid "Direct Chain"
-msgstr "Директан ланац"
+msgstr "שרשרת ישירה"
 
 #: ../src/firewall-config.glade.h:7
 msgid "Please select ipv and table and enter the chain name."
-msgstr "Молим изаберите ipv и табелу и унесите име ланца."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:8
 msgid "ipv:"
-msgstr "ipv:"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:9
 msgid "eb"
-msgstr "eb"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:10
 msgid "Chain:"
-msgstr "Ланац:"
+msgstr "שרשרת:"
 
 #: ../src/firewall-config.glade.h:11
 msgid "nat"
@@ -762,156 +752,154 @@ msgstr "raw"
 
 #: ../src/firewall-config.glade.h:13
 msgid "security"
-msgstr "сигурност"
+msgstr "אבטחה"
 
 #: ../src/firewall-config.glade.h:14
 msgid "Table:"
-msgstr "Табела:"
+msgstr "טבלה:"
 
 #: ../src/firewall-config.glade.h:15
 msgid "Direct Passthrough Rule"
-msgstr "Директно правило пропуштања"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:16
 msgid "Please select ipv and enter the args."
-msgstr "Молим изаберите ipv и унесите параметре."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:17
 msgid "Args:"
-msgstr "Параметри:"
+msgstr "ארגומנטים:"
 
 #: ../src/firewall-config.glade.h:18
 msgid "Port Forwarding"
-msgstr "Прослеђивање портова"
+msgstr "העברת פתחות"
 
 #: ../src/firewall-config.glade.h:19
 msgid ""
 "Please select the source and destination options according to your needs."
-msgstr "Изаберите опције за извор и одредиште у зависности од потреба."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:20
 msgid "Port / Port Range:"
-msgstr "Порт / опсег портова:"
+msgstr "פתחה / טווח פתחות:"
 
 #: ../src/firewall-config.glade.h:21
 msgid "IP address:"
-msgstr "IP адреса:"
+msgstr "כתובת IP:"
 
 #: ../src/firewall-config.glade.h:22
 msgid "Protocol:"
-msgstr "Протокол:"
+msgstr "פרוטוקול:"
 
 #: ../src/firewall-config.glade.h:24
 msgid "Destination"
-msgstr "Одредиште"
+msgstr "יעד"
 
 #: ../src/firewall-config.glade.h:25
 msgid ""
 "If you enable local forwarding, you have to specify a port. This port has to "
 "be different to the source port."
 msgstr ""
-"Ако укључите локално прослеђивање, морате навести порт. Тај порт се мора "
-"разликовати од изворног порта."
 
 #: ../src/firewall-config.glade.h:26
 msgid "Local forwarding"
-msgstr "Локално прослеђивање"
+msgstr "העברה מקומית"
 
 #: ../src/firewall-config.glade.h:27
 msgid "Forward to another port"
-msgstr "Проследи на неки други порт"
+msgstr "העברה לפתחה אחרת"
 
 #: ../src/firewall-config.glade.h:28
 msgid "Base Helper Settings"
-msgstr ""
+msgstr "הגדרות מסייע בסיס"
 
 #: ../src/firewall-config.glade.h:29
 msgid "Please configure base helper settings:"
-msgstr ""
+msgstr "נא להגדיר את מסייע הבסיס:"
 
 #: ../src/firewall-config.glade.h:30
 msgid "Bold entries are mandatory, all others are optional."
-msgstr "Подебљана поља су обавезна, све остало је опционо."
+msgstr "רשומות מודגשות הן בגדר חובה, כל השאר רשות."
 
 #: ../src/firewall-config.glade.h:31
 msgid "Name:"
-msgstr "Име:"
+msgstr "שם:"
 
 #: ../src/firewall-config.glade.h:32
 msgid "Version:"
-msgstr "Верзија:"
+msgstr "גרסה:"
 
 #: ../src/firewall-config.glade.h:33
 msgid "Short:"
-msgstr "Кратко:"
+msgstr "קצר:"
 
 #: ../src/firewall-config.glade.h:34
 msgid "Description:"
-msgstr "Опис:"
+msgstr "תיאור:"
 
 #: ../src/firewall-config.glade.h:35
 msgid "Family:"
-msgstr "Породица:"
+msgstr "משפחה:"
 
 #: ../src/firewall-config.glade.h:39
 msgid "Module:"
-msgstr ""
+msgstr "מודול:"
 
 #: ../src/firewall-config.glade.h:40
 msgid "Helper"
-msgstr ""
+msgstr "מסייע"
 
 #: ../src/firewall-config.glade.h:41
 msgid "Please select a helper:"
-msgstr ""
+msgstr "נא לבחור מסייע:"
 
 #: ../src/firewall-config.glade.h:42
 msgid "Base ICMP Type Settings"
-msgstr "Основна ICMP подешавања"
+msgstr "הגדרות סוג ICMP בסיסי"
 
 #: ../src/firewall-config.glade.h:43
 msgid "Please configure base ICMP type settings:"
-msgstr "Молим подесите основна ICMP подешавања:"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:44
 msgid "ICMP Type"
-msgstr "ICMP врста"
+msgstr "סוג ICMP"
 
 #: ../src/firewall-config.glade.h:45
 msgid "Please select an ICMP type"
-msgstr "Молим изаберите ICMP врсту"
+msgstr "נא לבחור סוג ICMP"
 
 #: ../src/firewall-config.glade.h:46
 msgid "Add Entry"
-msgstr "Додај ставку"
+msgstr "הוספת רשומה"
 
 #: ../src/firewall-config.glade.h:47
 msgid "Add Entries From File"
-msgstr ""
+msgstr "הוספת רשומות מקובץ"
 
 #: ../src/firewall-config.glade.h:48
 msgid "Remove Selected Entry"
-msgstr ""
+msgstr "הסרת הרשומה הנבחרת"
 
 #: ../src/firewall-config.glade.h:49
 msgid "Remove All Entries"
-msgstr ""
+msgstr "הסרת כל הרשומות"
 
 #: ../src/firewall-config.glade.h:50
 msgid "Remove Entries From File"
-msgstr ""
+msgstr "הסרת רשומות מקובץ"
 
 #: ../src/firewall-config.glade.h:52
 msgid "_File"
-msgstr "Да_тотека"
+msgstr "_קובץ"
 
 #: ../src/firewall-config.glade.h:53
 msgid "_Options"
-msgstr "Опциј_е"
+msgstr "_אפשרויות"
 
 #: ../src/firewall-config.glade.h:54
 msgid "Reload Firewalld"
-msgstr "Поново учитај Firewalld"
+msgstr "טעינת Firewalld מחדש"
 
 #: ../src/firewall-config.glade.h:55
 msgid ""
@@ -919,22 +907,18 @@ msgid ""
 "runtime configuration. i.e. all runtime only changes done until reload are "
 "lost with reload if they have not been also in permanent configuration."
 msgstr ""
-"Поново учитај правила заштитног зида. Тренутна трајна подешавања ће постати "
-"нова подешавања за време извршавања. нпр. све постављене измене само за "
-"време извршавања ће бити изгубљене при поновном учитавању ако нису такође "
-"биле у трајним подешавањима."
 
 #: ../src/firewall-config.glade.h:56
 msgid "Change which zone a network connection belongs to."
-msgstr "Промени којој зони припада мрежна веза."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:58
 msgid "Change Default Zone"
-msgstr "Промени подразумевану зону"
+msgstr "החלפת אזור ברירת המחדל"
 
 #: ../src/firewall-config.glade.h:59
 msgid "Change default zone for connections or interfaces."
-msgstr "Промени подразумевану зону за везе или интерфејсе."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:60
 msgid "Change Log Denied"
@@ -954,23 +938,23 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:64
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
-msgstr "Мод панике значи да ће сав долазни и одлазни пакети бити испуштени."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:65
 msgid "Panic Mode"
-msgstr "Мод панике"
+msgstr "מצב תבהלה"
 
 #: ../src/firewall-config.glade.h:66
 msgid "Make runtime configuration permanent"
-msgstr "Претвори подешавања током извршавања у трајна"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:67
 msgid "Runtime To Permanent"
-msgstr "Радна у трајна"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:68
 msgid "_View"
-msgstr "_Преглед"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:69
 msgid "IPSets"
@@ -978,7 +962,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:70
 msgid "ICMP Types"
-msgstr "ICMP врсте"
+msgstr "סוגי ICMP"
 
 #: ../src/firewall-config.glade.h:71
 msgid "Helpers"
@@ -986,7 +970,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:72
 msgid "Direct Configuration"
-msgstr "Директна подешавања"
+msgstr "הגדרה ישירה"
 
 #: ../src/firewall-config.glade.h:73
 msgid "Active Bindings"
@@ -994,15 +978,15 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:74
 msgid "_Help"
-msgstr "_Помоћ"
+msgstr "ע_זרה"
 
 #: ../src/firewall-config.glade.h:75
 msgid "Change Zone"
-msgstr ""
+msgstr "החלפת אזור"
 
 #: ../src/firewall-config.glade.h:76
 msgid "Change zone of binding"
-msgstr ""
+msgstr "החלפת אזור האיגוד"
 
 #: ../src/firewall-config.glade.h:77
 msgid ""
@@ -1016,7 +1000,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:79
 msgid "Configuration:"
-msgstr "Подешавање:"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:80
 msgid ""
@@ -1024,9 +1008,6 @@ msgid ""
 "configuration. Permanent configuration will be active after service or "
 "system reload or restart."
 msgstr ""
-"Тренутно видљива подешавања. Подешавања у току извршавања су актуелна "
-"активна подешавања. Трајна подешавања ће бити активна након поновног "
-"учитавања или покретања сервиса или система."
 
 #: ../src/firewall-config.glade.h:81
 msgid ""
@@ -1036,26 +1017,22 @@ msgid ""
 "filters and rich rules. The zone can be bound to interfaces and source "
 "addresses."
 msgstr ""
-"Firewalld зона дефинише ниво поверења у мрежним везама, интерфејсима и "
-"изворним адресама везаним за зоне. Зона обједињује сервисе, портове, "
-"протоколе, маскараде, порт/пакет прослеђивање, icmp филтере и обогаћена "
-"правила. Зона може бити повезана са интерфејсима и изворним адресама."
 
 #: ../src/firewall-config.glade.h:83
 msgid "Add Zone"
-msgstr "Додај зону"
+msgstr "הוספת אזור"
 
 #: ../src/firewall-config.glade.h:84
 msgid "Edit Zone"
-msgstr "Измени зону"
+msgstr "עריכת אזור"
 
 #: ../src/firewall-config.glade.h:85
 msgid "Remove Zone"
-msgstr "Уклони зону"
+msgstr "הסרת אזור"
 
 #: ../src/firewall-config.glade.h:86
 msgid "Load Zone Defaults"
-msgstr "Учитај подразумеване вредности за зону"
+msgstr "טעינת ברירות המחדל של האזור"
 
 #: ../src/firewall-config.glade.h:87
 msgid ""
@@ -1063,37 +1040,32 @@ msgid ""
 "are accessible from all hosts and networks that can reach the machine from "
 "connections, interfaces and sources bound to this zone."
 msgstr ""
-"Овде можете одредити којим сервисима се верује у зони. Ти сервиси су "
-"доступни са свих хостова и мрежа који могу досегнути до машине кроз везе, "
-"интерфејсе и изворе повезане са овом зоном."
 
 #: ../src/firewall-config.glade.h:88
 msgid "Services"
-msgstr "Сервиси"
+msgstr "שירותים"
 
 #: ../src/firewall-config.glade.h:89
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks that can connect to the machine."
 msgstr ""
-"Додај додатни порт или опсег портова, који треба да буду доступни свим "
-"хостовима или мрежама који могу да се повежу на машину."
 
 #: ../src/firewall-config.glade.h:90
 msgid "Add Port"
-msgstr "На порт"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:91
 msgid "Edit Port"
-msgstr "Измени порт"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:92
 msgid "Remove Port"
-msgstr "Уклони порт"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:93
 msgid "Ports"
-msgstr "Портови"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:94
 msgid "Add protocols, which need to be accessible for all hosts or networks."
@@ -1131,25 +1103,20 @@ msgid ""
 "network to the internet. Your local network will not be visible and the "
 "hosts appear as a single address on the internet. Masquerading is IPv4 only."
 msgstr ""
-"Маскирање дозвољава да поставите домаћина или рутер који повезује вашу "
-"локалну мрежу на интернет. Локална мрежа неће бити видљива и домаћини ће се "
-"појавити као једна адреса на интернету. Маскирање је само за IPv4."
 
 #: ../src/firewall-config.glade.h:102
 msgid "Masquerade zone"
-msgstr "Маскирај зону"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:103
 msgid ""
 "If you enable masquerading, IP forwarding will be enabled for your IPv4 "
 "networks."
 msgstr ""
-"Ако омогућите маскараду, IP прослеђивање ће бити омогућено за ваше IPv4 "
-"мреже."
 
 #: ../src/firewall-config.glade.h:104
 msgid "Masquerading"
-msgstr "Маскирање"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:105
 msgid ""
@@ -1158,22 +1125,18 @@ msgid ""
 "system is only useful if the interface is masqueraded. Port forwarding is "
 "IPv4 only."
 msgstr ""
-"Додајте ставке за прослеђене портове или са једног порта на неки други на "
-"локалном систему, или са локалног система на други систем. Прослеђивање на "
-"други систем је корисно само ако је спрега маскирана. Прослеђивање портова "
-"је само за IPv4."
 
 #: ../src/firewall-config.glade.h:106
 msgid "Add Forward Port"
-msgstr "Додај порт за прослеђивање"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:107
 msgid "Edit Forward Port"
-msgstr "Измени порт за прослеђивање"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:108
 msgid "Remove Forward Port"
-msgstr "Уклони порт за прослеђивање"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:109
 msgid ""
@@ -1181,18 +1144,12 @@ msgid ""
 "messages between networked computers, but additionally for informational "
 "messages like ping requests and replies."
 msgstr ""
-"Протокол за контролисање интернет порука (ICMP — Internet Control Message "
-"Protocol) се углавном користи за слање порука о грешкама између умрежених "
-"рачунара, али и додатно за информативне поруке попут пинг захтева и одговора."
 
 #: ../src/firewall-config.glade.h:110
 msgid ""
 "Mark the ICMP types in the list, which should be rejected. All other ICMP "
 "types are allowed to pass the firewall. The default is no limitation."
 msgstr ""
-"Означите ICMP врсте на списку које желите одбити. Свим осталим ICMP врстама "
-"је дозвољено да прођу кроз заштитни зид. Подразумевана опција је без "
-"ограничења."
 
 #: ../src/firewall-config.glade.h:111
 msgid ""
@@ -1206,47 +1163,45 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:113
 msgid "ICMP Filter"
-msgstr "Филтер за ICMP"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:114
 msgid "Here you can set rich language rules for the zone."
-msgstr "Овде можете подешавати правила у обогаћеном језику за зону."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:115
 msgid "Add Rich Rule"
-msgstr "Додај обогаћено правило"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:116
 msgid "Edit Rich Rule"
-msgstr "Измени обогаћено правило"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:117
 msgid "Remove Rich Rule"
-msgstr "Уклони обогаћено правило"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:118
 msgid "Rich Rules"
-msgstr "Обогаћена правила"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:119
 msgid ""
 "Add entries to bind interfaces to the zone. If the interface will be used by "
 "a connection, the zone will be set to the zone specified in the connection."
 msgstr ""
-"Додајте уносе да се повежу интерфејси са зоном. Ако ће веза користити "
-"интерфејс, зона ће бити постављена на зону подешену у вези."
 
 #: ../src/firewall-config.glade.h:120
 msgid "Add Interface"
-msgstr "Додај интерфејс"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:121
 msgid "Edit Interface"
-msgstr "Измени интерфејс"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:122
 msgid "Remove Interface"
-msgstr "Уклони интерфејс"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:124
 msgid ""
@@ -1257,43 +1212,41 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:125
 msgid "Add Source"
-msgstr "Додај извор"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:126
 msgid "Edit Source"
-msgstr "Измени извор"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:127
 msgid "Remove Source"
-msgstr "Уклони извор"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:129
 msgid "Zones"
-msgstr "Зоне"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:130
 msgid ""
 "A firewalld service is a combination of ports, protocols, modules and "
 "destination addresses."
 msgstr ""
-"Firewalld сервис је обједињење портова, протокола, модула и одредишних "
-"адреса."
 
 #: ../src/firewall-config.glade.h:132
 msgid "Add Service"
-msgstr "Додај сервис"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:133
 msgid "Edit Service"
-msgstr "Измени сервис"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:134
 msgid "Remove Service"
-msgstr "Уклони сервис"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:135
 msgid "Load Service Defaults"
-msgstr "Учитај подразумеване вредности сервиса"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:136
 msgid ""
@@ -1303,11 +1256,11 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:137
 msgid "Edit Entry"
-msgstr "Уреди ставку"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:138
 msgid "Remove Entry"
-msgstr "Уклони ставку"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:139
 msgid ""
@@ -1325,7 +1278,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:142
 msgid "Modules"
-msgstr "Модули"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:143
 msgid ""
@@ -1333,24 +1286,20 @@ msgid ""
 "the destination address and type. If both entries are empty, there is no "
 "limitation."
 msgstr ""
-"Ако назначите одредишне адресе, унос сервиса ће бити ограничен само на "
-"одредишну адресу и врсту. Ако су оба уноса празна, нема ограничења."
 
 #: ../src/firewall-config.glade.h:144
 msgid "IPv4:"
-msgstr "IPv4:"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:145
 msgid "IPv6:"
-msgstr "IPv6:"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:146
 msgid ""
 "Services can only be changed in the permanent configuration view. The "
 "runtime configuration of services is fixed."
 msgstr ""
-"Сервиси се могу мењати само у прегледу трајних подешавања. Подешавање "
-"сервиса у време извршавања је статично."
 
 #: ../src/firewall-config.glade.h:147
 msgid ""
@@ -1410,36 +1359,32 @@ msgid ""
 "A firewalld icmptype provides the information for an Internet Control "
 "Message Protocol (ICMP) type for firewalld."
 msgstr ""
-"Firewalld icmptype пружа информације о врсти протокола интернет контролних "
-"порука (ICMP - Internet Control Message Protocol) за firewalld."
 
 #: ../src/firewall-config.glade.h:160
 msgid "Add ICMP Type"
-msgstr "Додај ICMP врсту"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:161
 msgid "Edit ICMP Type"
-msgstr "Измени ICMP врсту"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:162
 msgid "Remove ICMP Type"
-msgstr "Уклони ICMP врсту"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:163
 msgid "Load ICMP Type Defaults"
-msgstr "Учитај подразумеване вредности ICMP врста"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:164
 msgid "Specify whether this ICMP Type is available for IPv4 and/or IPv6."
-msgstr "Одредите да ли ће ICMP врста бити доступна за IPv4 и/или IPv6."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:165
 msgid ""
 "ICMP Types can only be changed in the permanent configuration view. The "
 "runtime configuration of ICMP Types is fixed."
 msgstr ""
-"ICMP врсте се могу мењати само у прегледу трајних подешавања. Подешавање "
-"ICMP врста у време извршавања је статично."
 
 #: ../src/firewall-config.glade.h:166
 msgid ""
@@ -1460,10 +1405,6 @@ msgid ""
 "commands, parameters and targets. Direct configuration should be used only "
 "as a last resort when it is not possible to use other firewalld features."
 msgstr ""
-"Диреткна подешавања дају директнији приступ заштитном зиду. Ове опције "
-"захтевају да корисник познаје основне iptables концепте, нпр. табеле, ланце, "
-"команде, параметре и циљеве. Директно подешавање би требало користити само "
-"као последњу опцију када није могуће користити остале firewalld могућности."
 
 #: ../src/firewall-config.glade.h:169
 msgid ""
@@ -1471,33 +1412,31 @@ msgid ""
 "will be for iptables, with ipv6 for ip6tables and with eb for ethernet "
 "bridges (ebtables)."
 msgstr ""
-" ipv параметар сваке опције мора бити IPv4 или IPv6 или eb. Са IPv4 биће за "
-"iptables, са IPv6 за ip6tables и са eb за мрежне мостове (ebtables)."
 
 #: ../src/firewall-config.glade.h:170
 msgid "Additional chains for use with rules."
-msgstr "Додатни ланци у употреби са правилима."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:171
 msgid "Add Chain"
-msgstr "Додај ланац"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:172
 msgid "Edit Chain"
-msgstr "Измени ланац"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:173
 msgid "Remove Chain"
-msgstr "Уклони ланац"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:174
 msgid "Chains"
-msgstr "Ланци"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:175
 msgid ""
 "Add a rule with the arguments args to a chain in a table with a priority."
-msgstr "Додај правило ланцу са аргументима args у табели са приоритетом."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:176
 msgid ""
@@ -1508,27 +1447,22 @@ msgid ""
 "after another one, use a low priority for the first and a higher for the "
 "following."
 msgstr ""
-"Приоритет служи за редослед правила. Приоритет 0 значи да се правило додаје "
-"на врх ланца, са већим приоритетом правило ће бити додато ниже. Правила са "
-"истим приоритетом су на истом нивоу и редослед тих правила није стално и "
-"може бити промењено. Ако желите да се осигурате да ће правило бити додато "
-"након другог, користите низак приоритет за прво и висок за следеће."
 
 #: ../src/firewall-config.glade.h:177
 msgid "Add Rule"
-msgstr "Додај правило"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:178
 msgid "Edit Rule"
-msgstr "Измени правило"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:179
 msgid "Remove Rule"
-msgstr "Уклони правило"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:180
 msgid "Rules"
-msgstr "Правила"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:181
 msgid ""
@@ -1536,34 +1470,30 @@ msgid ""
 "not placed in special chains. All iptables, ip6tables and ebtables options "
 "can be used."
 msgstr ""
-"Пропусна правила су директно пружена кроз заштитни зид и нису смештена у "
-"посебне ланце. Све iptables, ip6tables и ebtables опције могу бити "
-"употребљене."
 
 #: ../src/firewall-config.glade.h:182
 msgid "Please be careful with passthrough rules to not damage the firewall."
 msgstr ""
-"Молимо да будете пажљиви са пропусним правилима да не оштетите заштитни зид."
 
 #: ../src/firewall-config.glade.h:183
 msgid "Add Passthrough"
-msgstr "Додај пропусно правило"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:184
 msgid "Edit Passthrough"
-msgstr "Измени пропусно правило"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:185
 msgid "Remove Passthrough"
-msgstr "Уклони пропусно правило"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:186
 msgid "Passthrough"
-msgstr "Пропусна правила"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:187
 msgid "Current default zone of the system."
-msgstr "Тренутна подразумевана зона за систем."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:188
 msgctxt ""
@@ -1574,7 +1504,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:189
 msgid "Panic Mode:"
-msgstr "Мод панике:"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:190
 msgctxt ""
@@ -1585,7 +1515,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:191
 msgid "Default Zone:"
-msgstr "Подразумевана зона:"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:193
 msgid "Please enter an interface name:"
@@ -1677,84 +1607,81 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:216
 msgid "Port and Protocol"
-msgstr "Порт и протокол"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:217
 msgid "Please enter a port and protocol."
-msgstr "Молим унесите порт и протокол."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:218
 msgid "Direct Rule"
-msgstr "Директно правило"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:219
 msgid "Please select ipv and table, chain priority and enter the args."
-msgstr "Молим одаберите ipv и табелу, приоритет ланца и унесите аргументе."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:220
 msgid "Priority:"
-msgstr "Приоритет:"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:222
 msgid "Please enter a protocol."
-msgstr "Молим унесите протокол."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:223
 msgid "Other Protocol:"
-msgstr "Други протокол:"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:224
 msgid "Rich Rule"
-msgstr "Обогаћено правило"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:225
 msgid "Please enter a rich rule."
-msgstr "Молим унесите обогаћено правило."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:226
-#, fuzzy
 msgid "For host or network allow or denylisting deactivate the element."
-msgstr "За белу или црну листу домаћина или мреже деактивирајте елемент."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:227
 msgid "Source:"
-msgstr "Извор:"
+msgstr "מקור:"
 
 #: ../src/firewall-config.glade.h:228
 msgid "Destination:"
-msgstr "Одредиште:"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:229
 msgid "Log:"
-msgstr "Запис:"
+msgstr "יומן:"
 
 #: ../src/firewall-config.glade.h:230
 msgid "Audit:"
-msgstr "Провера:"
+msgstr "פיקוח:"
 
 #: ../src/firewall-config.glade.h:231
 msgid "ipv4 and ipv6"
-msgstr "ipv4 и ipv6"
+msgstr "ipv4 ו־ipv6"
 
 #: ../src/firewall-config.glade.h:232
 msgid "inverted"
-msgstr "обрнуто"
+msgstr "הפוך"
 
 #: ../src/firewall-config.glade.h:237
 msgid ""
 "To enable this Action has to be 'reject' and Family either 'ipv4' or "
 "'ipv6' (not both)."
 msgstr ""
-"Да омогућите ово Акција мора бити 'одбиј' и Породица или 'ipv4' или "
-"'ipv6' (не оба)."
 
 #: ../src/firewall-config.glade.h:238
 msgid "with Type:"
-msgstr "са Врстом:"
+msgstr "עם סוג:"
 
 #: ../src/firewall-config.glade.h:239
 msgid "With limit:"
-msgstr "Са ограничењем:"
+msgstr "עם מגבלה:"
 
 #: ../src/firewall-config.glade.h:240
 msgid "/"
@@ -1762,159 +1689,79 @@ msgstr "/"
 
 #: ../src/firewall-config.glade.h:245
 msgid "Prefix:"
-msgstr "Префикс:"
+msgstr "קידומת:"
 
 #: ../src/firewall-config.glade.h:246
 msgid "Level:"
-msgstr "Ниво:"
+msgstr "רמה:"
 
 #: ../src/firewall-config.glade.h:263
 msgid "Element:"
-msgstr "Елемент:"
+msgstr "רכיב:"
 
 #: ../src/firewall-config.glade.h:264
 msgid "Action:"
-msgstr "Акција:"
+msgstr "פעולה:"
 
 #: ../src/firewall-config.glade.h:265
 msgid "Base Service Settings"
-msgstr "Основна подешавања сервиса"
+msgstr "הגדרות שירות הבסיס"
 
 #: ../src/firewall-config.glade.h:266
 msgid "Please configure base service settings:"
-msgstr "Молим поставите основна подешавања сервиса:"
+msgstr "נא להגדיר את תצורת שירות הבסיס:"
 
 #: ../src/firewall-config.glade.h:267
 msgid "Please select a service."
-msgstr "Молим одаберите сервис."
+msgstr "נא לבחור שירות."
 
 #: ../src/firewall-config.glade.h:268
 msgid "Please enter a source."
-msgstr ""
+msgstr "נא למלא את המקור."
 
 #: ../src/firewall-config.glade.h:269
 msgid "label"
-msgstr ""
+msgstr "תווית"
 
 #: ../src/firewall-config.glade.h:270
 msgid "Base Zone Settings"
-msgstr "Основна подешавања зоне"
+msgstr "הגדרות אזור הבסיס"
 
 #: ../src/firewall-config.glade.h:271
 msgid "Please configure base zone settings:"
-msgstr "Молим поставите основна подешавања зоне:"
+msgstr "נא להגדיר את תצורת אזור הבסיס:"
 
 #: ../src/firewall-config.glade.h:272
 msgid "Default Target"
-msgstr "Подразумевани циљ"
+msgstr "יעד ברירת מחדל"
 
 #: ../src/firewall-config.glade.h:273
 msgid "Target:"
-msgstr "Циљ:"
+msgstr "יעד:"
+
+#~ msgid "Context"
+#~ msgstr "הקשר"
+
+#~ msgid "Command line"
+#~ msgstr "שורת פקודה"
 
 #~ msgid "User name"
-#~ msgstr "Корисничко име"
+#~ msgstr "שם משתמש"
+
+#~ msgid "User id"
+#~ msgstr "מזהה משתמש"
 
 #~ msgid "Please enter the command line."
-#~ msgstr "Молим унесите командну линију."
+#~ msgstr "נא להיכנס לשורת הפקודה."
 
 #~ msgid "Please enter the context."
-#~ msgstr "Молим унесите контекст."
-
-#~ msgid ""
-#~ "Lockdown locks firewall configuration so that only applications on "
-#~ "lockdown whitelist are able to change it."
-#~ msgstr ""
-#~ "Закључавање закључава подешавање заштитног зида тако да само програми на "
-#~ "белој листи закључавања смеју да је мењају."
-
-#~ msgid "Lockdown"
-#~ msgstr "Закључавање"
-
-#~ msgid "Lockdown Whitelist"
-#~ msgstr "Бела листа закључавања"
-
-#~ msgid ""
-#~ "The lockdown feature is a light version of user and application policies "
-#~ "for firewalld. It limits changes to the firewall. The lockdown whitelist "
-#~ "can contain commands, contexts, users and user ids."
-#~ msgstr ""
-#~ "Могућност закључавања је лагана верзија полиса корисника и програма за "
-#~ "firewalld. Оно ограничава промене на заштитном зиду. Бела листа за "
-#~ "закључавање може садржати команде, контексте, кориснике и корисничке ID-"
-#~ "ове."
-
-#~ msgid "Add Context"
-#~ msgstr "Додај контекст"
-
-#~ msgid "Edit Context"
-#~ msgstr "Измени контекст"
-
-#~ msgid "Remove Context"
-#~ msgstr "Уклони контекст"
-
-#~ msgid "Contexts"
-#~ msgstr "Контексти"
-
-#~ msgid ""
-#~ "If a command entry on the whitelist ends with an asterisk '*', then all "
-#~ "command lines starting with the command will match. If the '*' is not "
-#~ "there the absolute command inclusive arguments must match."
-#~ msgstr ""
-#~ "Ако унос команде у белу листу завршава са астериском '*', онда ће се све "
-#~ "командне линије које почињу са командом подударати. Ако '*' није ту "
-#~ "апсолутна команда са аргументима мора да се подудара."
-
-#~ msgid "Add Command Line"
-#~ msgstr "Додај командну линију"
-
-#~ msgid "Edit Command Line"
-#~ msgstr "Измени командну линију"
-
-#~ msgid "Remove Command Line"
-#~ msgstr "Уклони командну линију"
-
-#~ msgid "Command lines"
-#~ msgstr "Командне линије"
-
-#~ msgid "User names."
-#~ msgstr "Корисничка имена."
-
-#~ msgid "Add User Name"
-#~ msgstr "Додај корисничко име"
-
-#~ msgid "Edit User Name"
-#~ msgstr "Измени корисничко име"
-
-#~ msgid "Remove User Name"
-#~ msgstr "Уклони корисничко име"
-
-#~ msgid "User names"
-#~ msgstr "Корисничка имена"
-
-#~ msgid "User ids."
-#~ msgstr "Кориснички ID-ови."
-
-#~ msgid "Add User Id"
-#~ msgstr "Додај кориснички ID"
-
-#~ msgid "Edit User Id"
-#~ msgstr "Измени кориснички ID"
-
-#~ msgid "Remove User Id"
-#~ msgstr "Уклони кориснички ID"
-
-#~ msgid "User Ids"
-#~ msgstr "Кориснички ID-ови"
-
-#~ msgid "Lockdown:"
-#~ msgstr "Закључавање:"
+#~ msgstr "נא למלא את ההקשר."
 
 #~ msgid "User ID"
-#~ msgstr "Кориснички ID"
+#~ msgstr "מזהה משתמש"
 
 #~ msgid "Please enter the user id."
-#~ msgstr "Молим унесите кориснички ID."
+#~ msgstr "נא למלא את מזהה המשתמש."
 
 #~ msgid "Please enter the user name."
-#~ msgstr "Молим унесите корисничко име."
+#~ msgstr "נא למלא את שם המשתמש."
