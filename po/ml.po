@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-11 13:41-0400\n"
+"POT-Creation-Date: 2024-11-04 15:37-0500\n"
 "PO-Revision-Date: 2015-02-26 10:00+0000\n"
 "Last-Translator: Copied by Zanata <copied-by-zanata@zanata.org>\n"
 "Language-Team: Malayalam (http://www.transifex.com/projects/p/firewalld/"
@@ -23,6 +23,40 @@ msgstr ""
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:450
 msgid "Firewall Applet"
 msgstr "ഫയര്‍വോള്‍ ആപ്ലെറ്റ്"
+
+#: ../config/firewall-config.appdata.xml.in.h:1
+msgid ""
+"Firewall Configuration provides a graphical tool for administering firewall."
+msgstr ""
+
+#: ../config/firewall-config.appdata.xml.in.h:2
+msgid "Allows to inspect and set:"
+msgstr ""
+
+#: ../config/firewall-config.appdata.xml.in.h:3
+#, fuzzy
+msgid "Runtime and permanent firewall configuration"
+msgstr "ഫയര്‍വോള്‍ ക്രമീകരണം"
+
+#: ../config/firewall-config.appdata.xml.in.h:4
+msgid "Predefined zones (levels of trust for network connections)"
+msgstr ""
+
+#: ../config/firewall-config.appdata.xml.in.h:5
+msgid "Predefined services (port/protocol, netfilter helper module)"
+msgstr ""
+
+#: ../config/firewall-config.appdata.xml.in.h:6
+msgid "Port forwarding, masquerading, ICMP blocking"
+msgstr ""
+
+#: ../config/firewall-config.appdata.xml.in.h:7
+msgid "Complex firewall rules a.k.a. Rich Language"
+msgstr ""
+
+#: ../config/firewall-config.appdata.xml.in.h:8
+msgid "Iptables rules a.k.a. Direct Interface"
+msgstr ""
 
 #: ../config/firewall-config.desktop.in.h:1
 msgid "Firewall"
@@ -1496,6 +1530,18 @@ msgstr ""
 "മുന്‍ഗണനയ്ക്കൊപ്പം ഒരു പട്ടികയില്‍ ഒരു ചെയിനിനു് args ആര്‍ഗ്യുമെന്റുകള്‍ക്കൊപ്പം ഒരു നിയമം ചേര്‍ക്കുക."
 
 #: ../src/firewall-config.glade.h:176
+msgid "Add Rule"
+msgstr "നിയമം ചേര്‍ക്കുക"
+
+#: ../src/firewall-config.glade.h:177
+msgid "Edit Rule"
+msgstr "നിയമത്തില്‍ മാറ്റം വരുത്തുക"
+
+#: ../src/firewall-config.glade.h:178
+msgid "Remove Rule"
+msgstr "നിയമം‍ നീക്കം ചെയ്യുക"
+
+#: ../src/firewall-config.glade.h:179
 msgid ""
 "The priority is used to order rules. Priority 0 means add rule on top of the "
 "chain, with a higher priority the rule will be added further down. Rules "
@@ -1508,18 +1554,6 @@ msgstr ""
 "ചേര്‍ക്കുക, ഇതിനു് ശേഷം കൂടുതല്‍ മുന്‍ഗണനയോടെ നിയമങ്ങള്‍ ചേര്‍ക്കുന്നു. ഒരേ മുന്‍ഗണനയുള്ള നിയമങ്ങള്‍ ഒരേ "
 "തലത്തിലാകുന്നു. ഇവയുടെ ക്രമം സ്ഥിരമല്ല, മാറ്റുവാന്‍ സാധ്യമാകുന്നു. ഒന്നിനു് ശേഷം മറ്റൊന്നായി "
 "നിയമം ചേര്‍ക്കുന്നതിനു്, ആദ്യം മുന്‍ഗണന കുറഞ്ഞതു് ഉപയോഗിയ്ക്കുക ശേഷം മുന്‍ഗണന കൂടിയതു്, അങ്ങനെ..."
-
-#: ../src/firewall-config.glade.h:177
-msgid "Add Rule"
-msgstr "നിയമം ചേര്‍ക്കുക"
-
-#: ../src/firewall-config.glade.h:178
-msgid "Edit Rule"
-msgstr "നിയമത്തില്‍ മാറ്റം വരുത്തുക"
-
-#: ../src/firewall-config.glade.h:179
-msgid "Remove Rule"
-msgstr "നിയമം‍ നീക്കം ചെയ്യുക"
 
 #: ../src/firewall-config.glade.h:180
 msgid "Rules"
@@ -1535,20 +1569,20 @@ msgstr ""
 "ip6tables, ebtables എന്നിവയെല്ലാം ഉപയോഗിയ്ക്കാം."
 
 #: ../src/firewall-config.glade.h:182
-msgid "Please be careful with passthrough rules to not damage the firewall."
-msgstr "പാസ്ത്രൂ നിയമങ്ങള്‍ ഫയര്‍വോളിനെ ബാധിയ്ക്കുന്നില്ലെന്നു് ദയവായി ഉറപ്പു് വരുത്തുക."
-
-#: ../src/firewall-config.glade.h:183
 msgid "Add Passthrough"
 msgstr "പാസ്ത്രൂ ചേര്‍ക്കുക"
 
-#: ../src/firewall-config.glade.h:184
+#: ../src/firewall-config.glade.h:183
 msgid "Edit Passthrough"
 msgstr "പാസ്ത്രൂ ചിട്ടപ്പെടുത്തുക"
 
-#: ../src/firewall-config.glade.h:185
+#: ../src/firewall-config.glade.h:184
 msgid "Remove Passthrough"
 msgstr "പാസ്ത്രൂ നീക്കം ചെയ്യുക"
+
+#: ../src/firewall-config.glade.h:185
+msgid "Please be careful with passthrough rules to not damage the firewall."
+msgstr "പാസ്ത്രൂ നിയമങ്ങള്‍ ഫയര്‍വോളിനെ ബാധിയ്ക്കുന്നില്ലെന്നു് ദയവായി ഉറപ്പു് വരുത്തുക."
 
 #: ../src/firewall-config.glade.h:186
 msgid "Passthrough"

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-11 13:41-0400\n"
+"POT-Creation-Date: 2024-11-04 15:37-0500\n"
 "PO-Revision-Date: 2021-08-19 06:05+0000\n"
 "Last-Translator: Hela Basa <r45xveza@pm.me>\n"
 "Language-Team: Sinhala <https://translate.fedoraproject.org/projects/"
@@ -20,6 +20,39 @@ msgstr ""
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:450
 msgid "Firewall Applet"
+msgstr ""
+
+#: ../config/firewall-config.appdata.xml.in.h:1
+msgid ""
+"Firewall Configuration provides a graphical tool for administering firewall."
+msgstr ""
+
+#: ../config/firewall-config.appdata.xml.in.h:2
+msgid "Allows to inspect and set:"
+msgstr ""
+
+#: ../config/firewall-config.appdata.xml.in.h:3
+msgid "Runtime and permanent firewall configuration"
+msgstr ""
+
+#: ../config/firewall-config.appdata.xml.in.h:4
+msgid "Predefined zones (levels of trust for network connections)"
+msgstr ""
+
+#: ../config/firewall-config.appdata.xml.in.h:5
+msgid "Predefined services (port/protocol, netfilter helper module)"
+msgstr ""
+
+#: ../config/firewall-config.appdata.xml.in.h:6
+msgid "Port forwarding, masquerading, ICMP blocking"
+msgstr ""
+
+#: ../config/firewall-config.appdata.xml.in.h:7
+msgid "Complex firewall rules a.k.a. Rich Language"
+msgstr ""
+
+#: ../config/firewall-config.appdata.xml.in.h:8
+msgid "Iptables rules a.k.a. Direct Interface"
 msgstr ""
 
 #: ../config/firewall-config.desktop.in.h:1
@@ -1434,6 +1467,18 @@ msgid ""
 msgstr ""
 
 #: ../src/firewall-config.glade.h:176
+msgid "Add Rule"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:177
+msgid "Edit Rule"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:178
+msgid "Remove Rule"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:179
 msgid ""
 "The priority is used to order rules. Priority 0 means add rule on top of the "
 "chain, with a higher priority the rule will be added further down. Rules "
@@ -1441,18 +1486,6 @@ msgid ""
 "not fixed and may change. If you want to make sure that a rule will be added "
 "after another one, use a low priority for the first and a higher for the "
 "following."
-msgstr ""
-
-#: ../src/firewall-config.glade.h:177
-msgid "Add Rule"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:178
-msgid "Edit Rule"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:179
-msgid "Remove Rule"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:180
@@ -1467,19 +1500,19 @@ msgid ""
 msgstr ""
 
 #: ../src/firewall-config.glade.h:182
-msgid "Please be careful with passthrough rules to not damage the firewall."
-msgstr ""
-
-#: ../src/firewall-config.glade.h:183
 msgid "Add Passthrough"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:184
+#: ../src/firewall-config.glade.h:183
 msgid "Edit Passthrough"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:185
+#: ../src/firewall-config.glade.h:184
 msgid "Remove Passthrough"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:185
+msgid "Please be careful with passthrough rules to not damage the firewall."
 msgstr ""
 
 #: ../src/firewall-config.glade.h:186

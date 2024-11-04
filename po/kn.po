@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-11 13:41-0400\n"
+"POT-Creation-Date: 2024-11-04 15:37-0500\n"
 "PO-Revision-Date: 2015-02-26 09:59+0000\n"
 "Last-Translator: Copied by Zanata <copied-by-zanata@zanata.org>\n"
 "Language-Team: Kannada (http://www.transifex.com/projects/p/firewalld/"
@@ -28,6 +28,40 @@ msgstr ""
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:450
 msgid "Firewall Applet"
 msgstr "ಫೈರ್ವಾಲ್ ಆಪ್ಲೆಟ್"
+
+#: ../config/firewall-config.appdata.xml.in.h:1
+msgid ""
+"Firewall Configuration provides a graphical tool for administering firewall."
+msgstr ""
+
+#: ../config/firewall-config.appdata.xml.in.h:2
+msgid "Allows to inspect and set:"
+msgstr ""
+
+#: ../config/firewall-config.appdata.xml.in.h:3
+#, fuzzy
+msgid "Runtime and permanent firewall configuration"
+msgstr "ಫೈರ್ವಾಲ್ ಸ್ವರೂಪಣೆ"
+
+#: ../config/firewall-config.appdata.xml.in.h:4
+msgid "Predefined zones (levels of trust for network connections)"
+msgstr ""
+
+#: ../config/firewall-config.appdata.xml.in.h:5
+msgid "Predefined services (port/protocol, netfilter helper module)"
+msgstr ""
+
+#: ../config/firewall-config.appdata.xml.in.h:6
+msgid "Port forwarding, masquerading, ICMP blocking"
+msgstr ""
+
+#: ../config/firewall-config.appdata.xml.in.h:7
+msgid "Complex firewall rules a.k.a. Rich Language"
+msgstr ""
+
+#: ../config/firewall-config.appdata.xml.in.h:8
+msgid "Iptables rules a.k.a. Direct Interface"
+msgstr ""
 
 #: ../config/firewall-config.desktop.in.h:1
 msgid "Firewall"
@@ -1507,6 +1541,18 @@ msgstr ""
 "ನಿಯಮವನ್ನು ಸೇರಿಸು."
 
 #: ../src/firewall-config.glade.h:176
+msgid "Add Rule"
+msgstr "ನಿಯಮವನ್ನು ಸೇರಿಸು"
+
+#: ../src/firewall-config.glade.h:177
+msgid "Edit Rule"
+msgstr "ನಿಯಮವನ್ನು ಸೇರಿಸು"
+
+#: ../src/firewall-config.glade.h:178
+msgid "Remove Rule"
+msgstr "ನಿಯಮವನ್ನು ತೆಗೆದುಹಾಕು"
+
+#: ../src/firewall-config.glade.h:179
 msgid ""
 "The priority is used to order rules. Priority 0 means add rule on top of the "
 "chain, with a higher priority the rule will be added further down. Rules "
@@ -1521,18 +1567,6 @@ msgstr ""
 "ಒಂದೇ ರೀತಿ ಇರದೆ ಬದಲಾವಣೆ ಹೊಂದುವ ಸಾಧ್ಯತೆ ಇರುತ್ತದೆ. ಒಂದು ನಿಯಮದ ನಂತರ ಇನ್ನೊಂದು "
 "ನಿಯಮವನ್ನು ಸೇರಿಸಬೇಕು ಎನ್ನುವುದನ್ನು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಲು ನೀವು ಬಯಸಿದಲ್ಲಿ, ಮೊದಲನೆಯದಕ್ಕೆ "
 "ಕಡಿಮೆ ಆದ್ಯತೆಯನ್ನು ಮತ್ತು ನಂತರದವುಗಳಿಗೆ ಹೆಚ್ಚಿನ ಆದ್ಯತೆಯನ್ನು ಬಳಸಿ."
-
-#: ../src/firewall-config.glade.h:177
-msgid "Add Rule"
-msgstr "ನಿಯಮವನ್ನು ಸೇರಿಸು"
-
-#: ../src/firewall-config.glade.h:178
-msgid "Edit Rule"
-msgstr "ನಿಯಮವನ್ನು ಸೇರಿಸು"
-
-#: ../src/firewall-config.glade.h:179
-msgid "Remove Rule"
-msgstr "ನಿಯಮವನ್ನು ತೆಗೆದುಹಾಕು"
 
 #: ../src/firewall-config.glade.h:180
 msgid "Rules"
@@ -1549,20 +1583,20 @@ msgstr ""
 "ಆಯ್ಕೆಗಳನ್ನು ಬಳಸಬಹುದು."
 
 #: ../src/firewall-config.glade.h:182
-msgid "Please be careful with passthrough rules to not damage the firewall."
-msgstr "ಪಾಸ್‌ತ್ರೂ ನಿಯಮಗಳು ಫೈರ್ವಾಲ್‌ಗೆ ತೊಂದರೆ ಮಾಡದಂತೆ ದಯವಿಟ್ಟು ಎಚ್ಚರವಹಿಸಿ."
-
-#: ../src/firewall-config.glade.h:183
 msgid "Add Passthrough"
 msgstr "ಪಾಸ್‌ತ್ರೂ ಅನ್ನು ಸೇರಿಸು"
 
-#: ../src/firewall-config.glade.h:184
+#: ../src/firewall-config.glade.h:183
 msgid "Edit Passthrough"
 msgstr "ಪಾಸ್‌ತ್ರೂ ಅನ್ನು ಸಂಪಾದಿಸು"
 
-#: ../src/firewall-config.glade.h:185
+#: ../src/firewall-config.glade.h:184
 msgid "Remove Passthrough"
 msgstr "ಪಾಸ್‌ತ್ರೂ ಅನ್ನು ತೆಗೆದುಹಾಕು"
+
+#: ../src/firewall-config.glade.h:185
+msgid "Please be careful with passthrough rules to not damage the firewall."
+msgstr "ಪಾಸ್‌ತ್ರೂ ನಿಯಮಗಳು ಫೈರ್ವಾಲ್‌ಗೆ ತೊಂದರೆ ಮಾಡದಂತೆ ದಯವಿಟ್ಟು ಎಚ್ಚರವಹಿಸಿ."
 
 #: ../src/firewall-config.glade.h:186
 msgid "Passthrough"

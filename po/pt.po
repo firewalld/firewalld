@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-11 13:41-0400\n"
+"POT-Creation-Date: 2024-11-04 15:37-0500\n"
 "PO-Revision-Date: 2019-09-07 12:26+0000\n"
 "Last-Translator: Manuela Silva <mmsrs@sky.com>\n"
 "Language-Team: Portuguese (http://www.transifex.com/projects/p/firewalld/"
@@ -27,6 +27,41 @@ msgstr ""
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:450
 msgid "Firewall Applet"
 msgstr "Míni aplicação de Firewall"
+
+#: ../config/firewall-config.appdata.xml.in.h:1
+msgid ""
+"Firewall Configuration provides a graphical tool for administering firewall."
+msgstr ""
+
+#: ../config/firewall-config.appdata.xml.in.h:2
+msgid "Allows to inspect and set:"
+msgstr ""
+
+#: ../config/firewall-config.appdata.xml.in.h:3
+#, fuzzy
+msgid "Runtime and permanent firewall configuration"
+msgstr "Configuração da Firewall"
+
+#: ../config/firewall-config.appdata.xml.in.h:4
+#, fuzzy
+msgid "Predefined zones (levels of trust for network connections)"
+msgstr "Zona predefinida utilizada pela ligação de rede '%s'"
+
+#: ../config/firewall-config.appdata.xml.in.h:5
+msgid "Predefined services (port/protocol, netfilter helper module)"
+msgstr ""
+
+#: ../config/firewall-config.appdata.xml.in.h:6
+msgid "Port forwarding, masquerading, ICMP blocking"
+msgstr ""
+
+#: ../config/firewall-config.appdata.xml.in.h:7
+msgid "Complex firewall rules a.k.a. Rich Language"
+msgstr ""
+
+#: ../config/firewall-config.appdata.xml.in.h:8
+msgid "Iptables rules a.k.a. Direct Interface"
+msgstr ""
 
 #: ../config/firewall-config.desktop.in.h:1
 msgid "Firewall"
@@ -1510,6 +1545,18 @@ msgstr ""
 "prioridade."
 
 #: ../src/firewall-config.glade.h:176
+msgid "Add Rule"
+msgstr "Adiciona Regra"
+
+#: ../src/firewall-config.glade.h:177
+msgid "Edit Rule"
+msgstr "Edita Regra"
+
+#: ../src/firewall-config.glade.h:178
+msgid "Remove Rule"
+msgstr "Remove Regra"
+
+#: ../src/firewall-config.glade.h:179
 msgid ""
 "The priority is used to order rules. Priority 0 means add rule on top of the "
 "chain, with a higher priority the rule will be added further down. Rules "
@@ -1524,18 +1571,6 @@ msgstr ""
 "mesmo nível e a ordem destas regras não está fixa e pode mudar. Se quiser "
 "ter a certeza que uma regra é inserida após outra regra, utilize uma "
 "prioridade mais baixa para a primeira e uma mais alta para a seguinte."
-
-#: ../src/firewall-config.glade.h:177
-msgid "Add Rule"
-msgstr "Adiciona Regra"
-
-#: ../src/firewall-config.glade.h:178
-msgid "Edit Rule"
-msgstr "Edita Regra"
-
-#: ../src/firewall-config.glade.h:179
-msgid "Remove Rule"
-msgstr "Remove Regra"
 
 #: ../src/firewall-config.glade.h:180
 msgid "Rules"
@@ -1552,22 +1587,22 @@ msgstr ""
 "iptables, ip6tables e ebtables."
 
 #: ../src/firewall-config.glade.h:182
+msgid "Add Passthrough"
+msgstr "Adiciona Passthrough"
+
+#: ../src/firewall-config.glade.h:183
+msgid "Edit Passthrough"
+msgstr "Edita Passthrough"
+
+#: ../src/firewall-config.glade.h:184
+msgid "Remove Passthrough"
+msgstr "Remove Passthrough"
+
+#: ../src/firewall-config.glade.h:185
 msgid "Please be careful with passthrough rules to not damage the firewall."
 msgstr ""
 "Por favor tenha cuidado com regras passthrough para uqe não danifiquem a "
 "firewall."
-
-#: ../src/firewall-config.glade.h:183
-msgid "Add Passthrough"
-msgstr "Adiciona Passthrough"
-
-#: ../src/firewall-config.glade.h:184
-msgid "Edit Passthrough"
-msgstr "Edita Passthrough"
-
-#: ../src/firewall-config.glade.h:185
-msgid "Remove Passthrough"
-msgstr "Remove Passthrough"
 
 #: ../src/firewall-config.glade.h:186
 msgid "Passthrough"
