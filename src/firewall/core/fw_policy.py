@@ -1242,6 +1242,9 @@ class FirewallPolicy:
                 errors.INVALID_SNAT, "to-source is missing"
             )
 
+    def list_snats(self, policy):
+        return self.get_policy(policy).snats
+
     # IPSETS
 
     def _ipset_family(self, name):

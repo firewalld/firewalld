@@ -1196,6 +1196,11 @@ class FirewallZone:
         p_name = self.policy_name_from_zones(zone, "ANY")
         return self._fw.policy.list_forward_ports(p_name)
 
+    def list_snats(self, zone):
+        zone = self._fw.check_zone(zone)
+        p_name = self.policy_name_from_zones(zone, "ANY")
+        return self._fw.policy.list_snats(p_name)
+
     def add_icmp_block(self, zone, icmp, timeout=0, sender=None):
         zone = self._fw.check_zone(zone)
         p_name = self.policy_name_from_zones(zone, "HOST")
