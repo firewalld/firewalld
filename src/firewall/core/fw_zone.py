@@ -21,6 +21,7 @@ from firewall.core.rich import (
     Rich_Service,
     Rich_SourcePort,
     Rich_Tcp_Mss_Clamp,
+    Rich_SNAT,
 )
 from firewall.core.fw_nm import nm_get_bus_name
 from firewall.functions import checkIPnMask, checkIP6nMask, check_mac
@@ -108,6 +109,7 @@ class FirewallZone:
             "icmp_block_inversion",
             "rules",
             "protocols",
+            "snats",
         ]:
             if (
                 fromZone == z_obj.name
@@ -132,7 +134,7 @@ class FirewallZone:
             elif (
                 fromZone == z_obj.name
                 and toZone == "ANY"
-                and setting in ["forward_ports"]
+                and setting in ["forward_ports", "snats"]
             ):
                 # zone --> any zone
                 setattr(p_obj, setting, copy.deepcopy(getattr(z_obj, setting)))
@@ -329,6 +331,7 @@ class FirewallZone:
             "source_ports": self.list_source_ports(zone),
             "icmp_block_inversion": self.query_icmp_block_inversion(zone),
             "forward": self.query_forward(zone),
+            "snats": self.list_snats(zone),
         }
         return self._fw.combine_runtime_with_permanent_settings(permanent, runtime)
 
@@ -358,6 +361,7 @@ class FirewallZone:
                 self.remove_icmp_block_inversion,
             ),
             "forward": (self.add_forward, self.remove_forward),
+            "snats": (self.add_snat, self.remove_snat),
         }
 
         # do a full config check on a temporary object before trying to make
@@ -1090,6 +1094,8 @@ class FirewallZone:
         if isinstance(rule.element, Rich_Masquerade):
             return self.policy_name_from_zones("ANY", zone)
         if isinstance(rule.element, Rich_Tcp_Mss_Clamp):
+            return self.policy_name_from_zones(zone, "ANY")
+        if isinstance(rule.element, Rich_SNAT):
             return self.policy_name_from_zones(zone, "ANY")
         if rule.element is None:
             return self.policy_name_from_zones(zone, "HOST")

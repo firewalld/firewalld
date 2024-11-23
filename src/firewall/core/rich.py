@@ -382,6 +382,55 @@ class Rich_Limit:
         return s
 
 
+@dataclass(frozen=True, order=True)
+class Rich_SNAT:
+    """This object only holds data and is read-only after init. It is also
+    hashable and can be used as a dictionary key."""
+
+    protocol: str = ""
+    from_port: str = ""
+    to_port: str = ""
+    to_source: str = ""
+    to_source_port: str = ""
+
+    def __post_init__(self):
+        # replace None with "" in to_port and/or to_address
+        if self.protocol is None:
+            object.__setattr__(self, "protocol", "")
+        if self.from_port is None:
+            object.__setattr__(self, "from_port", "")
+        if self.to_port is None:
+            object.__setattr__(self, "to_port", "")
+        if self.to_source is None:
+            object.__setattr__(self, "to_source", "")
+        if self.to_source_port is None:
+            object.__setattr__(self, "to_source_port", "")
+
+        if self.protocol != "" and self.protocol not in ["tcp", "udp", "sctp", "dccp"]:
+            raise FirewallError(errors.INVALID_PROTOCOL, self.protocol)
+
+        if self.protocol == "" and (self.from_port != "" or self.to_port != "" or self.to_source_port != ""):
+            raise FirewallError(errors.INVALID_PROTOCOL, self.protocol)
+
+        if self.from_port != "" and not functions.check_port(self.from_port):
+            raise FirewallError(errors.INVALID_PORT, self.from_port)
+
+        if self.to_port != "" and not functions.check_port(self.to_port):
+            raise FirewallError(errors.INVALID_PORT, self.to_port)
+
+        if self.to_source_port != "" and not functions.check_port(self.to_source_port):
+            raise FirewallError(errors.INVALID_PORT, self.to_source_port)
+
+    def __str__(self):
+        return 'snat %s%s%s%s%s' % (
+            ' protocol="%s"' % self.protocol if self.protocol != "" else "",
+            ' from-port="%s"' % self.from_port if self.from_port != "" else "",
+            ' to-port="%s"' % self.from_port if self.from_port != "" else "",
+            ' to-source="%s"' % self.to_source if self.to_source != "" else "",
+            ' to-source-port="%s"' % self.to_source_port if self.to_source_port != "" else "",
+        )
+
+
 @dataclass(frozen=True)
 class Rich_Log:
     """This object only holds data and is read-only after init. It is also
@@ -627,6 +676,7 @@ class Rich_Rule:
         Rich_IcmpBlock,
         Rich_IcmpType,
         Rich_Masquerade,
+        Rich_SNAT,
     ] = None
     log: Rich_Log = None
     audit: Rich_Audit = None
@@ -739,6 +789,8 @@ class Rich_Rule:
                     "type",
                     "set",
                     "burst",
+                    "to-source",
+                    "to-source-port",
                 ]:
                     raise FirewallError(
                         errors.INVALID_RULE, "bad attribute '%s'" % attr_name
@@ -768,6 +820,7 @@ class Rich_Rule:
                     "NOT",
                     EOL,
                     "tcp-mss-clamp",
+                    "snat",
                 ]:
                     if current_element == "source" and self.source:
                         raise FirewallError(
@@ -788,6 +841,7 @@ class Rich_Rule:
                             "masquerade",
                             "forward-port",
                             "source-port",
+                            "snat",
                         ]
                         and self.element
                     ):
@@ -1001,6 +1055,24 @@ class Rich_Rule:
                     in_elements.pop()  # source-port
                     attrs.clear()
                     index = index - 1  # return token to input
+            elif in_element == "snat":
+                if attr_name in ["protocol", "from-port", "to-port", "to-source", "to-source-port"]:
+                    attrs[attr_name] = attr_value
+                else:
+                    object.__setattr__(
+                        self,
+                        "element",
+                        Rich_SNAT(
+                            attrs.get("protocol"),
+                            attrs.get("from-port"),
+                            attrs.get("to-port"),
+                            attrs.get("to-source"),
+                            attrs.get("to-source-port"),
+                        ),
+                    )
+                    in_elements.pop()  # snat
+                    attrs.clear()
+                    index = index - 1  # return token to input
             elif in_element == "log":
                 if attr_name in ["prefix", "level"]:
                     attrs[attr_name] = attr_value
@@ -1138,6 +1210,7 @@ class Rich_Rule:
             Rich_ForwardPort,
             Rich_Masquerade,
             Rich_Tcp_Mss_Clamp,
+            Rich_SNAT
         ]:
             if self.log is None and self.audit is None and self.action is None:
                 raise FirewallError(errors.INVALID_RULE, "no action, no log, no audit")
