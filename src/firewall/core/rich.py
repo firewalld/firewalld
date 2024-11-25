@@ -789,6 +789,7 @@ class Rich_Rule:
                     "type",
                     "set",
                     "burst",
+                    "from-port",
                     "to-source",
                     "to-source-port",
                 ]:
