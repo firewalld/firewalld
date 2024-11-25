@@ -1196,6 +1196,29 @@ class FirewallZone:
         p_name = self.policy_name_from_zones(zone, "ANY")
         return self._fw.policy.list_forward_ports(p_name)
 
+    def add_snat(
+        self, zone, protocol=None, fromport=None, toport=None, tosource=None, tosourceport=None, timeout=0, sender=None
+    ):
+        zone = self._fw.check_zone(zone)
+        p_name = self.policy_name_from_zones(zone, "ANY")
+        self._fw.policy.add_snat(
+            p_name, protocol, fromport, toport, tosource, tosourceport, timeout, sender
+        )
+        return zone
+
+    def remove_snat(self, zone, protocol=None, fromport=None, toport=None, tosource=None, tosourceport=None):
+        zone = self._fw.check_zone(zone)
+        p_name = self.policy_name_from_zones(zone, "ANY")
+        self._fw.policy.remove_snat(p_name, protocol, fromport, toport, tosource, tosourceport)
+        return zone
+
+    def query_snat(self, zone, protocol=None, fromport=None, toport=None, tosource=None, tosourceport=None):
+        zone = self._fw.check_zone(zone)
+        p_name = self.policy_name_from_zones(zone, "ANY")
+        return self._fw.policy.query_snat(
+            p_name, protocol, fromport, toport, tosource, tosourceport
+        )
+
     def list_snats(self, zone):
         zone = self._fw.check_zone(zone)
         p_name = self.policy_name_from_zones(zone, "ANY")

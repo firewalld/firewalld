@@ -621,19 +621,17 @@ def common_writer(obj, handler):
     # snat
     for snat in uniqify(obj.snats):
         handler.ignorableWhitespace("  ")
-        attrs = {"protocol": forward[0]}
-        if forward[1] and forward[1] != "":
-            attrs["from-addr"] = forward[1]
-        if forward[2] and forward[2] != "":
-            attrs["from-port"] = forward[2]
-        if forward[3] and forward[3] != "":
-            attrs["to-addr"] = forward[3]
-        if forward[4] and forward[4] != "":
-            attrs["to-port"] = forward[4]
-        if forward[5] and forward[5] != "":
-            attrs["to-source"] = forward[5]
-        if forward[6] and forward[6] != "":
-            attrs["to-source-port"] = forward[6]
+        attrs = {}
+        if snat[0] and snat[0] != "":
+            attrs["protocol"] = snat[1]
+        if snat[1] and snat[1] != "":
+            attrs["from-port"] = snat[1]
+        if snat[2] and snat[2] != "":
+            attrs["to-port"] = snat[2]
+        if snat[3] and snat[3] != "":
+            attrs["to-source"] = snat[3]
+        if snat[4] and snat[4] != "":
+            attrs["to-source-port"] = snat[4]
         handler.simpleElement("snat", attrs)
         handler.ignorableWhitespace("\n")
 
@@ -733,6 +731,18 @@ def common_writer(obj, handler):
                 element = "source-port"
                 attrs["port"] = rule.element.port
                 attrs["protocol"] = rule.element.protocol
+            elif isinstance(rule.element, rich.Rich_SNAT):
+                element = "snat"
+                if rule.element.protocol != "":
+                    attrs["protocol"] = rule.element.protocol
+                if rule.element.from_port != "":
+                    attrs["from-port"] = rule.element.from_port
+                if rule.element.to_port != "":
+                    attrs["to-port"] = rule.element.to_port
+                if rule.element.to_source != "":
+                    attrs["to-source"] = rule.element.to_source
+                if rule.element.to_source_port != "":
+                    attrs["to-source-port"] = rule.element.to_source_port
             else:
                 raise FirewallError(
                     errors.INVALID_OBJECT,

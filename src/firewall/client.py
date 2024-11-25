@@ -102,6 +102,7 @@ class FirewallClientZoneSettings:
             False,
             DEFAULT_ZONE_PRIORITY,
             DEFAULT_ZONE_PRIORITY,
+            []
         ]
         self.settings_name = [
             "version",
@@ -123,6 +124,7 @@ class FirewallClientZoneSettings:
             "forward",
             "ingress_priority",
             "egress_priority",
+            "snats"
         ]
         self.settings_dbus_type = [
             "s",
@@ -144,6 +146,7 @@ class FirewallClientZoneSettings:
             "b",
             "i",
             "i",
+            "(sssss)"
         ]
         if settings:
             if isinstance(settings, list):
@@ -457,6 +460,10 @@ class FirewallClientZoneSettings:
     @handle_exceptions
     def setForwardPorts(self, ports):
         self.settings[9] = ports
+
+    @handle_exceptions
+    def getSNATS(self):
+        return self.settings[19]
 
     @handle_exceptions
     def addForwardPort(self, port, protocol, to_port, to_addr):
@@ -910,6 +917,58 @@ class FirewallClientConfigZone:
             toaddr = ""
         return self.fw_zone.queryForwardPort(port, protocol, toport, toaddr)
 
+    # snat
+
+    @handle_exceptions
+    def getSNATS(self):
+        return self.fw_zone.getSNATS()
+
+    @handle_exceptions
+    def setSNATS(self, ports):
+        self.fw_zone.setSNATS(ports)
+
+    @handle_exceptions
+    def addSNAT(self, protocol, fromport, toport, tosource, tosourceport):
+        if protocol is None:
+            protocol = ""
+        if fromport is None:
+            fromport = ""
+        if toport is None:
+            toport = ""
+        if tosource is None:
+            tosource = ""
+        if tosourceport is None:
+            tosourceport = ""
+        self.fw_zone.addSNAT(protocol, fromport, toport, tosource, tosourceport)
+
+    @handle_exceptions
+    def removeSNAT(self, protocol, fromport, toport, tosource, tosourceport):
+        if protocol is None:
+            protocol = ""
+        if fromport is None:
+            fromport = ""
+        if toport is None:
+            toport = ""
+        if tosource is None:
+            tosource = ""
+        if tosourceport is None:
+            tosourceport = ""
+        self.fw_zone.removeSNAT(protocol, fromport, toport, tosource, tosourceport)
+
+    @handle_exceptions
+    def querySNAT(self, protocol, fromport, toport, tosource, tosourceport):
+        if protocol is None:
+            protocol = ""
+        if fromport is None:
+            fromport = ""
+        if toport is None:
+            toport = ""
+        if tosource is None:
+            tosource = ""
+        if tosourceport is None:
+            tosourceport = ""
+        return self.fw_zone.querySNAT(protocol, fromport, toport, tosource, tosourceport)
+
     # interface
 
     @handle_exceptions
@@ -984,6 +1043,7 @@ class FirewallClientPolicySettings:
             "description": "",
             "egress_zones": [],
             "forward_ports": [],
+            "snats": [],
             "icmp_blocks": [],
             "ingress_zones": [],
             "masquerade": False,
@@ -1001,6 +1061,7 @@ class FirewallClientPolicySettings:
             "s",
             "s",
             "(ssss)",
+            "(sssss)",
             "s",
             "s",
             "b",
@@ -3656,6 +3717,60 @@ class FirewallClient:
             toaddr = ""
         return dbus_to_python(
             self.fw_zone.removeForwardPort(zone, port, protocol, toport, toaddr)
+        )
+
+    # snats
+
+    @handle_exceptions
+    def addSNAT(self, zone, protocol, fromport, toport, tosource, tosourceport, timeout=0):
+        if protocol is None:
+            protocol = ""
+        if fromport is None:
+            fromport = ""
+        if toport is None:
+            toport = ""
+        if tosource is None:
+            tosource = ""
+        if tosourceport is None:
+            tosourceport = ""
+        return dbus_to_python(
+            self.fw_zone.addSNAT(zone, protocol, fromport, toport, tosource, tosourceport, timeout)
+        )
+
+    @handle_exceptions
+    def getSNATS(self, zone):
+        return dbus_to_python(self.fw_zone.getSNATS(zone))
+
+    @handle_exceptions
+    def querySNAT(self, zone, protocol, fromport, toport, tosource, tosourceport):
+        if protocol is None:
+            protocol = ""
+        if fromport is None:
+            fromport = ""
+        if toport is None:
+            toport = ""
+        if tosource is None:
+            tosource = ""
+        if tosourceport is None:
+            tosourceport = ""
+        return dbus_to_python(
+            self.fw_zone.querySNAT(zone, protocol, fromport, toport, tosource, tosourceport)
+        )
+
+    @handle_exceptions
+    def removeSNAT(self, zone, protocol, fromport, toport, tosource, tosourceport):
+        if protocol is None:
+            protocol = ""
+        if fromport is None:
+            fromport = ""
+        if toport is None:
+            toport = ""
+        if tosource is None:
+            tosource = ""
+        if tosourceport is None:
+            tosourceport = ""
+        return dbus_to_python(
+            self.fw_zone.removeSNAT(zone, protocol, fromport, toport, tosource, tosourceport)
         )
 
     # source ports
