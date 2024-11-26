@@ -462,10 +462,6 @@ class FirewallClientZoneSettings:
         self.settings[9] = ports
 
     @handle_exceptions
-    def getSNATS(self):
-        return self.settings[19]
-
-    @handle_exceptions
     def addForwardPort(self, port, protocol, to_port, to_addr):
         if to_port is None:
             to_port = ""
@@ -499,6 +495,72 @@ class FirewallClientZoneSettings:
         if to_addr is None:
             to_addr = ""
         return (port, protocol, to_port, to_addr) in self.settings[9]
+
+    #snat
+    @handle_exceptions
+    def getSNATS(self):
+        return self.settings[19]
+
+    @handle_exceptions
+    def setSNATS(self, snats):
+        self.settings[19] = snats
+
+    @handle_exceptions
+    def addSNAT(self, protocol, from_port, to_port, to_source, to_source_port):
+        if protocol is None:
+            protocol = ""
+        if from_port is None:
+            from_port = ""
+        if to_port is None:
+            to_port = ""
+        if to_source is None:
+            to_source = ""
+        if to_source_port is None:
+            to_source_port = ""
+        if (protocol, from_port, to_port, to_source, to_source_port) not in self.settings[19]:
+            self.settings[19].append((protocol, from_port, to_port, to_source, to_source_port))
+        else:
+            raise FirewallError(
+                errors.ALREADY_ENABLED,
+                "'%s:%s:%s:%s:%s'" % (protocol, from_port, to_port, to_source, to_source_port),
+            )
+
+    @handle_exceptions
+    def removeSNAT(self, protocol, from_port, to_port, to_source, to_source_port):
+        if protocol is None:
+            protocol = ""
+        if from_port is None:
+            from_port = ""
+        if to_port is None:
+            to_port = ""
+        if to_source is None:
+            to_source = ""
+        if to_source_port is None:
+            to_source_port = ""
+        if (protocol, from_port, to_port, to_source, to_source_port) in self.settings[19]:
+            self.settings[19].remove((protocol, from_port, to_port, to_source, to_source_port))
+        else:
+            raise FirewallError(
+                errors.NOT_ENABLED, "'%s:%s:%s:%s:%s'" % (protocol, from_port, to_port, to_source, to_source_port)
+            )
+
+    @handle_exceptions
+    def querySNAT(self, protocol, from_port, to_port, to_source, to_source_port):
+        if protocol is None:
+            protocol = ""
+        if from_port is None:
+            from_port = ""
+        if to_port is None:
+            to_port = ""
+        if to_source is None:
+            to_source = ""
+        if to_source_port is None:
+            to_source_port = ""
+        return (protocol, from_port, to_port, to_source, to_source_port) in self.settings[19]
+
+    @handle_exceptions
+    def getSNATS(self):
+        return self.settings[19]
 
     @handle_exceptions
     def getInterfaces(self):
@@ -1056,6 +1118,7 @@ class FirewallClientPolicySettings:
             "source_ports": [],
             "target": DEFAULT_POLICY_TARGET,
             "version": "",
+            "snats": [],
         }
         self.settings_dbus_type = [
             "s",
@@ -1074,6 +1137,7 @@ class FirewallClientPolicySettings:
             "(ss)",
             "s",
             "s",
+            "(sssss)"
         ]
         if settings:
             self.setSettingsDict(settings)
@@ -1340,6 +1404,68 @@ class FirewallClientPolicySettings:
         if to_addr is None:
             to_addr = ""
         return (port, protocol, to_port, to_addr) in self.settings["forward_ports"]
+
+    #snat
+    @handle_exceptions
+    def getSNATS(self):
+        return self.settings["snats"]
+
+    @handle_exceptions
+    def setSNATS(self, ports):
+        self.settings["snats"] = ports
+
+    @handle_exceptions
+    def addSNAT(self, protocol, from_port, to_port, to_source, to_source_port):
+        if protocol is None:
+            protocol = ""
+        if from_port is None:
+            from_port = ""
+        if to_port is None:
+            to_port = ""
+        if to_source is None:
+            to_source = ""
+        if to_source_port is None:
+            to_source_port = ""
+        if (protocol, from_port, to_port, to_source, to_source_port) not in self.settings["snats"]:
+            self.settings["snats"].append((protocol, from_port, to_port, to_source, to_source_port))
+        else:
+            raise FirewallError(
+                errors.ALREADY_ENABLED,
+                "'%s:%s:%s:%s:%s'" % (protocol, from_port, to_port, to_source, to_source_port),
+            )
+
+    @handle_exceptions
+    def removeSNAT(self, protocol, from_port, to_port, to_source, to_source_port):
+        if protocol is None:
+            protocol = ""
+        if from_port is None:
+            from_port = ""
+        if to_port is None:
+            to_port = ""
+        if to_source is None:
+            to_source = ""
+        if to_source_port is None:
+            to_source_port = ""
+        if (protocol, from_port, to_port, to_source, to_source_port) in self.settings["snats"]:
+            self.settings["snats"].remove((protocol, from_port, to_port, to_source, to_source_port))
+        else:
+            raise FirewallError(
+                errors.NOT_ENABLED, "'%s:%s:%s:%s:%s'" % (protocol, from_port, to_port, to_source, to_source_port)
+            )
+
+    @handle_exceptions
+    def querySNAT(self, protocol, from_port, to_port, to_source, to_source_port):
+        if protocol is None:
+            protocol = ""
+        if from_port is None:
+            from_port = ""
+        if to_port is None:
+            to_port = ""
+        if to_source is None:
+            to_source = ""
+        if to_source_port is None:
+            to_source_port = ""
+        return (protocol, from_port, to_port, to_source, to_source_port) in self.settings["snats"]
 
     @handle_exceptions
     def getRichRules(self):

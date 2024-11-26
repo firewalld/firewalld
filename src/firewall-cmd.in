@@ -3825,7 +3825,7 @@ elif a.policy:
         )
 
    # snat
-    elif a.list_snat:
+    elif a.list_snats:
         l = settings.getSNATS()
         cmd.print_and_exit(
             "\n".join(

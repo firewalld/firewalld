@@ -336,6 +336,11 @@ Options to Adapt and Query Zones and Policies
                        Add the IPv4 forward port [Z] [O]
   --remove-forward-port=port=<portid>[-<portid>]:proto=<protocol>[:toport=<portid>[-<portid>]][:toaddr=<address>[/<mask>]]
                        Remove the IPv4 forward port [Z] [O]
+  --list-snats         List snat added [P] [Z] [O]
+  --add-snat=proto=<protocol>[:fromport=<portid>][:toport=<portid>][:tosource=<address>[/<mask>]][:tosourceport=<portid>]
+                       Add the snat [P] [Z] [O] [T]
+  --remove-snat=proto=<protocol>[:fromport=<portid>][:toport=<portid>][:tosource=<address>[/<mask>]][:tosourceport=<portid>]
+                       Remove the snat [P] [Z] [O]
 
 Options to Adapt and Query Zones
   --add-icmp-block-inversion
@@ -829,12 +834,22 @@ parser_group_zone_or_policy.add_argument(
 parser_group_zone_or_policy.add_argument(
     "--query-forward-port", metavar="<port>", action="append"
 )
+parser_group_zone_or_policy.add_argument(
+    "--add-snat", metavar="<tosource>", action="append"
+)
+parser_group_zone_or_policy.add_argument(
+    "--remove-snat", metavar="<tosource>", action="append"
+)
+parser_group_zone_or_policy.add_argument(
+    "--query-snat", metavar="<tosource>", action="append"
+)
 parser_group_zone_or_policy.add_argument("--list-rich-rules", action="store_true")
 parser_group_zone_or_policy.add_argument("--list-services", action="store_true")
 parser_group_zone_or_policy.add_argument("--list-ports", action="store_true")
 parser_group_zone_or_policy.add_argument("--list-protocols", action="store_true")
 parser_group_zone_or_policy.add_argument("--list-icmp-blocks", action="store_true")
 parser_group_zone_or_policy.add_argument("--list-forward-ports", action="store_true")
+parser_group_zone_or_policy.add_argument("--list-snats", action="store_true")
 parser_group_zone_or_policy.add_argument("--list-source-ports", action="store_true")
 parser_group_zone_or_policy.add_argument("--list-all", action="store_true")
 parser_group_zone_or_policy.add_argument("--get-target", action="store_true")
@@ -1150,6 +1165,9 @@ options_zone_and_policy_adapt_query = (
     or a.add_forward_port
     or a.remove_forward_port
     or a.query_forward_port
+    or a.add_snat
+    or a.remove_snat
+    or a.query_snat
     or a.add_rich_rule
     or a.remove_rich_rule
     or a.query_rich_rule
@@ -1162,6 +1180,7 @@ options_zone_and_policy_adapt_query = (
     or a.list_source_ports
     or a.list_icmp_blocks
     or a.list_forward_ports
+    or a.list_snats
     or a.list_rich_rules
     or a.list_all
     or a.get_target
@@ -1349,6 +1368,7 @@ options_list_get = (
     or a.list_protocols
     or a.list_icmp_blocks
     or a.list_forward_ports
+    or a.list_snats
     or a.list_rich_rules
     or a.list_interfaces
     or a.list_sources
@@ -1588,6 +1608,19 @@ try:
                     fw_settings.addForwardPort(port, protocol, toport, toaddr)
                 else:
                     cmd.print_msg("ALREADY_ENABLED: %s" % fp)
+        if a.snat:
+            for sn in a.snat:
+                (protocol, fromport, toport, tosource, tosourceport) = cmd.parse_snat(
+                    sn, compat=True
+                )
+                cmd.print_msg(
+                    "Adding snat %s:%s:%s:%s:%s to default zone."
+                    % (protocol, fromport, toport, tosource, tosourceport)
+                )
+                if not fw_settings.querySNAT(protocol, fromport, toport, tosource, tosourceport):
+                    fw_settings.addSNAT(protocol, fromport, toport, tosource, tosourceport)
+                else:
+                    cmd.print_msg("ALREADY_ENABLED: %s" % sn)
         if a.block_icmp:
             for ib in a.block_icmp:
                 cmd.print_msg("Adding icmpblock '%s' to default zone." % ib)
@@ -2901,6 +2934,48 @@ try:
                 "port=%s:proto=%s:toport=%s:toaddr=%s",
             )
 
+        # snat
+        elif a.list_snats:
+            l = fw_settings.getSNATS()
+            cmd.print_and_exit(
+                "\n".join(
+                    [
+                        "%s%s%s%s%s"
+                        % (
+                            "proto:%s:" % protocol if protocol else "",
+                            "fromport:%s:" % fromport if fromport else "",
+                            "toport:%s:" % toport if toport else "",
+                            "tosource:%s:" % tosource if tosource else "",
+                            "tosourceport:%s:" % tosourceport if tosourceport else "",
+                        )
+                        for (protocol, fromport, toport, tosource, tosourceport) in l
+                    ]
+                )
+            )
+        elif a.add_snat:
+            cmd.add_sequence(
+                a.add_snat,
+                fw_settings.addSNAT,
+                fw_settings.querySNAT,
+                cmd.parse_snat,
+                "protocol=%s:fromport=%s:toport%s:tosource%s:tosourceport%s",
+            )
+        elif a.remove_snat:
+            cmd.remove_sequence(
+                a.remove_snat,
+                fw_settings.removeSNAT,
+                fw_settings.querySNAT,
+                cmd.parse_snat,
+                "protocol=%s:fromport=%s:toport%s:tosource%s:tosourceport%s",
+            )
+        elif a.query_snat:
+            cmd.query_sequence(
+                a.query_snat,
+                fw_settings.querySNAT,
+                cmd.parse_snat,
+                "protocol=%s:fromport=%s:toport%s:tosource%s:tosourceport%s",
+            )
+
         # block icmp
         elif a.list_icmp_blocks:
             l = fw_settings.getIcmpBlocks()
@@ -3287,6 +3362,48 @@ try:
                 fw_settings.queryForwardPort,
                 cmd.parse_forward_port,
                 "port=%s:proto=%s:toport=%s:toaddr=%s",
+            )
+
+        # snat
+        elif a.list_snats:
+            l = fw_zone.getSNATS()
+            cmd.print_and_exit(
+                "\n".join(
+                    [
+                        "%s%s%s%s%s"
+                        % (
+                            "proto:%s:" % protocol if protocol else "",
+                            "fromport:%s:" % fromport if fromport else "",
+                            "toport:%s:" % toport if toport else "",
+                            "tosource:%s:" % tosource if tosource else "",
+                            "tosourceport:%s:" % tosourceport if tosourceport else "",
+                        )
+                        for (protocol, fromport, toport, tosource, tosourceport) in l
+                    ]
+                )
+            )
+        elif a.add_snat:
+            cmd.add_sequence(
+                a.add_snat,
+                fw_settings.addSNAT,
+                fw_settings.querySNAT,
+                cmd.parse_snat,
+                "proto=%s:fromport=%s:toport=%s:tosource=%s:tosourceport=%s",
+            )
+        elif a.remove_snat:
+            cmd.remove_sequence(
+                a.remove_snat,
+                fw_settings.removeSNAT,
+                fw_settings.querySNAT,
+                cmd.parse_snat,
+                "proto=%s:fromport=%s:toport=%s:tosource=%s:tosourceport=%s",
+            )
+        elif a.query_snat:
+            cmd.query_sequence(
+                a.query_snat,
+                fw_settings.querySNAT,
+                cmd.parse_snat,
+                "proto=%s:fromport=%s:toport=%s:tosource=%s:tosourceport=%s",
             )
 
         # block icmp
