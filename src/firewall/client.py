@@ -1431,7 +1431,7 @@ class FirewallClientPolicySettings:
         else:
             raise FirewallError(
                 errors.ALREADY_ENABLED,
-                "'%s:%s:%s:%s:%s'" % (protocol, from_port, to_port, to_source, to_source_port),
+                "'%s:%s:%s:%s:%s'" % (protocol, from_port, to_port, to_source, to_source_port)
             )
 
     @handle_exceptions
