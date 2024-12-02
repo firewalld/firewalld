@@ -3848,7 +3848,7 @@ class FirewallClient:
     # snats
 
     @handle_exceptions
-    def addSNAT(self, zone, protocol, fromport, toport, tosource, tosourceport, timeout=0):
+    def addSNAT(self, zone, protocol, fromport, toport, tosource, tosourceport, timeout = 0):
         if protocol is None:
             protocol = ""
         if fromport is None:
