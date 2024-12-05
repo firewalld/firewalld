@@ -30,6 +30,7 @@ gsettings_SCHEMAS = $(gsettings_in_file:.xml.in=.xml)
 
 xmlschemadir = $(prefixlibdir)/xmlschema
 dist_xmlschema_DATA = \
+	xmlschema/helper.xsd \
 	xmlschema/icmptype.xsd \
 	xmlschema/ipset.xsd \
 	xmlschema/service.xsd \
