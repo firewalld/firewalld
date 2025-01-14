@@ -627,6 +627,7 @@ class FirewallDConfig(DbusServiceObject):
             else:
                 return dbus.String("no")
         elif prop == "IPv6_rpfilter2":
+            value = self.config.get_firewalld_conf().get("IPv6_rpfilter")
             if value is None:
                 value = config.FALLBACK_IPV6_RPFILTER
             return dbus.String(value)
@@ -766,28 +767,32 @@ class FirewallDConfig(DbusServiceObject):
                             errors.INVALID_VALUE,
                             "'%s' for %s" % (new_value, property_name),
                         )
+                    config_name = property_name
                 elif property_name == "LogDenied":
                     if new_value not in config.LOG_DENIED_VALUES:
                         raise FirewallError(
                             errors.INVALID_VALUE,
                             "'%s' for %s" % (new_value, property_name),
                         )
+                    config_name = property_name
                 elif property_name == "FirewallBackend":
                     if new_value not in config.FIREWALL_BACKEND_VALUES:
                         raise FirewallError(
                             errors.INVALID_VALUE,
                             "'%s' for %s" % (new_value, property_name),
                         )
+                    config_name = property_name
                 elif property_name == "IPv6_rpfilter2":
                     if new_value not in config.IPV6_RPFILTER_VALUES:
                         raise FirewallError(
                             errors.INVALID_VALUE,
                             "'%s' for %s" % (new_value, property_name),
                         )
+                    config_name = "IPv6_rpfilter"
                 else:
                     raise errors.BugError(f'Unhandled property_name "{property_name}"')
 
-                self.config.get_firewalld_conf().set(property_name, new_value)
+                self.config.get_firewalld_conf().set(config_name, new_value)
                 self.config.get_firewalld_conf().write()
                 self.PropertiesChanged(interface_name, {property_name: new_value}, [])
         elif interface_name in [
