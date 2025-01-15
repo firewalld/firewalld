@@ -123,17 +123,46 @@ NFT_LIST_RULES([inet], [filter_PREROUTING], 0, [dnl
 FWD_END_TEST([-e "/^ERROR: INVALID_VALUE:/d"])
 
 FWD_START_TEST([rpfilter - config values])
-AT_KEYWORDS(rpfilter)
+AT_KEYWORDS(rpfilter RHEL-72937)
 CHECK_NFTABLES_FIB()
 
-dnl Verify other/deprecated configuration values are accepted.
+dnl Verify all configuration values are accepted.
 dnl
-m4_foreach([VALUE], [[no], [yes], [false], [true]], [
+m4_foreach([VALUE], [[no], [yes], [false], [true], [strict], [loose]], [
     AT_CHECK([sed -i 's/^IPv6_rpfilter.*/IPv6_rpfilter=VALUE/' ./firewalld.conf])
     FWD_RELOAD()
+    m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
+        DBUS_GET([config], [config], [string:"IPv6_rpfilter2"], 0, [dnl
+            variant string "VALUE"
+        ])
+    ])
 ])
+
 dnl And a bogus one.
 AT_CHECK([sed -i 's/^IPv6_rpfilter.*/IPv6_rpfilter=bogus/' ./firewalld.conf])
 FWD_RELOAD()
 
 FWD_END_TEST([-e "/^WARNING: IPv6_rpfilter 'bogus' is not valid/d"])
+
+FWD_START_TEST([rpfilter - config values, -forward])
+AT_KEYWORDS(rpfilter RHEL-72937)
+CHECK_NFTABLES_FIB()
+CHECK_NFTABLES_FIB_IN_FORWARD()
+
+dnl These are not valid for iptables.
+dnl
+m4_foreach([VALUE], [[strict-forward], [loose-forward]], [
+    AT_CHECK([sed -i 's/^IPv6_rpfilter.*/IPv6_rpfilter=VALUE/' ./firewalld.conf])
+    m4_if(iptables, FIREWALL_BACKEND, [
+        FWD_RELOAD(114, [ignore], [ignore])
+    ], [
+        FWD_RELOAD()
+        m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
+            DBUS_GET([config], [config], [string:"IPv6_rpfilter2"], 0, [dnl
+                variant string "VALUE"
+            ])
+        ])
+    ])
+])
+
+FWD_END_TEST([-e "/^ERROR: INVALID_VALUE:.*is incompatible with FirewallBackend=iptables."])
