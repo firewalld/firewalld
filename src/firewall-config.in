@@ -3988,6 +3988,14 @@ class FirewallConfig:
                 self.richRuleDialogActionCheck.set_sensitive(False)
                 self.richRuleDialogActionBox.set_sensitive(False)
 
+            if (
+                self.richRuleDialogElementChooser.is_sensitive()
+                and not self.richRuleDialogElementChooser.get_text()
+            ):
+                self.richRuleDialogOkButton.set_sensitive(False)
+                self.richRuleDialogOkButton.set_tooltip_text(_("invalid element"))
+                return
+
         rule = self.richRuleDialog_getRule()
         try:
             rule.check()
