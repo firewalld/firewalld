@@ -3549,7 +3549,8 @@ class FirewallConfig:
                 selection.select_iter(iter)
             iter = self.serviceDialogServiceStore.iter_next(iter)
 
-        self.serviceDialogOkButton.set_sensitive(False)
+        if old_service:
+            self.serviceDialogOkButton.set_sensitive(False)
         self.serviceDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.serviceDialog.set_transient_for(self.mainWindow)
         self.serviceDialog.show_all()
