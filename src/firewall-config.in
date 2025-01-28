@@ -3699,25 +3699,22 @@ class FirewallConfig:
             _("debug"): "debug",
         }  # 7, debug-level messages
 
+        rule_params = {}
+
         # family
         combolabel = self.richRuleDialogFamilyCombobox.get_active_text()
-        if combolabel == _("ipv4"):
-            rule = rich.Rich_Rule("ipv4")  # ipv4 rule
-        elif combolabel == _("ipv6"):
-            rule = rich.Rich_Rule("ipv6")  # ipv6 rule
-        else:
-            rule = rich.Rich_Rule()  # ipv4+ipv6 rule
+        if combolabel in [_("ipv4"), _("ipv6")]:
+            rule_params["family"] = combolabel
 
         # priority
         priority = self.richRuleDialogPriorityEntry.get_value_as_int()
-        if priority != 0:
-            rule.priority = priority
+        rule_params["priority"] = priority
 
         # element
         if self.richRuleDialogElementCheck.get_active():
             combolabel = self.richRuleDialogElementCombobox.get_active_text()
             if combolabel == _("service"):
-                rule.element = rich.Rich_Service(
+                rule_params["element"] = rich.Rich_Service(
                     self.richRuleDialogElementChooser.get_text()
                 )
             elif combolabel == _("port"):
@@ -3729,17 +3726,16 @@ class FirewallConfig:
                         (port, proto) = text.split("/")
                 except:
                     return None
-                rule.element = rich.Rich_Port(port, proto)
             elif combolabel == _("protocol"):
-                rule.element = rich.Rich_Protocol(
+                rule_params["element"] = rich.Rich_Protocol(
                     self.richRuleDialogElementChooser.get_text()
                 )
             elif combolabel == _("icmp-block"):
-                rule.element = rich.Rich_IcmpBlock(
+                rule_params["element"] = rich.Rich_IcmpBlock(
                     self.richRuleDialogElementChooser.get_text()
                 )
             elif combolabel == _("icmp-type"):
-                rule.element = rich.Rich_IcmpType(
+                rule_params["element"] = rich.Rich_IcmpType(
                     self.richRuleDialogElementChooser.get_text()
                 )
             elif combolabel == _("forward-port"):
@@ -3748,9 +3744,11 @@ class FirewallConfig:
                     (port, proto, to_port, to_addr) = self.split_fwp_string(text)
                 except:
                     return None
-                rule.element = rich.Rich_ForwardPort(port, proto, to_port, to_addr)
+                rule_params["element"] = rich.Rich_ForwardPort(
+                    port, proto, to_port, to_addr
+                )
             elif combolabel == _("masquerade"):
-                rule.element = rich.Rich_Masquerade()
+                rule_params["element"] = rich.Rich_Masquerade()
             elif combolabel == _("source-port"):
                 text = self.richRuleDialogElementChooser.get_text()
                 port = ""
@@ -3760,7 +3758,7 @@ class FirewallConfig:
                         (port, proto) = text.split("/")
                 except:
                     return None
-                rule.element = rich.Rich_SourcePort(port, proto)
+                rule_params["element"] = rich.Rich_SourcePort(port, proto)
 
         # action
         if (
@@ -3777,19 +3775,19 @@ class FirewallConfig:
                 limit = rich.Rich_Limit(value)
             combolabel = self.richRuleDialogActionCombobox.get_active_text()
             if combolabel == _("accept"):
-                rule.action = rich.Rich_Accept(limit)
+                rule_params["action"] = rich.Rich_Accept(limit)
             elif combolabel == _("reject"):
                 _type = None
                 if self.richRuleDialogActionRejectTypeCheck.get_active():
                     _type = (
                         self.richRuleDialogActionRejectTypeCombobox.get_active_text()
                     )
-                rule.action = rich.Rich_Reject(_type, limit)
+                rule_params["action"] = rich.Rich_Reject(_type, limit)
             elif combolabel == _("drop"):
-                rule.action = rich.Rich_Drop(limit)
+                rule_params["action"] = rich.Rich_Drop(limit)
             elif combolabel == _("mark"):
                 _set = self.richRuleDialogActionMarkChooser.get_text()
-                rule.action = rich.Rich_Mark(_set, limit)
+                rule_params["action"] = rich.Rich_Mark(_set, limit)
 
         # source
         if self.richRuleDialogSourceChooser.is_sensitive() and (
@@ -3804,7 +3802,7 @@ class FirewallConfig:
                 mac = self.richRuleDialogSourceChooser.get_text()
             if txt == "ipset":
                 ipset = self.richRuleDialogSourceChooser.get_text()
-            rule.source = rich.Rich_Source(
+            rule_params["source"] = rich.Rich_Source(
                 addr, mac, ipset, self.richRuleDialogSourceInvertCheck.get_active()
             )
 
@@ -3813,7 +3811,7 @@ class FirewallConfig:
             self.richRuleDialogDestinationChooser.get_text() != ""
             or self.richRuleDialogDestinationInvertCheck.get_active()
         ):
-            rule.destination = rich.Rich_Destination(
+            rule_params["destination"] = rich.Rich_Destination(
                 self.richRuleDialogDestinationChooser.get_text(),
                 None,
                 invert=self.richRuleDialogDestinationInvertCheck.get_active(),
@@ -3834,7 +3832,7 @@ class FirewallConfig:
                 limit = rich.Rich_Limit(value)
 
             level = self.richRuleDialogLogLevelCombobox.get_active_text()
-            rule.log = rich.Rich_Log(
+            rule_params["log"] = rich.Rich_Log(
                 self.richRuleDialogLogPrefixEntry.get_text(), loglevel[level], limit
             )
 
@@ -3851,9 +3849,9 @@ class FirewallConfig:
                     self.richRuleDialogAuditLimitDurationCombobox.get_active_text()
                 ]
                 limit = rich.Rich_Limit(value)
-            rule.audit = rich.Rich_Audit(limit)
+            rule_params["audit"] = rich.Rich_Audit(limit)
 
-        return rule
+        return rich.Rich_Rule(**rule_params)
 
     def on_richRuleDialogFamilyCombobox_changed(self, *args):
         combolabel = self.richRuleDialogFamilyCombobox.get_active_text()
