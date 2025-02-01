@@ -2645,11 +2645,36 @@ class nftables:
                 }
             },
         ]
+
         if log_denied != "off":
-            expr_fragments.append({"log": {"prefix": "rpfilter_DROP: "}})
+            if log_denied == "all":
+                expr_fragments.append({"log": {"prefix": "rpfilter_DROP: "}})
+            else:
+                rules.append(
+                    {
+                        "insert": {
+                            "rule": {
+                                "family": "inet",
+                                "table": TABLE_NAME,
+                                "chain": rpfilter_chain,
+                                "expr": (
+                                    expr_fragments
+                                    + [
+                                        self._pkttype_match_fragment(
+                                            self._fw.get_log_denied()
+                                        ),
+                                        {"log": {"prefix": "rpfilter_DROP: "}},
+                                    ]
+                                ),
+                            }
+                        }
+                    }
+                )
+
         expr_fragments.append({"drop": None})
 
-        rules.append(
+        rules.insert(
+            0,
             {
                 "insert": {
                     "rule": {
@@ -2659,8 +2684,9 @@ class nftables:
                         "expr": expr_fragments,
                     }
                 }
-            }
+            },
         )
+
         # RHBZ#1058505, RHBZ#1575431 (bug in kernel 4.16-4.17)
         if self._fw._ipv6_rpfilter not in ("loose-forward", "strict-forward"):
             # this rule doesn't make sense for forwarded packets
