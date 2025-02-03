@@ -1157,6 +1157,29 @@ class Policy(IO_Object):
                                         self.name, zone
                                     ),
                                 )
+                elif obj.element and isinstance(obj.element, rich.Rich_SNAT):
+                    if "ingress_zones" in all_config:
+                        for zone in all_config["ingress_zones"]:
+                            if zone == "ANY":
+                                continue
+                            if zone not in all_io_objects["zones"]:
+                                raise FirewallError(
+                                    errors.INVALID_ZONE,
+                                    "Policy '{}': Zone '{}' does not exist.".format(
+                                        self.name, zone
+                                    ),
+                                )
+                            if (
+                                all_io_objects["conf"].get("FirewallBackend")
+                                != "nftables"
+                                and all_io_objects["zones"][zone].interfaces
+                            ):
+                                raise FirewallError(
+                                    errors.INVALID_ZONE,
+                                    "Policy '{}': 'snat' cannot be used because ingress zone '{}' has assigned interfaces. ".format(
+                                        self.name, zone
+                                    ),
+                                )
         elif item == "forward_ports":
             for fwd_port in config:
                 if "egress_zones" in all_config:
@@ -1185,6 +1208,28 @@ class Policy(IO_Object):
                                         self.name, zone
                                     ),
                                 )
+        elif item == "snats" and config:
+            if "ingress_zones" in all_config:
+                for zone in all_config["ingress_zones"]:
+                    if zone == "ANY":
+                        continue
+                    if zone not in all_io_objects["zones"]:
+                        raise FirewallError(
+                            errors.INVALID_ZONE,
+                            "Policy '{}': Zone '{}' does not exist.".format(
+                                self.name, zone
+                            ),
+                        )
+                    if (
+                        all_io_objects["conf"].get("FirewallBackend") != "nftables"
+                        and all_io_objects["zones"][zone].interfaces
+                    ):
+                        raise FirewallError(
+                            errors.INVALID_ZONE,
+                            "Policy '{}': 'snat' cannot be used because ingress zone '{}' has assigned interfaces. ".format(
+                                self.name, zone
+                            ),
+                        )
 
     def check_name(self, name):
         super(Policy, self).check_name(name)
