@@ -22,7 +22,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-11 13:41-0400\n"
+"POT-Creation-Date: 2024-11-04 15:37-0500\n"
 "PO-Revision-Date: 2017-11-26 02:37+0000\n"
 "Last-Translator: A S Alam <aalam@fedoraproject.org>\n"
 "Language-Team: Panjabi (Punjabi) (http://www.transifex.com/projects/p/"
@@ -37,6 +37,40 @@ msgstr ""
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:450
 msgid "Firewall Applet"
 msgstr "ਫਾਇਰਵਾਲ ਐਪਲੈੱਟ"
+
+#: ../config/firewall-config.appdata.xml.in.h:1
+msgid ""
+"Firewall Configuration provides a graphical tool for administering firewall."
+msgstr ""
+
+#: ../config/firewall-config.appdata.xml.in.h:2
+msgid "Allows to inspect and set:"
+msgstr ""
+
+#: ../config/firewall-config.appdata.xml.in.h:3
+#, fuzzy
+msgid "Runtime and permanent firewall configuration"
+msgstr "ਫਾਇਰਵਾਲ ਸੰਰਚਨਾ"
+
+#: ../config/firewall-config.appdata.xml.in.h:4
+msgid "Predefined zones (levels of trust for network connections)"
+msgstr ""
+
+#: ../config/firewall-config.appdata.xml.in.h:5
+msgid "Predefined services (port/protocol, netfilter helper module)"
+msgstr ""
+
+#: ../config/firewall-config.appdata.xml.in.h:6
+msgid "Port forwarding, masquerading, ICMP blocking"
+msgstr ""
+
+#: ../config/firewall-config.appdata.xml.in.h:7
+msgid "Complex firewall rules a.k.a. Rich Language"
+msgstr ""
+
+#: ../config/firewall-config.appdata.xml.in.h:8
+msgid "Iptables rules a.k.a. Direct Interface"
+msgstr ""
 
 #: ../config/firewall-config.desktop.in.h:1
 msgid "Firewall"
@@ -1495,6 +1529,18 @@ msgid ""
 msgstr "ਤਰਜੀਹ ਵਾਲੀ ਇੱਕ ਸਾਰਣੀ ਵਿੱਚ ਲੜੀ ਨਾਲ ਆਰਗੂਮੈਂਟਾਂ args ਨਾਲ ਇੱਕ ਨਿਯਮ ਜੋੜੋ"
 
 #: ../src/firewall-config.glade.h:176
+msgid "Add Rule"
+msgstr "ਨਿਯਮ ਜੋੜੋ"
+
+#: ../src/firewall-config.glade.h:177
+msgid "Edit Rule"
+msgstr "ਨਿਯਮ ਸੋਧੋ"
+
+#: ../src/firewall-config.glade.h:178
+msgid "Remove Rule"
+msgstr "ਨਿਯਮ ਹਟਾਉ"
+
+#: ../src/firewall-config.glade.h:179
 msgid ""
 "The priority is used to order rules. Priority 0 means add rule on top of the "
 "chain, with a higher priority the rule will be added further down. Rules "
@@ -1507,18 +1553,6 @@ msgstr ""
 "ਜੋੜੋ, ਵੱਡੀ ਤਰਜੀਹ ਨਾਲ ਨਿਯਮ ਹੋਰ ਥੱਲੇ ਜੋੜੇ ਜਾਣਗੇ। ਇੱਕੋ ਤਰਜੀਹ ਵਾਲੇ ਨਿਯਮ ਇੱਕੋ ਪੱਧਰ ਤੇ ਹਨ ਅਤੇ ਇਹਨਾਂ "
 "ਨਿਯਮਾਂ ਦੀ ਤਰਤੀਬ ਪੱਕੀ ਨਹੀਂ ਹੈ ਤੇ ਬਦਲ ਸਕਦੀ ਹੈ। ਜੇ ਤੁਸੀਂ ਇਹ ਪੱਕਾ ਕਰਨਾ ਚਾਹੁੰਦੇ ਹੋ ਕਿ ਨਿਯਮ ਇੱਕ "
 "ਦੂਜੇ ਤੋਂ ਬਾਅਦ ਜੋੜੇ ਜਾਣਗੇ, ਪਹਿਲੇ ਲਈ ਘੱਟ ਅਤੇ ਬਾਅਦ ਵਾਲੇ ਲਈ ਵੱਡੀ ਤਰਜੀਹ ਵਰਤੋ।"
-
-#: ../src/firewall-config.glade.h:177
-msgid "Add Rule"
-msgstr "ਨਿਯਮ ਜੋੜੋ"
-
-#: ../src/firewall-config.glade.h:178
-msgid "Edit Rule"
-msgstr "ਨਿਯਮ ਸੋਧੋ"
-
-#: ../src/firewall-config.glade.h:179
-msgid "Remove Rule"
-msgstr "ਨਿਯਮ ਹਟਾਉ"
 
 #: ../src/firewall-config.glade.h:180
 msgid "Rules"
@@ -1534,20 +1568,20 @@ msgstr ""
 "iptables, ip6tables ਅਤੇ ebtables ਚੋਣਾਂ ਵਰਤੀਆਂ ਜਾ ਸਕਦੀਆਂ।"
 
 #: ../src/firewall-config.glade.h:182
-msgid "Please be careful with passthrough rules to not damage the firewall."
-msgstr "ਕਿਰਪਾ ਕਰ ਕੇ ਪਾਸਥਰੂਅ ਨਿਯਮਾਂ ਨਾਲ ਸੁਚੇਤ ਰਹੋ ਕਿਤੇ ਫਾਇਰਵਾਲ ਨੂੰ ਨੁਕਸਾਨ ਨਾ ਪਹੁੰਚੇ।"
-
-#: ../src/firewall-config.glade.h:183
 msgid "Add Passthrough"
 msgstr "ਪਾਸਥਰੂਅ ਜੋੜੋ"
 
-#: ../src/firewall-config.glade.h:184
+#: ../src/firewall-config.glade.h:183
 msgid "Edit Passthrough"
 msgstr "ਪਾਸਥਰੂਅ ਸੋਧੋ"
 
-#: ../src/firewall-config.glade.h:185
+#: ../src/firewall-config.glade.h:184
 msgid "Remove Passthrough"
 msgstr "ਪਾਸਥਰੂਅ ਹਟਾਉ"
+
+#: ../src/firewall-config.glade.h:185
+msgid "Please be careful with passthrough rules to not damage the firewall."
+msgstr "ਕਿਰਪਾ ਕਰ ਕੇ ਪਾਸਥਰੂਅ ਨਿਯਮਾਂ ਨਾਲ ਸੁਚੇਤ ਰਹੋ ਕਿਤੇ ਫਾਇਰਵਾਲ ਨੂੰ ਨੁਕਸਾਨ ਨਾ ਪਹੁੰਚੇ।"
 
 #: ../src/firewall-config.glade.h:186
 msgid "Passthrough"

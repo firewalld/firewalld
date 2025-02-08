@@ -7,7 +7,7 @@ jobs:
       apt-dependencies: |
         autoconf automake ebtables intltool ipset iptables libdbus-1-dev \
         libgirepository1.0-dev libglib2.0-dev libxml2-utils network-manager \
-        pkg-config python3-cap-ng
+        pkg-config python3-cap-ng libcairo2-dev
       pip-dependencies: |
         dbus-python PyGObject
 
@@ -18,14 +18,14 @@ jobs:
       no-iptables=${{ matrix.no-iptables }}
       no-ip6tables=${{ matrix.no-ip6tables }}
 
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
 
     strategy:
       fail-fast: false
       matrix:
         python-version: [3.8]
-        libnftnl-version: [libnftnl-1.2.3]
-        nftables-version: [v1.0.5]
+        libnftnl-version: [libnftnl-1.2.5]
+        nftables-version: [v1.0.7]
         keyword: [offline, nftables, iptables]
         no-iptables: [true, false]
         no-ip6tables: [true, false]

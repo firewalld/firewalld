@@ -78,6 +78,7 @@ CONFIG_PROPERTIES = {
     "NftablesFlowtable": ConfigPropertiesTuple("readwrite", False, False),
     "NftablesCounters": ConfigPropertiesTuple("readwrite", False, False),
     "NftablesTableOwner": ConfigPropertiesTuple("readwrite", False, False),
+    "StrictForwardPorts": ConfigPropertiesTuple("readwrite", False, False),
 }
 
 
@@ -626,6 +627,7 @@ class FirewallDConfig(DbusServiceObject):
             else:
                 return dbus.String("no")
         elif prop == "IPv6_rpfilter2":
+            value = self.config.get_firewalld_conf().get("IPv6_rpfilter")
             if value is None:
                 value = config.FALLBACK_IPV6_RPFILTER
             return dbus.String(value)
@@ -668,6 +670,10 @@ class FirewallDConfig(DbusServiceObject):
         elif prop == "NftablesTableOwner":
             if value is None:
                 value = "yes" if config.FALLBACK_NFTABLES_TABLE_OWNER else "no"
+            return dbus.String(value)
+        elif prop == "StrictForwardPorts":
+            if value is None:
+                value = "yes" if config.FALLBACK_STRICT_FORWARD_PORTS else "no"
             return dbus.String(value)
         else:
             raise dbus.exceptions.DBusException(
@@ -754,34 +760,39 @@ class FirewallDConfig(DbusServiceObject):
                     "RFC3964_IPv4",
                     "NftablesCounters",
                     "NftablesTableOwner",
+                    "StrictForwardPorts",
                 ]:
                     if new_value.lower() not in ["yes", "no", "true", "false"]:
                         raise FirewallError(
                             errors.INVALID_VALUE,
                             "'%s' for %s" % (new_value, property_name),
                         )
+                    config_name = property_name
                 elif property_name == "LogDenied":
                     if new_value not in config.LOG_DENIED_VALUES:
                         raise FirewallError(
                             errors.INVALID_VALUE,
                             "'%s' for %s" % (new_value, property_name),
                         )
+                    config_name = property_name
                 elif property_name == "FirewallBackend":
                     if new_value not in config.FIREWALL_BACKEND_VALUES:
                         raise FirewallError(
                             errors.INVALID_VALUE,
                             "'%s' for %s" % (new_value, property_name),
                         )
+                    config_name = property_name
                 elif property_name == "IPv6_rpfilter2":
                     if new_value not in config.IPV6_RPFILTER_VALUES:
                         raise FirewallError(
                             errors.INVALID_VALUE,
                             "'%s' for %s" % (new_value, property_name),
                         )
+                    config_name = "IPv6_rpfilter"
                 else:
                     raise errors.BugError(f'Unhandled property_name "{property_name}"')
 
-                self.config.get_firewalld_conf().set(property_name, new_value)
+                self.config.get_firewalld_conf().set(config_name, new_value)
                 self.config.get_firewalld_conf().write()
                 self.PropertiesChanged(interface_name, {property_name: new_value}, [])
         elif interface_name in [

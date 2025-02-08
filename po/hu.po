@@ -25,7 +25,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-11 13:41-0400\n"
+"POT-Creation-Date: 2024-11-04 15:37-0500\n"
 "PO-Revision-Date: 2020-07-21 14:28+0000\n"
 "Last-Translator: Balázs Meskó <meskobalazs@mailbox.org>\n"
 "Language-Team: Hungarian <https://translate.fedoraproject.org/projects/"
@@ -40,6 +40,42 @@ msgstr ""
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:450
 msgid "Firewall Applet"
 msgstr "Tűzfal kisalkalmazás"
+
+#: ../config/firewall-config.appdata.xml.in.h:1
+msgid ""
+"Firewall Configuration provides a graphical tool for administering firewall."
+msgstr ""
+
+#: ../config/firewall-config.appdata.xml.in.h:2
+#, fuzzy
+msgid "Allows to inspect and set:"
+msgstr "Válasszon egy IP-készletet:"
+
+#: ../config/firewall-config.appdata.xml.in.h:3
+#, fuzzy
+msgid "Runtime and permanent firewall configuration"
+msgstr "Tűzfal beállítások"
+
+#: ../config/firewall-config.appdata.xml.in.h:4
+#, fuzzy
+msgid "Predefined zones (levels of trust for network connections)"
+msgstr "A(z) „%s” hálózati kapcsolat által használt alapértelmezett zóna"
+
+#: ../config/firewall-config.appdata.xml.in.h:5
+msgid "Predefined services (port/protocol, netfilter helper module)"
+msgstr ""
+
+#: ../config/firewall-config.appdata.xml.in.h:6
+msgid "Port forwarding, masquerading, ICMP blocking"
+msgstr ""
+
+#: ../config/firewall-config.appdata.xml.in.h:7
+msgid "Complex firewall rules a.k.a. Rich Language"
+msgstr ""
+
+#: ../config/firewall-config.appdata.xml.in.h:8
+msgid "Iptables rules a.k.a. Direct Interface"
+msgstr ""
 
 #: ../config/firewall-config.desktop.in.h:1
 msgid "Firewall"
@@ -1574,6 +1610,18 @@ msgstr ""
 "megadott prioritással."
 
 #: ../src/firewall-config.glade.h:176
+msgid "Add Rule"
+msgstr "Szabály hozzáadása"
+
+#: ../src/firewall-config.glade.h:177
+msgid "Edit Rule"
+msgstr "Szabály szerkesztése"
+
+#: ../src/firewall-config.glade.h:178
+msgid "Remove Rule"
+msgstr "Szabály eltávolítása"
+
+#: ../src/firewall-config.glade.h:179
 msgid ""
 "The priority is used to order rules. Priority 0 means add rule on top of the "
 "chain, with a higher priority the rule will be added further down. Rules "
@@ -1590,18 +1638,6 @@ msgstr ""
 "hozzáadva, akkor használjon alacsony prioritást az elsőnél és magasabb "
 "prioritást az ezt követőknél."
 
-#: ../src/firewall-config.glade.h:177
-msgid "Add Rule"
-msgstr "Szabály hozzáadása"
-
-#: ../src/firewall-config.glade.h:178
-msgid "Edit Rule"
-msgstr "Szabály szerkesztése"
-
-#: ../src/firewall-config.glade.h:179
-msgid "Remove Rule"
-msgstr "Szabály eltávolítása"
-
 #: ../src/firewall-config.glade.h:180
 msgid "Rules"
 msgstr "Szabályok"
@@ -1617,20 +1653,20 @@ msgstr ""
 "használható."
 
 #: ../src/firewall-config.glade.h:182
-msgid "Please be careful with passthrough rules to not damage the firewall."
-msgstr "Legyen óvatos az áteresztő szabályokkal, hogy ne károsítsa a tűzfalat."
-
-#: ../src/firewall-config.glade.h:183
 msgid "Add Passthrough"
 msgstr "Áteresztés hozzáadása"
 
-#: ../src/firewall-config.glade.h:184
+#: ../src/firewall-config.glade.h:183
 msgid "Edit Passthrough"
 msgstr "Áteresztés szerkesztése"
 
-#: ../src/firewall-config.glade.h:185
+#: ../src/firewall-config.glade.h:184
 msgid "Remove Passthrough"
 msgstr "Áteresztés eltávolítása"
+
+#: ../src/firewall-config.glade.h:185
+msgid "Please be careful with passthrough rules to not damage the firewall."
+msgstr "Legyen óvatos az áteresztő szabályokkal, hogy ne károsítsa a tűzfalat."
 
 #: ../src/firewall-config.glade.h:186
 msgid "Passthrough"

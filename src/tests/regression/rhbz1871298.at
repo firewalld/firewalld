@@ -1,5 +1,5 @@
 FWD_START_TEST([rich rule parsing bottleneck])
-AT_KEYWORDS(rich offline rhbz1871298)
+AT_KEYWORDS(rich offline rhbz1871298 scale)
 
 AT_SKIP_IF([! NS_CMD([which timeout >/dev/null 2>&1])])
 

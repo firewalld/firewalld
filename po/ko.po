@@ -20,7 +20,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-11 13:41-0400\n"
+"POT-Creation-Date: 2024-11-04 15:37-0500\n"
 "PO-Revision-Date: 2022-06-06 06:18+0000\n"
 "Last-Translator: 김인수 <simmon@nplob.com>\n"
 "Language-Team: Korean <https://translate.fedoraproject.org/projects/"
@@ -35,6 +35,42 @@ msgstr ""
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:450
 msgid "Firewall Applet"
 msgstr "방화벽 애플릿"
+
+#: ../config/firewall-config.appdata.xml.in.h:1
+msgid ""
+"Firewall Configuration provides a graphical tool for administering firewall."
+msgstr ""
+
+#: ../config/firewall-config.appdata.xml.in.h:2
+#, fuzzy
+msgid "Allows to inspect and set:"
+msgstr "IPSet을 선택하십시오:"
+
+#: ../config/firewall-config.appdata.xml.in.h:3
+#, fuzzy
+msgid "Runtime and permanent firewall configuration"
+msgstr "방화벽 설정"
+
+#: ../config/firewall-config.appdata.xml.in.h:4
+#, fuzzy
+msgid "Predefined zones (levels of trust for network connections)"
+msgstr "네트워크 연결 '%s'에 의해 사용되는 기본 영역"
+
+#: ../config/firewall-config.appdata.xml.in.h:5
+msgid "Predefined services (port/protocol, netfilter helper module)"
+msgstr ""
+
+#: ../config/firewall-config.appdata.xml.in.h:6
+msgid "Port forwarding, masquerading, ICMP blocking"
+msgstr ""
+
+#: ../config/firewall-config.appdata.xml.in.h:7
+msgid "Complex firewall rules a.k.a. Rich Language"
+msgstr ""
+
+#: ../config/firewall-config.appdata.xml.in.h:8
+msgid "Iptables rules a.k.a. Direct Interface"
+msgstr ""
 
 #: ../config/firewall-config.desktop.in.h:1
 msgid "Firewall"
@@ -1534,6 +1570,18 @@ msgstr ""
 "규칙을 args 인수와 함께 테이블에 있는 체인에 우선 순위를 붙여 추가합니다."
 
 #: ../src/firewall-config.glade.h:176
+msgid "Add Rule"
+msgstr "규칙 추가"
+
+#: ../src/firewall-config.glade.h:177
+msgid "Edit Rule"
+msgstr "규칙 편집"
+
+#: ../src/firewall-config.glade.h:178
+msgid "Remove Rule"
+msgstr "규칙 삭제"
+
+#: ../src/firewall-config.glade.h:179
 msgid ""
 "The priority is used to order rules. Priority 0 means add rule on top of the "
 "chain, with a higher priority the rule will be added further down. Rules "
@@ -1547,18 +1595,6 @@ msgstr ""
 "한 우선 순위를 갖는 규칙은 동일한 수준이 되며 이러한 규칙의 순서는 고정되지 "
 "않고 변경될 수 있습니다. 규칙을 다른 규칙 뒤에 추가하려면 먼저 낮은 우선 순위"
 "를 사용하고 그 다음으로 더 높은 우선 순위를 사용합니다."
-
-#: ../src/firewall-config.glade.h:177
-msgid "Add Rule"
-msgstr "규칙 추가"
-
-#: ../src/firewall-config.glade.h:178
-msgid "Edit Rule"
-msgstr "규칙 편집"
-
-#: ../src/firewall-config.glade.h:179
-msgid "Remove Rule"
-msgstr "규칙 삭제"
 
 #: ../src/firewall-config.glade.h:180
 msgid "Rules"
@@ -1574,20 +1610,20 @@ msgstr ""
 "iptables, ip6tables, ebtables의 모든 옵션을 사용할 수 있습니다."
 
 #: ../src/firewall-config.glade.h:182
-msgid "Please be careful with passthrough rules to not damage the firewall."
-msgstr "통과 규칙이 방화벽에 손상을 입히지 않도록 주의하십시오."
-
-#: ../src/firewall-config.glade.h:183
 msgid "Add Passthrough"
 msgstr "통과 규칙 추가"
 
-#: ../src/firewall-config.glade.h:184
+#: ../src/firewall-config.glade.h:183
 msgid "Edit Passthrough"
 msgstr "통과 규칙 편집"
 
-#: ../src/firewall-config.glade.h:185
+#: ../src/firewall-config.glade.h:184
 msgid "Remove Passthrough"
 msgstr "통과 규칙 제거"
+
+#: ../src/firewall-config.glade.h:185
+msgid "Please be careful with passthrough rules to not damage the firewall."
+msgstr "통과 규칙이 방화벽에 손상을 입히지 않도록 주의하십시오."
 
 #: ../src/firewall-config.glade.h:186
 msgid "Passthrough"

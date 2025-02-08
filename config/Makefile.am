@@ -30,6 +30,7 @@ gsettings_SCHEMAS = $(gsettings_in_file:.xml.in=.xml)
 
 xmlschemadir = $(prefixlibdir)/xmlschema
 dist_xmlschema_DATA = \
+	xmlschema/helper.xsd \
 	xmlschema/icmptype.xsd \
 	xmlschema/ipset.xsd \
 	xmlschema/service.xsd \
@@ -48,7 +49,7 @@ BUILT_SOURCES = \
 
 @INTLTOOL_DESKTOP_RULE@
 @INTLTOOL_POLICY_RULE@
-@INTLTOOL_XML_NOMERGE_RULE@
+@INTLTOOL_XML_RULE@
 @GSETTINGS_RULES@
 
 all: $(desktop_DATA) $(appdata_DATA) $(applet_desktop_DATA) $(polkit1_action_DATA) $(gsettings_SCHEMAS)
@@ -195,6 +196,7 @@ CONFIG_FILES = \
 	services/ganglia-client.xml \
 	services/ganglia-master.xml \
 	services/git.xml \
+	services/gitea.xml \
 	services/gpsd.xml \
 	services/grafana.xml \
 	services/gre.xml \
@@ -290,6 +292,7 @@ CONFIG_FILES = \
 	services/prometheus-node-exporter.xml \
 	services/prometheus.xml \
 	services/proxy-dhcp.xml \
+	services/proxy-http.xml \
 	services/ps2link.xml \
 	services/ps3netsrv.xml \
 	services/ptp.xml \
@@ -326,6 +329,7 @@ CONFIG_FILES = \
 	services/snmp.xml \
 	services/snmptls-trap.xml \
 	services/snmptls.xml \
+	services/socks.xml \
 	services/spideroak-lansync.xml \
 	services/spotify-sync.xml \
 	services/squid.xml \
@@ -347,6 +351,7 @@ CONFIG_FILES = \
 	services/syncthing-relay.xml \
 	services/synergy.xml \
 	services/syscomlan.xml \
+	services/syslog-ng.xml \
 	services/syslog-tls.xml \
 	services/syslog.xml \
 	services/telnet.xml \

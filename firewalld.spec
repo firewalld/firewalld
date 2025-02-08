@@ -52,6 +52,7 @@ are required by other packages that add firewalld configuration files.
 
 %package -n firewalld-test
 Summary: Firewalld testsuite
+Requires: firewalld-filesystem = %{version}-%{release}
 
 %description -n firewalld-test
 This package provides the firewalld testsuite.
@@ -59,6 +60,7 @@ This package provides the firewalld testsuite.
 %package -n firewall-applet
 Summary: Firewall panel applet
 Requires: %{name} = %{version}-%{release}
+Requires: firewalld-filesystem = %{version}-%{release}
 Requires: firewall-config = %{version}-%{release}
 Requires: hicolor-icon-theme
 %if (0%{?fedora} >= 39 || 0%{?rhel} >= 10)
@@ -78,6 +80,7 @@ the firewall settings.
 %package -n firewall-config
 Summary: Firewall configuration application
 Requires: %{name} = %{version}-%{release}
+Requires: firewalld-filesystem = %{version}-%{release}
 Requires: hicolor-icon-theme
 Requires: gtk3
 Requires: python3-gobject
@@ -217,6 +220,7 @@ fi
 %dir %{_prefix}/lib/firewalld/services
 %dir %{_prefix}/lib/firewalld/zones
 %dir %{_prefix}/lib/firewalld/xmlschema
+%dir %{_datadir}/firewalld
 %{_rpmconfigdir}/macros.d/macros.firewalld
 
 %files -n firewalld-test

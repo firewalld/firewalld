@@ -2584,6 +2584,20 @@
               </para>
             </listitem>
           </varlistentry>
+          <varlistentry id="FirewallD1.config.Properties.StrictForwardPorts">
+            <term>StrictForwardPorts - s - (rw)</term>
+            <listitem>
+              <para>
+                If set to yes, the generated destination NAT (DNAT) rules will
+                NOT accept traffic that was DNAT'd by other entities, e.g.
+                docker. Firewalld will be strict and not allow published
+                container ports until they're explicitly allowed via firewalld.
+                If set to no, then docker (and podman) integrates seamlessly
+                with firewalld. Published container ports are implicitly
+                allowed.
+              </para>
+            </listitem>
+          </varlistentry>
           <varlistentry id="FirewallD1.config.Properties.NftablesFlowtable">
             <term>NftablesFlowtable - s - (rw)</term>
             <listitem>

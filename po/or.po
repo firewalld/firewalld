@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-11 13:41-0400\n"
+"POT-Creation-Date: 2024-11-04 15:37-0500\n"
 "PO-Revision-Date: 2016-01-04 12:33+0000\n"
 "Last-Translator: Copied by Zanata <copied-by-zanata@zanata.org>\n"
 "Language-Team: Oriya (http://www.transifex.com/projects/p/firewalld/language/"
@@ -27,6 +27,40 @@ msgstr ""
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:450
 msgid "Firewall Applet"
 msgstr "ଅଗ୍ନିକବଚ ଆପଲେଟ"
+
+#: ../config/firewall-config.appdata.xml.in.h:1
+msgid ""
+"Firewall Configuration provides a graphical tool for administering firewall."
+msgstr ""
+
+#: ../config/firewall-config.appdata.xml.in.h:2
+msgid "Allows to inspect and set:"
+msgstr ""
+
+#: ../config/firewall-config.appdata.xml.in.h:3
+#, fuzzy
+msgid "Runtime and permanent firewall configuration"
+msgstr "ଅଗ୍ନିକବଚର ବିନ୍ଯାସ"
+
+#: ../config/firewall-config.appdata.xml.in.h:4
+msgid "Predefined zones (levels of trust for network connections)"
+msgstr ""
+
+#: ../config/firewall-config.appdata.xml.in.h:5
+msgid "Predefined services (port/protocol, netfilter helper module)"
+msgstr ""
+
+#: ../config/firewall-config.appdata.xml.in.h:6
+msgid "Port forwarding, masquerading, ICMP blocking"
+msgstr ""
+
+#: ../config/firewall-config.appdata.xml.in.h:7
+msgid "Complex firewall rules a.k.a. Rich Language"
+msgstr ""
+
+#: ../config/firewall-config.appdata.xml.in.h:8
+msgid "Iptables rules a.k.a. Direct Interface"
+msgstr ""
 
 #: ../config/firewall-config.desktop.in.h:1
 msgid "Firewall"
@@ -1493,6 +1527,18 @@ msgid ""
 msgstr "ସ୍ୱତନ୍ତ୍ରଚର args ସହିତ ଏକ ଶୃଙ୍ଖଳରେ ପ୍ରାଥମିକତା ଦେଇ ଗୋଟିଏ ନିୟମ ଯୋଗ କରନ୍ତୁ।"
 
 #: ../src/firewall-config.glade.h:176
+msgid "Add Rule"
+msgstr "ନିୟମ ୟୋଗକରନ୍ତୁ"
+
+#: ../src/firewall-config.glade.h:177
+msgid "Edit Rule"
+msgstr "ନିୟମ ସମ୍ପାଦନ କରନ୍ତୁ"
+
+#: ../src/firewall-config.glade.h:178
+msgid "Remove Rule"
+msgstr "ନିୟମକୁ ବାହାର କରନ୍ତୁ"
+
+#: ../src/firewall-config.glade.h:179
 msgid ""
 "The priority is used to order rules. Priority 0 means add rule on top of the "
 "chain, with a higher priority the rule will be added further down. Rules "
@@ -1506,18 +1552,6 @@ msgstr ""
 "ପ୍ରାଥମିକତା ବିଶିଷ୍ଟ ନିୟମାବଳୀ ସମାନ ସ୍ତରରେ  ଥାଏ ଏବଂ ସେହି ନିୟମାବଳୀର କ୍ରମ ସ୍ଥାୟୀନଥାଏ ଏବଂ "
 "ପରିବର୍ତ୍ତନ ହୋଇପାରେ। ଯଦି ଆପଣ ନିଶ୍ଚିତ କରିବାକୁ ଚାହୁଁଛନ୍ତି ଯେ ଅନ୍ୟ ଗୋଟିଏ ଉପରେ ନିୟମାବଳୀ ଯୋଗ ହେବ "
 "ତେବେ, ପ୍ରଥମେ କମ ପ୍ରାଥମିକତାକୁ ବ୍ୟବହାର କରନ୍ତୁ ଏବଂ ତାପରେ ଉଚ୍ଚ ପ୍ରାଥମିକତାକୁ ରଖନ୍ତୁ।"
-
-#: ../src/firewall-config.glade.h:177
-msgid "Add Rule"
-msgstr "ନିୟମ ୟୋଗକରନ୍ତୁ"
-
-#: ../src/firewall-config.glade.h:178
-msgid "Edit Rule"
-msgstr "ନିୟମ ସମ୍ପାଦନ କରନ୍ତୁ"
-
-#: ../src/firewall-config.glade.h:179
-msgid "Remove Rule"
-msgstr "ନିୟମକୁ ବାହାର କରନ୍ତୁ"
 
 #: ../src/firewall-config.glade.h:180
 msgid "Rules"
@@ -1533,20 +1567,20 @@ msgstr ""
 "ରଖାଯାଇନଥାଏ। ସମସ୍ତ iptables, ip6tables ଏବଂ etables ବିକଳ୍ପକୁ ବ୍ୟବହାର କରାଯାଇପାରିବ।"
 
 #: ../src/firewall-config.glade.h:182
-msgid "Please be careful with passthrough rules to not damage the firewall."
-msgstr "ଅଗ୍ରଗତି ନିୟମାବଳୀ ସହିତ ଦୟାକରି ସତର୍କ ରୁହନ୍ତୁ ଯେପରି ତାହା ଫାୟାରୱାଲକୁ କ୍ଷତି ନକରେ।"
-
-#: ../src/firewall-config.glade.h:183
 msgid "Add Passthrough"
 msgstr "ଅଗ୍ରଗତିକୁ ଯୋଗ କରନ୍ତୁ"
 
-#: ../src/firewall-config.glade.h:184
+#: ../src/firewall-config.glade.h:183
 msgid "Edit Passthrough"
 msgstr "ଅଗ୍ରଗତିକୁ ସମ୍ପାଦନ କରନ୍ତୁ"
 
-#: ../src/firewall-config.glade.h:185
+#: ../src/firewall-config.glade.h:184
 msgid "Remove Passthrough"
 msgstr "ଅଗ୍ରଗତିକୁ ବାହାର କରନ୍ତୁ"
+
+#: ../src/firewall-config.glade.h:185
+msgid "Please be careful with passthrough rules to not damage the firewall."
+msgstr "ଅଗ୍ରଗତି ନିୟମାବଳୀ ସହିତ ଦୟାକରି ସତର୍କ ରୁହନ୍ତୁ ଯେପରି ତାହା ଫାୟାରୱାଲକୁ କ୍ଷତି ନକରେ।"
 
 #: ../src/firewall-config.glade.h:186
 msgid "Passthrough"

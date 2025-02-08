@@ -31,6 +31,7 @@ valid_keys = [
     "NftablesFlowtable",
     "NftablesCounters",
     "NftablesTableOwner",
+    "StrictForwardPorts",
     # Deprecated keys:
     "Lockdown",
 ]
@@ -96,6 +97,10 @@ class firewalld_conf:
         self.set(
             "NftablesTableOwner",
             "yes" if config.FALLBACK_NFTABLES_TABLE_OWNER else "no",
+        )
+        self.set(
+            "StrictForwardPorts",
+            "yes" if config.FALLBACK_STRICT_FORWARD_PORTS else "no",
         )
 
     def sanity_check(self):
