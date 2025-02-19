@@ -1609,19 +1609,19 @@ msgstr ""
 "Afegiu una regla amb arguments a un encadenament en una taula amb una "
 "prioritat."
 
-#: ../src/firewall-config.glade.h:176
+#: ../src/firewall-config.glade.h:176 ../src/firewall-config.glade.h:177
 msgid "Add Rule"
 msgstr "Afegeix una regla"
 
-#: ../src/firewall-config.glade.h:177
+#: ../src/firewall-config.glade.h:177 ../src/firewall-config.glade.h:178
 msgid "Edit Rule"
 msgstr "Edita la regla"
 
-#: ../src/firewall-config.glade.h:178
+#: ../src/firewall-config.glade.h:178 ../src/firewall-config.glade.h:179
 msgid "Remove Rule"
 msgstr "Suprimeix la regla"
 
-#: ../src/firewall-config.glade.h:179
+#: ../src/firewall-config.glade.h:179 ../src/firewall-config.glade.h:176
 msgid ""
 "The priority is used to order rules. Priority 0 means add rule on top of the "
 "chain, with a higher priority the rule will be added further down. Rules "
@@ -1651,19 +1651,19 @@ msgstr ""
 "col·loquen en encadenaments especials. Es poden fer ús de totes les opcions "
 "d'iptables, d'ip6tables i d'ebtables."
 
-#: ../src/firewall-config.glade.h:182
+#: ../src/firewall-config.glade.h:182 ../src/firewall-config.glade.h:183
 msgid "Add Passthrough"
 msgstr "Afegeix un traspàs"
 
-#: ../src/firewall-config.glade.h:183
+#: ../src/firewall-config.glade.h:183 ../src/firewall-config.glade.h:184
 msgid "Edit Passthrough"
 msgstr "Edita el traspàs"
 
-#: ../src/firewall-config.glade.h:184
+#: ../src/firewall-config.glade.h:184 ../src/firewall-config.glade.h:185
 msgid "Remove Passthrough"
 msgstr "Suprimeix el traspàs"
 
-#: ../src/firewall-config.glade.h:185
+#: ../src/firewall-config.glade.h:185 ../src/firewall-config.glade.h:182
 msgid "Please be careful with passthrough rules to not damage the firewall."
 msgstr "Aneu amb compte amb les regles de traspàs per no danyar el tallafoc."
 
@@ -1826,7 +1826,6 @@ msgid "Please enter a rich rule."
 msgstr "Introduïu una regla d'enriquiment."
 
 #: ../src/firewall-config.glade.h:226
-#, fuzzy
 msgid "For host or network allow or denylisting deactivate the element."
 msgstr ""
 "Per a l'amfitrió o la xarxa en la llista blanca o en la llista negra "
