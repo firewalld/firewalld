@@ -12,7 +12,6 @@ EnvironmentFile=-/etc/sysconfig/firewalld
 ExecStart=@sbindir@/firewalld --nofork --nopid $FIREWALLD_ARGS
 ExecStartPost=@bindir@/firewall-cmd --state
 ExecReload=/bin/kill -HUP $MAINPID
-# supress to log debug and error output also to /var/log/messages
 StandardOutput=null
 StandardError=null
 Type=dbus
