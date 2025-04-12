@@ -372,6 +372,7 @@ CONFIG_FILES = \
 	services/wbem-http.xml \
 	services/wbem-https.xml \
 	services/wireguard.xml \
+	services/wivrn.xml \
 	services/ws-discovery-client.xml \
 	services/ws-discovery-host.xml \
 	services/ws-discovery-tcp.xml \

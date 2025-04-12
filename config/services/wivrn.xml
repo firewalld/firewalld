@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>WiVRn wirelessly connects a standalone VR headset to a Linux computer</short>
+  <description>
+    Play PCVR games on the headset while processing is done on the computer. It supports a wide range of headsets. It targets OpenXR applications, and OpenVR via OpenComposite.
+  </description>
+  <port port="9757" protocol="udp"/>
+  <port port="9757" protocol="tcp"/>
+</service>
