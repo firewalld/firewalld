@@ -284,9 +284,6 @@ class Firewall:
                 self.ipset_supported_types = []
             # ipset is not usable
             self.ipset_enabled = False
-        else:
-            # ipset is usable, get all supported types
-            self.ipset_supported_types = self.ipset_backend.set_supported_types()
 
         self.ip4tables_backend.fill_exists()
         if not self.ip4tables_backend.restore_command_exists:
