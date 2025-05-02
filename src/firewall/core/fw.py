@@ -272,19 +272,6 @@ class Firewall:
             raise FirewallError(errors.UNKNOWN_ERROR, "No IPv4 and IPv6 firewall.")
 
     def _start_probe_backends(self):
-        try:
-            self.ipset_backend.set_list()
-        except ValueError:
-            if self.nftables_enabled:
-                log.info1(
-                    "ipset not usable, disabling ipset usage in firewall. Other set backends (nftables) remain usable."
-                )
-            else:
-                log.warning("ipset not usable, disabling ipset usage in firewall.")
-                self.ipset_supported_types = []
-            # ipset is not usable
-            self.ipset_enabled = False
-
         self.ip4tables_backend.fill_exists()
         if not self.ip4tables_backend.restore_command_exists:
             if self.ip4tables_backend.command_exists:
