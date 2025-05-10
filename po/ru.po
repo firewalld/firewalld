@@ -20,13 +20,14 @@
 # Igor Gorbounov <igor.gorbounov@gmail.com>, 2018. #zanata
 # Sergey A. <sw@atrus.ru>, 2022.
 # "Sergey A." <sw@atrus.ru>, 2023.
+# "Sergey A." <Ser82-png@yandex.ru>, 2024.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-11-04 15:37-0500\n"
-"PO-Revision-Date: 2023-09-12 15:35+0000\n"
-"Last-Translator: \"Sergey A.\" <sw@atrus.ru>\n"
+"PO-Revision-Date: 2024-12-30 18:33+0000\n"
+"Last-Translator: \"Sergey A.\" <Ser82-png@yandex.ru>\n"
 "Language-Team: Russian <https://translate.fedoraproject.org/projects/"
 "firewalld/master/ru/>\n"
 "Language: ru\n"
@@ -35,7 +36,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 5.0.1\n"
+"X-Generator: Weblate 5.9.1\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:450
 msgid "Firewall Applet"
@@ -45,37 +46,38 @@ msgstr "Апплет межсетевого экрана"
 msgid ""
 "Firewall Configuration provides a graphical tool for administering firewall."
 msgstr ""
+"«Настройка межсетевого экрана» предоставляет графический инструментарий для "
+"администрирования межсетевого экрана."
 
 #: ../config/firewall-config.appdata.xml.in.h:2
-#, fuzzy
 msgid "Allows to inspect and set:"
-msgstr "Выберите ipset:"
+msgstr "Позволяет проверять и устанавливать:"
 
 #: ../config/firewall-config.appdata.xml.in.h:3
-#, fuzzy
 msgid "Runtime and permanent firewall configuration"
-msgstr "Настройка межсетевого экрана"
+msgstr "Динамические и постоянные конфигурации межсетевого экран"
 
 #: ../config/firewall-config.appdata.xml.in.h:4
-#, fuzzy
 msgid "Predefined zones (levels of trust for network connections)"
-msgstr "Зона по умолчанию, используемая сетевым подключением «%s»"
+msgstr "Предварительно заданные зоны (уровни доверия для сетевых подключений)"
 
 #: ../config/firewall-config.appdata.xml.in.h:5
 msgid "Predefined services (port/protocol, netfilter helper module)"
 msgstr ""
+"Предварительно заданные службы (порт/протокол, вспомогательный модуль "
+"netfilter)"
 
 #: ../config/firewall-config.appdata.xml.in.h:6
 msgid "Port forwarding, masquerading, ICMP blocking"
-msgstr ""
+msgstr "Переадресацию портов, маскировку, блокировку ICMP"
 
 #: ../config/firewall-config.appdata.xml.in.h:7
 msgid "Complex firewall rules a.k.a. Rich Language"
-msgstr ""
+msgstr "Сложные правила межсетевого экрана, известные как «Rich Language»"
 
 #: ../config/firewall-config.appdata.xml.in.h:8
 msgid "Iptables rules a.k.a. Direct Interface"
-msgstr ""
+msgstr "Правила Iptables, известные как «Direct Interface»"
 
 #: ../config/firewall-config.desktop.in.h:1
 msgid "Firewall"
