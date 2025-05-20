@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>Kubernetes MetalLB</short>
+  <description>MetalLB is a load-balancer implementation for bare-metal Kubernetes clusters, providing external IPs for services.</description>
+  <port protocol="tcp" port="7472"/>
+  <port protocol="udp" port="7472"/>
+  <port protocol="tcp" port="7946"/>
+  <port protocol="udp" port="7946"/>
+</service>
