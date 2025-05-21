@@ -65,6 +65,7 @@ class Zone(IO_Object):
         "forward": True,  # b
         "ingress_priority": 0,  # i
         "egress_priority": 0,  # i
+        "snats": [("", "", "", "", "")],  # a(sssss)
     }
     ADDITIONAL_ALNUM_CHARS = ["_", "-", "/"]
     PARSER_REQUIRED_ELEMENT_ATTRS = {
@@ -92,6 +93,7 @@ class Zone(IO_Object):
         "mark": ["set"],
         "limit": ["value"],
         "icmp-block-inversion": None,
+        "snat": ["to-source"],
     }
     PARSER_OPTIONAL_ELEMENT_ATTRS = {
         "zone": [
@@ -112,6 +114,7 @@ class Zone(IO_Object):
         "reject": ["type"],
         "limit": ["burst"],
         "tcp-mss-clamp": ["value"],
+        "snat": ["protocol", "from-port", "to-port", "to-source-port"],
     }
 
     @staticmethod
@@ -144,6 +147,7 @@ class Zone(IO_Object):
         self.applied = False
         self.ingress_priority = self.priority_default
         self.egress_priority = self.priority_default
+        self.snats = []
 
     def cleanup(self):
         self.version = ""
@@ -167,6 +171,7 @@ class Zone(IO_Object):
         self.applied = False
         self.ingress_priority = self.priority_default
         self.egress_priority = self.priority_default
+        del self.snats[:]
 
     def __getattr__(self, name):
         if name == "rules_str":
@@ -422,6 +427,9 @@ class zone_ContentHandler(IO_Object_ContentHandler):
 
         elif name == "icmp-block-inversion":
             self.item.icmp_block_inversion = True
+
+        elif name == "snat":
+            return
 
         else:
             raise FirewallError(errors.INVALID_ZONE, f"Unknown XML element '{name}'.")

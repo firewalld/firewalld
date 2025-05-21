@@ -2123,6 +2123,134 @@ class FirewallD(DbusServiceObject):
 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+    # SNAT
+
+    @dbus_handle_exceptions
+    def disable_snat(
+        self, zone, protocol, fromport, toport, tosource, tosourceport
+    ):
+        del self._timeouts[zone][(protocol, fromport, toport, tosource, tosourceport)]
+        self.fw.zone.remove_snat(zone, protocol, fromport, toport, tosource, tosourceport)
+        self.SNATRemoved(zone, protocol, fromport, toport, tosource, tosourceport)
+
+    @dbus_polkit_require_auth(config.dbus.PK_ACTION_CONFIG)
+    @dbus_service_method(
+        config.dbus.DBUS_INTERFACE_ZONE, in_signature="ssssssi", out_signature="s"
+    )
+    @dbus_handle_exceptions
+    def addSNAT(
+        self, zone, protocol, fromport, toport, tosource, tosourceport, timeout, sender=None
+    ):
+        # add snat if not enabled already for zone
+        zone = dbus_to_python(zone, str)
+        protocol = dbus_to_python(protocol, str)
+        fromport = dbus_to_python(fromport, str)
+        toport = dbus_to_python(toport, str)
+        tosource = dbus_to_python(tosource, str)
+        timeout = dbus_to_python(timeout, int)
+        log.debug1(
+            "zone.addSNAT('%s', '%s', '%s', '%s', '%s', '%s')"
+            % (zone, protocol, fromport, toport, tosource, tosourceport)
+        )
+        self.accessCheck(sender)
+        _zone = self.fw.zone.add_snat(
+            zone, protocol, fromport, toport, tosource, tosourceport, timeout, sender
+        )
+
+        if timeout > 0:
+            tag = GLib.timeout_add_seconds(
+                timeout,
+                self.disable_snat,
+                _zone,
+                protocol,
+                fromport,
+                toport,
+                tosource,
+                tosourceport,
+            )
+            self.addTimeout(_zone, (protocol, fromport, toport, tosource, tosourceport), tag)
+
+        self.SNATAdded(_zone, protocol, fromport, toport, tosource, tosourceport, timeout)
+        return _zone
+
+    @dbus_polkit_require_auth(config.dbus.PK_ACTION_CONFIG)
+    @dbus_service_method(
+        config.dbus.DBUS_INTERFACE_ZONE, in_signature="ssssss", out_signature="s"
+    )
+    @dbus_handle_exceptions
+    def removeSNAT(
+        self, zone, protocol, fromport, toport, tosource, tosourceport, sender=None
+    ):
+        # remove snat from zone
+        zone = dbus_to_python(zone, str)
+        protocol = dbus_to_python(protocol, str)
+        fromport = dbus_to_python(fromport, str)
+        toport = dbus_to_python(toport, str)
+        tosource = dbus_to_python(tosource, str)
+        log.debug1(
+            "zone.removeSNAT('%s', '%s', '%s', '%s', '%s', '%s')"
+            % (zone, protocol, fromport, toport, tosource, tosourceport)
+        )
+        self.accessCheck(sender)
+        _zone = self.fw.zone.remove_snat(zone, protocol, fromport, toport, tosource, tosourceport)
+
+        self.removeTimeout(_zone, (protocol, fromport, toport, tosource, tosourceport))
+        self.SNATRemoved(_zone, protocol, fromport, toport, tosource, tosourceport)
+        return _zone
+
+    @dbus_polkit_require_auth(config.dbus.PK_ACTION_CONFIG_INFO)
+    @dbus_service_method(
+        config.dbus.DBUS_INTERFACE_ZONE, in_signature="ssssss", out_signature="b"
+    )
+    @dbus_handle_exceptions
+    def querySNAT(
+        self, zone, protocol, fromport, toport, tosource, tosourceport, sender=None
+    ):
+        # returns true if a forward port is enabled for zone
+        zone = dbus_to_python(zone, str)
+        protocol = dbus_to_python(protocol, str)
+        fromport = dbus_to_python(fromport, str)
+        toport = dbus_to_python(toport, str)
+        tosource = dbus_to_python(tosource, str)
+        log.debug1(
+            "zone.querySNAT('%s', '%s', '%s', '%s', '%s', '%s')"
+            % (zone, protocol, fromport, toport, tosource, tosourceport)
+        )
+        return self.fw.zone.query_snat(zone, protocol, fromport, toport, tosource, tosourceport)
+
+    @dbus_polkit_require_auth(config.dbus.PK_ACTION_CONFIG_INFO)
+    @dbus_service_method(
+        config.dbus.DBUS_INTERFACE_ZONE, in_signature="s", out_signature="aas"
+    )
+    @dbus_handle_exceptions
+    def getSNATS(self, zone, sender=None):
+        # returns the list of snats for zone
+        zone = dbus_to_python(zone, str)
+        log.debug1("zone.listSNATS('%s')" % (zone))
+        return self.fw.zone.list_snats(zone)
+
+    @dbus_service_signal(config.dbus.DBUS_INTERFACE_ZONE, signature="ssssssi")
+    @dbus_handle_exceptions
+    def SNATAdded(
+        self, zone, protocol, fromport, toport, tosource, tosourceport, timeout=0
+    ):
+        log.debug1(
+            "zone.SNATAdded('%s', '%s', '%s', '%s', '%s', '%s', %d)"
+            % (zone, protocol, fromport, toport, tosource, tosourceport, timeout)
+        )
+
+    @dbus_service_signal(config.dbus.DBUS_INTERFACE_ZONE, signature="ssssss")
+    @dbus_handle_exceptions
+    def SNATRemoved(
+        self, zone, protocol, fromport, toport, tosource, tosourceport
+    ):
+        log.debug1(
+            "zone.SNATRemoved('%s', '%s', '%s', '%s', '%s', '%s')"
+            % (zone, protocol, fromport, toport, tosource, tosourceport)
+        )
+
+    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
     # ICMP BLOCK
 
     @dbus_handle_exceptions
