@@ -496,6 +496,22 @@ def common_check_config(obj, config, item, all_config, all_io_objects):
                             obj_type, obj.name, obj_rich.element.name
                         ),
                     )
+            elif obj_rich.source and obj_rich.source.ipset:
+                if obj_rich.source.ipset not in all_io_objects["ipsets"]:
+                    raise FirewallError(
+                        errors.INVALID_IPSET,
+                        "{} '{}': '{}' not among existing ipsets".format(
+                            obj_type, obj.name, obj_rich.source.ipset
+                        ),
+                    )
+            elif obj_rich.destination and obj_rich.destination.ipset:
+                if obj_rich.destination.ipset not in all_io_objects["ipsets"]:
+                    raise FirewallError(
+                        errors.INVALID_IPSET,
+                        "{} '{}': '{}' not among existing ipsets".format(
+                            obj_type, obj.name, obj_rich.destination.ipset
+                        ),
+                    )
 
 
 def _handler_add_rich_limit(handler, limit):
