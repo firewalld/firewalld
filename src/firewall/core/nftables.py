@@ -2646,6 +2646,9 @@ class nftables:
             },
         ]
         if log_denied != "off":
+            expr_fragments.append(
+                self._pkttype_match_fragment(self._fw.get_log_denied())
+            )
             expr_fragments.append({"log": {"prefix": "rpfilter_DROP: "}})
         expr_fragments.append({"drop": None})
 
