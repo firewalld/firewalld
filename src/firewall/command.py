@@ -436,6 +436,62 @@ class FirewallCommand:
 
         return (port, protocol, toport, toaddr)
 
+    def parse_snat(self, value, compat=False):
+        protocol = None
+        fromport = None
+        toport = None
+        tosource = None
+        tosourceport = None
+        i = 0
+        while "=" in value[i:]:
+            opt = value[i:].split("=", 1)[0]
+            i += len(opt) + 1
+            if "=" in value[i:]:
+                val = value[i:].split(":", 1)[0]
+            else:
+                val = value[i:]
+            i += len(val) + 1
+
+            if opt == "proto":
+                protocol = val
+            elif opt == "fromport":
+                fromport = val
+            elif opt == "toport":
+                toport = val
+            elif opt == "tosource":
+                tosource = val
+            elif opt == "tosourceport":
+                tosourceport = val
+            else:
+                raise FirewallError(
+                    errors.INVALID_FORWARD, "invalid snat arg '%s'" % (opt)
+                )
+
+        if not protocol:
+            if fromport or toport or tosourceport:
+                raise FirewallError(errors.INVALID_FORWARD, "missing protocol")
+        else:
+            if protocol not in ["tcp", "udp", "sctp", "dccp"]:
+                raise FirewallError(
+                    errors.INVALID_PROTOCOL,
+                    "'%s' not in {'tcp'|'udp'|'sctp'|'dccp'}" % protocol,
+                )
+
+        if not (tosource):
+            raise FirewallError(errors.INVALID_FORWARD, "missing tosource")
+        if fromport and not check_port(fromport):
+            raise FirewallError(errors.INVALID_PORT, fromport)
+        if toport and not check_port(toport):
+            raise FirewallError(errors.INVALID_PORT, toport)
+        if tosourceport and not check_port(tosourceport):
+            raise FirewallError(errors.INVALID_PORT, tosourceport)
+
+        if tosource and not check_single_address("ipv4", tosource):
+            if compat or not check_single_address("ipv6", tosource):
+                raise FirewallError(errors.INVALID_ADDR, tosource)
+
+        return (protocol, fromport, toport, tosource, tosourceport)
+
     def parse_ipset_option(self, value):
         args = value.split("=")
         if len(args) == 1:
@@ -514,6 +570,7 @@ class FirewallCommand:
         protocols = settings.getProtocols()
         masquerade = settings.getMasquerade()
         forward_ports = settings.getForwardPorts()
+        snats = settings.getSNATS()
         source_ports = settings.getSourcePorts()
         icmp_blocks = settings.getIcmpBlocks()
         rules = settings.getRichRules()
@@ -595,6 +652,23 @@ class FirewallCommand:
         self.print_msg(
             "  source-ports: "
             + " ".join(["%s/%s" % (port[0], port[1]) for port in source_ports])
+        )
+        self.print_msg(
+            "  snats: "
+            + ("\n\t" if snats else "")
+            + "\n\t".join(
+                [
+                    "%s%s%s%s%s"
+                    % (
+                        "proto=%s:" % proto if proto else "",
+                        "fromport=%s:" % fromport if fromport else "",
+                        "toport=%s:" % toport if toport else "",
+                        "tosource=%s:" % tosource if tosource else "",
+                        "tosourceport=%s" % tosourceport if tosourceport else "",
+                    )
+                    for (proto, fromport, toport, tosource, tosourceport) in snats
+                ]
+            )
         )
         self.print_msg("  icmp-blocks: " + " ".join(icmp_blocks))
         self.print_msg(
