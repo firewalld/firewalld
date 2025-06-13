@@ -17,21 +17,22 @@
 # Cheng-Chia Tseng <pswo10680@gmail.com>, 2017. #zanata
 # Eric Garver <e@erig.me>, 2018. #zanata
 # Peter Pan <pan93412@gmail.com>, 2018. #zanata
+# hsu zangmen <chzang55@gmail.com>, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-11-04 15:37-0500\n"
-"PO-Revision-Date: 2018-11-16 08:29+0000\n"
-"Last-Translator: Copied by Zanata <copied-by-zanata@zanata.org>\n"
-"Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/"
-"firewalld/language/zh_TW/)\n"
+"PO-Revision-Date: 2025-04-02 19:08+0000\n"
+"Last-Translator: hsu zangmen <chzang55@gmail.com>\n"
+"Language-Team: Chinese (Traditional) <https://translate.fedoraproject.org/"
+"projects/firewalld/master/zh_TW/>\n"
 "Language: zh_TW\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Zanata 4.6.2\n"
+"X-Generator: Weblate 5.10.4\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:450
 msgid "Firewall Applet"
@@ -40,38 +41,35 @@ msgstr "防火牆面板程式"
 #: ../config/firewall-config.appdata.xml.in.h:1
 msgid ""
 "Firewall Configuration provides a graphical tool for administering firewall."
-msgstr ""
+msgstr "防火牆組態配置提供管理防火牆的圖形工具。"
 
 #: ../config/firewall-config.appdata.xml.in.h:2
-#, fuzzy
 msgid "Allows to inspect and set:"
-msgstr "請選取 IPset："
+msgstr "允許檢查和設定："
 
 #: ../config/firewall-config.appdata.xml.in.h:3
-#, fuzzy
 msgid "Runtime and permanent firewall configuration"
-msgstr "防火牆組態"
+msgstr "運行時和永久防火牆設定"
 
 #: ../config/firewall-config.appdata.xml.in.h:4
-#, fuzzy
 msgid "Predefined zones (levels of trust for network connections)"
-msgstr "網路連線 '%s' 所使用的預設界域"
+msgstr "預先定義的區域（網路連線的信任等級）"
 
 #: ../config/firewall-config.appdata.xml.in.h:5
 msgid "Predefined services (port/protocol, netfilter helper module)"
-msgstr ""
+msgstr "預先定義的服務（通訊埠/通訊協定、netfilter 協助模組）"
 
 #: ../config/firewall-config.appdata.xml.in.h:6
 msgid "Port forwarding, masquerading, ICMP blocking"
-msgstr ""
+msgstr "通訊埠端口轉發、偽裝、ICMP 封鎖"
 
 #: ../config/firewall-config.appdata.xml.in.h:7
 msgid "Complex firewall rules a.k.a. Rich Language"
-msgstr ""
+msgstr "複雜的防火牆規則 a.k.a. Rich Language"
 
 #: ../config/firewall-config.appdata.xml.in.h:8
 msgid "Iptables rules a.k.a. Direct Interface"
-msgstr ""
+msgstr "Iptables 規則 a.k.a. 直接介面"
 
 #: ../config/firewall-config.desktop.in.h:1
 msgid "Firewall"
@@ -545,7 +543,7 @@ msgstr "icmp-type"
 #: ../src/firewall-config.in:3429 ../src/firewall-config.in:3745
 #: ../src/firewall-config.in:3982 ../src/firewall-config.glade.h:260
 msgid "forward-port"
-msgstr "forward-port"
+msgstr "己轉發的通訊埠端口"
 
 #: ../src/firewall-config.in:2074 ../src/firewall-config.in:3261
 #: ../src/firewall-config.in:3431 ../src/firewall-config.in:3754
@@ -687,7 +685,7 @@ msgstr "內建服務，不支援重新命名。"
 
 #: ../src/firewall-config.in:5723
 msgid "Please enter an ipv4 address with the form address[/mask]."
-msgstr "請從格式位址（或遮罩）輸入 IPV4 位址"
+msgstr "請輸入格式為 address[/mask] 的ipv4位址。"
 
 #: ../src/firewall-config.in:5724
 msgid "The mask can be a network mask or a number."
@@ -695,7 +693,7 @@ msgstr "遮罩可以是網路遮罩或數字。"
 
 #: ../src/firewall-config.in:5726
 msgid "Please enter an ipv6 address with the form address[/mask]."
-msgstr "請從格式位址（或遮罩）輸入 IPV6 位址"
+msgstr "請輸入格式為 address[/mask] 的 ipv6 位址。"
 
 #: ../src/firewall-config.in:5727
 msgid "The mask is a number."
@@ -781,11 +779,11 @@ msgstr "請從下列清單中選取預設界域。"
 
 #: ../src/firewall-config.glade.h:6
 msgid "Direct Chain"
-msgstr "直接鏈條"
+msgstr "直通鏈"
 
 #: ../src/firewall-config.glade.h:7
 msgid "Please select ipv and table and enter the chain name."
-msgstr "請選取 ipv 與表格，並輸入鏈條名稱"
+msgstr "請選取 ipv 與表格，並輸入鏈條名稱。"
 
 #: ../src/firewall-config.glade.h:8
 msgid "ipv:"
@@ -1389,9 +1387,8 @@ msgstr "服務僅可以在永久組態檢視下更動。服務的執行時期組
 msgid ""
 "An IPSet can be used to create white or black lists and is able to store for "
 "example IP addresses, port numbers or MAC addresses. "
-msgstr ""
-"IPSet 可以用來建立白名單或黑名單，且可以儲存例如 IP 位址、連接埠號、或 MAC 位"
-"址等。"
+msgstr "IPSet 可以用來建立白名單或黑名單，且可以儲存例如 IP 位址、連接埠號、或 MAC "
+"位址等。 "
 
 #: ../src/firewall-config.glade.h:148
 msgid "IPSet"
@@ -1748,7 +1745,6 @@ msgid "Please enter a rich rule."
 msgstr "請輸入豐富規則。"
 
 #: ../src/firewall-config.glade.h:226
-#, fuzzy
 msgid "For host or network allow or denylisting deactivate the element."
 msgstr "主機或網路白名單、黑名單來停用元素。"
 
