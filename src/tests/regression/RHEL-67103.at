@@ -1,0 +1,34 @@
+FWD_START_TEST([rich rule invalid ipset])
+AT_KEYWORDS(rich ipset RHEL-67103 RHEL-67331)
+
+dnl valid ipset
+FWD_CHECK([--permanent --new-ipset thisexists --type=hash:net], 0, [ignore])
+FWD_CHECK([--permanent --add-rich-rule="rule family=ipv4 source ipset=thisexists accept"], 0, [ignore])
+FWD_CHECK([--permanent --add-rich-rule="rule family=ipv4 destination ipset=thisexists accept"], 0, [ignore])
+FWD_RELOAD()
+
+dnl invalid ipset
+FWD_CHECK([            --add-rich-rule="rule family=ipv4 source ipset=doesnotexist accept"], 135, [ignore], [ignore])
+FWD_CHECK([--permanent --add-rich-rule="rule family=ipv4 source ipset=doesnotexist accept"], 135, [ignore], [ignore])
+FWD_CHECK([            --add-rich-rule="rule family=ipv4 destination ipset=doesnotexist accept"], 135, [ignore], [ignore])
+FWD_CHECK([--permanent --add-rich-rule="rule family=ipv4 destination ipset=doesnotexist accept"], 135, [ignore], [ignore])
+
+dnl verify checks for manually added XML
+AT_DATA([./zones/broken.xml], [m4_strip([dnl
+  <?xml version="1.0" encoding="utf-8"?>
+  <zone>
+    <short>broken</short>
+    <rule family="ipv4">
+      <source ipset="doesnotexist"/>
+      <accept/>
+    </rule>
+    <rule family="ipv4">
+      <destination ipset="doesnotexist"/>
+      <accept/>
+    </rule>
+    <forward/>
+  </zone>
+])])
+FWD_RELOAD(135, [ignore], [ignore])
+
+FWD_END_TEST([-e '/ERROR: INVALID_IPSET/d'])
