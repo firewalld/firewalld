@@ -9,7 +9,7 @@ NFT_LIST_RULES([inet], [filter_PREROUTING], 0, [dnl
     table inet firewalld {
         chain filter_PREROUTING {
             icmpv6 type { nd-router-advert, nd-neighbor-solicit } accept
-            meta nfproto ipv6 fib saddr . mark . iif oif missing drop
+            meta nfproto ipv6 fib saddr . mark . iif check missing drop
         }
     }
 ])
@@ -35,7 +35,7 @@ NFT_LIST_RULES([inet], [filter_PREROUTING], 0, [dnl
     table inet firewalld {
         chain filter_PREROUTING {
             icmpv6 type { nd-router-advert, nd-neighbor-solicit } accept
-            meta nfproto ipv6 fib saddr . mark oif missing drop
+            meta nfproto ipv6 fib saddr . mark check missing drop
         }
     }
 ])
@@ -65,7 +65,7 @@ FWD_RELOAD()
 NFT_LIST_RULES([inet], [filter_FORWARD], 0, [dnl
     table inet firewalld {
         chain filter_FORWARD {
-            meta nfproto ipv6 fib saddr . mark . iif oif missing drop
+            meta nfproto ipv6 fib saddr . mark . iif check missing drop
             ct state established,related accept
             ct status dnat accept
             iifname "lo" accept
@@ -101,7 +101,7 @@ FWD_RELOAD()
 NFT_LIST_RULES([inet], [filter_FORWARD], 0, [dnl
     table inet firewalld {
         chain filter_FORWARD {
-            meta nfproto ipv6 fib saddr . mark oif missing drop
+            meta nfproto ipv6 fib saddr . mark check missing drop
             ct state established,related accept
             ct status dnat accept
             iifname "lo" accept
