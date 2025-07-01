@@ -7,6 +7,7 @@ dnl #################
 
 DBUS_CHECK([], [policy.getPolicySettings], ["allow-host-ipv6"], 0, [dnl
     'description': <'Allows basic IPv6 functionality for the host running firewalld.'>
+    'disable': <false>
     'egress_zones': m4_escape([<['HOST']>])
     'ingress_zones': m4_escape([<['ANY']>])
     'masquerade': <false>
@@ -23,6 +24,7 @@ DBUS_CHECK([], [policy.setPolicySettings], [dnl
      '{"services": m4_escape([<["mdns"]>]), dnl
        "ports": m4_escape([<[("1234", "udp")]>]), dnl
        "icmp_blocks": m4_escape([<["echo-request"]>]), dnl
+       "disable": <true>, dnl
        "masquerade": <false>, dnl
        "forward_ports": m4_escape([<[("1234", "udp", "4321", "")]>]), dnl
        "rich_rules": m4_escape([<["rule family=ipv4 source address=10.20.20.20 accept"]>]), dnl
@@ -34,6 +36,7 @@ DBUS_CHECK([], [policy.setPolicySettings], [dnl
     ], 0, [ignore])
 DBUS_CHECK([], [policy.getPolicySettings], ["allow-host-ipv6"], 0, [dnl
     'description': <'Allows basic IPv6 functionality for the host running firewalld.'>
+    'disable': <true>
     'egress_zones': m4_escape([<['HOST']>])
     'forward_ports': m4_escape([<[('1234', 'udp', '4321', '')]>])
     'icmp_blocks': m4_escape([<['echo-request']>])
@@ -86,6 +89,7 @@ DBUS_CHECK([], [policy.setPolicySettings], [dnl
 dnl verify the updates
 DBUS_CHECK([], [policy.getPolicySettings], ["allow-host-ipv6"], 0, [dnl
     'description': <'Allows basic IPv6 functionality for the host running firewalld.'>
+    'disable': <true>
     'egress_zones': m4_escape([<['HOST']>])
     'icmp_blocks': m4_escape([<['echo-reply']>])
     'ingress_zones': m4_escape([<['ANY']>])

@@ -65,6 +65,7 @@
             <programlisting>
 &lt;?xml version="1.0" encoding="utf-8"?&gt;
 &lt;policy [version="<replaceable>versionstring</replaceable>"] [target="<literal>CONTINUE</literal>|<literal>ACCEPT</literal>|<literal>REJECT</literal>|<literal>DROP</literal>"] [priority="<replaceable>priority</replaceable>"]&gt;
+    [ &lt;disable/&gt; ]
     [ &lt;ingress-zone name="<replaceable>zone</replaceable>"/&gt; ]
     [ &lt;egress-zone name="<replaceable>zone</replaceable>"/&gt; ]
 
@@ -109,6 +110,14 @@
                     </listitem>
                 </varlistentry>
             </variablelist>
+        </refsect2>
+
+        <refsect2 id="disable">
+            <title>disable</title>
+            <para>
+                Is an optional empty-element tag. It can be used only once. If it's
+                present the policy is disabled and will not activate.
+            </para>
         </refsect2>
 
         <refsect2 id="ingress-zone">
