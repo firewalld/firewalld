@@ -111,6 +111,7 @@ AT_KEYWORDS(policy)
 
 FWD_CHECK([--info-policy allow-host-ipv6 | TRIM_WHITESPACE], 0, [m4_strip([dnl
 allow-host-ipv6 (active)
+  disable: no
   priority: -15000
   target: CONTINUE
   ingress-zones: ANY
@@ -130,6 +131,7 @@ allow-host-ipv6 (active)
 ])])
 FWD_CHECK([--permanent --info-policy allow-host-ipv6 | TRIM_WHITESPACE], 0, [m4_strip([dnl
 allow-host-ipv6
+  disable: no
   priority: -15000
   target: CONTINUE
   ingress-zones: ANY
@@ -150,6 +152,7 @@ allow-host-ipv6
 
 FWD_CHECK([--list-all-policies | TRIM_WHITESPACE], 0, [m4_strip([dnl
 allow-host-ipv6 (active)
+  disable: no
   priority: -15000
   target: CONTINUE
   ingress-zones: ANY
@@ -169,6 +172,7 @@ allow-host-ipv6 (active)
 ])])
 FWD_CHECK([--permanent --list-all-policies | TRIM_WHITESPACE], 0, [m4_strip([dnl
 allow-host-ipv6
+  disable: no
   priority: -15000
   target: CONTINUE
   ingress-zones: ANY
@@ -189,6 +193,7 @@ allow-host-ipv6
 
 FWD_CHECK([--policy allow-host-ipv6 --list-all | TRIM_WHITESPACE], 0, [m4_strip([dnl
 allow-host-ipv6 (active)
+  disable: no
   priority: -15000
   target: CONTINUE
   ingress-zones: ANY
@@ -208,6 +213,7 @@ allow-host-ipv6 (active)
 ])])
 FWD_CHECK([--permanent --policy allow-host-ipv6 --list-all | TRIM_WHITESPACE], 0, [m4_strip([dnl
 allow-host-ipv6
+  disable: no
   priority: -15000
   target: CONTINUE
   ingress-zones: ANY
