@@ -366,6 +366,12 @@ Options to Adapt and Query Policies
   --query-egress-zone=<zone>
                        Query whether the egress zone has been adedd to a
                        policy [P] [O]
+  --add-disable
+                       Disable the policy so it does not activate [P] [O]
+  --remove-disable
+                       Do not disable the policy so it may activate [P] [O]
+  --query-disable
+                       Query whether policy is disabled [P] [O]
 
 Options to Handle Bindings of Interfaces
   --list-interfaces    List interfaces that are bound to a zone [P] [Z]
@@ -772,6 +778,9 @@ parser_group_zone_or_policy.add_argument("--query-forward", action="store_true")
 parser_group_zone_or_policy.add_argument("--add-masquerade", action="store_true")
 parser_group_zone_or_policy.add_argument("--remove-masquerade", action="store_true")
 parser_group_zone_or_policy.add_argument("--query-masquerade", action="store_true")
+parser_group_zone_or_policy.add_argument("--add-disable", action="store_true")
+parser_group_zone_or_policy.add_argument("--remove-disable", action="store_true")
+parser_group_zone_or_policy.add_argument("--query-disable", action="store_true")
 parser_group_zone_or_policy.add_argument(
     "--add-icmp-block", metavar="<icmptype>", action="append"
 )
@@ -2511,6 +2520,14 @@ if a.permanent:
                 a.query_egress_zone, settings.queryEgressZone, None, "'%s'"
             )
 
+        # disable
+        elif a.add_disable:
+            settings.setDisable(True)
+        elif a.remove_disable:
+            settings.setDisable(False)
+        elif a.query_disable:
+            cmd.print_query_result(settings.getDisable())
+
         # priority
         elif a.get_priority:
             cmd.print_and_exit(str(settings.getPriority()))
@@ -3557,6 +3574,14 @@ elif a.policy:
         )
     elif a.query_egress_zone:
         cmd.query_sequence(a.query_egress_zone, settings.queryEgressZone, None, "'%s'")
+
+    # disable
+    elif a.add_disable:
+        settings.setDisable(True)
+    elif a.remove_disable:
+        settings.setDisable(False)
+    elif a.query_disable:
+        cmd.print_query_result(settings.getDisable())
 
     # rich rules
     elif a.list_rich_rules:
