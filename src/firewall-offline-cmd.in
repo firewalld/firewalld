@@ -145,6 +145,9 @@ Policy Options
                        Load policy default settings
   --policy=<policy>    Use this policy to set or query options
                        Usable for options marked with [O]
+  --policy-set=<policy>
+                       Modify this set of policies
+                       Usable for a subset of policy options, e.g. --remove-disable
   --info-policy=<policy>
                        Print information about a policy
   --path-policy=<policy>
@@ -706,6 +709,7 @@ parser_group_lockdown_whitelist.add_argument(
 
 parser.add_argument("--zone", default="", metavar="<zone>")
 parser.add_argument("--policy", default="", metavar="<policy>")
+parser.add_argument("--policy-set", default="", metavar="<policy>")
 
 parser_group_zone_or_policy = parser.add_mutually_exclusive_group()
 parser_group_zone_or_policy.add_argument(
@@ -1481,8 +1485,17 @@ if a.policy and options_zone_unique:
 if a.zone and options_policy_unique:
     cmd.fail(parser.format_usage() + "Can't use --zone with policy only options.")
 
-if not a.policy and options_policy_unique:
-    cmd.fail(parser.format_usage() + "Must use --policy with policy only options.")
+if not a.policy and not a.policy_set and options_policy_unique:
+    cmd.fail(
+        parser.format_usage()
+        + "Must use --policy/--policy-set with policy only options."
+    )
+
+if a.policy_set and not (a.add_disable or a.remove_disable):
+    cmd.fail(
+        parser.format_usage()
+        + "Option --policy-set may only be used with --add-disable or --remove-disable."
+    )
 
 if a.help:
     __usage()
@@ -2662,6 +2675,25 @@ try:
             cmd.print_policy_info(policy, fw_settings)
             cmd.print_msg("")
         sys.exit(0)
+
+    elif a.policy_set:
+        for _policy in filter(
+            lambda x: x[: len(a.policy_set)] == a.policy_set,
+            fw.config.get_policy_objects(),
+        ):
+            fw_policy = fw.config.get_policy_object(_policy)
+            fw_settings = FirewallClientPolicySettings(
+                fw.config.get_policy_object_config_dict(fw_policy)
+            )
+
+            if a.add_disable:
+                fw_settings.setDisable(True)
+            elif a.remove_disable:
+                fw_settings.setDisable(False)
+
+            fw.config.set_policy_object_config_dict(
+                fw_policy, fw_settings.getSettingsDict()
+            )
 
     elif a.policy:
         fw_policy = fw.config.get_policy_object(a.policy)
