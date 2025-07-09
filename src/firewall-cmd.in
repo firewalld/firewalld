@@ -2461,6 +2461,24 @@ if a.permanent:
             cmd.print_msg("")
         sys.exit(0)
 
+    elif (
+        a.policy
+        and a.policy[:4] == "set-"
+        and a.policy not in fw.config().getPolicyNames()
+    ):
+        for _policy in filter(
+            lambda x: x[: len(a.policy)] == a.policy, fw.config().getPolicyNames()
+        ):
+            fw_policy = fw.config().getPolicyByName(_policy)
+            settings = fw_policy.getSettings()
+
+            if a.add_disable:
+                settings.setDisable(True)
+            elif a.remove_disable:
+                settings.setDisable(False)
+
+            fw_policy.update(settings)
+
     elif a.policy:
         fw_policy = fw.config().getPolicyByName(a.policy)
         settings = fw_policy.getSettings()
@@ -3516,6 +3534,17 @@ elif a.remove_source:
     )
 elif a.query_source:
     cmd.x_query_sequence(zone, a.query_source, fw.querySource, None, "'%s'")
+
+elif a.policy and a.policy[:4] == "set-" and a.policy not in fw.getPolicies():
+    for _policy in filter(lambda x: x[: len(a.policy)] == a.policy, fw.getPolicies()):
+        settings = fw.getPolicySettings(_policy)
+
+        if a.add_disable:
+            settings.setDisable(True)
+        elif a.remove_disable:
+            settings.setDisable(False)
+
+        fw.setPolicySettings(_policy, settings)
 
 # policy
 elif a.policy:

@@ -2660,6 +2660,28 @@ try:
             cmd.print_msg("")
         sys.exit(0)
 
+    elif (
+        a.policy
+        and a.policy[:4] == "set-"
+        and a.policy not in fw.config.get_policy_objects()
+    ):
+        for _policy in filter(
+            lambda x: x[: len(a.policy)] == a.policy, fw.config.get_policy_objects()
+        ):
+            fw_policy = fw.config.get_policy_object(_policy)
+            fw_settings = FirewallClientPolicySettings(
+                fw.config.get_policy_object_config_dict(fw_policy)
+            )
+
+            if a.add_disable:
+                fw_settings.setDisable(True)
+            elif a.remove_disable:
+                fw_settings.setDisable(False)
+
+            fw.config.set_policy_object_config_dict(
+                fw_policy, fw_settings.getSettingsDict()
+            )
+
     elif a.policy:
         fw_policy = fw.config.get_policy_object(a.policy)
         fw_settings = FirewallClientPolicySettings(
