@@ -111,6 +111,9 @@ Policy Options
                        Load policy default settings
   --policy=<policy>    Use this policy to set or query options
                        Usable for options marked with [O]
+  --policy-set=<policy>
+                       Modify this set of policies
+                       Usable for a subset of policy options, e.g. --remove-disable
   --info-policy=<policy>
                        Print information about a policy
   --path-policy=<policy>
@@ -678,6 +681,7 @@ parser_group_lockdown_whitelist.add_argument(
 parser.add_argument("--permanent", action="store_true")
 parser.add_argument("--zone", default="", metavar="<zone>")
 parser.add_argument("--policy", default="", metavar="<policy>")
+parser.add_argument("--policy-set", default="", metavar="<policy>")
 parser.add_argument("--timeout", default="0", metavar="<seconds>")
 
 parser_group_zone_or_policy = parser.add_mutually_exclusive_group()
@@ -1410,6 +1414,12 @@ if options_config and (options_zone or options_policy):
         + "Wrong usage of --get-zones | --get-services | --get-icmptypes | --get-policies."
     )
 
+if a.policy_set and not (a.add_disable or a.remove_disable):
+    cmd.fail(
+        parser.format_usage()
+        + "Option --policy-set may only be used with --add-disable or --remove-disable."
+    )
+
 if a.timeout != "0":
     value = 0
     unit = "s"
@@ -1493,8 +1503,11 @@ if a.policy and options_zone_unique:
 if a.zone and options_policy_unique:
     cmd.fail(parser.format_usage() + "Can't use --zone with policy only options.")
 
-if not a.policy and options_policy_unique:
-    cmd.fail(parser.format_usage() + "Must use --policy with policy only options.")
+if not a.policy and not a.policy_set and options_policy_unique:
+    cmd.fail(
+        parser.format_usage()
+        + "Must use --policy/--policy-set with policy only options."
+    )
 
 if a.help:
     __usage()
@@ -2463,6 +2476,21 @@ if a.permanent:
             cmd.print_policy_info(policy, settings)
             cmd.print_msg("")
         sys.exit(0)
+
+    elif a.policy_set:
+        for _policy in filter(
+            lambda x: x[: len(a.policy_set)] == a.policy_set,
+            fw.config().getPolicyNames(),
+        ):
+            fw_policy = fw.config().getPolicyByName(_policy)
+            settings = fw_policy.getSettings()
+
+            if a.add_disable:
+                settings.setDisable(True)
+            elif a.remove_disable:
+                settings.setDisable(False)
+
+            fw_policy.update(settings)
 
     elif a.policy:
         fw_policy = fw.config().getPolicyByName(a.policy)
@@ -3519,6 +3547,19 @@ elif a.remove_source:
     )
 elif a.query_source:
     cmd.x_query_sequence(zone, a.query_source, fw.querySource, None, "'%s'")
+
+elif a.policy_set:
+    for _policy in filter(
+        lambda x: x[: len(a.policy_set)] == a.policy_set, fw.getPolicies()
+    ):
+        settings = fw.getPolicySettings(_policy)
+
+        if a.add_disable:
+            settings.setDisable(True)
+        elif a.remove_disable:
+            settings.setDisable(False)
+
+        fw.setPolicySettings(_policy, settings)
 
 # policy
 elif a.policy:
