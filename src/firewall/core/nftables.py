@@ -36,6 +36,7 @@ from firewall.core.rich import (
     Rich_IcmpBlock,
     Rich_Tcp_Mss_Clamp,
     Rich_NFLog,
+    Rich_SNAT,
 )
 from firewall.core.base import DEFAULT_ZONE_TARGET
 from nftables.nftables import Nftables
@@ -1721,6 +1722,7 @@ class nftables:
             Rich_ForwardPort,
             Rich_IcmpBlock,
             Rich_Tcp_Mss_Clamp,
+            Rich_SNAT,
         ]:
             # These are special and don't have an explicit action
             pass
@@ -1742,6 +1744,7 @@ class nftables:
                 Rich_Masquerade,
                 Rich_ForwardPort,
                 Rich_Tcp_Mss_Clamp,
+                Rich_SNAT,
             ] or type(rich_rule.action) in [Rich_Accept, Rich_Mark]:
                 return "allow"
             elif type(rich_rule.element) in [Rich_IcmpBlock] or type(
@@ -2445,6 +2448,85 @@ class nftables:
                 ],
             }
             rules.append({"insert" if enable else "delete": {"rule": rule}})
+
+        return rules
+
+    def build_policy_snat_rules(
+        self, enable, policy, protocol, fromport, toport, tosource, tosourceport, rich_rule=None
+    ):
+        table = "nat"
+        _policy = self._fw.policy.policy_base_chain_name(
+            policy, table, POLICY_CHAIN_PREFIX, True
+        )
+        p_obj = self._fw.policy.get_policy(policy)
+        add_del = {True: "add", False: "delete"}[enable]
+
+        expr_fragments = []
+        if rich_rule:
+            expr_fragments.append(self._rich_rule_family_fragment(rich_rule.family))
+            expr_fragments.append(
+                self._rich_rule_destination_fragment(rich_rule.destination)
+            )
+            expr_fragments.append(self._rich_rule_source_fragment(rich_rule.source))
+            chain_suffix = self._rich_rule_chain_suffix(rich_rule)
+        else:
+            nfproto = "ipv4"
+            if tosource and check_single_address("ipv6", tosource):
+                nfproto = "ipv6"
+            expr_fragments.append(
+                {
+                    "match": {
+                        "left": {"meta": {"key": "nfproto"}},
+                        "op": "==",
+                        "right": nfproto,
+                    }
+                }
+            )
+            chain_suffix = "allow"
+
+        if (fromport):
+            expr_fragments.append(
+                {
+                    "match": {
+                        "left": {"payload": {"protocol": protocol, "field": "sport"}},
+                        "op": "==",
+                        "right": self._port_fragment(fromport),
+                    }
+                }
+            )
+        if (toport):
+            expr_fragments.append(
+                {
+                    "match": {
+                        "left": {"payload": {"protocol": protocol, "field": "dport"}},
+                        "op": "==",
+                        "right": self._port_fragment(toport),
+                    }
+                }
+            )
+
+        rules = []
+        if rich_rule:
+            rules.append(
+                self._rich_rule_log(policy, rich_rule, enable, table, expr_fragments)
+            )
+
+        if tosource:
+            if check_single_address("ipv6", tosource):
+                tosource = normalizeIP6(tosource)
+            if tosourceport:
+                expr_fragments.append({"snat": {"addr": "%s:%s" % (tosource, tosourceport) }})
+            else:
+                expr_fragments.append({"snat": {"addr": tosource}})
+
+        rule = {
+            "family": "inet",
+            "table": TABLE_NAME,
+            "chain": "nat_%s_%s" % (_policy, chain_suffix),
+            "expr": expr_fragments,
+        }
+        rule.update(self._rich_rule_priority_fragment(rich_rule))
+        rules.append({add_del: {"rule": rule}})
 
         return rules
 

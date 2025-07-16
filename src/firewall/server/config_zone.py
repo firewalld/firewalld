@@ -932,6 +932,123 @@ class FirewallDConfigZone(DbusServiceObject):
         fwp_id = (port, protocol, str(toport), str(toaddr))
         return fwp_id in self.getSettings()[9]
 
+    # snat
+
+    @dbus_service_method(
+        config.dbus.DBUS_INTERFACE_CONFIG_ZONE, out_signature="a(sssss)"
+    )
+    @dbus_handle_exceptions
+    def getSNATS(self, sender=None):
+        log.debug1("%s.getSNATS()", self._log_prefix)
+        return self.getSettings()[19]
+
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE, in_signature="a(ssss)")
+    @dbus_handle_exceptions
+    def setSNATS(self, snats, sender=None):
+        _snats = []
+        # convert embedded lists to tuples
+        for snat in dbus_to_python(snats, list):
+            if isinstance(snat, list):
+                _snats.append(tuple(snat))
+            else:
+                _snats.append(snat)
+        snays = _snats
+        log.debug1(
+            "%s.setSNATS('[%s]')",
+            self._log_prefix,
+            ",".join(
+                "('%s, '%s', '%s', '%s', '%s')" % (snat[0], snat[1], snat[2], snat[3], snat[4])
+                for snat in snats
+            ),
+        )
+        self.parent.accessCheck(sender)
+        settings = list(self.getSettings())
+        settings[19] = snats
+        self.update(settings)
+
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE, in_signature="sssss")
+    @dbus_handle_exceptions
+    def addSNAT(
+        self, protocol, fromport, toport, tosource, tosourceport, sender=None
+    ):
+        protocol = dbus_to_python(protocol, str)
+        fromport = dbus_to_python(fromport, str)
+        toport = dbus_to_python(toport, str)
+        tosource = dbus_to_python(tosource, str)
+        tosourceport = dbus_to_python(tosourceport, str)
+        log.debug1(
+            "%s.addSNAT('%s', '%s', '%s', '%s', '%s')",
+            self._log_prefix,
+            protocol,
+            fromport,
+            toport,
+            tosource,
+            tosourceport,
+        )
+        self.parent.accessCheck(sender)
+        fwp_id = (protocol, str(fromport), str(toport), str(tosource), str(tosourceport))
+        settings = list(self.getSettings())
+        if fwp_id in settings[19]:
+            raise FirewallError(
+                errors.ALREADY_ENABLED, "%s:%s:%s:%s:%s" % (protocol, fromport, toport, tosource, tosourceport)
+            )
+        settings[19].append(fwp_id)
+        self.update(settings)
+
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE, in_signature="sssss")
+    @dbus_handle_exceptions
+    def removeSNAT(
+        self, protocol, fromport, toport, tosource, tosourceport, sender=None
+    ):  # pylint: disable=R0913
+        protocol = dbus_to_python(protocol, str)
+        fromport = dbus_to_python(fromport, str)
+        toport = dbus_to_python(toport, str)
+        tosource = dbus_to_python(tosource, str)
+        tosourceport = dbus_to_python(tosourceport, str)
+        log.debug1(
+            "%s.removeSNAT('%s', '%s', '%s', '%s', '%s')",
+            self._log_prefix,
+            protocol,
+            fromport,
+            toport,
+            tosource,
+            tosourceport,
+        )
+        self.parent.accessCheck(sender)
+        fwp_id = (protocol, str(fromport), str(toport), str(tosource), str(tosourceport))
+        settings = list(self.getSettings())
+        if fwp_id not in settings[19]:
+            raise FirewallError(
+                errors.NOT_ENABLED, "%s:%s:%s:%s" % (protocol, fromport, toport, tosource, tosourceport)
+            )
+        settings[19].remove(fwp_id)
+        self.update(settings)
+
+    @dbus_service_method(
+        config.dbus.DBUS_INTERFACE_CONFIG_ZONE, in_signature="sssss", out_signature="b"
+    )
+    @dbus_handle_exceptions
+    def querySNAT(
+        self, protocol, fromport, toport, tosource, tosourceport, sender=None
+    ):
+        protocol = dbus_to_python(protocol, str)
+        fromport = dbus_to_python(fromport, str)
+        toport = dbus_to_python(toport, str)
+        tosource = dbus_to_python(tosource, str)
+        tosourceport = dbus_to_python(tosourceport, str)
+        log.debug1(
+            "%s.querySNAT('%s', '%s', '%s', '%s', '%s')",
+            self._log_prefix,
+            protocol,
+            fromport,
+            toport,
+            tosource,
+            tosourceport,
+        )
+        fwp_id = (str(protocol), str(fromport), str(toport), str(tosource), str(tosourceport))
+        return fwp_id in self.getSettings()[19]
+
+
     # interface
 
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE, out_signature="as")

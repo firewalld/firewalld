@@ -788,7 +788,7 @@ class FirewallConfig:
         return self._builtin_zones[obj.name]
 
     def get_zone_config(self, obj):
-        return obj.export_config_tuple(length=16)
+        return obj.export_config_tuple(length=20)
 
     def get_zone_config_dict(self, obj):
         return obj.export_config_dict()

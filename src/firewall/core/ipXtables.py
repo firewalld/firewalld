@@ -38,6 +38,7 @@ from firewall.core.rich import (
     Rich_ForwardPort,
     Rich_IcmpBlock,
     Rich_Tcp_Mss_Clamp,
+    Rich_SNAT,
 )
 from firewall.core.base import DEFAULT_ZONE_TARGET
 import string
@@ -1201,6 +1202,7 @@ class ip4tables:
             Rich_ForwardPort,
             Rich_IcmpBlock,
             Rich_Tcp_Mss_Clamp,
+            Rich_SNAT,
         ]:
             # These are special and don't have an explicit action
             pass
@@ -1222,6 +1224,7 @@ class ip4tables:
                 Rich_Masquerade,
                 Rich_ForwardPort,
                 Rich_Tcp_Mss_Clamp,
+                Rich_SNAT,
             ] or type(rich_rule.action) in [Rich_Accept, Rich_Mark]:
                 return "allow"
             elif type(rich_rule.element) in [Rich_IcmpBlock] or type(
@@ -1685,6 +1688,57 @@ class ip4tables:
                 ]
                 + ["-j", "ACCEPT"]
             )
+
+        return rules
+
+    def build_policy_snat_rules(
+        self, enable, policy, protocol, fromport, toport, tosource, tosourceport, rich_rule=None
+    ):
+        table = "nat"
+        _policy = self._fw.policy.policy_base_chain_name(
+            policy, table, POLICY_CHAIN_PREFIX, True
+        )
+        add_del = {True: "-A", False: "-D"}[enable]
+
+        snatto = ""
+        if tosource:
+            if check_single_address("ipv6", tosource):
+                snatto += "[%s]" % normalizeIP6(tosource)
+            else:
+                snatto += tosource
+        if tosourceport and tosourceport != "":
+            snatto += ":%s" % portStr(tosourceport, "-")
+
+        port_fragment = []
+        if protocol:
+            port_fragment += ["-p", protocol]
+        if fromport:
+            port_fragment += ["--sport", fromport]
+        if toport:
+            port_fragment += ["--dport", toport]
+
+        rules = []
+        rule_fragment = []
+        if rich_rule:
+            chain_suffix = self._rich_rule_chain_suffix(rich_rule)
+            rule_fragment = self._rich_rule_priority_fragment(rich_rule)
+            rule_fragment += self._rich_rule_destination_fragment(rich_rule.destination)
+            rule_fragment += self._rich_rule_source_fragment(rich_rule.source)
+
+            rules.append(
+                self._rich_rule_log(
+                    policy, rich_rule, enable, "nat", rule_fragment
+                )
+            )
+        else:
+            chain_suffix = "allow"
+
+        rules.append(
+            ["-t", "nat", add_del, "%s_%s" % (_policy, chain_suffix)]
+            + rule_fragment
+            + port_fragment
+            + ["-j", "SNAT", "--to", snatto]
+        )
 
         return rules
 

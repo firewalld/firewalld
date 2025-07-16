@@ -202,6 +202,71 @@ def common_startElement(obj, name, attrs):
         if entry not in obj.item.forward_ports:
             obj.item.forward_ports.append(entry)
 
+    elif name == "snat":
+        protocol = "";
+        from_port = "";
+        to_port = "";
+        to_source = "";
+        to_source_port = "";
+
+        if "protocol" in attrs:
+            protocol = attrs["protocol"]
+            check_tcpudp(attrs["protocol"])
+        if "from-port" in attrs:
+            from_port = attrs["from-port"]
+            check_port(from_port)
+        if "to-port" in attrs:
+            to_port = attrs["to-port"]
+            check_port(to_port)
+        if "to-source" in attrs:
+            to_source = attrs["to-source"]
+            if not checkIP(to_source) and not checkIP6(to_source):
+                raise FirewallError(
+                    errors.INVALID_ADDR, "to-source '%s' is not a valid address" % to_source
+                )
+        if "to-source-port" in attrs:
+            to_source_port = attrs["to-source-port"]
+            check_port(to_source_port)
+
+        if obj._rule:
+            if obj._rule.element:
+                log.warning(
+                    "Invalid rule: More than one element in rule '%s', ignoring.",
+                    str(obj._rule),
+                )
+                obj._rule_error = True
+                return True
+            obj._rule = dataclasses.replace(
+                obj._rule,
+                element=rich.Rich_SNAT(
+                    protocol,
+                    from_port,
+                    to_port,
+                    to_source,
+                    to_source_port
+                ),
+            )
+            return True
+
+        entry = (
+            protocol,
+            portStr(from_port, "-"),
+            portStr(to_port, "-"),
+            str(to_source),
+            portStr(to_source_port, "-"),
+        )
+        if entry not in obj.item.snats:
+            obj.item.snats.append(entry)
+        else:
+            log.warning(
+                "SNAT %s%s%s %s%s already set, ignoring.",
+                "%s " % protocol if protocol else "",
+                "%s " % from_port if from_port else "",
+                "%s " % to_port if to_addr else ""
+                " -> %s" % to_source if to_source else "",
+                ":%s " % to_source_port if to_source_port else "",
+            )
+
     elif name == "source-port":
         if obj._rule:
             if obj._rule.element:
@@ -569,6 +634,23 @@ def common_writer(obj, handler):
         handler.simpleElement("masquerade", {})
         handler.ignorableWhitespace("\n")
 
+    # snat
+    for snat in uniqify(obj.snats):
+        handler.ignorableWhitespace("  ")
+        attrs = {}
+        if snat[0] and snat[0] != "":
+            attrs["protocol"] = snat[1]
+        if snat[1] and snat[1] != "":
+            attrs["from-port"] = snat[1]
+        if snat[2] and snat[2] != "":
+            attrs["to-port"] = snat[2]
+        if snat[3] and snat[3] != "":
+            attrs["to-source"] = snat[3]
+        if snat[4] and snat[4] != "":
+            attrs["to-source-port"] = snat[4]
+        handler.simpleElement("snat", attrs)
+        handler.ignorableWhitespace("\n")
+
     # forward-ports
     for forward in uniqify(obj.forward_ports):
         handler.ignorableWhitespace("  ")
@@ -665,6 +747,18 @@ def common_writer(obj, handler):
                 element = "source-port"
                 attrs["port"] = rule.element.port
                 attrs["protocol"] = rule.element.protocol
+            elif isinstance(rule.element, rich.Rich_SNAT):
+                element = "snat"
+                if rule.element.protocol != "":
+                    attrs["protocol"] = rule.element.protocol
+                if rule.element.from_port != "":
+                    attrs["from-port"] = rule.element.from_port
+                if rule.element.to_port != "":
+                    attrs["to-port"] = rule.element.to_port
+                if rule.element.to_source != "":
+                    attrs["to-source"] = rule.element.to_source
+                if rule.element.to_source_port != "":
+                    attrs["to-source-port"] = rule.element.to_source_port
             else:
                 raise FirewallError(
                     errors.INVALID_OBJECT,
@@ -785,6 +879,7 @@ class Policy(IO_Object):
         "priority": 0,  # i
         "ingress_zones": [""],  # as
         "egress_zones": [""],  # as
+        "snats": [("", "", "", "", "")],  # a(sssss)
     }
     ADDITIONAL_ALNUM_CHARS = ["_", "-", "/"]
     PARSER_REQUIRED_ELEMENT_ATTRS = {
@@ -812,6 +907,7 @@ class Policy(IO_Object):
         "limit": ["value"],
         "ingress-zone": ["name"],
         "egress-zone": ["name"],
+        "snat": ["to-source"],
     }
     PARSER_OPTIONAL_ELEMENT_ATTRS = {
         "policy": ["version", "priority"],
@@ -824,6 +920,7 @@ class Policy(IO_Object):
         "reject": ["type"],
         "tcp-mss-clamp": ["value"],
         "limit": ["burst"],
+        "snat": ["protocol", "from-port", "to-port", "to-source-port"],
     }
 
     def __init__(self):
@@ -846,6 +943,7 @@ class Policy(IO_Object):
         self.derived_from_zone = None
         self.ingress_zones = []
         self.egress_zones = []
+        self.snats = []
 
     def cleanup(self):
         self.version = ""
@@ -865,6 +963,7 @@ class Policy(IO_Object):
         self.priority = self.priority_default
         del self.ingress_zones[:]
         del self.egress_zones[:]
+        del self.snats[:]
 
     def __getattr__(self, name):
         if name == "rich_rules":
@@ -1074,6 +1173,29 @@ class Policy(IO_Object):
                                         self.name, zone
                                     ),
                                 )
+                elif obj.element and isinstance(obj.element, rich.Rich_SNAT):
+                    if "ingress_zones" in all_config:
+                        for zone in all_config["ingress_zones"]:
+                            if zone == "ANY":
+                                continue
+                            if zone not in all_io_objects["zones"]:
+                                raise FirewallError(
+                                    errors.INVALID_ZONE,
+                                    "Policy '{}': Zone '{}' does not exist.".format(
+                                        self.name, zone
+                                    ),
+                                )
+                            if (
+                                all_io_objects["conf"].get("FirewallBackend")
+                                != "nftables"
+                                and all_io_objects["zones"][zone].interfaces
+                            ):
+                                raise FirewallError(
+                                    errors.INVALID_ZONE,
+                                    "Policy '{}': 'snat' cannot be used because ingress zone '{}' has assigned interfaces. ".format(
+                                        self.name, zone
+                                    ),
+                                )
         elif item == "forward_ports":
             for fwd_port in config:
                 if "egress_zones" in all_config:
@@ -1102,6 +1224,28 @@ class Policy(IO_Object):
                                         self.name, zone
                                     ),
                                 )
+        elif item == "snats" and config:
+            if "ingress_zones" in all_config:
+                for zone in all_config["ingress_zones"]:
+                    if zone == "ANY":
+                        continue
+                    if zone not in all_io_objects["zones"]:
+                        raise FirewallError(
+                            errors.INVALID_ZONE,
+                            "Policy '{}': Zone '{}' does not exist.".format(
+                                self.name, zone
+                            ),
+                        )
+                    if (
+                        all_io_objects["conf"].get("FirewallBackend") != "nftables"
+                        and all_io_objects["zones"][zone].interfaces
+                    ):
+                        raise FirewallError(
+                            errors.INVALID_ZONE,
+                            "Policy '{}': 'snat' cannot be used because ingress zone '{}' has assigned interfaces. ".format(
+                                self.name, zone
+                            ),
+                        )
 
     def check_name(self, name):
         super(Policy, self).check_name(name)

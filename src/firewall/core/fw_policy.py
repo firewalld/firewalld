@@ -30,6 +30,7 @@ from firewall.core.rich import (
     Rich_IcmpBlock,
     Rich_IcmpType,
     Rich_Tcp_Mss_Clamp,
+    Rich_SNAT
 )
 from firewall import errors
 from firewall.errors import FirewallError
@@ -141,6 +142,7 @@ class FirewallPolicy:
             "icmp_block_inversion",
             "ingress_zones",
             "egress_zones",
+            "snats",
         ]:
             args_list = getattr(self.get_policy(policy), key)
             if isinstance(args_list, bool):
@@ -174,6 +176,8 @@ class FirewallPolicy:
                 elif key == "egress_zones":
                     # key off ingress zones, which also considers egress zones
                     continue
+                elif key == "snats":
+                    self._snat(enable, _policy, transaction, *args)
                 else:
                     log.warning(
                         "Policy '%s': Unknown setting '%s:%s', " "unable to apply",
@@ -231,6 +235,7 @@ class FirewallPolicy:
             "source_ports": (self.add_source_port, self.remove_source_port),
             "ingress_zones": (self.add_ingress_zone, self.remove_ingress_zone),
             "egress_zones": (self.add_egress_zone, self.remove_egress_zone),
+            "snats": (self.add_snat, self.remove_snat),
         }
 
         # do a full config check on a temporary object before trying to make
@@ -1218,6 +1223,107 @@ class FirewallPolicy:
                 if len(self._chains[policy]) == 0:
                     del self._chains[policy]
 
+    # SNAT
+
+    def __snat_id(self, protocol=None, fromport=None, toport=None, tosource=None, tosourceport=None):
+        if check_single_address("ipv6", tosource):
+            self.check_snat("ipv6", protocol, fromport, toport, tosource, tosourceport)
+        else:
+            self.check_snat("ipv4", protocol, fromport, toport, tosource, tosourceport)
+        return (protocol, portStr(fromport, "-"), portStr(toport, "-"), str(tosource), portStr(tosourceport, "-"))
+
+    def add_snat(
+        self,
+        policy,
+        protocol=None,
+        fromport=None,
+        toport=None,
+        tosource=None,
+        tosourceport=None,
+        timeout=0,
+        sender=None,
+    ):
+        _policy = self._fw.check_policy(policy)
+        self._fw.check_timeout(timeout)
+        self._fw.check_panic()
+        _obj = self._policies[_policy]
+
+        snat_id = self.__snat_id(protocol, fromport, toport, tosource, tosourceport)
+        if snat_id in _obj.snats:
+            _name = _obj.derived_from_zone if _obj.derived_from_zone else _policy
+            raise FirewallError(
+                errors.ALREADY_ENABLED,
+                "'%s:%s:%s:%s:%s' already in '%s'"
+                % (protocol, fromport, toport, tosource, tosourceport, _name),
+            )
+
+        with self.with_transaction() as transaction:
+
+            if _obj.applied:
+                self._snat(
+                    True, _policy, transaction, protocol, fromport, toport, tosource, tosourceport
+                )
+
+            self.__register_snat(_obj, snat_id, timeout, sender)
+            transaction.add_fail(self.__unregister_forward_port, _obj, snat_id)
+
+        return _policy
+
+    def __register_snat(self, _obj, snat_id, timeout, sender):
+        _obj.snats.append(snat_id)
+
+    def remove_snat(self, policy, protocol=None, fromport=None, toport=None, tosource=None, tosourceport=None):
+        _policy = self._fw.check_policy(policy)
+        self._fw.check_panic()
+        _obj = self._policies[_policy]
+
+        snat_id = self.__snat_id(protocol, fromport, toport, tosource, tosourceport)
+        if snat_id not in _obj.snats:
+            _name = _obj.derived_from_zone if _obj.derived_from_zone else _policy
+            raise FirewallError(
+                errors.NOT_ENABLED,
+                "'%s:%s:%s:%s:%s' not in '%s'" % (protocol, fromport, toport, tosource, tosourceport, _name),
+            )
+
+        with self.with_transaction() as transaction:
+
+            if _obj.applied:
+                self._snat(
+                    False, _policy, transaction, protocol, fromport, toport, tosource, tosourceport
+                )
+
+            transaction.add_post(self.__unregister_snat, _obj, snat_id)
+
+        return _policy
+
+    def __unregister_snat(self, _obj, snat_id):
+        if snat_id in _obj.snats:
+            _obj.snats.remove(snat_id)
+
+    def query_snat(self, policy, protocol=None, fromport=None, toport=None, tosource=None, tosourceport=None):
+        snat_id = self.__snat_id(protocol, fromport, toport, tosource, tosourceport)
+        return snat_id in self.get_policy(policy).snats
+
+    def check_snat(self, ipv, protocol, fromport=None, toport=None, tosource=None, tosourceport=None):
+        if protocol:
+            self._fw.check_tcpudp(protocol)
+        if fromport:
+            self._fw.check_port(fromport)
+        if toport:
+            self._fw.check_port(toport)
+        if tosourceport:
+            self._fw.check_port(tosourceport)
+        if tosource:
+            if not check_single_address(ipv, tosource):
+                raise FirewallError(errors.INVALID_ADDR, tosource)
+        if not tosource:
+            raise FirewallError(
+                errors.INVALID_SNAT, "to-source is missing"
+            )
+
+    def list_snats(self, policy):
+        return self.get_policy(policy).snats
+
     # IPSETS
 
     def _ipset_family(self, name):
@@ -1468,11 +1574,28 @@ class FirewallPolicy:
                 )
                 transaction.add_rules(backend, rules)
 
+            # SNAT
+            elif isinstance(rule.element, Rich_SNAT):
+                protocol = rule.element.protocol
+                fromport = rule.element.from_port
+                toport = rule.element.to_port
+                tosource = rule.element.to_source
+                tosourceport = rule.element.to_source_port
+                for ipv in ipvs:
+                    if backend.is_ipv_supported(ipv):
+                        self.check_snat(ipv, protocol, fromport, toport, tosource, tosourceport)
+
+                rules = backend.build_policy_snat_rules(
+                    enable, policy, protocol, fromport, toport, tosource, tosourceport, rule
+                )
+                transaction.add_rules(backend, rules)
+
             elif rule.element is None:
                 rules = backend.build_policy_rich_source_destination_rules(
                     enable, policy, rule
                 )
                 transaction.add_rules(backend, rules)
+
 
             # EVERYTHING ELSE
             else:
@@ -1606,6 +1729,20 @@ class FirewallPolicy:
         backend = self._fw.get_backend_by_ipv(ipv)
         rules = backend.build_policy_forward_port_rules(
             enable, policy, port, protocol, toport, toaddr
+        )
+        transaction.add_rules(backend, rules)
+
+    def _snat(
+        self, enable, policy, transaction, protocol, fromport, toport, tosource=None, tosourceport=None
+    ):
+        if check_single_address("ipv6", tosource):
+            ipv = "ipv6"
+        else:
+            ipv = "ipv4"
+
+        backend = self._fw.get_backend_by_ipv(ipv)
+        rules = backend.build_policy_snat_rules(
+             enable, policy, protocol, fromport, toport, tosource, tosourceport
         )
         transaction.add_rules(backend, rules)
 
