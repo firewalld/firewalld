@@ -478,6 +478,9 @@ m4_define([NFT_LIST_RULES_NORMALIZE], [dnl
         dnl newer nft replace ICMP reject aliases with code values
         dnl nftables commit 5fecd2a6ef61 ("src: disentangle ICMP code types")
         -e ['s/\(icmp\|icmpv6\|icmpx\) code no-route/\1 code 0/g'] dnl
+        dnl nftables commit f4b646032acf ("fib: allow to check if route exists in maps")
+        dnl changed the fib output. Now uses "check" keyword.
+        -e ['s/oif missing/check missing/g'] dnl
 ])
 
 m4_define([NFT_LIST_RULES_ALWAYS], [

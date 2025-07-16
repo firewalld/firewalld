@@ -114,7 +114,7 @@ IF_HOST_SUPPORTS_NFT_FIB([
         table inet firewalld {
             chain filter_PREROUTING {
                 icmpv6 type { nd-router-advert, nd-neighbor-solicit } accept
-                meta nfproto ipv6 fib saddr . mark . iif oif missing drop
+                meta nfproto ipv6 fib saddr . mark . iif check missing drop
             }
         }
     ])
