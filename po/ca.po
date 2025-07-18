@@ -15,21 +15,22 @@
 # Eric Garver <e@erig.me>, 2017. #zanata
 # Robert Antoni Buj Gelonch <rbuj@fedoraproject.org>, 2017. #zanata
 # Robert Antoni Buj Gelonch <rbuj@fedoraproject.org>, 2018. #zanata
+# David Medina <dmedinacpnl@gmail.com>, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-11-04 15:37-0500\n"
-"PO-Revision-Date: 2018-08-20 10:43+0000\n"
-"Last-Translator: Robert Antoni Buj Gelonch <rbuj@fedoraproject.org>\n"
-"Language-Team: Catalan (http://www.transifex.com/projects/p/firewalld/"
-"language/ca/)\n"
+"PO-Revision-Date: 2025-02-16 09:38+0000\n"
+"Last-Translator: David Medina <dmedinacpnl@gmail.com>\n"
+"Language-Team: Catalan <https://translate.fedoraproject.org/projects/"
+"firewalld/master/ca/>\n"
 "Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Zanata 4.6.2\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.9.2\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:450
 msgid "Firewall Applet"
@@ -39,37 +40,36 @@ msgstr "Miniaplicació del tallafoc"
 msgid ""
 "Firewall Configuration provides a graphical tool for administering firewall."
 msgstr ""
+"La configuració del tallafoc proporciona una eina gràfica per administrar el "
+"tallafoc."
 
 #: ../config/firewall-config.appdata.xml.in.h:2
-#, fuzzy
 msgid "Allows to inspect and set:"
-msgstr "Seleccioneu un ipset:"
+msgstr "Permet inspeccionar i configurar el següent:"
 
 #: ../config/firewall-config.appdata.xml.in.h:3
-#, fuzzy
 msgid "Runtime and permanent firewall configuration"
-msgstr "Configuració del tallafoc"
+msgstr "Entorn d'execució i configuració permanent del tallafoc"
 
 #: ../config/firewall-config.appdata.xml.in.h:4
-#, fuzzy
 msgid "Predefined zones (levels of trust for network connections)"
-msgstr "La zona predeterminada que s'utilitza en la connexió de xarxa «%s»"
+msgstr "Zones predefinides (nivells de confiança per a les connexions de xarxa)"
 
 #: ../config/firewall-config.appdata.xml.in.h:5
 msgid "Predefined services (port/protocol, netfilter helper module)"
-msgstr ""
+msgstr "Serveis predefinits (port/protocol, mòdul d'ajuda del filtre de xarxa)"
 
 #: ../config/firewall-config.appdata.xml.in.h:6
 msgid "Port forwarding, masquerading, ICMP blocking"
-msgstr ""
+msgstr "Reenviament de ports, enmascarament, bloqueig ICMP"
 
 #: ../config/firewall-config.appdata.xml.in.h:7
 msgid "Complex firewall rules a.k.a. Rich Language"
-msgstr ""
+msgstr "Regles complexes del tallafoc, també conegut com a Rich Language"
 
 #: ../config/firewall-config.appdata.xml.in.h:8
 msgid "Iptables rules a.k.a. Direct Interface"
-msgstr ""
+msgstr "Regles d'Iptables, també coneguda com a interfície directa"
 
 #: ../config/firewall-config.desktop.in.h:1
 msgid "Firewall"
@@ -1609,19 +1609,19 @@ msgstr ""
 "Afegiu una regla amb arguments a un encadenament en una taula amb una "
 "prioritat."
 
-#: ../src/firewall-config.glade.h:176
+#: ../src/firewall-config.glade.h:176 ../src/firewall-config.glade.h:177
 msgid "Add Rule"
 msgstr "Afegeix una regla"
 
-#: ../src/firewall-config.glade.h:177
+#: ../src/firewall-config.glade.h:177 ../src/firewall-config.glade.h:178
 msgid "Edit Rule"
 msgstr "Edita la regla"
 
-#: ../src/firewall-config.glade.h:178
+#: ../src/firewall-config.glade.h:178 ../src/firewall-config.glade.h:179
 msgid "Remove Rule"
 msgstr "Suprimeix la regla"
 
-#: ../src/firewall-config.glade.h:179
+#: ../src/firewall-config.glade.h:179 ../src/firewall-config.glade.h:176
 msgid ""
 "The priority is used to order rules. Priority 0 means add rule on top of the "
 "chain, with a higher priority the rule will be added further down. Rules "
@@ -1651,19 +1651,19 @@ msgstr ""
 "col·loquen en encadenaments especials. Es poden fer ús de totes les opcions "
 "d'iptables, d'ip6tables i d'ebtables."
 
-#: ../src/firewall-config.glade.h:182
+#: ../src/firewall-config.glade.h:182 ../src/firewall-config.glade.h:183
 msgid "Add Passthrough"
 msgstr "Afegeix un traspàs"
 
-#: ../src/firewall-config.glade.h:183
+#: ../src/firewall-config.glade.h:183 ../src/firewall-config.glade.h:184
 msgid "Edit Passthrough"
 msgstr "Edita el traspàs"
 
-#: ../src/firewall-config.glade.h:184
+#: ../src/firewall-config.glade.h:184 ../src/firewall-config.glade.h:185
 msgid "Remove Passthrough"
 msgstr "Suprimeix el traspàs"
 
-#: ../src/firewall-config.glade.h:185
+#: ../src/firewall-config.glade.h:185 ../src/firewall-config.glade.h:182
 msgid "Please be careful with passthrough rules to not damage the firewall."
 msgstr "Aneu amb compte amb les regles de traspàs per no danyar el tallafoc."
 
@@ -1826,7 +1826,6 @@ msgid "Please enter a rich rule."
 msgstr "Introduïu una regla d'enriquiment."
 
 #: ../src/firewall-config.glade.h:226
-#, fuzzy
 msgid "For host or network allow or denylisting deactivate the element."
 msgstr ""
 "Per a l'amfitrió o la xarxa en la llista blanca o en la llista negra "
