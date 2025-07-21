@@ -53,13 +53,53 @@
             <para>
                 A policy's relationship to zones is defined by assigning
                 a set of ingress zones and a set of egress zones.
-                For example, if the set of ingress zones contains "public" and
-                the set of egress zones contains "internal" then the policy will
-                affect all traffic flowing from the "public" zone to the "internal"
+                For example, if the set of ingress zones contains "internal" and
+                the set of egress zones contains "external" then the policy will
+                affect all traffic flowing from the "internal" zone to the "external"
                 zone. However, since policies are unidirectional it will not
-                apply to traffic flowing from "internal" to "public". Note that
-                the ingress set and egress set can contain multiple zones.
+                apply to traffic flowing from "external" to "internal".
+                The ingress set and egress set may contain multiple zones.
             </para>
+
+            <para>
+                Below as a visual representation of policy foobar followed by
+                the CLI commands to create it. This policy would affect traffic
+                flowing from the internal zone to the external zone. Initially,
+                the target is set to ACCEPT to allow all traffic. This is common
+                if the internal network is trusted.
+            </para>
+
+            <programlisting>
+                +----------+           +----------+
+                |          |  policy   |          |
+                | internal | --------> | external |
+                |   zone   |  foobar   |   zone   |
+                |          |           |          |
+                +----------+           +----------+
+            </programlisting>
+
+            <programlisting>
+                # firewall-cmd --permanent --new-policy foobar
+                # firewall-cmd --permanent --policy foobar --add-ingress-zone internal
+                # firewall-cmd --permanent --policy foobar --add-egress-zone external
+                # firewall-cmd --permanent --policy foobar --set-target ACCEPT
+                # firewall-cmd --reload
+            </programlisting>
+
+            <para>
+                Perhaps it makes sense to be more restrictive. This example
+                changes foobar so that it only allows: dns, http, and https
+                traffic. Everything else is blocked. Clients would only be
+                allowed to surf the web.
+            </para>
+
+            <programlisting>
+                # firewall-cmd --permanent --policy foobar --set-target REJECT
+                # firewall-cmd --permanent --policy foobar --add-service dns
+                # firewall-cmd --permanent --policy foobar --add-service http
+                # firewall-cmd --permanent --policy foobar --add-service https
+                # firewall-cmd --reload
+            </programlisting>
         </refsect2>
 
         <refsect2 id="activepolicies">
