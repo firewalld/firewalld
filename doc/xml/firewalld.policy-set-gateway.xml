@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN" "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd"
+[
+<!ENTITY authors SYSTEM "authors.xml">
+<!ENTITY seealso SYSTEM "seealso.xml">
+<!ENTITY notes SYSTEM "notes.xml">
+]>
+
+<!--
+  SPDX-License-Identifier: GPL-2.0-or-later
+
+  This file is part of firewalld.
+
+  Copyright (C) 2025 Red Hat, Inc.
+
+  Authors:
+  Eric Garver <eric@garver.life>
+-->
+
+<refentry id="firewalld.policy-set-gateway">
+
+    <refentryinfo>
+        <title>Firewalld Policy Set Gateway</title>
+        <productname>firewalld</productname>
+        &authors;
+    </refentryinfo>
+
+    <refmeta>
+        <refentrytitle>firewalld.policy-set-gateway</refentrytitle>
+        <manvolnum>5</manvolnum>
+    </refmeta>
+
+    <refnamediv>
+        <refname>firewalld.policy-set-gateway</refname>
+        <refpurpose>Firewalld Policy Set Gateway</refpurpose>
+    </refnamediv>
+
+    <refsect1 id="description">
+        <title>Description</title>
+
+        <refsect2 id="set-gateway">
+            <title>Policy Set: Gateway</title>
+
+            <para>
+                The Gateway policy set is a useful starting point for a home
+                router. It enables masquerading, conntrack helpers, and
+                forwarding between zones.
+            </para>
+
+            <para>
+                Zones used by this set are logically grouped. These groups name
+                are used by the predefined policies.
+            </para>
+            <programlisting>
+            +-----------+                  +-----------+
+            |    LAN    |                  |   WORLD   |
+            |-----------|                  |-----------|
+            | zones:    |                  | zones:    |
+            |  internal |                  |  external |
+            |  home     |                  |  public   |
+            |  trusted  |                  |           |
+            +-----------+                  +-----------+
+                  |                              |
+                  |                              |
+                  |         +-----------+        |
+                  +---------|   HOST    |--------+
+                            |-----------|
+                            | zones:    |
+                  +---------|  HOST     |--------+
+                  |         +-----------+        |
+                  |                              |
+                  |                              |
+            +-----------+                  +-----------+
+            |   WORK    |                  |    DMZ    |
+            |-----------|                  |-----------|
+            | zones:    |                  | zones:    |
+            |  work     |                  |  dmz      |
+            +-----------+                  +-----------+
+            </programlisting>
+        </refsect2>
+
+        <refsect2 id="policies-in-set">
+            <title>Policies in the Gateway set</title>
+
+            <variablelist>
+                <varlistentry>
+                <term>gateway-dmz-to-HOST</term>
+                <listitem>
+                    <para>
+                        Enables services commonly needed for a gateway,
+                        e.g. dns, dhcp.
+                    </para>
+                    <para>
+                        File location: <filename><config.prefix/>/lib/firewalld/policies/gateway-dmz-to-HOST.xml</filename>
+                    </para>
+                </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                <term>gateway-lan-to-work</term>
+                <listitem>
+                    <para>
+                        Allows all traffic from LAN to work. Enables
+                        masquerading and common connection tracking helpers.
+                    </para>
+                    <para>
+                        File location: <filename><config.prefix/>/lib/firewalld/policies/gateway-lan-to-work.xml</filename>
+                    </para>
+                </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                <term>gateway-lan-to-world</term>
+                <listitem>
+                    <para>
+                        Allows all traffic from LAN to world. If an
+                        interface is added to the "external" zone then the
+                        traffic will be masqueraded. Also enables connection
+                        tracking helpers for common services, e.g. ftp.
+                    </para>
+                    <para>
+                        File location: <filename><config.prefix/>/lib/firewalld/policies/gateway-lan-to-world.xml</filename>
+                    </para>
+                </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                <term>gateway-lan-to-HOST</term>
+                <listitem>
+                    <para>
+                        Enables services commonly needed for a gateway,
+                        e.g. dns, dhcp.
+                    </para>
+                    <para>
+                        File location: <filename><config.prefix/>/lib/firewalld/policies/gateway-lan-to-HOST.xml</filename>
+                    </para>
+                </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                <term>gateway-world-to-HOST</term>
+                <listitem>
+                    <para>
+                        May be used to expose internal/dmz services to the world
+                        by adding a forward port to this policy.
+                    </para>
+                    <para>
+                        Here is an example for adding a forward port. It forward
+                        port 8080 to 10.1.1.42:80.
+                        <programlisting>
+# firewall-cmd --permanent --policy gateway-world-to-HOST \
+               --add-forward-port=port=8080:proto=tcp:toport=80:toaddr=10.1.1.42
+# firewall-cmd --reload
+                        </programlisting>
+                    </para>
+                    <para>
+                        File location: <filename><config.prefix/>/lib/firewalld/policies/gateway-world-to-HOST.xml</filename>
+                    </para>
+                </listitem>
+                </varlistentry>
+            </variablelist>
+        </refsect2>
+
+    </refsect1>
+
+    &seealso;
+
+    &notes;
+
+</refentry>
