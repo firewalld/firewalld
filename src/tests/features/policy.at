@@ -96,9 +96,25 @@ FWD_END_TEST
 FWD_START_TEST([policy - name])
 AT_KEYWORDS(policy)
 
-dnl verify name length (18)
-FWD_CHECK([--permanent --new-policy 123456789012345678], 0, [ignore])
-FWD_CHECK([--permanent --new-policy 1234567890123456789], 116, [ignore], [ignore])
+dnl verify name length
+FWD_CHECK([--permanent --new-policy=$(head -c 128 /dev/zero |tr '\0' 'F')], 0, [ignore])
+FWD_CHECK([--permanent --new-policy=$(head -c 129 /dev/zero |tr '\0' 'F')], 116, [ignore], [ignore])
+
+dnl make it go active to verify runtime
+FWD_CHECK([--permanent --policy=$(head -c 128 /dev/zero |tr '\0' 'F') --add-ingress-zone ANY], 0, [ignore])
+FWD_CHECK([--permanent --policy=$(head -c 128 /dev/zero |tr '\0' 'F') --add-egress-zone HOST], 0, [ignore])
+FWD_CHECK([--permanent --policy=$(head -c 128 /dev/zero |tr '\0' 'F') --set-target ACCEPT], 0, [ignore])
+FWD_RELOAD()
+dnl iptables backend has to do some magic with chain names because it only
+dnl support 28 chars. Verify it works as expected.
+dnl NOTE: This depends on the random seed being initialized in Python.
+FWD_CHECK([--policy=$(head -c 128 /dev/zero |tr '\0' 'F') --add-service http], 0, [ignore])
+IPTABLES_LIST_RULES([filter], [eaeJ6G8R34yAWeJqtZuQQEPZ2mnQ], 0, [dnl
+    ACCEPT 6 -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:80
+])
+IP6TABLES_LIST_RULES([filter], [eaeJ6G8R34yAWeJqtZuQQEPZ2mnQ], 0, [dnl
+    ACCEPT 6 -- ::/0 ::/0 tcp dpt:80
+])
 
 dnl verify zone and policy can't have the same name.
 FWD_CHECK([--permanent --new-policy public], 26, [ignore], [ignore])
