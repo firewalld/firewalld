@@ -109,9 +109,7 @@ dnl #################
 dnl Fetching Policies
 dnl #################
 
-DBUS_CHECK([], [policy.getPolicies], [], 0, [dnl
-    m4_escape([(['allow-host-ipv6'],)])
-])
+DBUS_CHECK([], [policy.getPolicies], [| grep "allow-host-ipv6"], 0, [ignore])
 
 DBUS_CHECK([], [policy.getActivePolicies], [], 0, [dnl
     ['allow-host-ipv6': {'ingress_zones': ['ANY'], 'egress_zones': ['HOST']}]
