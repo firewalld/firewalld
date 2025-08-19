@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>wivrn</short>
+  <description>
+    The Linux OpenXR streaming application to standalone headsets 
+  </description>
+  <port port="5353" protocol="udp"/>
+  <port port="9757" protocol="udp"/>
+  <port port="9757" protocol="tcp"/>
+</service>
