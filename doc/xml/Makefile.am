@@ -29,6 +29,8 @@ man5_MANS = \
 	../man/man5/firewalld.zone.5 \
 	../man/man5/firewalld.zones.5 \
 	../man/man5/firewalld.policy.5 \
+	../man/man5/firewalld.policy-sets.5 \
+	../man/man5/firewalld.policy-set-gateway.5 \
 	../man/man5/firewalld.policies.5
 endif
 

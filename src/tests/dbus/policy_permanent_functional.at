@@ -10,9 +10,7 @@ NS_CHECK([sed -e ["s/['][,]/'\n/g"] ./stdout |dnl
           sed -e ["s/.*config\/policy\/\([^']\+\)['].*/\1/"] |dnl
           while read LINE; do { echo "${LINE}" | grep ["^[0-9]\+$"] ; } || exit 1; done], 0, [ignore])
 
-DBUS_CHECK([config], [config.getPolicyNames], [], 0, [dnl
-    m4_escape([(['allow-host-ipv6'],)])
-])
+DBUS_CHECK([config], [config.getPolicyNames], [| grep "allow-host-ipv6"], 0, [ignore])
 
 DBUS_CHECK([config], [config.getPolicyByName], ["allow-host-ipv6"], 0, [stdout])
 NS_CHECK([sed -e ["s/.*config\/policy\/\([^']\+\)['].*/\1/"] ./stdout | grep ["^[0-9]\+$"]], 0, [ignore])
