@@ -1213,6 +1213,9 @@ options_policy_unique = (
     or a.add_egress_zone
     or a.remove_egress_zone
     or a.query_egress_zone
+    or a.add_disable
+    or a.remove_disable
+    or a.query_disable
 )
 
 options_policy_ops = options_policy_unique or options_zone_and_policy_adapt_query
