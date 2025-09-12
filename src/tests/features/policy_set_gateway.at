@@ -1,0 +1,51 @@
+m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
+FWD_START_TEST([policy set - gateway])
+AT_KEYWORDS(policy RHEL-115518)
+START_TEST_TOPOLOGY()
+
+dnl We use various tools to do functional tests.
+AT_SKIP_IF([! NS_CMD([which python3])])
+AT_SKIP_IF([! NS_CMD([which curl])])
+
+FWD_CHECK([--policy-set gateway --remove-disable], 0, [ignore])
+
+dnl test forward port
+dnl
+echo "Hello World!" > index.html
+TEST_TOPOLOGY_CMD([internal], [python3 -m http.server 8080 &])
+echo "kill $!" >> ./cleanup
+WAIT_UNTIL([NS_CMD([curl http://10.5.0.2:8080/index.html])])
+dnl
+FWD_CHECK([--policy gateway-world-to-HOST --add-forward-port=port=80:proto=tcp:toport=8080:toaddr=10.5.0.2], 0, [ignore])
+TEST_TOPOLOGY_CHECK([external], [curl http://10.3.0.1/index.html], 0, [ignore], [ignore])
+TEST_TOPOLOGY_CHECK([public], [curl http://10.6.0.1/index.html], 0, [ignore], [ignore])
+
+dnl test masquerade
+dnl
+echo "Hello World!" > index.html
+TEST_TOPOLOGY_CMD([external], [python3 -m http.server 8080 2> ./httpd_log_external &])
+echo "kill $!" >> ./cleanup
+WAIT_UNTIL([NS_CMD([curl http://10.3.0.2:8080/index.html])])
+dnl
+TEST_TOPOLOGY_CHECK([internal], [curl http://10.3.0.2:8080/index.html], 0, [ignore], [ignore])
+dnl the "source" will be 10.3.0.1 since it was masqueraded
+TEST_TOPOLOGY_CHECK([external], [awk '{print $1}' ./httpd_log_external], 0, [dnl
+::ffff:10.3.0.1
+::ffff:10.3.0.1
+])
+
+dnl test non-masquerade (public)
+dnl
+echo "Hello World!" > index.html
+TEST_TOPOLOGY_CMD([public], [python3 -m http.server 8080 2> ./httpd_log_public &])
+echo "kill $!" >> ./cleanup
+WAIT_UNTIL([NS_CMD([curl http://10.6.0.2:8080/index.html])])
+dnl
+TEST_TOPOLOGY_CHECK([internal], [curl http://10.6.0.2:8080/index.html], 0, [ignore], [ignore])
+TEST_TOPOLOGY_CHECK([external], [awk '{print $1}' ./httpd_log_public], 0, [dnl
+::ffff:10.6.0.1
+::ffff:10.5.0.2
+])
+
+FWD_END_TEST()
+])
