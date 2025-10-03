@@ -1172,9 +1172,11 @@ NFT_LIST_RULES([inet], [mangle_PREROUTING_POLICIES], 0, [dnl
             iifname "foobar1" jump mangle_PRE_internal
             iifname "foobar1" return
             iifname "foobar0" jump mangle_PRE_policy_allow-host-ipv6
+            iifname "foobar0" jump mangle_PRE_policy_foobar
             iifname "foobar0" jump mangle_PRE_public
             iifname "foobar0" return
             jump mangle_PRE_policy_allow-host-ipv6
+            jump mangle_PRE_policy_foobar
             jump mangle_PRE_public
             return
         }
@@ -1185,9 +1187,11 @@ IPTABLES_LIST_RULES([mangle], [PREROUTING_POLICIES], 0, [dnl
     PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
     RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
     RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
     RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
@@ -1196,9 +1200,11 @@ IP6TABLES_LIST_RULES([mangle], [PREROUTING_POLICIES], 0, [dnl
     PRE_internal 0 -- ::/0 ::/0
     RETURN 0 -- ::/0 ::/0
     PRE_allow-host-ipv6 0 -- ::/0 ::/0
+    PRE_foobar 0 -- ::/0 ::/0
     PRE_public 0 -- ::/0 ::/0
     RETURN 0 -- ::/0 ::/0
     PRE_allow-host-ipv6 0 -- ::/0 ::/0
+    PRE_foobar 0 -- ::/0 ::/0
     PRE_public 0 -- ::/0 ::/0
     RETURN 0 -- ::/0 ::/0
 ])
@@ -1210,9 +1216,11 @@ NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES], 0, [dnl
             iifname "foobar1" jump nat_PRE_internal
             iifname "foobar1" return
             iifname "foobar0" jump nat_PRE_policy_allow-host-ipv6
+            iifname "foobar0" jump nat_PRE_policy_foobar
             iifname "foobar0" jump nat_PRE_public
             iifname "foobar0" return
             jump nat_PRE_policy_allow-host-ipv6
+            jump nat_PRE_policy_foobar
             jump nat_PRE_public
             return
         }
@@ -1223,9 +1231,11 @@ IPTABLES_LIST_RULES([nat], [PREROUTING_POLICIES], 0, [dnl
     PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
     RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
     RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
     RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
@@ -1234,9 +1244,11 @@ IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES], 0, [dnl
     PRE_internal 0 -- ::/0 ::/0
     RETURN 0 -- ::/0 ::/0
     PRE_allow-host-ipv6 0 -- ::/0 ::/0
+    PRE_foobar 0 -- ::/0 ::/0
     PRE_public 0 -- ::/0 ::/0
     RETURN 0 -- ::/0 ::/0
     PRE_allow-host-ipv6 0 -- ::/0 ::/0
+    PRE_foobar 0 -- ::/0 ::/0
     PRE_public 0 -- ::/0 ::/0
     RETURN 0 -- ::/0 ::/0
 ])
