@@ -1916,7 +1916,7 @@ class FirewallPolicy:
             return tc
         elif "HOST" in obj.egress_zones:
             # zone --> HOST
-            tc = [("filter", "INPUT")]
+            tc = [("filter", "INPUT"), ("nat", "PREROUTING"), ("mangle", "PREROUTING")]
             # iptables backend needs to put conntrack helper rules in raw
             # prerouting.
             if not self._fw.nftables_enabled:
