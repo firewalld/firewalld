@@ -734,3 +734,18 @@ m4_define([CHECK_NM_CAPABILITY_OVS], [
 m4_define([IF_BACKEND_IS_DEFAULT], [
     m4_if(nftables, FIREWALL_BACKEND, [$1], [])
 ])
+
+dnl $1 = command to run until zero exit code
+m4_define([WAIT_UNTIL], [
+    _fail=1
+    _timeout=120
+    for I in $(seq ${_timeout}); do
+        { $1 ; } && { _fail=0; break; }
+        sleep 1
+    done
+    if test ${_fail} -gt 0; then
+        printf "FAIL: Command failed succeed in ${_timeout} seconds:\n"
+        printf "  $1\n"
+        AT_FAIL_IF([:])
+    fi
+])
