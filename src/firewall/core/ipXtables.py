@@ -1998,6 +1998,7 @@ class ip6tables(ip4tables):
                 ]
                 + rpfilter_fragment
                 + [
+                    "%%LOGTYPE%%",
                     "-j",
                     "LOG",
                     "--log-prefix",
