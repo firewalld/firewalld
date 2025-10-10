@@ -1297,6 +1297,35 @@
         </listitem>
       </varlistentry>
 
+      <!-- add/remove/query disable -->
+      <varlistentry>
+        <term><option>--policy</option>=<replaceable>policy</replaceable>|<option>--policy-set</option>=<replaceable>policy-set</replaceable> <option>--add-disable</option></term>
+        <listitem>
+          <para>
+            Administratively disable a policy. A disabled policy will not activate.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><option>--policy</option>=<replaceable>policy</replaceable>|<option>--policy-set</option>=<replaceable>policy-set</replaceable> <option>--remove-disable</option></term>
+        <listitem>
+          <para>
+            Remove the administratively disable from a policy. Allows a policy
+            to activate.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><option>--policy</option>=<replaceable>policy</replaceable> <option>--query-disable</option></term>
+        <listitem>
+          <para>
+            Return if the policy is administratively disabled.
+          </para>
+        </listitem>
+      </varlistentry>
+
       </variablelist>
     </refsect2>
 

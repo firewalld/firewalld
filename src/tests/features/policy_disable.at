@@ -1,0 +1,405 @@
+FWD_START_TEST([policy - disable XML])
+AT_KEYWORDS(policy disable xml RHEL-70357)
+
+AT_CHECK([mkdir -p ./policies])
+
+AT_DATA([./policies/foobar.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<policy target="CONTINUE" priority="-123">
+<short>foobar</short>
+<description>foobar policy</description>
+<ingress-zone name="public" />
+<egress-zone name="ANY" />
+<disable />
+<masquerade />
+<protocol value="ipv6-icmp" />
+</policy>
+])
+FWD_CHECK([--check-config], 0, [ignore], [ignore])
+FWD_RELOAD()
+
+FWD_END_TEST()
+
+dnl ###################
+dnl ###################
+dnl ###################
+
+FWD_START_TEST([policy - CLI disable])
+AT_KEYWORDS(policy disable)
+
+FWD_CHECK([--permanent --zone internal --add-interface foo], 0, [ignore])
+FWD_CHECK([--permanent --zone external --add-interface bar], 0, [ignore])
+
+dnl a single policy
+FWD_CHECK([--permanent --new-policy foobar], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar --add-ingress-zone internal], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar --add-egress-zone external], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar --add-service https], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar --add-disable], 0, [ignore])
+
+dnl a policy set
+FWD_CHECK([--permanent --new-policy group-one], 0, [ignore])
+FWD_CHECK([--permanent --policy group-one --add-ingress-zone internal], 0, [ignore])
+FWD_CHECK([--permanent --policy group-one --add-egress-zone external], 0, [ignore])
+FWD_CHECK([--permanent --policy group-one --add-service https], 0, [ignore])
+FWD_CHECK([--permanent --policy group-one --add-disable], 0, [ignore])
+FWD_CHECK([--permanent --new-policy group-two], 0, [ignore])
+FWD_CHECK([--permanent --policy group-two --add-ingress-zone external], 0, [ignore])
+FWD_CHECK([--permanent --policy group-two --add-egress-zone internal], 0, [ignore])
+FWD_CHECK([--permanent --policy group-two --add-service ssh], 0, [ignore])
+FWD_CHECK([--permanent --policy group-two --add-disable], 0, [ignore])
+
+FWD_RELOAD()
+
+dnl --policy-set only allows a small subset of options. Verify others are
+dnl denied.
+FWD_CHECK([--policy-set group --add-interface foo], 2, [ignore], [ignore])
+FWD_CHECK([--policy-set group --add-service ssh], 2, [ignore], [ignore])
+
+dnl remove permanent disable
+FWD_CHECK([--permanent --policy foobar --remove-disable], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar --query-disable], 1, [dnl
+no
+])
+FWD_CHECK([--permanent --info-policy foobar | TRIM_WHITESPACE], 0, [m4_strip([dnl
+foobar
+  disable: no
+  priority: -1
+  target: CONTINUE
+  ingress-zones: internal
+  egress-zones: external
+  services: https
+  ports:
+  protocols:
+  masquerade: no
+  forward-ports:
+  source-ports:
+  icmp-blocks:
+  rich rules:
+])])
+FWD_CHECK([--permanent --policy group-one --remove-disable], 0, [ignore])
+FWD_CHECK([--permanent --policy group-one --query-disable], 1, [dnl
+no
+])
+FWD_CHECK([--permanent --info-policy group-one | TRIM_WHITESPACE], 0, [m4_strip([dnl
+group-one
+  disable: no
+  priority: -1
+  target: CONTINUE
+  ingress-zones: internal
+  egress-zones: external
+  services: https
+  ports:
+  protocols:
+  masquerade: no
+  forward-ports:
+  source-ports:
+  icmp-blocks:
+  rich rules:
+])])
+FWD_CHECK([--permanent --policy group-one --add-disable], 0, [ignore])
+FWD_CHECK([--permanent --policy-set group --remove-disable], 0, [ignore])
+FWD_CHECK([--permanent --policy group-one --query-disable], 1, [dnl
+no
+])
+FWD_CHECK([--permanent --info-policy group-one | TRIM_WHITESPACE], 0, [m4_strip([dnl
+group-one
+  disable: no
+  priority: -1
+  target: CONTINUE
+  ingress-zones: internal
+  egress-zones: external
+  services: https
+  ports:
+  protocols:
+  masquerade: no
+  forward-ports:
+  source-ports:
+  icmp-blocks:
+  rich rules:
+])])
+FWD_CHECK([--permanent --policy group-two --query-disable], 1, [dnl
+no
+])
+FWD_CHECK([--permanent --info-policy group-two | TRIM_WHITESPACE], 0, [m4_strip([dnl
+group-two
+  disable: no
+  priority: -1
+  target: CONTINUE
+  ingress-zones: external
+  egress-zones: internal
+  services: ssh
+  ports:
+  protocols:
+  masquerade: no
+  forward-ports:
+  source-ports:
+  icmp-blocks:
+  rich rules:
+])])
+
+dnl re-add permanent disable
+FWD_CHECK([--permanent --policy foobar --add-disable], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar --query-disable], 0, [dnl
+yes
+])
+FWD_CHECK([--permanent --info-policy foobar | TRIM_WHITESPACE], 0, [m4_strip([dnl
+foobar
+  disable: yes
+  priority: -1
+  target: CONTINUE
+  ingress-zones: internal
+  egress-zones: external
+  services: https
+  ports:
+  protocols:
+  masquerade: no
+  forward-ports:
+  source-ports:
+  icmp-blocks:
+  rich rules:
+])])
+FWD_CHECK([--permanent --policy group-one --add-disable], 0, [ignore])
+FWD_CHECK([--permanent --policy group-one --query-disable], 0, [dnl
+yes
+])
+FWD_CHECK([--permanent --info-policy group-one | TRIM_WHITESPACE], 0, [m4_strip([dnl
+group-one
+  disable: yes
+  priority: -1
+  target: CONTINUE
+  ingress-zones: internal
+  egress-zones: external
+  services: https
+  ports:
+  protocols:
+  masquerade: no
+  forward-ports:
+  source-ports:
+  icmp-blocks:
+  rich rules:
+])])
+FWD_CHECK([--permanent --policy group-one --remove-disable], 0, [ignore])
+FWD_CHECK([--permanent --policy-set group --add-disable], 0, [ignore])
+FWD_CHECK([--permanent --policy group-one --query-disable], 0, [dnl
+yes
+])
+FWD_CHECK([--permanent --info-policy group-one | TRIM_WHITESPACE], 0, [m4_strip([dnl
+group-one
+  disable: yes
+  priority: -1
+  target: CONTINUE
+  ingress-zones: internal
+  egress-zones: external
+  services: https
+  ports:
+  protocols:
+  masquerade: no
+  forward-ports:
+  source-ports:
+  icmp-blocks:
+  rich rules:
+])])
+FWD_CHECK([--permanent --policy group-two --query-disable], 0, [dnl
+yes
+])
+FWD_CHECK([--permanent --info-policy group-two | TRIM_WHITESPACE], 0, [m4_strip([dnl
+group-two
+  disable: yes
+  priority: -1
+  target: CONTINUE
+  ingress-zones: external
+  egress-zones: internal
+  services: ssh
+  ports:
+  protocols:
+  masquerade: no
+  forward-ports:
+  source-ports:
+  icmp-blocks:
+  rich rules:
+])])
+
+dnl remove runtime disable
+FWD_CHECK([--policy foobar --remove-disable], 0, [ignore])
+FWD_CHECK([--policy foobar --query-disable], 1, [dnl
+no
+])
+FWD_CHECK([--info-policy foobar | TRIM_WHITESPACE], 0, [m4_strip([dnl
+foobar (active)
+  disable: no
+  priority: -1
+  target: CONTINUE
+  ingress-zones: internal
+  egress-zones: external
+  services: https
+  ports:
+  protocols:
+  masquerade: no
+  forward-ports:
+  source-ports:
+  icmp-blocks:
+  rich rules:
+])])
+FWD_CHECK([--policy group-one --remove-disable], 0, [ignore])
+FWD_CHECK([--policy group-one --query-disable], 1, [dnl
+no
+])
+FWD_CHECK([--info-policy group-one | TRIM_WHITESPACE], 0, [m4_strip([dnl
+group-one (active)
+  disable: no
+  priority: -1
+  target: CONTINUE
+  ingress-zones: internal
+  egress-zones: external
+  services: https
+  ports:
+  protocols:
+  masquerade: no
+  forward-ports:
+  source-ports:
+  icmp-blocks:
+  rich rules:
+])])
+FWD_CHECK([--policy group-one --add-disable], 0, [ignore])
+FWD_CHECK([--policy-set group --remove-disable], 0, [ignore])
+FWD_CHECK([--policy group-one --query-disable], 1, [dnl
+no
+])
+FWD_CHECK([--info-policy group-one | TRIM_WHITESPACE], 0, [m4_strip([dnl
+group-one (active)
+  disable: no
+  priority: -1
+  target: CONTINUE
+  ingress-zones: internal
+  egress-zones: external
+  services: https
+  ports:
+  protocols:
+  masquerade: no
+  forward-ports:
+  source-ports:
+  icmp-blocks:
+  rich rules:
+])])
+FWD_CHECK([--policy group-two --query-disable], 1, [dnl
+no
+])
+FWD_CHECK([--info-policy group-two | TRIM_WHITESPACE], 0, [m4_strip([dnl
+group-two (active)
+  disable: no
+  priority: -1
+  target: CONTINUE
+  ingress-zones: external
+  egress-zones: internal
+  services: ssh
+  ports:
+  protocols:
+  masquerade: no
+  forward-ports:
+  source-ports:
+  icmp-blocks:
+  rich rules:
+])])
+NFT_LIST_RULES([inet], [filter_FWD_policy_foobar], 0, [ignore])
+IPTABLES_LIST_RULES([filter], [FWD_foobar], 0, [ignore])
+IP6TABLES_LIST_RULES([filter], [FWD_foobar], 0, [ignore])
+NFT_LIST_RULES([inet], [filter_FWD_policy_group-one], 0, [ignore])
+IPTABLES_LIST_RULES([filter], [FWD_group-one], 0, [ignore])
+IP6TABLES_LIST_RULES([filter], [FWD_group-one], 0, [ignore])
+NFT_LIST_RULES([inet], [filter_FWD_policy_group-two], 0, [ignore])
+IPTABLES_LIST_RULES([filter], [FWD_group-two], 0, [ignore])
+IP6TABLES_LIST_RULES([filter], [FWD_group-one], 0, [ignore])
+
+dnl re-add runtime disable
+FWD_CHECK([--policy foobar --add-disable], 0, [ignore])
+FWD_CHECK([--policy foobar --query-disable], 0, [dnl
+yes
+])
+FWD_CHECK([--info-policy foobar | TRIM_WHITESPACE], 0, [m4_strip([dnl
+foobar (disabled)
+  disable: yes
+  priority: -1
+  target: CONTINUE
+  ingress-zones: internal
+  egress-zones: external
+  services: https
+  ports:
+  protocols:
+  masquerade: no
+  forward-ports:
+  source-ports:
+  icmp-blocks:
+  rich rules:
+])])
+FWD_CHECK([--policy group-one --add-disable], 0, [ignore])
+FWD_CHECK([--policy group-one --query-disable], 0, [dnl
+yes
+])
+FWD_CHECK([--info-policy group-one | TRIM_WHITESPACE], 0, [m4_strip([dnl
+group-one (disabled)
+  disable: yes
+  priority: -1
+  target: CONTINUE
+  ingress-zones: internal
+  egress-zones: external
+  services: https
+  ports:
+  protocols:
+  masquerade: no
+  forward-ports:
+  source-ports:
+  icmp-blocks:
+  rich rules:
+])])
+FWD_CHECK([--policy group-one --remove-disable], 0, [ignore])
+FWD_CHECK([--policy-set group --add-disable], 0, [ignore])
+FWD_CHECK([--policy group-one --query-disable], 0, [dnl
+yes
+])
+FWD_CHECK([--info-policy group-one | TRIM_WHITESPACE], 0, [m4_strip([dnl
+group-one (disabled)
+  disable: yes
+  priority: -1
+  target: CONTINUE
+  ingress-zones: internal
+  egress-zones: external
+  services: https
+  ports:
+  protocols:
+  masquerade: no
+  forward-ports:
+  source-ports:
+  icmp-blocks:
+  rich rules:
+])])
+FWD_CHECK([--policy group-two --query-disable], 0, [dnl
+yes
+])
+FWD_CHECK([--info-policy group-two | TRIM_WHITESPACE], 0, [m4_strip([dnl
+group-two (disabled)
+  disable: yes
+  priority: -1
+  target: CONTINUE
+  ingress-zones: external
+  egress-zones: internal
+  services: ssh
+  ports:
+  protocols:
+  masquerade: no
+  forward-ports:
+  source-ports:
+  icmp-blocks:
+  rich rules:
+])])
+NFT_LIST_RULES([inet], [filter_FWD_policy_foobar], 1, [ignore], [ignore])
+IPTABLES_LIST_RULES([filter], [FWD_foobar], 1, [ignore], [ignore])
+IP6TABLES_LIST_RULES([filter], [FWD_foobar], 1, [ignore], [ignore])
+NFT_LIST_RULES([inet], [filter_FWD_policy_group-one], 1, [ignore], [ignore])
+IPTABLES_LIST_RULES([filter], [FWD_group-one], 1, [ignore], [ignore])
+IP6TABLES_LIST_RULES([filter], [FWD_group-one], 1, [ignore], [ignore])
+NFT_LIST_RULES([inet], [filter_FWD_policy_group-two], 1, [ignore], [ignore])
+IPTABLES_LIST_RULES([filter], [FWD_group-two], 1, [ignore], [ignore])
+IP6TABLES_LIST_RULES([filter], [FWD_group-two], 1, [ignore], [ignore])
+
+FWD_END_TEST()

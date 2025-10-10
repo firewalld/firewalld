@@ -496,6 +496,22 @@ def common_check_config(obj, config, item, all_config, all_io_objects):
                             obj_type, obj.name, obj_rich.element.name
                         ),
                     )
+            elif obj_rich.source and obj_rich.source.ipset:
+                if obj_rich.source.ipset not in all_io_objects["ipsets"]:
+                    raise FirewallError(
+                        errors.INVALID_IPSET,
+                        "{} '{}': '{}' not among existing ipsets".format(
+                            obj_type, obj.name, obj_rich.source.ipset
+                        ),
+                    )
+            elif obj_rich.destination and obj_rich.destination.ipset:
+                if obj_rich.destination.ipset not in all_io_objects["ipsets"]:
+                    raise FirewallError(
+                        errors.INVALID_IPSET,
+                        "{} '{}': '{}' not among existing ipsets".format(
+                            obj_type, obj.name, obj_rich.destination.ipset
+                        ),
+                    )
 
 
 def _handler_add_rich_limit(handler, limit):
@@ -769,6 +785,7 @@ class Policy(IO_Object):
         "priority": 0,  # i
         "ingress_zones": [""],  # as
         "egress_zones": [""],  # as
+        "disable": False,  # b
     }
     ADDITIONAL_ALNUM_CHARS = ["_", "-", "/"]
     PARSER_REQUIRED_ELEMENT_ATTRS = {
@@ -796,6 +813,7 @@ class Policy(IO_Object):
         "limit": ["value"],
         "ingress-zone": ["name"],
         "egress-zone": ["name"],
+        "disable": None,
     }
     PARSER_OPTIONAL_ELEMENT_ATTRS = {
         "policy": ["version", "priority"],
@@ -830,6 +848,7 @@ class Policy(IO_Object):
         self.derived_from_zone = None
         self.ingress_zones = []
         self.egress_zones = []
+        self.disable = False
 
     def cleanup(self):
         self.version = ""
@@ -849,6 +868,7 @@ class Policy(IO_Object):
         self.priority = self.priority_default
         del self.ingress_zones[:]
         del self.egress_zones[:]
+        self.disable = False
 
     def __getattr__(self, name):
         if name == "rich_rules":
@@ -1178,6 +1198,9 @@ class policy_ContentHandler(IO_Object_ContentHandler):
             )
             return
 
+        elif name == "disable":
+            self.item.disable = True
+
         else:
             raise FirewallError(errors.INVALID_POLICY, f"Unknown XML element '{name}'.")
 
@@ -1265,6 +1288,11 @@ def policy_writer(policy, path=None):
     for zone in uniqify(policy.egress_zones):
         handler.ignorableWhitespace("  ")
         handler.simpleElement("egress-zone", {"name": zone})
+        handler.ignorableWhitespace("\n")
+
+    if policy.disable:
+        handler.ignorableWhitespace("  ")
+        handler.simpleElement("disable", {})
         handler.ignorableWhitespace("\n")
 
     # end policy element

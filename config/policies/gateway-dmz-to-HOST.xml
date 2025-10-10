@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<policy target="CONTINUE" priority="1000">
+  <short>Set Gateway - DMZ to HOST</short>
+  <description>
+    Part of the policy set "gateway". Enables services commonly needed for a
+    gateway, e.g. dns, dhcp.
+  </description>
+  <disable />
+
+  <ingress-zone name="dmz" />
+  <egress-zone name="HOST" />
+
+  <service name="dns" />
+  <service name="dhcp" />
+</policy>

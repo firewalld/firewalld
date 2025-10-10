@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN" "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd"
+[
+<!ENTITY authors SYSTEM "authors.xml">
+<!ENTITY seealso SYSTEM "seealso.xml">
+<!ENTITY notes SYSTEM "notes.xml">
+]>
+
+<!--
+  SPDX-License-Identifier: GPL-2.0-or-later
+
+  This file is part of firewalld.
+
+  Copyright (C) 2025 Red Hat, Inc.
+
+  Authors:
+  Eric Garver <eric@garver.life>
+-->
+
+<refentry id="firewalld.policy-sets">
+
+    <refentryinfo>
+        <title>Firewalld Policy Sets</title>
+        <productname>firewalld</productname>
+        &authors;
+    </refentryinfo>
+
+    <refmeta>
+        <refentrytitle>firewalld.policy-sets</refentrytitle>
+        <manvolnum>5</manvolnum>
+    </refmeta>
+
+    <refnamediv>
+        <refname>firewalld.policy-sets</refname>
+        <refpurpose>Policy Sets</refpurpose>
+    </refnamediv>
+
+    <refsect1 id="description">
+        <title>Description</title>
+
+        <refsect2>
+            <title>What Are Policy Sets?</title>
+
+            <para>
+              Policy sets are collections of policies that serve as starting
+              configuration for specific use cases, e.g. a home router. They
+              provide an easy way to get started. Users may then fine tune the
+              configuration for their environment. Every policy set has a
+              dedicated man page to explain its use case.
+            </para>
+
+            <para>
+              All policy sets shipped by firewalld are administratively disabled
+              by default. Using them is a matter of adding your interfaces to
+              zones and removing the disable.
+            </para>
+        </refsect2>
+
+        <refsect2>
+            <title>Enabling a Policy Set</title>
+
+            <para>
+              Below is a complete example for using the gateway policy set. In
+              this example: eth0 is the LAN interface, and eth1 is the uplink to
+              the internet.
+            </para>
+
+            <programlisting>
+	      # firewall-cmd --permanent --zone internal eth0
+	      # firewall-cmd --permanent --zone external eth1
+	      # firewall-cmd --permanent --policy-set gateway --remove-disable
+	      # firewall-cmd --reload
+            </programlisting>
+        </refsect2>
+
+        <refsect2>
+            <title>Enabling Multiple Policy Sets</title>
+            <para>
+              Policy sets are guaranteed to interoperate. Multiple policy sets
+              may be enabled simultaneously.
+            </para>
+        </refsect2>
+
+        <refsect2>
+            <title>Existing Policy Sets</title>
+
+            <variablelist>
+                <varlistentry>
+                <term>gateway</term>
+                <listitem>
+                    <para>
+                      Provides basic functionality for a gateway, e.g. a home
+                      router. See
+                      <citerefentry>
+                        <refentrytitle>firewalld.policy-set-gateway</refentrytitle>
+                        <manvolnum>5</manvolnum>
+                      </citerefentry>.
+                    </para>
+                </listitem>
+                </varlistentry>
+            </variablelist>
+        </refsect2>
+
+    </refsect1>
+
+    &seealso;
+
+    &notes;
+
+</refentry>

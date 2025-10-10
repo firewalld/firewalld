@@ -128,6 +128,11 @@ CONFIG_FILES = \
 	icmptypes/unknown-option.xml \
 	ipsets/README.md \
 	policies/allow-host-ipv6.xml \
+	policies/gateway-dmz-to-HOST.xml \
+	policies/gateway-lan-to-HOST.xml \
+	policies/gateway-lan-to-work.xml \
+	policies/gateway-lan-to-world.xml \
+	policies/gateway-world-to-HOST.xml \
 	services/0-AD.xml \
 	services/afp.xml \
 	services/alvr.xml \

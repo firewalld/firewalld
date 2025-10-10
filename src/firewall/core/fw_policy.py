@@ -74,6 +74,8 @@ class FirewallPolicy:
         active_policies = []
         for policy in self.get_policies_not_derived_from_zone():
             p_obj = self.get_policy(policy)
+            if p_obj.disable:
+                continue
             if (
                 set(p_obj.ingress_zones)
                 & set(self._fw.zone.get_active_zones() + ["HOST", "ANY"])
@@ -231,6 +233,7 @@ class FirewallPolicy:
             "source_ports": (self.add_source_port, self.remove_source_port),
             "ingress_zones": (self.add_ingress_zone, self.remove_ingress_zone),
             "egress_zones": (self.add_egress_zone, self.remove_egress_zone),
+            "disable": (self.add_disable, self.remove_disable),
         }
 
         # do a full config check on a temporary object before trying to make
@@ -923,6 +926,51 @@ class FirewallPolicy:
 
     def query_masquerade(self, policy):
         return self.get_policy(policy).masquerade
+
+    def add_disable(self, policy, timeout=0, sender=None):
+        _policy = self._fw.check_policy(policy)
+        self._fw.check_timeout(timeout)
+        self._fw.check_panic()
+        _obj = self._policies[_policy]
+
+        if _obj.disable:
+            raise FirewallError(
+                errors.ALREADY_ENABLED, f"{_policy} is already disabled"
+            )
+
+        with self.with_transaction() as transaction:
+            transaction.add_post(self.__register_disable, _obj, timeout, sender)
+
+            if _obj.applied:
+                self.unapply_policy_settings(_policy, transaction)
+
+        return _policy
+
+    def __register_disable(self, _obj, timeout, sender):
+        _obj.disable = True
+
+    def remove_disable(self, policy):
+        _policy = self._fw.check_policy(policy)
+        self._fw.check_panic()
+        _obj = self._policies[_policy]
+
+        if not _obj.disable:
+            raise FirewallError(errors.NOT_ENABLED, f"{_policy} is not disabled")
+
+        with self.with_transaction() as transaction:
+            self.__unregister_disable(_obj)
+            transaction.add_fail(self.__register_disable, _obj, 0, None)
+
+            if not _obj.applied:
+                self.try_apply_policy_settings(_policy, use_transaction=transaction)
+
+        return _policy
+
+    def __unregister_disable(self, _obj):
+        _obj.disable = False
+
+    def query_disable(self, policy):
+        return self.get_policy(policy).disable
 
     # PORT FORWARDING
 
@@ -1916,7 +1964,7 @@ class FirewallPolicy:
             return tc
         elif "HOST" in obj.egress_zones:
             # zone --> HOST
-            tc = [("filter", "INPUT")]
+            tc = [("filter", "INPUT"), ("nat", "PREROUTING"), ("mangle", "PREROUTING")]
             # iptables backend needs to put conntrack helper rules in raw
             # prerouting.
             if not self._fw.nftables_enabled:

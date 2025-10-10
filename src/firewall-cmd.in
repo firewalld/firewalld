@@ -111,6 +111,9 @@ Policy Options
                        Load policy default settings
   --policy=<policy>    Use this policy to set or query options
                        Usable for options marked with [O]
+  --policy-set=<policy>
+                       Modify this set of policies
+                       Usable for a subset of policy options, e.g. --remove-disable
   --info-policy=<policy>
                        Print information about a policy
   --path-policy=<policy>
@@ -366,6 +369,12 @@ Options to Adapt and Query Policies
   --query-egress-zone=<zone>
                        Query whether the egress zone has been adedd to a
                        policy [P] [O]
+  --add-disable
+                       Disable the policy so it does not activate [P] [O]
+  --remove-disable
+                       Do not disable the policy so it may activate [P] [O]
+  --query-disable
+                       Query whether policy is disabled [P] [O]
 
 Options to Handle Bindings of Interfaces
   --list-interfaces    List interfaces that are bound to a zone [P] [Z]
@@ -672,6 +681,7 @@ parser_group_lockdown_whitelist.add_argument(
 parser.add_argument("--permanent", action="store_true")
 parser.add_argument("--zone", default="", metavar="<zone>")
 parser.add_argument("--policy", default="", metavar="<policy>")
+parser.add_argument("--policy-set", default="", metavar="<policy>")
 parser.add_argument("--timeout", default="0", metavar="<seconds>")
 
 parser_group_zone_or_policy = parser.add_mutually_exclusive_group()
@@ -772,6 +782,9 @@ parser_group_zone_or_policy.add_argument("--query-forward", action="store_true")
 parser_group_zone_or_policy.add_argument("--add-masquerade", action="store_true")
 parser_group_zone_or_policy.add_argument("--remove-masquerade", action="store_true")
 parser_group_zone_or_policy.add_argument("--query-masquerade", action="store_true")
+parser_group_zone_or_policy.add_argument("--add-disable", action="store_true")
+parser_group_zone_or_policy.add_argument("--remove-disable", action="store_true")
+parser_group_zone_or_policy.add_argument("--query-disable", action="store_true")
 parser_group_zone_or_policy.add_argument(
     "--add-icmp-block", metavar="<icmptype>", action="append"
 )
@@ -1128,6 +1141,9 @@ options_policy_unique = (
     or a.add_egress_zone
     or a.remove_egress_zone
     or a.query_egress_zone
+    or a.add_disable
+    or a.remove_disable
+    or a.query_disable
 )
 
 options_policy_ops = options_policy_unique or options_zone_and_policy_adapt_query
@@ -1398,6 +1414,12 @@ if options_config and (options_zone or options_policy):
         + "Wrong usage of --get-zones | --get-services | --get-icmptypes | --get-policies."
     )
 
+if a.policy_set and not (a.add_disable or a.remove_disable):
+    cmd.fail(
+        parser.format_usage()
+        + "Option --policy-set may only be used with --add-disable or --remove-disable."
+    )
+
 if a.timeout != "0":
     value = 0
     unit = "s"
@@ -1481,8 +1503,11 @@ if a.policy and options_zone_unique:
 if a.zone and options_policy_unique:
     cmd.fail(parser.format_usage() + "Can't use --zone with policy only options.")
 
-if not a.policy and options_policy_unique:
-    cmd.fail(parser.format_usage() + "Must use --policy with policy only options.")
+if not a.policy and not a.policy_set and options_policy_unique:
+    cmd.fail(
+        parser.format_usage()
+        + "Must use --policy/--policy-set with policy only options."
+    )
 
 if a.help:
     __usage()
@@ -2452,6 +2477,21 @@ if a.permanent:
             cmd.print_msg("")
         sys.exit(0)
 
+    elif a.policy_set:
+        for _policy in filter(
+            lambda x: x[: len(a.policy_set)] == a.policy_set,
+            fw.config().getPolicyNames(),
+        ):
+            fw_policy = fw.config().getPolicyByName(_policy)
+            settings = fw_policy.getSettings()
+
+            if a.add_disable:
+                settings.setDisable(True)
+            elif a.remove_disable:
+                settings.setDisable(False)
+
+            fw_policy.update(settings)
+
     elif a.policy:
         fw_policy = fw.config().getPolicyByName(a.policy)
         settings = fw_policy.getSettings()
@@ -2510,6 +2550,14 @@ if a.permanent:
             cmd.query_sequence(
                 a.query_egress_zone, settings.queryEgressZone, None, "'%s'"
             )
+
+        # disable
+        elif a.add_disable:
+            settings.setDisable(True)
+        elif a.remove_disable:
+            settings.setDisable(False)
+        elif a.query_disable:
+            cmd.print_query_result(settings.getDisable())
 
         # priority
         elif a.get_priority:
@@ -3500,6 +3548,19 @@ elif a.remove_source:
 elif a.query_source:
     cmd.x_query_sequence(zone, a.query_source, fw.querySource, None, "'%s'")
 
+elif a.policy_set:
+    for _policy in filter(
+        lambda x: x[: len(a.policy_set)] == a.policy_set, fw.getPolicies()
+    ):
+        settings = fw.getPolicySettings(_policy)
+
+        if a.add_disable:
+            settings.setDisable(True)
+        elif a.remove_disable:
+            settings.setDisable(False)
+
+        fw.setPolicySettings(_policy, settings)
+
 # policy
 elif a.policy:
     settings = fw.getPolicySettings(a.policy)
@@ -3557,6 +3618,14 @@ elif a.policy:
         )
     elif a.query_egress_zone:
         cmd.query_sequence(a.query_egress_zone, settings.queryEgressZone, None, "'%s'")
+
+    # disable
+    elif a.add_disable:
+        settings.setDisable(True)
+    elif a.remove_disable:
+        settings.setDisable(False)
+    elif a.query_disable:
+        cmd.print_query_result(settings.getDisable())
 
     # rich rules
     elif a.list_rich_rules:

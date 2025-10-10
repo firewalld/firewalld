@@ -10,9 +10,7 @@ NS_CHECK([sed -e ["s/['][,]/'\n/g"] ./stdout |dnl
           sed -e ["s/.*config\/policy\/\([^']\+\)['].*/\1/"] |dnl
           while read LINE; do { echo "${LINE}" | grep ["^[0-9]\+$"] ; } || exit 1; done], 0, [ignore])
 
-DBUS_CHECK([config], [config.getPolicyNames], [], 0, [dnl
-    m4_escape([(['allow-host-ipv6'],)])
-])
+DBUS_CHECK([config], [config.getPolicyNames], [| grep "allow-host-ipv6"], 0, [ignore])
 
 DBUS_CHECK([config], [config.getPolicyByName], ["allow-host-ipv6"], 0, [stdout])
 NS_CHECK([sed -e ["s/.*config\/policy\/\([^']\+\)['].*/\1/"] ./stdout | grep ["^[0-9]\+$"]], 0, [ignore])
@@ -45,6 +43,7 @@ dnl ####################
 
 DBUS_CHECK([config/policy/${DBUS_FOOBAR_POLICY_OBJ}], [config.policy.getSettings], [], 0, [dnl
        'description': <'foobar policy'>
+       'disable': <false>
        'egress_zones': m4_escape([<['HOST']>])
        'forward_ports': m4_escape([<[('1234', 'tcp', '4321', ''), ('1234', 'udp', '4321', '')]>])
        'icmp_blocks': m4_escape([<['echo-request']>])
@@ -71,6 +70,7 @@ DBUS_CHECK([config/policy/${DBUS_FOOBAR_POLICY_OBJ}], [config.policy.update], [d
        "services": m4_escape([<["mdns"]>]), dnl
        "ports": m4_escape([<[("1234", "udp")]>]), dnl
        "icmp_blocks": m4_escape([<["echo-request", "echo-reply"]>]), dnl
+       "disable": <true>, dnl
        "masquerade": <false>, dnl
        "forward_ports": m4_escape([<[("1234", "udp", "4321", "10.10.10.10")]>]), dnl
        "rich_rules": m4_escape([<["rule family=ipv4 source address=10.20.20.20 accept"]>]), dnl
@@ -83,6 +83,7 @@ DBUS_CHECK([config/policy/${DBUS_FOOBAR_POLICY_OBJ}], [config.policy.update], [d
     ], 0, [ignore])
 DBUS_CHECK([config/policy/${DBUS_FOOBAR_POLICY_OBJ}], [config.policy.getSettings], [], 0, [dnl
        'description': <'foobar policy update'>
+       'disable': <true>
        'egress_zones': m4_escape([<['internal']>])
        'forward_ports': m4_escape([<[('1234', 'udp', '4321', '10.10.10.10')]>])
        'icmp_blocks': m4_escape([<['echo-request', 'echo-reply']>])
@@ -120,6 +121,7 @@ DBUS_CHECK([config/policy/${DBUS_FOOBAR_POLICY_OBJ}], [config.policy.update], [d
 dnl verify the updates
 DBUS_CHECK([config/policy/${DBUS_FOOBAR_POLICY_OBJ}], [config.policy.getSettings], [], 0, [dnl
        'description': <'foobar policy update'>
+       'disable': <true>
        'egress_zones': m4_escape([<['internal']>])
        'ingress_zones': m4_escape([<['public', 'external']>])
        'masquerade': <false>
@@ -151,6 +153,7 @@ DBUS_CHECK([config/policy/${DBUS_BUILTIN_POLICY_OBJ}], [config.policy.update], [
     ], 0, [ignore])
 DBUS_CHECK([config/policy/${DBUS_BUILTIN_POLICY_OBJ}], [config.policy.getSettings], [], 0, [dnl
     'description': <'Allows basic IPv6 functionality for the host running firewalld.'>
+    'disable': <false>
     'egress_zones': m4_escape([<['HOST']>])
     'ingress_zones': m4_escape([<['ANY']>])
     'masquerade': <false>
@@ -164,6 +167,7 @@ DBUS_CHECK([config/policy/${DBUS_BUILTIN_POLICY_OBJ}], [config.policy.getSetting
 DBUS_CHECK([config/policy/${DBUS_BUILTIN_POLICY_OBJ}], [config.policy.loadDefaults], [], 0, [ignore])
 DBUS_CHECK([config/policy/${DBUS_BUILTIN_POLICY_OBJ}], [config.policy.getSettings], [], 0, [dnl
     'description': <'Allows basic IPv6 functionality for the host running firewalld.'>
+    'disable': <false>
     'egress_zones': m4_escape([<['HOST']>])
     'ingress_zones': m4_escape([<['ANY']>])
     'masquerade': <false>

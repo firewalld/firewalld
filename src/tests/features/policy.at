@@ -83,22 +83,38 @@ dnl create a few policies
 FWD_CHECK([--permanent --new-policy worldToHost], 0, [ignore])
 FWD_CHECK([--permanent --new-policy hostToWorld], 0, [ignore])
 FWD_CHECK([--permanent --new-policy zoneToZone], 0, [ignore])
-FWD_CHECK([--permanent --get-policies], 0, [dnl
-allow-host-ipv6 hostToWorld worldToHost zoneToZone
-])
+FWD_CHECK([--permanent --get-policies |grep hostToWorld], 0, [ignore])
+FWD_CHECK([--permanent --get-policies |grep worldToHost], 0, [ignore])
+FWD_CHECK([--permanent --get-policies |grep zoneToZone], 0, [ignore])
 FWD_RELOAD
-FWD_CHECK([--get-policies], 0, [dnl
-allow-host-ipv6 hostToWorld worldToHost zoneToZone
-])
+FWD_CHECK([--get-policies |grep hostToWorld], 0, [ignore])
+FWD_CHECK([--get-policies |grep worldToHost], 0, [ignore])
+FWD_CHECK([--get-policies |grep zoneToZone], 0, [ignore])
 
 FWD_END_TEST
 
 FWD_START_TEST([policy - name])
 AT_KEYWORDS(policy)
 
-dnl verify name length (18)
-FWD_CHECK([--permanent --new-policy 123456789012345678], 0, [ignore])
-FWD_CHECK([--permanent --new-policy 1234567890123456789], 116, [ignore], [ignore])
+dnl verify name length
+FWD_CHECK([--permanent --new-policy=$(head -c 128 /dev/zero |tr '\0' 'F')], 0, [ignore])
+FWD_CHECK([--permanent --new-policy=$(head -c 129 /dev/zero |tr '\0' 'F')], 116, [ignore], [ignore])
+
+dnl make it go active to verify runtime
+FWD_CHECK([--permanent --policy=$(head -c 128 /dev/zero |tr '\0' 'F') --add-ingress-zone ANY], 0, [ignore])
+FWD_CHECK([--permanent --policy=$(head -c 128 /dev/zero |tr '\0' 'F') --add-egress-zone HOST], 0, [ignore])
+FWD_CHECK([--permanent --policy=$(head -c 128 /dev/zero |tr '\0' 'F') --set-target ACCEPT], 0, [ignore])
+FWD_RELOAD()
+dnl iptables backend has to do some magic with chain names because it only
+dnl support 28 chars. Verify it works as expected.
+dnl NOTE: This depends on the random seed being initialized in Python.
+FWD_CHECK([--policy=$(head -c 128 /dev/zero |tr '\0' 'F') --add-service http], 0, [ignore])
+IPTABLES_LIST_RULES([filter], [eaeJ6G8R34yAWeJqtZuQQEPZ2mnQ], 0, [dnl
+    ACCEPT 6 -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:80
+])
+IP6TABLES_LIST_RULES([filter], [eaeJ6G8R34yAWeJqtZuQQEPZ2mnQ], 0, [dnl
+    ACCEPT 6 -- ::/0 ::/0 tcp dpt:80
+])
 
 dnl verify zone and policy can't have the same name.
 FWD_CHECK([--permanent --new-policy public], 26, [ignore], [ignore])
@@ -111,6 +127,7 @@ AT_KEYWORDS(policy)
 
 FWD_CHECK([--info-policy allow-host-ipv6 | TRIM_WHITESPACE], 0, [m4_strip([dnl
 allow-host-ipv6 (active)
+  disable: no
   priority: -15000
   target: CONTINUE
   ingress-zones: ANY
@@ -130,6 +147,7 @@ allow-host-ipv6 (active)
 ])])
 FWD_CHECK([--permanent --info-policy allow-host-ipv6 | TRIM_WHITESPACE], 0, [m4_strip([dnl
 allow-host-ipv6
+  disable: no
   priority: -15000
   target: CONTINUE
   ingress-zones: ANY
@@ -148,47 +166,12 @@ allow-host-ipv6
        rule family="ipv6" icmp-type name="router-advertisement" accept
 ])])
 
-FWD_CHECK([--list-all-policies | TRIM_WHITESPACE], 0, [m4_strip([dnl
-allow-host-ipv6 (active)
-  priority: -15000
-  target: CONTINUE
-  ingress-zones: ANY
-  egress-zones: HOST
-  services:
-  ports:
-  protocols:
-  masquerade: no
-  forward-ports:
-  source-ports:
-  icmp-blocks:
-  rich rules:
-       rule family="ipv6" icmp-type name="neighbour-advertisement" accept
-       rule family="ipv6" icmp-type name="neighbour-solicitation" accept
-       rule family="ipv6" icmp-type name="redirect" accept
-       rule family="ipv6" icmp-type name="router-advertisement" accept
-])])
-FWD_CHECK([--permanent --list-all-policies | TRIM_WHITESPACE], 0, [m4_strip([dnl
-allow-host-ipv6
-  priority: -15000
-  target: CONTINUE
-  ingress-zones: ANY
-  egress-zones: HOST
-  services:
-  ports:
-  protocols:
-  masquerade: no
-  forward-ports:
-  source-ports:
-  icmp-blocks:
-  rich rules:
-       rule family="ipv6" icmp-type name="neighbour-advertisement" accept
-       rule family="ipv6" icmp-type name="neighbour-solicitation" accept
-       rule family="ipv6" icmp-type name="redirect" accept
-       rule family="ipv6" icmp-type name="router-advertisement" accept
-])])
+FWD_CHECK([--list-all-policies | TRIM_WHITESPACE], 0, [ignore])
+FWD_CHECK([--permanent --list-all-policies | TRIM_WHITESPACE], 0, [ignore])
 
 FWD_CHECK([--policy allow-host-ipv6 --list-all | TRIM_WHITESPACE], 0, [m4_strip([dnl
 allow-host-ipv6 (active)
+  disable: no
   priority: -15000
   target: CONTINUE
   ingress-zones: ANY
@@ -208,6 +191,7 @@ allow-host-ipv6 (active)
 ])])
 FWD_CHECK([--permanent --policy allow-host-ipv6 --list-all | TRIM_WHITESPACE], 0, [m4_strip([dnl
 allow-host-ipv6
+  disable: no
   priority: -15000
   target: CONTINUE
   ingress-zones: ANY
@@ -1188,9 +1172,11 @@ NFT_LIST_RULES([inet], [mangle_PREROUTING_POLICIES], 0, [dnl
             iifname "foobar1" jump mangle_PRE_internal
             iifname "foobar1" return
             iifname "foobar0" jump mangle_PRE_policy_allow-host-ipv6
+            iifname "foobar0" jump mangle_PRE_policy_foobar
             iifname "foobar0" jump mangle_PRE_public
             iifname "foobar0" return
             jump mangle_PRE_policy_allow-host-ipv6
+            jump mangle_PRE_policy_foobar
             jump mangle_PRE_public
             return
         }
@@ -1201,9 +1187,11 @@ IPTABLES_LIST_RULES([mangle], [PREROUTING_POLICIES], 0, [dnl
     PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
     RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
     RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
     RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
@@ -1212,9 +1200,11 @@ IP6TABLES_LIST_RULES([mangle], [PREROUTING_POLICIES], 0, [dnl
     PRE_internal 0 -- ::/0 ::/0
     RETURN 0 -- ::/0 ::/0
     PRE_allow-host-ipv6 0 -- ::/0 ::/0
+    PRE_foobar 0 -- ::/0 ::/0
     PRE_public 0 -- ::/0 ::/0
     RETURN 0 -- ::/0 ::/0
     PRE_allow-host-ipv6 0 -- ::/0 ::/0
+    PRE_foobar 0 -- ::/0 ::/0
     PRE_public 0 -- ::/0 ::/0
     RETURN 0 -- ::/0 ::/0
 ])
@@ -1226,9 +1216,11 @@ NFT_LIST_RULES([inet], [nat_PREROUTING_POLICIES], 0, [dnl
             iifname "foobar1" jump nat_PRE_internal
             iifname "foobar1" return
             iifname "foobar0" jump nat_PRE_policy_allow-host-ipv6
+            iifname "foobar0" jump nat_PRE_policy_foobar
             iifname "foobar0" jump nat_PRE_public
             iifname "foobar0" return
             jump nat_PRE_policy_allow-host-ipv6
+            jump nat_PRE_policy_foobar
             jump nat_PRE_public
             return
         }
@@ -1239,9 +1231,11 @@ IPTABLES_LIST_RULES([nat], [PREROUTING_POLICIES], 0, [dnl
     PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
     RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
     RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
     RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
@@ -1250,9 +1244,11 @@ IP6TABLES_LIST_RULES([nat], [PREROUTING_POLICIES], 0, [dnl
     PRE_internal 0 -- ::/0 ::/0
     RETURN 0 -- ::/0 ::/0
     PRE_allow-host-ipv6 0 -- ::/0 ::/0
+    PRE_foobar 0 -- ::/0 ::/0
     PRE_public 0 -- ::/0 ::/0
     RETURN 0 -- ::/0 ::/0
     PRE_allow-host-ipv6 0 -- ::/0 ::/0
+    PRE_foobar 0 -- ::/0 ::/0
     PRE_public 0 -- ::/0 ::/0
     RETURN 0 -- ::/0 ::/0
 ])
@@ -6126,13 +6122,9 @@ FWD_CHECK([--permanent --policy allow-host-ipv6 --add-protocol ipv6-icmp], 0, [i
 AT_CHECK([ls "./policies/allow-host-ipv6.xml"], 0, [ignore])
 FWD_CHECK([--permanent --new-policy-from-file "./policies/allow-host-ipv6.xml" --name my-allow-host-ipv6], 0, [ignore])
 AT_CHECK([ls "./policies/my-allow-host-ipv6.xml"], 0, [ignore])
-FWD_CHECK([--permanent --get-policies], 0, [dnl
-allow-host-ipv6 my-allow-host-ipv6
-])
+FWD_CHECK([--permanent --get-policies |grep my-allow-host-ipv6], 0, [ignore])
 FWD_RELOAD
-FWD_CHECK([--get-policies], 0, [dnl
-allow-host-ipv6 my-allow-host-ipv6
-])
+FWD_CHECK([--get-policies |grep my-allow-host-ipv6], 0, [ignore])
 
 FWD_END_TEST
 
