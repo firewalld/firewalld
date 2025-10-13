@@ -2,6 +2,7 @@
 Description=firewalld - dynamic firewall daemon
 Before=network-pre.target
 Wants=network-pre.target
+Requires=dbus.service
 After=dbus.service
 After=polkit.service
 Conflicts=iptables.service ip6tables.service ebtables.service ipset.service
