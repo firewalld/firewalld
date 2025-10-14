@@ -10,6 +10,7 @@ from gi.repository import GLib
 import copy
 import dbus
 import dbus.service
+import dbus.mainloop.glib
 
 from firewall import config
 from firewall.core.fw import Firewall
@@ -61,12 +62,18 @@ class FirewallD(DbusServiceObject):
     """ Use config.dbus.PK_ACTION_CONFIG as a default """
 
     @handle_exceptions
-    def __init__(self, *args, **kwargs):
-        super(FirewallD, self).__init__(*args, **kwargs)
+    def __init__(self):
         self.fw = Firewall()
-        self.busname = args[0]
-        self.path = args[1]
         self.start()
+
+        dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
+        bus = dbus.SystemBus()
+        name = dbus.service.BusName(config.dbus.DBUS_INTERFACE, bus=bus)
+        super(FirewallD, self).__init__(name, config.dbus.DBUS_PATH)
+
+        self.busname = name
+        self.path = config.dbus.DBUS_PATH
+
         dbus_introspection_prepare_properties(self, config.dbus.DBUS_INTERFACE)
         self.config = FirewallDConfig(
             self.fw.config, self.busname, config.dbus.DBUS_PATH_CONFIG
