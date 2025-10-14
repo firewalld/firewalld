@@ -11,8 +11,6 @@ Documentation=man:firewalld(1)
 EnvironmentFile=-/etc/sysconfig/firewalld
 ExecStart=@sbindir@/firewalld --nofork --nopid $FIREWALLD_ARGS
 ExecStartPost=@bindir@/firewall-cmd --state
-# don't fail ExecStartPost on RUNNING_BUT_FAILED
-SuccessExitStatus=251
 ExecReload=/bin/kill -HUP $MAINPID
 StandardOutput=null
 StandardError=null
