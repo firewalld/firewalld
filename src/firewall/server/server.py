@@ -16,11 +16,6 @@ import signal
 
 from gi.repository import GLib
 
-import dbus
-import dbus.service
-import dbus.mainloop.glib
-
-from firewall import config
 from firewall.core.logger import log
 from firewall.server.firewalld import FirewallD
 
@@ -80,10 +75,7 @@ def run_server(debug_gc=False):
             GLib.timeout_add_seconds(gc_timeout, gc_collect)
 
     try:
-        dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
-        bus = dbus.SystemBus()
-        name = dbus.service.BusName(config.dbus.DBUS_INTERFACE, bus=bus)
-        service = FirewallD(name, config.dbus.DBUS_PATH)
+        service = FirewallD()
 
         mainloop = GLib.MainLoop()
         if debug_gc:
