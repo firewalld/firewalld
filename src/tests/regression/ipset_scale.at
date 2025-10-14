@@ -1,6 +1,8 @@
 FWD_START_TEST([ipset scale])
 AT_KEYWORDS(ipset gh738)
 
+AT_SKIP_IF([! NS_CMD([which wc >/dev/null 2>&1])])
+
 dnl Create a huge ipset
 AT_CHECK([touch ./entries], 0, [ignore])
 AT_CHECK([sh -c '
@@ -21,5 +23,12 @@ ulimit -d $(expr 1024 \* 300)
 
 FWD_RESTART() dnl required because we changed ulimit
 FWD_RELOAD()
+
+dnl Verify all the entries are added.
+m4_if(nftables, FIREWALL_BACKEND, [
+    WAIT_UNTIL([test "$(NS_CMD([nft $NFT_NUMERIC_ARGS list set inet firewalld foobar |wc -l]))" -eq 31256])
+], [
+    WAIT_UNTIL([test "$(NS_CMD([$IPSET list foobar |wc -l]))" -eq 62508])
+])
 
 FWD_END_TEST()
