@@ -5,6 +5,8 @@
 # Authors:
 # Eric Garver <eric@garver.life>
 
+from gi.repository import GLib
+
 import copy
 import json
 import ipaddress
@@ -3040,15 +3042,27 @@ class nftables:
         rules = []
         rules.extend(self.build_set_create_rules(set_name, type_name, create_options))
         rules.extend(self.build_set_flush_rules(set_name))
+        self.set_rules(rules, self._fw.get_log_denied())
 
-        # avoid large memory usage by chunking the entries
+        def _idle_set_add_entries(rules):
+            try:
+                self.set_rules(rules, self._fw.get_log_denied())
+            except Exception as e:
+                log.error("While restoring ipset entries the following Error occurred:")
+                log.error(e)
+
+        # Avoid large memory usage by chunking the entries. Additionally, add
+        # the entries from the GLib main loop when it's idle. This avoids
+        # blocking the main loop for too long.
+        #
         chunk = 0
+        rules = []
         for entry in entries:
             rules.extend(self.build_set_add_rules(set_name, entry))
             chunk += 1
             if chunk >= 1000:
-                self.set_rules(rules, self._fw.get_log_denied())
-                rules.clear()
+                GLib.idle_add(lambda x: _idle_set_add_entries(x), rules)
+                rules = []
                 chunk = 0
         else:
-            self.set_rules(rules, self._fw.get_log_denied())
+            GLib.idle_add(lambda x: _idle_set_add_entries(x), rules)
