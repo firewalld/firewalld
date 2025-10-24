@@ -10,13 +10,14 @@
 # Oğuz Ersen <oguzersen@protonmail.com>, 2020.
 # Burak Yavuz <hitowerdigit@hotmail.com>, 2020, 2022, 2024, 2025.
 # Oğuz Ersen <oguz@ersen.moe>, 2022.
+# Emir SARI <emir_sari@icloud.com>, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-11-04 15:37-0500\n"
-"PO-Revision-Date: 2025-05-17 23:36+0000\n"
-"Last-Translator: Burak Yavuz <hitowerdigit@hotmail.com>\n"
+"PO-Revision-Date: 2025-06-16 20:40+0000\n"
+"Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <https://translate.fedoraproject.org/projects/"
 "firewalld/master/tr/>\n"
 "Language: tr\n"
@@ -24,7 +25,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n>1);\n"
-"X-Generator: Weblate 5.11.3\n"
+"X-Generator: Weblate 5.12.1\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:450
 msgid "Firewall Applet"
@@ -47,12 +48,13 @@ msgstr "Çalışma zamanı ve kalıcı güvenlik duvarı yapılandırması"
 
 #: ../config/firewall-config.appdata.xml.in.h:4
 msgid "Predefined zones (levels of trust for network connections)"
-msgstr "Ön tanımlı bölgeler (ağ bağlantıları için güven seviyeleri)"
+msgstr "Önceden tanımlı bölgeler (ağ bağlantıları için güven düzeyleri)"
 
 #: ../config/firewall-config.appdata.xml.in.h:5
 msgid "Predefined services (port/protocol, netfilter helper module)"
 msgstr ""
-"Ön tanımlı hizmetler (bağlantı noktası/protokol, netfilter yardımcı modülü)"
+"Önceden tanımlı hizmetler (bağlantı noktası/protokol, netfilter yardımcı "
+"modülü)"
 
 #: ../config/firewall-config.appdata.xml.in.h:6
 msgid "Port forwarding, masquerading, ICMP blocking"
@@ -60,11 +62,11 @@ msgstr "Bağlantı noktası yönlendirme, maskeleme, ICMP engelleme"
 
 #: ../config/firewall-config.appdata.xml.in.h:7
 msgid "Complex firewall rules a.k.a. Rich Language"
-msgstr "Zengin Dil olarak ta bilinen karmaşık güvenlik duvarı kuralları"
+msgstr "Zengin Dil olarak da bilinen karmaşık güvenlik duvarı kuralları"
 
 #: ../config/firewall-config.appdata.xml.in.h:8
 msgid "Iptables rules a.k.a. Direct Interface"
-msgstr "Doğrudan Arayüz olarak ta bilinen Iptables kuralları"
+msgstr "Doğrudan Arayüz olarak da bilinen Iptables kuralları"
 
 #: ../config/firewall-config.desktop.in.h:1
 msgid "Firewall"
@@ -83,7 +85,7 @@ msgstr ""
 #: ../src/firewall-applet.in:91 ../src/firewall-config.in:7683
 #, c-format
 msgid "Select zone for interface '%s'"
-msgstr "'%s' arayüzü için bölge seç"
+msgstr "“%s” arayüzü için bölge seç"
 
 #: ../src/firewall-applet.in:132 ../src/firewall-applet.in:139
 #: ../src/firewall-applet.in:145 ../src/firewall-config.in:2440
@@ -95,7 +97,7 @@ msgstr "Varsayılan Bölge"
 #: ../src/firewall-applet.in:168 ../src/firewall-config.in:7764
 #, c-format
 msgid "Select zone for connection '%s'"
-msgstr "'%s' bağlantısı için bölge seç"
+msgstr "“%s” bağlantısı için bölge seç"
 
 #: ../src/firewall-applet.in:178 ../src/firewall-config.in:4030
 msgid "Failed to set zone {zone} for connection {connection_name}"
@@ -104,7 +106,7 @@ msgstr "{connection_name} bağlantısı için {zone} bölgesi ayarlanamadı"
 #: ../src/firewall-applet.in:199
 #, c-format
 msgid "Select zone for source '%s'"
-msgstr "'%s' kaynağı için bölge seç"
+msgstr "“%s” kaynağı için bölge seç"
 
 #: ../src/firewall-applet.in:218
 msgid "Configure Shields Up/Down Zones"
@@ -127,7 +129,7 @@ msgstr ""
 
 #: ../src/firewall-applet.in:256
 msgid "Shields Up Zone:"
-msgstr "Kalkanlar Yukarı Bölgesi:"
+msgstr "Kalkanlar yukarı bölgesi:"
 
 #: ../src/firewall-applet.in:265 ../src/firewall-applet.in:278
 msgid "Reset To Default"
@@ -135,12 +137,12 @@ msgstr "Varsayılana Sıfırla"
 
 #: ../src/firewall-applet.in:269
 msgid "Shields Down Zone:"
-msgstr "Kalkanlar Aşağı Bölgesi:"
+msgstr "Kalkanlar aşağı bölgesi:"
 
 #: ../src/firewall-applet.in:368
 #, c-format
 msgid "About %s"
-msgstr "%s hakkında"
+msgstr "%s Hakkında"
 
 #: ../src/firewall-applet.in:421
 msgid "Authors"
@@ -160,15 +162,15 @@ msgstr "Bildirimler açık"
 
 #: ../src/firewall-applet.in:525
 msgid "Edit Firewall Settings..."
-msgstr "Güvenlik Duvarı ayarlarını değiştir..."
+msgstr "Güvenlik Duvarı Ayarlarını Düzenle…"
 
 #: ../src/firewall-applet.in:529 ../src/firewall-config.glade.h:57
 msgid "Change Zones of Connections..."
-msgstr "Bağlantı Bölgelerini Değiştir..."
+msgstr "Bağlantı Bölgelerini Değiştir…"
 
 #: ../src/firewall-applet.in:534
 msgid "Configure Shields UP/Down Zones..."
-msgstr "Kalkanlar Yukarı/Aşağı Bölgelerini Yapılandır..."
+msgstr "Kalkanlar Yukarı/Aşağı Bölgelerini Yapılandır…"
 
 #: ../src/firewall-applet.in:538
 msgid "Block all network traffic"
@@ -214,11 +216,11 @@ msgstr "{entry} (Bölge: {zone})"
 
 #: ../src/firewall-applet.in:733
 msgid "{entry} (Default Zone: {default_zone})"
-msgstr "{entry} (Varsayılan Bölge: {default_zone})"
+msgstr "{entry} (Varsayılan bölge: {default_zone})"
 
 #: ../src/firewall-applet.in:819 ../src/firewall-config.in:1536
 msgid "Failed to get connections from NetworkManager"
-msgstr "NetworkManager'dan bağlantılar alınamadı"
+msgstr "NetworkManager’dan bağlantılar alınamadı"
 
 #: ../src/firewall-applet.in:831 ../src/firewall-config.in:1368
 msgid "No NetworkManager imports available"
@@ -235,30 +237,30 @@ msgstr "Tüm ağ trafiği engellendi."
 #: ../src/firewall-applet.in:916
 #, c-format
 msgid "Default Zone: '%s'"
-msgstr "Varsayılan Bölge: '%s'"
+msgstr "Varsayılan bölge: “%s”"
 
 #: ../src/firewall-applet.in:923
 msgid ""
 "Default Zone '{default_zone}' active for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
-"Varsayılan Bölge '{default_zone}', '{interface}' arayüzünde '{connection}' "
+"Varsayılan Bölge “{default_zone}”, “{interface}” arayüzünde “{connection}” "
 "bağlantısı için etkin"
 
 #: ../src/firewall-applet.in:928
 msgid ""
 "Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
 msgstr ""
-"'{zone}' bölgesi, '{interface}' arayüzünde '{connection}' bağlantısı için "
+"“{zone}” bölgesi, “{interface}” arayüzünde “{connection}” bağlantısı için "
 "etkin"
 
 #: ../src/firewall-applet.in:946
 msgid "Zone '{zone}' active for interface '{interface}'"
-msgstr "'{zone}' bölgesi '{interface}' arayüzü için etkin"
+msgstr "“{zone}” bölgesi, “{interface}” arayüzü için etkin"
 
 #: ../src/firewall-applet.in:958
 msgid "Zone '{zone}' active for source {source}"
-msgstr "'{zone}' bölgesi, {source} kaynağı için etkin"
+msgstr "“{zone}” bölgesi, “{source}” kaynağı için etkin"
 
 #: ../src/firewall-applet.in:962
 msgid "No Active Zones."
@@ -279,7 +281,7 @@ msgstr "FirewallD yeniden yüklendi."
 #: ../src/firewall-applet.in:1052
 #, c-format
 msgid "Default zone changed to '%s'."
-msgstr "Varsayılan bölge '%s' olarak değiştirildi."
+msgstr "Varsayılan bölge “%s” olarak değiştirildi."
 
 #: ../src/firewall-applet.in:1071
 msgid "Network traffic is not blocked anymore."
@@ -298,7 +300,7 @@ msgid ""
 "Default zone '{default_zone}' {activated_deactivated} for connection "
 "'{connection}' on interface '{interface}'"
 msgstr ""
-"Varsayılan bölge '{default_zone}', '{interface}' arayüzünde '{connection}' "
+"Varsayılan bölge “{default_zone}”, “{interface}” arayüzünde “{connection}” "
 "bağlantısı için {activated_deactivated}"
 
 #: ../src/firewall-applet.in:1111
@@ -306,26 +308,26 @@ msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
-"'{zone}' bölgesi, '{interface}' arayüzünde '{connection}' bağlantısı için "
+"“{zone}” bölgesi, “{interface}” arayüzünde “{connection}” bağlantısı için "
 "{activated_deactivated}"
 
 #: ../src/firewall-applet.in:1118
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
-msgstr "'{zone}' bölgesi, '{interface}' arayüzü için {activated_deactivated}"
+msgstr "“{zone}” bölgesi, “{interface}” arayüzü için {activated_deactivated}"
 
 #: ../src/firewall-applet.in:1149
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
-msgstr "'%s' bölgesi, '%s' arayüzü için etkinleştirildi"
+msgstr "“%s” bölgesi, “%s” arayüzü için etkinleştirildi"
 
 #: ../src/firewall-applet.in:1165
 msgid "Zone '{zone}' {activated_deactivated} for source '{source}'"
-msgstr "'{zone}' bölgesi, '{source}' kaynağı için {activated_deactivated}"
+msgstr "“{zone}” bölgesi, “{source}” kaynağı için {activated_deactivated}"
 
 #: ../src/firewall-applet.in:1194
 #, c-format
 msgid "Zone '%s' activated for source '%s'"
-msgstr "'%s' bölgesi, '%s' kaynağı için etkinleştirildi"
+msgstr "“%s” bölgesi, “%s” kaynağı için etkinleştirildi"
 
 #: ../src/firewall-config.in:85
 msgid "Connection to firewalld established."
@@ -333,15 +335,15 @@ msgstr "Firewalld ile bağlantı kuruldu."
 
 #: ../src/firewall-config.in:86
 msgid "Trying to connect to firewalld, waiting..."
-msgstr "firewalld'ye bağlanmaya çalışılıyor, bekleyin..."
+msgstr "firewalld’ye bağlanmaya çalışılıyor, bekleyin…"
 
 #: ../src/firewall-config.in:88
 msgid ""
 "Failed to connect to firewalld. Please make sure that the service has been "
 "started correctly and try again."
 msgstr ""
-"firewalld'ye bağlanılamadı. Lütfen hizmetin doğru şekilde başlatıldığından "
-"emin olun ve tekrar deneyin."
+"firewalld’ye bağlanılamadı. Lütfen hizmetin doğru şekilde başlatıldığından "
+"emin olun ve yeniden deneyin."
 
 #: ../src/firewall-config.in:91
 msgid "Changes applied."
@@ -350,12 +352,12 @@ msgstr "Değişiklikler uygulandı."
 #: ../src/firewall-config.in:92
 #, c-format
 msgid "Used by network connection '%s'"
-msgstr "'%s' ağ bağlantısı tarafından kullanılıyor"
+msgstr "“%s” ağ bağlantısı tarafından kullanılıyor"
 
 #: ../src/firewall-config.in:94
 #, c-format
 msgid "Default zone used by network connection '%s'"
-msgstr "'%s' ağ bağlantısı tarafından kullanılan varsayılan bölge"
+msgstr "“%s” ağ bağlantısı tarafından kullanılan varsayılan bölge"
 
 #: ../src/firewall-config.in:96
 msgid "enabled"
@@ -401,7 +403,7 @@ msgstr "Hizmet"
 #: ../src/firewall-config.in:501 ../src/firewall-config.in:756
 #: ../src/firewall-config.in:996 ../src/firewall-config.in:1035
 msgid "Port"
-msgstr "Bağlantı noktası"
+msgstr "Bağlantı Noktası"
 
 #: ../src/firewall-config.in:431 ../src/firewall-config.in:449
 #: ../src/firewall-config.in:478 ../src/firewall-config.in:504
@@ -535,19 +537,19 @@ msgstr "maskeleme"
 #: ../src/firewall-config.in:3425 ../src/firewall-config.in:3737
 #: ../src/firewall-config.in:3987 ../src/firewall-config.glade.h:258
 msgid "icmp-block"
-msgstr "icmp-engelleme"
+msgstr "icmp-engelle"
 
 #: ../src/firewall-config.in:2065 ../src/firewall-config.in:3247
 #: ../src/firewall-config.in:3427 ../src/firewall-config.in:3741
 #: ../src/firewall-config.glade.h:259
 msgid "icmp-type"
-msgstr "icmp-türü"
+msgstr "icmp-tür"
 
 #: ../src/firewall-config.in:2067 ../src/firewall-config.in:3251
 #: ../src/firewall-config.in:3429 ../src/firewall-config.in:3745
 #: ../src/firewall-config.in:3982 ../src/firewall-config.glade.h:260
 msgid "forward-port"
-msgstr "bağlantı-noktası-yönlendirme"
+msgstr "bağlantı-noktası-yönlendir"
 
 #: ../src/firewall-config.in:2074 ../src/firewall-config.in:3261
 #: ../src/firewall-config.in:3431 ../src/firewall-config.in:3754
@@ -557,7 +559,7 @@ msgstr "kaynak-bağlantı-noktası"
 
 #: ../src/firewall-config.in:2085
 msgid "level"
-msgstr "seviye"
+msgstr "düzey"
 
 #: ../src/firewall-config.in:2089 ../src/firewall-config.in:2094
 msgid "yes"
@@ -571,7 +573,7 @@ msgstr "Bölge"
 #: ../src/firewall-config.in:2472
 #, c-format
 msgid "Default Zone: %s"
-msgstr "Varsayılan Bölge: %s"
+msgstr "Varsayılan bölge: %s"
 
 #: ../src/firewall-config.in:2486 ../src/firewall-config.in:2527
 #: ../src/firewall-config.in:2564
@@ -582,7 +584,7 @@ msgstr "Bölge: %s"
 #: ../src/firewall-config.in:2852
 #, c-format
 msgid "Zone '%s': Service '%s' is not available."
-msgstr "Bölge '%s': '%s' hizmeti kullanılamıyor."
+msgstr "Bölge “%s”: “%s” hizmeti kullanılamıyor."
 
 #: ../src/firewall-config.in:2860 ../src/firewall-config.in:2913
 #: ../src/firewall-config.glade.h:156
@@ -591,12 +593,12 @@ msgstr "Kaldır"
 
 #: ../src/firewall-config.in:2860 ../src/firewall-config.in:2913
 msgid "Ignore"
-msgstr "Yoksay"
+msgstr "Yok Say"
 
 #: ../src/firewall-config.in:2905
 #, c-format
 msgid "Zone '%s': ICMP type '%s' is not available."
-msgstr "Bölge '%s': '%s' ICMP türü kullanılamıyor."
+msgstr "Bölge “%s”: “%s” ICMP türü kullanılamıyor."
 
 #: ../src/firewall-config.in:3065
 msgid "Built-in zone, rename not supported."
@@ -630,7 +632,7 @@ msgstr "acil durum"
 #: ../src/firewall-config.in:3191 ../src/firewall-config.in:3693
 #: ../src/firewall-config.glade.h:248
 msgid "alert"
-msgstr "alarm"
+msgstr "ikaz"
 
 #: ../src/firewall-config.in:3192 ../src/firewall-config.in:3694
 #: ../src/firewall-config.glade.h:249
@@ -650,7 +652,7 @@ msgstr "uyarı"
 #: ../src/firewall-config.in:3195 ../src/firewall-config.in:3697
 #: ../src/firewall-config.glade.h:252
 msgid "notice"
-msgstr "ikaz"
+msgstr "ihbar"
 
 #: ../src/firewall-config.in:3196 ../src/firewall-config.in:3698
 #: ../src/firewall-config.glade.h:253
@@ -717,7 +719,7 @@ msgstr ""
 
 #: ../src/firewall-config.in:5915
 msgid "Built-in ipset, rename not supported."
-msgstr "Yerleşik ipset, yeniden adlandırma desteklenmiyor."
+msgstr "Yerleşik IPSet, yeniden adlandırma desteklenmiyor."
 
 #: ../src/firewall-config.in:6015 ../src/firewall-config.in:6104
 msgid "Please select a file"
@@ -757,7 +759,7 @@ msgstr "Dahili icmp, yeniden adlandırma desteklenmiyor."
 #: ../src/firewall-config.in:7650
 #, c-format
 msgid "Failed to read file '%s': %s"
-msgstr "'%s' dosyası okunamadı: %s"
+msgstr "“%s” dosyası okunamadı: %s"
 
 #: ../src/firewall-config.in:7787
 #, c-format
@@ -823,7 +825,7 @@ msgstr "Doğrudan Geçiş Kuralı"
 
 #: ../src/firewall-config.glade.h:16
 msgid "Please select ipv and enter the args."
-msgstr "Lütfen ipv'yi seçin ve argümanları girin."
+msgstr "Lütfen ipv’yi seçin ve argümanları girin."
 
 #: ../src/firewall-config.glade.h:17
 msgid "Args:"
@@ -840,7 +842,7 @@ msgstr "Lütfen ihtiyaçlarınıza göre kaynak ve hedef seçeneklerini seçin."
 
 #: ../src/firewall-config.glade.h:20
 msgid "Port / Port Range:"
-msgstr "Bağlantı Noktası / Bağlantı Noktası Aralığı:"
+msgstr "Bağlantı Noktası / Bağlantı Noktası aralığı:"
 
 #: ../src/firewall-config.glade.h:21
 msgid "IP address:"
@@ -859,9 +861,8 @@ msgid ""
 "If you enable local forwarding, you have to specify a port. This port has to "
 "be different to the source port."
 msgstr ""
-"Yerel yönlendirmeyi etkinleştirirseniz, bir bağlantı noktası belirtmeniz "
-"gerekir. Bu bağlantı noktasının kaynak bağlantı noktasından farklı olması "
-"gerekir."
+"Yerel yönlendirmeyi etkinleştirirseniz bir bağlantı noktası belirtmeniz "
+"gerekir. Bu bağlantı noktası, kaynak bağlantı noktasından farklı olmalıdır."
 
 #: ../src/firewall-config.glade.h:26
 msgid "Local forwarding"
@@ -961,7 +962,7 @@ msgstr "_Seçenekler"
 
 #: ../src/firewall-config.glade.h:54
 msgid "Reload Firewalld"
-msgstr "Firewalld 'yi yeniden yükle"
+msgstr "Firewalld’yi Yeniden Yükle"
 
 #: ../src/firewall-config.glade.h:55
 msgid ""
@@ -1005,12 +1006,11 @@ msgstr "Otomatik Yardımcı Atama ayarını yapılandırın."
 
 #: ../src/firewall-config.glade.h:64
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
-msgstr ""
-"Panik modu, gelen ve giden tüm paketlerin yok sayıldığı anlamına gelir."
+msgstr "Panik kipi, gelen ve giden tüm paketlerin yok sayıldığı anlamına gelir."
 
 #: ../src/firewall-config.glade.h:65
 msgid "Panic Mode"
-msgstr "Panik Modu"
+msgstr "Panik Kipi"
 
 #: ../src/firewall-config.glade.h:66
 msgid "Make runtime configuration permanent"
@@ -1026,7 +1026,7 @@ msgstr "_Görünüm"
 
 #: ../src/firewall-config.glade.h:69
 msgid "IPSets"
-msgstr "IPSet'ler"
+msgstr "IPSet’ler"
 
 #: ../src/firewall-config.glade.h:70
 msgid "ICMP Types"
@@ -1092,9 +1092,9 @@ msgid ""
 "addresses."
 msgstr ""
 "Bir firewalld bölgesi, bölgeye bağlı ağ bağlantıları, arayüzler ve kaynak "
-"adresleri için güven seviyesini tanımlar. Bölge; hizmetleri, bağlantı "
+"adresleri için güven düzeyini tanımlar. Bölge; hizmetleri, bağlantı "
 "noktalarını, protokolleri, maskelemeyi, bağlantı noktası/paket "
-"yönlendirmeyi, icmp filtrelerini ve zengin kuralları bir araya getirir. "
+"yönlendirmeyi, icmp süzgeçlerini ve zengin kuralları bir araya getirir. "
 "Bölge, arayüzlere ve kaynak adreslere bağlanabilir."
 
 #: ../src/firewall-config.glade.h:83
@@ -1142,15 +1142,15 @@ msgstr "Bağlantı Noktası Ekle"
 
 #: ../src/firewall-config.glade.h:91
 msgid "Edit Port"
-msgstr "Bağlantı Noktası Düzenle"
+msgstr "Bağlantı Noktasını Düzenle"
 
 #: ../src/firewall-config.glade.h:92
 msgid "Remove Port"
-msgstr "Bağlantı Noktası Kaldır"
+msgstr "Bağlantı Noktasını Kaldır"
 
 #: ../src/firewall-config.glade.h:93
 msgid "Ports"
-msgstr "Bağlantı noktaları"
+msgstr "Bağlantı Noktaları"
 
 #: ../src/firewall-config.glade.h:94
 msgid "Add protocols, which need to be accessible for all hosts or networks."
@@ -1232,11 +1232,11 @@ msgstr "Yönlendirme Bağlantı Noktası Ekle"
 
 #: ../src/firewall-config.glade.h:107
 msgid "Edit Forward Port"
-msgstr "Yönlendirme Bağlantı Noktası Düzenle"
+msgstr "Yönlendirme Bağlantı Noktasını Düzenle"
 
 #: ../src/firewall-config.glade.h:108
 msgid "Remove Forward Port"
-msgstr "Yönlendirme Bağlantı Noktası Kaldır"
+msgstr "Yönlendirme Bağlantı Noktasını Kaldır"
 
 #: ../src/firewall-config.glade.h:109
 msgid ""
@@ -1244,10 +1244,10 @@ msgid ""
 "messages between networked computers, but additionally for informational "
 "messages like ping requests and replies."
 msgstr ""
-"Internet Denetim Mesajı Protokolü (Internet Control Message Protocol - "
-"ICMP), esas olarak ağa bağlı bilgisayarlar arasında hata mesajları göndermek "
-"için kullanılır, ancak ek olarak ping istekleri ve yanıtları gibi bilgi "
-"mesajları için de kullanılır."
+"Internet Denetim Mesajı Protokolü (Internet Control Message Protocol — ICMP)"
+", esas olarak ağa bağlı bilgisayarlar arasında hata iletileri göndermek için "
+"kullanılır; ancak ek olarak ping istekleri ve yanıtları gibi bilgi iletileri "
+"için de kullanılmaktadır."
 
 #: ../src/firewall-config.glade.h:110
 msgid ""
@@ -1263,16 +1263,16 @@ msgid ""
 "If Invert Filter is enabled, marked ICMP entries are accepted and the others "
 "are rejected. In a zone with the target DROP, they are dropped."
 msgstr ""
-"Filtreyi Ters Çevirme etkinse, işaretli ICMP girdileri kabul edilir ve "
+"Süzgeci Ters Çevirme etkinse, işaretli ICMP girdileri kabul edilir ve "
 "diğerleri reddedilir. Hedefin DROP olduğu bir bölgede yok sayılırlar."
 
 #: ../src/firewall-config.glade.h:112
 msgid "Invert Filter"
-msgstr "Filtreyi Ters Çevir"
+msgstr "Süzgeci Ters Çevir"
 
 #: ../src/firewall-config.glade.h:113
 msgid "ICMP Filter"
-msgstr "ICMP Filter"
+msgstr "ICMP Süzgeci"
 
 #: ../src/firewall-config.glade.h:114
 msgid "Here you can set rich language rules for the zone."
@@ -1322,7 +1322,7 @@ msgid ""
 "masquerading will not work for MAC source bindings."
 msgstr ""
 "Kaynak adresleri veya alanları bölgeye bağlamak için girdiler ekleyin. Bir "
-"MAC kaynak adresine de bağlayabilirsiniz, ancak sınırlamalar vardır. "
+"MAC kaynak adresine de bağlayabilirsiniz; ancak sınırlamalar vardır. "
 "Bağlantı noktası yönlendirme ve maskeleme, MAC kaynak bağlamaları için "
 "çalışmaz."
 
@@ -1408,8 +1408,8 @@ msgid ""
 "the destination address and type. If both entries are empty, there is no "
 "limitation."
 msgstr ""
-"Eğer belirli bir hedef adres belirlediyseniz, hizmet girişi hedef adres ve "
-"türü ile sınırlı olacaktır. Eğer ikisi de boş ise , herhangi bir sınırlama "
+"Eğer belirli bir hedef adres belirlediyseniz hizmet girişi hedef adres ve "
+"türü ile sınırlı olacaktır. Eğer ikisi de boşsa herhangi bir sınırlama "
 "yoktur."
 
 #: ../src/firewall-config.glade.h:144
@@ -1447,11 +1447,11 @@ msgstr "IPSet Ekle"
 
 #: ../src/firewall-config.glade.h:150
 msgid "Edit IPSet"
-msgstr "IPSet Düzenle"
+msgstr "IPSet’i Düzenle"
 
 #: ../src/firewall-config.glade.h:151
 msgid "Remove IPSet"
-msgstr "IPSet Kaldır"
+msgstr "IPSet’i Kaldır"
 
 #: ../src/firewall-config.glade.h:152
 msgid "Load IPSet Defaults"
@@ -1464,8 +1464,8 @@ msgid ""
 "added by firewalld. Entries, that have been directly added with the ipset "
 "command wil not be listed here."
 msgstr ""
-"IPSet girdileri. Sadece zaman aşımı seçeneğini kullanmayan ipset'lerin "
-"girdilerini, ayrıca sadece firewalld tarafından eklenen girdileri "
+"IPSet girdileri. Sadece zaman aşımı seçeneğini kullanmayan IPSet’lerin "
+"girdilerini, ayrıca yalnızca firewalld tarafından eklenen girdileri "
 "görebilirsiniz. Doğrudan ipset komutuyla eklenen girdiler burada "
 "listelenmeyecektir."
 
@@ -1489,7 +1489,7 @@ msgstr "Girdiler"
 msgid ""
 "IPSets can only be created or deleted in the permanent configuration view."
 msgstr ""
-"IPSet'ler sadece kalıcı yapılandırma görünümünde oluşturulabilir veya "
+"IPSet’ler yalnızca kalıcı yapılandırma görünümünde oluşturulabilir veya "
 "silinebilir."
 
 #: ../src/firewall-config.glade.h:159
@@ -1497,8 +1497,8 @@ msgid ""
 "A firewalld icmptype provides the information for an Internet Control "
 "Message Protocol (ICMP) type for firewalld."
 msgstr ""
-"Bir firewalld icmptype, firewalld için bir İnternet Denetim Mesajı Protokolü "
-"(Internet Control Message Protocol - ICMP) türü için bilgi sağlar."
+"Bir firewalld icmptype, firewalld için bir İnternet Denetim İletisi "
+"Protokolü (Internet Control Message Protocol — ICMP) türü için bilgi sağlar."
 
 #: ../src/firewall-config.glade.h:160
 msgid "Add ICMP Type"
@@ -1621,9 +1621,9 @@ msgid ""
 msgstr ""
 "Öncelik, kuralları sıralamak için kullanılır. Öncelik 0, zincirin üstüne "
 "kural eklemek anlamına gelir, daha yüksek bir önceliğe sahip kural daha "
-"aşağıya eklenir. Aynı önceliğe sahip kurallar aynı seviyededir ve bu "
+"aşağıya eklenir. Aynı önceliğe sahip kurallar aynı düzeydedir ve bu "
 "kuralların sırası sabit değildir ve değişebilir. Bir kuralın bir diğeri "
-"ardına ekleneceğinden emin olmak istiyorsanız, birincisi için düşük öncelik "
+"ardına ekleneceğinden emin olmak istiyorsanız birincisi için düşük öncelik "
 "ve diğeri için daha yüksek öncelik kullanın."
 
 #: ../src/firewall-config.glade.h:180
@@ -1670,22 +1670,22 @@ msgctxt ""
 "Meaning: Log of denied packets. But this is too long. LogDenied is also the "
 "parameter used in firewalld.conf."
 msgid "Log Denied:"
-msgstr "Reddedilen Log Kaydı:"
+msgstr "Günlük kaydı reddi:"
 
 #: ../src/firewall-config.glade.h:189
 msgid "Panic Mode:"
-msgstr "Panik Modu:"
+msgstr "Panik kipi:"
 
 #: ../src/firewall-config.glade.h:190
 msgctxt ""
 "Meaning: Log of denied packets. But this is too long. LogDenied is also the "
 "parameter used in firewalld.conf."
 msgid "Automatic Helpers:"
-msgstr "Otomatik Yardımcılar:"
+msgstr "Otomatik yardımcılar:"
 
 #: ../src/firewall-config.glade.h:191
 msgid "Default Zone:"
-msgstr "Varsayılan Bölge:"
+msgstr "Varsayılan bölge:"
 
 #: ../src/firewall-config.glade.h:193
 msgid "Please enter an interface name:"
@@ -1697,7 +1697,7 @@ msgstr "Temel IPSet Ayarları"
 
 #: ../src/firewall-config.glade.h:195
 msgid "Please configure base ipset settings:"
-msgstr "Lütfen temel ipset ayarlarını yapılandırın:"
+msgstr "Lütfen temel IPSet ayarlarını yapılandırın:"
 
 #: ../src/firewall-config.glade.h:196
 msgid "Type:"
@@ -1729,11 +1729,11 @@ msgstr "En fazla öğe sayısı, varsayılan 65536"
 
 #: ../src/firewall-config.glade.h:203
 msgid "Please select an ipset:"
-msgstr "Lütfen bir ipset seçin:"
+msgstr "Lütfen bir IPSet seçin:"
 
 #: ../src/firewall-config.glade.h:205
 msgid "Please enter an ipset entry:"
-msgstr "Lütfen bir ip kümesi girişi girin:"
+msgstr "Lütfen bir IPSet girdisi girin:"
 
 #: ../src/firewall-config.glade.h:206
 msgid "Log Denied"
@@ -1771,11 +1771,11 @@ msgstr "Lütfen bir netfilter conntrack yardımcısı seçin:"
 
 #: ../src/firewall-config.glade.h:214
 msgid "- Select -"
-msgstr "- Seç -"
+msgstr "— Seç —"
 
 #: ../src/firewall-config.glade.h:215
 msgid "Other Module:"
-msgstr "Diğer Modüller:"
+msgstr "Diğer modül:"
 
 #: ../src/firewall-config.glade.h:216
 msgid "Port and Protocol"
@@ -1791,7 +1791,7 @@ msgstr "Doğrudan Kural"
 
 #: ../src/firewall-config.glade.h:219
 msgid "Please select ipv and table, chain priority and enter the args."
-msgstr "Lütfen ipv ve tablo, zincir önceliği seçin ve argümanları girin."
+msgstr "Lütfen ipv ve tablo ve zincir önceliği seçin ve argümanları girin."
 
 #: ../src/firewall-config.glade.h:220
 msgid "Priority:"
@@ -1803,7 +1803,7 @@ msgstr "Lütfen bir protokol girin."
 
 #: ../src/firewall-config.glade.h:223
 msgid "Other Protocol:"
-msgstr "Diğer Protokol:"
+msgstr "Diğer protokol:"
 
 #: ../src/firewall-config.glade.h:224
 msgid "Rich Rule"
@@ -1848,7 +1848,7 @@ msgid ""
 "To enable this Action has to be 'reject' and Family either 'ipv4' or "
 "'ipv6' (not both)."
 msgstr ""
-"Bunu etkinleştirmek için, Eylem 'reject' ve Aile 'ipv4' veya 'ipv6' "
+"Bunu etkinleştirmek için eylem, “reject” ve aile “ipv4” veya “ipv6” "
 "olmalıdır (her ikisi birden değil)."
 
 #: ../src/firewall-config.glade.h:238
@@ -1865,11 +1865,11 @@ msgstr "/"
 
 #: ../src/firewall-config.glade.h:245
 msgid "Prefix:"
-msgstr "Ön ek:"
+msgstr "Önek:"
 
 #: ../src/firewall-config.glade.h:246
 msgid "Level:"
-msgstr "Seviye:"
+msgstr "Düzey:"
 
 #: ../src/firewall-config.glade.h:263
 msgid "Element:"
