@@ -312,6 +312,10 @@ allow-host-ipv6
   source-ports:
   icmp-blocks:
   rich rules:
+       rule family="ipv6" icmp-type name="mld-listener-done" accept
+       rule family="ipv6" icmp-type name="mld-listener-query" accept
+       rule family="ipv6" icmp-type name="mld-listener-report" accept
+       rule family="ipv6" icmp-type name="mld2-listener-report" accept
        rule family="ipv6" icmp-type name="neighbour-advertisement" accept
        rule family="ipv6" icmp-type name="neighbour-solicitation" accept
        rule family="ipv6" icmp-type name="redirect" accept
@@ -344,6 +348,10 @@ allow-host-ipv6
   source-ports:
   icmp-blocks:
   rich rules:
+       rule family="ipv6" icmp-type name="mld-listener-done" accept
+       rule family="ipv6" icmp-type name="mld-listener-query" accept
+       rule family="ipv6" icmp-type name="mld-listener-report" accept
+       rule family="ipv6" icmp-type name="mld2-listener-report" accept
        rule family="ipv6" icmp-type name="neighbour-advertisement" accept
        rule family="ipv6" icmp-type name="neighbour-solicitation" accept
        rule family="ipv6" icmp-type name="redirect" accept
@@ -524,6 +532,10 @@ allow-host-ipv6 (active)
   source-ports:
   icmp-blocks:
   rich rules:
+       rule family="ipv6" icmp-type name="mld-listener-done" accept
+       rule family="ipv6" icmp-type name="mld-listener-query" accept
+       rule family="ipv6" icmp-type name="mld-listener-report" accept
+       rule family="ipv6" icmp-type name="mld2-listener-report" accept
        rule family="ipv6" icmp-type name="neighbour-advertisement" accept
        rule family="ipv6" icmp-type name="neighbour-solicitation" accept
        rule family="ipv6" icmp-type name="redirect" accept
