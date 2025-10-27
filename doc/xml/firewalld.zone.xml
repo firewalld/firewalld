@@ -99,7 +99,7 @@
 	      The <literal>ACCEPT</literal> target is used in <literal>trusted</literal> zone to accept every packet not matching any rule.
 	      The <literal>%%REJECT%%</literal> target is used in <literal>block</literal> zone to reject (with default firewalld reject type) every packet not matching any rule.
 	      The <literal>DROP</literal> target is used in <literal>drop</literal> zone to drop every packet not matching any rule.
-	      If the target is not specified, every packet not matching any rule will be rejected.
+	      If the target is not specified, ICMP packets will be accepted, and every other packet not matching any rule will be rejected.
 	    </para>
 	  </listitem>
 	</varlistentry>
