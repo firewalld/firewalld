@@ -12,7 +12,7 @@ DBUS_CHECK([], [policy.getPolicySettings], ["allow-host-ipv6"], 0, [dnl
     'ingress_zones': m4_escape([<['ANY']>])
     'masquerade': <false>
     'priority': <-15000>
-    'rich_rules': m4_escape([<['rule family="ipv6" icmp-type name="neighbour-advertisement" accept', 'rule family="ipv6" icmp-type name="neighbour-solicitation" accept', 'rule family="ipv6" icmp-type name="redirect" accept', 'rule family="ipv6" icmp-type name="router-advertisement" accept']>])
+    'rich_rules': m4_escape([<['rule family="ipv6" icmp-type name="mld-listener-done" accept', 'rule family="ipv6" icmp-type name="mld-listener-query" accept', 'rule family="ipv6" icmp-type name="mld-listener-report" accept', 'rule family="ipv6" icmp-type name="mld2-listener-report" accept', 'rule family="ipv6" icmp-type name="neighbour-advertisement" accept', 'rule family="ipv6" icmp-type name="neighbour-solicitation" accept', 'rule family="ipv6" icmp-type name="redirect" accept', 'rule family="ipv6" icmp-type name="router-advertisement" accept']>])
     'short': <'Allow host IPv6'>
     'target': <'CONTINUE'>
 ])
