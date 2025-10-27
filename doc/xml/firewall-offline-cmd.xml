@@ -628,6 +628,9 @@
           <para>
             <literal>default</literal> is similar to <literal>REJECT</literal>, but it implicitly allows ICMP packets.
           </para>
+          <para>
+            <literal>ACCEPT</literal> allows traffic to be forwarded from the zone, either to the same zone or other zones.
+          </para>
         </listitem>
       </varlistentry>
 

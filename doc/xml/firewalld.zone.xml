@@ -96,7 +96,7 @@
           <listitem>
 	    <para>
 	      Can be used to accept, reject or drop every packet that doesn't match any rule (port, service, etc.).
-	      The <literal>ACCEPT</literal> target is used in the <literal>trusted</literal> zone to accept every packet not matching any rule.
+	      The <literal>ACCEPT</literal> target is special: it enables inter-zone and intra-zone forwarding. It is used in the <literal>trusted</literal> zone to accept every packet not matching any rule.
 	      The <literal>%%REJECT%%</literal> target is used in the <literal>block</literal> zone to reject (with default firewalld reject type) every packet not matching any rule.
 	      The <literal>DROP</literal> target is used in the <literal>drop</literal> zone to drop every packet not matching any rule.
 	      If the target is not specified, ICMP packets will be accepted, and every other packet not matching any rule will be rejected.
