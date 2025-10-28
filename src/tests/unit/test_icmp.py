@@ -379,12 +379,9 @@ def _test_icmptypes_nftables(xmlobjs):
             assert ipx in _get_destination(xmlobj)
 
 
-def _test_icmptypes_ipset(xmlobjs):
-    # firewall.core.icmp is only used by src/firewall/core/io/ipset.py, and
-    # hard-codes valid ICMP types. It's not used anywhere else.
-    #
-    # It should still correspond to our XML files, where every entry here has
-    # an XML file, but some XML files are not found here.
+def _test_icmptypes_defined_type_and_code(xmlobjs):
+    """Verify that every icmptype has a type/code defined in ICMP_TYPES and/or
+    ICMPV6_TYPES."""
     types4 = firewall.core.icmp.ICMP_TYPES
     types6 = firewall.core.icmp.ICMPV6_TYPES
     for xmlobj in xmlobjs:
@@ -393,35 +390,7 @@ def _test_icmptypes_ipset(xmlobjs):
         assert should_have4 or should_have6
         has4 = xmlobj.name in types4
         has6 = xmlobj.name in types6
-        if not has4 and not has6:
-            # We have XML files for those ICMP types, but they are not in
-            # firewall.core.icmp.{ICMP_TYPES,ICMPV6_TYPES}.
-            assert xmlobj.name in [
-                "beyond-scope",
-                "destination-unreachable",
-                "failed-policy",
-                "mld-listener-done",
-                "mld-listener-query",
-                "mld-listener-report",
-                "mld2-listener-report",
-                "parameter-problem",
-                "reject-route",
-                "time-exceeded",
-                "tos-host-redirect",
-                "tos-host-unreachable",
-                "tos-network-redirect",
-                "tos-network-unreachable",
-            ]
-            continue
-        if has4 != should_have4:
-            # The file "redirect.xml" is both for IPv4 and IPv6. However, it is
-            # only in firewall.core.icmp.ICMPV6_TYPES not
-            # firewall.core.icmp.ICMP_TYPES.
-            assert xmlobj.name in [
-                "redirect",
-            ]
-            assert should_have4
-            assert should_have6
+        assert has4 == should_have4
         assert has6 == should_have6
 
 
@@ -434,4 +403,4 @@ def test_icmptypes():
         xmlobjs.append(_icmptypes_load_file(dirname, file))
 
     _test_icmptypes_nftables(xmlobjs)
-    _test_icmptypes_ipset(xmlobjs)
+    _test_icmptypes_defined_type_and_code(xmlobjs)
