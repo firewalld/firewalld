@@ -91,29 +91,6 @@ IPTABLES_TO_NFT_HOOK = {
 }
 
 
-def _icmp_types_fragments(protocol, type, code=None):
-    fragments = [
-        {
-            "match": {
-                "left": {"payload": {"protocol": protocol, "field": "type"}},
-                "op": "==",
-                "right": type,
-            }
-        }
-    ]
-    if code is not None:
-        fragments.append(
-            {
-                "match": {
-                    "left": {"payload": {"protocol": protocol, "field": "code"}},
-                    "op": "==",
-                    "right": code,
-                }
-            }
-        )
-    return fragments
-
-
 class nftables:
     name = "nftables"
     policies_supported = True
@@ -2341,13 +2318,39 @@ class nftables:
 
         return rules
 
+    def _icmp_types_fragments(self, protocol, type, code=None):
+        fragments = [
+            {
+                "match": {
+                    "left": {"payload": {"protocol": protocol, "field": "type"}},
+                    "op": "==",
+                    "right": type,
+                }
+            }
+        ]
+        if code is not None:
+            fragments.append(
+                {
+                    "match": {
+                        "left": {"payload": {"protocol": protocol, "field": "code"}},
+                        "op": "==",
+                        "right": code,
+                    }
+                }
+            )
+        return fragments
+
     def _icmp_types_to_nft_fragments(self, ipv, icmp_type):
         if ipv == "ipv4" and icmp_type in ICMP_TYPES:
             _type, _code, _omit_code = ICMP_TYPES[icmp_type]
-            return _icmp_types_fragments("icmp", _type, None if _omit_code else _code)
+            return self._icmp_types_fragments(
+                "icmp", _type, None if _omit_code else _code
+            )
         elif ipv == "ipv6" and icmp_type in ICMPV6_TYPES:
             _type, _code, _omit_code = ICMPV6_TYPES[icmp_type]
-            return _icmp_types_fragments("icmpv6", _type, None if _omit_code else _code)
+            return self._icmp_types_fragments(
+                "icmpv6", _type, None if _omit_code else _code
+            )
         else:
             raise FirewallError(
                 INVALID_ICMPTYPE,
