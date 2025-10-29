@@ -1626,7 +1626,7 @@ class nftables:
                 "match": {
                     "left": {"meta": {"key": "pkttype"}},
                     "op": "==",
-                    "right": pkttype,
+                    "right": "host" if pkttype == "unicast" else pkttype,
                 }
             }
 
