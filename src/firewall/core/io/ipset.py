@@ -31,9 +31,9 @@ from firewall.core.io.io_object import (
 from firewall.core.ipset import IPSET_TYPES, IPSET_CREATE_OPTIONS
 from firewall.core.icmp import (
     check_icmp_name,
-    check_icmp_type,
+    check_icmp_type_code,
     check_icmpv6_name,
-    check_icmpv6_type,
+    check_icmpv6_type_code,
 )
 from firewall.core.logger import log
 from firewall import errors
@@ -221,13 +221,19 @@ class IPSet(IO_Object):
                                 "invalid protocol for family '%s' in '%s'"
                                 % (family, entry),
                             )
-                        if not check_icmp_name(splits[1]) and not check_icmp_type(
-                            splits[1]
-                        ):
+                        if not check_icmp_name(splits[1]) and "/" not in splits[1]:
                             raise FirewallError(
                                 errors.INVALID_ENTRY,
                                 "invalid icmp type '%s' in '%s'" % (splits[1], entry),
                             )
+                        else:
+                            (_type, _code) = splits[1].split("/")
+                            if not check_icmp_type_code(_type, _code):
+                                raise FirewallError(
+                                    errors.INVALID_ENTRY,
+                                    "invalid icmp type '%s' in '%s'"
+                                    % (splits[1], entry),
+                                )
                     elif splits[0] in ["icmpv6", "ipv6-icmp"]:
                         if family != "ipv6":
                             raise FirewallError(
@@ -235,13 +241,19 @@ class IPSet(IO_Object):
                                 "invalid protocol for family '%s' in '%s'"
                                 % (family, entry),
                             )
-                        if not check_icmpv6_name(splits[1]) and not check_icmpv6_type(
-                            splits[1]
-                        ):
+                        if not check_icmpv6_name(splits[1]) and "/" not in splits[1]:
                             raise FirewallError(
                                 errors.INVALID_ENTRY,
                                 "invalid icmpv6 type '%s' in '%s'" % (splits[1], entry),
                             )
+                        else:
+                            (_type, _code) = splits[1].split("/")
+                            if not check_icmpv6_type_code(_type, _code):
+                                raise FirewallError(
+                                    errors.INVALID_ENTRY,
+                                    "invalid icmpv6 type '%s' in '%s'"
+                                    % (splits[1], entry),
+                                )
                     elif splits[0] not in [
                         "tcp",
                         "sctp",
