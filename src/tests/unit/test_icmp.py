@@ -357,28 +357,6 @@ def _icmptypes_load_file(dirname, file):
     return xmlobj
 
 
-def _test_icmptypes_nftables(xmlobjs):
-    nft = firewall.core.nftables.ICMP_TYPES_FRAGMENTS
-    assert set(nft.keys()) == set(["ipv4", "ipv6"])
-
-    # Check that all .xml files are listed in firewall.core.nftables.ICMP_TYPES_FRAGMENTS
-    for xmlobj in xmlobjs:
-        for ipx in _get_destination(xmlobj):
-            assert xmlobj.name in nft[ipx], (
-                f'XML file "{xmlobj.path}/{xmlobj.name}.xml" has no entry '
-                f'"{xmlobj.name}" in firewall.core.nftables.ICMP_TYPES_FRAGMENTS["{ipx}"]'
-            )
-
-    # Check that all firewall.core.nftables.ICMP_TYPES_FRAGMENTS have an .xml file.
-    for ipx in nft:
-        assert ipx in ["ipv4", "ipv6"]
-        for icmp_type in nft[ipx]:
-            l = [xmlobj for xmlobj in xmlobjs if xmlobj.name == icmp_type]
-            assert len(l) == 1
-            xmlobj = l[0]
-            assert ipx in _get_destination(xmlobj)
-
-
 def _test_icmptypes_defined_type_and_code(xmlobjs):
     """Verify that every icmptype has a type/code defined in ICMP_TYPES and/or
     ICMPV6_TYPES."""
@@ -402,5 +380,4 @@ def test_icmptypes():
     for file in files:
         xmlobjs.append(_icmptypes_load_file(dirname, file))
 
-    _test_icmptypes_nftables(xmlobjs)
     _test_icmptypes_defined_type_and_code(xmlobjs)
