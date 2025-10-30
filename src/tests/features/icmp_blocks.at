@@ -39,8 +39,8 @@ NFT_LIST_RULES([inet], [filter_IN_policy_foobar_deny], 0, [dnl
             icmp echo-reply reject with icmpx admin-prohibited
             icmpv6 echo-reply reject with icmpx admin-prohibited
             icmp redirect reject with icmpx admin-prohibited
-            icmpv6 nd-redirect reject with icmpx admin-prohibited
-            ip6 saddr 1234:5678::/64 icmpv6 nd-redirect reject with icmpx admin-prohibited
+            icmpv6 nd-redirect icmpv6 code 0 reject with icmpx admin-prohibited
+            ip6 saddr 1234:5678::/64 icmpv6 nd-redirect icmpv6 code 0 reject with icmpx admin-prohibited
         }
     }
 ])
@@ -56,8 +56,8 @@ IPTABLES_LIST_RULES([filter], [IN_foobar_deny], 0, [dnl
 IP6TABLES_LIST_RULES([filter], [IN_foobar_deny], 0, [dnl
     REJECT 58 -- ::/0 ::/0 ipv6-icmptype 128 reject-with icmp6-adm-prohibited
     REJECT 58 -- ::/0 ::/0 ipv6-icmptype 129 reject-with icmp6-adm-prohibited
-    REJECT 58 -- ::/0 ::/0 ipv6-icmptype 137 reject-with icmp6-adm-prohibited
-    REJECT 58 -- 1234:5678::/64 ::/0 ipv6-icmptype 137 reject-with icmp6-adm-prohibited
+    REJECT 58 -- ::/0 ::/0 ipv6-icmptype 137 code 0 reject-with icmp6-adm-prohibited
+    REJECT 58 -- 1234:5678::/64 ::/0 ipv6-icmptype 137 code 0 reject-with icmp6-adm-prohibited
 ])
 FWD_CHECK([--permanent --policy=foobar --remove-icmp-block echo-request], 0, [ignore])
 FWD_CHECK([--permanent --policy foobar --query-icmp-block echo-request], 1, [ignore])
@@ -104,7 +104,7 @@ NFT_LIST_RULES([inet], [filter_IN_policy_foobar_deny], 0, [dnl
         chain filter_IN_policy_foobar_deny {
             icmp echo-request reject with icmpx admin-prohibited
             icmpv6 echo-request reject with icmpx admin-prohibited
-            ip6 saddr 1234:5678::/64 icmpv6 nd-redirect reject with icmpx admin-prohibited
+            ip6 saddr 1234:5678::/64 icmpv6 nd-redirect icmpv6 code 0 reject with icmpx admin-prohibited
         }
     }
 ])
@@ -117,7 +117,7 @@ IPTABLES_LIST_RULES([filter], [IN_foobar_deny], 0, [dnl
 ])
 IP6TABLES_LIST_RULES([filter], [IN_foobar_deny], 0, [dnl
     REJECT 58 -- ::/0 ::/0 ipv6-icmptype 128 reject-with icmp6-adm-prohibited
-    REJECT 58 -- 1234:5678::/64 ::/0 ipv6-icmptype 137 reject-with icmp6-adm-prohibited
+    REJECT 58 -- 1234:5678::/64 ::/0 ipv6-icmptype 137 code 0 reject-with icmp6-adm-prohibited
 ])
 FWD_CHECK([--permanent --policy=foobar --remove-icmp-block echo-request], 0, [ignore])
 IF_HOST_SUPPORTS_IPV6_RULES([
