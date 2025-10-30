@@ -81,7 +81,7 @@ ICMPV6_TYPES = {
     "neigbour-solicitation": (135, 0, False),
     "neighbour-advertisement": (136, 0, False),
     "neigbour-advertisement": (136, 0, False),
-    "redirect": (137, 0, True),
+    "redirect": (137, 0, False),
     # MLD is RFC-2710
     "mld-listener-query": (130, 0, True),
     "mld-listener-report": (131, 0, True),
