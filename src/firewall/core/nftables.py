@@ -40,6 +40,7 @@ from firewall.core.rich import (
     Rich_NFLog,
 )
 from firewall.core.base import DEFAULT_ZONE_TARGET
+from firewall.core.icmp import ICMP_TYPES, ICMPV6_TYPES
 from nftables.nftables import Nftables
 
 TABLE_NAME = "firewalld"
@@ -86,139 +87,6 @@ IPTABLES_TO_NFT_HOOK = {
         "INPUT": ("input", 0 + NFT_HOOK_OFFSET),
         "FORWARD": ("forward", 0 + NFT_HOOK_OFFSET),
         "OUTPUT": ("output", 0 + NFT_HOOK_OFFSET),
-    },
-}
-
-
-def _icmp_types_fragments(protocol, type, code=None):
-    fragments = [
-        {
-            "match": {
-                "left": {"payload": {"protocol": protocol, "field": "type"}},
-                "op": "==",
-                "right": type,
-            }
-        }
-    ]
-    if code is not None:
-        fragments.append(
-            {
-                "match": {
-                    "left": {"payload": {"protocol": protocol, "field": "code"}},
-                    "op": "==",
-                    "right": code,
-                }
-            }
-        )
-    return fragments
-
-
-# Most ICMP types are provided by nft, but for the codes we have to use numeric
-# values.
-#
-ICMP_TYPES_FRAGMENTS = {
-    "ipv4": {
-        "communication-prohibited": _icmp_types_fragments(
-            "icmp", "destination-unreachable", 13
-        ),
-        "destination-unreachable": _icmp_types_fragments(
-            "icmp", "destination-unreachable"
-        ),
-        "echo-reply": _icmp_types_fragments("icmp", "echo-reply"),
-        "echo-request": _icmp_types_fragments("icmp", "echo-request"),
-        "fragmentation-needed": _icmp_types_fragments(
-            "icmp", "destination-unreachable", 4
-        ),
-        "host-precedence-violation": _icmp_types_fragments(
-            "icmp", "destination-unreachable", 14
-        ),
-        "host-prohibited": _icmp_types_fragments("icmp", "destination-unreachable", 10),
-        "host-redirect": _icmp_types_fragments("icmp", "redirect", 1),
-        "host-unknown": _icmp_types_fragments("icmp", "destination-unreachable", 7),
-        "host-unreachable": _icmp_types_fragments("icmp", "destination-unreachable", 1),
-        "ip-header-bad": _icmp_types_fragments("icmp", "parameter-problem", 1),
-        "network-prohibited": _icmp_types_fragments(
-            "icmp", "destination-unreachable", 8
-        ),
-        "network-redirect": _icmp_types_fragments("icmp", "redirect", 0),
-        "network-unknown": _icmp_types_fragments("icmp", "destination-unreachable", 6),
-        "network-unreachable": _icmp_types_fragments(
-            "icmp", "destination-unreachable", 0
-        ),
-        "parameter-problem": _icmp_types_fragments("icmp", "parameter-problem"),
-        "port-unreachable": _icmp_types_fragments("icmp", "destination-unreachable", 3),
-        "precedence-cutoff": _icmp_types_fragments(
-            "icmp", "destination-unreachable", 15
-        ),
-        "protocol-unreachable": _icmp_types_fragments(
-            "icmp", "destination-unreachable", 2
-        ),
-        "redirect": _icmp_types_fragments("icmp", "redirect"),
-        "required-option-missing": _icmp_types_fragments(
-            "icmp", "parameter-problem", 1
-        ),
-        "router-advertisement": _icmp_types_fragments("icmp", "router-advertisement"),
-        "router-solicitation": _icmp_types_fragments("icmp", "router-solicitation"),
-        "source-quench": _icmp_types_fragments("icmp", "source-quench"),
-        "source-route-failed": _icmp_types_fragments(
-            "icmp", "destination-unreachable", 5
-        ),
-        "time-exceeded": _icmp_types_fragments("icmp", "time-exceeded"),
-        "timestamp-reply": _icmp_types_fragments("icmp", "timestamp-reply"),
-        "timestamp-request": _icmp_types_fragments("icmp", "timestamp-request"),
-        "tos-host-redirect": _icmp_types_fragments("icmp", "redirect", 3),
-        "tos-host-unreachable": _icmp_types_fragments(
-            "icmp", "destination-unreachable", 12
-        ),
-        "tos-network-redirect": _icmp_types_fragments("icmp", "redirect", 2),
-        "tos-network-unreachable": _icmp_types_fragments(
-            "icmp", "destination-unreachable", 11
-        ),
-        "ttl-zero-during-reassembly": _icmp_types_fragments("icmp", "time-exceeded", 1),
-        "ttl-zero-during-transit": _icmp_types_fragments("icmp", "time-exceeded", 0),
-    },
-    "ipv6": {
-        "address-unreachable": _icmp_types_fragments(
-            "icmpv6", "destination-unreachable", 3
-        ),
-        "bad-header": _icmp_types_fragments("icmpv6", "parameter-problem", 0),
-        "beyond-scope": _icmp_types_fragments("icmpv6", "destination-unreachable", 2),
-        "communication-prohibited": _icmp_types_fragments(
-            "icmpv6", "destination-unreachable", 1
-        ),
-        "destination-unreachable": _icmp_types_fragments(
-            "icmpv6", "destination-unreachable"
-        ),
-        "echo-reply": _icmp_types_fragments("icmpv6", "echo-reply"),
-        "echo-request": _icmp_types_fragments("icmpv6", "echo-request"),
-        "failed-policy": _icmp_types_fragments("icmpv6", "destination-unreachable", 5),
-        "mld-listener-done": _icmp_types_fragments("icmpv6", "mld-listener-done"),
-        "mld-listener-query": _icmp_types_fragments("icmpv6", "mld-listener-query"),
-        "mld-listener-report": _icmp_types_fragments("icmpv6", "mld-listener-report"),
-        "mld2-listener-report": _icmp_types_fragments("icmpv6", "mld2-listener-report"),
-        "neighbour-advertisement": _icmp_types_fragments(
-            "icmpv6", "nd-neighbor-advert"
-        ),
-        "neighbour-solicitation": _icmp_types_fragments(
-            "icmpv6", "nd-neighbor-solicit"
-        ),
-        "no-route": _icmp_types_fragments("icmpv6", "destination-unreachable", 0),
-        "packet-too-big": _icmp_types_fragments("icmpv6", "packet-too-big"),
-        "parameter-problem": _icmp_types_fragments("icmpv6", "parameter-problem"),
-        "port-unreachable": _icmp_types_fragments(
-            "icmpv6", "destination-unreachable", 4
-        ),
-        "redirect": _icmp_types_fragments("icmpv6", "nd-redirect"),
-        "reject-route": _icmp_types_fragments("icmpv6", "destination-unreachable", 6),
-        "router-advertisement": _icmp_types_fragments("icmpv6", "nd-router-advert"),
-        "router-solicitation": _icmp_types_fragments("icmpv6", "nd-router-solicit"),
-        "time-exceeded": _icmp_types_fragments("icmpv6", "time-exceeded"),
-        "ttl-zero-during-reassembly": _icmp_types_fragments(
-            "icmpv6", "time-exceeded", 1
-        ),
-        "ttl-zero-during-transit": _icmp_types_fragments("icmpv6", "time-exceeded", 0),
-        "unknown-header-type": _icmp_types_fragments("icmpv6", "parameter-problem", 1),
-        "unknown-option": _icmp_types_fragments("icmpv6", "parameter-problem", 2),
     },
 }
 
@@ -693,12 +561,12 @@ class nftables:
         return rules
 
     def supported_icmp_types(self, ipv=None):
-        # nftables supports any icmp_type via arbitrary type/code matching.
-        # We just need a translation for it in ICMP_TYPES_FRAGMENTS.
         supported = set()
 
-        for _ipv in [ipv] if ipv else ICMP_TYPES_FRAGMENTS.keys():
-            supported.update(ICMP_TYPES_FRAGMENTS[_ipv].keys())
+        if ipv is None or ipv == "ipv4":
+            supported.update(ICMP_TYPES.keys())
+        if ipv is None or ipv == "ipv6":
+            supported.update(ICMPV6_TYPES.keys())
 
         return list(supported)
 
@@ -2450,9 +2318,39 @@ class nftables:
 
         return rules
 
+    def _icmp_types_fragments(self, protocol, type, code=None):
+        fragments = [
+            {
+                "match": {
+                    "left": {"payload": {"protocol": protocol, "field": "type"}},
+                    "op": "==",
+                    "right": type,
+                }
+            }
+        ]
+        if code is not None:
+            fragments.append(
+                {
+                    "match": {
+                        "left": {"payload": {"protocol": protocol, "field": "code"}},
+                        "op": "==",
+                        "right": code,
+                    }
+                }
+            )
+        return fragments
+
     def _icmp_types_to_nft_fragments(self, ipv, icmp_type):
-        if icmp_type in ICMP_TYPES_FRAGMENTS[ipv]:
-            return ICMP_TYPES_FRAGMENTS[ipv][icmp_type]
+        if ipv == "ipv4" and icmp_type in ICMP_TYPES:
+            _type, _code, _omit_code = ICMP_TYPES[icmp_type]
+            return self._icmp_types_fragments(
+                "icmp", _type, None if _omit_code else _code
+            )
+        elif ipv == "ipv6" and icmp_type in ICMPV6_TYPES:
+            _type, _code, _omit_code = ICMPV6_TYPES[icmp_type]
+            return self._icmp_types_fragments(
+                "icmpv6", _type, None if _omit_code else _code
+            )
         else:
             raise FirewallError(
                 INVALID_ICMPTYPE,

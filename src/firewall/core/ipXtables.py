@@ -28,6 +28,7 @@ from firewall.errors import (
     INVALID_RULE,
     UNKNOWN_ERROR,
     INVALID_ADDR,
+    INVALID_ICMPTYPE,
 )
 from firewall.core.rich import (
     Rich_Accept,
@@ -41,6 +42,7 @@ from firewall.core.rich import (
     Rich_Tcp_Mss_Clamp,
 )
 from firewall.core.base import DEFAULT_ZONE_TARGET
+from firewall.core.icmp import ICMP_TYPES, ICMPV6_TYPES
 import string
 
 POLICY_CHAIN_PREFIX = ""
@@ -728,43 +730,14 @@ class ip4tables:
         return rules
 
     def supported_icmp_types(self, ipv=None):
-        """Return ICMP types that are supported by the iptables/ip6tables command and kernel"""
-        output = ""
-        try:
-            output = self.__run(
-                ["-p", "icmp" if self.ipv == "ipv4" else "ipv6-icmp", "--help"]
-            )
-        except ValueError as ex:
-            if self.ipv == "ipv4":
-                log.debug1("iptables error: %s" % ex)
-            else:
-                log.debug1("ip6tables error: %s" % ex)
+        supported = set()
 
-        return self._parse_supported_icmp_types(self.ipv, output)
+        if ipv is None or self.ipv == "ipv4":
+            supported.update(ICMP_TYPES.keys())
+        if ipv is None or self.ipv == "ipv6":
+            supported.update(ICMPV6_TYPES.keys())
 
-    @staticmethod
-    def _parse_supported_icmp_types(ipv, output):
-        in_types = False
-        ret = []
-        for line in output.splitlines():
-            if in_types:
-                line = line.strip().lower()
-                splits = line.split()
-                for split in splits:
-                    if split.startswith("(") and split.endswith(")"):
-                        x = split[1:-1]
-                    else:
-                        x = split
-                    if x not in ret:
-                        ret.append(x)
-            if (
-                ipv == "ipv4"
-                and line.startswith("Valid ICMP Types:")
-                or ipv == "ipv6"
-                and line.startswith("Valid ICMPv6 Types:")
-            ):
-                in_types = True
-        return ret
+        return list(supported)
 
     def build_default_tables(self):
         # nothing to do, they always exist
@@ -1814,6 +1787,20 @@ class ip4tables:
 
         return rules
 
+    def _icmp_types_fragment(self, icmp_type):
+        if self.ipv == "ipv4" and icmp_type in ICMP_TYPES:
+            _type, _code, _omit_code = ICMP_TYPES[icmp_type]
+            _type_str = str(_type) if _omit_code else str(_type) + "/" + str(_code)
+            return ["-m", "icmp", "--icmp-type", _type_str]
+        elif self.ipv == "ipv6" and icmp_type in ICMPV6_TYPES:
+            _type, _code, _omit_code = ICMPV6_TYPES[icmp_type]
+            _type_str = str(_type) if _omit_code else str(_type) + "/" + str(_code)
+            return ["-m", "icmp6", "--icmpv6-type", _type_str]
+        else:
+            raise FirewallError(
+                INVALID_ICMPTYPE, f"ICMP type {icmp_type} not supported by {self.name}"
+            )
+
     def build_policy_icmp_block_rules(
         self, enable, policy, ict, rich_rule=None, ipvs=None
     ):
@@ -1825,10 +1812,10 @@ class ip4tables:
 
         if self.ipv == "ipv4":
             proto = ["-p", "icmp"]
-            match = ["-m", "icmp", "--icmp-type", ict.name]
+            match = self._icmp_types_fragment(ict.name)
         else:
             proto = ["-p", "ipv6-icmp"]
-            match = ["-m", "icmp6", "--icmpv6-type", ict.name]
+            match = self._icmp_types_fragment(ict.name)
 
         rules = []
         if self._fw.policy.query_icmp_block_inversion(policy):
