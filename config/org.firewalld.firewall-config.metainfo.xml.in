@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright 2014 Jiri Popelka <jpopelka@redhat.com> -->
-<component type="desktop">
-  <id>firewall-config.desktop</id>
+<component type="desktop-application">
+  <id>org.firewalld.firewall-config</id>
+  <provides>
+    <id>firewall-config.desktop</id>
+  </provides>
+  <launchable type="desktop-id">firewall-config.desktop</launchable>
+  <_name>Firewall</_name>
+  <developer id="org.firewalld">
+    <name>Red Hat, Inc.</name>
+  </developer>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-2.0+</project_license>
+  <_summary>Firewall Configuration</_summary>
   <description>
     <_p>Firewall Configuration provides a graphical tool for administering firewall.</_p>
     <_p>Allows to inspect and set:</_p>
@@ -27,4 +36,5 @@
   <url type="vcs-browser">https://github.com/firewalld/firewalld</url>
   <translation type="gettext">firewalld</translation>
   <update_contact>twoerner_at_redhat.com</update_contact>
+  <content_rating type="oars-1.1"/>
 </component>
