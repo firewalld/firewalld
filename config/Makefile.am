@@ -6,9 +6,9 @@ desktop_FILES = firewall-config.desktop.in
 desktopdir = $(datadir)/applications
 desktop_DATA = $(desktop_FILES:.in=)
 
-appdata_FILES = firewall-config.appdata.xml.in
-appdatadir = $(datadir)/metainfo/
-appdata_DATA = $(appdata_FILES:.in=)
+metainfo_FILES = org.firewalld.firewall-config.metainfo.xml.in
+metainfodir = $(datadir)/metainfo/
+metainfo_DATA = $(metainfo_FILES:.in=)
 
 applet_desktop_FILES = firewall-applet.desktop.in
 applet_desktopdir = $(sysconfdir)/xdg/autostart
@@ -39,7 +39,7 @@ dist_xmlschema_SCRIPTS = xmlschema/check.sh
 
 BUILT_SOURCES = \
 	$(desktop_DATA) \
-	$(appdata_DATA) \
+	$(metainfo_DATA) \
 	$(applet_desktop_DATA) \
 	$(polkit1_action_DATA) \
 	$(gsettings_SCHEMAS) \
@@ -52,13 +52,13 @@ BUILT_SOURCES = \
 @INTLTOOL_XML_RULE@
 @GSETTINGS_RULES@
 
-all: $(desktop_DATA) $(appdata_DATA) $(applet_desktop_DATA) $(polkit1_action_DATA) $(gsettings_SCHEMAS)
+all: $(desktop_DATA) $(metainfo_DATA) $(applet_desktop_DATA) $(polkit1_action_DATA) $(gsettings_SCHEMAS)
 
 CLEANFILES = *~ *\# .\#* firewalld.service firewalld-sysctls.conf firewalld.logrotate
 
 DISTCLEANFILES = \
 	$(desktop_DATA) \
-	$(appdata_DATA) \
+	$(metainfo_DATA) \
 	$(applet_desktop_DATA) \
 	$(polkit1_action_DATA) \
 	$(gsettings_SCHEMAS)
@@ -419,7 +419,7 @@ CONFIG_FILES_TESTS = \
 
 EXTRA_DIST = \
 	$(desktop_FILES) \
-	$(appdata_FILES) \
+	$(metainfo_FILES) \
 	$(applet_desktop_FILES) \
 	$(polkit1_action_FILES) \
 	$(gsettings_in_file) \
