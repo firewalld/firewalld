@@ -59,7 +59,7 @@
 &lt;helper module="<replaceable>nf_conntrack_module</replaceable>" [family="<literal>ipv4</literal>|<literal>ipv6</literal>"]&gt;
   &lt;short&gt;<replaceable>short</replaceable>&lt;/short&gt;
   &lt;description&gt;<replaceable>description</replaceable>&lt;/description&gt;
-  &lt;port <replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>|<literal>sctp</literal>|<literal>dccp</literal>"/&gt;
+  &lt;port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>|<literal>sctp</literal>|<literal>dccp</literal>"/&gt;
 &lt;/helper&gt;
       </programlisting>
     </para>
