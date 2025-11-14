@@ -1,13 +1,13 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# Remus-Gabriel Chelu <remusgabriel.chelu@disroot.org>, 2023.
+# Remus-Gabriel Chelu <remusgabriel.chelu@disroot.org>, 2023, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-06 14:46-0500\n"
-"PO-Revision-Date: 2023-12-25 09:37+0000\n"
+"PO-Revision-Date: 2025-11-14 10:32+0000\n"
 "Last-Translator: Remus-Gabriel Chelu <remusgabriel.chelu@disroot.org>\n"
 "Language-Team: Romanian <https://translate.fedoraproject.org/projects/"
 "firewalld/master/ro/>\n"
@@ -15,9 +15,9 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
-"20)) ? 1 : 2;\n"
-"X-Generator: Weblate 5.3\n"
+"Plural-Forms: nplurals=3; plural=n==1 ? 0 : "
+"(n==0 || (n%100 > 0 && n%100 < 20)) ? 1 : 2;\n"
+"X-Generator: Weblate 5.14.3\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:450
 msgid "Firewall Applet"
@@ -27,37 +27,36 @@ msgstr "Mini-aplicație Paravan de protecție"
 msgid ""
 "Firewall Configuration provides a graphical tool for administering firewall."
 msgstr ""
+"Configurarea paravanului de protecție oferă un instrument grafic pentru "
+"administrarea acestuia."
 
 #: ../config/firewall-config.appdata.xml.in.h:2
-#, fuzzy
 msgid "Allows to inspect and set:"
-msgstr "Selectați un Set-IP:"
+msgstr "Permite inspectarea și ajustarea:"
 
 #: ../config/firewall-config.appdata.xml.in.h:3
-#, fuzzy
 msgid "Runtime and permanent firewall configuration"
-msgstr "Configurarea Paravanului de protecție"
+msgstr "Configurarea permanentă și în timp real a paravanului de protecție"
 
 #: ../config/firewall-config.appdata.xml.in.h:4
-#, fuzzy
 msgid "Predefined zones (levels of trust for network connections)"
-msgstr "Zona implicită utilizată de conexiunea de rețea „%s”"
+msgstr "Zone predefinite (niveluri de încredere pentru conexiunile de rețea)"
 
 #: ../config/firewall-config.appdata.xml.in.h:5
 msgid "Predefined services (port/protocol, netfilter helper module)"
-msgstr ""
+msgstr "Servicii predefinite (port/protocol, modul ajutător netfilter)"
 
 #: ../config/firewall-config.appdata.xml.in.h:6
 msgid "Port forwarding, masquerading, ICMP blocking"
-msgstr ""
+msgstr "Redirecționarea porturilor, mascarea, blocarea ICMP"
 
 #: ../config/firewall-config.appdata.xml.in.h:7
 msgid "Complex firewall rules a.k.a. Rich Language"
-msgstr ""
+msgstr "Reguli de paravan de protecție complexe a.k.a.„limbaj complex”"
 
 #: ../config/firewall-config.appdata.xml.in.h:8
 msgid "Iptables rules a.k.a. Direct Interface"
-msgstr ""
+msgstr "Reguli Iptables a.k.a. Interfață directă"
 
 #: ../config/firewall-config.desktop.in.h:1
 msgid "Firewall"
@@ -668,9 +667,8 @@ msgid "ipv6"
 msgstr "ipv6"
 
 #: ../src/firewall-config.in:3995
-#, fuzzy
 msgid "invalid element"
-msgstr "Nume nevalid"
+msgstr "Element nevalid"
 
 #: ../src/firewall-config.in:5161
 msgid ""
@@ -1247,10 +1245,10 @@ msgid ""
 "messages between networked computers, but additionally for informational "
 "messages like ping requests and replies."
 msgstr ""
-"Protocolul de mesaje de control în Internet („Internet Control Message "
-"Protocol”: ICMP) este utilizat în principal pentru a trimite mesaje de "
-"eroare între calculatoarele din rețea, dar și pentru mesaje informative, cum "
-"ar fi cererile și răspunsurile la ping."
+"Protocolul de mesaje de control în Internet "
+"(„Internet Control Message Protocol”: ICMP) este utilizat în principal "
+"pentru a trimite mesaje de eroare între calculatoarele din rețea, dar și "
+"pentru mesaje informative, cum ar fi cererile și răspunsurile la ping."
 
 #: ../src/firewall-config.glade.h:110
 msgid ""
@@ -1760,8 +1758,7 @@ msgstr "Introduceți un marcaj cu o mască opțională."
 
 #: ../src/firewall-config.glade.h:210
 msgid "The mark and the mask fields are both 32 bits wide unsigned numbers."
-msgstr ""
-"Câmpurile marcaj și mască sunt amândouă numere fără semn pe 32 de biți."
+msgstr "Câmpurile marcaj și mască sunt amândouă numere fără semn pe 32 de biți."
 
 #: ../src/firewall-config.glade.h:211
 msgid "Mark:"
