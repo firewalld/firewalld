@@ -30,7 +30,7 @@
 # Mateus de Melo Santos <mateusms@tutanota.com>, 2017. #zanata
 # Eric Garver <e@erig.me>, 2018. #zanata
 # Renan Marcos Ferreira <renan.ferreira18@fatec.sp.gov.br>, 2018. #zanata
-# Rafael Fontenelle <rafaelff@gnome.org>, 2020.
+# Rafael Fontenelle <rafaelff@gnome.org>, 2020, 2025.
 # Henrique Roberto Gattermann Mittelstaedt <henrique.roberto97@gmail.com>, 2020.
 msgid ""
 msgstr ""
@@ -38,7 +38,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-06 14:46-0500\n"
 "PO-Revision-Date: 2025-11-13 20:53+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"Last-Translator: Rafael Fontenelle <rafaelff@gnome.org>\n"
 "Language-Team: Portuguese (Brazil) <https://translate.fedoraproject.org/"
 "projects/firewalld/master/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -56,37 +56,36 @@ msgstr "Miniaplicativo do Firewall"
 msgid ""
 "Firewall Configuration provides a graphical tool for administering firewall."
 msgstr ""
+"A configuração do firewall fornece uma ferramenta gráfica para administrar o "
+"firewall."
 
 #: ../config/firewall-config.appdata.xml.in.h:2
-#, fuzzy
 msgid "Allows to inspect and set:"
-msgstr "Por favor, selecione um ipset:"
+msgstr "Permite inspecionar e definir:"
 
 #: ../config/firewall-config.appdata.xml.in.h:3
-#, fuzzy
 msgid "Runtime and permanent firewall configuration"
-msgstr "Configuração do Firewall"
+msgstr "Configuração de firewall permanente e em tempo de execução"
 
 #: ../config/firewall-config.appdata.xml.in.h:4
-#, fuzzy
 msgid "Predefined zones (levels of trust for network connections)"
-msgstr "Zona padrão utilizada pela conexão de rede '%s'"
+msgstr "Zonas predefinidas (níveis de confiança para conexões de rede)"
 
 #: ../config/firewall-config.appdata.xml.in.h:5
 msgid "Predefined services (port/protocol, netfilter helper module)"
-msgstr ""
+msgstr "Serviços predefinidos (porta/protocolo, módulo auxiliar netfilter)"
 
 #: ../config/firewall-config.appdata.xml.in.h:6
 msgid "Port forwarding, masquerading, ICMP blocking"
-msgstr ""
+msgstr "Encaminhamento de porta, mascaramento, bloqueio de ICMP"
 
 #: ../config/firewall-config.appdata.xml.in.h:7
 msgid "Complex firewall rules a.k.a. Rich Language"
-msgstr ""
+msgstr "Regras complexas de firewall, também conhecidas como linguagem rica"
 
 #: ../config/firewall-config.appdata.xml.in.h:8
 msgid "Iptables rules a.k.a. Direct Interface"
-msgstr ""
+msgstr "Regras do iptables, também conhecidas como Interface Direta"
 
 #: ../config/firewall-config.desktop.in.h:1
 msgid "Firewall"
@@ -695,9 +694,8 @@ msgid "ipv6"
 msgstr "ipv6"
 
 #: ../src/firewall-config.in:3995
-#, fuzzy
 msgid "invalid element"
-msgstr "Nome inválido"
+msgstr "Elemento inválido"
 
 #: ../src/firewall-config.in:5161
 msgid ""
