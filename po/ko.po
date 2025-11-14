@@ -15,13 +15,13 @@
 # Terry Chuang <tchuang@redhat.com>, 2016. #zanata
 # Eric Garver <e@erig.me>, 2018. #zanata
 # simmon <simmon@nplob.com>, 2021.
-# 김인수 <simmon@nplob.com>, 2022.
+# 김인수 <simmon@nplob.com>, 2022, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-06 14:46-0500\n"
-"PO-Revision-Date: 2022-06-06 06:18+0000\n"
+"PO-Revision-Date: 2025-11-13 20:50+0000\n"
 "Last-Translator: 김인수 <simmon@nplob.com>\n"
 "Language-Team: Korean <https://translate.fedoraproject.org/projects/"
 "firewalld/master/ko/>\n"
@@ -30,7 +30,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.12.2\n"
+"X-Generator: Weblate 5.14.3\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:450
 msgid "Firewall Applet"
@@ -342,9 +342,8 @@ msgstr "firewalld에 연결 시도 중입니다. 대기 중..."
 msgid ""
 "Failed to connect to firewalld. Please make sure that the service has been "
 "started correctly and try again."
-msgstr ""
-"방화벽에 연결 할 수 없습니다. 서비스를 제대로 시작했는지 확인하고 다시 시도"
-"해 주십시오."
+msgstr "방화벽에 연결 할 수 없습니다. 서비스를 제대로 시작했는지 확인하고 다시 시도해"
+" 주십시오."
 
 #: ../src/firewall-config.in:91
 msgid "Changes applied."
@@ -688,8 +687,8 @@ msgid ""
 "masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
-"인터페이스가 마스커레이딩되는 경우에만 다른 시스템에 전송하는 것이 유용합니"
-"다.\n"
+"인터페이스가 마스커레이딩되는 경우에만 다른 시스템에 전송하는 것이 유용합니다"
+".\n"
 "이 영역을 마스커레이딩하시겠습니까?"
 
 #: ../src/firewall-config.in:5519
@@ -867,8 +866,7 @@ msgstr "대상"
 msgid ""
 "If you enable local forwarding, you have to specify a port. This port has to "
 "be different to the source port."
-msgstr ""
-"로컬 포워딩을 사용하실 경우, 포트를 지정하셔야 합니다. 이러한 포트는 소스 포"
+msgstr "로컬 포워딩을 사용하실 경우, 포트를 지정하셔야 합니다. 이러한 포트는 소스 포"
 "트와 달라야 합니다."
 
 #: ../src/firewall-config.glade.h:26
@@ -1131,8 +1129,7 @@ msgstr "서비스"
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks that can connect to the machine."
-msgstr ""
-"이 컴퓨터에 연결 가능한 모든 호스트 또는 네트워크에 액세스할 수 있어야 하는 "
+msgstr "이 컴퓨터에 연결 가능한 모든 호스트 또는 네트워크에 액세스할 수 있어야 하는 "
 "추가 포트 또는 포트 범위를 추가합니다."
 
 #: ../src/firewall-config.glade.h:90
@@ -1175,8 +1172,7 @@ msgstr "통신규약"
 msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks that can connect to the machine."
-msgstr ""
-"이 컴퓨터에 연결 가능한 모든 호스트 또는 네트워크에 액세스할 수 있어야 하는 "
+msgstr "이 컴퓨터에 연결 가능한 모든 호스트 또는 네트워크에 액세스할 수 있어야 하는 "
 "추가 소스 포트 또는 포트 범위를 추가합니다."
 
 #: ../src/firewall-config.glade.h:100
@@ -1189,10 +1185,10 @@ msgid ""
 "network to the internet. Your local network will not be visible and the "
 "hosts appear as a single address on the internet. Masquerading is IPv4 only."
 msgstr ""
-"마스커레이딩 (Masquerading) 기능은 로컬 네트워크를 인터넷에 연결하는 호스트"
-"나 라우터를 설정할 수 있게 합니다. 로컬 네트워크는 볼 수 없으며 호스트는 인터"
-"넷에서 하나의 주소로 나타납니다. 마스커레이딩 (Masquerading) 기능은 IPv4에서"
-"만 해당됩니다."
+"마스커레이딩 (Masquerading) 기능은 로컬 네트워크를 인터넷에 연결하는 호스트나"
+" 라우터를 설정할 수 있게 합니다. 로컬 네트워크는 볼 수 없으며 호스트는 인터넷"
+"에서 하나의 주소로 나타납니다. 마스커레이딩 (Masquerading) 기능은 IPv4에서만 "
+"해당됩니다."
 
 #: ../src/firewall-config.glade.h:102
 msgid "Masquerade zone"
@@ -1239,9 +1235,9 @@ msgid ""
 "messages between networked computers, but additionally for informational "
 "messages like ping requests and replies."
 msgstr ""
-"ICMP (Internet Control Message Protocol)는 네트워크로 연결된 컴퓨터 간의 오"
-"류 메세지를 보내는 데 주로 사용되지만, 추가로 핑 요청 및 응답과 같은 알림 메"
-"세지를 보내는 데 사용될 수 있습니다."
+"ICMP (Internet Control Message Protocol)는 네트워크로 연결된 컴퓨터 간의 오류"
+" 메세지를 보내는 데 주로 사용되지만, 추가로 핑 요청 및 응답과 같은 알림 메세"
+"지를 보내는 데 사용될 수 있습니다."
 
 #: ../src/firewall-config.glade.h:110
 msgid ""
@@ -1411,8 +1407,7 @@ msgstr "IPv6:"
 msgid ""
 "Services can only be changed in the permanent configuration view. The "
 "runtime configuration of services is fixed."
-msgstr ""
-"서비스는 영구 설정 보기에서만 변경할 수 있습니다. 서비스의 런타임 설정은 고정"
+msgstr "서비스는 영구 설정 보기에서만 변경할 수 있습니다. 서비스의 런타임 설정은 고정"
 "되어 있습니다."
 
 #: ../src/firewall-config.glade.h:147
@@ -1507,8 +1502,7 @@ msgstr "ICMP 유형이 IPv4 및 IPv6에서 사용 가능한 지에 대한 여부
 msgid ""
 "ICMP Types can only be changed in the permanent configuration view. The "
 "runtime configuration of ICMP Types is fixed."
-msgstr ""
-"ICMP 유형은 영구 설정 보기에서만 변경할 수 있습니다. ICMP 유형의 런타임 설정"
+msgstr "ICMP 유형은 영구 설정 보기에서만 변경할 수 있습니다. ICMP 유형의 런타임 설정"
 "은 고정되어 있습니다."
 
 #: ../src/firewall-config.glade.h:166
@@ -1786,8 +1780,7 @@ msgstr "고급 규칙을 입력하십시오."
 
 #: ../src/firewall-config.glade.h:226
 msgid "For host or network allow or denylisting deactivate the element."
-msgstr ""
-"호스트 또는 네트워크의 경우 허용 또는 거부 목록에 따라 요소가 비활성화됩니다."
+msgstr "호스트 또는 네트워크의 경우 허용 또는 거부 목록에 따라 요소가 비활성화됩니다."
 
 #: ../src/firewall-config.glade.h:227
 msgid "Source:"
@@ -1817,9 +1810,8 @@ msgstr "변환됨"
 msgid ""
 "To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
 "(not both)."
-msgstr ""
-"이를 활성화하려면 작업을 '거부'하고 'ipv4' 또는 'ipv6' 중 하나 (둘 중 하나)"
-"의 제품군을 선택합니다."
+msgstr "이를 활성화하려면 작업을 '거부'하고 'ipv4' 또는 'ipv6' 중 하나 (둘 중 하나)의"
+" 제품군을 선택합니다."
 
 #: ../src/firewall-config.glade.h:238
 msgid "with Type:"
