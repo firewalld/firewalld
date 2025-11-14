@@ -25,8 +25,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-06 14:46-0500\n"
-"PO-Revision-Date: 2023-09-12 15:35+0000\n"
-"Last-Translator: \"Sergey A.\" <sw@atrus.ru>\n"
+"PO-Revision-Date: 2025-11-13 20:53+0000\n"
+"Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Russian <https://translate.fedoraproject.org/projects/"
 "firewalld/master/ru/>\n"
 "Language: ru\n"
@@ -35,7 +35,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 5.0.1\n"
+"X-Generator: Weblate 5.14.3\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:450
 msgid "Firewall Applet"
@@ -122,8 +122,7 @@ msgstr "Настроить зоны включения/выключения за
 
 #: ../src/firewall-applet.in:233
 msgid "Here you can select the zones used for Shields Up and Shields Down."
-msgstr ""
-"Здесь можно выбрать зоны, используемые для включения/отключения защиты."
+msgstr "Здесь можно выбрать зоны, используемые для включения/отключения защиты."
 
 #: ../src/firewall-applet.in:244
 msgid ""
@@ -1215,8 +1214,8 @@ msgid ""
 "If you enable masquerading, IP forwarding will be enabled for your IPv4 "
 "networks."
 msgstr ""
-"При включении маскирования для сетей IPv4 будет включено перенаправление IP-"
-"пакетов."
+"При включении маскирования для сетей IPv4 будет включено перенаправление "
+"IP-пакетов."
 
 #: ../src/firewall-config.glade.h:104
 msgid "Masquerading"
@@ -1554,9 +1553,9 @@ msgid ""
 "as a last resort when it is not possible to use other firewalld features."
 msgstr ""
 "Прямая конфигурация предоставляет прямой доступ к межсетевому экрану. Для ее "
-"настройки необходимы знания iptables (таблицы, цепочки, команды, параметры и "
-"цели). Прямая конфигурация должна использоваться только в случаях крайней "
-"необходимости."
+"настройки необходимы знания iptables "
+"(таблицы, цепочки, команды, параметры и цели). Прямая конфигурация должна "
+"использоваться только в случаях крайней необходимости."
 
 #: ../src/firewall-config.glade.h:169
 msgid ""

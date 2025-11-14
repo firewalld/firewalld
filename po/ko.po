@@ -22,7 +22,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-06 14:46-0500\n"
 "PO-Revision-Date: 2025-11-13 20:50+0000\n"
-"Last-Translator: 김인수 <simmon@nplob.com>\n"
+"Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Korean <https://translate.fedoraproject.org/projects/"
 "firewalld/master/ko/>\n"
 "Language: ko\n"
@@ -244,14 +244,13 @@ msgid ""
 "Default Zone '{default_zone}' active for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
-"기본 영역 '{default_zone}'은 인터페이스 '{interface}' 상의 연결 "
-"'{connection}'에 대해 활성화"
+"기본 영역 '{default_zone}'은 인터페이스 '{interface}' 상의 연결 '{connection}"
+"'에 대해 활성화"
 
 #: ../src/firewall-applet.in:928
 msgid ""
 "Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
-msgstr ""
-"영역 '{zone}'은 인터페이스 '{interface}' 상의 연결 '{connection}'에 대해 활성"
+msgstr "영역 '{zone}'은 인터페이스 '{interface}' 상의 연결 '{connection}'에 대해 활성"
 "화"
 
 #: ../src/firewall-applet.in:946
@@ -300,21 +299,19 @@ msgid ""
 "Default zone '{default_zone}' {activated_deactivated} for connection "
 "'{connection}' on interface '{interface}'"
 msgstr ""
-"기본 영역 '{default_zone}'은 인터페이스 '{interface}' 상의 연결 "
-"'{connection}'에 대해 {activated_deactivated}"
+"기본 영역 '{default_zone}'은 인터페이스 '{interface}' 상의 연결 '{connection}"
+"'에 대해 {activated_deactivated}"
 
 #: ../src/firewall-applet.in:1111
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
-msgstr ""
-"영역 '{zone}'이 인터페이스 '{interface}' 상의 연결에 대해 "
+msgstr "영역 '{zone}'이 인터페이스 '{interface}' 상의 연결에 대해 "
 "{activated_deactivated}"
 
 #: ../src/firewall-applet.in:1118
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
-msgstr ""
-"영역 '{zone}'이 인터페이스 '{interface}'에 대해 {activated_deactivated}"
+msgstr "영역 '{zone}'이 인터페이스 '{interface}'에 대해 {activated_deactivated}"
 
 #: ../src/firewall-applet.in:1149
 #, c-format
@@ -1198,8 +1195,7 @@ msgstr "마스커레이딩 영역"
 msgid ""
 "If you enable masquerading, IP forwarding will be enabled for your IPv4 "
 "networks."
-msgstr ""
-"마스커레이딩을 활성화할 경우 IP 포워딩은 IPv4 네트워크에 대해 활성화됩니다."
+msgstr "마스커레이딩을 활성화할 경우 IP 포워딩은 IPv4 네트워크에 대해 활성화됩니다."
 
 #: ../src/firewall-config.glade.h:104
 msgid "Masquerading"
@@ -1287,8 +1283,7 @@ msgstr "고급 규칙"
 msgid ""
 "Add entries to bind interfaces to the zone. If the interface will be used by "
 "a connection, the zone will be set to the zone specified in the connection."
-msgstr ""
-"영역에 인터페이스를 바인딩할 항목을 추가합니다. 인터페이스가 연결에 의해 사용"
+msgstr "영역에 인터페이스를 바인딩할 항목을 추가합니다. 인터페이스가 연결에 의해 사용"
 "될 경우 영역은 연결에 지정된 영역으로 설정됩니다."
 
 #: ../src/firewall-config.glade.h:120
@@ -1355,8 +1350,7 @@ msgstr "서비스 기본값 읽기"
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks."
-msgstr ""
-"모든 호스트 또는 네트워크에 액세스 가능한 포트 및 포트 범위를 추가합니다."
+msgstr "모든 호스트 또는 네트워크에 액세스 가능한 포트 및 포트 범위를 추가합니다."
 
 #: ../src/firewall-config.glade.h:137
 msgid "Edit Entry"
@@ -1370,9 +1364,8 @@ msgstr "항목 삭제"
 msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks."
-msgstr ""
-"모든 호스트 또는 네트워크에 액세스 가능한 소스 포트 및 포트 범위를 추가합니"
-"다."
+msgstr "모든 호스트 또는 네트워크에 액세스 가능한 소스 포트 및 포트 범위를 추가합니다"
+"."
 
 #: ../src/firewall-config.glade.h:140
 msgid "Source Port"
@@ -1538,9 +1531,9 @@ msgid ""
 "will be for iptables, with ipv6 for ip6tables and with eb for ethernet "
 "bridges (ebtables)."
 msgstr ""
-"각 옵션의 ipv 인수는 ipv4, ipv6, eb 중 하나여야 합니다. ipv4를 지정하면 "
-"iptables가 사용됩니다. ipv6를 지정하면 ip6tables가 사용됩니다. eb를 사용하면 "
-"이더넷 브리지 (ebtables)가 사용됩니다."
+"각 옵션의 ipv 인수는 ipv4, ipv6, eb 중 하나여야 합니다. ipv4를 지정하면 iptab"
+"les가 사용됩니다. ipv6를 지정하면 ip6tables가 사용됩니다. eb를 사용하면 이더"
+"넷 브리지 (ebtables)가 사용됩니다."
 
 #: ../src/firewall-config.glade.h:170
 msgid "Additional chains for use with rules."
@@ -1565,8 +1558,7 @@ msgstr "체인"
 #: ../src/firewall-config.glade.h:175
 msgid ""
 "Add a rule with the arguments args to a chain in a table with a priority."
-msgstr ""
-"규칙을 args 인수와 함께 테이블에 있는 체인에 우선 순위를 붙여 추가합니다."
+msgstr "규칙을 args 인수와 함께 테이블에 있는 체인에 우선 순위를 붙여 추가합니다."
 
 #: ../src/firewall-config.glade.h:176
 msgid "Add Rule"
