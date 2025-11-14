@@ -17,8 +17,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-06 14:46-0500\n"
 "PO-Revision-Date: 2025-11-14 10:32+0000\n"
-"Last-Translator: Weblate Translation Memory <noreply-mt-weblate-translation-"
-"memory@weblate.org>\n"
+"Last-Translator: Burak Yavuz <hitowerdigit@hotmail.com>\n"
 "Language-Team: Turkish <https://translate.fedoraproject.org/projects/"
 "firewalld/master/tr/>\n"
 "Language: tr\n"
@@ -49,13 +48,12 @@ msgstr "Çalışma zamanı ve kalıcı güvenlik duvarı yapılandırması"
 
 #: ../config/firewall-config.appdata.xml.in.h:4
 msgid "Predefined zones (levels of trust for network connections)"
-msgstr "Önceden tanımlı bölgeler (ağ bağlantıları için güven düzeyleri)"
+msgstr "Öntanımlı bölgeler (ağ bağlantıları için güven düzeyleri)"
 
 #: ../config/firewall-config.appdata.xml.in.h:5
 msgid "Predefined services (port/protocol, netfilter helper module)"
 msgstr ""
-"Önceden tanımlı hizmetler "
-"(bağlantı noktası/protokol, netfilter yardımcı modülü)"
+"Öntanımlı hizmetler (bağlantı noktası/protokol, netfilter yardımcı modülü)"
 
 #: ../config/firewall-config.appdata.xml.in.h:6
 msgid "Port forwarding, masquerading, ICMP blocking"
@@ -67,7 +65,7 @@ msgstr "Zengin Dil olarak ta bilinen karmaşık güvenlik duvarı kuralları"
 
 #: ../config/firewall-config.appdata.xml.in.h:8
 msgid "Iptables rules a.k.a. Direct Interface"
-msgstr "Doğrudan Arayüz olarak da bilinen Iptables kuralları"
+msgstr "Doğrudan Arayüz olarak ta bilinen Ip tabloları kuralları"
 
 #: ../config/firewall-config.desktop.in.h:1
 msgid "Firewall"
@@ -444,7 +442,7 @@ msgstr "Eylem"
 
 #: ../src/firewall-config.in:790
 msgid "Element"
-msgstr "Eleman"
+msgstr "Öğe"
 
 #: ../src/firewall-config.in:793
 msgid "Src"
@@ -678,9 +676,8 @@ msgid "ipv6"
 msgstr "ipv6"
 
 #: ../src/firewall-config.in:3995
-#, fuzzy
 msgid "invalid element"
-msgstr "Geçersiz ad"
+msgstr "geçersiz öğe"
 
 #: ../src/firewall-config.in:5161
 msgid ""
@@ -1733,7 +1730,7 @@ msgstr "Başlangıç hash boyutu, öntanımlı olarak 1024"
 
 #: ../src/firewall-config.glade.h:202
 msgid "Max number of elements, default 65536"
-msgstr "Azami eleman sayısı, öntanımlı olarak 65536"
+msgstr "En fazla öğe sayısı, varsayılan 65536"
 
 #: ../src/firewall-config.glade.h:203
 msgid "Please select an ipset:"
@@ -1824,8 +1821,8 @@ msgstr "Lütfen bir zengin kural girin."
 #: ../src/firewall-config.glade.h:226
 msgid "For host or network allow or denylisting deactivate the element."
 msgstr ""
-"Ana makine veya ağ için, izin veya ret listesine almak elemanı devreden "
-"çıkarır."
+"Anamakine veya ağ için izin verme veya reddetme listesine almak öğeyi devre "
+"dışı bırakır."
 
 #: ../src/firewall-config.glade.h:227
 msgid "Source:"
@@ -1861,11 +1858,11 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:238
 msgid "with Type:"
-msgstr "Tür:"
+msgstr "Şu türle:"
 
 #: ../src/firewall-config.glade.h:239
 msgid "With limit:"
-msgstr "Limit:"
+msgstr "Şu sınırla:"
 
 #: ../src/firewall-config.glade.h:240
 msgid "/"
@@ -1881,7 +1878,7 @@ msgstr "Seviye:"
 
 #: ../src/firewall-config.glade.h:263
 msgid "Element:"
-msgstr "Eleman:"
+msgstr "Öğe:"
 
 #: ../src/firewall-config.glade.h:264
 msgid "Action:"
@@ -1917,7 +1914,7 @@ msgstr "Lütfen temel bölge ayarlarını yapılandırın:"
 
 #: ../src/firewall-config.glade.h:272
 msgid "Default Target"
-msgstr "Öntanımlı Hedef"
+msgstr "Varsayılan Hedef"
 
 #: ../src/firewall-config.glade.h:273
 msgid "Target:"
