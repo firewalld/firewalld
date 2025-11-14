@@ -25,8 +25,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && "
-"(n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 5.14.3\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:450
@@ -80,9 +80,7 @@ msgstr "Konfiguracja zapory sieciowej"
 #. Translators: These are searchable keywords for the firewall configuration tool
 #: ../config/firewall-config.desktop.in.h:4
 msgid "firewall;network;security;iptables;netfilter;"
-msgstr ""
-"zapora;sieciowa;ogniowa;firewall;sieć;sieci;network;bezpieczeństwo;zabezpieczenia;security;iptables;netfilter;"
-""
+msgstr "zapora;sieciowa;ogniowa;firewall;sieć;sieci;network;bezpieczeństwo;zabezpieczenia;security;iptables;netfilter;"
 
 #: ../src/firewall-applet.in:91 ../src/firewall-config.in:7690
 #, c-format
@@ -309,8 +307,8 @@ msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
-"Strefa „{zone}” została {activated_deactivated} dla połączenia „{connection}”"
-" na interfejsie „{interface}”"
+"Strefa „{zone}” została {activated_deactivated} dla połączenia "
+"„{connection}” na interfejsie „{interface}”"
 
 #: ../src/firewall-applet.in:1118
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
@@ -1076,8 +1074,8 @@ msgstr ""
 msgid ""
 "Show active runtime bindings of connections, interfaces and sources to zones"
 msgstr ""
-"Wyświetlenie aktywnych dowiązań czasu uruchamiania połączeń, interfejsów i "
-"źródeł do stref"
+"Wyświetlenie aktywnych dowiązań czasu uruchamiania połączeń, interfejsów "
+"i źródeł do stref"
 
 #: ../src/firewall-config.glade.h:79
 msgid "Configuration:"
@@ -1103,8 +1101,8 @@ msgid ""
 msgstr ""
 "Strefa usługi firewalld określa poziom zaufania dla połączeń sieciowych, "
 "interfejsów i adresów źródłowych powiązanych ze strefą. Strefa łączy usługi, "
-"porty, protokoły, maskarady, przekierowywanie portów/pakietów, filtry ICMP i "
-"złożone reguły. Strefa może być także powiązana z interfejsami i adresami "
+"porty, protokoły, maskarady, przekierowywanie portów/pakietów, filtry ICMP "
+"i złożone reguły. Strefa może być także powiązana z interfejsami i adresami "
 "źródłowymi."
 
 #: ../src/firewall-config.glade.h:83
@@ -1164,8 +1162,8 @@ msgstr "Porty"
 #: ../src/firewall-config.glade.h:94
 msgid "Add protocols, which need to be accessible for all hosts or networks."
 msgstr ""
-"Można dodać protokoły, które mają być dostępne dla wszystkich komputerów i "
-"sieci."
+"Można dodać protokoły, które mają być dostępne dla wszystkich komputerów "
+"i sieci."
 
 #: ../src/firewall-config.glade.h:95
 msgid "Add Protocol"
@@ -1271,8 +1269,8 @@ msgid ""
 "If Invert Filter is enabled, marked ICMP entries are accepted and the others "
 "are rejected. In a zone with the target DROP, they are dropped."
 msgstr ""
-"Jeśli filtr jest odwrócony, to oznaczone wpisy ICMP są akceptowane, a "
-"pozostałe są odrzucane. W strefie z celem DROP są one odrzucane."
+"Jeśli filtr jest odwrócony, to oznaczone wpisy ICMP są akceptowane, "
+"a pozostałe są odrzucane. W strefie z celem DROP są one odrzucane."
 
 #: ../src/firewall-config.glade.h:112
 msgid "Invert Filter"
@@ -1308,8 +1306,8 @@ msgid ""
 "a connection, the zone will be set to the zone specified in the connection."
 msgstr ""
 "Dodanie wpisów do dowiązania interfejsów do strefy. Jeśli interfejs będzie "
-"używany przez połączenie, to strefa zostanie ustawiona na strefę podaną w "
-"połączeniu."
+"używany przez połączenie, to strefa zostanie ustawiona na strefę podaną "
+"w połączeniu."
 
 #: ../src/firewall-config.glade.h:120
 msgid "Add Interface"
@@ -1439,8 +1437,8 @@ msgid ""
 "An IPSet can be used to create white or black lists and is able to store for "
 "example IP addresses, port numbers or MAC addresses. "
 msgstr ""
-"Zestaw adresów IP może być używany do tworzenia białych i czarnych list, i "
-"może przechowywać na przykład adresy IP, numery portów i adresy MAC. "
+"Zestaw adresów IP może być używany do tworzenia białych i czarnych list, "
+"i może przechowywać na przykład adresy IP, numery portów i adresy MAC. "
 
 #: ../src/firewall-config.glade.h:148
 msgid "IPSet"
@@ -1502,8 +1500,8 @@ msgid ""
 "A firewalld icmptype provides the information for an Internet Control "
 "Message Protocol (ICMP) type for firewalld."
 msgstr ""
-"icmptype dla firewalld dostarcza informacje o typach ICMP "
-"(Internet Control Message Protocol) usłudze firewalld."
+"icmptype dla firewalld dostarcza informacje o typach ICMP (Internet Control "
+"Message Protocol) usłudze firewalld."
 
 #: ../src/firewall-config.glade.h:160
 msgid "Add ICMP Type"
@@ -1623,8 +1621,8 @@ msgstr ""
 "reguły na górze łańcucha, reguły o wyższym priorytecie będą dodawane niżej. "
 "Reguły o tym samym priorytecie są na tym samym poziomie, a kolejność tych "
 "reguł nie jest stała i może ulec zmianie. Aby upewnić się, że reguła "
-"zostanie dodana po innej, należy użyć niskiego priorytetu dla pierwszej, a "
-"wyższego dla drugiej."
+"zostanie dodana po innej, należy użyć niskiego priorytetu dla pierwszej, "
+"a wyższego dla drugiej."
 
 #: ../src/firewall-config.glade.h:180
 msgid "Rules"
@@ -1637,8 +1635,8 @@ msgid ""
 "can be used."
 msgstr ""
 "Reguły przejścia są bezpośrednio przekazywane do zapory sieciowej i nie są "
-"umieszczane w specjalnych łańcuchach. Wszystkie opcje iptables, ip6tables i "
-"ebtables mogą być używane."
+"umieszczane w specjalnych łańcuchach. Wszystkie opcje iptables, ip6tables "
+"i ebtables mogą być używane."
 
 #: ../src/firewall-config.glade.h:182
 msgid "Add Passthrough"
