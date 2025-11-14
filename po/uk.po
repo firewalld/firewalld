@@ -3,19 +3,19 @@
 # This file is distributed under the same license as the PACKAGE package.
 # Translators:
 # Maxim Dubovoy <max@mylinux.com.ua>, 2003
-# Yuri Chornoivan <yurchor@ukr.net>, 2010-2014, 2020.
-# Yuri Chornoivan <yurchor@ukr.net>, 2012, 2020.
-# Yuri Chornoivan <yurchor@ukr.net>, 2015. #zanata, 2020.
-# Yuri Chornoivan <yurchor@ukr.net>, 2016. #zanata, 2020.
-# Yuri Chornoivan <yurchor@ukr.net>, 2017. #zanata, 2020.
-# Yuri Chornoivan <yurchor@ukr.net>, 2018. #zanata, 2020.
+# Yuri Chornoivan <yurchor@ukr.net>, 2010-2014, 2020, 2025.
+# Yuri Chornoivan <yurchor@ukr.net>, 2012, 2020, 2025.
+# Yuri Chornoivan <yurchor@ukr.net>, 2015. #zanata, 2020, 2025.
+# Yuri Chornoivan <yurchor@ukr.net>, 2016. #zanata, 2020, 2025.
+# Yuri Chornoivan <yurchor@ukr.net>, 2017. #zanata, 2020, 2025.
+# Yuri Chornoivan <yurchor@ukr.net>, 2018. #zanata, 2020, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-06 14:46-0500\n"
-"PO-Revision-Date: 2025-11-13 20:56+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2025-11-13 21:23+0000\n"
+"Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <https://translate.fedoraproject.org/projects/"
 "firewalld/master/uk/>\n"
 "Language: uk\n"
@@ -34,37 +34,37 @@ msgstr "Аплет брандмауера"
 msgid ""
 "Firewall Configuration provides a graphical tool for administering firewall."
 msgstr ""
+"«Налаштування брандмауера» є графічним інструментом для адміністрування "
+"брандмауера."
 
 #: ../config/firewall-config.appdata.xml.in.h:2
-#, fuzzy
 msgid "Allows to inspect and set:"
-msgstr "Будь ласка, виберіть ipset:"
+msgstr "Надає змогу вивчати та встановлювати:"
 
 #: ../config/firewall-config.appdata.xml.in.h:3
-#, fuzzy
 msgid "Runtime and permanent firewall configuration"
-msgstr "Налаштовування мережного екрану"
+msgstr "Динамічні і сталі налаштування брандмауера"
 
 #: ../config/firewall-config.appdata.xml.in.h:4
-#, fuzzy
 msgid "Predefined zones (levels of trust for network connections)"
-msgstr "Типова зона, що використовується для з’єднання «%s»"
+msgstr "Попередньо визначені зони (рівні довіри до з'єднань мережі)"
 
 #: ../config/firewall-config.appdata.xml.in.h:5
 msgid "Predefined services (port/protocol, netfilter helper module)"
 msgstr ""
+"Попередньо визначені служби (порт/протокол, допоміжний модуль netfilter)"
 
 #: ../config/firewall-config.appdata.xml.in.h:6
 msgid "Port forwarding, masquerading, ICMP blocking"
-msgstr ""
+msgstr "Переспрямування портів, маскування, блокування ICMP"
 
 #: ../config/firewall-config.appdata.xml.in.h:7
 msgid "Complex firewall rules a.k.a. Rich Language"
-msgstr ""
+msgstr "Складені правила брандмауера або збагачену мову"
 
 #: ../config/firewall-config.appdata.xml.in.h:8
 msgid "Iptables rules a.k.a. Direct Interface"
-msgstr ""
+msgstr "Правила iptables або безпосередній інтерфейс"
 
 #: ../config/firewall-config.desktop.in.h:1
 msgid "Firewall"
@@ -286,7 +286,7 @@ msgstr "Обмін даними мережею повністю розблоко
 
 #: ../src/firewall-applet.in:1098 ../src/firewall-applet.in:1164
 msgid "activated"
-msgstr "увімкнено"
+msgstr "активовано"
 
 #: ../src/firewall-applet.in:1098 ../src/firewall-applet.in:1164
 msgid "deactivated"
@@ -674,9 +674,8 @@ msgid "ipv6"
 msgstr "ipv6"
 
 #: ../src/firewall-config.in:3995
-#, fuzzy
 msgid "invalid element"
-msgstr "Неправильний аргумент %s"
+msgstr "некоректний елемент"
 
 #: ../src/firewall-config.in:5161
 msgid ""
