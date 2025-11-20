@@ -5,6 +5,8 @@
 # Authors:
 # Thomas Woerner <twoerner@redhat.com>
 
+from gi.repository import GLib
+
 import copy
 from firewall.core.base import SHORTCUTS, DEFAULT_ZONE_TARGET, SOURCE_IPSET_TYPES
 from firewall.core.io.policy import Policy
@@ -1302,6 +1304,10 @@ class FirewallZone:
             if _obj.applied:
                 self._forward(True, _zone, transaction)
 
+            if timeout > 0:
+                tag = GLib.timeout_add_seconds(timeout, self.remove_forward, _zone)
+                self.addTimeout(tag, ("forward", _zone))
+
             self.__register_forward(_obj, timeout, sender)
             transaction.add_fail(self.__unregister_forward, _obj)
 
@@ -1324,6 +1330,8 @@ class FirewallZone:
 
             if _obj.applied:
                 self._forward(False, _zone, transaction)
+
+            self.removeTimeout(("forward", _zone))
 
             transaction.add_post(self.__unregister_forward, _obj)
 
