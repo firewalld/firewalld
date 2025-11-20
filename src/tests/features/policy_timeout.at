@@ -1,0 +1,299 @@
+m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
+FWD_START_TEST([policy - timeout])
+AT_KEYWORDS(policy timeout RHEL-129918 RHEL-95705 RHEL-5795 gh1381)
+
+FWD_CHECK([--permanent --zone trusted --add-interface foobar0], 0, [ignore])
+FWD_CHECK([--permanent --new-policy foobar], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar --add-ingress-zone ANY], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar --add-egress-zone ANY], 0, [ignore])
+FWD_RELOAD()
+
+dnl $1 = firewall-cmd args
+dnl $2 = nftables expected forward allow chain rules
+dnl $3 = nftables expected forward deny chain rules
+dnl $4 = nftables expected nat prerouting chain rules
+dnl $5 = nftables expected nat postrouting chain rules
+dnl $6 = iptables expected forward allow chain rules
+dnl $7 = iptables expected forward deny chain rules
+dnl $8 = iptables expected nat prerouting chain rules
+dnl $9 = iptables expected nat postrouting chain rules
+m4_define([do_timeout], [dnl
+
+FWD_CHECK([--policy foobar --timeout 2 $1], 0, [ignore])
+FWD_CHECK([--policy foobar --add-service https], 0, [ignore])
+
+NFT_LIST_RULES([inet], [filter_FWD_policy_foobar_allow], 0, [dnl
+    table inet firewalld {
+        chain filter_FWD_policy_foobar_allow {
+            $2 dnl
+            tcp dport 443 accept
+        }
+    }
+])
+NFT_LIST_RULES([inet], [filter_FWD_policy_foobar_deny], 0, [dnl
+    table inet firewalld {
+        chain filter_FWD_policy_foobar_deny {
+            $3 dnl
+        }
+    }
+])
+NFT_LIST_RULES([inet], [nat_PRE_policy_foobar_allow], 0, [dnl
+    table inet firewalld {
+        chain nat_PRE_policy_foobar_allow {
+            $4 dnl
+        }
+    }
+])
+NFT_LIST_RULES([inet], [nat_POST_policy_foobar_allow], 0, [dnl
+    table inet firewalld {
+        chain nat_POST_policy_foobar_allow {
+            $5 dnl
+        }
+    }
+])
+IPTABLES_LIST_RULES([filter], [FWD_foobar_allow], 0, [dnl
+    $6 dnl
+    ACCEPT 6 -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:443
+])
+IPTABLES_LIST_RULES([filter], [FWD_foobar_deny], 0, [dnl
+    $7 dnl
+])
+IPTABLES_LIST_RULES([nat], [PRE_foobar_allow], 0, [dnl
+    $8 dnl
+])
+IPTABLES_LIST_RULES([nat], [POST_foobar_allow], 0, [dnl
+    $9 dnl
+])
+
+sleep 5
+NFT_LIST_RULES([inet], [filter_FWD_policy_foobar_allow], 0, [dnl
+    table inet firewalld {
+        chain filter_FWD_policy_foobar_allow {
+            tcp dport 443 accept
+        }
+    }
+])
+NFT_LIST_RULES([inet], [filter_FWD_policy_foobar_deny], 0, [dnl
+    table inet firewalld {
+        chain filter_FWD_policy_foobar_deny {
+        }
+    }
+])
+NFT_LIST_RULES([inet], [nat_PRE_policy_foobar_allow], 0, [dnl
+    table inet firewalld {
+        chain nat_PRE_policy_foobar_allow {
+        }
+    }
+])
+NFT_LIST_RULES([inet], [nat_POST_policy_foobar_allow], 0, [dnl
+    table inet firewalld {
+        chain nat_POST_policy_foobar_allow {
+        }
+    }
+])
+IPTABLES_LIST_RULES([filter], [FWD_foobar_allow], 0, [dnl
+    ACCEPT 6 -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:443
+])
+IPTABLES_LIST_RULES([filter], [FWD_foobar_deny], 0, [dnl
+])
+IPTABLES_LIST_RULES([nat], [PRE_foobar_allow], 0, [dnl
+])
+IPTABLES_LIST_RULES([nat], [POST_foobar_allow], 0, [dnl
+])
+
+FWD_CHECK([--policy foobar --remove-service https], 0, [ignore])
+
+]) dnl end m4_define()
+
+dnl ##################################
+dnl ##### Test every option that #####
+dnl ##### supports timeouts      #####
+dnl ##################################
+
+do_timeout([--add-port 1234/tcp],
+[dnl
+    tcp dport 1234 accept
+], [], [], [],
+[dnl
+    ACCEPT 6 -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:1234
+], [], [], [])
+
+do_timeout([--add-source-port 1234/tcp],
+[dnl
+    tcp sport 1234 accept
+], [], [], [],
+[dnl
+    ACCEPT 6 -- 0.0.0.0/0 0.0.0.0/0 tcp spt:1234
+], [], [], [])
+
+do_timeout([--add-protocol igmp],
+[dnl
+    meta l4proto igmp accept
+], [], [], [],
+[dnl
+    ACCEPT 2 -- 0.0.0.0/0 0.0.0.0/0
+], [], [], [])
+
+do_timeout([--add-service http],
+[dnl
+    tcp dport 80 accept
+], [], [], [],
+[dnl
+    ACCEPT 6 -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:80
+], [], [], [])
+
+do_timeout([--add-rich-rule 'rule service name=irc accept'],
+[dnl
+    tcp dport 6667 accept
+], [], [], [],
+[dnl
+    ACCEPT 6 -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:6667
+], [], [], [])
+
+do_timeout([--add-icmp-block echo-request],
+[], [dnl
+    icmp echo-request reject with icmpx admin-prohibited
+    icmpv6 echo-request reject with icmpx admin-prohibited
+], [], [], [],
+[dnl
+    REJECT 1 -- 0.0.0.0/0 0.0.0.0/0 icmptype 8 reject-with icmp-host-prohibited
+], [], [])
+
+do_timeout([--add-forward-port port=2222:proto=tcp:toport=22:toaddr=10.10.10.10],
+[], [], [dnl
+    meta nfproto ipv4 tcp dport 2222 dnat ip to 10.10.10.10:22
+], [], [], [], [dnl
+    DNAT 6 -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:2222 to:10.10.10.10:22
+], [])
+
+do_timeout([--add-masquerade],
+[], [], [], [dnl
+    meta nfproto ipv4 oifname != "lo" masquerade
+], [], [], [], [dnl
+    MASQUERADE 0 -- 0.0.0.0/0 0.0.0.0/0
+])
+
+dnl for disable we have to check the dispatch
+FWD_CHECK([--policy foobar --timeout 2 --add-disable], 0, [ignore])
+
+NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES], 0, [dnl
+    table inet firewalld {
+        chain filter_FORWARD_POLICIES {
+            iifname "foobar0" oifname "foobar0" jump filter_FWD_trusted
+            iifname "foobar0" oifname "foobar0" accept
+            iifname "foobar0" jump filter_FWD_trusted
+            iifname "foobar0" accept
+            oifname "foobar0" jump filter_FWD_public
+            oifname "foobar0" reject with icmpx admin-prohibited
+            jump filter_FWD_public
+            reject with icmpx admin-prohibited
+        }
+    }
+])
+IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES], 0, [dnl
+    FWD_trusted 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_trusted 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+    FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+])
+
+sleep 5
+NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES], 0, [dnl
+    table inet firewalld {
+        chain filter_FORWARD_POLICIES {
+            iifname "foobar0" oifname "foobar0" jump filter_FWD_policy_foobar
+            iifname "foobar0" oifname "foobar0" jump filter_FWD_trusted
+            iifname "foobar0" oifname "foobar0" accept
+            iifname "foobar0" jump filter_FWD_policy_foobar
+            iifname "foobar0" jump filter_FWD_trusted
+            iifname "foobar0" accept
+            oifname "foobar0" jump filter_FWD_policy_foobar
+            oifname "foobar0" jump filter_FWD_public
+            oifname "foobar0" reject with icmpx admin-prohibited
+            jump filter_FWD_public
+            reject with icmpx admin-prohibited
+        }
+    }
+])
+IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES], 0, [dnl
+    FWD_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_trusted 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_trusted 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+    FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+])
+
+dnl for ingress-zone and egress-zone we have to check the dispatch
+FWD_CHECK([--policy foobar --remove-ingress-zone ANY], 0, [ignore])
+FWD_CHECK([--policy foobar --timeout 2 --add-ingress-zone ANY], 0, [ignore])
+
+NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES], 0, [dnl
+    table inet firewalld {
+        chain filter_FORWARD_POLICIES {
+            iifname "foobar0" oifname "foobar0" jump filter_FWD_policy_foobar
+            iifname "foobar0" oifname "foobar0" jump filter_FWD_trusted
+            iifname "foobar0" oifname "foobar0" accept
+            iifname "foobar0" jump filter_FWD_policy_foobar
+            iifname "foobar0" jump filter_FWD_trusted
+            iifname "foobar0" accept
+            oifname "foobar0" jump filter_FWD_policy_foobar
+            oifname "foobar0" jump filter_FWD_public
+            oifname "foobar0" reject with icmpx admin-prohibited
+            jump filter_FWD_public
+            reject with icmpx admin-prohibited
+        }
+    }
+])
+IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES], 0, [dnl
+    FWD_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_trusted 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_trusted 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+    FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+])
+
+sleep 5
+NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES], 0, [dnl
+    table inet firewalld {
+        chain filter_FORWARD_POLICIES {
+            iifname "foobar0" oifname "foobar0" jump filter_FWD_trusted
+            iifname "foobar0" oifname "foobar0" accept
+            iifname "foobar0" jump filter_FWD_trusted
+            iifname "foobar0" accept
+            oifname "foobar0" jump filter_FWD_public
+            oifname "foobar0" reject with icmpx admin-prohibited
+            jump filter_FWD_public
+            reject with icmpx admin-prohibited
+        }
+    }
+])
+IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES], 0, [dnl
+    FWD_trusted 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_trusted 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+    FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+])
+
+m4_undefine([do_timeout])
+FWD_END_TEST()
+])
