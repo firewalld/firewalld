@@ -3625,8 +3625,8 @@ class FirewallClient:
     # forward
 
     @handle_exceptions
-    def addForward(self, zone):
-        self.fw_zone.setZoneSettings2(zone, {"forward": True})
+    def addForward(self, zone, timeout=0):
+        self.fw_zone.setZoneSettings2(zone, {"forward": True, "timeout": timeout})
 
     @handle_exceptions
     def queryForward(self, zone):

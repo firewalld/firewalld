@@ -3919,7 +3919,7 @@ elif a.query_source_port:
 
 # forward
 elif a.add_forward:
-    fw.addForward(zone)
+    fw.addForward(zone, a.timeout)
 elif a.remove_forward:
     fw.removeForward(zone)
 elif a.query_forward:
