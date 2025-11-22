@@ -2,9 +2,9 @@
 Description=firewalld - dynamic firewall daemon
 Before=network-pre.target
 Wants=network-pre.target
-Requires=dbus.service
-After=dbus.service
-After=polkit.service
+# Use PartOf so firewalld is restarted when dbus is restarted. But it doesn't
+# have to wait on it initially.
+PartOf=dbus.service
 Conflicts=iptables.service ip6tables.service ebtables.service ipset.service
 Documentation=man:firewalld(1)
 
@@ -14,8 +14,6 @@ ExecStart=@sbindir@/firewalld --nofork --nopid $FIREWALLD_ARGS
 ExecReload=/bin/kill -HUP $MAINPID
 StandardOutput=null
 StandardError=null
-Type=dbus
-BusName=org.fedoraproject.FirewallD1
 KillMode=mixed
 DevicePolicy=closed
 KeyringMode=private
