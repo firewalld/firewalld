@@ -7,6 +7,7 @@
 
 from gi.repository import GLib
 
+import time
 import copy
 import dbus
 import dbus.service
@@ -67,8 +68,26 @@ class FirewallD(DbusServiceObject):
         self.start()
 
         dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
-        bus = dbus.SystemBus()
-        name = dbus.service.BusName(config.dbus.DBUS_INTERFACE, bus=bus)
+        bus = None
+        name = None
+
+        retries_before_log = 60  # seconds-ish
+        while True:
+            for retries in range(retries_before_log):
+                try:
+                    bus = dbus.SystemBus()
+                    name = dbus.service.BusName(config.dbus.DBUS_INTERFACE, bus=bus)
+                    break
+                except Exception:
+                    time.sleep(1)
+            else:
+                log.info1(
+                    f"Failed to connect to dbus after {retries_before_log} retries."
+                )
+
+            if bus and name:
+                break
+
         super(FirewallD, self).__init__(name, config.dbus.DBUS_PATH)
 
         self.busname = name
