@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>Kubernetes Flannel</short>
+  <description>Flannel is an overlay network provider that can be used with Kubernetes.</description>
+  <port protocol="udp" port="8285"/>
+  <port protocol="udp" port="8472"/>
+</service>
