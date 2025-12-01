@@ -363,6 +363,12 @@ class FirewallZone:
             "forward": (self.add_forward, self.remove_forward),
         }
 
+        timeout = 0
+        if "timeout" in settings:
+            timeout = settings["timeout"]
+            settings = copy.copy(settings)
+            del settings["timeout"]
+
         # do a full config check on a temporary object before trying to make
         # the runtime changes
         old_obj = self.get_zone(zone)
@@ -393,15 +399,19 @@ class FirewallZone:
                         setting_to_fn[key][0](zone, args, sender=sender)
                     else:
                         if isinstance(args, tuple):
-                            setting_to_fn[key][0](zone, *args, timeout=0, sender=sender)
+                            setting_to_fn[key][0](
+                                zone, *args, timeout=timeout, sender=sender
+                            )
                         else:
-                            setting_to_fn[key][0](zone, args, timeout=0, sender=sender)
+                            setting_to_fn[key][0](
+                                zone, args, timeout=timeout, sender=sender
+                            )
             else:  # bool
                 if key in ["icmp_block_inversion"]:
                     # no timeout arg
                     setting_to_fn[key][0](zone, sender=sender)
                 else:
-                    setting_to_fn[key][0](zone, timeout=0, sender=sender)
+                    setting_to_fn[key][0](zone, timeout=timeout, sender=sender)
 
     def addTimeout(self, tag, _id):
         if _id not in self._timeouts:
