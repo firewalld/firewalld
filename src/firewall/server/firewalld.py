@@ -2083,13 +2083,6 @@ class FirewallD(DbusServiceObject):
 
     # ICMP BLOCK
 
-    @dbus_handle_exceptions
-    def disableTimedIcmpBlock(self, zone, icmp, sender):  # pylint: disable=W0613
-        log.debug1("zone.disableTimedIcmpBlock('%s', '%s')" % (zone, icmp))
-        del self._timeouts[zone][icmp]
-        self.fw.zone.remove_icmp_block(zone, icmp)
-        self.IcmpBlockRemoved(zone, icmp)
-
     @dbus_polkit_require_auth(config.dbus.PK_ACTION_CONFIG)
     @dbus_service_method(
         config.dbus.DBUS_INTERFACE_ZONE, in_signature="ssi", out_signature="s"
@@ -2105,10 +2098,7 @@ class FirewallD(DbusServiceObject):
         _zone = self.fw.zone.add_icmp_block(zone, icmp, timeout, sender)
 
         if timeout > 0:
-            tag = GLib.timeout_add_seconds(
-                timeout, self.disableTimedIcmpBlock, _zone, icmp, sender
-            )
-            self.addTimeout(_zone, icmp, tag)
+            GLib.timeout_add_seconds(timeout, self.IcmpBlockRemoved, _zone, icmp)
 
         self.IcmpBlockAdded(_zone, icmp, timeout)
         return _zone
@@ -2126,7 +2116,6 @@ class FirewallD(DbusServiceObject):
         self.accessCheck(sender)
         _zone = self.fw.zone.remove_icmp_block(zone, icmp)
 
-        self.removeTimeout(_zone, icmp)
         self.IcmpBlockRemoved(_zone, icmp)
         return _zone
 
