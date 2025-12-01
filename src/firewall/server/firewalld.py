@@ -1903,12 +1903,6 @@ class FirewallD(DbusServiceObject):
 
     # MASQUERADE
 
-    @dbus_handle_exceptions
-    def disableTimedMasquerade(self, zone):
-        del self._timeouts[zone]["masquerade"]
-        self.fw.zone.remove_masquerade(zone)
-        self.MasqueradeRemoved(zone)
-
     @dbus_polkit_require_auth(config.dbus.PK_ACTION_CONFIG)
     @dbus_service_method(
         config.dbus.DBUS_INTERFACE_ZONE, in_signature="si", out_signature="s"
@@ -1923,8 +1917,7 @@ class FirewallD(DbusServiceObject):
         _zone = self.fw.zone.add_masquerade(zone, timeout, sender)
 
         if timeout > 0:
-            tag = GLib.timeout_add_seconds(timeout, self.disableTimedMasquerade, _zone)
-            self.addTimeout(_zone, "masquerade", tag)
+            GLib.timeout_add_seconds(timeout, self.MasqueradeRemoved, _zone)
 
         self.MasqueradeAdded(_zone, timeout)
         return _zone
@@ -1941,7 +1934,6 @@ class FirewallD(DbusServiceObject):
         self.accessCheck(sender)
         _zone = self.fw.zone.remove_masquerade(zone)
 
-        self.removeTimeout(_zone, "masquerade")
         self.MasqueradeRemoved(_zone)
         return _zone
 
