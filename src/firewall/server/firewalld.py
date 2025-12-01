@@ -1502,14 +1502,6 @@ class FirewallD(DbusServiceObject):
 
     # RICH RULES
 
-    @dbus_handle_exceptions
-    def disableTimedRichRule(self, zone, rule):
-        log.debug1("zone.disableTimedRichRule('%s', '%s')" % (zone, rule))
-        del self._timeouts[zone][rule]
-        obj = Rich_Rule(rule_str=rule)
-        self.fw.zone.remove_rule(zone, obj)
-        self.RichRuleRemoved(zone, rule)
-
     @dbus_polkit_require_auth(config.dbus.PK_ACTION_CONFIG)
     @dbus_service_method(
         config.dbus.DBUS_INTERFACE_ZONE, in_signature="ssi", out_signature="s"
@@ -1524,10 +1516,7 @@ class FirewallD(DbusServiceObject):
         _zone = self.fw.zone.add_rule(zone, obj, timeout)
 
         if timeout > 0:
-            tag = GLib.timeout_add_seconds(
-                timeout, self.disableTimedRichRule, _zone, rule
-            )
-            self.addTimeout(_zone, rule, tag)
+            GLib.timeout_add_seconds(timeout, self.RichRuleRemoved, _zone, rule)
 
         self.RichRuleAdded(_zone, rule, timeout)
         return _zone
@@ -1543,7 +1532,6 @@ class FirewallD(DbusServiceObject):
         log.debug1("zone.removeRichRule('%s', '%s')" % (zone, rule))
         obj = Rich_Rule(rule_str=rule)
         _zone = self.fw.zone.remove_rule(zone, obj)
-        self.removeTimeout(_zone, rule)
         self.RichRuleRemoved(_zone, rule)
         return _zone
 
