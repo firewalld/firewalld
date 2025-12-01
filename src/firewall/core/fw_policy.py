@@ -1151,6 +1151,12 @@ class FirewallPolicy:
             if _obj.applied:
                 self._icmp_block(True, _policy, icmp, transaction)
 
+            if timeout > 0:
+                tag = GLib.timeout_add_seconds(
+                    timeout, self.remove_icmp_block, _policy, icmp
+                )
+                self.addTimeout(tag, ("icmp_block", _policy, icmp))
+
             self.__register_icmp_block(_obj, icmp_id, timeout, sender)
             transaction.add_fail(self.__unregister_icmp_block, _obj, icmp_id)
 
@@ -1173,6 +1179,8 @@ class FirewallPolicy:
 
             if _obj.applied:
                 self._icmp_block(False, _policy, icmp, transaction)
+
+            self.removeTimeout(("icmp_block", _policy, icmp))
 
             transaction.add_post(self.__unregister_icmp_block, _obj, icmp_id)
 
