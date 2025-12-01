@@ -464,6 +464,10 @@ class FirewallPolicy:
             if _obj.applied:
                 self.__rule(True, _policy, rule, transaction)
 
+            if timeout > 0:
+                tag = GLib.timeout_add_seconds(timeout, self.remove_rule, _policy, rule)
+                self.addTimeout(tag, ("rule", _policy, rule))
+
             self.__register_rule(_obj, rule, timeout, sender)
             transaction.add_fail(self.__unregister_rule, _obj, rule)
 
@@ -485,6 +489,8 @@ class FirewallPolicy:
 
             if _obj.applied:
                 self.__rule(False, _policy, rule, transaction)
+
+            self.removeTimeout(("rule", _policy, rule))
 
             transaction.add_post(self.__unregister_rule, _obj, rule)
 
