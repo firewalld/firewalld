@@ -35,6 +35,7 @@ class FirewallZone:
         self._fw = fw
         self._zones = {}
         self._zone_policies = {}
+        self._timeouts = {}
 
     def __repr__(self):
         return "%s(%r)" % (self.__class__, self._zones)
@@ -42,6 +43,8 @@ class FirewallZone:
     def cleanup(self):
         self._zones.clear()
         self._zone_policies.clear()
+        for _id in self._timeouts:
+            self.removeTimeout(_id)
 
     def with_transaction(self, *args, **kwargs):
         ctx = self._fw.with_transaction(*args, **kwargs)
@@ -399,6 +402,15 @@ class FirewallZone:
                     setting_to_fn[key][0](zone, sender=sender)
                 else:
                     setting_to_fn[key][0](zone, timeout=0, sender=sender)
+
+    def addTimeout(self, tag, _id):
+        if _id not in self._timeouts:
+            self._timeouts[_id] = tag
+
+    def removeTimeout(self, _id):
+        if _id in self._timeouts:
+            GLib.source_remove(self._timeouts[_id])
+            del self._timeouts[_id]
 
     # INTERFACES
 
