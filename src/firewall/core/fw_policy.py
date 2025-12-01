@@ -238,6 +238,12 @@ class FirewallPolicy:
             "egress_zones": (self.add_egress_zone, self.remove_egress_zone),
         }
 
+        timeout = 0
+        if "timeout" in settings:
+            timeout = settings["timeout"]
+            settings = copy.copy(settings)
+            del settings["timeout"]
+
         # do a full config check on a temporary object before trying to make
         # the runtime changes
         old_obj = self.get_policy(policy)
@@ -264,11 +270,15 @@ class FirewallPolicy:
             if isinstance(add_settings[key], list):
                 for args in add_settings[key]:
                     if isinstance(args, tuple):
-                        setting_to_fn[key][0](policy, *args, timeout=0, sender=sender)
+                        setting_to_fn[key][0](
+                            policy, *args, timeout=timeout, sender=sender
+                        )
                     else:
-                        setting_to_fn[key][0](policy, args, timeout=0, sender=sender)
+                        setting_to_fn[key][0](
+                            policy, args, timeout=timeout, sender=sender
+                        )
             else:  # bool
-                setting_to_fn[key][0](policy, timeout=0, sender=sender)
+                setting_to_fn[key][0](policy, timeout=timeout, sender=sender)
 
     def addTimeout(self, tag, _id):
         if _id not in self._timeouts:
