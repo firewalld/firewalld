@@ -119,29 +119,6 @@ class FirewallD(DbusServiceObject):
     def accessCheck(self, sender):
         pass
 
-    # timeout functions
-
-    @dbus_handle_exceptions
-    def addTimeout(self, zone, x, tag):
-        if zone not in self._timeouts:
-            self._timeouts[zone] = {}
-        self._timeouts[zone][x] = tag
-
-    @dbus_handle_exceptions
-    def removeTimeout(self, zone, x):
-        if zone in self._timeouts and x in self._timeouts[zone]:
-            GLib.source_remove(self._timeouts[zone][x])
-            del self._timeouts[zone][x]
-
-    @dbus_handle_exceptions
-    def cleanup_timeouts(self):
-        # cleanup timeouts
-        for zone in self._timeouts:
-            for x in self._timeouts[zone]:
-                GLib.source_remove(self._timeouts[zone][x])
-            self._timeouts[zone].clear()
-        self._timeouts.clear()
-
     # property handling
 
     @dbus_handle_exceptions
