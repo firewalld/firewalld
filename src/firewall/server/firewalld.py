@@ -1833,15 +1833,6 @@ class FirewallD(DbusServiceObject):
 
     # SOURCE PORTS
 
-    @dbus_handle_exceptions
-    def disableTimedSourcePort(self, zone, port, protocol):
-        log.debug1(
-            "zone.disableTimedSourcePort('%s', '%s', '%s')" % (zone, port, protocol)
-        )
-        del self._timeouts[zone][("sport", port, protocol)]
-        self.fw.zone.remove_source_port(zone, port, protocol)
-        self.SourcePortRemoved(zone, port, protocol)
-
     @dbus_polkit_require_auth(config.dbus.PK_ACTION_CONFIG)
     @dbus_service_method(
         config.dbus.DBUS_INTERFACE_ZONE, in_signature="sssi", out_signature="s"
@@ -1860,10 +1851,9 @@ class FirewallD(DbusServiceObject):
         _zone = self.fw.zone.add_source_port(zone, port, protocol, timeout, sender)
 
         if timeout > 0:
-            tag = GLib.timeout_add_seconds(
-                timeout, self.disableTimedSourcePort, _zone, port, protocol
+            GLib.timeout_add_seconds(
+                timeout, self.SourcePortRemoved, _zone, port, protocol
             )
-            self.addTimeout(_zone, ("sport", port, protocol), tag)
 
         self.SourcePortAdded(_zone, port, protocol, timeout)
         return _zone
@@ -1884,7 +1874,6 @@ class FirewallD(DbusServiceObject):
         self.accessCheck(sender)
         _zone = self.fw.zone.remove_source_port(zone, port, protocol)
 
-        self.removeTimeout(_zone, ("sport", port, protocol))
         self.SourcePortRemoved(_zone, port, protocol)
         return _zone
 

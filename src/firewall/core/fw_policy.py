@@ -844,6 +844,12 @@ class FirewallPolicy:
                 port_id = self.__source_port_id(range, protocol)
                 transaction.add_post(self.__unregister_source_port, _obj, port_id)
 
+            if timeout > 0:
+                tag = GLib.timeout_add_seconds(
+                    timeout, self.remove_source_port, _policy, port, protocol
+                )
+                self.addTimeout(tag, ("source_port", _policy, port, protocol))
+
         return _policy
 
     def __register_source_port(self, _obj, port_id, timeout, sender):
@@ -887,6 +893,8 @@ class FirewallPolicy:
             for range in removed_ranges:
                 port_id = self.__source_port_id(range, protocol)
                 transaction.add_post(self.__unregister_source_port, _obj, port_id)
+
+            self.removeTimeout(("source_port", _policy, port, protocol))
 
         return _policy
 
