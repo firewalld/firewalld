@@ -1,6 +1,8 @@
 #
 # SPDX-License-Identifier: GPL-2.0-or-later
 
+from gi.repository import GLib
+
 import copy
 import dataclasses
 
@@ -41,6 +43,7 @@ class FirewallPolicy:
         self._fw = fw
         self._chains = {}
         self._policies = {}
+        self._timeouts = {}
 
     def __repr__(self):
         return "%s(%r, %r)" % (self.__class__, self._chains, self._policies)
@@ -48,6 +51,8 @@ class FirewallPolicy:
     def cleanup(self):
         self._chains.clear()
         self._policies.clear()
+        for _id in self._timeouts:
+            self.removeTimeout(_id)
 
     # transaction
 
@@ -267,6 +272,15 @@ class FirewallPolicy:
                         setting_to_fn[key][0](policy, args, timeout=0, sender=sender)
             else:  # bool
                 setting_to_fn[key][0](policy, timeout=0, sender=sender)
+
+    def addTimeout(self, tag, _id):
+        if _id not in self._timeouts:
+            self._timeouts[_id] = tag
+
+    def removeTimeout(self, _id):
+        if _id in self._timeouts:
+            GLib.source_remove(self._timeouts[_id])
+            del self._timeouts[_id]
 
     # ingress zones
 
