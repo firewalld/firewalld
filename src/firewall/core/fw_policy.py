@@ -524,6 +524,12 @@ class FirewallPolicy:
             if _obj.applied:
                 self._service(True, _policy, service, transaction)
 
+            if timeout > 0:
+                tag = GLib.timeout_add_seconds(
+                    timeout, self.remove_service, _policy, service
+                )
+                self.addTimeout(tag, ("service", _policy, service))
+
             self.__register_service(_obj, service_id, timeout, sender)
             transaction.add_fail(self.__unregister_service, _obj, service_id)
 
@@ -548,6 +554,8 @@ class FirewallPolicy:
 
             if _obj.applied:
                 self._service(False, _policy, service, transaction)
+
+            self.removeTimeout(("service", _policy, service))
 
             transaction.add_post(self.__unregister_service, _obj, service_id)
 
