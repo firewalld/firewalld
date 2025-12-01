@@ -760,6 +760,12 @@ class FirewallPolicy:
             if _obj.applied:
                 self._protocol(True, _policy, protocol, transaction)
 
+            if timeout > 0:
+                tag = GLib.timeout_add_seconds(
+                    timeout, self.remove_protocol, _policy, protocol
+                )
+                self.addTimeout(tag, ("protocol", _policy, protocol))
+
             self.__register_protocol(_obj, protocol_id, timeout, sender)
             transaction.add_fail(self.__unregister_protocol, _obj, protocol_id)
 
@@ -784,6 +790,8 @@ class FirewallPolicy:
 
             if _obj.applied:
                 self._protocol(False, _policy, protocol, transaction)
+
+            self.removeTimeout(("protocol", _policy, protocol))
 
             transaction.add_post(self.__unregister_protocol, _obj, protocol_id)
 
