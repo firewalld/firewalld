@@ -1970,14 +1970,6 @@ class FirewallD(DbusServiceObject):
 
     # FORWARD PORT
 
-    @dbus_handle_exceptions
-    def disable_forward_port(
-        self, zone, port, protocol, toport, toaddr
-    ):  # pylint: disable=R0913
-        del self._timeouts[zone][(port, protocol, toport, toaddr)]
-        self.fw.zone.remove_forward_port(zone, port, protocol, toport, toaddr)
-        self.ForwardPortRemoved(zone, port, protocol, toport, toaddr)
-
     @dbus_polkit_require_auth(config.dbus.PK_ACTION_CONFIG)
     @dbus_service_method(
         config.dbus.DBUS_INTERFACE_ZONE, in_signature="sssssi", out_signature="s"
@@ -2003,16 +1995,9 @@ class FirewallD(DbusServiceObject):
         )
 
         if timeout > 0:
-            tag = GLib.timeout_add_seconds(
-                timeout,
-                self.disable_forward_port,
-                _zone,
-                port,
-                protocol,
-                toport,
-                toaddr,
+            GLib.timeout_add_seconds(
+                timeout, self.ForwardPortRemoved, _zone, port, protocol, toport, toaddr
             )
-            self.addTimeout(_zone, (port, protocol, toport, toaddr), tag)
 
         self.ForwardPortAdded(_zone, port, protocol, toport, toaddr, timeout)
         return _zone
@@ -2038,7 +2023,6 @@ class FirewallD(DbusServiceObject):
         self.accessCheck(sender)
         _zone = self.fw.zone.remove_forward_port(zone, port, protocol, toport, toaddr)
 
-        self.removeTimeout(_zone, (port, protocol, toport, toaddr))
         self.ForwardPortRemoved(_zone, port, protocol, toport, toaddr)
         return _zone
 

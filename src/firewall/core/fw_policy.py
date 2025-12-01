@@ -1063,6 +1063,20 @@ class FirewallPolicy:
                     True, _policy, transaction, port, protocol, toport, toaddr
                 )
 
+            if timeout > 0:
+                tag = GLib.timeout_add_seconds(
+                    timeout,
+                    self.remove_forward_port,
+                    _policy,
+                    port,
+                    protocol,
+                    toport,
+                    toaddr,
+                )
+                self.addTimeout(
+                    tag, ("forward_port", _policy, port, protocol, toport, toaddr)
+                )
+
             self.__register_forward_port(_obj, forward_id, timeout, sender)
             transaction.add_fail(self.__unregister_forward_port, _obj, forward_id)
 
@@ -1090,6 +1104,10 @@ class FirewallPolicy:
                 self._forward_port(
                     False, _policy, transaction, port, protocol, toport, toaddr
                 )
+
+            self.removeTimeout(
+                ("forward_port", _policy, port, protocol, toport, toaddr)
+            )
 
             transaction.add_post(self.__unregister_forward_port, _obj, forward_id)
 
