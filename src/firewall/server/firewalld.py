@@ -933,11 +933,20 @@ class FirewallD(DbusServiceObject):
             zone, dbus_to_python(settings), sender
         )
         self.ZoneUpdated(zone, settings)
+        if "timeout" in settings and settings["timeout"] > 0:
+            GLib.timeout_add_seconds(
+                settings["timeout"],
+                self.ZoneUpdatedCurrentSettings,
+                zone,
+            )
 
     @dbus_service_signal(config.dbus.DBUS_INTERFACE_ZONE, signature="sa{sv}")
     @dbus_handle_exceptions
     def ZoneUpdated(self, zone, settings):
         log.debug1("zone.ZoneUpdated('%s', '%s')" % (zone, settings))
+
+    def ZoneUpdatedCurrentSettings(self, zone):
+        self.ZoneUpdated(zone, self.fw.zone.get_config_with_settings_dict(zone))
 
     @dbus_polkit_require_auth(config.dbus.PK_ACTION_CONFIG_INFO)
     @dbus_service_method(
