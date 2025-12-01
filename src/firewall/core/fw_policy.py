@@ -931,6 +931,10 @@ class FirewallPolicy:
             if _obj.applied:
                 self._masquerade(True, _policy, transaction)
 
+            if timeout > 0:
+                tag = GLib.timeout_add_seconds(timeout, self.remove_masquerade, _policy)
+                self.addTimeout(tag, ("masquerade", _policy))
+
             self.__register_masquerade(_obj, timeout, sender)
             transaction.add_fail(self.__unregister_masquerade, _obj)
 
@@ -954,6 +958,8 @@ class FirewallPolicy:
 
             if _obj.applied:
                 self._masquerade(False, _policy, transaction)
+
+            self.removeTimeout(("masquerade", _policy))
 
             transaction.add_post(self.__unregister_masquerade, _obj)
 
