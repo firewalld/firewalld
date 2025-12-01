@@ -969,11 +969,20 @@ class FirewallD(DbusServiceObject):
             policy, dbus_to_python(settings), sender
         )
         self.PolicyUpdated(policy, settings)
+        if "timeout" in settings and settings["timeout"] > 0:
+            GLib.timeout_add_seconds(
+                settings["timeout"],
+                self.PolicyUpdatedCurrentSettings,
+                policy,
+            )
 
     @dbus_service_signal(config.dbus.DBUS_INTERFACE_POLICY, signature="sa{sv}")
     @dbus_handle_exceptions
     def PolicyUpdated(self, policy, settings):
         log.debug1("policy.PolicyUpdated('%s', '%s')" % (policy, settings))
+
+    def PolicyUpdatedCurrentSettings(self, policy):
+        self.PolicyUpdated(policy, self.fw.policy.get_config_with_settings_dict(policy))
 
     @dbus_polkit_require_auth(config.dbus.PK_ACTION_INFO)
     @dbus_service_method(
