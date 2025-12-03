@@ -3809,7 +3809,7 @@ elif a.policy:
     elif a.query_icmp_block:
         cmd.query_sequence(a.query_icmp_block, settings.queryIcmpBlock, None, "'%s'")
 
-    fw.setPolicySettings(a.policy, settings)
+    fw.setPolicySettings(a.policy, settings, a.timeout)
 
 # endif a.policy
 #
