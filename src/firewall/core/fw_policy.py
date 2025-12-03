@@ -318,6 +318,12 @@ class FirewallPolicy:
             if _obj.applied:
                 self._ingress_zone(True, _policy, zone, transaction)
 
+            if timeout > 0:
+                tag = GLib.timeout_add_seconds(
+                    timeout, self.remove_ingress_zone, _policy, zone
+                )
+                self.addTimeout(tag, ("ingress_zone", _policy, zone))
+
             self.__register_ingress_zone(_obj, zone_id, timeout, sender)
             transaction.add_fail(self.__unregister_ingress_zone, _obj, zone_id)
 
@@ -345,6 +351,8 @@ class FirewallPolicy:
                     self.unapply_policy_settings(policy, transaction)
                 else:
                     self._ingress_zone(False, _policy, zone, transaction)
+
+            self.removeTimeout(("ingress_zone", _policy, zone))
 
             transaction.add_post(self.__unregister_ingress_zone, _obj, zone_id)
 
@@ -389,6 +397,12 @@ class FirewallPolicy:
             if _obj.applied:
                 self._egress_zone(True, _policy, zone, transaction)
 
+            if timeout > 0:
+                tag = GLib.timeout_add_seconds(
+                    timeout, self.remove_egress_zone, _policy, zone
+                )
+                self.addTimeout(tag, ("egress_zone", _policy, zone))
+
             self.__register_egress_zone(_obj, zone_id, timeout, sender)
             transaction.add_fail(self.__unregister_egress_zone, _obj, zone_id)
 
@@ -416,6 +430,8 @@ class FirewallPolicy:
                     self.unapply_policy_settings(policy, transaction)
                 else:
                     self._egress_zone(False, _policy, zone, transaction)
+
+            self.removeTimeout(("egress_zone", _policy, zone))
 
             transaction.add_post(self.__unregister_egress_zone, _obj, zone_id)
 
