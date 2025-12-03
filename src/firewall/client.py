@@ -3487,8 +3487,10 @@ class FirewallClient:
         )
 
     @handle_exceptions
-    def setPolicySettings(self, policy, settings):
-        self.fw_policy.setPolicySettings(policy, settings.getRuntimeSettingsDbusDict())
+    def setPolicySettings(self, policy, settings, timeout=0):
+        settings = settings.getRuntimeSettingsDbusDict()
+        settings["timeout"] = timeout
+        self.fw_policy.setPolicySettings(policy, settings)
 
     @handle_exceptions
     def getPolicies(self):
