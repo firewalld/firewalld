@@ -33,13 +33,16 @@
 # Eric Garver <e@erig.me>, 2018. #zanata
 # Milo Casagrande <milo@milo.name>, 2018. #zanata
 # Enrico Bella <enric@e.email>, 2020, 2025.
+# Salvatore Cocuzza <info@salvatorecocuzza.it>, 2025.
+# Weblate Translation Memory <noreply-mt-weblate-translation-memory@weblate.org>, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-06 14:46-0500\n"
-"PO-Revision-Date: 2025-11-13 20:49+0000\n"
-"Last-Translator: Enrico Bella <enric@e.email>\n"
+"PO-Revision-Date: 2025-11-19 22:58+0000\n"
+"Last-Translator: Weblate Translation Memory <noreply-mt-weblate-translation-"
+"memory@weblate.org>\n"
 "Language-Team: Italian <https://translate.fedoraproject.org/projects/"
 "firewalld/master/it/>\n"
 "Language: it\n"
@@ -57,37 +60,36 @@ msgstr "Applet firewall"
 msgid ""
 "Firewall Configuration provides a graphical tool for administering firewall."
 msgstr ""
+"Firewall Configuration fornisce uno strumento grafico per l'amministrazione "
+"del firewall."
 
 #: ../config/firewall-config.appdata.xml.in.h:2
-#, fuzzy
 msgid "Allows to inspect and set:"
-msgstr "Per favore selezionare un ipset:"
+msgstr "Permette di ispezionare e impostare:"
 
 #: ../config/firewall-config.appdata.xml.in.h:3
-#, fuzzy
 msgid "Runtime and permanent firewall configuration"
-msgstr "Configurazione del firewall"
+msgstr "Configurazione del firewall permanente e di runtime"
 
 #: ../config/firewall-config.appdata.xml.in.h:4
-#, fuzzy
 msgid "Predefined zones (levels of trust for network connections)"
-msgstr "Zona predefinita utilizzata dalla connessione di rete '%s'"
+msgstr "Zone predefinite (livelli di fiducia per le connessioni di rete)"
 
 #: ../config/firewall-config.appdata.xml.in.h:5
 msgid "Predefined services (port/protocol, netfilter helper module)"
-msgstr ""
+msgstr "Servizi predefiniti (porta/protocollo, modulo helper netfilter)"
 
 #: ../config/firewall-config.appdata.xml.in.h:6
 msgid "Port forwarding, masquerading, ICMP blocking"
-msgstr ""
+msgstr "Port forwarding, mascheramento, blocco ICMP"
 
 #: ../config/firewall-config.appdata.xml.in.h:7
 msgid "Complex firewall rules a.k.a. Rich Language"
-msgstr ""
+msgstr "Regole firewall complesse, ovvero Rich Language"
 
 #: ../config/firewall-config.appdata.xml.in.h:8
 msgid "Iptables rules a.k.a. Direct Interface"
-msgstr ""
+msgstr "Regole di Iptables, ovvero Direct Interface"
 
 #: ../config/firewall-config.desktop.in.h:1
 msgid "Firewall"
@@ -697,9 +699,8 @@ msgid "ipv6"
 msgstr "ipv6"
 
 #: ../src/firewall-config.in:3995
-#, fuzzy
 msgid "invalid element"
-msgstr "Nome non valido"
+msgstr "elemento non valido"
 
 #: ../src/firewall-config.in:5161
 msgid ""
@@ -1847,9 +1848,8 @@ msgid "Please enter a rich rule."
 msgstr "Inserire una regola estesa."
 
 #: ../src/firewall-config.glade.h:226
-#, fuzzy
 msgid "For host or network allow or denylisting deactivate the element."
-msgstr "Per host o rete bianca o in lista nera disattivare l'elemento."
+msgstr "Per consentire o negare l'host o la rete, disattivare l'elemento."
 
 #: ../src/firewall-config.glade.h:227
 msgid "Source:"
