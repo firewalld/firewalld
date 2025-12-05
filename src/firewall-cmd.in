@@ -1476,6 +1476,8 @@ if a.timeout and not (
     or a.add_masquerade
     or a.add_rich_rule
     or a.add_disable
+    or a.add_ingress_zone
+    or a.add_egress_zone
 ):
     cmd.fail(parser.format_usage() + "Wrong --timeout usage")
 
