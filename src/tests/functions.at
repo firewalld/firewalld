@@ -649,7 +649,7 @@ m4_define([CHECK_LOG_AUDIT], [
 m4_define([CHECK_NFT_CT_HELPER], [
     m4_if(nftables, FIREWALL_BACKEND, [
         NS_CHECK([nft add table inet firewalld_check_ct_helper])
-        AT_SKIP_IF([! NS_CMD([nft add ct helper inet firewalld helper-ftp-tcp { type \"ftp\" protocol tcp \; } >/dev/null 2>&1])])
+        AT_SKIP_IF([! NS_CMD([nft add ct helper inet firewalld_check_ct_helper helper-ftp-tcp { type \"ftp\" protocol tcp \; } >/dev/null 2>&1])])
         NS_CHECK([nft delete table inet firewalld_check_ct_helper])
     ])
 ])
