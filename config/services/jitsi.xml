@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>Jitsi</short>
+  <description>
+    Jitsi is an online video conference platform.
+  </description>
+  <include service="https"/>
+  <port protocol="udp" port="10000"/>
+</service>
