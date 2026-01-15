@@ -68,8 +68,16 @@ OPTIONS_POLICY="${OPTIONS_ZONE_POLICY_ACTION} \
 
 OPTIONS_IPSET="${OPTIONS_IPSET_ACTION_ACTION} ${OPTIONS_IPSET_ADAPT_QUERY}"
 
+OPTIONS_SERVICE="--set-description= --get-description --set-short= --get-short \
+                --add-port= --remove-port= --query-port= --get-ports \
+                --add-protocol= --remove-protocol= --query-protocol= --get-protocols --add-source-port= \
+                --remove-source-port= --query-source-port= --get-source-ports --add-helper= \
+                --remove-helper= --query-helper= --get-service-helpers --set-destination= \
+                --remove-destination= --query-destination= --get-destinations --add-include= \
+                --remove-include= --query-include= --get-includes"
+
 OPTIONS_PERMANENT_ONLY="--new-icmptype= --new-icmptype-from-file= --delete-icmptype= \
-                        --new-service= --new-service-from-file= --delete-service= \
+                        --new-service= --new-service-from-file= --service= --delete-service= \
                         --new-zone= --new-zone-from-file= --delete-zone= \
                         --load-zone-defaults= \
                         --new-policy= --new-policy-from-file= --delete-policy= \
@@ -179,11 +187,16 @@ _firewall_cmd()
           COMPREPLY=( $( compgen -W '`firewall-cmd --get-ipsets`' -- "$cur" ) )
         fi
         ;;
-    --*-service)
+    --*-service|--service)
         if [[ ${words[@]} == *--permanent* ]]; then
           COMPREPLY=( $( compgen -W '`firewall-cmd --permanent --get-services`' -- "$cur" ) )
         else
           COMPREPLY=( $( compgen -W '`firewall-cmd --get-services`' -- "$cur" ) )
+        fi
+        ;;
+    --service=*)
+        if [[ ${words[@]} == *--permanent* ]]; then
+            COMPREPLY=( $( compgen -W "${OPTIONS_SERVICE}" -- "$cur" ) )
         fi
         ;;
     --helper|--info-helper|--path-helper)
