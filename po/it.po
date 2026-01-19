@@ -33,13 +33,14 @@
 # Eric Garver <e@erig.me>, 2018. #zanata
 # Milo Casagrande <milo@milo.name>, 2018. #zanata
 # Enrico Bella <enric@e.email>, 2020, 2025.
+# Salvatore Cocuzza <info@salvatorecocuzza.it>, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-06 14:46-0500\n"
-"PO-Revision-Date: 2025-11-13 20:49+0000\n"
-"Last-Translator: Enrico Bella <enric@e.email>\n"
+"PO-Revision-Date: 2025-11-19 22:57+0000\n"
+"Last-Translator: Salvatore Cocuzza <info@salvatorecocuzza.it>\n"
 "Language-Team: Italian <https://translate.fedoraproject.org/projects/"
 "firewalld/master/it/>\n"
 "Language: it\n"
@@ -57,16 +58,16 @@ msgstr "Applet firewall"
 msgid ""
 "Firewall Configuration provides a graphical tool for administering firewall."
 msgstr ""
+"Firewall Configuration fornisce uno strumento grafico per l'amministrazione "
+"del firewall."
 
 #: ../config/firewall-config.appdata.xml.in.h:2
-#, fuzzy
 msgid "Allows to inspect and set:"
-msgstr "Per favore selezionare un ipset:"
+msgstr "Permette di ispezionare e impostare:"
 
 #: ../config/firewall-config.appdata.xml.in.h:3
-#, fuzzy
 msgid "Runtime and permanent firewall configuration"
-msgstr "Configurazione del firewall"
+msgstr "Configurazione del firewall permanente e di runtime"
 
 #: ../config/firewall-config.appdata.xml.in.h:4
 #, fuzzy
@@ -697,9 +698,8 @@ msgid "ipv6"
 msgstr "ipv6"
 
 #: ../src/firewall-config.in:3995
-#, fuzzy
 msgid "invalid element"
-msgstr "Nome non valido"
+msgstr "elemento non valido"
 
 #: ../src/firewall-config.in:5161
 msgid ""
@@ -1847,9 +1847,8 @@ msgid "Please enter a rich rule."
 msgstr "Inserire una regola estesa."
 
 #: ../src/firewall-config.glade.h:226
-#, fuzzy
 msgid "For host or network allow or denylisting deactivate the element."
-msgstr "Per host o rete bianca o in lista nera disattivare l'elemento."
+msgstr "Per consentire o negare l'host o la rete, disattivare l'elemento."
 
 #: ../src/firewall-config.glade.h:227
 msgid "Source:"
