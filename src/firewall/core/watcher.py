@@ -14,7 +14,6 @@ class Watcher:
         self._timeout = timeout
         self._monitors = {}
         self._timeouts = {}
-        self._blocked = []
 
     def add_watch_dir(self, directory):
         gfile = Gio.File.new_for_path(directory)
@@ -37,31 +36,17 @@ class Watcher:
     def remove_watch(self, filename):
         del self._monitors[filename]
 
-    def block_source(self, filename):
-        if filename not in self._blocked:
-            self._blocked.append(filename)
-
-    def unblock_source(self, filename):
-        if filename in self._blocked:
-            self._blocked.remove(filename)
-
     def clear_timeouts(self):
         for filename in list(self._timeouts.keys()):
             GLib.source_remove(self._timeouts[filename])
             del self._timeouts[filename]
 
     def _call_callback(self, filename):
-        if filename not in self._blocked:
-            self._callback(filename)
+        self._callback(filename)
         del self._timeouts[filename]
 
     def _file_changed_cb(self, monitor, gio_file, gio_other_file, event):
         filename = gio_file.get_parse_name()
-        if filename in self._blocked:
-            if filename in self._timeouts:
-                GLib.source_remove(self._timeouts[filename])
-                del self._timeouts[filename]
-            return
 
         if (
             event == Gio.FileMonitorEvent.CHANGED
