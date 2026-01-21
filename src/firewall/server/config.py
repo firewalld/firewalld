@@ -31,6 +31,7 @@ from firewall.server.config_zone import FirewallDConfigZone
 from firewall.server.config_policy import FirewallDConfigPolicy
 from firewall.server.config_ipset import FirewallDConfigIPSet
 from firewall.server.config_helper import FirewallDConfigHelper
+from firewall.core.io.functions import check_on_disk_config
 from firewall.core.io.icmptype import IcmpType
 from firewall.core.io.ipset import IPSet
 from firewall.core.io.helper import Helper
@@ -166,7 +167,7 @@ class FirewallDConfig(DbusServiceObject):
         for policy in self.config.get_policy_objects():
             self._addPolicy(self.config.get_policy_object(policy))
 
-        self.watcher = Watcher(self.watch_updater, 5)
+        self.watcher = Watcher(self.on_disk_config_changed, 5)
         self._start_watcher()
 
     @handle_exceptions
@@ -201,143 +202,40 @@ class FirewallDConfig(DbusServiceObject):
             del item
         self._init_vars()
 
-    @handle_exceptions
-    def watch_updater(self, name):
-        if name == config.FIREWALLD_CONF:
-            old_props = self.GetAll(config.dbus.DBUS_INTERFACE_CONFIG)
-            log.debug1(
-                "config: Reloading firewalld config file '%s'", config.FIREWALLD_CONF
-            )
-            try:
-                self.config.update_firewalld_conf()
-            except Exception as msg:
-                log.error("Failed to load firewalld.conf file '%s': %s" % (name, msg))
-                return
-            props = self.GetAll(config.dbus.DBUS_INTERFACE_CONFIG).copy()
-            for key in list(props.keys()):
-                if key in old_props and old_props[key] == props[key]:
-                    del props[key]
-            if len(props) > 0:
-                self.PropertiesChanged(config.dbus.DBUS_INTERFACE_CONFIG, props, [])
+    def on_disk_config_changed(self, name):
+        if not os.path.isfile(name):
+            return
+        # avoid .bak files, etc.
+        (_, ext) = os.path.splitext(name)
+        if not ext or ext not in (".xml", ".conf"):
             return
 
-        if (
-            name.startswith(config.FIREWALLD_ICMPTYPES)
-            or name.startswith(config.ETC_FIREWALLD_ICMPTYPES)
-        ) and name.endswith(".xml"):
-            try:
-                (what, obj) = self.config.update_icmptype_from_path(name)
-            except Exception as msg:
-                log.error("Failed to load icmptype file '%s': %s" % (name, msg))
-                return
-            if what == "new":
-                self._addIcmpType(obj)
-            elif what == "remove":
-                self.removeIcmpType(obj)
-            elif what == "update":
-                self._updateIcmpType(obj)
+        # log/warn only once
+        self._destroy_watcher()
 
-        elif (
-            name.startswith(config.FIREWALLD_SERVICES)
-            or name.startswith(config.ETC_FIREWALLD_SERVICES)
-        ) and name.endswith(".xml"):
-            try:
-                (what, obj) = self.config.update_service_from_path(name)
-            except Exception as msg:
-                log.error("Failed to load service file '%s': %s" % (name, msg))
-                return
-            if what == "new":
-                self._addService(obj)
-            elif what == "remove":
-                self.removeService(obj)
-            elif what == "update":
-                self._updateService(obj)
-
-        elif name.startswith(config.FIREWALLD_ZONES) or name.startswith(
-            config.ETC_FIREWALLD_ZONES
-        ):
-            if name.endswith(".xml"):
-                try:
-                    (what, obj) = self.config.update_zone_from_path(name)
-                except Exception as msg:
-                    log.error("Failed to load zone file '%s': %s" % (name, msg))
-                    return
-                if what == "new":
-                    self._addZone(obj)
-                elif what == "remove":
-                    self.removeZone(obj)
-                elif what == "update":
-                    self._updateZone(obj)
-            elif name.startswith(config.ETC_FIREWALLD_ZONES):
-                # possible combined zone base directory
-                _name = name.replace(config.ETC_FIREWALLD_ZONES, "").strip("/")
-                if len(_name) < 1 or "/" in _name:
-                    # if there is a / in x, then it is a sub sub directory
-                    # ignore it
-                    return
-                if os.path.isdir(name):
-                    if not self.watcher.has_watch(name):
-                        self.watcher.add_watch_dir(name)
-                elif self.watcher.has_watch(name):
-                    self.watcher.remove_watch(name)
-
-        elif (
-            name.startswith(config.FIREWALLD_IPSETS)
-            or name.startswith(config.ETC_FIREWALLD_IPSETS)
-        ) and name.endswith(".xml"):
-            try:
-                (what, obj) = self.config.update_ipset_from_path(name)
-            except Exception as msg:
-                log.error("Failed to load ipset file '%s': %s" % (name, msg))
-
-                return
-            if what == "new":
-                self._addIPSet(obj)
-            elif what == "remove":
-                self.removeIPSet(obj)
-            elif what == "update":
-                self._updateIPSet(obj)
-
-        elif (
-            name.startswith(config.FIREWALLD_HELPERS)
-            or name.startswith(config.ETC_FIREWALLD_HELPERS)
-        ) and name.endswith(".xml"):
-            try:
-                (what, obj) = self.config.update_helper_from_path(name)
-            except Exception as msg:
-                log.error("Failed to load helper file '%s': %s" % (name, msg))
-
-                return
-            if what == "new":
-                self._addHelper(obj)
-            elif what == "remove":
-                self.removeHelper(obj)
-            elif what == "update":
-                self._updateHelper(obj)
-
-        elif name == config.FIREWALLD_DIRECT:
-            try:
-                self.config.update_direct()
-            except Exception as msg:
-                log.error("Failed to load direct rules file '%s': %s" % (name, msg))
-                return
-            self.Updated()
-
-        elif (
-            name.startswith(config.FIREWALLD_POLICIES)
-            or name.startswith(config.ETC_FIREWALLD_POLICIES)
-        ) and name.endswith(".xml"):
-            try:
-                (what, obj) = self.config.update_policy_object_from_path(name)
-            except Exception as msg:
-                log.error("Failed to load policy file '%s': %s" % (name, msg))
-                return
-            if what == "new":
-                self._addPolicy(obj)
-            elif what == "remove":
-                self.removePolicy(obj)
-            elif what == "update":
-                self._updatePolicy(obj)
+        log.info1(
+            "Detected permanent (on-disk) configuration change out-of-band of firewalld!"
+        )
+        try:
+            check_on_disk_config(self.config._fw)
+            log.info1("To load the new configuration, reload firewalld:")
+            log.info1("  # firewall-cmd --reload")
+        except Exception as error:
+            log.warning(error)
+            log.warning(
+                "Unfortunately, the new configuration cannot be loaded by the running firewalld. "
+                "This may occur if new configuration was installed that "
+                "the running firewalld does not support. Or it may occur "
+                "if the configuration is invalid."
+            )
+            log.warning("It is suggested to check the configuration with command:")
+            log.warning("  # firewall-offline-cmd --check-config")
+            log.warning("If that succeeds, then please restart the firewalld service:")
+            log.warning("  # systemctl restart firewalld")
+            log.warning(
+                "If the configuration checks fail, then the configuration must be "
+                "manually fixed by editing the configuration files."
+            )
 
     @handle_exceptions
     def _addIcmpType(self, obj):
