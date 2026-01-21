@@ -1,0 +1,187 @@
+m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
+FWD_START_TEST([config watcher - no trigger])
+AT_KEYWORDS([watcher RHEL-137602])
+
+AT_DATA([./zones/trusted.xml.bak], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone target="ACCEPT">
+  <short>Trusted</short>
+  <description>All network connections are accepted.</description>
+  <forward/>
+  <service name="ssh"/>
+</zone>
+])
+sleep 10
+FWD_OFFLINE_CHECK([--check-config], 0, [ignore], [ignore])
+
+FWD_END_TEST()
+
+FWD_START_TEST([config watcher - valid])
+AT_KEYWORDS([watcher RHEL-137602])
+
+AT_DATA([./zones/trusted.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone target="ACCEPT">
+  <short>Trusted</short>
+  <description>All network connections are accepted.</description>
+  <forward/>
+  <service name="ssh"/>
+</zone>
+])
+sleep 10
+FWD_GREP_LOG([Detected permanent [(]on-disk[)] configuration change out-of-band of firewalld!])
+FWD_GREP_LOG([To load the new configuration, reload firewalld:])
+FWD_OFFLINE_CHECK([--check-config], 0, [ignore], [ignore])
+
+FWD_END_TEST([-e '/Detected permanent.* configuration change/d'])
+
+FWD_START_TEST([config watcher - invalid updated])
+AT_KEYWORDS([watcher RHEL-137602])
+
+AT_DATA([./zones/trusted.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone target="ACCEPT">
+  <short>Trusted</short>
+  <description>All network connections are accepted.</description>
+  <forward/>
+  <service name="doesnotexist"/>
+</zone>
+])
+sleep 10
+FWD_GREP_LOG([WARNING: Unfortunately, the new configuration cannot be loaded by the running firewalld])
+FWD_OFFLINE_CHECK([--check-config], 101, [ignore], [ignore])
+
+FWD_END_TEST([ignore])
+
+FWD_START_TEST([config watcher - invalid new])
+AT_KEYWORDS([watcher RHEL-137602])
+
+AT_DATA([./zones/newzone.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone target="ACCEPT">
+  <short>newzone</short>
+  <description>A new zone.</description>
+  <service name="doesnotexist"/>
+</zone>
+])
+sleep 10
+FWD_GREP_LOG([WARNING: Unfortunately, the new configuration cannot be loaded by the running firewalld])
+FWD_OFFLINE_CHECK([--check-config], 101, [ignore], [ignore])
+
+FWD_END_TEST([ignore])
+
+FWD_START_TEST([config watcher - unsupported updated])
+AT_KEYWORDS([watcher RHEL-137602])
+
+AT_DATA([./zones/trusted.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone target="ACCEPT">
+  <short>Trusted</short>
+  <description>All network connections are accepted.</description>
+  <unsupported/>
+</zone>
+])
+sleep 10
+FWD_GREP_LOG([WARNING: Unfortunately, the new configuration cannot be loaded by the running firewalld])
+FWD_OFFLINE_CHECK([--check-config], 28, [ignore], [ignore])
+
+FWD_END_TEST([ignore])
+
+FWD_START_TEST([config watcher - unsupported new])
+AT_KEYWORDS([watcher RHEL-137602])
+
+AT_DATA([./zones/newzone.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone target="ACCEPT">
+  <short>newzone</short>
+  <description>A new zone.</description>
+  <unsupportedtwo/>
+</zone>
+])
+sleep 10
+FWD_GREP_LOG([WARNING: Unfortunately, the new configuration cannot be loaded by the running firewalld])
+FWD_OFFLINE_CHECK([--check-config], 28, [ignore], [ignore])
+
+FWD_END_TEST([ignore])
+
+FWD_START_TEST([config watcher - log rate limit])
+AT_KEYWORDS([watcher RHEL-137602])
+AT_SKIP_IF([! NS_CMD([which truncate >/dev/null 2>&1])])
+
+AT_DATA([./zones/trusted.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone target="ACCEPT">
+  <short>Trusted</short>
+  <description>All network connections are accepted.</description>
+  <forward/>
+  <service name="ssh"/>
+</zone>
+])
+sleep 10
+FWD_GREP_LOG([Detected permanent [(]on-disk[)] configuration change out-of-band of firewalld!])
+FWD_GREP_LOG([To load the new configuration, reload firewalld:])
+FWD_OFFLINE_CHECK([--check-config], 0, [ignore], [ignore])
+
+dnl Do it again and verify that no new log is generated
+AT_CHECK([truncate -s 0 ./firewalld.log])
+AT_DATA([./zones/trusted2.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone target="ACCEPT">
+  <short>Trusted 2</short>
+  <description>All network connections are accepted.</description>
+  <forward/>
+</zone>
+])
+sleep 10
+FWD_GREP_LOG([Detected permanent [(]on-disk[)] configuration change out-of-band of firewalld!], [1])
+
+dnl One last time after a reload which should trigger the log again.
+FWD_RELOAD()
+AT_DATA([./zones/trusted3.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone target="ACCEPT">
+  <short>Trusted 3</short>
+  <description>All network connections are accepted.</description>
+  <forward/>
+</zone>
+])
+sleep 10
+FWD_GREP_LOG([Detected permanent [(]on-disk[)] configuration change out-of-band of firewalld!])
+
+FWD_END_TEST([-e '/Detected permanent.* configuration change/d'])
+
+FWD_START_TEST([config watcher - no log after config])
+AT_KEYWORDS([watcher RHEL-137602])
+AT_SKIP_IF([! NS_CMD([which truncate >/dev/null 2>&1])])
+
+AT_DATA([./zones/trusted.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone target="ACCEPT">
+  <short>Trusted</short>
+  <description>All network connections are accepted.</description>
+  <forward/>
+  <service name="ssh"/>
+</zone>
+])
+sleep 10
+FWD_GREP_LOG([Detected permanent [(]on-disk[)] configuration change out-of-band of firewalld!])
+FWD_GREP_LOG([To load the new configuration, reload firewalld:])
+FWD_OFFLINE_CHECK([--check-config], 0, [ignore], [ignore])
+
+dnl Do it again and verify that no new log is generated after a permanent
+dnl configuration change
+AT_CHECK([truncate -s 0 ./firewalld.log])
+FWD_CHECK([--permanent --zone public --add-service https], [0], [ignore])
+AT_DATA([./zones/trusted2.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone target="ACCEPT">
+  <short>Trusted 2</short>
+  <description>All network connections are accepted.</description>
+  <forward/>
+</zone>
+])
+sleep 10
+FWD_GREP_LOG([Detected permanent [(]on-disk[)] configuration change out-of-band of firewalld!], [1])
+
+FWD_END_TEST()
+])
