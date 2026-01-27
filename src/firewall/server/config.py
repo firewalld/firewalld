@@ -130,6 +130,10 @@ class FirewallDConfig(DbusServiceObject):
         self.watcher.add_watch_file(config.FIREWALLD_DIRECT)
         self.watcher.add_watch_file(config.FIREWALLD_CONF)
 
+    def _stop_watcher(self):
+        for w in list(self.watcher.get_watches()):
+            self.watcher.remove_watch(w)
+
     @handle_exceptions
     def _init_vars(self):
         self.ipsets = []
