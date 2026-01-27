@@ -98,7 +98,17 @@ class FirewallDConfig(DbusServiceObject):
         self.busname = args[0]
         self.path = args[1]
         self._init_vars()
+
         self.watcher = Watcher(self.on_disk_config_changed, 5)
+        self._start_watcher()
+
+        dbus_introspection_prepare_properties(
+            self,
+            config.dbus.DBUS_INTERFACE_CONFIG,
+            {prop: d.mode for prop, d in CONFIG_PROPERTIES.items()},
+        )
+
+    def _start_watcher(self):
         self.watcher.add_watch_dir(config.FIREWALLD_IPSETS)
         self.watcher.add_watch_dir(config.ETC_FIREWALLD_IPSETS)
         self.watcher.add_watch_dir(config.FIREWALLD_ICMPTYPES)
@@ -119,12 +129,6 @@ class FirewallDConfig(DbusServiceObject):
                     self.watcher.add_watch_dir(path)
         self.watcher.add_watch_file(config.FIREWALLD_DIRECT)
         self.watcher.add_watch_file(config.FIREWALLD_CONF)
-
-        dbus_introspection_prepare_properties(
-            self,
-            config.dbus.DBUS_INTERFACE_CONFIG,
-            {prop: d.mode for prop, d in CONFIG_PROPERTIES.items()},
-        )
 
     @handle_exceptions
     def _init_vars(self):
