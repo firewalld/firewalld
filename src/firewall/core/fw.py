@@ -1388,7 +1388,9 @@ class Firewall:
         if value != self.get_log_denied():
             self._log_denied = value
             self._firewalld_conf.set("LogDenied", value)
+            self.config.call_pre_write_hooks()
             self._firewalld_conf.write()
+            self.config.call_post_write_hooks()
         else:
             raise FirewallError(errors.ALREADY_SET, value)
 
@@ -1403,7 +1405,9 @@ class Firewall:
             raise FirewallError(errors.ZONE_ALREADY_SET, _zone)
 
         self._firewalld_conf.set("DefaultZone", _zone)
+        self.config.call_pre_write_hooks()
         self._firewalld_conf.write()
+        self.config.call_post_write_hooks()
 
     def combine_runtime_with_permanent_settings(self, permanent, runtime):
         combined = permanent.copy()
