@@ -136,6 +136,8 @@ class FirewallDConfig(DbusServiceObject):
         if not self.watcher:
             return
 
+        self.config.remove_pre_write_hook(self._stop_watcher)
+        self.config.remove_post_write_hook(self._start_watcher)
         self._stop_watcher()
         self.watcher = None
 
@@ -169,6 +171,8 @@ class FirewallDConfig(DbusServiceObject):
 
         self.watcher = Watcher(self.on_disk_config_changed, 5)
         self._start_watcher()
+        self.config.add_pre_write_hook(self._stop_watcher)
+        self.config.add_post_write_hook(self._start_watcher)
 
     @handle_exceptions
     def __del__(self):
@@ -707,7 +711,9 @@ class FirewallDConfig(DbusServiceObject):
                     raise errors.BugError(f'Unhandled property_name "{property_name}"')
 
                 self.config.get_firewalld_conf().set(config_name, new_value)
+                self.config.call_pre_write_hooks()
                 self.config.get_firewalld_conf().write()
+                self.config.call_post_write_hooks()
                 self.PropertiesChanged(interface_name, {property_name: new_value}, [])
         elif interface_name in [
             config.dbus.DBUS_INTERFACE_CONFIG_DIRECT,
@@ -1361,7 +1367,9 @@ class FirewallDConfig(DbusServiceObject):
         log.debug1("config.direct.update()")
         settings = dbus_to_python(settings)
         self.config.get_direct().import_config(settings, {})
+        self.config.call_pre_write_hooks()
         self.config.get_direct().write()
+        self.config.call_post_write_hooks()
         self.Updated()
 
     @dbus_service_signal(
