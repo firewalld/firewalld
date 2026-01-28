@@ -180,6 +180,10 @@ class FirewallDConfig(DbusServiceObject):
 
     @handle_exceptions
     def reload(self):
+        # A reload will trigger a full check config. As such, any pending
+        # watcher checks become redundant.
+        self._destroy_watcher()
+
         while len(self.ipsets) > 0:
             item = self.ipsets.pop()
             item.unregister()
