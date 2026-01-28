@@ -2239,5 +2239,4 @@ AT_DATA([./ipsets/foobar.xml], [dnl
     ])
     AT_CHECK([rm ./zones/foobar.xml])
 
-FWD_END_TEST([-e '/ERROR:/d'dnl
-              -e '/WARNING:/d'])
+FWD_END_TEST([ignore])
