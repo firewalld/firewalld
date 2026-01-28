@@ -292,7 +292,8 @@ m4_define([FWD_END_TEST], [
             AT_FAIL_IF([cat ./firewalld.log | dnl
                        sed "/WARNING: ip6tables not usable, disabling IPv6 firewall/d" | dnl
                        m4_ifnblank([$1], [sed $1 |]) dnl
-                       [grep '^[0-9-]*[ ]\+[0-9:]*[ ]\+\(ERROR\|WARNING\)']])
+                       grep -e ['^[0-9-]*[ ]\+[0-9:]*[ ]\+\(ERROR\|WARNING\)'] dnl
+                            -e ['Detected permanent.* configuration change']])
         fi
         m4_ifdef([CURRENT_DBUS_ADDRESS], [m4_undefine([CURRENT_DBUS_ADDRESS])])
         m4_ifdef([CURRENT_TEST_NS], [m4_undefine([CURRENT_TEST_NS])])
