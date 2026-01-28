@@ -26,6 +26,8 @@ from firewall.errors import FirewallError
 class FirewallConfig:
     def __init__(self, fw):
         self._fw = fw
+        self._pre_write_hooks = []
+        self._post_write_hooks = []
         self.__init_vars()
 
     def __repr__(self):
@@ -110,6 +112,28 @@ class FirewallConfig:
             self._direct = None
 
         self.__init_vars()
+
+    def add_pre_write_hook(self, fn):
+        self._pre_write_hooks.append(fn)
+
+    def add_post_write_hook(self, fn):
+        self._post_write_hooks.append(fn)
+
+    def remove_pre_write_hook(self, fn):
+        if fn in self._pre_write_hooks:
+            self._pre_write_hooks.remove(fn)
+
+    def remove_post_write_hook(self, fn):
+        if fn in self._post_write_hooks:
+            self._post_write_hooks.remove(fn)
+
+    def call_pre_write_hooks(self):
+        for fn in self._pre_write_hooks:
+            fn()
+
+    def call_post_write_hooks(self):
+        for fn in self._post_write_hooks:
+            fn()
 
     def get_all_io_objects_dict(self):
         """
