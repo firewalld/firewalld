@@ -42,8 +42,8 @@ class Watcher:
             del self._timeouts[filename]
 
     def _call_callback(self, filename):
-        self._callback(filename)
         del self._timeouts[filename]
+        self._callback(filename)
 
     def _file_changed_cb(self, monitor, gio_file, gio_other_file, event):
         filename = gio_file.get_parse_name()
