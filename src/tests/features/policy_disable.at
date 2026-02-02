@@ -1,8 +1,6 @@
 FWD_START_TEST([policy - disable XML])
 AT_KEYWORDS(policy disable xml RHEL-70357)
 
-AT_CHECK([mkdir -p ./policies])
-
 AT_DATA([./policies/foobar.xml], [dnl
 <?xml version="1.0" encoding="utf-8"?>
 <policy target="CONTINUE" priority="-123">

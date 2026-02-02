@@ -5,8 +5,6 @@ dnl ###############
 FWD_START_TEST([policy - xml])
 AT_KEYWORDS(policy xml)
 
-AT_CHECK([mkdir -p ./policies])
-
 dnl something in all elements
 AT_DATA([./policies/foobar.xml], [dnl
 <?xml version="1.0" encoding="utf-8"?>

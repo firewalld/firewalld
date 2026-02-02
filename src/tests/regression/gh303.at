@@ -1,7 +1,6 @@
 FWD_START_TEST([unicode in XML])
 AT_KEYWORDS(xml unicode service gh303)
 
-AT_CHECK([mkdir -p ./services])
 AT_CHECK([cat <<HERE > ./services/unicode-service-test.xml
 <?xml version="1.0" encoding="utf-8"?>
 <service>

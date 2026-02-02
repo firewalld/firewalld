@@ -1896,7 +1896,6 @@ ERROR: Invalid option: 'SomeBogusField=yes'
     AT_CHECK([rm ./lockdown-whitelist.xml])
 
     dnl ipset
-    AT_CHECK([mkdir -p ./ipsets])
     AT_DATA([./ipsets/foobar.xml], [dnl
 <?xml version="1.0" encoding="utf-8"?>
 <ipset type="hash:mac">
@@ -1938,7 +1937,6 @@ AT_DATA([./ipsets/foobar.xml], [dnl
     AT_CHECK([rm ./ipsets/foobar.xml])
 
     dnl helpers
-    AT_CHECK([mkdir -p ./helpers])
     AT_DATA([./helpers/foobar.xml], [dnl
 <?xml version="1.0" encoding="utf-8"?>
 <helper>
@@ -1965,7 +1963,6 @@ AT_DATA([./ipsets/foobar.xml], [dnl
     AT_CHECK([rm ./helpers/foobar.xml])
 
     dnl icmptype
-    AT_CHECK([mkdir -p ./icmptypes])
     AT_DATA([./icmptypes/foobar.xml], [dnl
 <?xml version="1.0" encoding="utf-8"?>
 <bad_element />
@@ -1984,7 +1981,6 @@ AT_DATA([./ipsets/foobar.xml], [dnl
     AT_CHECK([rm ./icmptypes/foobar.xml])
 
     dnl services
-    AT_CHECK([mkdir -p ./services])
     AT_DATA([./services/foobar.xml], [dnl
 <?xml version="1.0" encoding="utf-8"?>
 <service>
@@ -2052,7 +2048,6 @@ AT_DATA([./ipsets/foobar.xml], [dnl
     AT_CHECK([rm ./services/foobar.xml])
 
     dnl zones
-    AT_CHECK([mkdir -p ./zones])
     AT_DATA([./zones/foobar.xml], [dnl
 <?xml version="1.0" encoding="utf-8"?>
 ])
