@@ -1,8 +1,6 @@
 FWD_START_TEST([zone overlapping ports])
 AT_KEYWORDS(zone port rhbz1914935)
 
-AT_CHECK([mkdir -p ./zones])
-
 AT_DATA([./zones/foobar.xml], [dnl
 <?xml version="1.0" encoding="utf-8"?>
 <zone>
