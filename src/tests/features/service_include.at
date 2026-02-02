@@ -1,7 +1,6 @@
 FWD_START_TEST([service include])
 AT_KEYWORDS(service xml gh273 rhbz1720300 gh707 gh1075)
 
-AT_CHECK([mkdir -p ./services])
 AT_CHECK([cat <<HERE > ./services/my-service-with-include.xml
 <?xml version="1.0" encoding="utf-8"?>
 <service>
