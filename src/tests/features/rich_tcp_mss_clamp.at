@@ -5,8 +5,6 @@ dnl ###############
 FWD_START_TEST([tcp-mss-clamp])
 AT_KEYWORDS(tcp-mss-clamp gh1121)
 
-AT_CHECK([mkdir -p ./zones])
-
 AT_DATA([./zones/tcp.xml], [dnl
 <?xml version="1.0" encoding="utf-8"?>
 <zone>
