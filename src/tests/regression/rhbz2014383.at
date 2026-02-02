@@ -1,8 +1,6 @@
 FWD_START_TEST([same source in two zone xml])
 AT_KEYWORDS(zone rhbz2014383)
 
-AT_CHECK([mkdir -p ./zones])
-
 AT_DATA([./zones/foobar.xml], [dnl
 <?xml version="1.0" encoding="utf-8"?>
 <zone>

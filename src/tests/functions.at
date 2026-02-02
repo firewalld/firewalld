@@ -104,6 +104,15 @@ m4_define([FWD_START_TEST], [
     AT_KEYWORDS([m4_bregexp(__file__, [^.*/\([^/]*\)\.at$], [\1])])
     AT_KEYWORDS([m4_bregexp(__file__, [^\(.*\)/[^/]*$], [\1])])
 
+    dnl empty config directories so we don't have a bunch of mkdir's in test
+    dnl cases
+    AT_CHECK([mkdir -p ./helpers])
+    AT_CHECK([mkdir -p ./icmptypes])
+    AT_CHECK([mkdir -p ./ipsets])
+    AT_CHECK([mkdir -p ./policies])
+    AT_CHECK([mkdir -p ./services])
+    AT_CHECK([mkdir -p ./zones])
+
     dnl Default values for things that should be defined in atlocal. If atlocal
     dnl can't be found it's likely because the testsuite is run "standalone" and
     dnl atconfig/atlocal aren't available. There should be one here for every value
