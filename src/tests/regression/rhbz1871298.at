@@ -3,7 +3,6 @@ AT_KEYWORDS(rich offline rhbz1871298 scale)
 
 AT_SKIP_IF([! NS_CMD([which timeout >/dev/null 2>&1])])
 
-NS_CHECK([mkdir -p ./zones])
 NS_CHECK([echo '<?xml version="1.0" encoding="utf-8"?>' > ./zones/foobar.xml])
 NS_CHECK([echo "<zone>" >> ./zones/foobar.xml])
 NS_CHECK([echo "<short>foobar</short>" >> ./zones/foobar.xml])

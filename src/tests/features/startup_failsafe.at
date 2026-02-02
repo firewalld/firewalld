@@ -3,7 +3,6 @@ IF_BACKEND_IS_DEFAULT([
 FWD_START_TEST([startup failsafe - invalid xml])
 AT_KEYWORDS(failsafe)
 dnl invalid XML
-AT_CHECK([mkdir -p ./zones])
 AT_DATA([./zones/broken.xml], [
 <zone>
 <service name="ssh" />
@@ -41,7 +40,6 @@ FWD_END_TEST([ignore])
 dnl invalid port
 FWD_START_TEST([startup failsafe - bad zone])
 AT_KEYWORDS(failsafe)
-AT_CHECK([mkdir -p ./zones])
 AT_DATA([./zones/broken.xml], [
 <zone>
 <port port="1234" />
@@ -54,7 +52,6 @@ FWD_END_TEST([ignore])
 dnl invalid source
 FWD_START_TEST([startup failsafe - bad policy])
 AT_KEYWORDS(failsafe)
-AT_CHECK([mkdir -p ./policies])
 AT_DATA([./policies/broken.xml], [
 <policy>
 <source ipset="doesnotexist" />
@@ -67,7 +64,6 @@ FWD_END_TEST([ignore])
 dnl non-existent service
 FWD_START_TEST([startup failsafe - non-existent service])
 AT_KEYWORDS(failsafe)
-AT_CHECK([mkdir -p ./zones])
 AT_DATA([./zones/broken.xml], [
 <zone>
 <service name="doesnotexist" />
@@ -80,7 +76,6 @@ FWD_END_TEST([ignore])
 dnl non-existent icmptype
 FWD_START_TEST([startup failsafe - non-existent icmptype])
 AT_KEYWORDS(failsafe)
-AT_CHECK([mkdir -p ./zones])
 AT_DATA([./zones/broken.xml], [
 <zone>
 <icmp-block name="doesnotexist" />
@@ -107,7 +102,6 @@ dnl broken stock config
 dnl results in a full shutdown
 FWD_START_TEST([startup failsafe - broken stock config])
 FWD_STOP_FIREWALLD()
-AT_CHECK([mkdir -p ./default_config/zones])
 AT_DATA([./default_config/zones/broken.xml], [
 <zone>
 <icmp-block name="doesnotexist" />
