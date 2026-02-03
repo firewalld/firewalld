@@ -131,6 +131,13 @@ class FirewallDConfig(DbusServiceObject):
         for w in list(self.watcher.get_watches()):
             self.watcher.remove_watch(w)
 
+    def _destroy_watcher(self):
+        if not self.watcher:
+            return
+
+        self._stop_watcher()
+        self.watcher = None
+
     @handle_exceptions
     def _init_vars(self):
         self.ipsets = []
