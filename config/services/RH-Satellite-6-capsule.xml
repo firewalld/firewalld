@@ -2,6 +2,14 @@
 <service>
   <short>Red Hat Satellite 6 Capsule</short>
   <description>Red Hat Satellite 6 is a systems management server that can be used to configure new systems, subscribe to updates, and maintain installations in distributed environments.</description>
-  <include service="RH-Satellite-6"/>
+  <!-- Pulp -->
+  <include service="http"/>
+  <!-- Pulp and reverse proxy to Foreman -->
+  <include service="https"/>
+  <!-- foreman-proxy HTTP -->
+  <port protocol="tcp" port="8000"/>
+  <!-- deprecated reverse proxy to Foreman -->
   <port protocol="tcp" port="8443"/>
+  <!-- foreman-proxy HTTPS -->
+  <port protocol="tcp" port="9090"/>
 </service>
