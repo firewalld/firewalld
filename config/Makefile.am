@@ -262,6 +262,7 @@ CONFIG_FILES = \
 	services/mongodb.xml \
 	services/mosh.xml \
 	services/mountd.xml \
+	services/mpd-httpd.xml \
 	services/mpd.xml \
 	services/mqtt.xml \
 	services/mqtt-tls.xml \
