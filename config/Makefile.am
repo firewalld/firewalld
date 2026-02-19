@@ -335,6 +335,7 @@ CONFIG_FILES = \
 	services/snmptls-trap.xml \
 	services/snmptls.xml \
 	services/socks.xml \
+	services/solr.xml \
 	services/spideroak-lansync.xml \
 	services/spotify-sync.xml \
 	services/squid.xml \
