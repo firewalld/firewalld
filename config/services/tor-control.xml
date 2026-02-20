@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>Tor - Control</short>
+  <description>Tor enables online anonymity and censorship resistance by directing Internet traffic through a network of relays. It conceals user's location from anyone conducting network surveillance and traffic analysis. Tor will accept connections on this port and allow those connections to control the Tor process using the Tor Control Protocol (described in control-spec.txt in torspec).</description>
+  <port protocol="tcp" port="9051"/>
+</service>
