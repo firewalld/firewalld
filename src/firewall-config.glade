@@ -6625,6 +6625,434 @@
                             <property name="tab_fill">False</property>
                           </packing>
                         </child>
+                        <child>
+                          <object class="GtkBox" id="policiesBox">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="orientation">vertical</property>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">label</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkPaned">
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                                <property name="margin-top">6</property>
+                                <property name="position">175</property>
+                                <child>
+                                  <object class="GtkBox">
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">False</property>
+                                    <property name="orientation">vertical</property>
+                                    <child>
+                                      <object class="GtkLabel">
+                                        <property name="visible">True</property>
+                                        <property name="can-focus">False</property>
+                                        <property name="label" translatable="yes">Policy</property>
+                                        <property name="xalign">0</property>
+                                        <property name="yalign">0</property>
+                                        <attributes>
+                                          <attribute name="weight" value="bold"/>
+                                        </attributes>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">0</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkScrolledWindow">
+                                        <property name="visible">True</property>
+                                        <property name="can-focus">True</property>
+                                        <property name="shadow-type">in</property>
+                                        <child>
+                                          <object class="GtkTreeView" id="policyView">
+                                            <property name="visible">True</property>
+                                            <property name="can-focus">True</property>
+                                            <child internal-child="selection">
+                                              <object class="GtkTreeSelection"/>
+                                            </child>
+                                          </object>
+                                        </child>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">True</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">1</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkToolbar">
+                                        <property name="visible">True</property>
+                                        <property name="can-focus">False</property>
+                                        <property name="show-arrow">False</property>
+                                        <property name="icon_size">1</property>
+                                        <child>
+                                          <object class="GtkToolButton">
+                                            <property name="visible">True</property>
+                                            <property name="can-focus">False</property>
+                                            <property name="use-underline">True</property>
+                                            <property name="stock-id">gtk-add</property>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="homogeneous">True</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkToolButton">
+                                            <property name="visible">True</property>
+                                            <property name="can-focus">False</property>
+                                            <property name="use-underline">True</property>
+                                            <property name="stock-id">gtk-edit</property>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="homogeneous">True</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkToolButton">
+                                            <property name="visible">True</property>
+                                            <property name="can-focus">False</property>
+                                            <property name="use-underline">True</property>
+                                            <property name="stock-id">gtk-remove</property>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="homogeneous">True</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkToolButton">
+                                            <property name="visible">True</property>
+                                            <property name="can-focus">False</property>
+                                            <property name="use-underline">True</property>
+                                            <property name="stock-id">gtk-revert-to-saved</property>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="homogeneous">True</property>
+                                          </packing>
+                                        </child>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">2</property>
+                                      </packing>
+                                    </child>
+                                  </object>
+                                  <packing>
+                                    <property name="resize">False</property>
+                                    <property name="shrink">True</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkNotebook">
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">True</property>
+                                    <property name="scrollable">True</property>
+                                    <child>
+                                      <object class="GtkBox">
+                                        <property name="visible">True</property>
+                                        <property name="can-focus">False</property>
+                                        <property name="orientation">vertical</property>
+                                        <child>
+                                          <object class="GtkBox">
+                                            <property name="visible">True</property>
+                                            <property name="can-focus">False</property>
+                                            <property name="orientation">vertical</property>
+                                            <child>
+                                              <object class="GtkLabel">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                                <property name="label" translatable="yes">Ingress Zones</property>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">0</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkEventBox" id="policyIngressHostEventBox">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                                <property name="visible-window">False</property>
+                                                <property name="above-child">True</property>
+                                                <child>
+                                                  <object class="GtkRadioButton" id="policyIngressHostButton">
+                                                    <property name="label" translatable="yes">HOST</property>
+                                                    <property name="visible">True</property>
+                                                    <property name="can-focus">True</property>
+                                                    <property name="receives-default">False</property>
+                                                    <property name="draw-indicator">True</property>
+                                                  </object>
+                                                </child>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">1</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkEventBox" id="policyIngressAnyEventBox">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                                <property name="visible-window">False</property>
+                                                <property name="above-child">True</property>
+                                                <child>
+                                                  <object class="GtkRadioButton" id="policyIngressAnyButton">
+                                                    <property name="label" translatable="yes">ANY</property>
+                                                    <property name="visible">True</property>
+                                                    <property name="can-focus">True</property>
+                                                    <property name="receives-default">False</property>
+                                                    <property name="draw-indicator">True</property>
+                                                    <property name="group">policyIngressHostButton</property>
+                                                  </object>
+                                                </child>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">2</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkBox">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                                <property name="orientation">vertical</property>
+                                                <child>
+                                                  <object class="GtkEventBox" id="policyIngressZonesEventBox">
+                                                    <property name="visible">True</property>
+                                                    <property name="can-focus">False</property>
+                                                    <property name="visible-window">False</property>
+                                                    <property name="above-child">True</property>
+                                                    <child>
+                                                      <object class="GtkRadioButton" id="policyIngressZonesButton">
+                                                        <property name="label" translatable="yes">Zones</property>
+                                                        <property name="visible">True</property>
+                                                        <property name="can-focus">True</property>
+                                                        <property name="receives-default">False</property>
+                                                        <property name="draw-indicator">True</property>
+                                                        <property name="group">policyIngressHostButton</property>
+                                                      </object>
+                                                    </child>
+                                                  </object>
+                                                  <packing>
+                                                    <property name="expand">False</property>
+                                                    <property name="fill">True</property>
+                                                    <property name="position">0</property>
+                                                  </packing>
+                                                </child>
+                                                <child>
+                                                  <object class="GtkScrolledWindow">
+                                                    <property name="visible">True</property>
+                                                    <property name="can-focus">True</property>
+                                                    <property name="shadow-type">in</property>
+                                                    <child>
+                                                      <object class="GtkTreeView" id="policyIngressZoneView">
+                                                        <property name="visible">True</property>
+                                                        <property name="can-focus">True</property>
+                                                      </object>
+                                                    </child>
+                                                  </object>
+                                                  <packing>
+                                                    <property name="expand">True</property>
+                                                    <property name="fill">True</property>
+                                                    <property name="position">1</property>
+                                                  </packing>
+                                                </child>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">True</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">3</property>
+                                              </packing>
+                                            </child>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">True</property>
+                                            <property name="fill">True</property>
+                                            <property name="position">0</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkBox">
+                                            <property name="visible">True</property>
+                                            <property name="can-focus">False</property>
+                                            <property name="orientation">vertical</property>
+                                            <child>
+                                              <object class="GtkLabel">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                                <property name="label" translatable="yes">Egress Zones</property>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">0</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkEventBox" id="policyEgressHostEventBox">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                                <property name="visible-window">False</property>
+                                                <property name="above-child">True</property>
+                                                <child>
+                                                  <object class="GtkRadioButton" id="policyEgressHostButton">
+                                                    <property name="label" translatable="yes">HOST</property>
+                                                    <property name="visible">True</property>
+                                                    <property name="can-focus">True</property>
+                                                    <property name="receives-default">False</property>
+                                                    <property name="draw-indicator">True</property>
+                                                  </object>
+                                                </child>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">1</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkEventBox" id="policyEgressAnyEventBox">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                                <property name="visible-window">False</property>
+                                                <property name="above-child">True</property>
+                                                <child>
+                                                  <object class="GtkRadioButton" id="policyEgressAnyButton">
+                                                    <property name="label" translatable="yes">ANY</property>
+                                                    <property name="visible">True</property>
+                                                    <property name="can-focus">True</property>
+                                                    <property name="receives-default">False</property>
+                                                    <property name="draw-indicator">True</property>
+                                                    <property name="group">policyEgressHostButton</property>
+                                                  </object>
+                                                </child>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">2</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkBox">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                                <property name="orientation">vertical</property>
+                                                <child>
+                                                  <object class="GtkEventBox" id="policyEgressZonesEventBox">
+                                                    <property name="visible">True</property>
+                                                    <property name="can-focus">False</property>
+                                                    <property name="visible-window">False</property>
+                                                    <property name="above-child">True</property>
+                                                    <child>
+                                                      <object class="GtkRadioButton" id="policyEgressZonesButton">
+                                                        <property name="label" translatable="yes">Zones</property>
+                                                        <property name="visible">True</property>
+                                                        <property name="can-focus">True</property>
+                                                        <property name="receives-default">False</property>
+                                                        <property name="draw-indicator">True</property>
+                                                        <property name="group">policyEgressHostButton</property>
+                                                      </object>
+                                                    </child>
+                                                  </object>
+                                                  <packing>
+                                                    <property name="expand">False</property>
+                                                    <property name="fill">True</property>
+                                                    <property name="position">0</property>
+                                                  </packing>
+                                                </child>
+                                                <child>
+                                                  <object class="GtkScrolledWindow">
+                                                    <property name="visible">True</property>
+                                                    <property name="can-focus">True</property>
+                                                    <property name="shadow-type">in</property>
+                                                    <child>
+                                                      <object class="GtkTreeView" id="policyEgressZoneView">
+                                                        <property name="visible">True</property>
+                                                        <property name="can-focus">True</property>
+                                                      </object>
+                                                    </child>
+                                                  </object>
+                                                  <packing>
+                                                    <property name="expand">True</property>
+                                                    <property name="fill">True</property>
+                                                    <property name="position">1</property>
+                                                  </packing>
+                                                </child>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">True</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">3</property>
+                                              </packing>
+                                            </child>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">True</property>
+                                            <property name="fill">True</property>
+                                            <property name="position">1</property>
+                                          </packing>
+                                        </child>
+                                      </object>
+                                    </child>
+                                    <child type="tab">
+                                      <object class="GtkLabel">
+                                        <property name="visible">True</property>
+                                        <property name="can-focus">False</property>
+                                        <property name="label" translatable="yes">Zones</property>
+                                      </object>
+                                      <packing>
+                                        <property name="tab-fill">False</property>
+                                      </packing>
+                                    </child>
+                                  </object>
+                                  <packing>
+                                    <property name="resize">True</property>
+                                    <property name="shrink">True</property>
+                                  </packing>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="position">6</property>
+                          </packing>
+                        </child>
+                        <child type="tab">
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="label" translatable="yes">Policies</property>
+                          </object>
+                          <packing>
+                            <property name="position">6</property>
+                            <property name="tab-fill">False</property>
+                          </packing>
+                        </child>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -6653,7 +7081,7 @@
         <child>
           <object class="GtkSeparator">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
+            <property name="can-focus">False</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -6664,17 +7092,17 @@
         <child>
           <object class="GtkBox" id="statusHBox">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="margin_left">6</property>
-            <property name="margin_right">6</property>
-            <property name="margin_top">3</property>
-            <property name="margin_bottom">3</property>
+            <property name="can-focus">False</property>
+            <property name="margin-left">6</property>
+            <property name="margin-right">6</property>
+            <property name="margin-top">3</property>
+            <property name="margin-bottom">3</property>
             <property name="spacing">6</property>
             <child>
               <object class="GtkLabel" id="statusLabel">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="use_markup">True</property>
+                <property name="can-focus">False</property>
+                <property name="use-markup">True</property>
                 <property name="xalign">0</property>
               </object>
               <packing>
@@ -6686,7 +7114,7 @@
             <child>
               <object class="GtkLabel" id="modifiedLabel">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
+                <property name="can-focus">False</property>
                 <property name="hexpand">True</property>
                 <property name="xalign">0</property>
               </object>
@@ -6704,35 +7132,36 @@
           </packing>
         </child>
         <child>
+          <!-- n-columns=8 n-rows=3 -->
           <object class="GtkGrid">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="margin_left">6</property>
-            <property name="margin_right">6</property>
-            <property name="margin_top">3</property>
-            <property name="margin_bottom">3</property>
-            <property name="row_spacing">3</property>
-            <property name="column_spacing">3</property>
+            <property name="can-focus">False</property>
+            <property name="margin-left">6</property>
+            <property name="margin-right">6</property>
+            <property name="margin-top">3</property>
+            <property name="margin-bottom">3</property>
+            <property name="row-spacing">3</property>
+            <property name="column-spacing">3</property>
             <child>
               <object class="GtkLabel" id="defaultZoneLabel">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="has_tooltip">True</property>
-                <property name="tooltip_markup" translatable="yes">Current default zone of the system.</property>
-                <property name="tooltip_text" translatable="yes">Current default zone of the system.</property>
+                <property name="can-focus">False</property>
+                <property name="has-tooltip">True</property>
+                <property name="tooltip-markup" translatable="yes">Current default zone of the system.</property>
+                <property name="tooltip-text" translatable="yes">Current default zone of the system.</property>
                 <property name="label">label</property>
                 <property name="xalign">0</property>
               </object>
               <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">0</property>
+                <property name="left-attach">1</property>
+                <property name="top-attach">0</property>
               </packing>
             </child>
             <child>
               <object class="GtkLabel" id="label1">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="margin_left">6</property>
+                <property name="can-focus">False</property>
+                <property name="margin-left">6</property>
                 <property name="label" translatable="yes" context="Meaning: Log of denied packets. But this is too long. LogDenied is also the parameter used in firewalld.conf.">Log Denied:</property>
                 <property name="justify">right</property>
                 <property name="xalign">1</property>
@@ -6741,30 +7170,30 @@
                 </attributes>
               </object>
               <packing>
-                <property name="left_attach">2</property>
-                <property name="top_attach">0</property>
+                <property name="left-attach">2</property>
+                <property name="top-attach">0</property>
               </packing>
             </child>
             <child>
               <object class="GtkLabel" id="logDeniedLabel">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="has_tooltip">True</property>
-                <property name="tooltip_markup" translatable="yes">Current default zone of the system.</property>
-                <property name="tooltip_text" translatable="yes">Current default zone of the system.</property>
+                <property name="can-focus">False</property>
+                <property name="has-tooltip">True</property>
+                <property name="tooltip-markup" translatable="yes">Current default zone of the system.</property>
+                <property name="tooltip-text" translatable="yes">Current default zone of the system.</property>
                 <property name="label">label</property>
                 <property name="xalign">0</property>
               </object>
               <packing>
-                <property name="left_attach">3</property>
-                <property name="top_attach">0</property>
+                <property name="left-attach">3</property>
+                <property name="top-attach">0</property>
               </packing>
             </child>
             <child>
               <object class="GtkLabel" id="label19">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="margin_left">6</property>
+                <property name="can-focus">False</property>
+                <property name="margin-left">6</property>
                 <property name="label" translatable="yes">Panic Mode:</property>
                 <property name="justify">right</property>
                 <property name="xalign">1</property>
@@ -6773,17 +7202,17 @@
                 </attributes>
               </object>
               <packing>
-                <property name="left_attach">4</property>
-                <property name="top_attach">0</property>
+                <property name="left-attach">4</property>
+                <property name="top-attach">0</property>
               </packing>
             </child>
             <child>
               <object class="GtkLabel" id="panicLabel">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="has_tooltip">True</property>
-                <property name="tooltip_markup" translatable="yes">Current default zone of the system.</property>
-                <property name="tooltip_text" translatable="yes">Current default zone of the system.</property>
+                <property name="can-focus">False</property>
+                <property name="has-tooltip">True</property>
+                <property name="tooltip-markup" translatable="yes">Current default zone of the system.</property>
+                <property name="tooltip-text" translatable="yes">Current default zone of the system.</property>
                 <property name="label">label</property>
                 <property name="xalign">0</property>
               </object>
