@@ -5329,18 +5329,28 @@ class FirewallConfig:
         # not in list, append
         self.serviceConfServiceStore.append([service])
 
+        self.serviceStore.append([False, service])
+
     def conf_service_updated_cb(self, service):
         self.onChangeService()
 
     def conf_service_removed_cb(self, service):
         if self.runtime_view:
             return
+
         iter = self.serviceConfServiceStore.get_iter_first()
         while iter:
             if self.serviceConfServiceStore.get_value(iter, 0) == service:
                 self.serviceConfServiceStore.remove(iter)
                 break
             iter = self.serviceConfServiceStore.iter_next(iter)
+
+        iter = self.serviceStore.get_iter_first()
+        while iter:
+            if self.serviceStore.get_value(iter, 1) == service:
+                self.serviceStore.remove(iter)
+                break
+            iter = self.serviceStore.iter_next(iter)
 
     def conf_service_renamed_cb(self, service):
         if self.runtime_view:
