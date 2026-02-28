@@ -8130,8 +8130,27 @@ class FirewallConfig:
             iter = self.policyStore.iter_next(iter)
 
     def conf_policy_renamed_cb(self, policy):
-        return
+        if self.runtime_view:
+            return
 
+        # Get all zones, renamed the one that is missing.
+        # If more or less than one is missing, update zone store.
+
+        policies = self.fw.config().getPolicyNames()
+
+        use_iter = None
+        iter = self.policyStore.get_iter_first()
+        while iter:
+            if self.policyStore.get_value(iter, 0) not in policies:
+                if use_iter is not None:
+                    return self.load_policies()
+                use_iter = iter
+            iter = self.policyStore.iter_next(iter)
+
+        if use_iter is None:
+            return self.load_policies()
+
+        self.policyStore.set_value(use_iter, 0, policy)
 
 def combobox_select_text(combobox, value, insensitive=False):
     model = combobox.get_model()
