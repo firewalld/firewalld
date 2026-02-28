@@ -34,7 +34,7 @@ from dbus.exceptions import DBusException
 from firewall import config
 from firewall import client
 from firewall import functions
-from firewall.core.base import DEFAULT_ZONE_TARGET, REJECT_TYPES, SOURCE_IPSET_TYPES
+from firewall.core.base import DEFAULT_ZONE_TARGET, REJECT_TYPES, SOURCE_IPSET_TYPES, DEFAULT_POLICY_TARGET
 from firewall.core.ipset import IPSET_MAXNAMELEN
 from firewall.core.helper import HELPER_MAXNAMELEN
 from firewall.core.io.zone import Zone
@@ -42,6 +42,7 @@ from firewall.core.io.service import Service
 from firewall.core.io.icmptype import IcmpType
 from firewall.core.io.ipset import IPSet
 from firewall.core.io.helper import Helper
+from firewall.core.io.policy import Policy
 from firewall.core import rich
 from firewall.core.fw_nm import (
     nm_is_imported,
@@ -1258,6 +1259,28 @@ class FirewallConfig:
         self.policyStore.set_sort_column_id(0, Gtk.SortType.ASCENDING)
         self.policyView.get_selection().connect("changed", self.onChangePolicy)
 
+        self.policyEditBox = builder.get_object("policyEditBox")
+        self.policyEditBox.hide()
+        self.policyEditLoadDefaultsButton = builder.get_object(
+            "policyEditLoadDefaultsButton"
+        )
+        self.policyEditEditButton = builder.get_object("policyEditEditButton")
+        self.policyEditRemoveButton = builder.get_object("policyEditRemoveButton")
+
+        self.policyBaseDialog = builder.get_object("policyBaseDialog")
+        self.policyBaseDialogOkButton = builder.get_object("policyBaseDialogOkButton")
+
+        self.policyBaseDialogNameEntry = builder.get_object("policyBaseDialogNameEntry")
+        self.policyBaseDialogVersionEntry = builder.get_object(
+            "policyBaseDialogVersionEntry"
+        )
+        self.policyBaseDialogShortEntry = builder.get_object("policyBaseDialogShortEntry")
+        self.policyBaseDialogDescText = builder.get_object("policyBaseDialogDescText")
+        self.policyBaseDialogTargetCheck = builder.get_object("policyBaseDialogTargetCheck")
+        self.policyBaseDialogTargetCombobox = builder.get_object(
+            "policyBaseDialogTargetCombobox"
+        )
+
         self.policyIngressHostButton = builder.get_object("policyIngressHostButton")
         self.policyIngressHostEventBox = builder.get_object("policyIngressHostEventBox")
         self.policyIngressHostEventBox.connect("button-press-event", self.policy_ingress_host_toggle_cb)
@@ -2452,6 +2475,7 @@ class FirewallConfig:
             self.icmpDialogIcmpEditBox.hide()
             self.helperConfHelperEditBox.hide()
             self.helperConfPortBox.hide()
+            self.policyEditBox.hide()
         else:
             self.zoneEditBox.show()
             self.ipsetConfIPSetEditBox.show()
@@ -2463,6 +2487,7 @@ class FirewallConfig:
             self.icmpDialogIcmpEditBox.show()
             self.helperConfHelperEditBox.show()
             self.helperConfPortBox.show()
+            self.policyEditBox.show()
 
         self.load_ipsets()
         self.load_zones()
@@ -3160,7 +3185,7 @@ class FirewallConfig:
     def onAddZone(self, *args):
         if self.runtime_view:
             return
-        self.add_edit_zone(True)
+        self.add_edit_zone_policy(False, True)
 
     def onRemoveZone(self, *args):
         if self.runtime_view:
@@ -3175,7 +3200,7 @@ class FirewallConfig:
     def onEditZone(self, *args):
         if self.runtime_view:
             return
-        self.add_edit_zone(False)
+        self.add_edit_zone_policy(False, False)
 
     def onLoadDefaultsZone(self, *args):
         if self.runtime_view:
@@ -3185,6 +3210,185 @@ class FirewallConfig:
         zone.loadDefaults()
         self.changes_applied()
         self.onChangeZone()
+
+    def onAddPolicy(self, *args):
+        if self.runtime_view:
+            return
+        self.add_edit_zone_policy(True, True)
+
+    def onRemovePolicy(self, *args):
+        if self.runtime_view:
+            return
+        selected_policy = self.get_selected_policy()
+        policy = self.fw.config().getPolicyByName(selected_policy)
+        policy.remove()
+        self.changes_applied()
+
+    def onEditPolicy(self, *args):
+        if self.runtime_view:
+            return
+        self.add_edit_zone_policy(True, False)
+
+    def onLoadPolicyDefaults(self, *args):
+        if self.runtime_view:
+            return
+        selected_policy = self.get_selected_policy()
+        policy = self.fw.config().getPolicyByName(selected_policy)
+        policy.loadDefaults()
+
+    def add_edit_zone_policy(self, policy, add):
+        if policy:
+            l = functions.max_policy_name_len()
+            dialog = self.policyBaseDialog
+            dialog_name_entry = self.policyBaseDialogNameEntry
+            dialog_version_entry = self.policyBaseDialogVersionEntry
+            dialog_short_entry = self.policyBaseDialogShortEntry
+            dialog_desc_text = self.policyBaseDialogDescText
+            dialog_target_check = self.policyBaseDialogTargetCheck
+            dialog_target_combobox = self.policyBaseDialogTargetCombobox
+            dialog_ok_button = self.policyBaseDialogOkButton
+        else:
+            l = functions.max_zone_name_len()
+            dialog = self.zoneBaseDialog
+            dialog_name_entry = self.zoneBaseDialogNameEntry
+            dialog_version_entry = self.zoneBaseDialogVersionEntry
+            dialog_short_entry = self.zoneBaseDialogShortEntry
+            dialog_desc_text = self.zoneBaseDialogDescText
+            dialog_target_check = self.zoneBaseDialogTargetCheck
+            dialog_target_combobox = self.zoneBaseDialogTargetCombobox
+            dialog_ok_button = self.zoneBaseDialogOkButton
+
+        dialog_name_entry.set_max_length(l)
+        dialog_name_entry.set_width_chars(l)
+        dialog_name_entry.set_max_width_chars(l)
+
+        if add:
+            default = True
+            builtin = False
+            old_name = None
+            old_version = None
+            old_short = None
+            old_desc = None
+            old_target = None
+
+            dialog_name_entry.set_text("")
+            dialog_version_entry.set_text("")
+            dialog_short_entry.set_text("")
+            dialog_desc_text.get_buffer().set_text("")
+            dialog_target_check.set_active(True)
+            dialog_target_combobox.set_active(0)
+        else:
+            if policy:
+                selected = self.get_selected_policy()
+                zp = self.fw.config().getPolicyByName(selected)
+            else:
+                selected = self.get_selected_zone()
+                zp = self.fw.config().getZoneByName(selected)
+            settings = zp.getSettings()
+            props = zp.get_properties()
+            default = props["default"]
+            builtin = props["builtin"]
+
+            old_name = selected
+            old_version = settings.getVersion()
+            old_short = settings.getShort()
+            old_desc = settings.getDescription()
+            old_target = settings.getTarget()
+
+            dialog_name_entry.set_text(old_name)
+            dialog_version_entry.set_text(old_version)
+            dialog_short_entry.set_text(old_short)
+            dialog_desc_text.get_buffer().set_text(old_desc)
+
+            if (policy and old_target == DEFAULT_POLICY_TARGET) or (not policy and (old_target == "default" or old_target == DEFAULT_ZONE_TARGET)):
+                dialog_target_check.set_active(True)
+                dialog_target_combobox.set_active(0)
+            else:
+                dialog_target_check.set_active(False)
+                combobox_select_text(
+                    dialog_target_combobox,
+                    old_target if old_target != "%%REJECT%%" else "REJECT",
+                )
+
+        dialog_ok_button.set_sensitive(False)
+        if builtin:
+            dialog_name_entry.set_tooltip_markup(
+                _("Built-in policy, rename not supported.")
+            )
+        else:
+            dialog_name_entry.set_tooltip_markup("")
+        dialog_name_entry.set_sensitive(not builtin and default)
+
+        dialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        dialog.set_transient_for(self.mainWindow)
+        dialog.show_all()
+        self.add_visible_dialog(dialog)
+        result = dialog.run()
+        dialog.hide()
+        self.remove_visible_dialog(dialog)
+
+        if result != 1:
+            return
+
+        name = dialog_name_entry.get_text()
+        version = dialog_version_entry.get_text()
+        short = dialog_short_entry.get_text()
+        buffer = dialog_desc_text.get_buffer()
+        desc = buffer.get_text(buffer.get_start_iter(), buffer.get_end_iter(), False)
+        target = DEFAULT_POLICY_TARGET if policy else "default"
+        if not dialog_target_check.get_active():
+            target = dialog_target_combobox.get_active_text()
+            if target == "REJECT":
+                target = "%%REJECT%%"
+
+        if (
+            old_name == name
+            and old_version == version
+            and old_short == short
+            and old_desc == desc
+            and old_target == target
+        ):
+            # no changes
+            return
+
+        if not add:
+            if policy:
+                selected_policy = self.get_selected_policy()
+                zp = self.fw.config().getPolicyByName(selected_policy)
+            else:
+                selected_zone = self.get_selected_zone()
+                zp = self.fw.config().getZoneByName(selected_zone)
+            settings = zp.getSettings()
+        else:
+            if policy:
+                settings = client.FirewallClientPolicySettings()
+            else:
+                settings = client.FirewallClientZoneSettings()
+
+        if (
+            old_version != version
+            or old_short != short
+            or old_desc != desc
+            or old_target != target
+        ):
+            # settings
+            settings.setVersion(version)
+            settings.setShort(short)
+            settings.setDescription(desc)
+            settings.setTarget(target)
+            if not add:
+                zp.update(settings)
+
+        if not add:
+            if old_name == name:
+                return
+            zp.rename(name)
+        else:
+            if policy:
+                self.fw.config().addPolicy(name, settings)
+            else:
+                self.fw.config().addZone(name, settings)
+        self.changes_applied()
 
     def entry_changed(self, entry, allowed_chars, modify=None):
         "Remove all disallowed characters and truncate length."
@@ -3224,124 +3428,28 @@ class FirewallConfig:
         val = check.get_active()
         self.zoneBaseDialogTargetCombobox.set_sensitive(not val)
 
-    def add_edit_zone(self, add):
-        l = functions.max_zone_name_len()
-        self.zoneBaseDialogNameEntry.set_max_length(l)
-        self.zoneBaseDialogNameEntry.set_width_chars(l)
-        self.zoneBaseDialogNameEntry.set_max_width_chars(l)
+    def onPolicyBaseDialogNameChanged(self, *args):
+        def check_policy_name(policy):
+            max_len = functions.max_policy_name_len()
+            parts = policy.split("/")
+            if len(parts) < 2:
+                return (True, policy)
+            if len(parts[0]) > max_len:
+                parts[0] = parts[0][:max_len]
+            policy = "/".join(parts[:2])
+            OK = len(policy) > 1 and policy[0] != "/" and policy[-1] != "/"
+            return (OK, policy)
 
-        if add:
-            default = True
-            builtin = False
-            old_name = None
-            old_version = None
-            old_short = None
-            old_desc = None
-            old_target = None
+        OK = True
+        if args and (args[0] == self.policyBaseDialogNameEntry):
+            additional_chars = "".join(Policy.ADDITIONAL_ALNUM_CHARS)
+            allowed_chars = string.ascii_letters + string.digits + additional_chars
+            OK = self.entry_changed(args[0], allowed_chars, check_policy_name)
+        self.policyBaseDialogOkButton.set_sensitive(OK)
 
-            self.zoneBaseDialogNameEntry.set_text("")
-            self.zoneBaseDialogVersionEntry.set_text("")
-            self.zoneBaseDialogShortEntry.set_text("")
-            self.zoneBaseDialogDescText.get_buffer().set_text("")
-            self.zoneBaseDialogTargetCheck.set_active(True)
-            self.zoneBaseDialogTargetCombobox.set_active(0)
-        else:
-            selected_zone = self.get_selected_zone()
-            zone = self.fw.config().getZoneByName(selected_zone)
-            settings = zone.getSettings()
-            props = zone.get_properties()
-            default = props["default"]
-            builtin = props["builtin"]
-
-            old_name = zone.get_property("name")
-            old_version = settings.getVersion()
-            old_short = settings.getShort()
-            old_desc = settings.getDescription()
-            old_target = settings.getTarget()
-
-            self.zoneBaseDialogNameEntry.set_text(old_name)
-            self.zoneBaseDialogVersionEntry.set_text(old_version)
-            self.zoneBaseDialogShortEntry.set_text(old_short)
-            self.zoneBaseDialogDescText.get_buffer().set_text(old_desc)
-            if old_target == "default" or old_target == DEFAULT_ZONE_TARGET:
-                self.zoneBaseDialogTargetCheck.set_active(True)
-                self.zoneBaseDialogTargetCombobox.set_active(0)
-            else:
-                self.zoneBaseDialogTargetCheck.set_active(False)
-                combobox_select_text(
-                    self.zoneBaseDialogTargetCombobox,
-                    old_target if old_target != "%%REJECT%%" else "REJECT",
-                )
-
-        self.zoneBaseDialogOkButton.set_sensitive(False)
-        if builtin:
-            self.zoneBaseDialogNameEntry.set_tooltip_markup(
-                _("Built-in zone, rename not supported.")
-            )
-        else:
-            self.zoneBaseDialogNameEntry.set_tooltip_markup("")
-        self.zoneBaseDialogNameEntry.set_sensitive(not builtin and default)
-
-        self.zoneBaseDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
-        self.zoneBaseDialog.set_transient_for(self.mainWindow)
-        self.zoneBaseDialog.show_all()
-        self.add_visible_dialog(self.zoneBaseDialog)
-        result = self.zoneBaseDialog.run()
-        self.zoneBaseDialog.hide()
-        self.remove_visible_dialog(self.zoneBaseDialog)
-
-        if result != 1:
-            return
-
-        name = self.zoneBaseDialogNameEntry.get_text()
-        version = self.zoneBaseDialogVersionEntry.get_text()
-        short = self.zoneBaseDialogShortEntry.get_text()
-        buffer = self.zoneBaseDialogDescText.get_buffer()
-        desc = buffer.get_text(buffer.get_start_iter(), buffer.get_end_iter(), False)
-        target = "default"  # this has been DEFAULT_ZONE_TARGET before
-        if not self.zoneBaseDialogTargetCheck.get_active():
-            target = self.zoneBaseDialogTargetCombobox.get_active_text()
-            if target == "REJECT":
-                target = "%%REJECT%%"
-
-        if (
-            old_name == name
-            and old_version == version
-            and old_short == short
-            and old_desc == desc
-            and old_target == target
-        ):
-            # no changes
-            return
-
-        if not add:
-            selected_zone = self.get_selected_zone()
-            zone = self.fw.config().getZoneByName(selected_zone)
-            settings = zone.getSettings()
-        else:
-            settings = client.FirewallClientZoneSettings()
-
-        if (
-            old_version != version
-            or old_short != short
-            or old_desc != desc
-            or old_target != target
-        ):
-            # settings
-            settings.setVersion(version)
-            settings.setShort(short)
-            settings.setDescription(desc)
-            settings.setTarget(target)
-            if not add:
-                zone.update(settings)
-
-        if not add:
-            if old_name == name:
-                return
-            zone.rename(name)
-        else:
-            self.fw.config().addZone(name, settings)
-        self.changes_applied()
+    def onPolicyBaseDialogTargetCheckToggled(self, check):
+        val = check.get_active()
+        self.policyBaseDialogTargetCombobox.set_sensitive(not val)
 
     def onAddRichRule(self, *args):
         self.add_edit_rich_rule(True)

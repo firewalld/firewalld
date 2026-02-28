@@ -6692,17 +6692,18 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkToolbar">
+                                      <object class="GtkToolbar" id="policyEditBox">
                                         <property name="visible">True</property>
                                         <property name="can-focus">False</property>
                                         <property name="show-arrow">False</property>
                                         <property name="icon_size">1</property>
                                         <child>
-                                          <object class="GtkToolButton">
+                                          <object class="GtkToolButton" id="policyEditAddButton">
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
                                             <property name="use-underline">True</property>
                                             <property name="stock-id">gtk-add</property>
+                                            <signal name="clicked" handler="onAddPolicy" swapped="no"/>
                                           </object>
                                           <packing>
                                             <property name="expand">False</property>
@@ -6710,11 +6711,12 @@
                                           </packing>
                                         </child>
                                         <child>
-                                          <object class="GtkToolButton">
+                                          <object class="GtkToolButton" id="policyEditEditButton">
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
                                             <property name="use-underline">True</property>
                                             <property name="stock-id">gtk-edit</property>
+                                            <signal name="clicked" handler="onEditPolicy" swapped="no"/>
                                           </object>
                                           <packing>
                                             <property name="expand">False</property>
@@ -6722,11 +6724,12 @@
                                           </packing>
                                         </child>
                                         <child>
-                                          <object class="GtkToolButton">
+                                          <object class="GtkToolButton" id="policyEditRemoveButton">
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
                                             <property name="use-underline">True</property>
                                             <property name="stock-id">gtk-remove</property>
+                                            <signal name="clicked" handler="onRemovePolicy" swapped="no"/>
                                           </object>
                                           <packing>
                                             <property name="expand">False</property>
@@ -6734,11 +6737,12 @@
                                           </packing>
                                         </child>
                                         <child>
-                                          <object class="GtkToolButton">
+                                          <object class="GtkToolButton" id="policyEditLoadDefaultsButton">
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
                                             <property name="use-underline">True</property>
                                             <property name="stock-id">gtk-revert-to-saved</property>
+                                            <signal name="clicked" handler="onLoadPolicyDefaults" swapped="no"/>
                                           </object>
                                           <packing>
                                             <property name="expand">False</property>
@@ -6867,6 +6871,9 @@
                                                       <object class="GtkTreeView" id="policyIngressZoneView">
                                                         <property name="visible">True</property>
                                                         <property name="can-focus">True</property>
+                                                        <child internal-child="selection">
+                                                          <object class="GtkTreeSelection"/>
+                                                        </child>
                                                       </object>
                                                     </child>
                                                   </object>
@@ -6989,6 +6996,9 @@
                                                       <object class="GtkTreeView" id="policyEgressZoneView">
                                                         <property name="visible">True</property>
                                                         <property name="can-focus">True</property>
+                                                        <child internal-child="selection">
+                                                          <object class="GtkTreeSelection"/>
+                                                        </child>
                                                       </object>
                                                     </child>
                                                   </object>
@@ -8679,9 +8689,331 @@
       <action-widget response="1">moduleDialogOkButton</action-widget>
     </action-widgets>
   </object>
+  <object class="GtkDialog" id="policyBaseDialog">
+    <property name="can-focus">False</property>
+    <property name="border-width">5</property>
+    <property name="title" translatable="yes">Base Policy Settings</property>
+    <property name="type-hint">dialog</property>
+    <child internal-child="vbox">
+      <object class="GtkBox">
+        <property name="can-focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox">
+            <property name="can-focus">False</property>
+            <property name="layout-style">end</property>
+            <child>
+              <object class="GtkButton" id="policyBaseDialogCancelButton">
+                <property name="label">gtk-cancel</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="can-default">True</property>
+                <property name="receives-default">True</property>
+                <property name="use-stock">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="policyBaseDialogOkButton">
+                <property name="label">gtk-ok</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="can-default">True</property>
+                <property name="has-default">True</property>
+                <property name="receives-default">True</property>
+                <property name="use-stock">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="pack-type">end</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox" id="vbox17">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="border-width">6</property>
+            <property name="orientation">vertical</property>
+            <property name="spacing">6</property>
+            <child>
+              <object class="GtkLabel" id="label17">
+                <property name="can-focus">False</property>
+                <property name="halign">start</property>
+                <property name="label" translatable="yes">Please configure base policy settings:</property>
+                <property name="wrap">True</property>
+                <property name="xalign">0</property>
+                <property name="yalign">0</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label46">
+                <property name="can-focus">False</property>
+                <property name="halign">start</property>
+                <property name="label" translatable="yes">Bold entries are mandatory, all others are optional.</property>
+                <property name="wrap">True</property>
+                <property name="xalign">0</property>
+                <property name="yalign">0</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <!-- n-columns=3 n-rows=6 -->
+              <object class="GtkGrid" id="portUserTable4">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="hexpand">True</property>
+                <property name="vexpand">True</property>
+                <property name="border-width">6</property>
+                <property name="row-spacing">6</property>
+                <property name="column-spacing">6</property>
+                <child>
+                  <object class="GtkEntry" id="policyBaseDialogVersionEntry">
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="hexpand">True</property>
+                    <property name="invisible-char">•</property>
+                    <property name="activates-default">True</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkEntry" id="policyBaseDialogShortEntry">
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="hexpand">True</property>
+                    <property name="invisible-char">•</property>
+                    <property name="activates-default">True</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkScrolledWindow" id="scrolledwindow22">
+                    <property name="width-request">250</property>
+                    <property name="height-request">80</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="hexpand">True</property>
+                    <property name="vexpand">True</property>
+                    <property name="shadow-type">in</property>
+                    <child>
+                      <object class="GtkTextView" id="policyBaseDialogDescText">
+                        <property name="visible">True</property>
+                        <property name="can-focus">True</property>
+                        <property name="hexpand">True</property>
+                        <property name="vexpand">True</property>
+                        <property name="wrap-mode">word</property>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkCheckButton" id="policyBaseDialogTargetCheck">
+                    <property name="label" translatable="yes">Default Target</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">False</property>
+                    <property name="halign">start</property>
+                    <property name="xalign">0</property>
+                    <property name="draw-indicator">True</property>
+                    <signal name="toggled" handler="onPolicyBaseDialogTargetCheckToggled" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">4</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label66">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">Name:</property>
+                    <property name="xalign">1</property>
+                    <attributes>
+                      <attribute name="weight" value="bold"/>
+                    </attributes>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkEntry" id="policyBaseDialogNameEntry">
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="halign">start</property>
+                    <property name="hexpand">True</property>
+                    <property name="max-length">17</property>
+                    <property name="invisible-char">•</property>
+                    <property name="activates-default">True</property>
+                    <property name="width-chars">17</property>
+                    <property name="max-width-chars">17</property>
+                    <signal name="changed" handler="onPolicyBaseDialogNameChanged" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="protoLabel12">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">Version:</property>
+                    <property name="xalign">1</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="protoLabel13">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">Short:</property>
+                    <property name="xalign">1</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="protoLabel14">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">Description:</property>
+                    <property name="xalign">1</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">Target:</property>
+                    <property name="xalign">1</property>
+                    <attributes>
+                      <attribute name="weight" value="bold"/>
+                    </attributes>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">4</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="ellipsize">middle</property>
+                    <property name="xalign">1</property>
+                    <attributes>
+                      <attribute name="weight" value="bold"/>
+                    </attributes>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">5</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkComboBoxText" id="policyBaseDialogTargetCombobox">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="halign">start</property>
+                    <property name="hexpand">True</property>
+                    <items>
+                      <item translatable="yes">CONTINUE</item>
+                      <item>ACCEPT</item>
+                      <item>REJECT</item>
+                      <item>DROP</item>
+                    </items>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">5</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+    <action-widgets>
+      <action-widget response="-1">policyBaseDialogCancelButton</action-widget>
+      <action-widget response="1">policyBaseDialogOkButton</action-widget>
+    </action-widgets>
+  </object>
   <object class="GtkDialog" id="portDialog">
-    <property name="can_focus">False</property>
-    <property name="border_width">5</property>
+    <property name="can-focus">False</property>
+    <property name="border-width">5</property>
     <property name="title" translatable="yes">Port and Protocol</property>
     <property name="modal">True</property>
     <property name="type_hint">dialog</property>
