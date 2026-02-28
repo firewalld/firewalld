@@ -3127,6 +3127,7 @@ class FirewallConfig:
                     while iter:
                         if self.policyIngressZoneStore.get_value(iter, 1) == item:
                             self.policyIngressZoneStore.set_value(iter, 0, True)
+                            break
                         iter = self.policyIngressZoneStore.iter_next(iter)
                     self.policyIngressZonesButton.set_active(True)
                     self.policyIngressZoneView.set_sensitive(True)
@@ -3148,6 +3149,7 @@ class FirewallConfig:
                     while iter:
                         if self.policyEgressZoneStore.get_value(iter, 1) == item:
                             self.policyEgressZoneStore.set_value(iter, 0, True)
+                            break
                         iter = self.policyEgressZoneStore.iter_next(iter)
                     self.policyEgressZonesButton.set_active(True)
                     self.policyEgressZoneView.set_sensitive(True)
