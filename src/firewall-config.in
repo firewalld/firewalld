@@ -1340,8 +1340,20 @@ class FirewallConfig:
         self.policyPortStore.set_sort_column_id(1, Gtk.SortType.ASCENDING)
         self.policyPortView.get_selection().connect("changed", self.change_policy_port_selection_cb)
 
-        self.policyEditPortButton = builder.get_object("editPolicyPortButton")
-        self.policyRemovePortButton = builder.get_object("removePolicyPortButton")
+        self.editPolicyPortButton = builder.get_object("editPolicyPortButton")
+        self.removePolicyPortButton = builder.get_object("removePolicyPortButton")
+
+        self.policyProtocolView = builder.get_object("policyProtocolView")
+        self.policyProtocolStore = Gtk.ListStore(GObject.TYPE_STRING)
+        self.policyProtocolView.append_column(
+            Gtk.TreeViewColumn(_("Protocol"), Gtk.CellRendererText(), text=0)
+        )
+        self.policyProtocolView.set_model(self.policyProtocolStore)
+        self.policyProtocolStore.set_sort_column_id(0, Gtk.SortType.ASCENDING)
+        self.policyProtocolView.get_selection().connect("changed", self.change_policy_protocol_selection_cb)
+
+        self.editPolicyProtocolButton = builder.get_object("editPolicyProtocolButton")
+        self.removePolicyProtocolButton = builder.get_object("removePolicyProtocolButton")
 
         # firewall client
 
@@ -2054,11 +2066,11 @@ class FirewallConfig:
     def change_policy_port_selection_cb(self, selection):
         (model, iter) = selection.get_selected()
         if iter:
-            self.policyEditPortButton.set_sensitive(True)
-            self.policyRemovePortButton.set_sensitive(True)
+            self.editPolicyPortButton.set_sensitive(True)
+            self.removePolicyPortButton.set_sensitive(True)
         else:
-            self.policyEditPortButton.set_sensitive(False)
-            self.policyRemovePortButton.set_sensitive(False)
+            self.editPolicyPortButton.set_sensitive(False)
+            self.removePolicyPortButton.set_sensitive(False)
 
     def change_port_selection_cb(self, selection):
         (model, iter) = selection.get_selected()
@@ -2077,6 +2089,15 @@ class FirewallConfig:
         else:
             self.editSourcePortButton.set_sensitive(False)
             self.removeSourcePortButton.set_sensitive(False)
+
+    def change_policy_protocol_selection_cb(self, selection):
+        (model, iter) = selection.get_selected()
+        if iter:
+            self.editPolicyProtocolButton.set_sensitive(True)
+            self.removePolicyProtocolButton.set_sensitive(True)
+        else:
+            self.editPolicyProtocolButton.set_sensitive(False)
+            self.removePolicyProtocolButton.set_sensitive(False)
 
     def change_protocol_selection_cb(self, selection):
         (model, iter) = selection.get_selected()
@@ -3134,6 +3155,7 @@ class FirewallConfig:
         selected_policy = self.get_selected_policy()
 
         self.policyPortStore.clear()
+        self.policyProtocolStore.clear()
 
         if not selected_policy:
             self.policyIngressHostButton.set_sensitive(False)
@@ -3158,6 +3180,7 @@ class FirewallConfig:
                 iter = self.serviceStore.iter_next(iter)
 
             self.policyPortView.set_sensitive(False)
+            self.policyProtocolView.set_sensitive(False)
 
             return
 
@@ -3172,6 +3195,7 @@ class FirewallConfig:
         self.policyServiceView.set_sensitive(True)
 
         self.policyPortView.set_sensitive(True)
+        self.policyProtocolView.set_sensitive(True)
 
         iter = self.zoneStore.get_iter_first()
         while iter:
@@ -3248,10 +3272,14 @@ class FirewallConfig:
         for item in settings["ports"]:
             self.policyPortStore.append(item)
 
+        for item in settings["protocols"]:
+            self.policyProtocolStore.append([item])
+
         self.policyIngressZoneView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
         self.policyEgressZoneView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
         self.policyServiceView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
         self.policyPortView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
+        self.policyProtocolView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
 
     def onAddZone(self, *args):
         if self.runtime_view:
@@ -5238,14 +5266,10 @@ class FirewallConfig:
             iter = self.sourcePortStore.iter_next(iter)
 
     def onAddProtocol(self, *args):
-        self.add_edit_protocol(True)
+        self.add_edit_protocol(False, True)
 
     def onEditProtocol(self, *args):
-        self.add_edit_protocol(False)
-
-    def onProtocolClicked(self, widget, event):
-        if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS:
-            self.add_edit_protocol(False)
+        self.add_edit_protocol(False, False)
 
     def onRemoveProtocol(self, *args):
         selected_zone = self.get_selected_zone()
@@ -5262,16 +5286,54 @@ class FirewallConfig:
             zone.removeProtocol(proto)
         self.changes_applied()
 
-    def add_edit_protocol(self, add):
-        selected_zone = self.get_selected_zone()
+    def onProtocolClicked(self, widget, event):
+        if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS:
+            self.add_edit_protocol(False, False)
+
+    def onAddPolicyProtocol(self, *args):
+        self.add_edit_protocol(True, True)
+
+    def onEditPolicyProtocol(self, *args):
+        self.add_edit_protocol(True, False)
+
+    def onRemovePolicyProtocol(self, *args):
+        selected_policy = self.get_selected_policy()
+        selection = self.policyProtocolView.get_selection()
+        (model, iter) = selection.get_selected()
+        if iter is None:
+            return
+        proto = self.policyProtocolStore.get_value(iter, 0)
+
+        if self.runtime_view:
+            settings = self.fw.getPolicySettings(selected_policy)
+            settings.removeProtocol(proto)
+            self.fw.setPolicySettings(selected_policy, settings)
+        else:
+            policy = self.fw.config().getPolicyByName(selected_policy)
+            settings = policy.getSettings()
+            settings.removeProtocol(proto)
+            policy.update(settings)
+        self.changes_applied()
+
+    def onPolicyProtocolClicked(self, widget, event):
+        if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS:
+            self.add_edit_protocol(True, False)
+
+    def add_edit_protocol(self, policy, add):
+        if policy:
+            selected = self.get_selected_policy()
+            protocol_view = self.policyProtocolView
+        else:
+            selected = self.get_selected_zone()
+            protocol_view = self.protocolView
 
         old_proto = None
         if not add:
-            selection = self.protocolView.get_selection()
+            selection = protocol_view.get_selection()
             (model, iter) = selection.get_selected()
             if iter is None:
                 return
-            old_proto = self.protocolStore.get_value(iter, 0)
+            old_proto = model.get_value(iter, 0)
 
         self.protoDialogProtoCombobox.set_active(0)
         self.protoDialogOtherProtoCheck.set_active(False)
@@ -5302,17 +5364,31 @@ class FirewallConfig:
             return
 
         if self.runtime_view:
-            if not self.fw.queryProtocol(selected_zone, proto):
-                self.fw.addProtocol(selected_zone, proto)
-                if not add:
-                    self.fw.removeProtocol(selected_zone, old_proto)
-                self.changes_applied()
+            if policy:
+                settings = self.fw.getPolicySettings(selected)
+                if not settings.queryProtocol(proto):
+                    settings.addProtocol(proto)
+                    if not add:
+                        settings.removeProtocol(old_proto)
+                    self.fw.setPolicySettings(selected, settings)
+                    self.changes_applied()
+            else:
+                if not self.fw.queryProtocol(selected, proto):
+                    self.fw.addProtocol(selected, proto)
+                    if not add:
+                        self.fw.removeProtocol(selected, old_proto)
+                    self.changes_applied()
         else:
-            zone = self.fw.config().getZoneByName(selected_zone)
-            if not zone.queryProtocol(proto):
+            if policy:
+                zp = self.fw.config().getPolicyByName(selected)
+            else:
+                zp = self.fw.config().getZoneByName(selected)
+            settings = zp.getSettings()
+            if not settings.queryProtocol(proto):
                 if not add:
-                    zone.removeProtocol(old_proto)
-                zone.addProtocol(proto)
+                    settings.removeProtocol(old_proto)
+                settings.addProtocol(proto)
+                zp.update(settings)
                 self.changes_applied()
 
     def service_conf_add_edit_protocol(self, add):
