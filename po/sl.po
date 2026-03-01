@@ -2,13 +2,14 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # Matjaž Jeran <matjaz.jeran@amis.net>, 2023, 2025.
+# Martin Srebotnjak <miles@filmsi.net>, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-06 14:46-0500\n"
-"PO-Revision-Date: 2025-11-13 20:58+0000\n"
-"Last-Translator: Matjaž Jeran <matjaz.jeran@amis.net>\n"
+"PO-Revision-Date: 2025-12-08 23:09+0000\n"
+"Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian <https://translate.fedoraproject.org/projects/"
 "firewalld/master/sl/>\n"
 "Language: sl\n"
@@ -27,16 +28,16 @@ msgstr "Programček vdorobrana"
 msgid ""
 "Firewall Configuration provides a graphical tool for administering firewall."
 msgstr ""
+"Prilagoditev požarnega zidu ponuja grafično orodje za upravljanje požarnega "
+"zidu."
 
 #: ../config/firewall-config.appdata.xml.in.h:2
-#, fuzzy
 msgid "Allows to inspect and set:"
-msgstr "Prosimo izberite ipset:"
+msgstr "Omogoča preučitev in nastavljanje:"
 
 #: ../config/firewall-config.appdata.xml.in.h:3
-#, fuzzy
 msgid "Runtime and permanent firewall configuration"
-msgstr "Konfiguracija vdorobrana"
+msgstr "Izvajalna datoteka in trajna prilagoditev požarnega zidu"
 
 #: ../config/firewall-config.appdata.xml.in.h:4
 #, fuzzy
@@ -49,7 +50,7 @@ msgstr ""
 
 #: ../config/firewall-config.appdata.xml.in.h:6
 msgid "Port forwarding, masquerading, ICMP blocking"
-msgstr ""
+msgstr "Posredovanje vrat, maskiranje, blokiranje ICMP"
 
 #: ../config/firewall-config.appdata.xml.in.h:7
 msgid "Complex firewall rules a.k.a. Rich Language"
@@ -57,7 +58,7 @@ msgstr ""
 
 #: ../config/firewall-config.appdata.xml.in.h:8
 msgid "Iptables rules a.k.a. Direct Interface"
-msgstr ""
+msgstr "Pravila tabel IP (t.j. neposredni vmesnik)"
 
 #: ../config/firewall-config.desktop.in.h:1
 msgid "Firewall"
@@ -664,9 +665,8 @@ msgid "ipv6"
 msgstr "ipv6"
 
 #: ../src/firewall-config.in:3995
-#, fuzzy
 msgid "invalid element"
-msgstr "Neveljavno ime"
+msgstr "neveljaven element"
 
 #: ../src/firewall-config.in:5161
 msgid ""
@@ -789,7 +789,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:9
 msgid "eb"
-msgstr ""
+msgstr "eb"
 
 #: ../src/firewall-config.glade.h:10
 msgid "Chain:"
@@ -797,7 +797,7 @@ msgstr "Veriga:"
 
 #: ../src/firewall-config.glade.h:11
 msgid "nat"
-msgstr ""
+msgstr "nat"
 
 #: ../src/firewall-config.glade.h:12
 msgid "raw"
