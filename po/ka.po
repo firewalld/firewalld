@@ -5,16 +5,15 @@
 # Translators:
 # George Machitidze <giomac@gmail.com>, 2013
 # Thomas Woerner <twoerner@redhat.com>, 2016. #zanata
-# Temuri Doghonadze <temuri.doghonadze@gmail.com>, 2022, 2025.
+# Temuri Doghonadze <temuri.doghonadze@gmail.com>, 2022, 2025, 2026.
 # Weblate Translation Memory <noreply-mt-weblate-translation-memory@weblate.org>, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-06 14:46-0500\n"
-"PO-Revision-Date: 2025-11-16 09:56+0000\n"
-"Last-Translator: Weblate Translation Memory <noreply-mt-weblate-translation-"
-"memory@weblate.org>\n"
+"PO-Revision-Date: 2026-02-25 16:58+0000\n"
+"Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <https://translate.fedoraproject.org/projects/"
 "firewalld/master/ka/>\n"
 "Language: ka\n"
@@ -22,7 +21,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.14.3\n"
+"X-Generator: Weblate 5.16\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:450
 msgid "Firewall Applet"
@@ -235,8 +234,8 @@ msgid ""
 "Default Zone '{default_zone}' active for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
-"კავშირის ({connection}) ინტერფეისზე ({interface}) ნაგულისხმები ზონაa "
-"({default_zona}) აქტიური"
+"ნაგულისხმევი ზონა '{default_zone}' აქტიურია კავშირისთვის '{connection}' "
+"ინტერფეისზე '{interface}'"
 
 #: ../src/firewall-applet.in:928
 msgid ""
@@ -668,9 +667,8 @@ msgid "ipv6"
 msgstr "ipv6"
 
 #: ../src/firewall-config.in:3995
-#, fuzzy
 msgid "invalid element"
-msgstr "არასწორი სახელი"
+msgstr "არასწორი ელემენტი"
 
 #: ../src/firewall-config.in:5161
 msgid ""
@@ -715,7 +713,7 @@ msgstr ""
 
 #: ../src/firewall-config.in:5922
 msgid "Built-in ipset, rename not supported."
-msgstr "ჩაშენებული IPSet-ს სახელს ვერ გადაარქმევთ."
+msgstr "ჩაშენებული ipset-ს სახელს ვერ გადაარქმევთ."
 
 #: ../src/firewall-config.in:6022 ../src/firewall-config.in:6111
 msgid "Please select a file"
@@ -1087,10 +1085,10 @@ msgid ""
 "filters and rich rules. The zone can be bound to interfaces and source "
 "addresses."
 msgstr ""
-"Firewalld-ის ზონა აღწერს ნდობის დონეს ქსელურ მიერთებებისთვის, "
+"firewalld-ის ზონა აღწერს ნდობის დონეს ქსელურ მიერთებებისთვის, "
 "ინტერფეისებისთვის და ზონაზე მიბმული წყაროს მისამართებისთვის. ზონა შეიცავს "
 "სერვისებს, პორტებს, პროტოკოლებს, მასკარადს, პორტის/პაკეტის გადამისამართებას, "
-"ICMP ფილტრებს და მდიდარ წესებს. ზონა, შეიძლება, ინტერფეისებზე და წყაროს "
+"icmp ფილტრებს და მდიდარ წესებს. ზონა, შეიძლება, ინტერფეისებზე და წყაროს "
 "მისამართებზე იყოს მიბმული."
 
 #: ../src/firewall-config.glade.h:83
@@ -1685,7 +1683,7 @@ msgstr "IPSet-ის საბაზისო მორგება"
 
 #: ../src/firewall-config.glade.h:195
 msgid "Please configure base ipset settings:"
-msgstr "მოირგეთ საბაზისო IPSet:"
+msgstr "მოირგეთ საბაზისო ipset:"
 
 #: ../src/firewall-config.glade.h:196
 msgid "Type:"
@@ -1717,11 +1715,11 @@ msgstr "ელემენტების მაქსიმალური რ�
 
 #: ../src/firewall-config.glade.h:203
 msgid "Please select an ipset:"
-msgstr "აირჩიეთ IPSet:"
+msgstr "აირჩიეთ ipset:"
 
 #: ../src/firewall-config.glade.h:205
 msgid "Please enter an ipset entry:"
-msgstr "შეიყვანეთ IPSet-ის ჩანაწერი:"
+msgstr "შეიყვანეთ ipset-ის ჩანაწერი:"
 
 #: ../src/firewall-config.glade.h:206
 msgid "Log Denied"
