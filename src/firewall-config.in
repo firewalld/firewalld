@@ -416,16 +416,16 @@ class FirewallConfig:
 
         self.serviceView = builder.get_object("serviceView")
         self.serviceStore = Gtk.ListStore(
-            GObject.TYPE_BOOLEAN, GObject.TYPE_STRING  # checked
+            GObject.TYPE_BOOLEAN, GObject.TYPE_BOOLEAN, GObject.TYPE_STRING  # zone-checked, policy-checked
         )  # name
         toggle = Gtk.CellRendererToggle()
         toggle.connect("toggled", self.service_toggle_cb, self.serviceStore, 0)
         self.serviceView.append_column(Gtk.TreeViewColumn("", toggle, active=0))
         self.serviceView.append_column(
-            Gtk.TreeViewColumn(_("Service"), Gtk.CellRendererText(), text=1)
+            Gtk.TreeViewColumn(_("Service"), Gtk.CellRendererText(), text=2)
         )
         self.serviceView.set_model(self.serviceStore)
-        self.serviceStore.set_sort_column_id(1, Gtk.SortType.ASCENDING)
+        self.serviceStore.set_sort_column_id(2, Gtk.SortType.ASCENDING)
 
         self.portView = builder.get_object("portView")
         self.portStore = Gtk.ListStore(GObject.TYPE_STRING, GObject.TYPE_STRING)
@@ -1787,9 +1787,9 @@ class FirewallConfig:
         self.automatic_helpers = self.fw.getAutomaticHelpers()
         self.set_automaticHelpersLabel(self.automatic_helpers)
         self.load_ipsets()
+        self.load_services()
         self.load_zones()
         self.load_policies()
-        self.load_services()
         self.load_icmps()
         self.load_helpers()
         self.load_direct()
@@ -1877,12 +1877,12 @@ class FirewallConfig:
 
         if self.runtime_view:
             for item in self.fw.listServices():
-                self.serviceStore.append([False, item])
+                self.serviceStore.append([False, False, item])
             for item in self.fw.listIcmpTypes():
                 self.icmpStore.append([False, item])
         else:
             for item in self.fw.config().getServiceNames():
-                self.serviceStore.append([False, item])
+                self.serviceStore.append([False, False, item])
             for item in self.fw.config().getIcmpTypeNames():
                 self.icmpStore.append([False, item])
 
@@ -1974,7 +1974,7 @@ class FirewallConfig:
             return
         iter = self.serviceStore.get_iter_first()
         while iter:
-            if self.serviceStore.get_value(iter, 1) == service:
+            if self.serviceStore.get_value(iter, 2) == service:
                 self.serviceStore.set_value(iter, 0, True)
                 break
             iter = self.serviceStore.iter_next(iter)
@@ -1984,7 +1984,7 @@ class FirewallConfig:
             return
         iter = self.serviceStore.get_iter_first()
         while iter:
-            if self.serviceStore.get_value(iter, 1) == service:
+            if self.serviceStore.get_value(iter, 2) == service:
                 self.serviceStore.set_value(iter, 0, False)
                 break
             iter = self.serviceStore.iter_next(iter)
@@ -2997,7 +2997,7 @@ class FirewallConfig:
         _services = services[:]
         iter = self.serviceStore.get_iter_first()
         while iter:
-            name = self.serviceStore.get_value(iter, 1)
+            name = self.serviceStore.get_value(iter, 2)
             if name in _services:
                 self.serviceStore.set_value(iter, 0, True)
                 _services.remove(name)
@@ -3143,8 +3143,14 @@ class FirewallConfig:
             self.zoneStore.set(iter, 3, False, 4, False)
             iter = self.zoneStore.iter_next(iter)
 
+        iter = self.serviceStore.get_iter_first()
+        while iter:
+            self.serviceStore.set_value(iter, 1, False)
+            iter = self.serviceStore.iter_next(iter)
+
         self.policyIngressZoneView.get_selection().set_mode(Gtk.SelectionMode.NONE)
         self.policyEgressZoneView.get_selection().set_mode(Gtk.SelectionMode.NONE)
+        self.policyServiceView.get_selection().set_mode(Gtk.SelectionMode.NONE)
 
         if self.runtime_view:
             settings = self.fw.getPolicySettings(selected_policy).getSettingsDict()
@@ -3195,8 +3201,17 @@ class FirewallConfig:
                     self.policyEgressZonesButton.set_active(True)
                     self.policyEgressZoneView.set_sensitive(True)
 
+        for item in settings["services"]:
+            iter = self.serviceStore.get_iter_first()
+            while iter:
+                if self.serviceStore.get_value(iter, 2) == item:
+                    self.serviceStore.set_value(iter, 1, True)
+                    break
+                iter = self.serviceStore.iter_next(iter)
+
         self.policyIngressZoneView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
         self.policyEgressZoneView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
+        self.policyServiceView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
 
     def onAddZone(self, *args):
         if self.runtime_view:
