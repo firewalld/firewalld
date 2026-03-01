@@ -978,12 +978,10 @@ class FirewallConfig:
         )
 
         self.serviceConfServiceView = builder.get_object("serviceConfServiceView")
-        self.serviceConfServiceStore = Gtk.ListStore(GObject.TYPE_STRING)
         self.serviceConfServiceView.append_column(
-            Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=0)
+            Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=1)
         )
-        self.serviceConfServiceView.set_model(self.serviceConfServiceStore)
-        self.serviceConfServiceStore.set_sort_column_id(0, Gtk.SortType.ASCENDING)
+        self.serviceConfServiceView.set_model(self.serviceStore)
         self.serviceConfServiceView.get_selection().connect(
             "changed", self.onChangeService
         )
@@ -1222,11 +1220,10 @@ class FirewallConfig:
         self.serviceDialogOkButton = builder.get_object("serviceDialogOkButton")
         self.serviceDialogCancelButton = builder.get_object("serviceDialogCancelButton")
         self.serviceDialogServiceView = builder.get_object("serviceDialogServiceView")
-        self.serviceDialogServiceStore = Gtk.ListStore(GObject.TYPE_STRING)
         self.serviceDialogServiceView.append_column(
-            Gtk.TreeViewColumn("Service", Gtk.CellRendererText(), text=0)
+            Gtk.TreeViewColumn("Service", Gtk.CellRendererText(), text=1)
         )
-        self.serviceDialogServiceView.set_model(self.serviceDialogServiceStore)
+        self.serviceDialogServiceView.set_model(self.serviceStore)
         self.serviceDialogServiceView.get_selection().connect(
             "changed", self.change_service_selection_cb
         )
@@ -1705,9 +1702,9 @@ class FirewallConfig:
         self.automatic_helpers = self.fw.getAutomaticHelpers()
         self.set_automaticHelpersLabel(self.automatic_helpers)
         self.load_ipsets()
-        self.load_zones()
         self.load_services()
         self.load_icmps()
+        self.load_zones()
         self.load_helpers()
         self.load_direct()
         self.update_active_zones()
@@ -1745,7 +1742,6 @@ class FirewallConfig:
         selection.set_mode(Gtk.SelectionMode.NONE)
 
         self.zoneStore.clear()
-        self.serviceStore.clear()
         self.portStore.clear()
         self.protocolStore.clear()
         self.forwardStore.clear()
@@ -1755,13 +1751,9 @@ class FirewallConfig:
         self.sourceStore.clear()
 
         if self.runtime_view:
-            for item in self.fw.listServices():
-                self.serviceStore.append([False, item])
             for item in self.fw.listIcmpTypes():
                 self.icmpStore.append([False, item])
         else:
-            for item in self.fw.config().getServiceNames():
-                self.serviceStore.append([False, item])
             for item in self.fw.config().getIcmpTypeNames():
                 self.icmpStore.append([False, item])
 
@@ -1796,7 +1788,7 @@ class FirewallConfig:
         selection = self.serviceConfServiceView.get_selection()
         (model, iter) = selection.get_selected()
         if iter:
-            return self.serviceConfServiceStore.get_value(iter, 0)
+            return self.serviceStore.get_value(iter, 1)
         return None
 
     def load_services(self):
@@ -1812,21 +1804,21 @@ class FirewallConfig:
 
         # reset and fill notebook content according to view
 
-        self.serviceConfServiceStore.clear()
+        self.serviceStore.clear()
 
         # services
 
         for service in services:
-            self.serviceConfServiceStore.append([service])
+            self.serviceStore.append([False, service])
 
         selection.set_mode(Gtk.SelectionMode.SINGLE)
 
-        iter = self.serviceConfServiceStore.get_iter_first()
+        iter = self.serviceStore.get_iter_first()
         while iter:
-            if self.serviceConfServiceStore.get_value(iter, 0) == active_service:
+            if self.serviceStore.get_value(iter, 1) == active_service:
                 selection.select_iter(iter)
                 return
-            iter = self.serviceConfServiceStore.iter_next(iter)
+            iter = self.serviceStore.iter_next(iter)
         selection.select_path(0)
 
         if not self.get_active_service():
@@ -2351,9 +2343,9 @@ class FirewallConfig:
             self.helperConfPortBox.show()
 
         self.load_ipsets()
-        self.load_zones()
         self.load_services()
         self.load_icmps()
+        self.load_zones()
         self.load_helpers()
         self.load_direct()
 
@@ -3531,23 +3523,19 @@ class FirewallConfig:
             self.serviceDialogOkButton.set_sensitive(False)
 
     def service_select_dialog(self, old_service=""):
-        self.serviceDialogServiceStore.clear()
         if self.runtime_view:
             services = self.fw.listServices()
         else:
             services = self.fw.config().getServiceNames()
 
-        for service in services:
-            self.serviceDialogServiceStore.append([service])
-
         selection = self.serviceDialogServiceView.get_selection()
         selection.set_mode(Gtk.SelectionMode.SINGLE)
         selection.select_path(0)
-        iter = self.serviceDialogServiceStore.get_iter_first()
+        iter = self.serviceStore.get_iter_first()
         while iter:
-            if self.serviceDialogServiceStore.get_value(iter, 0) == old_service:
+            if self.serviceStore.get_value(iter, 1) == old_service:
                 selection.select_iter(iter)
-            iter = self.serviceDialogServiceStore.iter_next(iter)
+            iter = self.serviceStore.iter_next(iter)
 
         if old_service:
             self.serviceDialogOkButton.set_sensitive(False)
@@ -3566,7 +3554,7 @@ class FirewallConfig:
         (model, iter) = selection.get_selected()
         if not iter:
             return None
-        service = self.serviceDialogServiceStore.get_value(iter, 0)
+        service = self.serviceStore.get_value(iter, 1)
         if old_service == service:
             return None
         return service
@@ -5321,13 +5309,13 @@ class FirewallConfig:
         if self.runtime_view:
             return
         # check if service is in store
-        iter = self.serviceConfServiceStore.get_iter_first()
+        iter = self.serviceStore.get_iter_first()
         while iter:
-            if self.serviceConfServiceStore.get_value(iter, 0) == service:
+            if self.serviceStore.get_value(iter, 1) == service:
                 return
-            iter = self.serviceConfServiceStore.iter_next(iter)
+            iter = self.serviceStore.iter_next(iter)
         # not in list, append
-        self.serviceConfServiceStore.append([service])
+        self.serviceStore.append([False, service])
 
     def conf_service_updated_cb(self, service):
         self.onChangeService()
@@ -5335,12 +5323,12 @@ class FirewallConfig:
     def conf_service_removed_cb(self, service):
         if self.runtime_view:
             return
-        iter = self.serviceConfServiceStore.get_iter_first()
+        iter = self.serviceStore.get_iter_first()
         while iter:
-            if self.serviceConfServiceStore.get_value(iter, 0) == service:
-                self.serviceConfServiceStore.remove(iter)
+            if self.serviceStore.get_value(iter, 1) == service:
+                self.serviceStore.remove(iter)
                 break
-            iter = self.serviceConfServiceStore.iter_next(iter)
+            iter = self.serviceStore.iter_next(iter)
 
     def conf_service_renamed_cb(self, service):
         if self.runtime_view:
@@ -5352,18 +5340,18 @@ class FirewallConfig:
         services = self.fw.config().getServiceNames()
 
         use_iter = None
-        iter = self.serviceConfServiceStore.get_iter_first()
+        iter = self.serviceStore.get_iter_first()
         while iter:
-            if self.serviceConfServiceStore.get_value(iter, 0) not in services:
+            if self.serviceStore.get_value(iter, 1) not in services:
                 if use_iter is not None:
                     return self.load_services()
                 use_iter = iter
-            iter = self.serviceConfServiceStore.iter_next(iter)
+            iter = self.serviceStore.iter_next(iter)
 
         if use_iter is None:
             return self.load_services()
 
-        self.serviceConfServiceStore.set_value(use_iter, 0, service)
+        self.serviceStore.set_value(use_iter, 1, service)
 
     def onServiceConfAddService(self, *args):
         self.add_edit_service(True)
