@@ -12,13 +12,14 @@
 # Toni Rantala <trantalafilo@gmail.com>, 2017. #zanata
 # Jiri Grönroos <jiri.gronroos@iki.fi>, 2018. #zanata, 2020, 2025.
 # Jan Kuparinen <copper_fin@hotmail.com>, 2021, 2025.
+# Weblate Translation Memory <noreply-mt-weblate-translation-memory@weblate.org>, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-06 14:46-0500\n"
-"PO-Revision-Date: 2025-11-13 20:46+0000\n"
-"Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
+"PO-Revision-Date: 2025-12-30 19:58+0000\n"
+"Last-Translator: Jan Kuparinen <copper_fin@hotmail.com>\n"
 "Language-Team: Finnish <https://translate.fedoraproject.org/projects/"
 "firewalld/master/fi/>\n"
 "Language: fi\n"
@@ -26,7 +27,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.14.3\n"
+"X-Generator: Weblate 5.15.1\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:450
 msgid "Firewall Applet"
@@ -35,38 +36,35 @@ msgstr "Palomuurisovelma"
 #: ../config/firewall-config.appdata.xml.in.h:1
 msgid ""
 "Firewall Configuration provides a graphical tool for administering firewall."
-msgstr ""
+msgstr "Palomuurikokoonpano tarjoaa graafisen työkalun palomuurin hallintaan."
 
 #: ../config/firewall-config.appdata.xml.in.h:2
-#, fuzzy
 msgid "Allows to inspect and set:"
-msgstr "Valitse ipset:"
+msgstr "Mahdollistaa tarkastuksen ja asettamisen:"
 
 #: ../config/firewall-config.appdata.xml.in.h:3
-#, fuzzy
 msgid "Runtime and permanent firewall configuration"
-msgstr "Palomuuriasetukset"
+msgstr "Ajonajan ja pysyvä palomuurikokoonpano"
 
 #: ../config/firewall-config.appdata.xml.in.h:4
-#, fuzzy
 msgid "Predefined zones (levels of trust for network connections)"
-msgstr "Verkkoyhteyden '%s' käyttämä oletusalue"
+msgstr "Esimääritetyt vyöhykkeet (verkkoyhteyksien luottamustasot)"
 
 #: ../config/firewall-config.appdata.xml.in.h:5
 msgid "Predefined services (port/protocol, netfilter helper module)"
-msgstr ""
+msgstr "Esimääritetyt palvelut (portti/protokolla, netfilter-apumoduuli)"
 
 #: ../config/firewall-config.appdata.xml.in.h:6
 msgid "Port forwarding, masquerading, ICMP blocking"
-msgstr ""
+msgstr "Portin edelleenlähetys, naamiointi, ICMP-esto"
 
 #: ../config/firewall-config.appdata.xml.in.h:7
 msgid "Complex firewall rules a.k.a. Rich Language"
-msgstr ""
+msgstr "Monimutkaiset palomuurisäännöt eli Rich Language"
 
 #: ../config/firewall-config.appdata.xml.in.h:8
 msgid "Iptables rules a.k.a. Direct Interface"
-msgstr ""
+msgstr "Iptables-säännöt eli Direct Interface"
 
 #: ../config/firewall-config.desktop.in.h:1
 msgid "Firewall"
@@ -674,9 +672,8 @@ msgid "ipv6"
 msgstr "ipv6"
 
 #: ../src/firewall-config.in:3995
-#, fuzzy
 msgid "invalid element"
-msgstr "Virheellinen nimi"
+msgstr "virheellinen elementti"
 
 #: ../src/firewall-config.in:5161
 msgid ""
