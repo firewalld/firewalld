@@ -8,7 +8,7 @@
 # Onuralp SEZER <thunderbirdtr@gmail.com>, 2012
 # Serdar Sağlam <teknomobil@msn.com>, 2019. #zanata
 # Oğuz Ersen <oguzersen@protonmail.com>, 2020.
-# Burak Yavuz <hitowerdigit@hotmail.com>, 2020, 2022, 2025.
+# Burak Yavuz <hitowerdigit@hotmail.com>, 2020, 2022, 2025, 2026.
 # Oğuz Ersen <oguz@ersen.moe>, 2022, 2025.
 # Weblate Translation Memory <noreply-mt-weblate-translation-memory@weblate.org>, 2025.
 msgid ""
@@ -16,7 +16,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-06 14:46-0500\n"
-"PO-Revision-Date: 2025-11-14 10:32+0000\n"
+"PO-Revision-Date: 2026-02-18 19:58+0000\n"
 "Last-Translator: Burak Yavuz <hitowerdigit@hotmail.com>\n"
 "Language-Team: Turkish <https://translate.fedoraproject.org/projects/"
 "firewalld/master/tr/>\n"
@@ -25,7 +25,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n>1);\n"
-"X-Generator: Weblate 5.14.3\n"
+"X-Generator: Weblate 5.16\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:450
 msgid "Firewall Applet"
@@ -91,7 +91,7 @@ msgstr "'%s' arayüzü için bölge seç"
 #: ../src/firewall-config.in:7736 ../src/firewall-config.in:7744
 #: ../src/firewall-config.in:7778 ../src/firewall-config.glade.h:4
 msgid "Default Zone"
-msgstr "Öntanımlı Bölge"
+msgstr "Varsayılan Bölge"
 
 #: ../src/firewall-applet.in:168 ../src/firewall-config.in:7771
 #, c-format
@@ -784,7 +784,7 @@ msgstr "Lütfen otomatik yardımcıların değerini seçin:"
 
 #: ../src/firewall-config.glade.h:5
 msgid "Please select default zone from the list below."
-msgstr "Lütfen aşağıdaki listeden öntanımlı bölgeyi seçin."
+msgstr "Lütfen aşağıdaki listeden varsayılan bölgeyi seçin."
 
 #: ../src/firewall-config.glade.h:6
 msgid "Direct Chain"
@@ -1085,8 +1085,9 @@ msgid ""
 "configuration. Permanent configuration will be active after service or "
 "system reload or restart."
 msgstr ""
-"Eğer belirli bir adres belirlediyseniz, ICMP tipi girişi bu hedefle sınırlı "
-"olacaktır."
+"Şu anda görünen yapılandırma. Çalışma zamanı yapılandırması asıl etkin "
+"yapılandırmadır. Kalıcı yapılandırma, hizmet veya sistem yeniden "
+"yüklendikten veya yeniden başlatıldıktan sonra etkin olacaktır."
 
 #: ../src/firewall-config.glade.h:81
 msgid ""
@@ -1414,7 +1415,7 @@ msgid ""
 "limitation."
 msgstr ""
 "Eğer belirli bir hedef adres belirlediyseniz, hizmet girişi hedef adres ve "
-"türü ile sınırlı olacaktır. Eğer ikisi de boş ise , herhangi bir sınırlama "
+"türü ile sınırlı olacaktır. Eğer ikisi de boş ise, herhangi bir sınırlama "
 "yoktur."
 
 #: ../src/firewall-config.glade.h:144
