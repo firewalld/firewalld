@@ -15,16 +15,15 @@
 # Terry Chuang <tchuang@redhat.com>, 2016. #zanata
 # Eric Garver <e@erig.me>, 2018. #zanata
 # simmon <simmon@nplob.com>, 2021.
-# 김인수 <simmon@nplob.com>, 2022, 2025.
+# 김인수 <simmon@nplob.com>, 2022, 2025, 2026.
 # Weblate Translation Memory <noreply-mt-weblate-translation-memory@weblate.org>, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-06 14:46-0500\n"
-"PO-Revision-Date: 2025-11-15 10:05+0000\n"
-"Last-Translator: Weblate Translation Memory <noreply-mt-weblate-translation-"
-"memory@weblate.org>\n"
+"PO-Revision-Date: 2026-02-20 04:58+0000\n"
+"Last-Translator: 김인수 <simmon@nplob.com>\n"
 "Language-Team: Korean <https://translate.fedoraproject.org/projects/"
 "firewalld/master/ko/>\n"
 "Language: ko\n"
@@ -32,7 +31,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.14.3\n"
+"X-Generator: Weblate 5.16\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:450
 msgid "Firewall Applet"
@@ -307,7 +306,7 @@ msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
-"영역 '{zone}'이 인터페이스 '{interface}' 상의 연결에 대해 "
+"인터페이스 '{interface}' 에서 연결 '{connection}' 를 위한 영역 '{zone}' "
 "{activated_deactivated}"
 
 #: ../src/firewall-applet.in:1118
@@ -677,9 +676,8 @@ msgid "ipv6"
 msgstr "ipv6"
 
 #: ../src/firewall-config.in:3995
-#, fuzzy
 msgid "invalid element"
-msgstr "잘못된 이름"
+msgstr "잘못된 요소"
 
 #: ../src/firewall-config.in:5161
 msgid ""
@@ -1669,7 +1667,7 @@ msgstr "기본 IPSet 설정"
 
 #: ../src/firewall-config.glade.h:195
 msgid "Please configure base ipset settings:"
-msgstr "기본 IPSet을 설정하십시오:"
+msgstr "기본 ipset을 구성해주세요:"
 
 #: ../src/firewall-config.glade.h:196
 msgid "Type:"
@@ -1701,7 +1699,7 @@ msgstr "최대 요소 값, 기본값 65536"
 
 #: ../src/firewall-config.glade.h:203
 msgid "Please select an ipset:"
-msgstr "IPSet을 선택하십시오:"
+msgstr "ipset을 선택하세요:"
 
 #: ../src/firewall-config.glade.h:205
 msgid "Please enter an ipset entry:"
@@ -1733,7 +1731,7 @@ msgstr "마크:"
 
 #: ../src/firewall-config.glade.h:212
 msgid "Mask:"
-msgstr "Mask:"
+msgstr "마스크:"
 
 #: ../src/firewall-config.glade.h:213
 msgid "Please select a netfilter conntrack helper:"
