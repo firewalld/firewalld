@@ -1257,7 +1257,7 @@ class FirewallConfig:
         )
 
         self.policyView = builder.get_object("policyView")
-        self.policyStore = Gtk.ListStore(GObject.TYPE_STRING)
+        self.policyStore = Gtk.ListStore(GObject.TYPE_STRING, GObject.TYPE_STRING) # name, tooltip
         self.policyView.append_column(Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=0))
         self.policyView.set_model(self.policyStore)
         self.policyStore.set_sort_column_id(0, Gtk.SortType.ASCENDING)
@@ -1846,7 +1846,12 @@ class FirewallConfig:
 
         # policies
         for item in policies:
-            self.policyStore.append([item])
+            if self.runtime_view:
+                settings = self.fw.getPolicySettings(item)
+            else:
+                settings = self.fw.config().getPolicyByName(item).getSettings()
+
+            self.policyStore.append([item, settings.getDescription()])
 
         if selected_policy in policies:
             _policy = selected_policy
@@ -8343,7 +8348,7 @@ class FirewallConfig:
             if self.policyStore.get_value(iter, 0) == policy:
                 return
             iter = self.policyStore.iter_next(iter)
-        self.policyStore.append([policy])
+        self.policyStore.append([policy, self.fw.config().getPolicyByName(policy).getSettings().getDescription()])
         selection = self.policyView.get_selection()
         if selection.count_selected_rows() == 0:
             selection.select_path(0)

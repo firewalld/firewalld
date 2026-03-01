@@ -6649,17 +6649,15 @@
                                 <property name="margin-top">6</property>
                                 <property name="position">175</property>
                                 <child>
-                                  <object class="GtkBox">
+                                  <object class="GtkBox" id="box3">
                                     <property name="visible">True</property>
                                     <property name="can-focus">False</property>
                                     <property name="orientation">vertical</property>
                                     <child>
-                                      <object class="GtkLabel">
-                                        <property name="visible">True</property>
+                                      <object class="GtkLabel" id="label71">
                                         <property name="can-focus">False</property>
                                         <property name="label" translatable="yes">Policy</property>
                                         <property name="xalign">0</property>
-                                        <property name="yalign">0</property>
                                         <attributes>
                                           <attribute name="weight" value="bold"/>
                                         </attributes>
@@ -6671,14 +6669,17 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkScrolledWindow">
+                                      <object class="GtkScrolledWindow" id="scrolledwindow24">
                                         <property name="visible">True</property>
                                         <property name="can-focus">True</property>
                                         <property name="shadow-type">in</property>
                                         <child>
                                           <object class="GtkTreeView" id="policyView">
+                                            <property name="width-request">150</property>
                                             <property name="visible">True</property>
                                             <property name="can-focus">True</property>
+                                            <property name="headers-visible">False</property>
+                                            <property name="tooltip-column">1</property>
                                             <child internal-child="selection">
                                               <object class="GtkTreeSelection"/>
                                             </child>
@@ -6695,12 +6696,15 @@
                                       <object class="GtkToolbar" id="policyEditBox">
                                         <property name="visible">True</property>
                                         <property name="can-focus">False</property>
+                                        <property name="has-tooltip">True</property>
+                                        <property name="hexpand">True</property>
                                         <property name="show-arrow">False</property>
                                         <property name="icon_size">1</property>
                                         <child>
-                                          <object class="GtkToolButton" id="policyEditAddButton">
+                                          <object class="GtkToolButton" id="toolbutton6">
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
+                                            <property name="tooltip-markup" translatable="yes">Add Policy</property>
                                             <property name="use-underline">True</property>
                                             <property name="stock-id">gtk-add</property>
                                             <signal name="clicked" handler="onAddPolicy" swapped="no"/>
@@ -6714,6 +6718,7 @@
                                           <object class="GtkToolButton" id="policyEditEditButton">
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
+                                            <property name="tooltip-markup" translatable="yes">Edit Policy</property>
                                             <property name="use-underline">True</property>
                                             <property name="stock-id">gtk-edit</property>
                                             <signal name="clicked" handler="onEditPolicy" swapped="no"/>
@@ -6727,6 +6732,7 @@
                                           <object class="GtkToolButton" id="policyEditRemoveButton">
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
+                                            <property name="tooltip-markup" translatable="yes">Remove Policy</property>
                                             <property name="use-underline">True</property>
                                             <property name="stock-id">gtk-remove</property>
                                             <signal name="clicked" handler="onRemovePolicy" swapped="no"/>
@@ -6740,6 +6746,7 @@
                                           <object class="GtkToolButton" id="policyEditLoadDefaultsButton">
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
+                                            <property name="tooltip-markup" translatable="yes">Load Policy Defaults</property>
                                             <property name="use-underline">True</property>
                                             <property name="stock-id">gtk-revert-to-saved</property>
                                             <signal name="clicked" handler="onLoadPolicyDefaults" swapped="no"/>
@@ -6759,7 +6766,7 @@
                                   </object>
                                   <packing>
                                     <property name="resize">False</property>
-                                    <property name="shrink">True</property>
+                                    <property name="shrink">False</property>
                                   </packing>
                                 </child>
                                 <child>
@@ -7225,20 +7232,24 @@
                                             </child>
                                           </object>
                                           <packing>
-                                            <property name="expand">True</property>
+                                            <property name="expand">False</property>
                                             <property name="fill">True</property>
-                                            <property name="position">1</property>
+                                            <property name="position">2</property>
                                           </packing>
                                         </child>
                                       </object>
+                                      <packing>
+                                        <property name="position">2</property>
+                                      </packing>
                                     </child>
                                     <child type="tab">
                                       <object class="GtkLabel">
                                         <property name="visible">True</property>
                                         <property name="can-focus">False</property>
-                                        <property name="label" translatable="yes">Zones</property>
+                                        <property name="label" translatable="yes">Ports</property>
                                       </object>
                                       <packing>
+                                        <property name="position">2</property>
                                         <property name="tab-fill">False</property>
                                       </packing>
                                     </child>
