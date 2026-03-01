@@ -340,8 +340,12 @@ class FirewallConfig:
 
         self.zoneView = builder.get_object("zoneView")
         self.zoneStore = Gtk.ListStore(
-            GObject.TYPE_STRING, GObject.TYPE_INT, GObject.TYPE_STRING  # name  # weight
-        )  # tooltip
+            GObject.TYPE_STRING, # name
+            GObject.TYPE_INT, # weight
+            GObject.TYPE_STRING,  # tooltip
+            GObject.TYPE_BOOLEAN,  # ingress
+            GObject.TYPE_BOOLEAN  # egress
+        )
         self.zoneView.append_column(
             Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=0, weight=1)
         )
@@ -1292,12 +1296,11 @@ class FirewallConfig:
         self.policyIngressZonesEventBox.connect("button-press-event", self.policy_ingress_zones_toggle_cb)
 
         self.policyIngressZoneView = builder.get_object("policyIngressZoneView")
-        self.policyIngressZoneStore = Gtk.ListStore(GObject.TYPE_BOOLEAN, GObject.TYPE_STRING)
         toggle = Gtk.CellRendererToggle()
         toggle.connect("toggled", self.policy_ingress_zone_toggle_cb)
-        self.policyIngressZoneView.append_column(Gtk.TreeViewColumn("", toggle, active=0))
-        self.policyIngressZoneView.append_column(Gtk.TreeViewColumn(_("Zone"), Gtk.CellRendererText(), text=1))
-        self.policyIngressZoneView.set_model(self.policyIngressZoneStore)
+        self.policyIngressZoneView.append_column(Gtk.TreeViewColumn("", toggle, active=3))
+        self.policyIngressZoneView.append_column(Gtk.TreeViewColumn(_("Zone"), Gtk.CellRendererText(), text=0))
+        self.policyIngressZoneView.set_model(self.zoneStore)
 
         self.policyEgressHostButton = builder.get_object("policyEgressHostButton")
         self.policyEgressHostEventBox = builder.get_object("policyEgressHostEventBox")
@@ -1310,12 +1313,20 @@ class FirewallConfig:
         self.policyEgressZonesEventBox.connect("button-press-event", self.policy_egress_zones_toggle_cb)
 
         self.policyEgressZoneView = builder.get_object("policyEgressZoneView")
-        self.policyEgressZoneStore = Gtk.ListStore(GObject.TYPE_BOOLEAN, GObject.TYPE_STRING)
         toggle = Gtk.CellRendererToggle()
         toggle.connect("toggled", self.policy_egress_zone_toggle_cb)
-        self.policyEgressZoneView.append_column(Gtk.TreeViewColumn("", toggle, active=0))
-        self.policyEgressZoneView.append_column(Gtk.TreeViewColumn(_("Zone"), Gtk.CellRendererText(), text=1))
-        self.policyEgressZoneView.set_model(self.policyEgressZoneStore)
+        self.policyEgressZoneView.append_column(Gtk.TreeViewColumn("", toggle, active=4))
+        self.policyEgressZoneView.append_column(Gtk.TreeViewColumn(_("Zone"), Gtk.CellRendererText(), text=0))
+        self.policyEgressZoneView.set_model(self.zoneStore)
+
+        self.policyServiceView = builder.get_object("policyServiceView")
+        toggle = Gtk.CellRendererToggle()
+        toggle.connect("toggled", self.policy_service_toggle_cb)
+        self.policyServiceView.append_column(Gtk.TreeViewColumn("", toggle, active=1))
+        self.policyServiceView.append_column(
+            Gtk.TreeViewColumn(_("Service"), Gtk.CellRendererText(), text=2)
+        )
+        self.policyServiceView.set_model(self.serviceStore)
 
         # firewall client
 
@@ -1801,7 +1812,7 @@ class FirewallConfig:
 
                     desc = re.sub(r"\s+", " ", desc)
 
-        self.zoneStore.append([zone, weight, desc])
+        self.zoneStore.append([zone, weight, desc, False, False])
 
     def load_policies(self):
         selected_policy = self.get_selected_policy()
@@ -1817,12 +1828,6 @@ class FirewallConfig:
         selection.set_mode(Gtk.SelectionMode.NONE)
 
         self.policyStore.clear()
-        # self.policyServiceStore.clear()
-        # self.policyPortStore.clear()
-        # self.policyProtocolStore.clear()
-        # self.policyForwardStore.clear()
-        # self.policyIcmpStore.clear()
-        # self.policyRichRuleStore.clear()
 
         # policies
         for item in policies:
@@ -1869,8 +1874,6 @@ class FirewallConfig:
         self.richRuleStore.clear()
         self.interfaceStore.clear()
         self.sourceStore.clear()
-        self.policyEgressZoneStore.clear()
-        self.policyIngressZoneStore.clear()
 
         if self.runtime_view:
             for item in self.fw.listServices():
@@ -1886,14 +1889,6 @@ class FirewallConfig:
         # policies
         self.policyEgressZoneView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
         self.policyIngressZoneView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
-
-        for zone in zones:
-            self.policyIngressZoneStore.append([False, zone])
-
-        self.policyEgressZoneView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
-
-        for zone in zones:
-            self.policyEgressZoneStore.append([False, zone])
 
         # zones
         active_zones = self.active_zones.keys()
@@ -2011,6 +2006,29 @@ class FirewallConfig:
                 zone.addService(name)
             else:
                 zone.removeService(name)
+            self.changes_applied()
+
+    def policy_service_toggle_cb(self, toggle, row):
+        iter = self.serviceStore.get_iter(row)
+        old_val = self.serviceStore.get_value(iter, 1)
+        name = self.serviceStore.get_value(iter, 2)
+        selected_policy = self.get_selected_policy()
+        if self.runtime_view:
+            settings = self.fw.getPolicySettings(selected_policy)
+            if not old_val:
+                settings.addService(name)
+            else:
+                settings.removeService(name)
+            self.fw.setPolicySettings(selected_policy, settings)
+            self.changes_applied()
+        else:
+            policy = self.fw.config().getPolicyByName(selected_policy)
+            settings = policy.getSettings()
+            if not old_val:
+                settings.addService(name)
+            else:
+                settings.removeService(name)
+            policy.update(settings)
             self.changes_applied()
 
     def change_port_selection_cb(self, selection):
@@ -2491,8 +2509,8 @@ class FirewallConfig:
 
         self.load_ipsets()
         self.load_zones()
-        self.load_policies()
         self.load_services()
+        self.load_policies()
         self.load_icmps()
         self.load_helpers()
         self.load_direct()
@@ -3091,21 +3109,22 @@ class FirewallConfig:
             self.policyIngressAnyButton.set_sensitive(False)
             self.policyIngressZonesButton.set_sensitive(False)
             self.policyIngressZoneView.set_sensitive(False)
+            self.policyServiceView.set_sensitive(False)
 
-            iter = self.policyIngressZoneStore.get_iter_first()
+            iter = self.zoneStore.get_iter_first()
             while iter:
-                self.policyIngressZoneStore.set_value(iter, 0, False)
-                iter = self.policyIngressZoneStore.iter_next(iter)
+                self.zoneStore.set(iter, 3, False, 4, False)
+                iter = self.zoneStore.iter_next(iter)
 
             self.policyEgressHostButton.set_sensitive(False)
             self.policyEgressAnyButton.set_sensitive(False)
             self.policyEgressZonesButton.set_sensitive(False)
             self.policyEgressZoneView.set_sensitive(False)
 
-            iter = self.policyEgressZoneStore.get_iter_first()
+            iter = self.serviceStore.get_iter_first()
             while iter:
-                self.policyEgressZoneStore.set_value(iter, 0, False)
-                iter = self.policyEgressZoneStore.iter_next(iter)
+                self.serviceStore.set_value(iter, 1, False)
+                iter = self.serviceStore.iter_next(iter)
 
             return
 
@@ -3117,15 +3136,12 @@ class FirewallConfig:
         self.policyEgressZonesButton.set_sensitive(True)
         self.policyEgressZoneView.set_sensitive(True)
 
-        iter = self.policyIngressZoneStore.get_iter_first()
-        while iter:
-            self.policyIngressZoneStore.set_value(iter, 0, False)
-            iter = self.policyIngressZoneStore.iter_next(iter)
+        self.policyServiceView.set_sensitive(True)
 
-        iter = self.policyEgressZoneStore.get_iter_first()
+        iter = self.zoneStore.get_iter_first()
         while iter:
-            self.policyEgressZoneStore.set_value(iter, 0, False)
-            iter = self.policyEgressZoneStore.iter_next(iter)
+            self.zoneStore.set(iter, 3, False, 4, False)
+            iter = self.zoneStore.iter_next(iter)
 
         self.policyIngressZoneView.get_selection().set_mode(Gtk.SelectionMode.NONE)
         self.policyEgressZoneView.get_selection().set_mode(Gtk.SelectionMode.NONE)
@@ -3148,12 +3164,12 @@ class FirewallConfig:
                 elif item == "ANY":
                     self.policyIngressAnyButton.set_active(True)
                 else:
-                    iter = self.policyIngressZoneStore.get_iter_first()
+                    iter = self.zoneStore.get_iter_first()
                     while iter:
-                        if self.policyIngressZoneStore.get_value(iter, 1) == item:
-                            self.policyIngressZoneStore.set_value(iter, 0, True)
+                        if self.zoneStore.get_value(iter, 0) == item:
+                            self.zoneStore.set_value(iter, 3, True)
                             break
-                        iter = self.policyIngressZoneStore.iter_next(iter)
+                        iter = self.zoneStore.iter_next(iter)
                     self.policyIngressZonesButton.set_active(True)
                     self.policyIngressZoneView.set_sensitive(True)
 
@@ -3170,12 +3186,12 @@ class FirewallConfig:
                 elif item == "ANY":
                     self.policyEgressAnyButton.set_active(True)
                 else:
-                    iter = self.policyEgressZoneStore.get_iter_first()
+                    iter = self.zoneStore.get_iter_first()
                     while iter:
-                        if self.policyEgressZoneStore.get_value(iter, 1) == item:
-                            self.policyEgressZoneStore.set_value(iter, 0, True)
+                        if self.zoneStore.get_value(iter, 0) == item:
+                            self.zoneStore.set_value(iter, 4, True)
                             break
-                        iter = self.policyEgressZoneStore.iter_next(iter)
+                        iter = self.zoneStore.iter_next(iter)
                     self.policyEgressZonesButton.set_active(True)
                     self.policyEgressZoneView.set_sensitive(True)
 
@@ -8054,9 +8070,9 @@ class FirewallConfig:
             self.changes_applied()
 
     def policy_ingress_zone_toggle_cb(self, toggle, row):
-        iter = self.policyIngressZoneStore.get_iter(row)
-        active = self.policyIngressZoneStore.get_value(iter, 0)
-        zone = self.policyIngressZoneStore.get_value(iter, 1)
+        iter = self.zoneStore.get_iter(row)
+        active = self.zoneStore.get_value(iter, 3)
+        zone = self.zoneStore.get_value(iter, 0)
         if active:
             selected_policy = self.get_selected_policy()
             if self.runtime_view:
@@ -8159,9 +8175,9 @@ class FirewallConfig:
             self.changes_applied()
 
     def policy_egress_zone_toggle_cb(self, toggle, row):
-        iter = self.policyEgressZoneStore.get_iter(row)
-        active = self.policyEgressZoneStore.get_value(iter, 0)
-        zone = self.policyEgressZoneStore.get_value(iter, 1)
+        iter = self.zoneStore.get_iter(row)
+        active = self.zoneStore.get_value(iter, 4)
+        zone = self.zoneStore.get_value(iter, 0)
         if active:
             selected_policy = self.get_selected_policy()
             if self.runtime_view:
