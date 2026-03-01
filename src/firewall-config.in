@@ -1174,12 +1174,10 @@ class FirewallConfig:
         )
 
         self.icmpDialogIcmpView = builder.get_object("icmpDialogIcmpView")
-        self.icmpDialogIcmpStore = Gtk.ListStore(GObject.TYPE_STRING)
         self.icmpDialogIcmpView.append_column(
-            Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=0)
+            Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=1)
         )
-        self.icmpDialogIcmpView.set_model(self.icmpDialogIcmpStore)
-        self.icmpDialogIcmpStore.set_sort_column_id(0, Gtk.SortType.ASCENDING)
+        self.icmpDialogIcmpView.set_model(self.icmpStore)
         self.icmpDialogIcmpView.get_selection().connect("changed", self.onChangeIcmp)
 
         self.icmpDialogDestIpv4Check = builder.get_object("icmpDialogDestIpv4Check")
@@ -1236,11 +1234,10 @@ class FirewallConfig:
             "icmptypeDialogIcmptypeView"
         )
 
-        self.icmptypeDialogIcmptypeStore = Gtk.ListStore(GObject.TYPE_STRING)
         self.icmptypeDialogIcmptypeView.append_column(
-            Gtk.TreeViewColumn("ICMP Type", Gtk.CellRendererText(), text=0)
+            Gtk.TreeViewColumn("ICMP Type", Gtk.CellRendererText(), text=1)
         )
-        self.icmptypeDialogIcmptypeView.set_model(self.icmptypeDialogIcmptypeStore)
+        self.icmptypeDialogIcmptypeView.set_model(self.icmpStore)
         self.icmptypeDialogIcmptypeView.get_selection().connect(
             "changed", self.change_icmptype_selection_cb
         )
@@ -1465,8 +1462,6 @@ class FirewallConfig:
         if self.show_icmp_types:
             if self.fw.connected:
                 self.load_icmps()
-        else:
-            self.icmpDialogIcmpStore.clear()
 
     def onViewHelpers_toggled(self, button):
         self.settings.set_boolean("show-helpers", button.get_active())
@@ -1740,17 +1735,9 @@ class FirewallConfig:
         self.portStore.clear()
         self.protocolStore.clear()
         self.forwardStore.clear()
-        self.icmpStore.clear()
         self.richRuleStore.clear()
         self.interfaceStore.clear()
         self.sourceStore.clear()
-
-        if self.runtime_view:
-            for item in self.fw.listIcmpTypes():
-                self.icmpStore.append([False, item])
-        else:
-            for item in self.fw.config().getIcmpTypeNames():
-                self.icmpStore.append([False, item])
 
         # zones
         active_zones = self.active_zones.keys()
@@ -3562,23 +3549,14 @@ class FirewallConfig:
             self.icmptypeDialogOkButton.set_sensitive(False)
 
     def icmptype_select_dialog(self, old_icmptype=""):
-        self.icmptypeDialogIcmptypeStore.clear()
-        if self.runtime_view:
-            icmptypes = self.fw.listIcmpTypes()
-        else:
-            icmptypes = self.fw.config().getIcmpTypeNames()
-
-        for icmptype in icmptypes:
-            self.icmptypeDialogIcmptypeStore.append([icmptype])
-
         selection = self.icmptypeDialogIcmptypeView.get_selection()
         selection.set_mode(Gtk.SelectionMode.SINGLE)
         selection.select_path(0)
-        iter = self.icmptypeDialogIcmptypeStore.get_iter_first()
+        iter = self.icmpStore.get_iter_first()
         while iter:
-            if self.icmptypeDialogIcmptypeStore.get_value(iter, 0) == old_icmptype:
+            if self.icmpStore.get_value(iter, 1) == old_icmptype:
                 selection.select_iter(iter)
-            iter = self.icmptypeDialogIcmptypeStore.iter_next(iter)
+            iter = self.icmpStore.iter_next(iter)
 
         self.icmptypeDialogOkButton.set_sensitive(False)
         self.icmptypeDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
@@ -3596,7 +3574,7 @@ class FirewallConfig:
         (model, iter) = selection.get_selected()
         if not iter:
             return None
-        icmptype = self.icmptypeDialogIcmptypeStore.get_value(iter, 0)
+        icmptype = self.icmpStore.get_value(iter, 1)
         if old_icmptype == icmptype:
             return None
         return icmptype
@@ -6847,7 +6825,7 @@ class FirewallConfig:
         selection = self.icmpDialogIcmpView.get_selection()
         (model, iter) = selection.get_selected()
         if iter:
-            return self.icmpDialogIcmpStore.get_value(iter, 0)
+            return self.icmpStore.get_value(iter, 1)
         return None
 
     def load_icmps(self):
@@ -6865,21 +6843,21 @@ class FirewallConfig:
 
         # reset and fill notebook content according to view
 
-        self.icmpDialogIcmpStore.clear()
+        self.icmpStore.clear()
 
         # icmps
 
         for icmp in icmps:
-            self.icmpDialogIcmpStore.append([icmp])
+            self.icmpStore.append([False, icmp])
 
         selection.set_mode(Gtk.SelectionMode.SINGLE)
 
-        iter = self.icmpDialogIcmpStore.get_iter_first()
+        iter = self.icmpStore.get_iter_first()
         while iter:
-            if self.icmpDialogIcmpStore.get_value(iter, 0) == active_icmp:
+            if self.icmpStore.get_value(iter, 1) == active_icmp:
                 selection.select_iter(iter)
                 return
-            iter = self.icmpDialogIcmpStore.iter_next(iter)
+            iter = self.icmpStore.iter_next(iter)
         selection.select_path(0)
 
         if not self.get_active_icmp():
@@ -7082,16 +7060,14 @@ class FirewallConfig:
     def conf_icmp_added_cb(self, icmp):
         if self.runtime_view:
             return
-        if not self.show_icmp_types:
-            return
         # check if icmp is in store
-        iter = self.icmpDialogIcmpStore.get_iter_first()
+        iter = self.icmpStore.get_iter_first()
         while iter:
-            if self.icmpDialogIcmpStore.get_value(iter, 0) == icmp:
+            if self.icmpStore.get_value(iter, 1) == icmp:
                 return
-            iter = self.icmpDialogIcmpStore.iter_next(iter)
+            iter = self.icmpStore.iter_next(iter)
         # not in list, append
-        self.icmpDialogIcmpStore.append([icmp])
+        self.icmpStore.append([False, icmp])
         selection = self.icmpDialogIcmpView.get_selection()
         if selection.count_selected_rows() == 0:
             selection.select_path(0)
@@ -7099,21 +7075,17 @@ class FirewallConfig:
     def conf_icmp_updated_cb(self, zone):
         if self.runtime_view:
             return
-        if not self.show_icmp_types:
-            return
         self.onChangeIcmp()
 
     def conf_icmp_removed_cb(self, icmp):
         if self.runtime_view:
             return
-        if not self.show_icmp_types:
-            return
-        iter = self.icmpDialogIcmpStore.get_iter_first()
+        iter = self.icmpStore.get_iter_first()
         while iter:
-            if self.icmpDialogIcmpStore.get_value(iter, 0) == icmp:
-                self.icmpDialogIcmpStore.remove(iter)
+            if self.icmpStore.get_value(iter, 1) == icmp:
+                self.icmpStore.remove(iter)
                 break
-            iter = self.icmpDialogIcmpStore.iter_next(iter)
+            iter = self.icmpStore.iter_next(iter)
 
     def conf_icmp_renamed_cb(self, icmp):
         if self.runtime_view:
@@ -7125,18 +7097,18 @@ class FirewallConfig:
         icmps = self.fw.config().getIcmpTypeNames()
 
         use_iter = None
-        iter = self.icmpDialogIcmpStore.get_iter_first()
+        iter = self.icmpStore.get_iter_first()
         while iter:
-            if self.icmpDialogIcmpStore.get_value(iter, 0) not in icmps:
+            if self.icmpStore.get_value(iter, 1) not in icmps:
                 if use_iter is not None:
                     return self.load_icmps()
                 use_iter = iter
-            iter = self.icmpDialogIcmpStore.iter_next(iter)
+            iter = self.icmpStore.iter_next(iter)
 
         if use_iter is None:
             return self.load_icmps()
 
-        self.icmpDialogIcmpStore.set_value(use_iter, 0, icmp)
+        self.icmpStore.set_value(use_iter, 1, icmp)
 
     def panic_check_cb(self, *args):
         if self.fw.queryPanicMode():
