@@ -1106,11 +1106,10 @@ class FirewallConfig:
         self.helperDialogCancelButton = builder.get_object("helperDialogCancelButton")
         self.helperDialogHelperView = builder.get_object("helperDialogHelperView")
 
-        self.helperDialogHelperStore = Gtk.ListStore(GObject.TYPE_STRING)
         self.helperDialogHelperView.append_column(
             Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=0)
         )
-        self.helperDialogHelperView.set_model(self.helperDialogHelperStore)
+        self.helperDialogHelperView.set_model(self.helperConfHelperStore)
         self.helperDialogHelperView.get_selection().connect(
             "changed", self.change_helper_selection_cb
         )
@@ -5530,25 +5529,14 @@ class FirewallConfig:
             self.serviceConfRemoveModuleButton.set_sensitive(False)
 
     def helper_select_dialog(self, old_helper=""):
-        self.helperDialogHelperStore.clear()
-
-        helpers = []
-        if self.runtime_view:
-            helpers = self.fw.getHelpers()
-        else:
-            helpers = self.fw.config().getHelperNames()
-
-        for helper in sorted(helpers):
-            self.helperDialogHelperStore.append([helper])
-
         selection = self.helperDialogHelperView.get_selection()
         selection.set_mode(Gtk.SelectionMode.SINGLE)
 
-        iter = self.helperDialogHelperStore.get_iter_first()
+        iter = self.helperConfHelperStore.get_iter_first()
         while iter:
-            if self.helperDialogHelperStore.get_value(iter, 0) == old_helper:
+            if self.helperConfHelperStore.get_value(iter, 0) == old_helper:
                 selection.select_iter(iter)
-            iter = self.helperDialogHelperStore.iter_next(iter)
+            iter = self.helperConfHelperStore.iter_next(iter)
 
         self.helperDialogOkButton.set_sensitive(False)
         self.helperDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
@@ -5566,7 +5554,7 @@ class FirewallConfig:
         (model, iter) = selection.get_selected()
         if not iter:
             return None
-        helper = self.helperDialogHelperStore.get_value(iter, 0)
+        helper = self.helperConfHelperStore.get_value(iter, 0)
         if old_helper == helper:
             return None
         return helper
