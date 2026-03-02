@@ -7815,6 +7815,148 @@
                                         <property name="tab-fill">False</property>
                                       </packing>
                                     </child>
+                                    <child>
+                                      <object class="GtkBox" id="rulesVBox1">
+                                        <property name="visible">True</property>
+                                        <property name="can-focus">False</property>
+                                        <property name="border-width">6</property>
+                                        <property name="orientation">vertical</property>
+                                        <property name="spacing">6</property>
+                                        <child>
+                                          <object class="GtkLabel" id="label84">
+                                            <property name="visible">True</property>
+                                            <property name="can-focus">False</property>
+                                            <property name="label" translatable="yes">Here you can set rich language rules for the policy.</property>
+                                            <property name="use-markup">True</property>
+                                            <property name="wrap">True</property>
+                                            <property name="xalign">0</property>
+                                            <property name="yalign">0</property>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">False</property>
+                                            <property name="position">0</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkBox" id="box15">
+                                            <property name="visible">True</property>
+                                            <property name="can-focus">False</property>
+                                            <property name="spacing">6</property>
+                                            <child>
+                                              <object class="GtkScrolledWindow" id="scrolledwindow26">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">True</property>
+                                                <property name="shadow-type">out</property>
+                                                <child>
+                                                  <object class="GtkTreeView" id="policyRichRuleView">
+                                                    <property name="visible">True</property>
+                                                    <property name="can-focus">True</property>
+                                                    <signal name="button-press-event" handler="onPolicyRichRuleClicked" swapped="no"/>
+                                                    <child internal-child="selection">
+                                                      <object class="GtkTreeSelection"/>
+                                                    </child>
+                                                  </object>
+                                                </child>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">True</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">0</property>
+                                              </packing>
+                                            </child>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">True</property>
+                                            <property name="fill">True</property>
+                                            <property name="position">1</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkButtonBox" id="buttonbox2">
+                                            <property name="visible">True</property>
+                                            <property name="can-focus">False</property>
+                                            <property name="spacing">6</property>
+                                            <property name="layout-style">start</property>
+                                            <child>
+                                              <object class="GtkButton" id="addPolicyRichRuleButton">
+                                                <property name="label">gtk-add</property>
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">True</property>
+                                                <property name="focus-on-click">False</property>
+                                                <property name="receives-default">True</property>
+                                                <property name="has-tooltip">True</property>
+                                                <property name="tooltip-text" translatable="yes">Add Rich Rule</property>
+                                                <property name="use-stock">True</property>
+                                                <signal name="clicked" handler="onAddPolicyRichRule" swapped="no"/>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">0</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkButton" id="editPolicyRichRuleButton">
+                                                <property name="label">gtk-edit</property>
+                                                <property name="visible">True</property>
+                                                <property name="sensitive">False</property>
+                                                <property name="can-focus">True</property>
+                                                <property name="focus-on-click">False</property>
+                                                <property name="receives-default">True</property>
+                                                <property name="has-tooltip">True</property>
+                                                <property name="tooltip-text" translatable="yes">Edit Rich Rule</property>
+                                                <property name="use-stock">True</property>
+                                                <signal name="clicked" handler="onEditPolicyRichRule" swapped="no"/>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">1</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkButton" id="removePolicyRichRuleButton">
+                                                <property name="label">gtk-remove</property>
+                                                <property name="visible">True</property>
+                                                <property name="sensitive">False</property>
+                                                <property name="can-focus">True</property>
+                                                <property name="focus-on-click">False</property>
+                                                <property name="receives-default">True</property>
+                                                <property name="has-tooltip">True</property>
+                                                <property name="tooltip-text" translatable="yes">Remove Rich Rule</property>
+                                                <property name="use-stock">True</property>
+                                                <signal name="clicked" handler="onRemovePolicyRichRule" swapped="no"/>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">2</property>
+                                              </packing>
+                                            </child>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">True</property>
+                                            <property name="position">2</property>
+                                          </packing>
+                                        </child>
+                                      </object>
+                                      <packing>
+                                        <property name="position">8</property>
+                                      </packing>
+                                    </child>
+                                    <child type="tab">
+                                      <object class="GtkLabel">
+                                        <property name="visible">True</property>
+                                        <property name="can-focus">False</property>
+                                        <property name="label" translatable="yes">Rich Rules</property>
+                                      </object>
+                                      <packing>
+                                        <property name="position">8</property>
+                                        <property name="tab-fill">False</property>
+                                      </packing>
+                                    </child>
                                   </object>
                                   <packing>
                                     <property name="resize">True</property>

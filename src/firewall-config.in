@@ -813,7 +813,6 @@ class FirewallConfig:
             "changed", self.change_rich_rule_selection_cb
         )
 
-        self.addRichRuleButton = builder.get_object("addRichRuleButton")
         self.editRichRuleButton = builder.get_object("editRichRuleButton")
         self.removeRichRuleButton = builder.get_object("removeRichRuleButton")
 
@@ -1410,6 +1409,53 @@ class FirewallConfig:
             Gtk.TreeViewColumn(_("Icmp Type"), Gtk.CellRendererText(), text=2)
         )
         self.policyIcmpView.set_model(self.icmpStore)
+
+        self.policyRichRuleView = builder.get_object("policyRichRuleView")
+        self.policyRichRuleStore = Gtk.ListStore(
+            GObject.TYPE_PYOBJECT,  # the rule obj
+            GObject.TYPE_STRING,  # ipv4/ipv6
+            GObject.TYPE_INT,  # priority
+            GObject.TYPE_STRING,  # action
+            GObject.TYPE_STRING,  # element
+            GObject.TYPE_STRING,  # source
+            GObject.TYPE_STRING,  # destination
+            GObject.TYPE_STRING,  # log
+            GObject.TYPE_STRING,
+        )  # audit
+
+        self.policyRichRuleView.append_column(
+            Gtk.TreeViewColumn(_("Family"), Gtk.CellRendererText(), text=1)
+        )
+        self.policyRichRuleView.append_column(
+            Gtk.TreeViewColumn(_("Priority"), Gtk.CellRendererText(), text=2)
+        )
+        self.policyRichRuleView.append_column(
+            Gtk.TreeViewColumn(_("Action"), Gtk.CellRendererText(), text=3)
+        )
+        self.policyRichRuleView.append_column(
+            Gtk.TreeViewColumn(_("Element"), Gtk.CellRendererText(), text=4)
+        )
+        self.policyRichRuleView.append_column(
+            Gtk.TreeViewColumn(_("Src"), Gtk.CellRendererText(), text=5)
+        )
+        self.policyRichRuleView.append_column(
+            Gtk.TreeViewColumn(_("Dest"), Gtk.CellRendererText(), text=6)
+        )
+        self.policyRichRuleView.append_column(
+            Gtk.TreeViewColumn(_("log"), Gtk.CellRendererText(), text=7)
+        )
+        self.policyRichRuleView.append_column(
+            Gtk.TreeViewColumn(_("Audit"), Gtk.CellRendererText(), text=8)
+        )
+        self.policyRichRuleView.set_model(self.policyRichRuleStore)
+        self.policyRichRuleStore.set_sort_column_id(2, Gtk.SortType.ASCENDING)
+
+        self.policyRichRuleView.get_selection().connect(
+            "changed", self.change_policy_rich_rule_selection_cb
+        )
+
+        self.editPolicyRichRuleButton = builder.get_object("editPolicyRichRuleButton")
+        self.removePolicyRichRuleButton = builder.get_object("removePolicyRichRuleButton")
 
         # firewall client
 
@@ -2057,6 +2103,15 @@ class FirewallConfig:
             self.editRichRuleButton.set_sensitive(False)
             self.removeRichRuleButton.set_sensitive(False)
 
+    def change_policy_rich_rule_selection_cb(self, selection):
+        (model, iter) = selection.get_selected()
+        if iter:
+            self.editPolicyRichRuleButton.set_sensitive(True)
+            self.removePolicyRichRuleButton.set_sensitive(True)
+        else:
+            self.editPolicyRichRuleButton.set_sensitive(False)
+            self.removePolicyRichRuleButton.set_sensitive(False)
+
     def service_added_cb(self, zone, service, timeout):
         if not self.runtime_view or zone != self.get_selected_zone():
             return
@@ -2358,7 +2413,7 @@ class FirewallConfig:
             return
         self.icmpBlockInversionCheck.set_active(False)
 
-    def _add_rich_rule(self, obj):
+    def _add_rich_rule(self, policy, obj):
         family = "all"
         priority = 0
         src = ""
@@ -2442,9 +2497,14 @@ class FirewallConfig:
             if audit == "":
                 audit = _("yes")
 
-        self.richRuleStore.append(
-            [obj, family, priority, action, elem, src, dest, log, audit]
-        )
+        if policy:
+            self.policyRichRuleStore.append(
+                [obj, family, priority, action, elem, src, dest, log, audit]
+            )
+        else:
+            self.richRuleStore.append(
+                [obj, family, priority, action, elem, src, dest, log, audit]
+            )
 
     def richrule_added_cb(self, zone, rule, timeout):
         if not self.runtime_view or zone != self.get_selected_zone():
@@ -2457,7 +2517,7 @@ class FirewallConfig:
                 return
             iter = self.richRuleStore.iter_next(iter)
         # nothing found, so add it
-        self._add_rich_rule(obj)
+        self._add_rich_rule(False, obj)
 
     def richrule_removed_cb(self, zone, rule):
         if not self.runtime_view or zone != self.get_selected_zone():
@@ -3282,7 +3342,7 @@ class FirewallConfig:
         # set rich rules
         for item in rules:
             rule = rich.Rich_Rule(rule_str=item)
-            self._add_rich_rule(rule)
+            self._add_rich_rule(False, rule)
 
         # set interfaces
         for item in interfaces:
@@ -3309,6 +3369,7 @@ class FirewallConfig:
         self.policyProtocolStore.clear()
         self.policySourcePortStore.clear()
         self.policyForwardStore.clear()
+        self.policyRichRuleStore.clear()
 
         if not selected_policy:
             self.policyIngressHostButton.set_sensitive(False)
@@ -3338,6 +3399,7 @@ class FirewallConfig:
             self.policyMasqueradeCheck.set_active(False)
             self.policyForwardView.set_sensitive(False)
             self.policyIcmpView.set_sensitive(False)
+            self.policyRichRuleView.set_sensitive(False)
 
             return
 
@@ -3355,6 +3417,7 @@ class FirewallConfig:
         self.policySourcePortView.set_sensitive(True)
         self.policyForwardView.set_sensitive(True)
         self.policyIcmpView.set_sensitive(True)
+        self.policyRichRuleView.set_sensitive(True)
 
         iter = self.zoneStore.get_iter_first()
         while iter:
@@ -3378,6 +3441,7 @@ class FirewallConfig:
         self.policyProtocolView.get_selection().set_mode(Gtk.SelectionMode.NONE)
         self.policySourcePortView.get_selection().set_mode(Gtk.SelectionMode.NONE)
         self.policyForwardView.get_selection().set_mode(Gtk.SelectionMode.NONE)
+        self.policyRichRuleView.get_selection().set_mode(Gtk.SelectionMode.NONE)
 
         if self.runtime_view:
             settings = self.fw.getPolicySettings(selected_policy).getSettingsDict()
@@ -3458,6 +3522,10 @@ class FirewallConfig:
                     break
                 iter = self.icmpStore.iter_next(iter)
 
+        for item in settings["rich_rules"]:
+            rule = rich.Rich_Rule(rule_str=item)
+            self._add_rich_rule(True, rule)
+
         self.policyIngressZoneView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
         self.policyEgressZoneView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
         self.policyServiceView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
@@ -3466,6 +3534,7 @@ class FirewallConfig:
         self.policySourcePortView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
         self.policyForwardView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
         self.policyIcmpView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
+        self.policyRichRuleView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
 
     def onAddZone(self, *args):
         if self.runtime_view:
@@ -3737,14 +3806,10 @@ class FirewallConfig:
         self.policyBaseDialogTargetCombobox.set_sensitive(not val)
 
     def onAddRichRule(self, *args):
-        self.add_edit_rich_rule(True)
+        self.add_edit_rich_rule(False, True)
 
     def onEditRichRule(self, *args):
-        self.add_edit_rich_rule(False)
-
-    def onRichRuleClicked(self, widget, event):
-        if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS:
-            self.add_edit_rich_rule(False)
+        self.add_edit_rich_rule(False, False)
 
     def onRemoveRichRule(self, *args):
         selected_zone = self.get_selected_zone()
@@ -3761,7 +3826,47 @@ class FirewallConfig:
             zone.removeRichRule(str(obj))
         self.changes_applied()
 
-    def add_edit_rich_rule(self, add):
+    def onRichRuleClicked(self, widget, event):
+        if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS:
+            self.add_edit_rich_rule(False, False)
+
+    def onAddPolicyRichRule(self, *args):
+        self.add_edit_rich_rule(True, True)
+
+    def onEditPolicyRichRule(self, *args):
+        self.add_edit_rich_rule(True, False)
+
+    def onRemovePolicyRichRule(self, *args):
+        selected_policy = self.get_selected_policy()
+        selection = self.policyRichRuleView.get_selection()
+        (model, iter) = selection.get_selected()
+        if iter is None:
+            return
+        obj = self.policyRichRuleStore.get_value(iter, 0)
+
+        if self.runtime_view:
+            settings = self.fw.getPolicySettings(selected_policy)
+            settings.removeRichRule(str(obj))
+            self.fw.setPolicySettings(selected_policy, settings)
+        else:
+            policy = self.fw.config().getPolicyByName(selected_policy)
+            settings = policy.getSettings()
+            settings.removeRichRule(str(obj))
+            policy.update(settings)
+        self.changes_applied()
+
+    def onPolicyRichRuleClicked(self, widget, event):
+        if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS:
+            self.add_edit_rich_rule(True, False)
+
+    def add_edit_rich_rule(self, policy, add):
+        if policy:
+            selected = self.get_selected_policy()
+            rich_rule_view = self.policyRichRuleView
+        else:
+            selected = self.get_selected_zone()
+            rich_rule_view = self.richRuleView
+
         self.richRuleDialogFamilyCombobox.set_active(0)
         self.richRuleDialogPriorityEntry.set_value(0)
         self.richRuleDialogElementCheck.set_active(False)
@@ -3804,16 +3909,14 @@ class FirewallConfig:
             "debug": _("debug"),
         }
 
-        selected_zone = self.get_selected_zone()
-
         old_obj = None
         iter = None
         if not add:
-            selection = self.richRuleView.get_selection()
+            selection = rich_rule_view.get_selection()
             (model, iter) = selection.get_selected()
             if iter is None:
                 return
-            old_obj = self.richRuleStore.get_value(iter, 0)
+            old_obj = model.get_value(iter, 0)
 
         self.richRuleDialog.old_obj = old_obj
 
@@ -3990,17 +4093,31 @@ class FirewallConfig:
             return
 
         if self.runtime_view:
-            if not self.fw.queryRichRule(selected_zone, rule):
-                self.fw.addRichRule(selected_zone, rule)
-                if not add:
-                    self.fw.removeRichRule(selected_zone, old_rule)
-                self.changes_applied()
+            if policy:
+                settings = self.fw.getPolicySettings(selected)
+                if not settings.queryRichRule(rule):
+                    settings.addRichRule(rule)
+                    if not add:
+                        settings.removeRichRule(old_rule)
+                    self.fw.setPolicySettings(selected, settings)
+                    self.changes_applied()
+            else:
+                if not self.fw.queryRichRule(selected, rule):
+                    self.fw.addRichRule(selected, rule)
+                    if not add:
+                        self.fw.removeRichRule(selected, old_rule)
+                    self.changes_applied()
         else:
-            zone = self.fw.config().getZoneByName(selected_zone)
-            if not zone.queryRichRule(rule):
+            if policy:
+                pz = self.fw.config().getPolicyByName(selected)
+            else:
+                pz = self.fw.config().getZoneByName(selected)
+            settings = pz.getSettings()
+            if not settings.queryRichRule(rule):
                 if not add:
-                    zone.removeRichRule(old_rule)
-                zone.addRichRule(rule)
+                    settings.removeRichRule(old_rule)
+                settings.addRichRule(rule)
+                pz.update(settings)
                 self.changes_applied()
 
     def on_richRuleDialogElementChooser_clicked(self, *args):
