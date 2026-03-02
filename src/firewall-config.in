@@ -1355,6 +1355,23 @@ class FirewallConfig:
         self.editPolicyProtocolButton = builder.get_object("editPolicyProtocolButton")
         self.removePolicyProtocolButton = builder.get_object("removePolicyProtocolButton")
 
+        self.policySourcePortView = builder.get_object("policySourcePortView")
+        self.policySourcePortStore = Gtk.ListStore(GObject.TYPE_STRING, GObject.TYPE_STRING)
+        self.policySourcePortView.append_column(
+            Gtk.TreeViewColumn(_("Port"), Gtk.CellRendererText(), text=0)
+        )
+        self.policySourcePortView.append_column(
+            Gtk.TreeViewColumn(_("Protocol"), Gtk.CellRendererText(), text=1)
+        )
+        self.policySourcePortView.set_model(self.policySourcePortStore)
+        self.policySourcePortStore.set_sort_column_id(1, Gtk.SortType.ASCENDING)
+        self.policySourcePortView.get_selection().connect(
+            "changed", self.change_policy_source_port_selection_cb
+        )
+
+        self.editPolicySourcePortButton = builder.get_object("editPolicySourcePortButton")
+        self.removePolicySourcePortButton = builder.get_object("removePolicySourcePortButton")
+
         # firewall client
 
         self.fw = client.FirewallClient(wait=1)
@@ -2089,6 +2106,15 @@ class FirewallConfig:
         else:
             self.editSourcePortButton.set_sensitive(False)
             self.removeSourcePortButton.set_sensitive(False)
+
+    def change_policy_source_port_selection_cb(self, selection):
+        (model, iter) = selection.get_selected()
+        if iter:
+            self.editPolicySourcePortButton.set_sensitive(True)
+            self.removePolicySourcePortButton.set_sensitive(True)
+        else:
+            self.editPolicySourcePortButton.set_sensitive(False)
+            self.removePolicySourcePortButton.set_sensitive(False)
 
     def change_policy_protocol_selection_cb(self, selection):
         (model, iter) = selection.get_selected()
@@ -3156,6 +3182,7 @@ class FirewallConfig:
 
         self.policyPortStore.clear()
         self.policyProtocolStore.clear()
+        self.policySourcePortStore.clear()
 
         if not selected_policy:
             self.policyIngressHostButton.set_sensitive(False)
@@ -3181,6 +3208,7 @@ class FirewallConfig:
 
             self.policyPortView.set_sensitive(False)
             self.policyProtocolView.set_sensitive(False)
+            self.policySourcePortView.set_sensitive(False)
 
             return
 
@@ -3196,6 +3224,7 @@ class FirewallConfig:
 
         self.policyPortView.set_sensitive(True)
         self.policyProtocolView.set_sensitive(True)
+        self.policySourcePortView.set_sensitive(True)
 
         iter = self.zoneStore.get_iter_first()
         while iter:
@@ -3211,6 +3240,8 @@ class FirewallConfig:
         self.policyEgressZoneView.get_selection().set_mode(Gtk.SelectionMode.NONE)
         self.policyServiceView.get_selection().set_mode(Gtk.SelectionMode.NONE)
         self.policyPortView.get_selection().set_mode(Gtk.SelectionMode.NONE)
+        self.policyProtocolView.get_selection().set_mode(Gtk.SelectionMode.NONE)
+        self.policySourcePortView.get_selection().set_mode(Gtk.SelectionMode.NONE)
 
         if self.runtime_view:
             settings = self.fw.getPolicySettings(selected_policy).getSettingsDict()
@@ -3275,11 +3306,15 @@ class FirewallConfig:
         for item in settings["protocols"]:
             self.policyProtocolStore.append([item])
 
+        for item in settings["source_ports"]:
+            self.policySourcePortStore.append(item)
+
         self.policyIngressZoneView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
         self.policyEgressZoneView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
         self.policyServiceView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
         self.policyPortView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
         self.policyProtocolView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
+        self.policySourcePortView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
 
     def onAddZone(self, *args):
         if self.runtime_view:
@@ -3379,12 +3414,12 @@ class FirewallConfig:
         else:
             if policy:
                 selected = self.get_selected_policy()
-                zp = self.fw.config().getPolicyByName(selected)
+                pz = self.fw.config().getPolicyByName(selected)
             else:
                 selected = self.get_selected_zone()
-                zp = self.fw.config().getZoneByName(selected)
-            settings = zp.getSettings()
-            props = zp.get_properties()
+                pz = self.fw.config().getZoneByName(selected)
+            settings = pz.getSettings()
+            props = pz.get_properties()
             default = props["default"]
             builtin = props["builtin"]
 
@@ -3453,11 +3488,11 @@ class FirewallConfig:
         if not add:
             if policy:
                 selected_policy = self.get_selected_policy()
-                zp = self.fw.config().getPolicyByName(selected_policy)
+                pz = self.fw.config().getPolicyByName(selected_policy)
             else:
                 selected_zone = self.get_selected_zone()
-                zp = self.fw.config().getZoneByName(selected_zone)
-            settings = zp.getSettings()
+                pz = self.fw.config().getZoneByName(selected_zone)
+            settings = pz.getSettings()
         else:
             if policy:
                 settings = client.FirewallClientPolicySettings()
@@ -3476,12 +3511,12 @@ class FirewallConfig:
             settings.setDescription(desc)
             settings.setTarget(target)
             if not add:
-                zp.update(settings)
+                pz.update(settings)
 
         if not add:
             if old_name == name:
                 return
-            zp.rename(name)
+            pz.rename(name)
         else:
             if policy:
                 self.fw.config().addPolicy(name, settings)
@@ -5109,14 +5144,10 @@ class FirewallConfig:
             iter = self.portStore.iter_next(iter)
 
     def onAddSourcePort(self, *args):
-        self.add_edit_source_port(True)
+        self.add_edit_source_port(False, True)
 
     def onEditSourcePort(self, *args):
-        self.add_edit_source_port(False)
-
-    def onSourcePortClicked(self, widget, event):
-        if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS:
-            self.add_edit_source_port(False)
+        self.add_edit_source_port(False, False)
 
     def onRemoveSourcePort(self, *args):
         selected_zone = self.get_selected_zone()
@@ -5134,18 +5165,57 @@ class FirewallConfig:
             zone.removeSourcePort(port, proto)
         self.changes_applied()
 
-    def add_edit_source_port(self, add):
-        selected_zone = self.get_selected_zone()
+    def onSourcePortClicked(self, widget, event):
+        if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS:
+            self.add_edit_source_port(False, False)
+
+    def onAddPolicySourcePort(self, *args):
+        self.add_edit_source_port(True, True)
+
+    def onEditPolicySourcePort(self, *args):
+        self.add_edit_source_port(True, False)
+
+    def onRemovePolicySourcePort(self, *args):
+        selected_policy = self.get_selected_policy()
+        selection = self.policySourcePortView.get_selection()
+        (model, iter) = selection.get_selected()
+        if iter is None:
+            return
+        port = self.policySourcePortStore.get_value(iter, 0)
+        proto = self.policySourcePortStore.get_value(iter, 1)
+
+        if self.runtime_view:
+            settings = self.fw.getPolicySettings(selected_policy)
+            settings.removeSourcePort(port, proto)
+            self.fw.setPolicySettings(selected_policy, settings)
+        else:
+            policy = self.fw.config().getPolicyByName(selected_policy)
+            settings = policy.getSettings()
+            settings.removeSourcePort(port, proto)
+            policy.update(settings)
+        self.changes_applied()
+
+    def onPolicySourcePortClicked(self, widget, event):
+        if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS:
+            self.add_edit_source_port(True, False)
+
+    def add_edit_source_port(self, policy, add):
+        if policy:
+            selected = self.get_selected_policy()
+            source_port_view = self.policySourcePortView
+        else:
+            selected = self.get_selected_zone()
+            source_port_view = self.sourcePortView
 
         old_port = None
         old_proto = None
         if not add:
-            selection = self.sourcePortView.get_selection()
+            selection = source_port_view.get_selection()
             (model, iter) = selection.get_selected()
             if iter is None:
                 return
-            old_port = self.sourcePortStore.get_value(iter, 0)
-            old_proto = self.sourcePortStore.get_value(iter, 1)
+            old_port = model.get_value(iter, 0)
+            old_proto = model.get_value(iter, 1)
 
         self.portDialogPortEntry.set_text("")
         self.portDialogProtoCombobox.set_active(0)
@@ -5175,17 +5245,31 @@ class FirewallConfig:
             return
 
         if self.runtime_view:
-            if not self.fw.querySourcePort(selected_zone, port, proto):
-                self.fw.addSourcePort(selected_zone, port, proto)
-                if not add:
-                    self.fw.removeSourcePort(selected_zone, old_port, old_proto)
-                self.changes_applied()
+            if policy:
+                settings = self.fw.getPolicySettings(selected)
+                if not settings.querySourcePort(port, proto):
+                    settings.addSourcePort(port, proto)
+                    if not add:
+                        settings.removeSourcePort(old_port, old_proto)
+                    self.fw.setPolicySettings(selected, settings)
+                    self.changes_applied()
+            else:
+                if not self.fw.querySourcePort(selected, port, proto):
+                    self.fw.addSourcePort(selected, port, proto)
+                    if not add:
+                        self.fw.removeSourcePort(selected, old_port, old_proto)
+                    self.changes_applied()
         else:
-            zone = self.fw.config().getZoneByName(selected_zone)
-            if not zone.querySourcePort(port, proto):
+            if policy:
+                pz = self.fw.config().getPolicyByName(selected)
+            else:
+                pz = self.fw.config().getZoneByName(selected)
+            settings = pz.getSettings()
+            if not settings.querySourcePort(port, proto):
                 if not add:
-                    zone.removeSourcePort(old_port, old_proto)
-                zone.addSourcePort(port, proto)
+                    settings.removeSourcePort(old_port, old_proto)
+                settings.addSourcePort(port, proto)
+                pz.update(settings)
                 self.changes_applied()
 
     def service_conf_add_edit_source_port(self, add):
@@ -5380,15 +5464,15 @@ class FirewallConfig:
                     self.changes_applied()
         else:
             if policy:
-                zp = self.fw.config().getPolicyByName(selected)
+                pz = self.fw.config().getPolicyByName(selected)
             else:
-                zp = self.fw.config().getZoneByName(selected)
-            settings = zp.getSettings()
+                pz = self.fw.config().getZoneByName(selected)
+            settings = pz.getSettings()
             if not settings.queryProtocol(proto):
                 if not add:
                     settings.removeProtocol(old_proto)
                 settings.addProtocol(proto)
-                zp.update(settings)
+                pz.update(settings)
                 self.changes_applied()
 
     def service_conf_add_edit_protocol(self, add):
