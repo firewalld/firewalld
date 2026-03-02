@@ -517,7 +517,7 @@ class FirewallConfig:
         self.forwardView.set_model(self.forwardStore)
         self.forwardStore.set_sort_column_id(1, Gtk.SortType.ASCENDING)
         self.forwardView.get_selection().connect(
-            "changed", self.change_forward_selection_cb
+            "changed", self.change_zone_forward_selection_cb
         )
 
         self.editForwardButton = builder.get_object("editForwardButton")
@@ -1374,6 +1374,34 @@ class FirewallConfig:
 
         self.policyMasqueradeCheck = builder.get_object("policyMasqueradeCheck")
 
+        self.policyForwardView = builder.get_object("policyForwardView")
+        self.policyForwardStore = Gtk.ListStore(
+            GObject.TYPE_STRING,
+            GObject.TYPE_STRING,
+            GObject.TYPE_STRING,
+            GObject.TYPE_STRING,
+        )
+        self.policyForwardView.append_column(
+            Gtk.TreeViewColumn(_("Port"), Gtk.CellRendererText(), text=0)
+        )
+        self.policyForwardView.append_column(
+            Gtk.TreeViewColumn(_("Protocol"), Gtk.CellRendererText(), text=1)
+        )
+        self.policyForwardView.append_column(
+            Gtk.TreeViewColumn(_("To Port"), Gtk.CellRendererText(), text=2)
+        )
+        self.policyForwardView.append_column(
+            Gtk.TreeViewColumn(_("To Address"), Gtk.CellRendererText(), text=3)
+        )
+        self.policyForwardView.set_model(self.policyForwardStore)
+        self.policyForwardStore.set_sort_column_id(1, Gtk.SortType.ASCENDING)
+        self.policyForwardView.get_selection().connect(
+            "changed", self.change_policy_forward_selection_cb
+        )
+
+        self.editPolicyForwardButton = builder.get_object("editPolicyForwardButton")
+        self.removePolicyForwardButton = builder.get_object("removePolicyForwardButton")
+
         # firewall client
 
         self.fw = client.FirewallClient(wait=1)
@@ -2136,14 +2164,27 @@ class FirewallConfig:
             self.editProtocolButton.set_sensitive(False)
             self.removeProtocolButton.set_sensitive(False)
 
-    def change_forward_selection_cb(self, selection):
+    def change_forward_selection_cb(self, policy, selection):
+        if policy:
+            edit_button = self.editPolicyForwardButton
+            remove_button = self.removePolicyForwardButton
+        else:
+            edit_button = self.editForwardButton
+            remove_button = self.removeForwardButton
+
         (model, iter) = selection.get_selected()
         if iter:
-            self.editForwardButton.set_sensitive(True)
-            self.removeForwardButton.set_sensitive(True)
+            edit_button.set_sensitive(True)
+            remove_button.set_sensitive(True)
         else:
-            self.editForwardButton.set_sensitive(False)
-            self.removeForwardButton.set_sensitive(False)
+            edit_button.set_sensitive(False)
+            remove_button.set_sensitive(False)
+
+    def change_zone_forward_selection_cb(self, selection):
+        self.change_forward_selection_cb(False, selection)
+
+    def change_policy_forward_selection_cb(self, selection):
+        self.change_forward_selection_cb(True, selection)
 
     def masquerade_check_cb(self, policy):
         if policy:
@@ -3215,6 +3256,7 @@ class FirewallConfig:
         self.policyPortStore.clear()
         self.policyProtocolStore.clear()
         self.policySourcePortStore.clear()
+        self.policyForwardStore.clear()
 
         if not selected_policy:
             self.policyIngressHostButton.set_sensitive(False)
@@ -3242,6 +3284,7 @@ class FirewallConfig:
             self.policyProtocolView.set_sensitive(False)
             self.policySourcePortView.set_sensitive(False)
             self.policyMasqueradeCheck.set_active(False)
+            self.policyForwardView.set_sensitive(False)
 
             return
 
@@ -3258,6 +3301,7 @@ class FirewallConfig:
         self.policyPortView.set_sensitive(True)
         self.policyProtocolView.set_sensitive(True)
         self.policySourcePortView.set_sensitive(True)
+        self.policyForwardView.set_sensitive(True)
 
         iter = self.zoneStore.get_iter_first()
         while iter:
@@ -3275,6 +3319,7 @@ class FirewallConfig:
         self.policyPortView.get_selection().set_mode(Gtk.SelectionMode.NONE)
         self.policyProtocolView.get_selection().set_mode(Gtk.SelectionMode.NONE)
         self.policySourcePortView.get_selection().set_mode(Gtk.SelectionMode.NONE)
+        self.policyForwardView.get_selection().set_mode(Gtk.SelectionMode.NONE)
 
         if self.runtime_view:
             settings = self.fw.getPolicySettings(selected_policy).getSettingsDict()
@@ -3344,12 +3389,16 @@ class FirewallConfig:
 
         self.policyMasqueradeCheck.set_active(settings["masquerade"])
 
+        for item in settings["forward_ports"]:
+            self.policyForwardStore.append(item)
+
         self.policyIngressZoneView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
         self.policyEgressZoneView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
         self.policyServiceView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
         self.policyPortView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
         self.policyProtocolView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
         self.policySourcePortView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
+        self.policyForwardView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
 
     def onAddZone(self, *args):
         if self.runtime_view:
@@ -5647,14 +5696,64 @@ class FirewallConfig:
         self.forwardDialogOkButton.set_sensitive(ok)
 
     def onAddForwardPort(self, *args):
-        self.add_edit_forward_port(True)
+        self.add_edit_forward_port(False, True)
 
     def onEditForwardPort(self, *args):
-        self.add_edit_forward_port(False)
+        self.add_edit_forward_port(False, False)
+
+    def onRemoveForwardPort(self, *args):
+        selected_zone = self.get_selected_zone()
+        selection = self.forwardView.get_selection()
+        (model, iter) = selection.get_selected()
+        if iter is None:
+            return
+        port = self.forwardStore.get_value(iter, 0)
+        proto = self.forwardStore.get_value(iter, 1)
+        to_port = self.forwardStore.get_value(iter, 2)
+        to_addr = self.forwardStore.get_value(iter, 3)
+
+        if self.runtime_view:
+            self.fw.removeForwardPort(selected_zone, port, proto, to_port, to_addr)
+        else:
+            zone = self.fw.config().getZoneByName(selected_zone)
+            zone.removeForwardPort(port, proto, to_port, to_addr)
+        self.changes_applied()
 
     def onForwardPortClicked(self, widget, event):
         if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS:
-            self.add_edit_forward_port(False)
+            self.add_edit_forward_port(False, False)
+
+    def onAddPolicyForwardPort(self, *args):
+        self.add_edit_forward_port(True, True)
+
+    def onEditPolicyForwardPort(self, *args):
+        self.add_edit_forward_port(True, False)
+
+    def onRemovePolicyForwardPort(self, *args):
+        selected_policy = self.get_selected_policy()
+        selection = self.policyForwardView.get_selection()
+        (model, iter) = selection.get_selected()
+        if iter is None:
+            return
+        port = model.get_value(iter, 0)
+        proto = model.get_value(iter, 1)
+        to_port = model.get_value(iter, 2)
+        to_addr = model.get_value(iter, 3)
+
+        if self.runtime_view:
+            settings = self.fw.getPolicySettings(selected_policy)
+            settings.removeForwardPort(port, proto, to_port, to_addr)
+            self.fw.setPolicySettings(selected_policy, settings)
+        else:
+            policy = self.fw.config().getPolicyByName(selected_zone)
+            settings = policy.getSettings()
+            settings.removeForwardPort(port, proto, to_port, to_addr)
+            policy.update(settings)
+        self.changes_applied()
+
+    def onPolicyForwardPortClicked(self, widget, event):
+        if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS:
+            self.add_edit_forward_port(True, False)
 
     def forwardport_select_dialog(self, family, old_value=None):
         self.forwardDialogOkButton.set_sensitive(False)
@@ -5710,8 +5809,13 @@ class FirewallConfig:
 
         return value
 
-    def add_edit_forward_port(self, add):
-        selected_zone = self.get_selected_zone()
+    def add_edit_forward_port(self, policy, add):
+        if policy:
+            selected = self.get_selected_policy()
+            forward_view = self.policyForwardView
+        else:
+            selected = self.get_selected_zone()
+            forward_view = self.forwardView
 
         self.forwardDialogOkButton.set_sensitive(False)
         self.forwardDialogLocalCheck.set_active(True)
@@ -5730,14 +5834,14 @@ class FirewallConfig:
             self.forwardDialogToPortEntry.set_text("")
             self.forwardDialogToAddrEntry.set_text("")
         else:
-            selection = self.forwardView.get_selection()
+            selection = forward_view.get_selection()
             (model, iter) = selection.get_selected()
             if iter is None:
                 return
-            old_port = self.forwardStore.get_value(iter, 0)
-            old_proto = self.forwardStore.get_value(iter, 1)
-            old_to_port = self.forwardStore.get_value(iter, 2)
-            old_to_addr = self.forwardStore.get_value(iter, 3)
+            old_port = model.get_value(iter, 0)
+            old_proto = model.get_value(iter, 1)
+            old_to_port = model.get_value(iter, 2)
+            old_to_addr = model.get_value(iter, 3)
 
             self.forwardDialogPortEntry.set_text(old_port)
             combobox_select_text(self.forwardDialogProtoCombobox, old_proto)
@@ -5780,29 +5884,50 @@ class FirewallConfig:
             return
 
         if self.runtime_view:
-            if not self.fw.queryForwardPort(
-                selected_zone, port, proto, to_port, to_addr
-            ):
-                self.fw.addForwardPort(selected_zone, port, proto, to_port, to_addr)
-                if not add:
-                    self.fw.removeForwardPort(
-                        selected_zone, old_port, old_proto, old_to_port, old_to_addr
-                    )
-                if add and to_addr and not self.fw.queryMasquerade(selected_zone):
-                    if self.masqueradeQueryDialog() == Gtk.ResponseType.YES:
-                        self.fw.addMasquerade(selected_zone)
-                self.changes_applied()
+            if policy:
+                settings = self.fw.getPolicySettings(selected)
+                if not settings.queryForwardPort(
+                    port, proto, to_port, to_addr
+                ):
+                    settings.addForwardPort(port, proto, to_port, to_addr)
+                    if not add:
+                        settings.removeForwardPort(
+                            old_port, old_proto, old_to_port, old_to_addr
+                        )
+                    if add and to_addr and not settings.queryMasquerade():
+                        if self.masqueradeQueryDialog() == Gtk.ResponseType.YES:
+                            settings.addMasquerade()
+                    self.fw.setPolicySettings(selected, settings)
+                    self.changes_applied()
+            else:
+                if not self.fw.queryForwardPort(
+                    selected, port, proto, to_port, to_addr
+                ):
+                    self.fw.addForwardPort(selected, port, proto, to_port, to_addr)
+                    if not add:
+                        self.fw.removeForwardPort(
+                            selected, old_port, old_proto, old_to_port, old_to_addr
+                        )
+                    if add and to_addr and not self.fw.queryMasquerade(selected):
+                        if self.masqueradeQueryDialog() == Gtk.ResponseType.YES:
+                            self.fw.addMasquerade(selected)
+                    self.changes_applied()
         else:
-            zone = self.fw.config().getZoneByName(selected_zone)
-            if not zone.queryForwardPort(port, proto, to_port, to_addr):
+            if policy:
+                pz = self.fw.config().getPolicyByName(selected)
+            else:
+                pz = self.fw.config().getZoneByName(selected)
+            settings = pz.getSettings()
+            if not settings.queryForwardPort(port, proto, to_port, to_addr):
                 if not add:
-                    zone.removeForwardPort(
+                    settings.removeForwardPort(
                         old_port, old_proto, old_to_port, old_to_addr
                     )
-                zone.addForwardPort(port, proto, to_port, to_addr)
-                if add and to_addr and not zone.getMasquerade():
+                settings.addForwardPort(port, proto, to_port, to_addr)
+                if add and to_addr and not settings.getMasquerade():
                     if self.masqueradeQueryDialog() == Gtk.ResponseType.YES:
-                        zone.setMasquerade(True)
+                        settings.setMasquerade(True)
+                pz.update(settings)
                 self.changes_applied()
 
     def masqueradeQueryDialog(self):
@@ -5854,24 +5979,6 @@ class FirewallConfig:
                 self.forwardStore.remove(iter)
                 break
             iter = self.forwardStore.iter_next(iter)
-
-    def onRemoveForwardPort(self, *args):
-        selected_zone = self.get_selected_zone()
-        selection = self.forwardView.get_selection()
-        (model, iter) = selection.get_selected()
-        if iter is None:
-            return
-        port = self.forwardStore.get_value(iter, 0)
-        proto = self.forwardStore.get_value(iter, 1)
-        to_port = self.forwardStore.get_value(iter, 2)
-        to_addr = self.forwardStore.get_value(iter, 3)
-
-        if self.runtime_view:
-            self.fw.removeForwardPort(selected_zone, port, proto, to_port, to_addr)
-        else:
-            zone = self.fw.config().getZoneByName(selected_zone)
-            zone.removeForwardPort(port, proto, to_port, to_addr)
-        self.changes_applied()
 
     def onChangeService(self, *args):
         active_service = self.get_active_service()

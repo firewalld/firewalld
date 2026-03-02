@@ -7613,6 +7613,149 @@
                                         <property name="tab-fill">False</property>
                                       </packing>
                                     </child>
+                                    <child>
+                                      <object class="GtkBox" id="portForwardingVBox1">
+                                        <property name="visible">True</property>
+                                        <property name="can-focus">False</property>
+                                        <property name="border-width">6</property>
+                                        <property name="orientation">vertical</property>
+                                        <property name="spacing">6</property>
+                                        <child>
+                                          <object class="GtkLabel" id="label82">
+                                            <property name="visible">True</property>
+                                            <property name="can-focus">False</property>
+                                            <property name="label" translatable="yes">Add entries to forward ports either from one port to another on the local system or from the local system to another system. Forwarding to another system is only useful if the interface is masqueraded. Port forwarding is IPv4 only.</property>
+                                            <property name="wrap">True</property>
+                                            <property name="xalign">0</property>
+                                            <property name="yalign">0</property>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">False</property>
+                                            <property name="position">0</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkBox" id="hbox13">
+                                            <property name="visible">True</property>
+                                            <property name="can-focus">False</property>
+                                            <property name="spacing">6</property>
+                                            <child>
+                                              <object class="GtkScrolledWindow" id="scrolledwindow25">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">True</property>
+                                                <property name="shadow-type">out</property>
+                                                <child>
+                                                  <object class="GtkTreeView" id="policyForwardView">
+                                                    <property name="visible">True</property>
+                                                    <property name="can-focus">True</property>
+                                                    <property name="enable-search">False</property>
+                                                    <signal name="button-press-event" handler="onPolicyForwardPortClicked" swapped="no"/>
+                                                    <child internal-child="selection">
+                                                      <object class="GtkTreeSelection"/>
+                                                    </child>
+                                                  </object>
+                                                </child>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">True</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">0</property>
+                                              </packing>
+                                            </child>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">True</property>
+                                            <property name="fill">True</property>
+                                            <property name="position">1</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkButtonBox" id="vbuttonbox10">
+                                            <property name="visible">True</property>
+                                            <property name="can-focus">False</property>
+                                            <property name="spacing">6</property>
+                                            <property name="layout-style">start</property>
+                                            <child>
+                                              <object class="GtkButton" id="addPolicyForwardButton">
+                                                <property name="label">gtk-add</property>
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">True</property>
+                                                <property name="focus-on-click">False</property>
+                                                <property name="receives-default">True</property>
+                                                <property name="has-tooltip">True</property>
+                                                <property name="tooltip-text" translatable="yes">Add Forward Port</property>
+                                                <property name="relief">none</property>
+                                                <property name="use-stock">True</property>
+                                                <signal name="clicked" handler="onAddPolicyForwardPort" swapped="no"/>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">0</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkButton" id="editPolicyForwardButton">
+                                                <property name="label">gtk-edit</property>
+                                                <property name="visible">True</property>
+                                                <property name="sensitive">False</property>
+                                                <property name="can-focus">True</property>
+                                                <property name="focus-on-click">False</property>
+                                                <property name="receives-default">True</property>
+                                                <property name="has-tooltip">True</property>
+                                                <property name="tooltip-text" translatable="yes">Edit Forward Port</property>
+                                                <property name="use-stock">True</property>
+                                                <signal name="clicked" handler="onEditPolicyForwardPort" swapped="no"/>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">1</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkButton" id="removePolicyForwardButton">
+                                                <property name="label">gtk-remove</property>
+                                                <property name="visible">True</property>
+                                                <property name="sensitive">False</property>
+                                                <property name="can-focus">True</property>
+                                                <property name="focus-on-click">False</property>
+                                                <property name="receives-default">True</property>
+                                                <property name="has-tooltip">True</property>
+                                                <property name="tooltip-text" translatable="yes">Remove Forward Port</property>
+                                                <property name="use-stock">True</property>
+                                                <signal name="clicked" handler="onRemovePolicyForwardPort" swapped="no"/>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">2</property>
+                                              </packing>
+                                            </child>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">True</property>
+                                            <property name="position">2</property>
+                                          </packing>
+                                        </child>
+                                      </object>
+                                      <packing>
+                                        <property name="position">6</property>
+                                      </packing>
+                                    </child>
+                                    <child type="tab">
+                                      <object class="GtkLabel">
+                                        <property name="visible">True</property>
+                                        <property name="can-focus">False</property>
+                                        <property name="label" translatable="yes">Port Forwarding</property>
+                                      </object>
+                                      <packing>
+                                        <property name="position">6</property>
+                                        <property name="tab-fill">False</property>
+                                      </packing>
+                                    </child>
                                   </object>
                                   <packing>
                                     <property name="resize">True</property>
