@@ -493,7 +493,7 @@ class FirewallConfig:
 
         self.masqueradeCheck = builder.get_object("masqueradeCheck")
         self.masqueradeEventbox = builder.get_object("masqueradeEventbox")
-        self.masqueradeEventbox.connect("button-press-event", self.masquerade_check_cb)
+        self.masqueradeEventbox.connect("button-press-event", self.zone_masquerade_check_cb)
 
         self.forwardView = builder.get_object("forwardView")
         self.forwardStore = Gtk.ListStore(
@@ -1372,6 +1372,8 @@ class FirewallConfig:
         self.editPolicySourcePortButton = builder.get_object("editPolicySourcePortButton")
         self.removePolicySourcePortButton = builder.get_object("removePolicySourcePortButton")
 
+        self.policyMasqueradeCheck = builder.get_object("policyMasqueradeCheck")
+
         # firewall client
 
         self.fw = client.FirewallClient(wait=1)
@@ -2143,21 +2145,51 @@ class FirewallConfig:
             self.editForwardButton.set_sensitive(False)
             self.removeForwardButton.set_sensitive(False)
 
-    def masquerade_check_cb(self, *args):
-        selected_zone = self.get_selected_zone()
-        if self.runtime_view:
-            if not self.masqueradeCheck.get_active():
-                if not self.fw.queryMasquerade(selected_zone):
-                    self.fw.addMasquerade(selected_zone)
-                    self.changes_applied()
-            else:
-                if self.fw.queryMasquerade(selected_zone):
-                    self.fw.removeMasquerade(selected_zone)
-                    self.changes_applied()
+    def masquerade_check_cb(self, policy):
+        if policy:
+            selected = self.get_selected_policy()
+            check = self.policyMasqueradeCheck
         else:
-            zone = self.fw.config().getZoneByName(selected_zone)
-            zone.setMasquerade(not self.masqueradeCheck.get_active())
+            selected = self.get_selected_zone()
+            check = self.masqueradeCheck
+
+        if self.runtime_view:
+            if policy:
+                settings = self.fw.getPolicySettings(selected)
+                if not check.get_active():
+                    if not settings.queryMasquerade():
+                        settings.addMasquerade()
+                        self.fw.setPolicySettings(selected, settings)
+                        self.changes_applied()
+                else:
+                    if settings.queryMasquerade():
+                        settings.removeMasquerade()
+                        self.fw.setPolicySettings(selected, settings)
+                        self.changes_applied()
+            else:
+                if not check.get_active():
+                    if not self.fw.queryMasquerade(selected):
+                        self.fw.addMasquerade(selected)
+                        self.changes_applied()
+                else:
+                    if self.fw.queryMasquerade(selected):
+                        self.fw.removeMasquerade(selected)
+                        self.changes_applied()
+        else:
+            if policy:
+                pz = self.fw.config().getPolicyByName(selected)
+            else:
+                pz = self.fw.config().getZoneByName(selected)
+            settings = pz.getSettings()
+            settings.setMasquerade(not check.get_active())
+            pz.update(settings)
             self.changes_applied()
+
+    def zone_masquerade_check_cb(self, *args):
+        self.masquerade_check_cb(False)
+
+    def policy_masquerade_check_cb(self, *args):
+        self.masquerade_check_cb(True)
 
     def masquerade_added_cb(self, zone, timeout):
         if not self.runtime_view or zone != self.get_selected_zone():
@@ -3209,6 +3241,7 @@ class FirewallConfig:
             self.policyPortView.set_sensitive(False)
             self.policyProtocolView.set_sensitive(False)
             self.policySourcePortView.set_sensitive(False)
+            self.policyMasqueradeCheck.set_active(False)
 
             return
 
@@ -3308,6 +3341,8 @@ class FirewallConfig:
 
         for item in settings["source_ports"]:
             self.policySourcePortStore.append(item)
+
+        self.policyMasqueradeCheck.set_active(settings["masquerade"])
 
         self.policyIngressZoneView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
         self.policyEgressZoneView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
