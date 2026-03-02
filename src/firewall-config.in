@@ -34,7 +34,7 @@ from dbus.exceptions import DBusException
 from firewall import config
 from firewall import client
 from firewall import functions
-from firewall.core.base import DEFAULT_ZONE_TARGET, REJECT_TYPES, SOURCE_IPSET_TYPES
+from firewall.core.base import DEFAULT_ZONE_TARGET, REJECT_TYPES, SOURCE_IPSET_TYPES, DEFAULT_POLICY_TARGET
 from firewall.core.ipset import IPSET_MAXNAMELEN
 from firewall.core.helper import HELPER_MAXNAMELEN
 from firewall.core.io.zone import Zone
@@ -42,6 +42,7 @@ from firewall.core.io.service import Service
 from firewall.core.io.icmptype import IcmpType
 from firewall.core.io.ipset import IPSet
 from firewall.core.io.helper import Helper
+from firewall.core.io.policy import Policy
 from firewall.core import rich
 from firewall.core.fw_nm import (
     nm_is_imported,
@@ -339,8 +340,12 @@ class FirewallConfig:
 
         self.zoneView = builder.get_object("zoneView")
         self.zoneStore = Gtk.ListStore(
-            GObject.TYPE_STRING, GObject.TYPE_INT, GObject.TYPE_STRING  # name  # weight
-        )  # tooltip
+            GObject.TYPE_STRING, # name
+            GObject.TYPE_INT, # weight
+            GObject.TYPE_STRING,  # tooltip
+            GObject.TYPE_BOOLEAN,  # ingress
+            GObject.TYPE_BOOLEAN  # egress
+        )
         self.zoneView.append_column(
             Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=0, weight=1)
         )
@@ -411,16 +416,16 @@ class FirewallConfig:
 
         self.serviceView = builder.get_object("serviceView")
         self.serviceStore = Gtk.ListStore(
-            GObject.TYPE_BOOLEAN, GObject.TYPE_STRING  # checked
+            GObject.TYPE_BOOLEAN, GObject.TYPE_BOOLEAN, GObject.TYPE_STRING  # zone-checked, policy-checked
         )  # name
         toggle = Gtk.CellRendererToggle()
         toggle.connect("toggled", self.service_toggle_cb, self.serviceStore, 0)
         self.serviceView.append_column(Gtk.TreeViewColumn("", toggle, active=0))
         self.serviceView.append_column(
-            Gtk.TreeViewColumn(_("Service"), Gtk.CellRendererText(), text=1)
+            Gtk.TreeViewColumn(_("Service"), Gtk.CellRendererText(), text=2)
         )
         self.serviceView.set_model(self.serviceStore)
-        self.serviceStore.set_sort_column_id(1, Gtk.SortType.ASCENDING)
+        self.serviceStore.set_sort_column_id(2, Gtk.SortType.ASCENDING)
 
         self.portView = builder.get_object("portView")
         self.portStore = Gtk.ListStore(GObject.TYPE_STRING, GObject.TYPE_STRING)
@@ -488,7 +493,7 @@ class FirewallConfig:
 
         self.masqueradeCheck = builder.get_object("masqueradeCheck")
         self.masqueradeEventbox = builder.get_object("masqueradeEventbox")
-        self.masqueradeEventbox.connect("button-press-event", self.masquerade_check_cb)
+        self.masqueradeEventbox.connect("button-press-event", self.zone_masquerade_check_cb)
 
         self.forwardView = builder.get_object("forwardView")
         self.forwardStore = Gtk.ListStore(
@@ -512,7 +517,7 @@ class FirewallConfig:
         self.forwardView.set_model(self.forwardStore)
         self.forwardStore.set_sort_column_id(1, Gtk.SortType.ASCENDING)
         self.forwardView.get_selection().connect(
-            "changed", self.change_forward_selection_cb
+            "changed", self.change_zone_forward_selection_cb
         )
 
         self.editForwardButton = builder.get_object("editForwardButton")
@@ -1251,6 +1256,152 @@ class FirewallConfig:
             "changed", self.change_icmptype_selection_cb
         )
 
+        self.policyView = builder.get_object("policyView")
+        self.policyStore = Gtk.ListStore(GObject.TYPE_STRING, GObject.TYPE_STRING) # name, tooltip
+        self.policyView.append_column(Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=0))
+        self.policyView.set_model(self.policyStore)
+        self.policyStore.set_sort_column_id(0, Gtk.SortType.ASCENDING)
+        self.policyView.get_selection().connect("changed", self.onChangePolicy)
+
+        self.policyEditBox = builder.get_object("policyEditBox")
+        self.policyEditBox.hide()
+        self.policyEditLoadDefaultsButton = builder.get_object(
+            "policyEditLoadDefaultsButton"
+        )
+        self.policyEditEditButton = builder.get_object("policyEditEditButton")
+        self.policyEditRemoveButton = builder.get_object("policyEditRemoveButton")
+
+        self.policyBaseDialog = builder.get_object("policyBaseDialog")
+        self.policyBaseDialogOkButton = builder.get_object("policyBaseDialogOkButton")
+
+        self.policyBaseDialogNameEntry = builder.get_object("policyBaseDialogNameEntry")
+        self.policyBaseDialogVersionEntry = builder.get_object(
+            "policyBaseDialogVersionEntry"
+        )
+        self.policyBaseDialogShortEntry = builder.get_object("policyBaseDialogShortEntry")
+        self.policyBaseDialogDescText = builder.get_object("policyBaseDialogDescText")
+        self.policyBaseDialogTargetCheck = builder.get_object("policyBaseDialogTargetCheck")
+        self.policyBaseDialogTargetCombobox = builder.get_object(
+            "policyBaseDialogTargetCombobox"
+        )
+
+        self.policyIngressHostButton = builder.get_object("policyIngressHostButton")
+        self.policyIngressHostEventBox = builder.get_object("policyIngressHostEventBox")
+        self.policyIngressHostEventBox.connect("button-press-event", self.policy_ingress_host_toggle_cb)
+        self.policyIngressAnyButton = builder.get_object("policyIngressAnyButton")
+        self.policyIngressAnyEventBox = builder.get_object("policyIngressAnyEventBox")
+        self.policyIngressAnyEventBox.connect("button-press-event", self.policy_ingress_any_toggle_cb)
+        self.policyIngressZonesButton = builder.get_object("policyIngressZonesButton")
+        self.policyIngressZonesEventBox = builder.get_object("policyIngressZonesEventBox")
+        self.policyIngressZonesEventBox.connect("button-press-event", self.policy_ingress_zones_toggle_cb)
+
+        self.policyIngressZoneView = builder.get_object("policyIngressZoneView")
+        toggle = Gtk.CellRendererToggle()
+        toggle.connect("toggled", self.policy_ingress_zone_toggle_cb)
+        self.policyIngressZoneView.append_column(Gtk.TreeViewColumn("", toggle, active=3))
+        self.policyIngressZoneView.append_column(Gtk.TreeViewColumn(_("Zone"), Gtk.CellRendererText(), text=0))
+        self.policyIngressZoneView.set_model(self.zoneStore)
+
+        self.policyEgressHostButton = builder.get_object("policyEgressHostButton")
+        self.policyEgressHostEventBox = builder.get_object("policyEgressHostEventBox")
+        self.policyEgressHostEventBox.connect("button-press-event", self.policy_egress_host_toggle_cb)
+        self.policyEgressAnyButton = builder.get_object("policyEgressAnyButton")
+        self.policyEgressAnyEventBox = builder.get_object("policyEgressAnyEventBox")
+        self.policyEgressAnyEventBox.connect("button-press-event", self.policy_egress_any_toggle_cb)
+        self.policyEgressZonesButton = builder.get_object("policyEgressZonesButton")
+        self.policyEgressZonesEventBox = builder.get_object("policyEgressZonesEventBox")
+        self.policyEgressZonesEventBox.connect("button-press-event", self.policy_egress_zones_toggle_cb)
+
+        self.policyEgressZoneView = builder.get_object("policyEgressZoneView")
+        toggle = Gtk.CellRendererToggle()
+        toggle.connect("toggled", self.policy_egress_zone_toggle_cb)
+        self.policyEgressZoneView.append_column(Gtk.TreeViewColumn("", toggle, active=4))
+        self.policyEgressZoneView.append_column(Gtk.TreeViewColumn(_("Zone"), Gtk.CellRendererText(), text=0))
+        self.policyEgressZoneView.set_model(self.zoneStore)
+
+        self.policyServiceView = builder.get_object("policyServiceView")
+        toggle = Gtk.CellRendererToggle()
+        toggle.connect("toggled", self.policy_service_toggle_cb)
+        self.policyServiceView.append_column(Gtk.TreeViewColumn("", toggle, active=1))
+        self.policyServiceView.append_column(
+            Gtk.TreeViewColumn(_("Service"), Gtk.CellRendererText(), text=2)
+        )
+        self.policyServiceView.set_model(self.serviceStore)
+
+        self.policyPortView = builder.get_object("policyPortView")
+        self.policyPortStore = Gtk.ListStore(GObject.TYPE_STRING, GObject.TYPE_STRING)
+        self.policyPortView.append_column(
+            Gtk.TreeViewColumn(_("Port"), Gtk.CellRendererText(), text=0)
+        )
+        self.policyPortView.append_column(
+            Gtk.TreeViewColumn(_("Protocol"), Gtk.CellRendererText(), text=1)
+        )
+        self.policyPortView.set_model(self.policyPortStore)
+        self.policyPortStore.set_sort_column_id(1, Gtk.SortType.ASCENDING)
+        self.policyPortView.get_selection().connect("changed", self.change_policy_port_selection_cb)
+
+        self.editPolicyPortButton = builder.get_object("editPolicyPortButton")
+        self.removePolicyPortButton = builder.get_object("removePolicyPortButton")
+
+        self.policyProtocolView = builder.get_object("policyProtocolView")
+        self.policyProtocolStore = Gtk.ListStore(GObject.TYPE_STRING)
+        self.policyProtocolView.append_column(
+            Gtk.TreeViewColumn(_("Protocol"), Gtk.CellRendererText(), text=0)
+        )
+        self.policyProtocolView.set_model(self.policyProtocolStore)
+        self.policyProtocolStore.set_sort_column_id(0, Gtk.SortType.ASCENDING)
+        self.policyProtocolView.get_selection().connect("changed", self.change_policy_protocol_selection_cb)
+
+        self.editPolicyProtocolButton = builder.get_object("editPolicyProtocolButton")
+        self.removePolicyProtocolButton = builder.get_object("removePolicyProtocolButton")
+
+        self.policySourcePortView = builder.get_object("policySourcePortView")
+        self.policySourcePortStore = Gtk.ListStore(GObject.TYPE_STRING, GObject.TYPE_STRING)
+        self.policySourcePortView.append_column(
+            Gtk.TreeViewColumn(_("Port"), Gtk.CellRendererText(), text=0)
+        )
+        self.policySourcePortView.append_column(
+            Gtk.TreeViewColumn(_("Protocol"), Gtk.CellRendererText(), text=1)
+        )
+        self.policySourcePortView.set_model(self.policySourcePortStore)
+        self.policySourcePortStore.set_sort_column_id(1, Gtk.SortType.ASCENDING)
+        self.policySourcePortView.get_selection().connect(
+            "changed", self.change_policy_source_port_selection_cb
+        )
+
+        self.editPolicySourcePortButton = builder.get_object("editPolicySourcePortButton")
+        self.removePolicySourcePortButton = builder.get_object("removePolicySourcePortButton")
+
+        self.policyMasqueradeCheck = builder.get_object("policyMasqueradeCheck")
+
+        self.policyForwardView = builder.get_object("policyForwardView")
+        self.policyForwardStore = Gtk.ListStore(
+            GObject.TYPE_STRING,
+            GObject.TYPE_STRING,
+            GObject.TYPE_STRING,
+            GObject.TYPE_STRING,
+        )
+        self.policyForwardView.append_column(
+            Gtk.TreeViewColumn(_("Port"), Gtk.CellRendererText(), text=0)
+        )
+        self.policyForwardView.append_column(
+            Gtk.TreeViewColumn(_("Protocol"), Gtk.CellRendererText(), text=1)
+        )
+        self.policyForwardView.append_column(
+            Gtk.TreeViewColumn(_("To Port"), Gtk.CellRendererText(), text=2)
+        )
+        self.policyForwardView.append_column(
+            Gtk.TreeViewColumn(_("To Address"), Gtk.CellRendererText(), text=3)
+        )
+        self.policyForwardView.set_model(self.policyForwardStore)
+        self.policyForwardStore.set_sort_column_id(1, Gtk.SortType.ASCENDING)
+        self.policyForwardView.get_selection().connect(
+            "changed", self.change_policy_forward_selection_cb
+        )
+
+        self.editPolicyForwardButton = builder.get_object("editPolicyForwardButton")
+        self.removePolicyForwardButton = builder.get_object("removePolicyForwardButton")
+
         # firewall client
 
         self.fw = client.FirewallClient(wait=1)
@@ -1326,6 +1477,11 @@ class FirewallConfig:
         self.fw.connect("config:helper-updated", self.conf_helper_updated_cb)
         self.fw.connect("config:helper-removed", self.conf_helper_removed_cb)
         self.fw.connect("config:helper-renamed", self.conf_helper_renamed_cb)
+        self.fw.connect("policy-updated", self.policy_updated_cb)
+        self.fw.connect("config:policy-added", self.conf_policy_added_cb)
+        self.fw.connect("config:policy-updated", self.conf_policy_updated_cb)
+        self.fw.connect("config:policy-removed", self.conf_policy_removed_cb)
+        self.fw.connect("config:policy-renamed", self.conf_policy_renamed_cb)
 
         # settings
 
@@ -1705,8 +1861,9 @@ class FirewallConfig:
         self.automatic_helpers = self.fw.getAutomaticHelpers()
         self.set_automaticHelpersLabel(self.automatic_helpers)
         self.load_ipsets()
-        self.load_zones()
         self.load_services()
+        self.load_zones()
+        self.load_policies()
         self.load_icmps()
         self.load_helpers()
         self.load_direct()
@@ -1729,7 +1886,47 @@ class FirewallConfig:
 
                     desc = re.sub(r"\s+", " ", desc)
 
-        self.zoneStore.append([zone, weight, desc])
+        self.zoneStore.append([zone, weight, desc, False, False])
+
+    def load_policies(self):
+        selected_policy = self.get_selected_policy()
+
+        if self.runtime_view:
+            policies = self.fw.getPolicies()
+        else:
+            policies = self.fw.config().getPolicyNames()
+
+        # reset and fill notebook content according to view
+
+        selection = self.policyView.get_selection()
+        selection.set_mode(Gtk.SelectionMode.NONE)
+
+        self.policyStore.clear()
+
+        # policies
+        for item in policies:
+            if self.runtime_view:
+                settings = self.fw.getPolicySettings(item)
+            else:
+                settings = self.fw.config().getPolicyByName(item).getSettings()
+
+            self.policyStore.append([item, settings.getDescription()])
+
+        if selected_policy in policies:
+            _policy = selected_policy
+        else:
+            _policy = None
+
+        selection.set_mode(Gtk.SelectionMode.SINGLE)
+
+        iter = self.policyStore.get_iter_first()
+        while iter:
+            if self.policyStore.get_value(iter, 0) == _policy:
+                selection.select_iter(iter)
+                return
+            iter = self.policyStore.iter_next(iter)
+        # fallback
+        selection.select_path(0)
 
     def load_zones(self):
         selected_zone = self.get_selected_zone()
@@ -1744,6 +1941,9 @@ class FirewallConfig:
         selection = self.zoneView.get_selection()
         selection.set_mode(Gtk.SelectionMode.NONE)
 
+        self.policyIngressZoneView.get_selection().set_mode(Gtk.SelectionMode.NONE)
+        self.policyEgressZoneView.get_selection().set_mode(Gtk.SelectionMode.NONE)
+
         self.zoneStore.clear()
         self.serviceStore.clear()
         self.portStore.clear()
@@ -1756,14 +1956,18 @@ class FirewallConfig:
 
         if self.runtime_view:
             for item in self.fw.listServices():
-                self.serviceStore.append([False, item])
+                self.serviceStore.append([False, False, item])
             for item in self.fw.listIcmpTypes():
                 self.icmpStore.append([False, item])
         else:
             for item in self.fw.config().getServiceNames():
-                self.serviceStore.append([False, item])
+                self.serviceStore.append([False, False, item])
             for item in self.fw.config().getIcmpTypeNames():
                 self.icmpStore.append([False, item])
+
+        # policies
+        self.policyEgressZoneView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
+        self.policyIngressZoneView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
 
         # zones
         active_zones = self.active_zones.keys()
@@ -1849,7 +2053,7 @@ class FirewallConfig:
             return
         iter = self.serviceStore.get_iter_first()
         while iter:
-            if self.serviceStore.get_value(iter, 1) == service:
+            if self.serviceStore.get_value(iter, 2) == service:
                 self.serviceStore.set_value(iter, 0, True)
                 break
             iter = self.serviceStore.iter_next(iter)
@@ -1859,7 +2063,7 @@ class FirewallConfig:
             return
         iter = self.serviceStore.get_iter_first()
         while iter:
-            if self.serviceStore.get_value(iter, 1) == service:
+            if self.serviceStore.get_value(iter, 2) == service:
                 self.serviceStore.set_value(iter, 0, False)
                 break
             iter = self.serviceStore.iter_next(iter)
@@ -1883,6 +2087,38 @@ class FirewallConfig:
                 zone.removeService(name)
             self.changes_applied()
 
+    def policy_service_toggle_cb(self, toggle, row):
+        iter = self.serviceStore.get_iter(row)
+        old_val = self.serviceStore.get_value(iter, 1)
+        name = self.serviceStore.get_value(iter, 2)
+        selected_policy = self.get_selected_policy()
+        if self.runtime_view:
+            settings = self.fw.getPolicySettings(selected_policy)
+            if not old_val:
+                settings.addService(name)
+            else:
+                settings.removeService(name)
+            self.fw.setPolicySettings(selected_policy, settings)
+            self.changes_applied()
+        else:
+            policy = self.fw.config().getPolicyByName(selected_policy)
+            settings = policy.getSettings()
+            if not old_val:
+                settings.addService(name)
+            else:
+                settings.removeService(name)
+            policy.update(settings)
+            self.changes_applied()
+
+    def change_policy_port_selection_cb(self, selection):
+        (model, iter) = selection.get_selected()
+        if iter:
+            self.editPolicyPortButton.set_sensitive(True)
+            self.removePolicyPortButton.set_sensitive(True)
+        else:
+            self.editPolicyPortButton.set_sensitive(False)
+            self.removePolicyPortButton.set_sensitive(False)
+
     def change_port_selection_cb(self, selection):
         (model, iter) = selection.get_selected()
         if iter:
@@ -1901,6 +2137,24 @@ class FirewallConfig:
             self.editSourcePortButton.set_sensitive(False)
             self.removeSourcePortButton.set_sensitive(False)
 
+    def change_policy_source_port_selection_cb(self, selection):
+        (model, iter) = selection.get_selected()
+        if iter:
+            self.editPolicySourcePortButton.set_sensitive(True)
+            self.removePolicySourcePortButton.set_sensitive(True)
+        else:
+            self.editPolicySourcePortButton.set_sensitive(False)
+            self.removePolicySourcePortButton.set_sensitive(False)
+
+    def change_policy_protocol_selection_cb(self, selection):
+        (model, iter) = selection.get_selected()
+        if iter:
+            self.editPolicyProtocolButton.set_sensitive(True)
+            self.removePolicyProtocolButton.set_sensitive(True)
+        else:
+            self.editPolicyProtocolButton.set_sensitive(False)
+            self.removePolicyProtocolButton.set_sensitive(False)
+
     def change_protocol_selection_cb(self, selection):
         (model, iter) = selection.get_selected()
         if iter:
@@ -1910,30 +2164,73 @@ class FirewallConfig:
             self.editProtocolButton.set_sensitive(False)
             self.removeProtocolButton.set_sensitive(False)
 
-    def change_forward_selection_cb(self, selection):
+    def change_forward_selection_cb(self, policy, selection):
+        if policy:
+            edit_button = self.editPolicyForwardButton
+            remove_button = self.removePolicyForwardButton
+        else:
+            edit_button = self.editForwardButton
+            remove_button = self.removeForwardButton
+
         (model, iter) = selection.get_selected()
         if iter:
-            self.editForwardButton.set_sensitive(True)
-            self.removeForwardButton.set_sensitive(True)
+            edit_button.set_sensitive(True)
+            remove_button.set_sensitive(True)
         else:
-            self.editForwardButton.set_sensitive(False)
-            self.removeForwardButton.set_sensitive(False)
+            edit_button.set_sensitive(False)
+            remove_button.set_sensitive(False)
 
-    def masquerade_check_cb(self, *args):
-        selected_zone = self.get_selected_zone()
-        if self.runtime_view:
-            if not self.masqueradeCheck.get_active():
-                if not self.fw.queryMasquerade(selected_zone):
-                    self.fw.addMasquerade(selected_zone)
-                    self.changes_applied()
-            else:
-                if self.fw.queryMasquerade(selected_zone):
-                    self.fw.removeMasquerade(selected_zone)
-                    self.changes_applied()
+    def change_zone_forward_selection_cb(self, selection):
+        self.change_forward_selection_cb(False, selection)
+
+    def change_policy_forward_selection_cb(self, selection):
+        self.change_forward_selection_cb(True, selection)
+
+    def masquerade_check_cb(self, policy):
+        if policy:
+            selected = self.get_selected_policy()
+            check = self.policyMasqueradeCheck
         else:
-            zone = self.fw.config().getZoneByName(selected_zone)
-            zone.setMasquerade(not self.masqueradeCheck.get_active())
+            selected = self.get_selected_zone()
+            check = self.masqueradeCheck
+
+        if self.runtime_view:
+            if policy:
+                settings = self.fw.getPolicySettings(selected)
+                if not check.get_active():
+                    if not settings.queryMasquerade():
+                        settings.addMasquerade()
+                        self.fw.setPolicySettings(selected, settings)
+                        self.changes_applied()
+                else:
+                    if settings.queryMasquerade():
+                        settings.removeMasquerade()
+                        self.fw.setPolicySettings(selected, settings)
+                        self.changes_applied()
+            else:
+                if not check.get_active():
+                    if not self.fw.queryMasquerade(selected):
+                        self.fw.addMasquerade(selected)
+                        self.changes_applied()
+                else:
+                    if self.fw.queryMasquerade(selected):
+                        self.fw.removeMasquerade(selected)
+                        self.changes_applied()
+        else:
+            if policy:
+                pz = self.fw.config().getPolicyByName(selected)
+            else:
+                pz = self.fw.config().getZoneByName(selected)
+            settings = pz.getSettings()
+            settings.setMasquerade(not check.get_active())
+            pz.update(settings)
             self.changes_applied()
+
+    def zone_masquerade_check_cb(self, *args):
+        self.masquerade_check_cb(False)
+
+    def policy_masquerade_check_cb(self, *args):
+        self.masquerade_check_cb(True)
 
     def masquerade_added_cb(self, zone, timeout):
         if not self.runtime_view or zone != self.get_selected_zone():
@@ -2284,6 +2581,13 @@ class FirewallConfig:
         else:
             self._error(exception_message)
 
+    def get_selected_policy(self):
+        selection = self.policyView.get_selection()
+        (model, iter) = selection.get_selected()
+        if iter:
+            return model.get_value(iter, 0)
+        return None
+
     def get_selected_zone(self):
         selection = self.zoneView.get_selection()
         (model, iter) = selection.get_selected()
@@ -2338,6 +2642,7 @@ class FirewallConfig:
             self.icmpDialogIcmpEditBox.hide()
             self.helperConfHelperEditBox.hide()
             self.helperConfPortBox.hide()
+            self.policyEditBox.hide()
         else:
             self.zoneEditBox.show()
             self.ipsetConfIPSetEditBox.show()
@@ -2349,10 +2654,12 @@ class FirewallConfig:
             self.icmpDialogIcmpEditBox.show()
             self.helperConfHelperEditBox.show()
             self.helperConfPortBox.show()
+            self.policyEditBox.show()
 
         self.load_ipsets()
         self.load_zones()
         self.load_services()
+        self.load_policies()
         self.load_icmps()
         self.load_helpers()
         self.load_direct()
@@ -2839,7 +3146,7 @@ class FirewallConfig:
         _services = services[:]
         iter = self.serviceStore.get_iter_first()
         while iter:
-            name = self.serviceStore.get_value(iter, 1)
+            name = self.serviceStore.get_value(iter, 2)
             if name in _services:
                 self.serviceStore.set_value(iter, 0, True)
                 _services.remove(name)
@@ -2943,10 +3250,160 @@ class FirewallConfig:
         self.interfaceView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
         self.sourceView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
 
+    def onChangePolicy(self, *args):
+        selected_policy = self.get_selected_policy()
+
+        self.policyPortStore.clear()
+        self.policyProtocolStore.clear()
+        self.policySourcePortStore.clear()
+        self.policyForwardStore.clear()
+
+        if not selected_policy:
+            self.policyIngressHostButton.set_sensitive(False)
+            self.policyIngressAnyButton.set_sensitive(False)
+            self.policyIngressZonesButton.set_sensitive(False)
+            self.policyIngressZoneView.set_sensitive(False)
+            self.policyServiceView.set_sensitive(False)
+
+            iter = self.zoneStore.get_iter_first()
+            while iter:
+                self.zoneStore.set(iter, 3, False, 4, False)
+                iter = self.zoneStore.iter_next(iter)
+
+            self.policyEgressHostButton.set_sensitive(False)
+            self.policyEgressAnyButton.set_sensitive(False)
+            self.policyEgressZonesButton.set_sensitive(False)
+            self.policyEgressZoneView.set_sensitive(False)
+
+            iter = self.serviceStore.get_iter_first()
+            while iter:
+                self.serviceStore.set_value(iter, 1, False)
+                iter = self.serviceStore.iter_next(iter)
+
+            self.policyPortView.set_sensitive(False)
+            self.policyProtocolView.set_sensitive(False)
+            self.policySourcePortView.set_sensitive(False)
+            self.policyMasqueradeCheck.set_active(False)
+            self.policyForwardView.set_sensitive(False)
+
+            return
+
+        self.policyIngressAnyButton.set_sensitive(True)
+        self.policyIngressZonesButton.set_sensitive(True)
+        self.policyIngressZoneView.set_sensitive(True)
+
+        self.policyEgressAnyButton.set_sensitive(True)
+        self.policyEgressZonesButton.set_sensitive(True)
+        self.policyEgressZoneView.set_sensitive(True)
+
+        self.policyServiceView.set_sensitive(True)
+
+        self.policyPortView.set_sensitive(True)
+        self.policyProtocolView.set_sensitive(True)
+        self.policySourcePortView.set_sensitive(True)
+        self.policyForwardView.set_sensitive(True)
+
+        iter = self.zoneStore.get_iter_first()
+        while iter:
+            self.zoneStore.set(iter, 3, False, 4, False)
+            iter = self.zoneStore.iter_next(iter)
+
+        iter = self.serviceStore.get_iter_first()
+        while iter:
+            self.serviceStore.set_value(iter, 1, False)
+            iter = self.serviceStore.iter_next(iter)
+
+        self.policyIngressZoneView.get_selection().set_mode(Gtk.SelectionMode.NONE)
+        self.policyEgressZoneView.get_selection().set_mode(Gtk.SelectionMode.NONE)
+        self.policyServiceView.get_selection().set_mode(Gtk.SelectionMode.NONE)
+        self.policyPortView.get_selection().set_mode(Gtk.SelectionMode.NONE)
+        self.policyProtocolView.get_selection().set_mode(Gtk.SelectionMode.NONE)
+        self.policySourcePortView.get_selection().set_mode(Gtk.SelectionMode.NONE)
+        self.policyForwardView.get_selection().set_mode(Gtk.SelectionMode.NONE)
+
+        if self.runtime_view:
+            settings = self.fw.getPolicySettings(selected_policy).getSettingsDict()
+        else:
+            settings = self.fw.config().getPolicyByName(selected_policy).getSettings().getSettingsDict()
+
+        self.policyEgressHostButton.set_sensitive(True)
+        if not settings["ingress_zones"]:
+            self.policyIngressZonesButton.set_active(True)
+            self.policyIngressZoneView.set_sensitive(True)
+        else:
+            self.policyIngressZoneView.set_sensitive(False)
+            for item in settings["ingress_zones"]:
+                if item == "HOST":
+                    self.policyIngressHostButton.set_active(True)
+                    self.policyEgressHostButton.set_sensitive(False)
+                elif item == "ANY":
+                    self.policyIngressAnyButton.set_active(True)
+                else:
+                    iter = self.zoneStore.get_iter_first()
+                    while iter:
+                        if self.zoneStore.get_value(iter, 0) == item:
+                            self.zoneStore.set_value(iter, 3, True)
+                            break
+                        iter = self.zoneStore.iter_next(iter)
+                    self.policyIngressZonesButton.set_active(True)
+                    self.policyIngressZoneView.set_sensitive(True)
+
+        self.policyIngressHostButton.set_sensitive(True)
+        if not settings["egress_zones"]:
+            self.policyEgressZonesButton.set_active(True)
+            self.policyEgressZoneView.set_sensitive(True)
+        else:
+            self.policyEgressZoneView.set_sensitive(False)
+            for item in settings["egress_zones"]:
+                if item == "HOST":
+                    self.policyEgressHostButton.set_active(True)
+                    self.policyIngressHostButton.set_sensitive(False)
+                elif item == "ANY":
+                    self.policyEgressAnyButton.set_active(True)
+                else:
+                    iter = self.zoneStore.get_iter_first()
+                    while iter:
+                        if self.zoneStore.get_value(iter, 0) == item:
+                            self.zoneStore.set_value(iter, 4, True)
+                            break
+                        iter = self.zoneStore.iter_next(iter)
+                    self.policyEgressZonesButton.set_active(True)
+                    self.policyEgressZoneView.set_sensitive(True)
+
+        for item in settings["services"]:
+            iter = self.serviceStore.get_iter_first()
+            while iter:
+                if self.serviceStore.get_value(iter, 2) == item:
+                    self.serviceStore.set_value(iter, 1, True)
+                    break
+                iter = self.serviceStore.iter_next(iter)
+
+        for item in settings["ports"]:
+            self.policyPortStore.append(item)
+
+        for item in settings["protocols"]:
+            self.policyProtocolStore.append([item])
+
+        for item in settings["source_ports"]:
+            self.policySourcePortStore.append(item)
+
+        self.policyMasqueradeCheck.set_active(settings["masquerade"])
+
+        for item in settings["forward_ports"]:
+            self.policyForwardStore.append(item)
+
+        self.policyIngressZoneView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
+        self.policyEgressZoneView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
+        self.policyServiceView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
+        self.policyPortView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
+        self.policyProtocolView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
+        self.policySourcePortView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
+        self.policyForwardView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
+
     def onAddZone(self, *args):
         if self.runtime_view:
             return
-        self.add_edit_zone(True)
+        self.add_edit_zone_policy(False, True)
 
     def onRemoveZone(self, *args):
         if self.runtime_view:
@@ -2961,7 +3418,7 @@ class FirewallConfig:
     def onEditZone(self, *args):
         if self.runtime_view:
             return
-        self.add_edit_zone(False)
+        self.add_edit_zone_policy(False, False)
 
     def onLoadDefaultsZone(self, *args):
         if self.runtime_view:
@@ -2971,6 +3428,185 @@ class FirewallConfig:
         zone.loadDefaults()
         self.changes_applied()
         self.onChangeZone()
+
+    def onAddPolicy(self, *args):
+        if self.runtime_view:
+            return
+        self.add_edit_zone_policy(True, True)
+
+    def onEditPolicy(self, *args):
+        if self.runtime_view:
+            return
+        self.add_edit_zone_policy(True, False)
+
+    def onRemovePolicy(self, *args):
+        if self.runtime_view:
+            return
+        selected_policy = self.get_selected_policy()
+        policy = self.fw.config().getPolicyByName(selected_policy)
+        policy.remove()
+        self.changes_applied()
+
+    def onLoadPolicyDefaults(self, *args):
+        if self.runtime_view:
+            return
+        selected_policy = self.get_selected_policy()
+        policy = self.fw.config().getPolicyByName(selected_policy)
+        policy.loadDefaults()
+
+    def add_edit_zone_policy(self, policy, add):
+        if policy:
+            l = functions.max_policy_name_len()
+            dialog = self.policyBaseDialog
+            dialog_name_entry = self.policyBaseDialogNameEntry
+            dialog_version_entry = self.policyBaseDialogVersionEntry
+            dialog_short_entry = self.policyBaseDialogShortEntry
+            dialog_desc_text = self.policyBaseDialogDescText
+            dialog_target_check = self.policyBaseDialogTargetCheck
+            dialog_target_combobox = self.policyBaseDialogTargetCombobox
+            dialog_ok_button = self.policyBaseDialogOkButton
+        else:
+            l = functions.max_zone_name_len()
+            dialog = self.zoneBaseDialog
+            dialog_name_entry = self.zoneBaseDialogNameEntry
+            dialog_version_entry = self.zoneBaseDialogVersionEntry
+            dialog_short_entry = self.zoneBaseDialogShortEntry
+            dialog_desc_text = self.zoneBaseDialogDescText
+            dialog_target_check = self.zoneBaseDialogTargetCheck
+            dialog_target_combobox = self.zoneBaseDialogTargetCombobox
+            dialog_ok_button = self.zoneBaseDialogOkButton
+
+        dialog_name_entry.set_max_length(l)
+        dialog_name_entry.set_width_chars(l)
+        dialog_name_entry.set_max_width_chars(l)
+
+        if add:
+            default = True
+            builtin = False
+            old_name = None
+            old_version = None
+            old_short = None
+            old_desc = None
+            old_target = None
+
+            dialog_name_entry.set_text("")
+            dialog_version_entry.set_text("")
+            dialog_short_entry.set_text("")
+            dialog_desc_text.get_buffer().set_text("")
+            dialog_target_check.set_active(True)
+            dialog_target_combobox.set_active(0)
+        else:
+            if policy:
+                selected = self.get_selected_policy()
+                pz = self.fw.config().getPolicyByName(selected)
+            else:
+                selected = self.get_selected_zone()
+                pz = self.fw.config().getZoneByName(selected)
+            settings = pz.getSettings()
+            props = pz.get_properties()
+            default = props["default"]
+            builtin = props["builtin"]
+
+            old_name = selected
+            old_version = settings.getVersion()
+            old_short = settings.getShort()
+            old_desc = settings.getDescription()
+            old_target = settings.getTarget()
+
+            dialog_name_entry.set_text(old_name)
+            dialog_version_entry.set_text(old_version)
+            dialog_short_entry.set_text(old_short)
+            dialog_desc_text.get_buffer().set_text(old_desc)
+
+            if (policy and old_target == DEFAULT_POLICY_TARGET) or (not policy and (old_target == "default" or old_target == DEFAULT_ZONE_TARGET)):
+                dialog_target_check.set_active(True)
+                dialog_target_combobox.set_active(0)
+            else:
+                dialog_target_check.set_active(False)
+                combobox_select_text(
+                    dialog_target_combobox,
+                    old_target if old_target != "%%REJECT%%" else "REJECT",
+                )
+
+        dialog_ok_button.set_sensitive(False)
+        if builtin:
+            dialog_name_entry.set_tooltip_markup(
+                _("Built-in policy, rename not supported.")
+            )
+        else:
+            dialog_name_entry.set_tooltip_markup("")
+        dialog_name_entry.set_sensitive(not builtin and default)
+
+        dialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        dialog.set_transient_for(self.mainWindow)
+        dialog.show_all()
+        self.add_visible_dialog(dialog)
+        result = dialog.run()
+        dialog.hide()
+        self.remove_visible_dialog(dialog)
+
+        if result != 1:
+            return
+
+        name = dialog_name_entry.get_text()
+        version = dialog_version_entry.get_text()
+        short = dialog_short_entry.get_text()
+        buffer = dialog_desc_text.get_buffer()
+        desc = buffer.get_text(buffer.get_start_iter(), buffer.get_end_iter(), False)
+        target = DEFAULT_POLICY_TARGET if policy else "default"
+        if not dialog_target_check.get_active():
+            target = dialog_target_combobox.get_active_text()
+            if target == "REJECT":
+                target = "%%REJECT%%"
+
+        if (
+            old_name == name
+            and old_version == version
+            and old_short == short
+            and old_desc == desc
+            and old_target == target
+        ):
+            # no changes
+            return
+
+        if not add:
+            if policy:
+                selected_policy = self.get_selected_policy()
+                pz = self.fw.config().getPolicyByName(selected_policy)
+            else:
+                selected_zone = self.get_selected_zone()
+                pz = self.fw.config().getZoneByName(selected_zone)
+            settings = pz.getSettings()
+        else:
+            if policy:
+                settings = client.FirewallClientPolicySettings()
+            else:
+                settings = client.FirewallClientZoneSettings()
+
+        if (
+            old_version != version
+            or old_short != short
+            or old_desc != desc
+            or old_target != target
+        ):
+            # settings
+            settings.setVersion(version)
+            settings.setShort(short)
+            settings.setDescription(desc)
+            settings.setTarget(target)
+            if not add:
+                pz.update(settings)
+
+        if not add:
+            if old_name == name:
+                return
+            pz.rename(name)
+        else:
+            if policy:
+                self.fw.config().addPolicy(name, settings)
+            else:
+                self.fw.config().addZone(name, settings)
+        self.changes_applied()
 
     def entry_changed(self, entry, allowed_chars, modify=None):
         "Remove all disallowed characters and truncate length."
@@ -3010,124 +3646,28 @@ class FirewallConfig:
         val = check.get_active()
         self.zoneBaseDialogTargetCombobox.set_sensitive(not val)
 
-    def add_edit_zone(self, add):
-        l = functions.max_zone_name_len()
-        self.zoneBaseDialogNameEntry.set_max_length(l)
-        self.zoneBaseDialogNameEntry.set_width_chars(l)
-        self.zoneBaseDialogNameEntry.set_max_width_chars(l)
+    def onPolicyBaseDialogNameChanged(self, *args):
+        def check_policy_name(policy):
+            max_len = functions.max_policy_name_len()
+            parts = policy.split("/")
+            if len(parts) < 2:
+                return (True, policy)
+            if len(parts[0]) > max_len:
+                parts[0] = parts[0][:max_len]
+            policy = "/".join(parts[:2])
+            OK = len(policy) > 1 and policy[0] != "/" and policy[-1] != "/"
+            return (OK, policy)
 
-        if add:
-            default = True
-            builtin = False
-            old_name = None
-            old_version = None
-            old_short = None
-            old_desc = None
-            old_target = None
+        OK = True
+        if args and (args[0] == self.policyBaseDialogNameEntry):
+            additional_chars = "".join(Policy.ADDITIONAL_ALNUM_CHARS)
+            allowed_chars = string.ascii_letters + string.digits + additional_chars
+            OK = self.entry_changed(args[0], allowed_chars, check_policy_name)
+        self.policyBaseDialogOkButton.set_sensitive(OK)
 
-            self.zoneBaseDialogNameEntry.set_text("")
-            self.zoneBaseDialogVersionEntry.set_text("")
-            self.zoneBaseDialogShortEntry.set_text("")
-            self.zoneBaseDialogDescText.get_buffer().set_text("")
-            self.zoneBaseDialogTargetCheck.set_active(True)
-            self.zoneBaseDialogTargetCombobox.set_active(0)
-        else:
-            selected_zone = self.get_selected_zone()
-            zone = self.fw.config().getZoneByName(selected_zone)
-            settings = zone.getSettings()
-            props = zone.get_properties()
-            default = props["default"]
-            builtin = props["builtin"]
-
-            old_name = zone.get_property("name")
-            old_version = settings.getVersion()
-            old_short = settings.getShort()
-            old_desc = settings.getDescription()
-            old_target = settings.getTarget()
-
-            self.zoneBaseDialogNameEntry.set_text(old_name)
-            self.zoneBaseDialogVersionEntry.set_text(old_version)
-            self.zoneBaseDialogShortEntry.set_text(old_short)
-            self.zoneBaseDialogDescText.get_buffer().set_text(old_desc)
-            if old_target == "default" or old_target == DEFAULT_ZONE_TARGET:
-                self.zoneBaseDialogTargetCheck.set_active(True)
-                self.zoneBaseDialogTargetCombobox.set_active(0)
-            else:
-                self.zoneBaseDialogTargetCheck.set_active(False)
-                combobox_select_text(
-                    self.zoneBaseDialogTargetCombobox,
-                    old_target if old_target != "%%REJECT%%" else "REJECT",
-                )
-
-        self.zoneBaseDialogOkButton.set_sensitive(False)
-        if builtin:
-            self.zoneBaseDialogNameEntry.set_tooltip_markup(
-                _("Built-in zone, rename not supported.")
-            )
-        else:
-            self.zoneBaseDialogNameEntry.set_tooltip_markup("")
-        self.zoneBaseDialogNameEntry.set_sensitive(not builtin and default)
-
-        self.zoneBaseDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
-        self.zoneBaseDialog.set_transient_for(self.mainWindow)
-        self.zoneBaseDialog.show_all()
-        self.add_visible_dialog(self.zoneBaseDialog)
-        result = self.zoneBaseDialog.run()
-        self.zoneBaseDialog.hide()
-        self.remove_visible_dialog(self.zoneBaseDialog)
-
-        if result != 1:
-            return
-
-        name = self.zoneBaseDialogNameEntry.get_text()
-        version = self.zoneBaseDialogVersionEntry.get_text()
-        short = self.zoneBaseDialogShortEntry.get_text()
-        buffer = self.zoneBaseDialogDescText.get_buffer()
-        desc = buffer.get_text(buffer.get_start_iter(), buffer.get_end_iter(), False)
-        target = "default"  # this has been DEFAULT_ZONE_TARGET before
-        if not self.zoneBaseDialogTargetCheck.get_active():
-            target = self.zoneBaseDialogTargetCombobox.get_active_text()
-            if target == "REJECT":
-                target = "%%REJECT%%"
-
-        if (
-            old_name == name
-            and old_version == version
-            and old_short == short
-            and old_desc == desc
-            and old_target == target
-        ):
-            # no changes
-            return
-
-        if not add:
-            selected_zone = self.get_selected_zone()
-            zone = self.fw.config().getZoneByName(selected_zone)
-            settings = zone.getSettings()
-        else:
-            settings = client.FirewallClientZoneSettings()
-
-        if (
-            old_version != version
-            or old_short != short
-            or old_desc != desc
-            or old_target != target
-        ):
-            # settings
-            settings.setVersion(version)
-            settings.setShort(short)
-            settings.setDescription(desc)
-            settings.setTarget(target)
-            if not add:
-                zone.update(settings)
-
-        if not add:
-            if old_name == name:
-                return
-            zone.rename(name)
-        else:
-            self.fw.config().addZone(name, settings)
-        self.changes_applied()
+    def onPolicyBaseDialogTargetCheckToggled(self, check):
+        val = check.get_active()
+        self.policyBaseDialogTargetCombobox.set_sensitive(not val)
 
     def onAddRichRule(self, *args):
         self.add_edit_rich_rule(True)
@@ -4452,14 +4992,14 @@ class FirewallConfig:
         return source
 
     def onAddPort(self, *args):
-        self.add_edit_port(True)
+        self.add_edit_port(False, True)
 
     def onEditPort(self, *args):
-        self.add_edit_port(False)
+        self.add_edit_port(False, False)
 
     def onPortClicked(self, widget, event):
         if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS:
-            self.add_edit_port(False)
+            self.add_edit_port(False, False)
 
     def onRemovePort(self, *args):
         selected_zone = self.get_selected_zone()
@@ -4477,6 +5017,36 @@ class FirewallConfig:
             zone.removePort(port, proto)
         self.changes_applied()
 
+    def onAddPolicyPort(self, *args):
+        self.add_edit_port(True, True)
+
+    def onEditPolicyPort(self, *args):
+        self.add_edit_port(True, False)
+
+    def onPolicyPortClicked(self, widget, event):
+        if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS:
+            self.add_edit_port(True, False)
+
+    def onRemovePolicyPort(self, *args):
+        selected_policy = self.get_selected_policy()
+        selection = self.policyPortView.get_selection()
+        (model, iter) = selection.get_selected()
+        if iter is None:
+            return
+        port = model.get_value(iter, 0)
+        proto = model.get_value(iter, 1)
+
+        if self.runtime_view:
+            settings = self.fw.getPolicySettings(selected_policy)
+            settings.removePort(port, proto)
+            self.fw.setPolicySettings(selected_policy, settings)
+        else:
+            policy = self.fw.config().getPolicyByName(selected_policy)
+            settings = policy.getSettings()
+            settings.removePort(port, proto)
+            policy.update(settings)
+        self.changes_applied()
+
     def onPortChanged(self, *args):
         ports = functions.getPortRange(self.portDialogPortEntry.get_text())
         if not ports or not (isinstance(ports, list) or isinstance(ports, tuple)):
@@ -4484,58 +5054,89 @@ class FirewallConfig:
         else:
             self.portDialogOkButton.set_sensitive(True)
 
-    def add_edit_port(self, add):
-        selected_zone = self.get_selected_zone()
+    def add_edit_port(self, policy, add):
+        if policy:
+            selected = self.get_selected_policy()
+            port_view = self.policyPortView
+            port_dialog = self.portDialog
+            port_dialog_port_entry = self.portDialogPortEntry
+            port_dialog_proto_combobox = self.portDialogProtoCombobox
+            port_dialog_ok_button = self.portDialogOkButton
+        else:
+            selected = self.get_selected_zone()
+            port_view = self.portView
+            port_dialog = self.portDialog
+            port_dialog_port_entry = self.portDialogPortEntry
+            port_dialog_proto_combobox = self.portDialogProtoCombobox
+            port_dialog_ok_button = self.portDialogOkButton
 
         old_port = None
         old_proto = None
         if not add:
-            selection = self.portView.get_selection()
+            selection = port_view.get_selection()
             (model, iter) = selection.get_selected()
             if iter is None:
                 return
-            old_port = self.portStore.get_value(iter, 0)
-            old_proto = self.portStore.get_value(iter, 1)
+            old_port = model.get_value(iter, 0)
+            old_proto = model.get_value(iter, 1)
 
-        self.portDialogPortEntry.set_text("")
-        self.portDialogProtoCombobox.set_active(0)
+        port_dialog_port_entry.set_text("")
+        port_dialog_proto_combobox.set_active(0)
 
         if old_port:
-            self.portDialogPortEntry.set_text(old_port)
+            port_dialog_port_entry.set_text(old_port)
         if old_proto:
-            combobox_select_text(self.portDialogProtoCombobox, old_proto)
+            combobox_select_text(port_dialog_proto_combobox, old_proto)
 
-        self.portDialogOkButton.set_sensitive(False)
+        port_dialog_ok_button.set_sensitive(False)
 
-        self.portDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
-        self.portDialog.set_transient_for(self.mainWindow)
-        self.portDialog.show_all()
-        self.add_visible_dialog(self.portDialog)
-        result = self.portDialog.run()
-        self.portDialog.hide()
-        self.remove_visible_dialog(self.portDialog)
+        port_dialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        port_dialog.set_transient_for(self.mainWindow)
+        port_dialog.show_all()
+        self.add_visible_dialog(port_dialog)
+        result = port_dialog.run()
+        port_dialog.hide()
+        self.remove_visible_dialog(port_dialog)
 
         if result != 1:
             return
 
-        port = self.portDialogPortEntry.get_text()
-        proto = self.portDialogProtoCombobox.get_active_text()
+        port = port_dialog_port_entry.get_text()
+        proto = port_dialog_proto_combobox.get_active_text()
         if old_port == port and old_proto == proto:
             # nothing to change
             return
 
         if self.runtime_view:
-            if not self.fw.queryPort(selected_zone, port, proto):
-                self.fw.addPort(selected_zone, port, proto)
-                if not add:
-                    self.fw.removePort(selected_zone, old_port, old_proto)
+            if policy:
+                settings = self.fw.getPolicySettings(selected)
+                if not settings.queryPort(port, proto):
+                    settings.addPort(port, proto)
+                    if not add:
+                        settings.removePort(old_port, old_proto)
+
+                    if policy:
+                        self.fw.setPolicySettings(selected, settings)
+                    else:
+                        self.fw.setZoneSettings(selected, settings)
+            else:
+                if not self.fw.queryPort(selected, port, proto):
+                    self.fw.addPort(selected, port, proto)
+                    if not add:
+                        self.fw.removePort(selected, old_port, old_proto)
+
                 self.changes_applied()
         else:
-            zone = self.fw.config().getZoneByName(selected_zone)
-            if not zone.queryPort(port, proto):
+            if policy:
+                pz = self.fw.config().getPolicyByName(selected)
+            else:
+                pz = self.fw.config().getZoneByName(selected)
+            settings = pz.getSettings()
+            if not settings.queryPort(port, proto):
                 if not add:
-                    zone.removePort(old_port, old_proto)
-                zone.addPort(port, proto)
+                    settings.removePort(old_port, old_proto)
+                settings.addPort(port, proto)
+                pz.update(settings)
                 self.changes_applied()
 
     def onPortProtoChanged(self, *args):
@@ -4627,14 +5228,10 @@ class FirewallConfig:
             iter = self.portStore.iter_next(iter)
 
     def onAddSourcePort(self, *args):
-        self.add_edit_source_port(True)
+        self.add_edit_source_port(False, True)
 
     def onEditSourcePort(self, *args):
-        self.add_edit_source_port(False)
-
-    def onSourcePortClicked(self, widget, event):
-        if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS:
-            self.add_edit_source_port(False)
+        self.add_edit_source_port(False, False)
 
     def onRemoveSourcePort(self, *args):
         selected_zone = self.get_selected_zone()
@@ -4652,18 +5249,57 @@ class FirewallConfig:
             zone.removeSourcePort(port, proto)
         self.changes_applied()
 
-    def add_edit_source_port(self, add):
-        selected_zone = self.get_selected_zone()
+    def onSourcePortClicked(self, widget, event):
+        if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS:
+            self.add_edit_source_port(False, False)
+
+    def onAddPolicySourcePort(self, *args):
+        self.add_edit_source_port(True, True)
+
+    def onEditPolicySourcePort(self, *args):
+        self.add_edit_source_port(True, False)
+
+    def onRemovePolicySourcePort(self, *args):
+        selected_policy = self.get_selected_policy()
+        selection = self.policySourcePortView.get_selection()
+        (model, iter) = selection.get_selected()
+        if iter is None:
+            return
+        port = self.policySourcePortStore.get_value(iter, 0)
+        proto = self.policySourcePortStore.get_value(iter, 1)
+
+        if self.runtime_view:
+            settings = self.fw.getPolicySettings(selected_policy)
+            settings.removeSourcePort(port, proto)
+            self.fw.setPolicySettings(selected_policy, settings)
+        else:
+            policy = self.fw.config().getPolicyByName(selected_policy)
+            settings = policy.getSettings()
+            settings.removeSourcePort(port, proto)
+            policy.update(settings)
+        self.changes_applied()
+
+    def onPolicySourcePortClicked(self, widget, event):
+        if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS:
+            self.add_edit_source_port(True, False)
+
+    def add_edit_source_port(self, policy, add):
+        if policy:
+            selected = self.get_selected_policy()
+            source_port_view = self.policySourcePortView
+        else:
+            selected = self.get_selected_zone()
+            source_port_view = self.sourcePortView
 
         old_port = None
         old_proto = None
         if not add:
-            selection = self.sourcePortView.get_selection()
+            selection = source_port_view.get_selection()
             (model, iter) = selection.get_selected()
             if iter is None:
                 return
-            old_port = self.sourcePortStore.get_value(iter, 0)
-            old_proto = self.sourcePortStore.get_value(iter, 1)
+            old_port = model.get_value(iter, 0)
+            old_proto = model.get_value(iter, 1)
 
         self.portDialogPortEntry.set_text("")
         self.portDialogProtoCombobox.set_active(0)
@@ -4693,17 +5329,31 @@ class FirewallConfig:
             return
 
         if self.runtime_view:
-            if not self.fw.querySourcePort(selected_zone, port, proto):
-                self.fw.addSourcePort(selected_zone, port, proto)
-                if not add:
-                    self.fw.removeSourcePort(selected_zone, old_port, old_proto)
-                self.changes_applied()
+            if policy:
+                settings = self.fw.getPolicySettings(selected)
+                if not settings.querySourcePort(port, proto):
+                    settings.addSourcePort(port, proto)
+                    if not add:
+                        settings.removeSourcePort(old_port, old_proto)
+                    self.fw.setPolicySettings(selected, settings)
+                    self.changes_applied()
+            else:
+                if not self.fw.querySourcePort(selected, port, proto):
+                    self.fw.addSourcePort(selected, port, proto)
+                    if not add:
+                        self.fw.removeSourcePort(selected, old_port, old_proto)
+                    self.changes_applied()
         else:
-            zone = self.fw.config().getZoneByName(selected_zone)
-            if not zone.querySourcePort(port, proto):
+            if policy:
+                pz = self.fw.config().getPolicyByName(selected)
+            else:
+                pz = self.fw.config().getZoneByName(selected)
+            settings = pz.getSettings()
+            if not settings.querySourcePort(port, proto):
                 if not add:
-                    zone.removeSourcePort(old_port, old_proto)
-                zone.addSourcePort(port, proto)
+                    settings.removeSourcePort(old_port, old_proto)
+                settings.addSourcePort(port, proto)
+                pz.update(settings)
                 self.changes_applied()
 
     def service_conf_add_edit_source_port(self, add):
@@ -4784,14 +5434,10 @@ class FirewallConfig:
             iter = self.sourcePortStore.iter_next(iter)
 
     def onAddProtocol(self, *args):
-        self.add_edit_protocol(True)
+        self.add_edit_protocol(False, True)
 
     def onEditProtocol(self, *args):
-        self.add_edit_protocol(False)
-
-    def onProtocolClicked(self, widget, event):
-        if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS:
-            self.add_edit_protocol(False)
+        self.add_edit_protocol(False, False)
 
     def onRemoveProtocol(self, *args):
         selected_zone = self.get_selected_zone()
@@ -4808,16 +5454,54 @@ class FirewallConfig:
             zone.removeProtocol(proto)
         self.changes_applied()
 
-    def add_edit_protocol(self, add):
-        selected_zone = self.get_selected_zone()
+    def onProtocolClicked(self, widget, event):
+        if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS:
+            self.add_edit_protocol(False, False)
+
+    def onAddPolicyProtocol(self, *args):
+        self.add_edit_protocol(True, True)
+
+    def onEditPolicyProtocol(self, *args):
+        self.add_edit_protocol(True, False)
+
+    def onRemovePolicyProtocol(self, *args):
+        selected_policy = self.get_selected_policy()
+        selection = self.policyProtocolView.get_selection()
+        (model, iter) = selection.get_selected()
+        if iter is None:
+            return
+        proto = self.policyProtocolStore.get_value(iter, 0)
+
+        if self.runtime_view:
+            settings = self.fw.getPolicySettings(selected_policy)
+            settings.removeProtocol(proto)
+            self.fw.setPolicySettings(selected_policy, settings)
+        else:
+            policy = self.fw.config().getPolicyByName(selected_policy)
+            settings = policy.getSettings()
+            settings.removeProtocol(proto)
+            policy.update(settings)
+        self.changes_applied()
+
+    def onPolicyProtocolClicked(self, widget, event):
+        if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS:
+            self.add_edit_protocol(True, False)
+
+    def add_edit_protocol(self, policy, add):
+        if policy:
+            selected = self.get_selected_policy()
+            protocol_view = self.policyProtocolView
+        else:
+            selected = self.get_selected_zone()
+            protocol_view = self.protocolView
 
         old_proto = None
         if not add:
-            selection = self.protocolView.get_selection()
+            selection = protocol_view.get_selection()
             (model, iter) = selection.get_selected()
             if iter is None:
                 return
-            old_proto = self.protocolStore.get_value(iter, 0)
+            old_proto = model.get_value(iter, 0)
 
         self.protoDialogProtoCombobox.set_active(0)
         self.protoDialogOtherProtoCheck.set_active(False)
@@ -4848,17 +5532,31 @@ class FirewallConfig:
             return
 
         if self.runtime_view:
-            if not self.fw.queryProtocol(selected_zone, proto):
-                self.fw.addProtocol(selected_zone, proto)
-                if not add:
-                    self.fw.removeProtocol(selected_zone, old_proto)
-                self.changes_applied()
+            if policy:
+                settings = self.fw.getPolicySettings(selected)
+                if not settings.queryProtocol(proto):
+                    settings.addProtocol(proto)
+                    if not add:
+                        settings.removeProtocol(old_proto)
+                    self.fw.setPolicySettings(selected, settings)
+                    self.changes_applied()
+            else:
+                if not self.fw.queryProtocol(selected, proto):
+                    self.fw.addProtocol(selected, proto)
+                    if not add:
+                        self.fw.removeProtocol(selected, old_proto)
+                    self.changes_applied()
         else:
-            zone = self.fw.config().getZoneByName(selected_zone)
-            if not zone.queryProtocol(proto):
+            if policy:
+                pz = self.fw.config().getPolicyByName(selected)
+            else:
+                pz = self.fw.config().getZoneByName(selected)
+            settings = pz.getSettings()
+            if not settings.queryProtocol(proto):
                 if not add:
-                    zone.removeProtocol(old_proto)
-                zone.addProtocol(proto)
+                    settings.removeProtocol(old_proto)
+                settings.addProtocol(proto)
+                pz.update(settings)
                 self.changes_applied()
 
     def service_conf_add_edit_protocol(self, add):
@@ -4998,14 +5696,64 @@ class FirewallConfig:
         self.forwardDialogOkButton.set_sensitive(ok)
 
     def onAddForwardPort(self, *args):
-        self.add_edit_forward_port(True)
+        self.add_edit_forward_port(False, True)
 
     def onEditForwardPort(self, *args):
-        self.add_edit_forward_port(False)
+        self.add_edit_forward_port(False, False)
+
+    def onRemoveForwardPort(self, *args):
+        selected_zone = self.get_selected_zone()
+        selection = self.forwardView.get_selection()
+        (model, iter) = selection.get_selected()
+        if iter is None:
+            return
+        port = self.forwardStore.get_value(iter, 0)
+        proto = self.forwardStore.get_value(iter, 1)
+        to_port = self.forwardStore.get_value(iter, 2)
+        to_addr = self.forwardStore.get_value(iter, 3)
+
+        if self.runtime_view:
+            self.fw.removeForwardPort(selected_zone, port, proto, to_port, to_addr)
+        else:
+            zone = self.fw.config().getZoneByName(selected_zone)
+            zone.removeForwardPort(port, proto, to_port, to_addr)
+        self.changes_applied()
 
     def onForwardPortClicked(self, widget, event):
         if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS:
-            self.add_edit_forward_port(False)
+            self.add_edit_forward_port(False, False)
+
+    def onAddPolicyForwardPort(self, *args):
+        self.add_edit_forward_port(True, True)
+
+    def onEditPolicyForwardPort(self, *args):
+        self.add_edit_forward_port(True, False)
+
+    def onRemovePolicyForwardPort(self, *args):
+        selected_policy = self.get_selected_policy()
+        selection = self.policyForwardView.get_selection()
+        (model, iter) = selection.get_selected()
+        if iter is None:
+            return
+        port = model.get_value(iter, 0)
+        proto = model.get_value(iter, 1)
+        to_port = model.get_value(iter, 2)
+        to_addr = model.get_value(iter, 3)
+
+        if self.runtime_view:
+            settings = self.fw.getPolicySettings(selected_policy)
+            settings.removeForwardPort(port, proto, to_port, to_addr)
+            self.fw.setPolicySettings(selected_policy, settings)
+        else:
+            policy = self.fw.config().getPolicyByName(selected_zone)
+            settings = policy.getSettings()
+            settings.removeForwardPort(port, proto, to_port, to_addr)
+            policy.update(settings)
+        self.changes_applied()
+
+    def onPolicyForwardPortClicked(self, widget, event):
+        if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS:
+            self.add_edit_forward_port(True, False)
 
     def forwardport_select_dialog(self, family, old_value=None):
         self.forwardDialogOkButton.set_sensitive(False)
@@ -5061,8 +5809,13 @@ class FirewallConfig:
 
         return value
 
-    def add_edit_forward_port(self, add):
-        selected_zone = self.get_selected_zone()
+    def add_edit_forward_port(self, policy, add):
+        if policy:
+            selected = self.get_selected_policy()
+            forward_view = self.policyForwardView
+        else:
+            selected = self.get_selected_zone()
+            forward_view = self.forwardView
 
         self.forwardDialogOkButton.set_sensitive(False)
         self.forwardDialogLocalCheck.set_active(True)
@@ -5081,14 +5834,14 @@ class FirewallConfig:
             self.forwardDialogToPortEntry.set_text("")
             self.forwardDialogToAddrEntry.set_text("")
         else:
-            selection = self.forwardView.get_selection()
+            selection = forward_view.get_selection()
             (model, iter) = selection.get_selected()
             if iter is None:
                 return
-            old_port = self.forwardStore.get_value(iter, 0)
-            old_proto = self.forwardStore.get_value(iter, 1)
-            old_to_port = self.forwardStore.get_value(iter, 2)
-            old_to_addr = self.forwardStore.get_value(iter, 3)
+            old_port = model.get_value(iter, 0)
+            old_proto = model.get_value(iter, 1)
+            old_to_port = model.get_value(iter, 2)
+            old_to_addr = model.get_value(iter, 3)
 
             self.forwardDialogPortEntry.set_text(old_port)
             combobox_select_text(self.forwardDialogProtoCombobox, old_proto)
@@ -5131,29 +5884,50 @@ class FirewallConfig:
             return
 
         if self.runtime_view:
-            if not self.fw.queryForwardPort(
-                selected_zone, port, proto, to_port, to_addr
-            ):
-                self.fw.addForwardPort(selected_zone, port, proto, to_port, to_addr)
-                if not add:
-                    self.fw.removeForwardPort(
-                        selected_zone, old_port, old_proto, old_to_port, old_to_addr
-                    )
-                if add and to_addr and not self.fw.queryMasquerade(selected_zone):
-                    if self.masqueradeQueryDialog() == Gtk.ResponseType.YES:
-                        self.fw.addMasquerade(selected_zone)
-                self.changes_applied()
+            if policy:
+                settings = self.fw.getPolicySettings(selected)
+                if not settings.queryForwardPort(
+                    port, proto, to_port, to_addr
+                ):
+                    settings.addForwardPort(port, proto, to_port, to_addr)
+                    if not add:
+                        settings.removeForwardPort(
+                            old_port, old_proto, old_to_port, old_to_addr
+                        )
+                    if add and to_addr and not settings.queryMasquerade():
+                        if self.masqueradeQueryDialog() == Gtk.ResponseType.YES:
+                            settings.addMasquerade()
+                    self.fw.setPolicySettings(selected, settings)
+                    self.changes_applied()
+            else:
+                if not self.fw.queryForwardPort(
+                    selected, port, proto, to_port, to_addr
+                ):
+                    self.fw.addForwardPort(selected, port, proto, to_port, to_addr)
+                    if not add:
+                        self.fw.removeForwardPort(
+                            selected, old_port, old_proto, old_to_port, old_to_addr
+                        )
+                    if add and to_addr and not self.fw.queryMasquerade(selected):
+                        if self.masqueradeQueryDialog() == Gtk.ResponseType.YES:
+                            self.fw.addMasquerade(selected)
+                    self.changes_applied()
         else:
-            zone = self.fw.config().getZoneByName(selected_zone)
-            if not zone.queryForwardPort(port, proto, to_port, to_addr):
+            if policy:
+                pz = self.fw.config().getPolicyByName(selected)
+            else:
+                pz = self.fw.config().getZoneByName(selected)
+            settings = pz.getSettings()
+            if not settings.queryForwardPort(port, proto, to_port, to_addr):
                 if not add:
-                    zone.removeForwardPort(
+                    settings.removeForwardPort(
                         old_port, old_proto, old_to_port, old_to_addr
                     )
-                zone.addForwardPort(port, proto, to_port, to_addr)
-                if add and to_addr and not zone.getMasquerade():
+                settings.addForwardPort(port, proto, to_port, to_addr)
+                if add and to_addr and not settings.getMasquerade():
                     if self.masqueradeQueryDialog() == Gtk.ResponseType.YES:
-                        zone.setMasquerade(True)
+                        settings.setMasquerade(True)
+                pz.update(settings)
                 self.changes_applied()
 
     def masqueradeQueryDialog(self):
@@ -5205,24 +5979,6 @@ class FirewallConfig:
                 self.forwardStore.remove(iter)
                 break
             iter = self.forwardStore.iter_next(iter)
-
-    def onRemoveForwardPort(self, *args):
-        selected_zone = self.get_selected_zone()
-        selection = self.forwardView.get_selection()
-        (model, iter) = selection.get_selected()
-        if iter is None:
-            return
-        port = self.forwardStore.get_value(iter, 0)
-        proto = self.forwardStore.get_value(iter, 1)
-        to_port = self.forwardStore.get_value(iter, 2)
-        to_addr = self.forwardStore.get_value(iter, 3)
-
-        if self.runtime_view:
-            self.fw.removeForwardPort(selected_zone, port, proto, to_port, to_addr)
-        else:
-            zone = self.fw.config().getZoneByName(selected_zone)
-            zone.removeForwardPort(port, proto, to_port, to_addr)
-        self.changes_applied()
 
     def onChangeService(self, *args):
         active_service = self.get_active_service()
@@ -7667,6 +8423,278 @@ class FirewallConfig:
             f.close()
         return entries
 
+    def policy_ingress_host_toggle_cb(self, *args):
+        if not self.policyIngressHostButton.get_active():
+            selected_policy = self.get_selected_policy()
+            if self.runtime_view:
+                policy = self.fw.getPolicySettings(selected_policy)
+                policy_settings = policy
+            else:
+                policy = self.fw.config().getPolicyByName(selected_policy)
+                policy_settings = policy.getSettings()
+
+            settings = policy_settings.getSettingsDict()
+
+            settings["ingress_zones"].clear()
+            settings["ingress_zones"].append("HOST")
+
+            if self.runtime_view:
+                self.fw.setPolicySettings(selected_policy, policy_settings)
+            else:
+                policy.update(policy_settings)
+
+            self.changes_applied()
+
+    def policy_ingress_any_toggle_cb(self, *args):
+        if not self.policyIngressAnyButton.get_active():
+            selected_policy = self.get_selected_policy()
+            if self.runtime_view:
+                policy = self.fw.getPolicySettings(selected_policy)
+                policy_settings = policy
+            else:
+                policy = self.fw.config().getPolicyByName(selected_policy)
+                policy_settings = policy.getSettings()
+
+            settings = policy_settings.getSettingsDict()
+
+            settings["ingress_zones"].clear()
+            settings["ingress_zones"].append("ANY")
+
+            if self.runtime_view:
+                self.fw.setPolicySettings(selected_policy, policy_settings)
+            else:
+                policy.update(policy_settings)
+
+            self.changes_applied()
+
+    def policy_ingress_zones_toggle_cb(self, *args):
+        if not self.policyIngressZonesButton.get_active():
+            selected_policy = self.get_selected_policy()
+            if self.runtime_view:
+                policy = self.fw.getPolicySettings(selected_policy)
+                policy_settings = policy
+            else:
+                policy = self.fw.config().getPolicyByName(selected_policy)
+                policy_settings = policy.getSettings()
+
+            settings = policy_settings.getSettingsDict()
+
+            settings["ingress_zones"].clear()
+
+            if self.runtime_view:
+                self.fw.setPolicySettings(selected_policy, policy_settings)
+            else:
+                policy.update(policy_settings)
+            self.changes_applied()
+
+    def policy_ingress_zone_toggle_cb(self, toggle, row):
+        iter = self.zoneStore.get_iter(row)
+        active = self.zoneStore.get_value(iter, 3)
+        zone = self.zoneStore.get_value(iter, 0)
+        if active:
+            selected_policy = self.get_selected_policy()
+            if self.runtime_view:
+                policy = self.fw.getPolicySettings(selected_policy)
+                policy_settings = policy
+            else:
+                policy = self.fw.config().getPolicyByName(selected_policy)
+                policy_settings = policy.getSettings()
+
+            settings = policy_settings.getSettingsDict()
+
+            settings["ingress_zones"].remove(zone)
+
+            if self.runtime_view:
+                self.fw.setPolicySettings(selected_policy, policy_settings)
+            else:
+                policy.update(policy_settings)
+        else:
+            selected_policy = self.get_selected_policy()
+            if self.runtime_view:
+                policy = self.fw.getPolicySettings(selected_policy)
+                policy_settings = policy
+            else:
+                policy = self.fw.config().getPolicyByName(selected_policy)
+                policy_settings = policy.getSettings()
+
+            settings = policy_settings.getSettingsDict()
+
+            settings["ingress_zones"].append(zone)
+
+            if self.runtime_view:
+                self.fw.setPolicySettings(selected_policy, policy_settings)
+            else:
+                policy.update(policy_settings)
+
+        self.changes_applied()
+
+    def policy_egress_host_toggle_cb(self, *args):
+        if not self.policyEgressHostButton.get_active():
+            selected_policy = self.get_selected_policy()
+            if self.runtime_view:
+                policy = self.fw.getPolicySettings(selected_policy)
+                policy_settings = policy
+            else:
+                policy = self.fw.config().getPolicyByName(selected_policy)
+                policy_settings = policy.getSettings()
+
+            settings = policy_settings.getSettingsDict()
+
+            settings["egress_zones"].clear()
+            settings["egress_zones"].append("HOST")
+
+            if self.runtime_view:
+                self.fw.setPolicySettings(selected_policy, policy_settings)
+            else:
+                policy.update(policy_settings)
+
+            self.changes_applied()
+
+    def policy_egress_any_toggle_cb(self, *args):
+        if not self.policyEgressAnyButton.get_active():
+            selected_policy = self.get_selected_policy()
+            if self.runtime_view:
+                policy = self.fw.getPolicySettings(selected_policy)
+                policy_settings = policy
+            else:
+                policy = self.fw.config().getPolicyByName(selected_policy)
+                policy_settings = policy.getSettings()
+
+            settings = policy_settings.getSettingsDict()
+
+            settings["egress_zones"].clear()
+            settings["egress_zones"].append("ANY")
+
+            if self.runtime_view:
+                self.fw.setPolicySettings(selected_policy, policy_settings)
+            else:
+                policy.update(policy_settings)
+
+            self.changes_applied()
+
+    def policy_egress_zones_toggle_cb(self, *args):
+        if not self.policyEgressZonesButton.get_active():
+            selected_policy = self.get_selected_policy()
+            if self.runtime_view:
+                policy = self.fw.getPolicySettings(selected_policy)
+                policy_settings = policy
+            else:
+                policy = self.fw.config().getPolicyByName(selected_policy)
+                policy_settings = policy.getSettings()
+
+            settings = policy_settings.getSettingsDict()
+
+            settings["egress_zones"].clear()
+
+            if self.runtime_view:
+                self.fw.setPolicySettings(selected_policy, policy_settings)
+            else:
+                policy.update(policy_settings)
+            self.changes_applied()
+
+    def policy_egress_zone_toggle_cb(self, toggle, row):
+        iter = self.zoneStore.get_iter(row)
+        active = self.zoneStore.get_value(iter, 4)
+        zone = self.zoneStore.get_value(iter, 0)
+        if active:
+            selected_policy = self.get_selected_policy()
+            if self.runtime_view:
+                policy = self.fw.getPolicySettings(selected_policy)
+                policy_settings = policy
+            else:
+                policy = self.fw.config().getPolicyByName(selected_policy)
+                policy_settings = policy.getSettings()
+
+            settings = policy_settings.getSettingsDict()
+
+            settings["egress_zones"].remove(zone)
+
+            if self.runtime_view:
+                self.fw.setPolicySettings(selected_policy, policy_settings)
+            else:
+                policy.update(policy_settings)
+        else:
+            selected_policy = self.get_selected_policy()
+            if self.runtime_view:
+                policy = self.fw.getPolicySettings(selected_policy)
+                policy_settings = policy
+            else:
+                policy = self.fw.config().getPolicyByName(selected_policy)
+                policy_settings = policy.getSettings()
+
+            settings = policy_settings.getSettingsDict()
+
+            settings["egress_zones"].append(zone)
+
+            if self.runtime_view:
+                self.fw.setPolicySettings(selected_policy, policy_settings)
+            else:
+                policy.update(policy_settings)
+
+        self.changes_applied()
+
+
+    def policy_updated_cb(self, policy, settings):
+        if not self.runtime_view:
+            return
+
+        if self.get_selected_policy() == policy:
+            self.onChangePolicy()
+
+    def conf_policy_added_cb(self, policy):
+        if self.runtime_view:
+            return
+        # check if zone is in store
+        iter = self.policyStore.get_iter_first()
+        while iter:
+            if self.policyStore.get_value(iter, 0) == policy:
+                return
+            iter = self.policyStore.iter_next(iter)
+        self.policyStore.append([policy, self.fw.config().getPolicyByName(policy).getSettings().getDescription()])
+        selection = self.policyView.get_selection()
+        if selection.count_selected_rows() == 0:
+            selection.select_path(0)
+
+
+    def conf_policy_updated_cb(self, policy):
+        if self.runtime_view:
+            return
+
+        if self.get_selected_policy() == policy:
+            self.onChangePolicy()
+
+    def conf_policy_removed_cb(self, policy):
+        if self.runtime_view:
+            return
+        iter = self.policyStore.get_iter_first()
+        while iter:
+            if self.policyStore.get_value(iter, 0) == policy:
+                self.policyStore.remove(iter)
+                break
+            iter = self.policyStore.iter_next(iter)
+
+    def conf_policy_renamed_cb(self, policy):
+        if self.runtime_view:
+            return
+
+        # Get all zones, renamed the one that is missing.
+        # If more or less than one is missing, update zone store.
+
+        policies = self.fw.config().getPolicyNames()
+
+        use_iter = None
+        iter = self.policyStore.get_iter_first()
+        while iter:
+            if self.policyStore.get_value(iter, 0) not in policies:
+                if use_iter is not None:
+                    return self.load_policies()
+                use_iter = iter
+            iter = self.policyStore.iter_next(iter)
+
+        if use_iter is None:
+            return self.load_policies()
+
+        self.policyStore.set_value(use_iter, 0, policy)
 
 def combobox_select_text(combobox, value, insensitive=False):
     model = combobox.get_model()
