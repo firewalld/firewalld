@@ -723,16 +723,16 @@ class FirewallConfig:
 
         self.icmpView = builder.get_object("icmpView")
         self.icmpStore = Gtk.ListStore(
-            GObject.TYPE_BOOLEAN, GObject.TYPE_STRING  # checked
+            GObject.TYPE_BOOLEAN, GObject.TYPE_BOOLEAN, GObject.TYPE_STRING  # zone-checked, policy-checked
         )  # name
         toggle = Gtk.CellRendererToggle()
         toggle.connect("toggled", self.icmp_toggle_cb, self.icmpStore, 0)
         self.icmpView.append_column(Gtk.TreeViewColumn("", toggle, active=0))
         self.icmpView.append_column(
-            Gtk.TreeViewColumn(_("Icmp Type"), Gtk.CellRendererText(), text=1)
+            Gtk.TreeViewColumn(_("Icmp Type"), Gtk.CellRendererText(), text=2)
         )
         self.icmpView.set_model(self.icmpStore)
-        self.icmpStore.set_sort_column_id(1, Gtk.SortType.ASCENDING)
+        self.icmpStore.set_sort_column_id(2, Gtk.SortType.ASCENDING)
 
         self.icmpBlockInversionCheck = builder.get_object("icmpBlockInversionCheck")
         self.icmpBlockInversionEventbox = builder.get_object(
@@ -1402,6 +1402,15 @@ class FirewallConfig:
         self.editPolicyForwardButton = builder.get_object("editPolicyForwardButton")
         self.removePolicyForwardButton = builder.get_object("removePolicyForwardButton")
 
+        self.policyIcmpView = builder.get_object("policyIcmpView")
+        toggle = Gtk.CellRendererToggle()
+        toggle.connect("toggled", self.policy_icmp_toggle_cb)
+        self.policyIcmpView.append_column(Gtk.TreeViewColumn("", toggle, active=1))
+        self.policyIcmpView.append_column(
+            Gtk.TreeViewColumn(_("Icmp Type"), Gtk.CellRendererText(), text=2)
+        )
+        self.policyIcmpView.set_model(self.icmpStore)
+
         # firewall client
 
         self.fw = client.FirewallClient(wait=1)
@@ -1958,12 +1967,12 @@ class FirewallConfig:
             for item in self.fw.listServices():
                 self.serviceStore.append([False, False, item])
             for item in self.fw.listIcmpTypes():
-                self.icmpStore.append([False, item])
+                self.icmpStore.append([False, False, item])
         else:
             for item in self.fw.config().getServiceNames():
                 self.serviceStore.append([False, False, item])
             for item in self.fw.config().getIcmpTypeNames():
-                self.icmpStore.append([False, item])
+                self.icmpStore.append([False, False, item])
 
         # policies
         self.policyEgressZoneView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
@@ -2244,8 +2253,8 @@ class FirewallConfig:
 
     def icmp_toggle_cb(self, toggle, row, model, col):
         iter = model.get_iter(row)
-        old_val = model.get(iter, col)[0]
-        name = model.get(iter, 1)[0]
+        old_val = model.get_value(iter, col)
+        name = model.get_value(iter, 2)
         selected_zone = self.get_selected_zone()
         if self.runtime_view:
             if not old_val:
@@ -2260,12 +2269,34 @@ class FirewallConfig:
                 zone.removeIcmpBlock(name)
         self.changes_applied()
 
+    def policy_icmp_toggle_cb(self, toggle, row):
+        iter = self.icmpStore.get_iter(row)
+        old_val = self.icmpStore.get_value(iter, 1)
+        name = self.icmpStore.get_value(iter, 2)
+        selected_policy = self.get_selected_policy()
+        if self.runtime_view:
+            settings = self.fw.getPolicySettings(selected_policy)
+            if not old_val:
+                settings.addIcmpBlock(name)
+            else:
+                settings.removeIcmpBlock(name)
+            self.fw.setPolicySettings(selected_policy, settings)
+        else:
+            policy = self.fw.config().getPolicyByName(selected_policy)
+            settings = policy.getSettings()
+            if not old_val:
+                settings.addIcmpBlock(name)
+            else:
+                settings.removeIcmpBlock(name)
+            policy.update(settings)
+        self.changes_applied()
+
     def icmp_added_cb(self, zone, icmp, timeout):
         if not self.runtime_view or zone != self.get_selected_zone():
             return
         iter = self.icmpStore.get_iter_first()
         while iter:
-            if self.icmpStore.get_value(iter, 1) == icmp:
+            if self.icmpStore.get_value(iter, 2) == icmp:
                 self.icmpStore.set_value(iter, 0, True)
                 break
             iter = self.icmpStore.iter_next(iter)
@@ -2275,7 +2306,7 @@ class FirewallConfig:
             return
         iter = self.icmpStore.get_iter_first()
         while iter:
-            if self.icmpStore.get_value(iter, 1) == icmp:
+            if self.icmpStore.get_value(iter, 2) == icmp:
                 self.icmpStore.set_value(iter, 0, False)
                 break
             iter = self.icmpStore.iter_next(iter)
@@ -2294,6 +2325,27 @@ class FirewallConfig:
         else:
             zone = self.fw.config().getZoneByName(selected_zone)
             zone.setIcmpBlockInversion(not self.icmpBlockInversionCheck.get_active())
+            self.changes_applied()
+
+    def policy_icmp_block_inversion_check_cb(self, *args):
+        selected_policy = self.get_selected_policy()
+        if self.runtime_view:
+            settings = self.fw.getPolicySettings(selected_policy)
+            if not self.policyIcmpBlockInversionCheck.get_active():
+                if not settings.queryIcmpBlockInversion():
+                    settings.addIcmpBlockInversion()
+                    self.fw.setPolicySettings(selected_policy, settings)
+                    self.changes_applied()
+            else:
+                if settings.queryIcmpBlockInversion():
+                    settings.removeIcmpBlockInversion()
+                    self.fw.setPolicySettings(selected_policy, settings)
+                    self.changes_applied()
+        else:
+            policy = self.fw.config().getPolicyByName(selected_policy)
+            settings = policy.getSettings()
+            settings.setIcmpBlockInversion(not self.policyIcmpBlockInversionCheck.get_active())
+            policy.update(settings)
             self.changes_applied()
 
     def icmp_inversion_added_cb(self, zone):
@@ -3197,7 +3249,7 @@ class FirewallConfig:
         _icmpblocks = icmpblocks[:]
         iter = self.icmpStore.get_iter_first()
         while iter:
-            name = self.icmpStore.get_value(iter, 1)
+            name = self.icmpStore.get_value(iter, 2)
             if name in _icmpblocks:
                 self.icmpStore.set_value(iter, 0, True)
                 _icmpblocks.remove(name)
@@ -3285,6 +3337,7 @@ class FirewallConfig:
             self.policySourcePortView.set_sensitive(False)
             self.policyMasqueradeCheck.set_active(False)
             self.policyForwardView.set_sensitive(False)
+            self.policyIcmpView.set_sensitive(False)
 
             return
 
@@ -3297,11 +3350,11 @@ class FirewallConfig:
         self.policyEgressZoneView.set_sensitive(True)
 
         self.policyServiceView.set_sensitive(True)
-
         self.policyPortView.set_sensitive(True)
         self.policyProtocolView.set_sensitive(True)
         self.policySourcePortView.set_sensitive(True)
         self.policyForwardView.set_sensitive(True)
+        self.policyIcmpView.set_sensitive(True)
 
         iter = self.zoneStore.get_iter_first()
         while iter:
@@ -3312,6 +3365,11 @@ class FirewallConfig:
         while iter:
             self.serviceStore.set_value(iter, 1, False)
             iter = self.serviceStore.iter_next(iter)
+
+        iter = self.icmpStore.get_iter_first()
+        while iter:
+            self.icmpStore.set_value(iter, 1, False)
+            iter = self.icmpStore.iter_next(iter)
 
         self.policyIngressZoneView.get_selection().set_mode(Gtk.SelectionMode.NONE)
         self.policyEgressZoneView.get_selection().set_mode(Gtk.SelectionMode.NONE)
@@ -3392,6 +3450,14 @@ class FirewallConfig:
         for item in settings["forward_ports"]:
             self.policyForwardStore.append(item)
 
+        for item in settings["icmp_blocks"]:
+            iter = self.icmpStore.get_iter_first()
+            while iter:
+                if self.icmpStore.get_value(iter, 2) == item:
+                    self.icmpStore.set_value(iter, 1, True)
+                    break
+                iter = self.icmpStore.iter_next(iter)
+
         self.policyIngressZoneView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
         self.policyEgressZoneView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
         self.policyServiceView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
@@ -3399,6 +3465,7 @@ class FirewallConfig:
         self.policyProtocolView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
         self.policySourcePortView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
         self.policyForwardView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
+        self.policyIcmpView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
 
     def onAddZone(self, *args):
         if self.runtime_view:
