@@ -22,13 +22,15 @@
 # Pany <geekpany@gmail.com>, 2020, 2025.
 # Charles Lee <lchopn@gmail.com>, 2020.
 # Tianhao Chai <cth451@gmail.com>, 2021, 2025.
+# Eric <localize101@users.noreply.translate.fedoraproject.org>, 2025, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-06 14:46-0500\n"
-"PO-Revision-Date: 2025-11-13 20:57+0000\n"
-"Last-Translator: Tianhao Chai <cth451@gmail.com>\n"
+"PO-Revision-Date: 2026-02-21 08:58+0000\n"
+"Last-Translator: Eric <localize101@users.noreply.translate.fedoraproject.org>"
+"\n"
 "Language-Team: Chinese (Simplified) <https://translate.fedoraproject.org/"
 "projects/firewalld/master/zh_CN/>\n"
 "Language: zh_CN\n"
@@ -36,7 +38,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.14.3\n"
+"X-Generator: Weblate 5.16\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:450
 msgid "Firewall Applet"
@@ -45,38 +47,35 @@ msgstr "防火墙小程序"
 #: ../config/firewall-config.appdata.xml.in.h:1
 msgid ""
 "Firewall Configuration provides a graphical tool for administering firewall."
-msgstr ""
+msgstr "防火墙配置提供了管理防火墙的图形工具。"
 
 #: ../config/firewall-config.appdata.xml.in.h:2
-#, fuzzy
 msgid "Allows to inspect and set:"
-msgstr "请选择 ipset："
+msgstr "允许监控并设置："
 
 #: ../config/firewall-config.appdata.xml.in.h:3
-#, fuzzy
 msgid "Runtime and permanent firewall configuration"
-msgstr "防火墙配置"
+msgstr "运行时和永久防火墙配置"
 
 #: ../config/firewall-config.appdata.xml.in.h:4
-#, fuzzy
 msgid "Predefined zones (levels of trust for network connections)"
-msgstr "网络连接 '%s' 使用的默认区"
+msgstr "预定义区（网络连接的信任等级）"
 
 #: ../config/firewall-config.appdata.xml.in.h:5
 msgid "Predefined services (port/protocol, netfilter helper module)"
-msgstr ""
+msgstr "预定义服务（端口/协议、netfilter 助手模块）"
 
 #: ../config/firewall-config.appdata.xml.in.h:6
 msgid "Port forwarding, masquerading, ICMP blocking"
-msgstr ""
+msgstr "端口转发、伪装、ICMP 拦截"
 
 #: ../config/firewall-config.appdata.xml.in.h:7
 msgid "Complex firewall rules a.k.a. Rich Language"
-msgstr ""
+msgstr "复杂防火墙规则，即富语言"
 
 #: ../config/firewall-config.appdata.xml.in.h:8
 msgid "Iptables rules a.k.a. Direct Interface"
-msgstr ""
+msgstr "iptables 规则，即直接接口"
 
 #: ../config/firewall-config.desktop.in.h:1
 msgid "Firewall"
@@ -678,9 +677,8 @@ msgid "ipv6"
 msgstr "ipv6"
 
 #: ../src/firewall-config.in:3995
-#, fuzzy
 msgid "invalid element"
-msgstr "无效的名称"
+msgstr "无效元素"
 
 #: ../src/firewall-config.in:5161
 msgid ""
@@ -831,7 +829,7 @@ msgstr "直接穿通规则"
 
 #: ../src/firewall-config.glade.h:16
 msgid "Please select ipv and enter the args."
-msgstr "请选择 IPV 并输入参数。"
+msgstr "请选择 IPV 并输入变量。"
 
 #: ../src/firewall-config.glade.h:17
 msgid "Args:"
@@ -1088,9 +1086,9 @@ msgid ""
 "filters and rich rules. The zone can be bound to interfaces and source "
 "addresses."
 msgstr ""
-"FirewallD 区域定义了绑定的网络连接、网卡以及源地址的可信程度。区域是服务、端"
-"口、协议、IP伪装、端口/报文转发、ICMP过滤以及富规则的组合。区域可以绑定到网卡"
-"以及源地址。"
+"FirewallD 区域定义了绑定到区域的网络连接、网卡以及源地址的可信程度。区域是服"
+"务、端口、协议、IP伪装、端口/报文转发、ICMP过滤以及富规则的组合。区域可以绑定"
+"到网卡以及源地址。"
 
 #: ../src/firewall-config.glade.h:83
 msgid "Add Zone"
@@ -1519,7 +1517,7 @@ msgid ""
 "will be for iptables, with ipv6 for ip6tables and with eb for ethernet "
 "bridges (ebtables)."
 msgstr ""
-"每个操作的 IPV 参数应为 ipv4 或 ipv6 或 eb。ipv4 用于 iptables，ipv6 用于 "
+"每个选项的 IPV 参数应为 ipv4 或 ipv6 或 eb。ipv4 用于 iptables，ipv6 用于 "
 "ip6tables，eb 用于以太网桥接(ebtables)。"
 
 #: ../src/firewall-config.glade.h:170
@@ -1733,7 +1731,7 @@ msgstr "直接规则"
 
 #: ../src/firewall-config.glade.h:219
 msgid "Please select ipv and table, chain priority and enter the args."
-msgstr "请选择 IPV 及表、链优先级并输入参数。"
+msgstr "请选择 IPV 及表、链优先级并输入变量。"
 
 #: ../src/firewall-config.glade.h:220
 msgid "Priority:"
