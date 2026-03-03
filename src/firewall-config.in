@@ -153,6 +153,8 @@ class FirewallConfig:
         self.helpersMenuitem = builder.get_object("helpersMenuitem")
         self.directBox = builder.get_object("directBox")
         self.directMenuitem = builder.get_object("directMenuitem")
+        self.policiesBox = builder.get_object("policiesBox")
+        self.policiesMenuitem = builder.get_object("policiesMenuitem")
         self.activeBindingsMenuitem = builder.get_object("activeBindingsMenuitem")
 
         self.changeZonesConnectionMenuitem = builder.get_object(
@@ -1558,6 +1560,9 @@ class FirewallConfig:
         self.settings.connect("changed::show-direct", self.settings_show_direct_changed)
         self.settings_show_direct_changed(self.settings, "show-direct")
 
+        self.settings.connect("changed::show-policies", self.settings_show_policies_changed)
+        self.settings_show_policies_changed(self.settings, "show-policies")
+
         self.settings.connect(
             "changed::show-helpers", self.settings_show_helpers_changed
         )
@@ -1711,6 +1716,9 @@ class FirewallConfig:
     def onViewDirect_toggled(self, button):
         self.settings.set_boolean("show-direct", button.get_active())
 
+    def onViewPolicies_toggled(self, button):
+        self.settings.set_boolean("show-policies", button.get_active())
+
     def settings_show_direct_changed(self, settings, key):
         self.show_direct = settings.get_boolean(key)
         self.directBox.set_visible(self.show_direct)
@@ -1723,6 +1731,22 @@ class FirewallConfig:
             self.directChainStore.clear()
             self.directRuleStore.clear()
             self.directPassthroughStore.clear()
+
+    def settings_show_policies_changed(self, settings, key):
+        self.show_policies = settings.get_boolean(key)
+        self.policiesBox.set_visible(self.show_policies)
+        self.policiesMenuitem.set_active(self.show_policies)
+
+        if self.show_policies:
+            if self.fw.connected:
+                self.load_policies()
+        else:
+            self.policyStore.clear()
+            self.policyPortStore.clear()
+            self.policyProtocolStore.clear()
+            self.policySourcePortStore.clear()
+            self.policyForwardStore.clear()
+            self.policyRichRuleStore.clear()
 
     def settings_show_active_bindings_changed(self, settings, key):
         self.show_active_bindings = settings.get_boolean(key)

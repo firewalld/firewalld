@@ -2226,6 +2226,15 @@
                       </object>
                     </child>
                     <child>
+                      <object class="GtkCheckMenuItem" id="policiesMenuitem">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="label" translatable="yes">Policies</property>
+                        <property name="use-underline">True</property>
+                        <signal name="toggled" handler="onViewPolicies_toggled" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
                       <object class="GtkCheckMenuItem" id="activeBindingsMenuitem">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
