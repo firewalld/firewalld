@@ -1259,11 +1259,12 @@ class FirewallConfig:
         self.policyStore = Gtk.ListStore(
                 GObject.TYPE_STRING, # name
                 GObject.TYPE_STRING, # tooltip
-                GObject.TYPE_BOOLEAN) # enabled
+                GObject.TYPE_BOOLEAN, # enabled
+                GObject.TYPE_INT) # active
         toggle = Gtk.CellRendererToggle()
         toggle.connect("toggled", self.policy_enable_toggle_cb)
         self.policyView.append_column(Gtk.TreeViewColumn("", toggle, active=2))
-        self.policyView.append_column(Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=0))
+        self.policyView.append_column(Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=0, weight=3))
         self.policyView.set_model(self.policyStore)
         self.policyStore.set_sort_column_id(0, Gtk.SortType.ASCENDING)
         self.policyView.get_selection().connect("changed", self.onChangePolicy)
@@ -1954,8 +1955,10 @@ class FirewallConfig:
 
         if self.runtime_view:
             policies = self.fw.getPolicies()
+            active_policies = self.fw.getActivePolicies()
         else:
             policies = self.fw.config().getPolicyNames()
+            active_policies = {}
 
         # reset and fill notebook content according to view
 
@@ -1971,7 +1974,11 @@ class FirewallConfig:
             else:
                 settings = self.fw.config().getPolicyByName(item).getSettings()
 
-            self.policyStore.append([item, settings.getDescription(), not settings.getDisable()])
+            self.policyStore.append([item,
+                                     settings.getDescription(),
+                                     not settings.getDisable(),
+                                     Pango.Weight.BOLD if item in active_policies else Pango.Weight.NORMAL])
+            active_policies.pop(item, None)
 
         if selected_policy in policies:
             _policy = selected_policy
@@ -2803,8 +2810,10 @@ class FirewallConfig:
 
         if self.fw.connected:
             self.active_zones = self.fw.getActiveZones()
+            active_policies = self.fw.getActivePolicies()
         else:
             self.active_zones = {}
+            active_policies = {}
 
         # clean bindingsView, leave connections, interfaces and sources entries
         self.bindingsView.get_selection().set_mode(Gtk.SelectionMode.NONE)
@@ -3002,6 +3011,15 @@ class FirewallConfig:
             else:
                 self.zoneStore.set_value(iter, 1, Pango.Weight.NORMAL)
             iter = self.zoneStore.iter_next(iter)
+
+        # A Change in zone activity may affect policy activity
+        iter = self.policyStore.get_iter_first()
+        while iter:
+            if self.policyStore.get_value(iter, 0) in active_policies:
+                self.policyStore.set_value(iter, 3, Pango.Weight.BOLD)
+            else:
+                self.policyStore.set_value(iter, 3, Pango.Weight.NORMAL)
+            iter = self.policyStore.iter_next(iter)
 
     def onChangeDefaultZone(self, *args):
         self.defaultZoneStore.clear()
@@ -8863,10 +8881,13 @@ class FirewallConfig:
         if not self.runtime_view:
             return
 
+        active_policies = self.fw.getActivePolicies()
+
         iter = self.policyStore.get_iter_first()
         while iter:
             if self.policyStore.get_value(iter, 0) == policy:
                 self.policyStore.set_value(iter, 2, not settings["disable"])
+                self.policyStore.set_value(iter, 3, Pango.Weight.BOLD if policy in active_policies else Pango.Weight.NORMAL)
                 break
             iter = self.policyStore.iter_next(iter)
 
@@ -8883,7 +8904,7 @@ class FirewallConfig:
                 return
             iter = self.policyStore.iter_next(iter)
         settings = self.fw.config().getPolicyByName(policy).getSettings()
-        self.policyStore.append([policy, settings.getDescription(), not settings.getDisable()])
+        self.policyStore.append([policy, settings.getDescription(), not settings.getDisable(), Pango.Weight.NORMAL])
         selection = self.policyView.get_selection()
         if selection.count_selected_rows() == 0:
             selection.select_path(0)
