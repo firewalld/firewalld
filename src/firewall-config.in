@@ -1256,7 +1256,13 @@ class FirewallConfig:
         )
 
         self.policyView = builder.get_object("policyView")
-        self.policyStore = Gtk.ListStore(GObject.TYPE_STRING, GObject.TYPE_STRING) # name, tooltip
+        self.policyStore = Gtk.ListStore(
+                GObject.TYPE_STRING, # name
+                GObject.TYPE_STRING, # tooltip
+                GObject.TYPE_BOOLEAN) # enabled
+        toggle = Gtk.CellRendererToggle()
+        toggle.connect("toggled", self.policy_enable_toggle_cb)
+        self.policyView.append_column(Gtk.TreeViewColumn("", toggle, active=2))
         self.policyView.append_column(Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=0))
         self.policyView.set_model(self.policyStore)
         self.policyStore.set_sort_column_id(0, Gtk.SortType.ASCENDING)
@@ -1965,7 +1971,7 @@ class FirewallConfig:
             else:
                 settings = self.fw.config().getPolicyByName(item).getSettings()
 
-            self.policyStore.append([item, settings.getDescription()])
+            self.policyStore.append([item, settings.getDescription(), not settings.getDisable()])
 
         if selected_policy in policies:
             _policy = selected_policy
@@ -8607,6 +8613,41 @@ class FirewallConfig:
             f.close()
         return entries
 
+    def policy_enable_toggle_cb(self, toggle, row):
+        iter = self.policyStore.get_iter(row)
+        enabled = self.policyStore.get_value(iter, 2)
+        name = self.policyStore.get_value(iter, 0)
+        if enabled:
+            if self.runtime_view:
+                policy = self.fw.getPolicySettings(name)
+                settings = policy
+            else:
+                policy = self.fw.config().getPolicyByName(name)
+                settings = policy.getSettings()
+
+            settings.addDisable()
+
+            if self.runtime_view:
+                self.fw.setPolicySettings(name, settings)
+            else:
+                policy.update(settings)
+        else:
+            if self.runtime_view:
+                policy = self.fw.getPolicySettings(name)
+                settings = policy
+            else:
+                policy = self.fw.config().getPolicyByName(name)
+                settings = policy.getSettings()
+
+            settings.removeDisable()
+
+            if self.runtime_view:
+                self.fw.setPolicySettings(name, settings)
+            else:
+                policy.update(settings)
+
+        self.changes_applied()
+
     def policy_ingress_host_toggle_cb(self, *args):
         if not self.policyIngressHostButton.get_active():
             selected_policy = self.get_selected_policy()
@@ -8822,6 +8863,13 @@ class FirewallConfig:
         if not self.runtime_view:
             return
 
+        iter = self.policyStore.get_iter_first()
+        while iter:
+            if self.policyStore.get_value(iter, 0) == policy:
+                self.policyStore.set_value(iter, 2, not settings["disable"])
+                break
+            iter = self.policyStore.iter_next(iter)
+
         if self.get_selected_policy() == policy:
             self.onChangePolicy()
 
@@ -8834,7 +8882,8 @@ class FirewallConfig:
             if self.policyStore.get_value(iter, 0) == policy:
                 return
             iter = self.policyStore.iter_next(iter)
-        self.policyStore.append([policy, self.fw.config().getPolicyByName(policy).getSettings().getDescription()])
+        settings = self.fw.config().getPolicyByName(policy).getSettings()
+        self.policyStore.append([policy, settings.getDescription(), not settings.getDisable()])
         selection = self.policyView.get_selection()
         if selection.count_selected_rows() == 0:
             selection.select_path(0)
@@ -8843,6 +8892,14 @@ class FirewallConfig:
     def conf_policy_updated_cb(self, policy):
         if self.runtime_view:
             return
+
+        settings = self.fw.config().getPolicyByName(policy).getSettings()
+        iter = self.policyStore.get_iter_first()
+        while iter:
+            if self.policyStore.get_value(iter, 0) == policy:
+                self.policyStore.set_value(iter, 2, not settings.getDisable())
+                break
+            iter = self.policyStore.iter_next(iter)
 
         if self.get_selected_policy() == policy:
             self.onChangePolicy()
