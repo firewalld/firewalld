@@ -1817,13 +1817,18 @@ class nftables(object):
                 fragment.append(entry_tokens[i])
         return [{"concat": fragment}] if len(type_format) > 1 else fragment
 
-    def build_set_add_rules(self, name, entry):
+    def build_set_add_rules(self, name, entries):
         rules = []
-        element = self._set_entry_fragment(name, entry)
+        elements = []
+        if not isinstance(entries, (list, tuple)):
+            entries = [entries]
+        for element in entries:
+            elements.extend(self._set_entry_fragment(name, element))
+
         rules.append({"add": {"element": {"family": "inet",
                                           "table": TABLE_NAME,
                                           "name": name,
-                                          "elem": element}}})
+                                          "elem": elements}}})
         return rules
 
     def set_add(self, name, entry):
@@ -1867,8 +1872,9 @@ class nftables(object):
         rules.extend(self.build_set_flush_rules(set_name))
         self.set_rules(rules, self._fw.get_log_denied())
 
-        def _idle_set_add_entries(rules):
+        def _idle_set_add_entries(entries):
             try:
+                rules = self.build_set_add_rules(set_name, entries)
                 self.set_rules(rules, self._fw.get_log_denied())
             except Exception as e:
                 log.error("While restoring ipset entries the following Error occurred:")
@@ -1878,14 +1884,5 @@ class nftables(object):
         # the entries from the GLib main loop when it's idle. This avoids
         # blocking the main loop for too long.
         #
-        chunk = 0
-        rules = []
-        for entry in entries:
-            rules.extend(self.build_set_add_rules(set_name, entry))
-            chunk += 1
-            if chunk >= 1000:
-                GLib.idle_add(lambda x: _idle_set_add_entries(x), rules)
-                rules = []
-                chunk = 0
-        else:
-            GLib.idle_add(lambda x: _idle_set_add_entries(x), rules)
+        for i in range(0, len(entries), 1000):
+            GLib.idle_add(lambda x: _idle_set_add_entries(x), entries[i : i + 1000])
