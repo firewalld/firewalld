@@ -71,7 +71,6 @@ Requires: python3-qt5
 Requires: python3-gobject
 Requires: libnotify
 Requires: NetworkManager-libnm
-Requires: dbus-x11
 
 %description -n firewall-applet
 The firewall panel applet provides a status information of firewalld and also
@@ -85,7 +84,6 @@ Requires: hicolor-icon-theme
 Requires: gtk3
 Requires: python3-gobject
 Requires: NetworkManager-libnm
-Requires: dbus-x11
 Recommends: polkit
 
 %description -n firewall-config
