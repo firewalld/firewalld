@@ -28,13 +28,15 @@
 # Eric Garver <e@erig.me>, 2018. #zanata
 # Máximo Castañeda Riloba <mcrcctm@gmail.com>, 2018. #zanata
 # Emilio Herrera <ehespinosa57@gmail.com>, 2020, 2025.
+# Weblate Translation Memory <noreply-mt-weblate-translation-memory@weblate.org>, 2025.
+# "Fco. Javier F. Serrador" <fserrador@gmail.com>, 2025, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-06 14:46-0500\n"
-"PO-Revision-Date: 2025-11-13 20:45+0000\n"
-"Last-Translator: Emilio Herrera <ehespinosa57@gmail.com>\n"
+"PO-Revision-Date: 2026-03-01 18:58+0000\n"
+"Last-Translator: \"Fco. Javier F. Serrador\" <fserrador@gmail.com>\n"
 "Language-Team: Spanish <https://translate.fedoraproject.org/projects/"
 "firewalld/master/es/>\n"
 "Language: es\n"
@@ -42,47 +44,47 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.14.3\n"
+"X-Generator: Weblate 5.16.1\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:450
 msgid "Firewall Applet"
-msgstr "Applet del cortafuegos"
+msgstr "Applet del Cortafuegos"
 
 #: ../config/firewall-config.appdata.xml.in.h:1
 msgid ""
 "Firewall Configuration provides a graphical tool for administering firewall."
 msgstr ""
+"La Configuración de Cortafuegos proporciona una herramienta gráfica para "
+"administrar cortafuegos."
 
 #: ../config/firewall-config.appdata.xml.in.h:2
-#, fuzzy
 msgid "Allows to inspect and set:"
-msgstr "Por favor elija un IPSet:"
+msgstr "Permite inspeccionar y configurar:"
 
 #: ../config/firewall-config.appdata.xml.in.h:3
-#, fuzzy
 msgid "Runtime and permanent firewall configuration"
-msgstr "Configuración del cortafuegos"
+msgstr "Configuración del cortafuegos en tiempo de ejecución y permanencia"
 
 #: ../config/firewall-config.appdata.xml.in.h:4
-#, fuzzy
 msgid "Predefined zones (levels of trust for network connections)"
-msgstr "Zona predeterminada en uso por la conexión de red '%s'"
+msgstr "Zonas predeterminadas (niveles de confianza para conexiones de red)"
 
 #: ../config/firewall-config.appdata.xml.in.h:5
 msgid "Predefined services (port/protocol, netfilter helper module)"
 msgstr ""
+"Servicios predefinidos (puerto/protocolo, módulo ayudante de filtro de red)"
 
 #: ../config/firewall-config.appdata.xml.in.h:6
 msgid "Port forwarding, masquerading, ICMP blocking"
-msgstr ""
+msgstr "Desvío de puerto, mascara, bloqueo de ICMP"
 
 #: ../config/firewall-config.appdata.xml.in.h:7
 msgid "Complex firewall rules a.k.a. Rich Language"
-msgstr ""
+msgstr "Reglas de cortafuegos complejas o.s.l. Lenguaje Rico"
 
 #: ../config/firewall-config.appdata.xml.in.h:8
 msgid "Iptables rules a.k.a. Direct Interface"
-msgstr ""
+msgstr "Reglas de iptables o Interfaz Directo"
 
 #: ../config/firewall-config.desktop.in.h:1
 msgid "Firewall"
@@ -444,7 +446,7 @@ msgstr "Entrada"
 
 #: ../src/firewall-config.in:727
 msgid "Icmp Type"
-msgstr "Tipo ICMP"
+msgstr "Tipo Icmp"
 
 #: ../src/firewall-config.in:781
 msgid "Family"
@@ -550,13 +552,13 @@ msgstr "enmascarar"
 #: ../src/firewall-config.in:3425 ../src/firewall-config.in:3734
 #: ../src/firewall-config.in:3986 ../src/firewall-config.glade.h:258
 msgid "icmp-block"
-msgstr "bloqueo de ICMP"
+msgstr "bloque icmp"
 
 #: ../src/firewall-config.in:2065 ../src/firewall-config.in:3247
 #: ../src/firewall-config.in:3427 ../src/firewall-config.in:3738
 #: ../src/firewall-config.glade.h:259
 msgid "icmp-type"
-msgstr "tipo de ICMP"
+msgstr "tipo de icmp"
 
 #: ../src/firewall-config.in:2067 ../src/firewall-config.in:3251
 #: ../src/firewall-config.in:3429 ../src/firewall-config.in:3742
@@ -690,9 +692,8 @@ msgid "ipv6"
 msgstr "ipv6"
 
 #: ../src/firewall-config.in:3995
-#, fuzzy
 msgid "invalid element"
-msgstr "Nombre inválido"
+msgstr "Elemento no válido"
 
 #: ../src/firewall-config.in:5161
 msgid ""
@@ -741,7 +742,7 @@ msgstr ""
 
 #: ../src/firewall-config.in:5922
 msgid "Built-in ipset, rename not supported."
-msgstr "IPset incorporado, no se puede renombrar."
+msgstr "Incorpora ipset, no se puede renombrar."
 
 #: ../src/firewall-config.in:6022 ../src/firewall-config.in:6111
 msgid "Please select a file"
@@ -776,7 +777,7 @@ msgstr "Agente incorporado, no se puede renombrar."
 
 #: ../src/firewall-config.in:7047
 msgid "Built-in icmp, rename not supported."
-msgstr "Tipo ICMP incorporado, no se puede renombrar."
+msgstr "Incorpora icmp, no se admite renombrar."
 
 #: ../src/firewall-config.in:7657
 #, c-format
@@ -811,7 +812,7 @@ msgstr "Cadena directa"
 
 #: ../src/firewall-config.glade.h:7
 msgid "Please select ipv and table and enter the chain name."
-msgstr "Seleccione la versión IP y la tabla e ingrese el nombre de la cadena."
+msgstr "Seleccione la versión ipv y la tabla e ingrese el nombre de la cadena."
 
 #: ../src/firewall-config.glade.h:8
 msgid "ipv:"
@@ -847,7 +848,7 @@ msgstr "Regla de paso directo"
 
 #: ../src/firewall-config.glade.h:16
 msgid "Please select ipv and enter the args."
-msgstr "Seleccione versión IP e ingrese los argumentos."
+msgstr "Seleccione versión ipv e ingrese los argumentos."
 
 #: ../src/firewall-config.glade.h:17
 msgid "Args:"
@@ -916,7 +917,7 @@ msgstr "Versión:"
 
 #: ../src/firewall-config.glade.h:33
 msgid "Short:"
-msgstr "Nombre corto:"
+msgstr "Breve:"
 
 #: ../src/firewall-config.glade.h:34
 msgid "Description:"
@@ -1004,7 +1005,7 @@ msgstr "Cambiar a qué zona pertenece la conexión de red."
 
 #: ../src/firewall-config.glade.h:58
 msgid "Change Default Zone"
-msgstr "Cambiar zona por defecto"
+msgstr "Cambiar Zona Predeterminada"
 
 #: ../src/firewall-config.glade.h:59
 msgid "Change default zone for connections or interfaces."
@@ -1047,7 +1048,7 @@ msgstr "Tiempo de ejecución a permanente"
 
 #: ../src/firewall-config.glade.h:68
 msgid "_View"
-msgstr "_Ver"
+msgstr "_Vista"
 
 #: ../src/firewall-config.glade.h:69
 msgid "IPSets"
@@ -1684,7 +1685,7 @@ msgctxt ""
 "Meaning: Log of denied packets. But this is too long. LogDenied is also the "
 "parameter used in firewalld.conf."
 msgid "Log Denied:"
-msgstr "Registro de rechazos:"
+msgstr "Bitácora denegada:"
 
 #: ../src/firewall-config.glade.h:189
 msgid "Panic Mode:"
@@ -1719,7 +1720,7 @@ msgstr "Tipo:"
 
 #: ../src/firewall-config.glade.h:197
 msgid "Timeout:"
-msgstr "Tiempo de espera:"
+msgstr "Vencimiento:"
 
 #: ../src/firewall-config.glade.h:198
 msgid "Hashsize:"
@@ -1743,7 +1744,7 @@ msgstr "Máximo número de elementos; valor predeterminado: 65536"
 
 #: ../src/firewall-config.glade.h:203
 msgid "Please select an ipset:"
-msgstr "Por favor elija un IPSet:"
+msgstr "Elija un ipset:"
 
 #: ../src/firewall-config.glade.h:205
 msgid "Please enter an ipset entry:"
@@ -1751,7 +1752,7 @@ msgstr "Introduzca una entrada de ipset:"
 
 #: ../src/firewall-config.glade.h:206
 msgid "Log Denied"
-msgstr "Registro de rechazos"
+msgstr "Bitácora de Rechazo"
 
 #: ../src/firewall-config.glade.h:207
 msgid "Please select the log denied value:"
@@ -1783,7 +1784,7 @@ msgstr "Por favor elija un agente netfilter de seguimiento de conexiones:"
 
 #: ../src/firewall-config.glade.h:214
 msgid "- Select -"
-msgstr "- Elija -"
+msgstr "- Seleccionar -"
 
 #: ../src/firewall-config.glade.h:215
 msgid "Other Module:"
@@ -1840,11 +1841,11 @@ msgstr "Destino:"
 
 #: ../src/firewall-config.glade.h:229
 msgid "Log:"
-msgstr "Log:"
+msgstr "Bitácora:"
 
 #: ../src/firewall-config.glade.h:230
 msgid "Audit:"
-msgstr "Aviso:"
+msgstr "Auditoría:"
 
 #: ../src/firewall-config.glade.h:231
 msgid "ipv4 and ipv6"
@@ -1912,11 +1913,11 @@ msgstr "etiqueta"
 
 #: ../src/firewall-config.glade.h:270
 msgid "Base Zone Settings"
-msgstr "Configuración de zona base"
+msgstr "Ajustes de zona base"
 
 #: ../src/firewall-config.glade.h:271
 msgid "Please configure base zone settings:"
-msgstr "Por favor configure la zona base:"
+msgstr "Por favor configure los ajustes de la zona base:"
 
 #: ../src/firewall-config.glade.h:272
 msgid "Default Target"

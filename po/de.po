@@ -38,13 +38,15 @@
 # Phil Sutter <psutter@redhat.com>, 2020, 2025.
 # Joachim Philipp <joachim.philipp@gmail.com>, 2022, 2025.
 # Daniel Ziegenberg <daniel@ziegenberg.at>, 2022, 2025.
+# Weblate Translation Memory <noreply-mt-weblate-translation-memory@weblate.org>, 2025.
+# Ettore Atalan <atalanttore@googlemail.com>, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-06 14:46-0500\n"
-"PO-Revision-Date: 2025-11-13 20:44+0000\n"
-"Last-Translator: Daniel Ziegenberg <daniel@ziegenberg.at>\n"
+"PO-Revision-Date: 2025-11-23 04:12+0000\n"
+"Last-Translator: Ettore Atalan <atalanttore@googlemail.com>\n"
 "Language-Team: German <https://translate.fedoraproject.org/projects/"
 "firewalld/master/de/>\n"
 "Language: de\n"
@@ -62,37 +64,36 @@ msgstr "Firewall-Applet"
 msgid ""
 "Firewall Configuration provides a graphical tool for administering firewall."
 msgstr ""
+"Die Firewall-Konfiguration bietet ein grafisches Werkzeug zur Verwaltung der "
+"Firewall."
 
 #: ../config/firewall-config.appdata.xml.in.h:2
-#, fuzzy
 msgid "Allows to inspect and set:"
-msgstr "Bitte wählen Sie ein IPSet:"
+msgstr "Ermöglicht das Inspizieren und Festlegen:"
 
 #: ../config/firewall-config.appdata.xml.in.h:3
-#, fuzzy
 msgid "Runtime and permanent firewall configuration"
-msgstr "Firewall-Konfiguration"
+msgstr "Laufzeit- und permanente Firewall-Konfiguration"
 
 #: ../config/firewall-config.appdata.xml.in.h:4
-#, fuzzy
 msgid "Predefined zones (levels of trust for network connections)"
-msgstr "Standardzone benutzt von Netzwerkverbindung '%s'"
+msgstr "Vordefinierte Zonen (Vertrauensstufen für Netzwerkverbindungen)"
 
 #: ../config/firewall-config.appdata.xml.in.h:5
 msgid "Predefined services (port/protocol, netfilter helper module)"
-msgstr ""
+msgstr "Vordefinierte Dienste (Port/Protokoll, netfilter-Hilfsmodul)"
 
 #: ../config/firewall-config.appdata.xml.in.h:6
 msgid "Port forwarding, masquerading, ICMP blocking"
-msgstr ""
+msgstr "Portweiterleitung, Maskierung, ICMP-Blockierung"
 
 #: ../config/firewall-config.appdata.xml.in.h:7
 msgid "Complex firewall rules a.k.a. Rich Language"
-msgstr ""
+msgstr "Komplexe Firewall-Regeln, auch bekannt als reichhaltige Sprache"
 
 #: ../config/firewall-config.appdata.xml.in.h:8
 msgid "Iptables rules a.k.a. Direct Interface"
-msgstr ""
+msgstr "Iptables-Regeln, auch bekannt als direkte Schnittstelle"
 
 #: ../config/firewall-config.desktop.in.h:1
 msgid "Firewall"
@@ -289,7 +290,7 @@ msgstr "Zone '{zone}' aktiv für Quelle {source}"
 
 #: ../src/firewall-applet.in:962
 msgid "No Active Zones."
-msgstr "Keine aktivierten Zonen"
+msgstr "Keine aktiven Zonen."
 
 #: ../src/firewall-applet.in:1028
 msgid "Connection to FirewallD established."
@@ -414,7 +415,7 @@ msgstr "Argumente"
 
 #: ../src/firewall-config.in:336 ../src/firewall-config.in:2322
 msgid "Runtime"
-msgstr "Runtime"
+msgstr "Laufzeit"
 
 #: ../src/firewall-config.in:337
 msgid "Permanent"
@@ -472,11 +473,11 @@ msgstr "Element"
 
 #: ../src/firewall-config.in:793
 msgid "Src"
-msgstr "Src"
+msgstr "Qu."
 
 #: ../src/firewall-config.in:796
 msgid "Dest"
-msgstr "Dest"
+msgstr "Ziel"
 
 #: ../src/firewall-config.in:799
 msgid "log"
@@ -556,7 +557,7 @@ msgstr "Protokoll"
 #: ../src/firewall-config.in:3751 ../src/firewall-config.in:3973
 #: ../src/firewall-config.glade.h:262
 msgid "masquerade"
-msgstr "Maskierung"
+msgstr "maskieren"
 
 #: ../src/firewall-config.in:2063 ../src/firewall-config.in:3243
 #: ../src/firewall-config.in:3425 ../src/firewall-config.in:3734
@@ -702,9 +703,8 @@ msgid "ipv6"
 msgstr "ipv6"
 
 #: ../src/firewall-config.in:3995
-#, fuzzy
 msgid "invalid element"
-msgstr "Ungültiger Name"
+msgstr "ungültiges Element"
 
 #: ../src/firewall-config.in:5161
 msgid ""
@@ -842,7 +842,7 @@ msgstr "nat"
 
 #: ../src/firewall-config.glade.h:12
 msgid "raw"
-msgstr "raw"
+msgstr "roh"
 
 #: ../src/firewall-config.glade.h:13
 msgid "security"
@@ -1251,7 +1251,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:104
 msgid "Masquerading"
-msgstr "Masquerading"
+msgstr "Maskierung"
 
 #: ../src/firewall-config.glade.h:105
 msgid ""
@@ -1316,7 +1316,7 @@ msgstr "ICMP-Filter"
 
 #: ../src/firewall-config.glade.h:114
 msgid "Here you can set rich language rules for the zone."
-msgstr "Hier können umfassende Sprachregeln für die Zone definiert werden"
+msgstr "Hier können Sie umfangreiche Sprachregeln für die Zone festlegen."
 
 #: ../src/firewall-config.glade.h:115
 msgid "Add Rich Rule"
@@ -1623,7 +1623,7 @@ msgstr "Kette Bearbeiten"
 
 #: ../src/firewall-config.glade.h:173
 msgid "Remove Chain"
-msgstr "Kette Entfernen"
+msgstr "Kette entfernen"
 
 #: ../src/firewall-config.glade.h:174
 msgid "Chains"
@@ -1703,14 +1703,14 @@ msgstr "Durchgang"
 
 #: ../src/firewall-config.glade.h:187
 msgid "Current default zone of the system."
-msgstr "Aktuelle Standardzone des Systems"
+msgstr "Aktuelle Standardzone des Systems."
 
 #: ../src/firewall-config.glade.h:188
 msgctxt ""
 "Meaning: Log of denied packets. But this is too long. LogDenied is also the "
 "parameter used in firewalld.conf."
 msgid "Log Denied:"
-msgstr "Log Denied:"
+msgstr "Protokoll abgelehnt:"
 
 #: ../src/firewall-config.glade.h:189
 msgid "Panic Mode:"
@@ -1745,7 +1745,7 @@ msgstr "Typ:"
 
 #: ../src/firewall-config.glade.h:197
 msgid "Timeout:"
-msgstr "Timeout:"
+msgstr "Zeitüberschreitung:"
 
 #: ../src/firewall-config.glade.h:198
 msgid "Hashsize:"
@@ -1777,7 +1777,7 @@ msgstr "Geben Sie einen Ipset-Eintrag ein:"
 
 #: ../src/firewall-config.glade.h:206
 msgid "Log Denied"
-msgstr "Log Denied"
+msgstr "Protokoll abgelehnt"
 
 #: ../src/firewall-config.glade.h:207
 msgid "Please select the log denied value:"
@@ -1789,7 +1789,7 @@ msgstr "Markieren"
 
 #: ../src/firewall-config.glade.h:209
 msgid "Please enter a mark with an optional mask."
-msgstr "Bitte geben Sie eine Markierung mit optionaler Maske ein"
+msgstr "Bitte geben Sie eine Markierung mit einer optionalen Maske ein."
 
 #: ../src/firewall-config.glade.h:210
 msgid "The mark and the mask fields are both 32 bits wide unsigned numbers."
@@ -1831,7 +1831,9 @@ msgstr "Direkte Regel"
 
 #: ../src/firewall-config.glade.h:219
 msgid "Please select ipv and table, chain priority and enter the args."
-msgstr "Bitte wählen Sie ipv und table, "
+msgstr ""
+"Bitte wählen Sie ipv und Tabelle, Kettenpriorität und geben Sie die "
+"Argumente ein."
 
 #: ../src/firewall-config.glade.h:220
 msgid "Priority:"
