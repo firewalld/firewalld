@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>FusionPBX</short>
+  <description>FusionPBX is a web-based VoIP PBX platform for FreeSWITCH. Enable this service if you plan to allow SIP signaling, RTP media, and web access for PBX functionality.</description>
+  <include service="http"/>
+  <include service="https"/>
+  <include service="sip"/>
+  <include service="sips"/>
+  <include service="onscreen"/>
+  <include service="rtp"/>
+  <include service="sdl-ets"/>
+</service>
