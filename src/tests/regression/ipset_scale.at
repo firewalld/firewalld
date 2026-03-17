@@ -1,6 +1,8 @@
 FWD_START_TEST([ipset scale], 307200)
 AT_KEYWORDS(ipset gh738 scale)
 
+AT_SKIP_IF([! NS_CMD([which wc >/dev/null 2>&1])])
+
 dnl Create a huge ipset
 
 SKIP_IF_FW_IN_CONTAINER_WITH_NFTABLES
@@ -18,5 +20,12 @@ FWD_CHECK([--permanent --new-ipset foobar --type hash:net], 0, [ignore])
 FWD_CHECK([--permanent --ipset foobar --add-entries-from-file ./entries], 0, [ignore])
 
 FWD_RELOAD()
+
+dnl Verify all the entries are added.
+m4_if(nftables, FIREWALL_BACKEND, [
+    WAIT_UNTIL([test "$(NS_CMD([nft $NFT_NUMERIC_ARGS list set inet firewalld foobar |wc -l]))" -eq 31256])
+], [
+    WAIT_UNTIL([test "$(NS_CMD([$IPSET list foobar |wc -l]))" -eq 62508])
+])
 
 FWD_END_TEST()

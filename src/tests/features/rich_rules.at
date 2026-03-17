@@ -150,7 +150,7 @@ NFT_LIST_RULES([inet], [filter_IN_policy_foobar_pre], 0, [dnl
             icmp echo-request accept
             icmpv6 echo-request accept
             ip daddr 10.20.20.21 accept
-            icmpv6 nd-neighbor-advert accept
+            icmpv6 nd-neighbor-advert icmpv6 code 0 accept
             ip saddr 10.10.10.14 accept
             ip saddr 10.20.20.20 accept
         }
@@ -166,7 +166,7 @@ IPTABLES_LIST_RULES([filter], [IN_foobar_pre], 0, [dnl
 IP6TABLES_LIST_RULES([filter], [IN_foobar_pre], 0, [dnl
     DROP 0 -- 1234::4321 1234::4444
     ACCEPT 58 -- ::/0 ::/0 ipv6-icmptype 128
-    ACCEPT 58 -- ::/0 ::/0 ipv6-icmptype 136
+    ACCEPT 58 -- ::/0 ::/0 ipv6-icmptype 136 code 0
 ])
 
 FWD_CHECK([--permanent --policy=foobar --remove-egress-zone HOST], 0, [ignore])

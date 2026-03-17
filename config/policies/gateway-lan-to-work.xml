@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<policy target="ACCEPT" priority="1000">
+  <short>Set Gateway - LAN to work</short>
+  <description>
+    Part of the policy set "gateway". Allows all traffic from LAN to work.
+    Enables masquerading and common connection tracking helpers.
+  </description>
+  <disable />
+
+  <ingress-zone name="internal" />
+  <ingress-zone name="home" />
+  <ingress-zone name="trusted" />
+  <egress-zone name="work" />
+
+  <!-- Some services that provide conntrack helpers -->
+  <service name="ftp"/>
+  <service name="tftp"/>
+</policy>

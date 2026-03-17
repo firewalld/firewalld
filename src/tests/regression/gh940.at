@@ -6,7 +6,6 @@ AT_CHECK([sed -i 's/^LogDenied.*/LogDenied=all/' ./firewalld.conf])
 
 FWD_CHECK([--permanent --zone public --add-interface foobar0], 0, [ignore])
 
-AT_CHECK([mkdir -p ./policies])
 AT_DATA([./policies/log-denied.xml], [dnl
 <?xml version="1.0" encoding="utf-8"?>
 <policy target="DROP" priority="1">

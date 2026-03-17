@@ -20,4 +20,20 @@
     <icmp-type name="redirect" />
     <accept />
   </rule>
+  <rule family="ipv6">
+    <icmp-type name="mld-listener-done" />
+    <accept />
+  </rule>
+  <rule family="ipv6">
+    <icmp-type name="mld-listener-query" />
+    <accept />
+  </rule>
+  <rule family="ipv6">
+    <icmp-type name="mld-listener-report" />
+    <accept />
+  </rule>
+  <rule family="ipv6">
+    <icmp-type name="mld2-listener-report" />
+    <accept />
+  </rule>
 </policy>

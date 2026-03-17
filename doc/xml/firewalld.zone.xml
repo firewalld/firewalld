@@ -95,12 +95,24 @@
 	  <term>target="<literal>ACCEPT</literal>|<literal>%%REJECT%%</literal>|<literal>DROP</literal>"</term>
           <listitem>
 	    <para>
-	      Can be used to accept, reject or drop every packet that doesn't match any rule (port, service, etc.).
-	      The <literal>ACCEPT</literal> target is used in <literal>trusted</literal> zone to accept every packet not matching any rule.
-	      The <literal>%%REJECT%%</literal> target is used in <literal>block</literal> zone to reject (with default firewalld reject type) every packet not matching any rule.
-	      The <literal>DROP</literal> target is used in <literal>drop</literal> zone to drop every packet not matching any rule.
-	      If the target is not specified, every packet not matching any rule will be rejected.
-	    </para>
+              Can be used to accept, reject or drop every packet that doesn't
+              match any rule (port, service, etc.).
+            </para>
+
+            <para>
+              <literal>ACCEPT</literal>
+              is special: packets which are not addressed to the host
+              will be forwarded to their destination regardless of the
+              zone's
+              <xref linked="forward" endterm="forward.title"/>
+              setting, or any policies attached to the zone.
+            </para>
+
+            <para>
+              If unspecified, the default behavior applies: ICMP will be
+              accepted and everything else will be rejected.
+            </para>
+
 	  </listitem>
 	</varlistentry>
 
@@ -194,7 +206,7 @@
     </refsect2>
 
     <refsect2 id="forward">
-      <title>forward</title>
+      <title id="forward.title">forward</title>
       <para>
 	Is an optional empty-element tag and can be used only once in a zone configuration. This flag enables intra-zone forwarding. When enabled, packets will be forwarded between interfaces or sources within a zone, even if the zone's target is not set to <literal>ACCEPT</literal>.
       </para>

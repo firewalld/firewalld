@@ -1,6 +1,6 @@
 Summary: A firewall daemon with D-Bus interface providing a dynamic firewall
 Name: firewalld
-Version: 2.2.999
+Version: 2.4.999
 Release: 1%{?dist}
 URL:     http://firewalld.org
 License: GPL-2.0-or-later
@@ -71,7 +71,6 @@ Requires: python3-qt5
 Requires: python3-gobject
 Requires: libnotify
 Requires: NetworkManager-libnm
-Requires: dbus-x11
 
 %description -n firewall-applet
 The firewall panel applet provides a status information of firewalld and also
@@ -85,7 +84,6 @@ Requires: hicolor-icon-theme
 Requires: gtk3
 Requires: python3-gobject
 Requires: NetworkManager-libnm
-Requires: dbus-x11
 Recommends: polkit
 
 %description -n firewall-config
@@ -251,11 +249,11 @@ fi
 %{_datadir}/firewalld/gtk3_chooserbutton.py*
 %{_datadir}/firewalld/gtk3_niceexpander.py*
 %{_datadir}/applications/firewall-config.desktop
-%{_datadir}/metainfo/firewall-config.appdata.xml
+%{_datadir}/metainfo/org.firewalld.firewall-config.metainfo.xml
 %{_datadir}/icons/hicolor/*/apps/firewall-config*.*
 %{_datadir}/glib-2.0/schemas/org.fedoraproject.FirewallConfig.gschema.xml
 %{_mandir}/man1/firewall-config*.1*
 
 %changelog
-* Thu Jul 11 2024 Eric Garver <eric@garver.life> - 2.2.999-1
+* Thu Nov 06 2025 Eric Garver <eric@garver.life> - 2.4.999-1
 - bump package version to development version

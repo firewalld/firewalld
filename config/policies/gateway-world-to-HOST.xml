@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<policy target="CONTINUE" priority="1000">
+  <short>Set Gateway - world to HOST</short>
+  <description>
+    Part of the policy set "gateway". A policy for traffic received from
+    external or public zones and destined to the HOST running firewalld. Useful
+    to expose internal/dmz services with forward ports.
+  </description>
+  <disable />
+
+  <ingress-zone name="external" />
+  <ingress-zone name="public" />
+  <egress-zone name="HOST" />
+
+  <service name="dhcpv6-client"/>
+</policy>

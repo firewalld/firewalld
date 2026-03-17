@@ -7,6 +7,7 @@
 
 import os.path
 import copy
+import random
 
 from firewall.core.prog import runProg
 from firewall.core.logger import log
@@ -27,6 +28,7 @@ from firewall.errors import (
     INVALID_RULE,
     UNKNOWN_ERROR,
     INVALID_ADDR,
+    INVALID_ICMPTYPE,
 )
 from firewall.core.rich import (
     Rich_Accept,
@@ -40,6 +42,7 @@ from firewall.core.rich import (
     Rich_Tcp_Mss_Clamp,
 )
 from firewall.core.base import DEFAULT_ZONE_TARGET
+from firewall.core.icmp import ICMP_TYPES, ICMPV6_TYPES
 import string
 
 POLICY_CHAIN_PREFIX = ""
@@ -166,6 +169,13 @@ class ip4tables:
         self.policy_dispatch_index_cache = {}
         self.policy_dispatch_index_cache_ref_count = {}
         self.our_chains = {}  # chains created by firewalld
+        self.unique_chain_name_map = (
+            {}
+        )  # maps long chain names to one with shorter unique ID
+        self.random = random.Random()
+        self.random.seed(
+            version=2, a="string to seed the generator and make test output predictable"
+        )
 
     def fill_exists(self):
         self.command_exists = os.path.exists(self._command)
@@ -660,10 +670,35 @@ class ip4tables:
 
         return wait_option
 
+    def get_unique_chain_name(self, chain, prefix="", suffix=""):
+        iptables_max_len = 28
+        if len(chain) <= iptables_max_len:
+            return chain
+        if chain in self.unique_chain_name_map:
+            return self.unique_chain_name_map[chain]
+
+        prefix = (prefix + "_") if prefix else ""
+        suffix = ("_" + suffix) if suffix else ""
+
+        while True:
+            rand_chain = (
+                prefix
+                + "".join(
+                    self.random.choice(string.ascii_letters + string.digits)
+                    for i in range(iptables_max_len - len(prefix) - len(suffix))
+                )
+                + suffix
+            )
+            if rand_chain not in self.unique_chain_name_map.values():
+                self.unique_chain_name_map[chain] = rand_chain
+                return rand_chain
+
     def build_flush_rules(self):
         self.rich_rule_priority_counts = {}
         self.policy_dispatch_index_cache = {}
         self.policy_dispatch_index_cache_ref_count = {}
+        self.our_chains = {}
+        self.unique_chain_name_map = {}
         rules = []
         for table in BUILT_IN_CHAINS.keys():
             if not self.get_available_tables(table):
@@ -695,43 +730,14 @@ class ip4tables:
         return rules
 
     def supported_icmp_types(self, ipv=None):
-        """Return ICMP types that are supported by the iptables/ip6tables command and kernel"""
-        output = ""
-        try:
-            output = self.__run(
-                ["-p", "icmp" if self.ipv == "ipv4" else "ipv6-icmp", "--help"]
-            )
-        except ValueError as ex:
-            if self.ipv == "ipv4":
-                log.debug1("iptables error: %s" % ex)
-            else:
-                log.debug1("ip6tables error: %s" % ex)
+        supported = set()
 
-        return self._parse_supported_icmp_types(self.ipv, output)
+        if ipv is None or self.ipv == "ipv4":
+            supported.update(ICMP_TYPES.keys())
+        if ipv is None or self.ipv == "ipv6":
+            supported.update(ICMPV6_TYPES.keys())
 
-    @staticmethod
-    def _parse_supported_icmp_types(ipv, output):
-        in_types = False
-        ret = []
-        for line in output.splitlines():
-            if in_types:
-                line = line.strip().lower()
-                splits = line.split()
-                for split in splits:
-                    if split.startswith("(") and split.endswith(")"):
-                        x = split[1:-1]
-                    else:
-                        x = split
-                    if x not in ret:
-                        ret.append(x)
-            if (
-                ipv == "ipv4"
-                and line.startswith("Valid ICMP Types:")
-                or ipv == "ipv6"
-                and line.startswith("Valid ICMPv6 Types:")
-            ):
-                in_types = True
-        return ret
+        return list(supported)
 
     def build_default_tables(self):
         # nothing to do, they always exist
@@ -996,6 +1002,7 @@ class ip4tables:
         _policy = self._fw.policy.policy_base_chain_name(
             policy, table, POLICY_CHAIN_PREFIX, isSNAT
         )
+        _policy_unique = self.get_unique_chain_name(_policy, prefix=POLICY_CHAIN_PREFIX)
         prerouting = True if chain == "PREROUTING" else False
         postrouting = True if chain == "POSTROUTING" else False
 
@@ -1018,7 +1025,19 @@ class ip4tables:
             rule.extend(self._rule_addr_fragment("-d", egress_source))
 
         if not last:
-            rule.extend(["-j", _policy])
+            if _policy == _policy_unique:
+                rule.extend(["-j", _policy_unique])
+            else:
+                rule.extend(
+                    [
+                        "-j",
+                        _policy_unique,
+                        "-m",
+                        "comment",
+                        "--comment",
+                        f"human readable jump target: {_policy}",
+                    ]
+                )
         elif table != "filter" or chain in ["PREROUTING", "OUTPUT"]:
             rule.extend(["-j", "RETURN"])
         elif p_obj.target in [
@@ -1118,33 +1137,36 @@ class ip4tables:
         _policy = self._fw.policy.policy_base_chain_name(
             policy, table, POLICY_CHAIN_PREFIX, isSNAT=isSNAT
         )
+        _policy_unique = self.get_unique_chain_name(_policy, prefix=POLICY_CHAIN_PREFIX)
         p_obj = self._fw.policy.get_policy(policy)
 
-        self.our_chains[table].update(
-            set(
-                [
-                    _policy,
-                    "%s_log" % _policy,
-                    "%s_deny" % _policy,
-                    "%s_pre" % _policy,
-                    "%s_post" % _policy,
-                    "%s_allow" % _policy,
-                ]
-            )
-        )
+        self.our_chains[table].add(_policy_unique)
 
         rules = []
-        rules.append([add_del_chain, _policy, "-t", table])
-        rules.append([add_del_chain, "%s_pre" % _policy, "-t", table])
-        rules.append([add_del_chain, "%s_log" % _policy, "-t", table])
-        rules.append([add_del_chain, "%s_deny" % _policy, "-t", table])
-        rules.append([add_del_chain, "%s_allow" % _policy, "-t", table])
-        rules.append([add_del_chain, "%s_post" % _policy, "-t", table])
-        rules.append([add_del_rule, _policy, "-t", table, "-j", "%s_pre" % _policy])
-        rules.append([add_del_rule, _policy, "-t", table, "-j", "%s_log" % _policy])
-        rules.append([add_del_rule, _policy, "-t", table, "-j", "%s_deny" % _policy])
-        rules.append([add_del_rule, _policy, "-t", table, "-j", "%s_allow" % _policy])
-        rules.append([add_del_rule, _policy, "-t", table, "-j", "%s_post" % _policy])
+        rules.append([add_del_chain, _policy_unique, "-t", table])
+        for suffix in ("pre", "log", "deny", "allow", "post"):
+            _p = self.get_unique_chain_name(
+                f"{_policy}_{suffix}", prefix=POLICY_CHAIN_PREFIX
+            )
+            self.our_chains[table].add(_p)
+            rules.append([add_del_chain, _p, "-t", table])
+            if _policy == _policy_unique:
+                rules.append([add_del_rule, _policy_unique, "-t", table, "-j", _p])
+            else:
+                rules.append(
+                    [
+                        add_del_rule,
+                        _policy_unique,
+                        "-t",
+                        table,
+                        "-j",
+                        _p,
+                        "-m",
+                        "comment",
+                        "--comment",
+                        f"human readable jump target: {_policy}_{suffix}",
+                    ]
+                )
 
         if not p_obj.derived_from_zone and table == "filter":
             target = self._fw.policy._policies[policy].target
@@ -1154,7 +1176,7 @@ class ip4tables:
                     rules.append(
                         [
                             add_del_rule,
-                            _policy,
+                            _policy_unique,
                             "-t",
                             table,
                             "%%LOGTYPE%%",
@@ -1168,7 +1190,7 @@ class ip4tables:
                     rules.append(
                         [
                             add_del_rule,
-                            _policy,
+                            _policy_unique,
                             "-t",
                             table,
                             "%%LOGTYPE%%",
@@ -1180,7 +1202,7 @@ class ip4tables:
                     )
 
             if target in ["ACCEPT", "REJECT", "%%REJECT%%", "DROP"]:
-                rules.append([add_del_rule, _policy, "-t", table, "-j", target])
+                rules.append([add_del_rule, _policy_unique, "-t", table, "-j", target])
 
         if not enable:
             rules.reverse()
@@ -1260,7 +1282,14 @@ class ip4tables:
         add_del = {True: "-A", False: "-D"}[enable]
 
         chain_suffix = self._rich_rule_chain_suffix_from_log(rich_rule)
-        rule = ["-t", table, add_del, "%s_%s" % (_policy, chain_suffix)]
+        rule = [
+            "-t",
+            table,
+            add_del,
+            self.get_unique_chain_name(
+                f"{_policy}_{chain_suffix}", prefix=POLICY_CHAIN_PREFIX
+            ),
+        ]
         rule += self._rich_rule_priority_fragment(rich_rule)
         if isinstance(rich_rule.log, Rich_NFLog):
             rule += rule_fragment + ["-j", "NFLOG"]
@@ -1291,7 +1320,14 @@ class ip4tables:
         )
 
         chain_suffix = self._rich_rule_chain_suffix_from_log(rich_rule)
-        rule = ["-t", table, add_del, "%s_%s" % (_policy, chain_suffix)]
+        rule = [
+            "-t",
+            table,
+            add_del,
+            self.get_unique_chain_name(
+                f"{_policy}_{chain_suffix}", prefix=POLICY_CHAIN_PREFIX
+            ),
+        ]
         rule += self._rich_rule_priority_fragment(rich_rule)
         rule += rule_fragment
         if isinstance(rich_rule.action, Rich_Accept):
@@ -1318,7 +1354,9 @@ class ip4tables:
         )
 
         chain_suffix = self._rich_rule_chain_suffix(rich_rule)
-        chain = "%s_%s" % (_policy, chain_suffix)
+        chain = self.get_unique_chain_name(
+            f"{_policy}_{chain_suffix}", prefix=POLICY_CHAIN_PREFIX
+        )
         if isinstance(rich_rule.action, Rich_Accept):
             rule_action = ["-j", "ACCEPT"]
         elif isinstance(rich_rule.action, Rich_Reject):
@@ -1332,7 +1370,9 @@ class ip4tables:
             _policy = self._fw.policy.policy_base_chain_name(
                 policy, table, POLICY_CHAIN_PREFIX
             )
-            chain = "%s_%s" % (_policy, chain_suffix)
+            chain = self.get_unique_chain_name(
+                f"{_policy}_{chain_suffix}", prefix=POLICY_CHAIN_PREFIX
+            )
             rule_action = ["-j", "MARK", "--set-xmark", rich_rule.action.set]
         else:
             raise FirewallError(
@@ -1436,7 +1476,14 @@ class ip4tables:
             )
         else:
             rules.append(
-                [add_del, "%s_allow" % (_policy), "-t", table]
+                [
+                    add_del,
+                    self.get_unique_chain_name(
+                        f"{_policy}_allow", prefix=POLICY_CHAIN_PREFIX
+                    ),
+                    "-t",
+                    table,
+                ]
                 + rule_fragment
                 + ["-j", "ACCEPT"]
             )
@@ -1472,7 +1519,14 @@ class ip4tables:
             )
         else:
             rules.append(
-                [add_del, "%s_allow" % (_policy), "-t", table]
+                [
+                    add_del,
+                    self.get_unique_chain_name(
+                        f"{_policy}_allow", prefix=POLICY_CHAIN_PREFIX
+                    ),
+                    "-t",
+                    table,
+                ]
                 + rule_fragment
                 + ["-j", "ACCEPT"]
             )
@@ -1502,7 +1556,15 @@ class ip4tables:
             rule_fragment += ["-j", "TCPMSS", "--set-mss", tcp_mss_clamp_value]
 
         return [
-            ["-t", "filter", add_del, "%s_%s" % (_policy, chain_suffix)] + rule_fragment
+            [
+                "-t",
+                "filter",
+                add_del,
+                self.get_unique_chain_name(
+                    f"{_policy}_{chain_suffix}", prefix=POLICY_CHAIN_PREFIX
+                ),
+            ]
+            + rule_fragment
         ]
 
     def build_policy_source_ports_rules(
@@ -1536,7 +1598,14 @@ class ip4tables:
             )
         else:
             rules.append(
-                [add_del, "%s_allow" % (_policy), "-t", table]
+                [
+                    add_del,
+                    self.get_unique_chain_name(
+                        f"{_policy}_allow", prefix=POLICY_CHAIN_PREFIX
+                    ),
+                    "-t",
+                    table,
+                ]
                 + rule_fragment
                 + ["-j", "ACCEPT"]
             )
@@ -1552,7 +1621,14 @@ class ip4tables:
         )
         add_del = {True: "-A", False: "-D"}[enable]
 
-        rule = [add_del, "%s_allow" % (_policy), "-t", "raw", "-p", proto]
+        rule = [
+            add_del,
+            self.get_unique_chain_name(f"{_policy}_allow", prefix=POLICY_CHAIN_PREFIX),
+            "-t",
+            "raw",
+            "-p",
+            proto,
+        ]
         if port:
             rule += ["--dport", "%s" % portStr(port)]
         if destination:
@@ -1576,7 +1652,9 @@ class ip4tables:
                     "-t",
                     "filter",
                     add_del,
-                    "%s_allow" % _policy,
+                    self.get_unique_chain_name(
+                        f"{_policy}_allow", prefix=POLICY_CHAIN_PREFIX
+                    ),
                     "-o",
                     interface,
                     "-j",
@@ -1589,7 +1667,14 @@ class ip4tables:
                 return []
 
             rules.append(
-                ["-t", "filter", add_del, "%s_allow" % _policy]
+                [
+                    "-t",
+                    "filter",
+                    add_del,
+                    self.get_unique_chain_name(
+                        f"{_policy}_allow", prefix=POLICY_CHAIN_PREFIX
+                    ),
+                ]
                 + self._rule_addr_fragment("-d", source)
                 + ["-j", "ACCEPT"]
             )
@@ -1614,7 +1699,14 @@ class ip4tables:
 
         rules = []
         rules.append(
-            ["-t", "nat", add_del, "%s_%s" % (_policy, chain_suffix)]
+            [
+                "-t",
+                "nat",
+                add_del,
+                self.get_unique_chain_name(
+                    f"{_policy}_{chain_suffix}", prefix=POLICY_CHAIN_PREFIX
+                ),
+            ]
             + rule_fragment
             + ["!", "-o", "lo", "-j", "MASQUERADE"]
         )
@@ -1658,7 +1750,14 @@ class ip4tables:
             chain_suffix = "allow"
 
         rules.append(
-            ["-t", "nat", add_del, "%s_%s" % (_policy, chain_suffix)]
+            [
+                "-t",
+                "nat",
+                add_del,
+                self.get_unique_chain_name(
+                    f"{_policy}_{chain_suffix}", prefix=POLICY_CHAIN_PREFIX
+                ),
+            ]
             + rule_fragment
             + port_fragment
             + ["-j", "DNAT", "--to-destination", to]
@@ -1688,6 +1787,20 @@ class ip4tables:
 
         return rules
 
+    def _icmp_types_fragment(self, icmp_type):
+        if self.ipv == "ipv4" and icmp_type in ICMP_TYPES:
+            _type, _code, _omit_code = ICMP_TYPES[icmp_type]
+            _type_str = str(_type) if _omit_code else str(_type) + "/" + str(_code)
+            return ["-m", "icmp", "--icmp-type", _type_str]
+        elif self.ipv == "ipv6" and icmp_type in ICMPV6_TYPES:
+            _type, _code, _omit_code = ICMPV6_TYPES[icmp_type]
+            _type_str = str(_type) if _omit_code else str(_type) + "/" + str(_code)
+            return ["-m", "icmp6", "--icmpv6-type", _type_str]
+        else:
+            raise FirewallError(
+                INVALID_ICMPTYPE, f"ICMP type {icmp_type} not supported by {self.name}"
+            )
+
     def build_policy_icmp_block_rules(
         self, enable, policy, ict, rich_rule=None, ipvs=None
     ):
@@ -1699,17 +1812,21 @@ class ip4tables:
 
         if self.ipv == "ipv4":
             proto = ["-p", "icmp"]
-            match = ["-m", "icmp", "--icmp-type", ict.name]
+            match = self._icmp_types_fragment(ict.name)
         else:
             proto = ["-p", "ipv6-icmp"]
-            match = ["-m", "icmp6", "--icmpv6-type", ict.name]
+            match = self._icmp_types_fragment(ict.name)
 
         rules = []
         if self._fw.policy.query_icmp_block_inversion(policy):
-            final_chain = "%s_allow" % (_policy)
+            final_chain = self.get_unique_chain_name(
+                f"{_policy}_allow", prefix=POLICY_CHAIN_PREFIX
+            )
             final_target = "ACCEPT"
         else:
-            final_chain = "%s_deny" % (_policy)
+            final_chain = self.get_unique_chain_name(
+                f"{_policy}_deny", prefix=POLICY_CHAIN_PREFIX
+            )
             final_target = "%%REJECT%%"
 
         rule_fragment = []
@@ -1734,7 +1851,14 @@ class ip4tables:
             else:
                 chain_suffix = self._rich_rule_chain_suffix(rich_rule)
                 rules.append(
-                    ["-t", table, add_del, "%s_%s" % (_policy, chain_suffix)]
+                    [
+                        "-t",
+                        table,
+                        add_del,
+                        self.get_unique_chain_name(
+                            f"{_policy}_{chain_suffix}", prefix=POLICY_CHAIN_PREFIX
+                        ),
+                    ]
                     + self._rich_rule_priority_fragment(rich_rule)
                     + rule_fragment
                     + ["-j", "%%REJECT%%"]
@@ -1765,6 +1889,7 @@ class ip4tables:
         _policy = self._fw.policy.policy_base_chain_name(
             policy, table, POLICY_CHAIN_PREFIX
         )
+        _policy_unique = self.get_unique_chain_name(_policy, prefix=POLICY_CHAIN_PREFIX)
 
         rules = []
         rule_idx = 6
@@ -1774,9 +1899,9 @@ class ip4tables:
 
             if self._fw.get_log_denied() != "off":
                 if enable:
-                    rule = ["-I", _policy, str(rule_idx)]
+                    rule = ["-I", _policy_unique, str(rule_idx)]
                 else:
-                    rule = ["-D", _policy]
+                    rule = ["-D", _policy_unique]
 
                 rule = rule + [
                     "-t",
@@ -1795,9 +1920,9 @@ class ip4tables:
             ibi_target = "ACCEPT"
 
         if enable:
-            rule = ["-I", _policy, str(rule_idx)]
+            rule = ["-I", _policy_unique, str(rule_idx)]
         else:
-            rule = ["-D", _policy]
+            rule = ["-D", _policy_unique]
         rule = rule + ["-t", table, "-p", "%%ICMP%%", "-j", ibi_target]
         rules.append(rule)
 

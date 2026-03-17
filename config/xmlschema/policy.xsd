@@ -12,6 +12,7 @@ elementFormDefault="qualified">
       <xs:element name="protocol" type="valuetype" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="service" type="nametype" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="rule" type="ruletype" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="disable" type="emptytype"/>
     </xs:choice>
     <xs:attribute name="target" type="policytargettype"/>
     <xs:attribute name="priority" type="prioritytype"/>

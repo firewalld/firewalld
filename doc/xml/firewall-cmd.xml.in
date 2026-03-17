@@ -535,6 +535,9 @@
           <para>
             <literal>default</literal> is similar to <literal>REJECT</literal>, but it implicitly allows ICMP packets.
           </para>
+          <para>
+            <literal>ACCEPT</literal> allows traffic to be forwarded from the zone, either to the same zone or other zones.
+          </para>
         </listitem>
       </varlistentry>
 
@@ -1235,6 +1238,35 @@
         </listitem>
       </varlistentry>
 
+      <!-- add/remove/query disable -->
+      <varlistentry>
+        <term><optional><option>--permanent</option></optional> <option>--policy</option>=<replaceable>policy</replaceable>|<option>--policy-set</option>=<replaceable>policy-set</replaceable> <option>--add-disable</option></term>
+        <listitem>
+          <para>
+            Administratively disable a policy. A disabled policy will not activate.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><optional><option>--permanent</option></optional> <option>--policy</option>=<replaceable>policy</replaceable>|<option>--policy-set</option>=<replaceable>policy-set</replaceable> <option>--remove-disable</option></term>
+        <listitem>
+          <para>
+            Remove the administratively disable from a policy. Allows a policy
+            to activate.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><optional><option>--permanent</option></optional> <option>--policy</option>=<replaceable>policy</replaceable> <option>--query-disable</option></term>
+        <listitem>
+          <para>
+            Return if the policy is administratively disabled.
+          </para>
+        </listitem>
+      </varlistentry>
+
       </variablelist>
     </refsect2>
 
@@ -1275,7 +1307,7 @@ For interfaces that are not under control of NetworkManager, firewalld tries to 
 	    <para>
 	      As a end user you don't need this in most cases, because NetworkManager (or legacy network service) adds interfaces into zones automatically (according to <option>ZONE=</option> option from ifcfg-<replaceable>interface</replaceable> file) if <replaceable>NM_CONTROLLED=no</replaceable> is not set.
 	      You should do it only if there's no @IFCFGDIR@/ifcfg-<replaceable>interface</replaceable> file.
-	      If there is such file and you add interface to zone with this <option>--add-interface</option> option, make sure the zone is the same in both cases, otherwise the behaviour would be undefined.
+	      If there is such file and you add interface to zone with this <option>--add-interface</option> option, make sure the zone is the same in both cases, otherwise the behavior would be undefined.
 	      Please also have a look at the <citerefentry><refentrytitle>firewalld</refentrytitle><manvolnum>1</manvolnum></citerefentry> man page in the <replaceable>Concepts</replaceable> section.
 	      For permanent association of interface with a zone, see also 'How to set or change a zone for a connection?' in <citerefentry><refentrytitle>firewalld.zones</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
 	    </para>

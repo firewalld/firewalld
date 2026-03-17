@@ -1,6 +1,8 @@
 #
 # SPDX-License-Identifier: GPL-2.0-or-later
 
+from gi.repository import GLib
+
 import copy
 import dataclasses
 
@@ -41,6 +43,7 @@ class FirewallPolicy:
         self._fw = fw
         self._chains = {}
         self._policies = {}
+        self._timeouts = {}
 
     def __repr__(self):
         return "%s(%r, %r)" % (self.__class__, self._chains, self._policies)
@@ -48,6 +51,8 @@ class FirewallPolicy:
     def cleanup(self):
         self._chains.clear()
         self._policies.clear()
+        for _id in self._timeouts:
+            self.removeTimeout(_id)
 
     # transaction
 
@@ -74,6 +79,8 @@ class FirewallPolicy:
         active_policies = []
         for policy in self.get_policies_not_derived_from_zone():
             p_obj = self.get_policy(policy)
+            if p_obj.disable:
+                continue
             if (
                 set(p_obj.ingress_zones)
                 & set(self._fw.zone.get_active_zones() + ["HOST", "ANY"])
@@ -231,7 +238,14 @@ class FirewallPolicy:
             "source_ports": (self.add_source_port, self.remove_source_port),
             "ingress_zones": (self.add_ingress_zone, self.remove_ingress_zone),
             "egress_zones": (self.add_egress_zone, self.remove_egress_zone),
+            "disable": (self.add_disable, self.remove_disable),
         }
+
+        timeout = 0
+        if "timeout" in settings:
+            timeout = settings["timeout"]
+            settings = copy.copy(settings)
+            del settings["timeout"]
 
         # do a full config check on a temporary object before trying to make
         # the runtime changes
@@ -259,11 +273,24 @@ class FirewallPolicy:
             if isinstance(add_settings[key], list):
                 for args in add_settings[key]:
                     if isinstance(args, tuple):
-                        setting_to_fn[key][0](policy, *args, timeout=0, sender=sender)
+                        setting_to_fn[key][0](
+                            policy, *args, timeout=timeout, sender=sender
+                        )
                     else:
-                        setting_to_fn[key][0](policy, args, timeout=0, sender=sender)
+                        setting_to_fn[key][0](
+                            policy, args, timeout=timeout, sender=sender
+                        )
             else:  # bool
-                setting_to_fn[key][0](policy, timeout=0, sender=sender)
+                setting_to_fn[key][0](policy, timeout=timeout, sender=sender)
+
+    def addTimeout(self, tag, _id):
+        if _id not in self._timeouts:
+            self._timeouts[_id] = tag
+
+    def removeTimeout(self, _id):
+        if _id in self._timeouts:
+            GLib.source_remove(self._timeouts[_id])
+            del self._timeouts[_id]
 
     # ingress zones
 
@@ -294,6 +321,12 @@ class FirewallPolicy:
             if _obj.applied:
                 self._ingress_zone(True, _policy, zone, transaction)
 
+            if timeout > 0:
+                tag = GLib.timeout_add_seconds(
+                    timeout, self.remove_ingress_zone, _policy, zone
+                )
+                self.addTimeout(tag, ("ingress_zone", _policy, zone))
+
             self.__register_ingress_zone(_obj, zone_id, timeout, sender)
             transaction.add_fail(self.__unregister_ingress_zone, _obj, zone_id)
 
@@ -321,6 +354,8 @@ class FirewallPolicy:
                     self.unapply_policy_settings(policy, transaction)
                 else:
                     self._ingress_zone(False, _policy, zone, transaction)
+
+            self.removeTimeout(("ingress_zone", _policy, zone))
 
             transaction.add_post(self.__unregister_ingress_zone, _obj, zone_id)
 
@@ -365,6 +400,12 @@ class FirewallPolicy:
             if _obj.applied:
                 self._egress_zone(True, _policy, zone, transaction)
 
+            if timeout > 0:
+                tag = GLib.timeout_add_seconds(
+                    timeout, self.remove_egress_zone, _policy, zone
+                )
+                self.addTimeout(tag, ("egress_zone", _policy, zone))
+
             self.__register_egress_zone(_obj, zone_id, timeout, sender)
             transaction.add_fail(self.__unregister_egress_zone, _obj, zone_id)
 
@@ -392,6 +433,8 @@ class FirewallPolicy:
                     self.unapply_policy_settings(policy, transaction)
                 else:
                     self._egress_zone(False, _policy, zone, transaction)
+
+            self.removeTimeout(("egress_zone", _policy, zone))
 
             transaction.add_post(self.__unregister_egress_zone, _obj, zone_id)
 
@@ -447,6 +490,10 @@ class FirewallPolicy:
             if _obj.applied:
                 self.__rule(True, _policy, rule, transaction)
 
+            if timeout > 0:
+                tag = GLib.timeout_add_seconds(timeout, self.remove_rule, _policy, rule)
+                self.addTimeout(tag, ("rule", _policy, rule))
+
             self.__register_rule(_obj, rule, timeout, sender)
             transaction.add_fail(self.__unregister_rule, _obj, rule)
 
@@ -468,6 +515,8 @@ class FirewallPolicy:
 
             if _obj.applied:
                 self.__rule(False, _policy, rule, transaction)
+
+            self.removeTimeout(("rule", _policy, rule))
 
             transaction.add_post(self.__unregister_rule, _obj, rule)
 
@@ -510,6 +559,12 @@ class FirewallPolicy:
             if _obj.applied:
                 self._service(True, _policy, service, transaction)
 
+            if timeout > 0:
+                tag = GLib.timeout_add_seconds(
+                    timeout, self.remove_service, _policy, service
+                )
+                self.addTimeout(tag, ("service", _policy, service))
+
             self.__register_service(_obj, service_id, timeout, sender)
             transaction.add_fail(self.__unregister_service, _obj, service_id)
 
@@ -534,6 +589,8 @@ class FirewallPolicy:
 
             if _obj.applied:
                 self._service(False, _policy, service, transaction)
+
+            self.removeTimeout(("service", _policy, service))
 
             transaction.add_post(self.__unregister_service, _obj, service_id)
 
@@ -631,6 +688,12 @@ class FirewallPolicy:
                 port_id = self.__port_id(range, protocol)
                 transaction.add_post(self.__unregister_port, _obj, port_id)
 
+            if timeout > 0:
+                tag = GLib.timeout_add_seconds(
+                    timeout, self.remove_port, _policy, port, protocol
+                )
+                self.addTimeout(tag, ("port", _policy, port, protocol))
+
         return _policy
 
     def __register_port(self, _obj, port_id, timeout, sender):
@@ -674,6 +737,8 @@ class FirewallPolicy:
             for range in removed_ranges:
                 port_id = self.__port_id(range, protocol)
                 transaction.add_post(self.__unregister_port, _obj, port_id)
+
+            self.removeTimeout(("port", _policy, port, protocol))
 
         return _policy
 
@@ -727,6 +792,12 @@ class FirewallPolicy:
             if _obj.applied:
                 self._protocol(True, _policy, protocol, transaction)
 
+            if timeout > 0:
+                tag = GLib.timeout_add_seconds(
+                    timeout, self.remove_protocol, _policy, protocol
+                )
+                self.addTimeout(tag, ("protocol", _policy, protocol))
+
             self.__register_protocol(_obj, protocol_id, timeout, sender)
             transaction.add_fail(self.__unregister_protocol, _obj, protocol_id)
 
@@ -751,6 +822,8 @@ class FirewallPolicy:
 
             if _obj.applied:
                 self._protocol(False, _policy, protocol, transaction)
+
+            self.removeTimeout(("protocol", _policy, protocol))
 
             transaction.add_post(self.__unregister_protocol, _obj, protocol_id)
 
@@ -811,6 +884,12 @@ class FirewallPolicy:
                 port_id = self.__source_port_id(range, protocol)
                 transaction.add_post(self.__unregister_source_port, _obj, port_id)
 
+            if timeout > 0:
+                tag = GLib.timeout_add_seconds(
+                    timeout, self.remove_source_port, _policy, port, protocol
+                )
+                self.addTimeout(tag, ("source_port", _policy, port, protocol))
+
         return _policy
 
     def __register_source_port(self, _obj, port_id, timeout, sender):
@@ -855,6 +934,8 @@ class FirewallPolicy:
                 port_id = self.__source_port_id(range, protocol)
                 transaction.add_post(self.__unregister_source_port, _obj, port_id)
 
+            self.removeTimeout(("source_port", _policy, port, protocol))
+
         return _policy
 
     def __unregister_source_port(self, _obj, port_id):
@@ -890,6 +971,10 @@ class FirewallPolicy:
             if _obj.applied:
                 self._masquerade(True, _policy, transaction)
 
+            if timeout > 0:
+                tag = GLib.timeout_add_seconds(timeout, self.remove_masquerade, _policy)
+                self.addTimeout(tag, ("masquerade", _policy))
+
             self.__register_masquerade(_obj, timeout, sender)
             transaction.add_fail(self.__unregister_masquerade, _obj)
 
@@ -914,6 +999,8 @@ class FirewallPolicy:
             if _obj.applied:
                 self._masquerade(False, _policy, transaction)
 
+            self.removeTimeout(("masquerade", _policy))
+
             transaction.add_post(self.__unregister_masquerade, _obj)
 
         return _policy
@@ -923,6 +1010,57 @@ class FirewallPolicy:
 
     def query_masquerade(self, policy):
         return self.get_policy(policy).masquerade
+
+    def add_disable(self, policy, timeout=0, sender=None):
+        _policy = self._fw.check_policy(policy)
+        self._fw.check_timeout(timeout)
+        self._fw.check_panic()
+        _obj = self._policies[_policy]
+
+        if _obj.disable:
+            raise FirewallError(
+                errors.ALREADY_ENABLED, f"{_policy} is already disabled"
+            )
+
+        with self.with_transaction() as transaction:
+            transaction.add_post(self.__register_disable, _obj, timeout, sender)
+
+            if _obj.applied:
+                self.unapply_policy_settings(_policy, transaction)
+
+            if timeout > 0:
+                tag = GLib.timeout_add_seconds(timeout, self.remove_disable, _policy)
+                self.addTimeout(tag, ("disable", _policy))
+
+        return _policy
+
+    def __register_disable(self, _obj, timeout, sender):
+        _obj.disable = True
+
+    def remove_disable(self, policy):
+        _policy = self._fw.check_policy(policy)
+        self._fw.check_panic()
+        _obj = self._policies[_policy]
+
+        if not _obj.disable:
+            raise FirewallError(errors.NOT_ENABLED, f"{_policy} is not disabled")
+
+        with self.with_transaction() as transaction:
+            self.__unregister_disable(_obj)
+            transaction.add_fail(self.__register_disable, _obj, 0, None)
+
+            if not _obj.applied:
+                self.try_apply_policy_settings(_policy, use_transaction=transaction)
+
+            self.removeTimeout(("disable", _policy))
+
+        return _policy
+
+    def __unregister_disable(self, _obj):
+        _obj.disable = False
+
+    def query_disable(self, policy):
+        return self.get_policy(policy).disable
 
     # PORT FORWARDING
 
@@ -977,6 +1115,20 @@ class FirewallPolicy:
                     True, _policy, transaction, port, protocol, toport, toaddr
                 )
 
+            if timeout > 0:
+                tag = GLib.timeout_add_seconds(
+                    timeout,
+                    self.remove_forward_port,
+                    _policy,
+                    port,
+                    protocol,
+                    toport,
+                    toaddr,
+                )
+                self.addTimeout(
+                    tag, ("forward_port", _policy, port, protocol, toport, toaddr)
+                )
+
             self.__register_forward_port(_obj, forward_id, timeout, sender)
             transaction.add_fail(self.__unregister_forward_port, _obj, forward_id)
 
@@ -1004,6 +1156,10 @@ class FirewallPolicy:
                 self._forward_port(
                     False, _policy, transaction, port, protocol, toport, toaddr
                 )
+
+            self.removeTimeout(
+                ("forward_port", _policy, port, protocol, toport, toaddr)
+            )
 
             transaction.add_post(self.__unregister_forward_port, _obj, forward_id)
 
@@ -1047,6 +1203,12 @@ class FirewallPolicy:
             if _obj.applied:
                 self._icmp_block(True, _policy, icmp, transaction)
 
+            if timeout > 0:
+                tag = GLib.timeout_add_seconds(
+                    timeout, self.remove_icmp_block, _policy, icmp
+                )
+                self.addTimeout(tag, ("icmp_block", _policy, icmp))
+
             self.__register_icmp_block(_obj, icmp_id, timeout, sender)
             transaction.add_fail(self.__unregister_icmp_block, _obj, icmp_id)
 
@@ -1069,6 +1231,8 @@ class FirewallPolicy:
 
             if _obj.applied:
                 self._icmp_block(False, _policy, icmp, transaction)
+
+            self.removeTimeout(("icmp_block", _policy, icmp))
 
             transaction.add_post(self.__unregister_icmp_block, _obj, icmp_id)
 
@@ -1916,7 +2080,7 @@ class FirewallPolicy:
             return tc
         elif "HOST" in obj.egress_zones:
             # zone --> HOST
-            tc = [("filter", "INPUT")]
+            tc = [("filter", "INPUT"), ("nat", "PREROUTING"), ("mangle", "PREROUTING")]
             # iptables backend needs to put conntrack helper rules in raw
             # prerouting.
             if not self._fw.nftables_enabled:

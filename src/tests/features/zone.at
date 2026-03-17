@@ -250,3 +250,31 @@ IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES], 0, [dnl
 ])
 
 FWD_END_TEST([ignore])
+
+FWD_START_TEST([zone - name limits])
+AT_KEYWORDS(zone)
+
+FWD_CHECK([--permanent --new-zone=$(head -c 128 /dev/zero |tr '\0' 'A')], 0, [ignore])
+FWD_CHECK([--permanent --new-zone=$(head -c 128 /dev/zero |tr '\0' 'F')], 0, [ignore])
+FWD_CHECK([--permanent --new-zone=$(head -c 129 /dev/zero |tr '\0' 'F')], 116, [ignore], [ignore])
+
+dnl make it go active to verify runtime
+FWD_CHECK([--permanent --zone=$(head -c 128 /dev/zero |tr '\0' 'A') --add-interface foobar0], 0, [ignore])
+FWD_CHECK([--permanent --zone=$(head -c 128 /dev/zero |tr '\0' 'F') --add-interface foobar1], 0, [ignore])
+FWD_RELOAD()
+dnl iptables backend has to do some magic with chain names because it only
+dnl support 28 chars. Verify it works as expected.
+dnl NOTE: This depends on the random seed being initialized in Python.
+FWD_CHECK([--zone=$(head -c 128 /dev/zero |tr '\0' 'F') --add-service http], 0, [ignore])
+IPTABLES_LIST_RULES([filter], [eaeJ6G8R34yAWeJqtZuQQEPZ2mnQ], 0, [dnl
+])
+IP6TABLES_LIST_RULES([filter], [eaeJ6G8R34yAWeJqtZuQQEPZ2mnQ], 0, [dnl
+])
+IPTABLES_LIST_RULES([filter], [PZVn8HDmoSahNpatmB26ExD5NYlh], 0, [dnl
+    ACCEPT 6 -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:80
+])
+IP6TABLES_LIST_RULES([filter], [PZVn8HDmoSahNpatmB26ExD5NYlh], 0, [dnl
+    ACCEPT 6 -- ::/0 ::/0 tcp dpt:80
+])
+
+FWD_END_TEST([ignore])

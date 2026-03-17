@@ -505,7 +505,7 @@ class FirewallCommand:
         default_zone=None,
         extra_interfaces=[],
         active_zones=[],
-        active_policies=[],
+        active_policies=None,
         isPolicy=True,
     ):  # pylint: disable=R0914
         target = settings.getTarget()
@@ -550,8 +550,10 @@ class FirewallCommand:
                 attributes.append("default")
         if not isPolicy and zone in active_zones:
             attributes.append("active")
-        if isPolicy and zone in active_policies:
+        if isPolicy and active_policies is not None and zone in active_policies:
             attributes.append("active")
+        if isPolicy and active_policies is not None and settings.getDisable():
+            attributes.append("disabled")
         if attributes:
             zone = zone + " (%s)" % ", ".join(attributes)
         self.print_msg(zone)
@@ -559,6 +561,7 @@ class FirewallCommand:
             self.print_msg("  summary: " + short_description)
             self.print_msg("  description: " + description)
         if isPolicy:
+            self.print_msg(f"  disable: {'yes' if settings.getDisable() else 'no'}")
             self.print_msg("  priority: " + str(priority))
         self.print_msg("  target: " + target)
         if not isPolicy:
@@ -621,7 +624,7 @@ class FirewallCommand:
         settings,
         default_zone=None,
         extra_interfaces=[],
-        active_policies=[],
+        active_policies=None,
     ):
         self.print_zone_policy_info(
             policy,

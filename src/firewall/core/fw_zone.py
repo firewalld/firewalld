@@ -5,6 +5,8 @@
 # Authors:
 # Thomas Woerner <twoerner@redhat.com>
 
+from gi.repository import GLib
+
 import copy
 from firewall.core.base import SHORTCUTS, DEFAULT_ZONE_TARGET, SOURCE_IPSET_TYPES
 from firewall.core.io.policy import Policy
@@ -35,6 +37,7 @@ class FirewallZone:
         self._fw = fw
         self._zones = {}
         self._zone_policies = {}
+        self._timeouts = {}
 
     def __repr__(self):
         return "%s(%r)" % (self.__class__, self._zones)
@@ -42,6 +45,8 @@ class FirewallZone:
     def cleanup(self):
         self._zones.clear()
         self._zone_policies.clear()
+        for _id in self._timeouts:
+            self.removeTimeout(_id)
 
     def with_transaction(self, *args, **kwargs):
         ctx = self._fw.with_transaction(*args, **kwargs)
@@ -360,6 +365,12 @@ class FirewallZone:
             "forward": (self.add_forward, self.remove_forward),
         }
 
+        timeout = 0
+        if "timeout" in settings:
+            timeout = settings["timeout"]
+            settings = copy.copy(settings)
+            del settings["timeout"]
+
         # do a full config check on a temporary object before trying to make
         # the runtime changes
         old_obj = self.get_zone(zone)
@@ -390,15 +401,28 @@ class FirewallZone:
                         setting_to_fn[key][0](zone, args, sender=sender)
                     else:
                         if isinstance(args, tuple):
-                            setting_to_fn[key][0](zone, *args, timeout=0, sender=sender)
+                            setting_to_fn[key][0](
+                                zone, *args, timeout=timeout, sender=sender
+                            )
                         else:
-                            setting_to_fn[key][0](zone, args, timeout=0, sender=sender)
+                            setting_to_fn[key][0](
+                                zone, args, timeout=timeout, sender=sender
+                            )
             else:  # bool
                 if key in ["icmp_block_inversion"]:
                     # no timeout arg
                     setting_to_fn[key][0](zone, sender=sender)
                 else:
-                    setting_to_fn[key][0](zone, timeout=0, sender=sender)
+                    setting_to_fn[key][0](zone, timeout=timeout, sender=sender)
+
+    def addTimeout(self, tag, _id):
+        if _id not in self._timeouts:
+            self._timeouts[_id] = tag
+
+    def removeTimeout(self, _id):
+        if _id in self._timeouts:
+            GLib.source_remove(self._timeouts[_id])
+            del self._timeouts[_id]
 
     # INTERFACES
 
@@ -1280,6 +1304,10 @@ class FirewallZone:
             if _obj.applied:
                 self._forward(True, _zone, transaction)
 
+            if timeout > 0:
+                tag = GLib.timeout_add_seconds(timeout, self.remove_forward, _zone)
+                self.addTimeout(tag, ("forward", _zone))
+
             self.__register_forward(_obj, timeout, sender)
             transaction.add_fail(self.__unregister_forward, _obj)
 
@@ -1302,6 +1330,8 @@ class FirewallZone:
 
             if _obj.applied:
                 self._forward(False, _zone, transaction)
+
+            self.removeTimeout(("forward", _zone))
 
             transaction.add_post(self.__unregister_forward, _obj)
 

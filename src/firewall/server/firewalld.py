@@ -7,9 +7,11 @@
 
 from gi.repository import GLib
 
+import time
 import copy
 import dbus
 import dbus.service
+import dbus.mainloop.glib
 
 from firewall import config
 from firewall.core.fw import Firewall
@@ -61,12 +63,36 @@ class FirewallD(DbusServiceObject):
     """ Use config.dbus.PK_ACTION_CONFIG as a default """
 
     @handle_exceptions
-    def __init__(self, *args, **kwargs):
-        super(FirewallD, self).__init__(*args, **kwargs)
+    def __init__(self):
         self.fw = Firewall()
-        self.busname = args[0]
-        self.path = args[1]
         self.start()
+
+        dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
+        bus = None
+        name = None
+
+        retries_before_log = 60  # seconds-ish
+        while True:
+            for retries in range(retries_before_log):
+                try:
+                    bus = dbus.SystemBus()
+                    name = dbus.service.BusName(config.dbus.DBUS_INTERFACE, bus=bus)
+                    break
+                except Exception:
+                    time.sleep(1)
+            else:
+                log.info1(
+                    f"Failed to connect to dbus after {retries_before_log} retries."
+                )
+
+            if bus and name:
+                break
+
+        super(FirewallD, self).__init__(name, config.dbus.DBUS_PATH)
+
+        self.busname = name
+        self.path = config.dbus.DBUS_PATH
+
         dbus_introspection_prepare_properties(self, config.dbus.DBUS_INTERFACE)
         self.config = FirewallDConfig(
             self.fw.config, self.busname, config.dbus.DBUS_PATH_CONFIG
@@ -92,29 +118,6 @@ class FirewallD(DbusServiceObject):
 
     def accessCheck(self, sender):
         pass
-
-    # timeout functions
-
-    @dbus_handle_exceptions
-    def addTimeout(self, zone, x, tag):
-        if zone not in self._timeouts:
-            self._timeouts[zone] = {}
-        self._timeouts[zone][x] = tag
-
-    @dbus_handle_exceptions
-    def removeTimeout(self, zone, x):
-        if zone in self._timeouts and x in self._timeouts[zone]:
-            GLib.source_remove(self._timeouts[zone][x])
-            del self._timeouts[zone][x]
-
-    @dbus_handle_exceptions
-    def cleanup_timeouts(self):
-        # cleanup timeouts
-        for zone in self._timeouts:
-            for x in self._timeouts[zone]:
-                GLib.source_remove(self._timeouts[zone][x])
-            self._timeouts[zone].clear()
-        self._timeouts.clear()
 
     # property handling
 
@@ -949,11 +952,20 @@ class FirewallD(DbusServiceObject):
             zone, dbus_to_python(settings), sender
         )
         self.ZoneUpdated(zone, settings)
+        if "timeout" in settings and settings["timeout"] > 0:
+            GLib.timeout_add_seconds(
+                settings["timeout"],
+                self.ZoneUpdatedCurrentSettings,
+                zone,
+            )
 
     @dbus_service_signal(config.dbus.DBUS_INTERFACE_ZONE, signature="sa{sv}")
     @dbus_handle_exceptions
     def ZoneUpdated(self, zone, settings):
         log.debug1("zone.ZoneUpdated('%s', '%s')" % (zone, settings))
+
+    def ZoneUpdatedCurrentSettings(self, zone):
+        self.ZoneUpdated(zone, self.fw.zone.get_config_with_settings_dict(zone))
 
     @dbus_polkit_require_auth(config.dbus.PK_ACTION_CONFIG_INFO)
     @dbus_service_method(
@@ -976,11 +988,20 @@ class FirewallD(DbusServiceObject):
             policy, dbus_to_python(settings), sender
         )
         self.PolicyUpdated(policy, settings)
+        if "timeout" in settings and settings["timeout"] > 0:
+            GLib.timeout_add_seconds(
+                settings["timeout"],
+                self.PolicyUpdatedCurrentSettings,
+                policy,
+            )
 
     @dbus_service_signal(config.dbus.DBUS_INTERFACE_POLICY, signature="sa{sv}")
     @dbus_handle_exceptions
     def PolicyUpdated(self, policy, settings):
         log.debug1("policy.PolicyUpdated('%s', '%s')" % (policy, settings))
+
+    def PolicyUpdatedCurrentSettings(self, policy):
+        self.PolicyUpdated(policy, self.fw.policy.get_config_with_settings_dict(policy))
 
     @dbus_polkit_require_auth(config.dbus.PK_ACTION_INFO)
     @dbus_service_method(
@@ -1476,14 +1497,6 @@ class FirewallD(DbusServiceObject):
 
     # RICH RULES
 
-    @dbus_handle_exceptions
-    def disableTimedRichRule(self, zone, rule):
-        log.debug1("zone.disableTimedRichRule('%s', '%s')" % (zone, rule))
-        del self._timeouts[zone][rule]
-        obj = Rich_Rule(rule_str=rule)
-        self.fw.zone.remove_rule(zone, obj)
-        self.RichRuleRemoved(zone, rule)
-
     @dbus_polkit_require_auth(config.dbus.PK_ACTION_CONFIG)
     @dbus_service_method(
         config.dbus.DBUS_INTERFACE_ZONE, in_signature="ssi", out_signature="s"
@@ -1498,10 +1511,7 @@ class FirewallD(DbusServiceObject):
         _zone = self.fw.zone.add_rule(zone, obj, timeout)
 
         if timeout > 0:
-            tag = GLib.timeout_add_seconds(
-                timeout, self.disableTimedRichRule, _zone, rule
-            )
-            self.addTimeout(_zone, rule, tag)
+            GLib.timeout_add_seconds(timeout, self.RichRuleRemoved, _zone, rule)
 
         self.RichRuleAdded(_zone, rule, timeout)
         return _zone
@@ -1517,7 +1527,6 @@ class FirewallD(DbusServiceObject):
         log.debug1("zone.removeRichRule('%s', '%s')" % (zone, rule))
         obj = Rich_Rule(rule_str=rule)
         _zone = self.fw.zone.remove_rule(zone, obj)
-        self.removeTimeout(_zone, rule)
         self.RichRuleRemoved(_zone, rule)
         return _zone
 
@@ -1560,13 +1569,6 @@ class FirewallD(DbusServiceObject):
 
     # SERVICES
 
-    @dbus_handle_exceptions
-    def disableTimedService(self, zone, service):
-        log.debug1("zone.disableTimedService('%s', '%s')" % (zone, service))
-        del self._timeouts[zone][service]
-        self.fw.zone.remove_service(zone, service)
-        self.ServiceRemoved(zone, service)
-
     @dbus_polkit_require_auth(config.dbus.PK_ACTION_CONFIG)
     @dbus_service_method(
         config.dbus.DBUS_INTERFACE_ZONE, in_signature="ssi", out_signature="s"
@@ -1583,10 +1585,7 @@ class FirewallD(DbusServiceObject):
         _zone = self.fw.zone.add_service(zone, service, timeout, sender)
 
         if timeout > 0:
-            tag = GLib.timeout_add_seconds(
-                timeout, self.disableTimedService, _zone, service
-            )
-            self.addTimeout(_zone, service, tag)
+            GLib.timeout_add_seconds(timeout, self.ServiceRemoved, _zone, service)
 
         self.ServiceAdded(_zone, service, timeout)
         return _zone
@@ -1605,7 +1604,6 @@ class FirewallD(DbusServiceObject):
 
         _zone = self.fw.zone.remove_service(zone, service)
 
-        self.removeTimeout(_zone, service)
         self.ServiceRemoved(_zone, service)
         return _zone
 
@@ -1648,13 +1646,6 @@ class FirewallD(DbusServiceObject):
 
     # PORTS
 
-    @dbus_handle_exceptions
-    def disableTimedPort(self, zone, port, protocol):
-        log.debug1("zone.disableTimedPort('%s', '%s', '%s')" % (zone, port, protocol))
-        del self._timeouts[zone][(port, protocol)]
-        self.fw.zone.remove_port(zone, port, protocol)
-        self.PortRemoved(zone, port, protocol)
-
     @dbus_polkit_require_auth(config.dbus.PK_ACTION_CONFIG)
     @dbus_service_method(
         config.dbus.DBUS_INTERFACE_ZONE, in_signature="sssi", out_signature="s"
@@ -1673,10 +1664,7 @@ class FirewallD(DbusServiceObject):
         _zone = self.fw.zone.add_port(zone, port, protocol, timeout, sender)
 
         if timeout > 0:
-            tag = GLib.timeout_add_seconds(
-                timeout, self.disableTimedPort, _zone, port, protocol
-            )
-            self.addTimeout(_zone, (port, protocol), tag)
+            GLib.timeout_add_seconds(timeout, self.PortRemoved, _zone, port, protocol)
 
         self.PortAdded(_zone, port, protocol, timeout)
         return _zone
@@ -1695,7 +1683,6 @@ class FirewallD(DbusServiceObject):
         self.accessCheck(sender)
         _zone = self.fw.zone.remove_port(zone, port, protocol)
 
-        self.removeTimeout(_zone, (port, protocol))
         self.PortRemoved(_zone, port, protocol)
         return _zone
 
@@ -1743,13 +1730,6 @@ class FirewallD(DbusServiceObject):
 
     # PROTOCOLS
 
-    @dbus_handle_exceptions
-    def disableTimedProtocol(self, zone, protocol):
-        log.debug1("zone.disableTimedProtocol('%s', '%s')" % (zone, protocol))
-        del self._timeouts[zone][(protocol)]
-        self.fw.zone.remove_protocol(zone, protocol)
-        self.ProtocolRemoved(zone, protocol)
-
     @dbus_polkit_require_auth(config.dbus.PK_ACTION_CONFIG)
     @dbus_service_method(
         config.dbus.DBUS_INTERFACE_ZONE, in_signature="ssi", out_signature="s"
@@ -1765,10 +1745,7 @@ class FirewallD(DbusServiceObject):
         _zone = self.fw.zone.add_protocol(zone, protocol, timeout, sender)
 
         if timeout > 0:
-            tag = GLib.timeout_add_seconds(
-                timeout, self.disableTimedProtocol, _zone, protocol
-            )
-            self.addTimeout(_zone, protocol, tag)
+            GLib.timeout_add_seconds(timeout, self.ProtocolRemoved, _zone, protocol)
 
         self.ProtocolAdded(_zone, protocol, timeout)
         return _zone
@@ -1786,7 +1763,6 @@ class FirewallD(DbusServiceObject):
         self.accessCheck(sender)
         _zone = self.fw.zone.remove_protocol(zone, protocol)
 
-        self.removeTimeout(_zone, protocol)
         self.ProtocolRemoved(_zone, protocol)
         return _zone
 
@@ -1829,15 +1805,6 @@ class FirewallD(DbusServiceObject):
 
     # SOURCE PORTS
 
-    @dbus_handle_exceptions
-    def disableTimedSourcePort(self, zone, port, protocol):
-        log.debug1(
-            "zone.disableTimedSourcePort('%s', '%s', '%s')" % (zone, port, protocol)
-        )
-        del self._timeouts[zone][("sport", port, protocol)]
-        self.fw.zone.remove_source_port(zone, port, protocol)
-        self.SourcePortRemoved(zone, port, protocol)
-
     @dbus_polkit_require_auth(config.dbus.PK_ACTION_CONFIG)
     @dbus_service_method(
         config.dbus.DBUS_INTERFACE_ZONE, in_signature="sssi", out_signature="s"
@@ -1856,10 +1823,9 @@ class FirewallD(DbusServiceObject):
         _zone = self.fw.zone.add_source_port(zone, port, protocol, timeout, sender)
 
         if timeout > 0:
-            tag = GLib.timeout_add_seconds(
-                timeout, self.disableTimedSourcePort, _zone, port, protocol
+            GLib.timeout_add_seconds(
+                timeout, self.SourcePortRemoved, _zone, port, protocol
             )
-            self.addTimeout(_zone, ("sport", port, protocol), tag)
 
         self.SourcePortAdded(_zone, port, protocol, timeout)
         return _zone
@@ -1880,7 +1846,6 @@ class FirewallD(DbusServiceObject):
         self.accessCheck(sender)
         _zone = self.fw.zone.remove_source_port(zone, port, protocol)
 
-        self.removeTimeout(_zone, ("sport", port, protocol))
         self.SourcePortRemoved(_zone, port, protocol)
         return _zone
 
@@ -1929,12 +1894,6 @@ class FirewallD(DbusServiceObject):
 
     # MASQUERADE
 
-    @dbus_handle_exceptions
-    def disableTimedMasquerade(self, zone):
-        del self._timeouts[zone]["masquerade"]
-        self.fw.zone.remove_masquerade(zone)
-        self.MasqueradeRemoved(zone)
-
     @dbus_polkit_require_auth(config.dbus.PK_ACTION_CONFIG)
     @dbus_service_method(
         config.dbus.DBUS_INTERFACE_ZONE, in_signature="si", out_signature="s"
@@ -1949,8 +1908,7 @@ class FirewallD(DbusServiceObject):
         _zone = self.fw.zone.add_masquerade(zone, timeout, sender)
 
         if timeout > 0:
-            tag = GLib.timeout_add_seconds(timeout, self.disableTimedMasquerade, _zone)
-            self.addTimeout(_zone, "masquerade", tag)
+            GLib.timeout_add_seconds(timeout, self.MasqueradeRemoved, _zone)
 
         self.MasqueradeAdded(_zone, timeout)
         return _zone
@@ -1967,7 +1925,6 @@ class FirewallD(DbusServiceObject):
         self.accessCheck(sender)
         _zone = self.fw.zone.remove_masquerade(zone)
 
-        self.removeTimeout(_zone, "masquerade")
         self.MasqueradeRemoved(_zone)
         return _zone
 
@@ -1996,14 +1953,6 @@ class FirewallD(DbusServiceObject):
 
     # FORWARD PORT
 
-    @dbus_handle_exceptions
-    def disable_forward_port(
-        self, zone, port, protocol, toport, toaddr
-    ):  # pylint: disable=R0913
-        del self._timeouts[zone][(port, protocol, toport, toaddr)]
-        self.fw.zone.remove_forward_port(zone, port, protocol, toport, toaddr)
-        self.ForwardPortRemoved(zone, port, protocol, toport, toaddr)
-
     @dbus_polkit_require_auth(config.dbus.PK_ACTION_CONFIG)
     @dbus_service_method(
         config.dbus.DBUS_INTERFACE_ZONE, in_signature="sssssi", out_signature="s"
@@ -2029,16 +1978,9 @@ class FirewallD(DbusServiceObject):
         )
 
         if timeout > 0:
-            tag = GLib.timeout_add_seconds(
-                timeout,
-                self.disable_forward_port,
-                _zone,
-                port,
-                protocol,
-                toport,
-                toaddr,
+            GLib.timeout_add_seconds(
+                timeout, self.ForwardPortRemoved, _zone, port, protocol, toport, toaddr
             )
-            self.addTimeout(_zone, (port, protocol, toport, toaddr), tag)
 
         self.ForwardPortAdded(_zone, port, protocol, toport, toaddr, timeout)
         return _zone
@@ -2064,7 +2006,6 @@ class FirewallD(DbusServiceObject):
         self.accessCheck(sender)
         _zone = self.fw.zone.remove_forward_port(zone, port, protocol, toport, toaddr)
 
-        self.removeTimeout(_zone, (port, protocol, toport, toaddr))
         self.ForwardPortRemoved(_zone, port, protocol, toport, toaddr)
         return _zone
 
@@ -2125,13 +2066,6 @@ class FirewallD(DbusServiceObject):
 
     # ICMP BLOCK
 
-    @dbus_handle_exceptions
-    def disableTimedIcmpBlock(self, zone, icmp, sender):  # pylint: disable=W0613
-        log.debug1("zone.disableTimedIcmpBlock('%s', '%s')" % (zone, icmp))
-        del self._timeouts[zone][icmp]
-        self.fw.zone.remove_icmp_block(zone, icmp)
-        self.IcmpBlockRemoved(zone, icmp)
-
     @dbus_polkit_require_auth(config.dbus.PK_ACTION_CONFIG)
     @dbus_service_method(
         config.dbus.DBUS_INTERFACE_ZONE, in_signature="ssi", out_signature="s"
@@ -2147,10 +2081,7 @@ class FirewallD(DbusServiceObject):
         _zone = self.fw.zone.add_icmp_block(zone, icmp, timeout, sender)
 
         if timeout > 0:
-            tag = GLib.timeout_add_seconds(
-                timeout, self.disableTimedIcmpBlock, _zone, icmp, sender
-            )
-            self.addTimeout(_zone, icmp, tag)
+            GLib.timeout_add_seconds(timeout, self.IcmpBlockRemoved, _zone, icmp)
 
         self.IcmpBlockAdded(_zone, icmp, timeout)
         return _zone
@@ -2168,7 +2099,6 @@ class FirewallD(DbusServiceObject):
         self.accessCheck(sender)
         _zone = self.fw.zone.remove_icmp_block(zone, icmp)
 
-        self.removeTimeout(_zone, icmp)
         self.IcmpBlockRemoved(_zone, icmp)
         return _zone
 

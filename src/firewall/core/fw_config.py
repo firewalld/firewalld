@@ -26,6 +26,8 @@ from firewall.errors import FirewallError
 class FirewallConfig:
     def __init__(self, fw):
         self._fw = fw
+        self._pre_write_hooks = []
+        self._post_write_hooks = []
         self.__init_vars()
 
     def __repr__(self):
@@ -111,6 +113,28 @@ class FirewallConfig:
 
         self.__init_vars()
 
+    def add_pre_write_hook(self, fn):
+        self._pre_write_hooks.append(fn)
+
+    def add_post_write_hook(self, fn):
+        self._post_write_hooks.append(fn)
+
+    def remove_pre_write_hook(self, fn):
+        if fn in self._pre_write_hooks:
+            self._pre_write_hooks.remove(fn)
+
+    def remove_post_write_hook(self, fn):
+        if fn in self._post_write_hooks:
+            self._post_write_hooks.remove(fn)
+
+    def call_pre_write_hooks(self):
+        for fn in self._pre_write_hooks:
+            fn()
+
+    def call_post_write_hooks(self):
+        for fn in self._post_write_hooks:
+            fn()
+
     def get_all_io_objects_dict(self):
         """
         Returns a dict of dicts of all permanent config objects.
@@ -179,6 +203,7 @@ class FirewallConfig:
             self._helpers,
             self._icmptypes,
         ]
+        self.call_pre_write_hooks()
         for io_obj_dict in order:
             dict_copy = copy.copy(io_obj_dict)
             for obj_name in dict_copy:
@@ -192,6 +217,7 @@ class FirewallConfig:
                 del io_obj_dict[obj_name]
         self._firewalld_conf.set_defaults()
         self._firewalld_conf.write()
+        self.call_post_write_hooks()
 
     # direct
 
@@ -255,7 +281,9 @@ class FirewallConfig:
         x.import_config(conf, self.get_all_io_objects_dict())
         self.full_check_config({"ipsets": [x]})
         self.add_ipset(x)
+        self.call_pre_write_hooks()
         ipset_writer(x)
+        self.call_post_write_hooks()
         return x
 
     def new_ipset(self, name, conf):
@@ -274,7 +302,9 @@ class FirewallConfig:
         x.import_config(conf, self.get_all_io_objects_dict())
         self.full_check_config({"ipsets": [x]})
         self.add_ipset(x)
+        self.call_pre_write_hooks()
         ipset_writer(x)
+        self.call_post_write_hooks()
         return x
 
     def update_ipset_from_path(self, name):
@@ -356,11 +386,13 @@ class FirewallConfig:
             )
 
         name = "%s/%s.xml" % (obj.path, obj.name)
+        self.call_pre_write_hooks()
         try:
             shutil.move(name, "%s.old" % name)
         except Exception as msg:
             log.error("Backup of file '%s' failed: %s", name, msg)
             os.remove(name)
+        self.call_post_write_hooks()
 
         del self._ipsets[obj.name]
 
@@ -431,7 +463,9 @@ class FirewallConfig:
         x.import_config(conf, self.get_all_io_objects_dict())
         self.full_check_config({"icmptypes": [x]})
         self.add_icmptype(x)
+        self.call_pre_write_hooks()
         icmptype_writer(x)
+        self.call_post_write_hooks()
         return x
 
     def new_icmptype(self, name, conf):
@@ -450,7 +484,9 @@ class FirewallConfig:
         x.import_config(conf, self.get_all_io_objects_dict())
         self.full_check_config({"icmptypes": [x]})
         self.add_icmptype(x)
+        self.call_pre_write_hooks()
         icmptype_writer(x)
+        self.call_post_write_hooks()
         return x
 
     def update_icmptype_from_path(self, name):
@@ -532,11 +568,13 @@ class FirewallConfig:
             )
 
         name = "%s/%s.xml" % (obj.path, obj.name)
+        self.call_pre_write_hooks()
         try:
             shutil.move(name, "%s.old" % name)
         except Exception as msg:
             log.error("Backup of file '%s' failed: %s", name, msg)
             os.remove(name)
+        self.call_post_write_hooks()
 
         del self._icmptypes[obj.name]
 
@@ -614,7 +652,9 @@ class FirewallConfig:
         x.import_config_dict(conf, self.get_all_io_objects_dict())
         self.full_check_config({"services": [x]})
         self.add_service(x)
+        self.call_pre_write_hooks()
         service_writer(x)
+        self.call_post_write_hooks()
         return x
 
     def new_service(self, name, conf):
@@ -642,7 +682,9 @@ class FirewallConfig:
         x.import_config_dict(conf, self.get_all_io_objects_dict())
         self.full_check_config({"services": [x]})
         self.add_service(x)
+        self.call_pre_write_hooks()
         service_writer(x)
+        self.call_post_write_hooks()
         return x
 
     def update_service_from_path(self, name):
@@ -724,11 +766,13 @@ class FirewallConfig:
             )
 
         name = "%s/%s.xml" % (obj.path, obj.name)
+        self.call_pre_write_hooks()
         try:
             shutil.move(name, "%s.old" % name)
         except Exception as msg:
             log.error("Backup of file '%s' failed: %s", name, msg)
             os.remove(name)
+        self.call_post_write_hooks()
 
         del self._services[obj.name]
 
@@ -808,7 +852,9 @@ class FirewallConfig:
         x.import_config_dict(conf, self.get_all_io_objects_dict())
         self.full_check_config({"zones": [x]})
         self.add_zone(x)
+        self.call_pre_write_hooks()
         zone_writer(x)
+        self.call_post_write_hooks()
         return x
 
     def new_zone(self, name, conf):
@@ -836,7 +882,9 @@ class FirewallConfig:
         x.import_config_dict(conf, self.get_all_io_objects_dict())
         self.full_check_config({"zones": [x]})
         self.add_zone(x)
+        self.call_pre_write_hooks()
         zone_writer(x)
+        self.call_post_write_hooks()
         return x
 
     def update_zone_from_path(self, name):
@@ -927,11 +975,13 @@ class FirewallConfig:
             )
 
         name = "%s/%s.xml" % (obj.path, obj.name)
+        self.call_pre_write_hooks()
         try:
             shutil.move(name, "%s.old" % name)
         except Exception as msg:
             log.error("Backup of file '%s' failed: %s", name, msg)
             os.remove(name)
+        self.call_post_write_hooks()
 
         del self._zones[obj.name]
 
@@ -1006,7 +1056,9 @@ class FirewallConfig:
         x.import_config_dict(conf, self.get_all_io_objects_dict())
         self.full_check_config({"policies": [x]})
         self.add_policy_object(x)
+        self.call_pre_write_hooks()
         policy_writer(x)
+        self.call_post_write_hooks()
         return x
 
     def new_policy_object_dict(self, name, conf):
@@ -1027,7 +1079,9 @@ class FirewallConfig:
         x.import_config_dict(conf, self.get_all_io_objects_dict())
         self.full_check_config({"policies": [x]})
         self.add_policy_object(x)
+        self.call_pre_write_hooks()
         policy_writer(x)
+        self.call_post_write_hooks()
         return x
 
     def update_policy_object_from_path(self, name):
@@ -1122,11 +1176,13 @@ class FirewallConfig:
             )
 
         name = "%s/%s.xml" % (obj.path, obj.name)
+        self.call_pre_write_hooks()
         try:
             shutil.move(name, "%s.old" % name)
         except Exception as msg:
             log.error("Backup of file '%s' failed: %s", name, msg)
             os.remove(name)
+        self.call_post_write_hooks()
 
         del self._policy_objects[obj.name]
 
@@ -1197,7 +1253,9 @@ class FirewallConfig:
         x.import_config(conf, self.get_all_io_objects_dict())
         self.full_check_config({"helpers": [x]})
         self.add_helper(x)
+        self.call_pre_write_hooks()
         helper_writer(x)
+        self.call_post_write_hooks()
         return x
 
     def new_helper(self, name, conf):
@@ -1216,7 +1274,9 @@ class FirewallConfig:
         x.import_config(conf, self.get_all_io_objects_dict())
         self.full_check_config({"helpers": [x]})
         self.add_helper(x)
+        self.call_pre_write_hooks()
         helper_writer(x)
+        self.call_post_write_hooks()
         return x
 
     def update_helper_from_path(self, name):
@@ -1298,11 +1358,13 @@ class FirewallConfig:
             )
 
         name = "%s/%s.xml" % (obj.path, obj.name)
+        self.call_pre_write_hooks()
         try:
             shutil.move(name, "%s.old" % name)
         except Exception as msg:
             log.error("Backup of file '%s' failed: %s", name, msg)
             os.remove(name)
+        self.call_post_write_hooks()
 
         del self._helpers[obj.name]
 

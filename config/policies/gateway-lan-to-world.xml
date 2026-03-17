@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<policy target="ACCEPT" priority="1000">
+  <short>Set Gateway - LAN to world</short>
+  <description>
+    Part of the policy set "gateway". Allows all traffic from LAN to world. If
+    an interface is added to the "external" zone then the traffic will be
+    masqueraded. Also enables connection tracking helpers for common services,
+    e.g. ftp.
+  </description>
+  <disable />
+
+  <ingress-zone name="internal" />
+  <ingress-zone name="home" />
+  <ingress-zone name="trusted" />
+  <egress-zone name="external" />
+  <egress-zone name="public" />
+
+  <!-- Some services that provide conntrack helpers -->
+  <service name="ftp"/>
+  <service name="tftp"/>
+</policy>

@@ -5,14 +5,14 @@
 # Translators:
 # George Machitidze <giomac@gmail.com>, 2013
 # Thomas Woerner <twoerner@redhat.com>, 2016. #zanata
-# Temuri Doghonadze <temuri.doghonadze@gmail.com>, 2022.
+# Temuri Doghonadze <temuri.doghonadze@gmail.com>, 2022, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-04 15:37-0500\n"
-"PO-Revision-Date: 2022-07-31 08:19+0000\n"
-"Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
+"POT-Creation-Date: 2025-11-06 14:46-0500\n"
+"PO-Revision-Date: 2025-11-13 20:49+0000\n"
+"Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Georgian <https://translate.fedoraproject.org/projects/"
 "firewalld/master/ka/>\n"
 "Language: ka\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.13\n"
+"X-Generator: Weblate 5.14.3\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:450
 msgid "Firewall Applet"
@@ -75,24 +75,24 @@ msgstr "ქსელური ფარის კონფიგურაცი�
 msgid "firewall;network;security;iptables;netfilter;"
 msgstr "ბრანდმაუერი;ქსელი;უსაფრთხოება;iptables;netfilter;"
 
-#: ../src/firewall-applet.in:91 ../src/firewall-config.in:7683
+#: ../src/firewall-applet.in:91 ../src/firewall-config.in:7690
 #, c-format
 msgid "Select zone for interface '%s'"
 msgstr "აირჩიეთ ინტერფეისის (%s) ზონა"
 
 #: ../src/firewall-applet.in:132 ../src/firewall-applet.in:139
 #: ../src/firewall-applet.in:145 ../src/firewall-config.in:2440
-#: ../src/firewall-config.in:7729 ../src/firewall-config.in:7737
-#: ../src/firewall-config.in:7771 ../src/firewall-config.glade.h:4
+#: ../src/firewall-config.in:7736 ../src/firewall-config.in:7744
+#: ../src/firewall-config.in:7778 ../src/firewall-config.glade.h:4
 msgid "Default Zone"
 msgstr "ნაგულისხმები ზონა"
 
-#: ../src/firewall-applet.in:168 ../src/firewall-config.in:7764
+#: ../src/firewall-applet.in:168 ../src/firewall-config.in:7771
 #, c-format
 msgid "Select zone for connection '%s'"
 msgstr "აირჩიეთ კავშირის (%s) ზონა"
 
-#: ../src/firewall-applet.in:178 ../src/firewall-config.in:4030
+#: ../src/firewall-applet.in:178 ../src/firewall-config.in:4037
 msgid "Failed to set zone {zone} for connection {connection_name}"
 msgstr "კავშირისთვის ( {connection_name}) ზონის ({zone}) დაყენების შეცდომა"
 
@@ -299,8 +299,8 @@ msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
-"ინტერფეისზე '{interface}' შეერთებისთვის '{connection}' ზონა "
-"'{zone}' {activated_deactivated}"
+"ინტერფეისზე '{interface}' შეერთებისთვის '{connection}' ზონა '{zone}' "
+"{activated_deactivated}"
 
 #: ../src/firewall-applet.in:1118
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
@@ -474,23 +474,23 @@ msgid "Error"
 msgstr "შეცდომა"
 
 #: ../src/firewall-config.in:2028 ../src/firewall-config.in:3271
-#: ../src/firewall-config.in:3779 ../src/firewall-config.glade.h:233
+#: ../src/firewall-config.in:3778 ../src/firewall-config.glade.h:233
 msgid "accept"
 msgstr "თანხმობა"
 
 #: ../src/firewall-config.in:2030 ../src/firewall-config.in:3273
-#: ../src/firewall-config.in:3781 ../src/firewall-config.in:3954
+#: ../src/firewall-config.in:3780 ../src/firewall-config.in:3953
 #: ../src/firewall-config.glade.h:234
 msgid "reject"
 msgstr "უარყოფა"
 
 #: ../src/firewall-config.in:2034 ../src/firewall-config.in:3290
-#: ../src/firewall-config.in:3788 ../src/firewall-config.glade.h:235
+#: ../src/firewall-config.in:3787 ../src/firewall-config.glade.h:235
 msgid "drop"
 msgstr "გადაგდება"
 
 #: ../src/firewall-config.in:2036 ../src/firewall-config.in:3292
-#: ../src/firewall-config.in:3790 ../src/firewall-config.in:3957
+#: ../src/firewall-config.in:3789 ../src/firewall-config.in:3956
 #: ../src/firewall-config.glade.h:236
 msgid "mark"
 msgstr "დანიშვნა"
@@ -501,49 +501,49 @@ msgid "limit"
 msgstr "ლიმიტი"
 
 #: ../src/firewall-config.in:2055 ../src/firewall-config.in:3226
-#: ../src/firewall-config.in:3412 ../src/firewall-config.in:3719
+#: ../src/firewall-config.in:3412 ../src/firewall-config.in:3717
 #: ../src/firewall-config.glade.h:255
 msgid "service"
 msgstr "სერვსი"
 
 #: ../src/firewall-config.in:2057 ../src/firewall-config.in:3230
-#: ../src/firewall-config.in:3414 ../src/firewall-config.in:3723
+#: ../src/firewall-config.in:3414 ../src/firewall-config.in:3721
 #: ../src/firewall-config.glade.h:256
 msgid "port"
 msgstr "პორტი"
 
 #: ../src/firewall-config.in:2059 ../src/firewall-config.in:3235
-#: ../src/firewall-config.in:3423 ../src/firewall-config.in:3733
+#: ../src/firewall-config.in:3423 ../src/firewall-config.in:3730
 #: ../src/firewall-config.glade.h:257
 msgid "protocol"
 msgstr "პროტოკოლი"
 
 #: ../src/firewall-config.in:2061 ../src/firewall-config.in:3239
-#: ../src/firewall-config.in:3752 ../src/firewall-config.in:3974
+#: ../src/firewall-config.in:3751 ../src/firewall-config.in:3973
 #: ../src/firewall-config.glade.h:262
 msgid "masquerade"
 msgstr "მასკარადი"
 
 #: ../src/firewall-config.in:2063 ../src/firewall-config.in:3243
-#: ../src/firewall-config.in:3425 ../src/firewall-config.in:3737
-#: ../src/firewall-config.in:3987 ../src/firewall-config.glade.h:258
+#: ../src/firewall-config.in:3425 ../src/firewall-config.in:3734
+#: ../src/firewall-config.in:3986 ../src/firewall-config.glade.h:258
 msgid "icmp-block"
 msgstr "icmp-ის ბლოკირება"
 
 #: ../src/firewall-config.in:2065 ../src/firewall-config.in:3247
-#: ../src/firewall-config.in:3427 ../src/firewall-config.in:3741
+#: ../src/firewall-config.in:3427 ../src/firewall-config.in:3738
 #: ../src/firewall-config.glade.h:259
 msgid "icmp-type"
 msgstr "icmp-ის ტიპი"
 
 #: ../src/firewall-config.in:2067 ../src/firewall-config.in:3251
-#: ../src/firewall-config.in:3429 ../src/firewall-config.in:3745
-#: ../src/firewall-config.in:3982 ../src/firewall-config.glade.h:260
+#: ../src/firewall-config.in:3429 ../src/firewall-config.in:3742
+#: ../src/firewall-config.in:3981 ../src/firewall-config.glade.h:260
 msgid "forward-port"
 msgstr "პორტის გადამისამართება"
 
 #: ../src/firewall-config.in:2074 ../src/firewall-config.in:3261
-#: ../src/firewall-config.in:3431 ../src/firewall-config.in:3754
+#: ../src/firewall-config.in:3431 ../src/firewall-config.in:3753
 #: ../src/firewall-config.glade.h:261
 msgid "source-port"
 msgstr "საწყისი პორტი"
@@ -595,79 +595,84 @@ msgstr "ზონა '%s': ICMP-ის ტიპი '%s' მიუწვდო�
 msgid "Built-in zone, rename not supported."
 msgstr "ჩადგმული ზონა, სახელის შეცვლა შეუძლებელია."
 
-#: ../src/firewall-config.in:3188 ../src/firewall-config.in:3690
+#: ../src/firewall-config.in:3188 ../src/firewall-config.in:3691
 #: ../src/firewall-config.glade.h:241
 msgid "second"
 msgstr "წამი"
 
-#: ../src/firewall-config.in:3188 ../src/firewall-config.in:3690
+#: ../src/firewall-config.in:3188 ../src/firewall-config.in:3691
 #: ../src/firewall-config.glade.h:242
 msgid "minute"
 msgstr "წუთი"
 
-#: ../src/firewall-config.in:3188 ../src/firewall-config.in:3690
+#: ../src/firewall-config.in:3188 ../src/firewall-config.in:3691
 #: ../src/firewall-config.glade.h:243
 msgid "hour"
 msgstr "საათი"
 
-#: ../src/firewall-config.in:3188 ../src/firewall-config.in:3690
+#: ../src/firewall-config.in:3188 ../src/firewall-config.in:3691
 #: ../src/firewall-config.glade.h:244
 msgid "day"
 msgstr "დღე"
 
-#: ../src/firewall-config.in:3190 ../src/firewall-config.in:3692
+#: ../src/firewall-config.in:3190 ../src/firewall-config.in:3693
 #: ../src/firewall-config.glade.h:247
 msgid "emergency"
 msgstr "სასწრაფო"
 
-#: ../src/firewall-config.in:3191 ../src/firewall-config.in:3693
+#: ../src/firewall-config.in:3191 ../src/firewall-config.in:3694
 #: ../src/firewall-config.glade.h:248
 msgid "alert"
 msgstr "გაფრთხილება"
 
-#: ../src/firewall-config.in:3192 ../src/firewall-config.in:3694
+#: ../src/firewall-config.in:3192 ../src/firewall-config.in:3695
 #: ../src/firewall-config.glade.h:249
 msgid "critical"
 msgstr "კრიტიკული"
 
-#: ../src/firewall-config.in:3193 ../src/firewall-config.in:3695
+#: ../src/firewall-config.in:3193 ../src/firewall-config.in:3696
 #: ../src/firewall-config.glade.h:250
 msgid "error"
 msgstr "შეცდომა"
 
-#: ../src/firewall-config.in:3194 ../src/firewall-config.in:3696
+#: ../src/firewall-config.in:3194 ../src/firewall-config.in:3697
 #: ../src/firewall-config.glade.h:251
 msgid "warning"
 msgstr "გაფრთხილება"
 
-#: ../src/firewall-config.in:3195 ../src/firewall-config.in:3697
+#: ../src/firewall-config.in:3195 ../src/firewall-config.in:3698
 #: ../src/firewall-config.glade.h:252
 msgid "notice"
 msgstr "შეტყობინება"
 
-#: ../src/firewall-config.in:3196 ../src/firewall-config.in:3698
+#: ../src/firewall-config.in:3196 ../src/firewall-config.in:3699
 #: ../src/firewall-config.glade.h:253
 msgid "info"
 msgstr "ინფორმაცია"
 
-#: ../src/firewall-config.in:3197 ../src/firewall-config.in:3699
+#: ../src/firewall-config.in:3197 ../src/firewall-config.in:3700
 #: ../src/firewall-config.glade.h:254
 msgid "debug"
 msgstr "გამართვა"
 
-#: ../src/firewall-config.in:3404 ../src/firewall-config.in:3626
-#: ../src/firewall-config.in:3650 ../src/firewall-config.in:3704
-#: ../src/firewall-config.in:3860 ../src/firewall-config.in:3913
+#: ../src/firewall-config.in:3404 ../src/firewall-config.in:3627
+#: ../src/firewall-config.in:3651 ../src/firewall-config.in:3707
+#: ../src/firewall-config.in:3859 ../src/firewall-config.in:3912
 msgid "ipv4"
 msgstr "ipv4"
 
-#: ../src/firewall-config.in:3406 ../src/firewall-config.in:3628
-#: ../src/firewall-config.in:3652 ../src/firewall-config.in:3706
-#: ../src/firewall-config.in:3862 ../src/firewall-config.in:3915
+#: ../src/firewall-config.in:3406 ../src/firewall-config.in:3629
+#: ../src/firewall-config.in:3653 ../src/firewall-config.in:3707
+#: ../src/firewall-config.in:3861 ../src/firewall-config.in:3914
 msgid "ipv6"
 msgstr "ipv6"
 
-#: ../src/firewall-config.in:5154
+#: ../src/firewall-config.in:3995
+#, fuzzy
+msgid "invalid element"
+msgstr "არასწორი სახელი"
+
+#: ../src/firewall-config.in:5161
 msgid ""
 "Forwarding to another system is only useful if the interface is "
 "masqueraded.\n"
@@ -676,31 +681,31 @@ msgstr ""
 "სხვა სისტემაზე გადაგზავნა საჭიროა, თუ ინტერფეისზე მასკარადია ჩართული.\n"
 "გნებავთ ამ ზონის მასკარადის ჩართვა?"
 
-#: ../src/firewall-config.in:5512
+#: ../src/firewall-config.in:5519
 msgid "Built-in service, rename not supported."
 msgstr "ჩადგმული სერვისი, სახელის შეცვლა შეუძლებელია."
 
-#: ../src/firewall-config.in:5723
+#: ../src/firewall-config.in:5730
 msgid "Please enter an ipv4 address with the form address[/mask]."
 msgstr "შეიყვანეთ Ipv4 მისამართი ფორმით მისამართი[/ნიღაბი]."
 
-#: ../src/firewall-config.in:5724
+#: ../src/firewall-config.in:5731
 msgid "The mask can be a network mask or a number."
 msgstr "ნიღაბი შეიძლება ან ქსელის ნიღაბი იყოს, ან რიცხვი."
 
-#: ../src/firewall-config.in:5726
+#: ../src/firewall-config.in:5733
 msgid "Please enter an ipv6 address with the form address[/mask]."
 msgstr "შეიყვანეთ ipv6 მისამართი ფორმით მისამართი[/ნიღაბი]."
 
-#: ../src/firewall-config.in:5727
+#: ../src/firewall-config.in:5734
 msgid "The mask is a number."
 msgstr "ნიღაბი რიცხვია."
 
-#: ../src/firewall-config.in:5730
+#: ../src/firewall-config.in:5737
 msgid "Please enter an ipv4 or ipv6 address with the form address[/mask]."
 msgstr "შეიყვანეთ ipv4 ან ipv6 მისამართი ფორმით მისამართი[/ნიღაბი]."
 
-#: ../src/firewall-config.in:5733
+#: ../src/firewall-config.in:5740
 msgid ""
 "The mask can be a network mask or a number for ipv4.\n"
 "The mask is a number for ipv6."
@@ -708,51 +713,51 @@ msgstr ""
 "ნიღაბი შეიძლება იყოს ან ქსელის ნიღაბი, ან რიცხვი ipv4-სთვის.\n"
 "ipv6-ის ნიღაბი რიცხვია."
 
-#: ../src/firewall-config.in:5915
+#: ../src/firewall-config.in:5922
 msgid "Built-in ipset, rename not supported."
 msgstr "ჩაშენებული IPSet-ს სახელს ვერ გადაარქმევთ."
 
-#: ../src/firewall-config.in:6015 ../src/firewall-config.in:6104
+#: ../src/firewall-config.in:6022 ../src/firewall-config.in:6111
 msgid "Please select a file"
 msgstr "აირჩიეთ ფაილი"
 
-#: ../src/firewall-config.in:6029 ../src/firewall-config.in:6118
+#: ../src/firewall-config.in:6036 ../src/firewall-config.in:6125
 msgid "Text Files"
 msgstr "ტექსტური ფაილები"
 
-#: ../src/firewall-config.in:6034 ../src/firewall-config.in:6123
+#: ../src/firewall-config.in:6041 ../src/firewall-config.in:6130
 msgid "All Files"
 msgstr "ყველა ფაილი"
 
-#: ../src/firewall-config.in:6549 ../src/firewall-config.in:6578
+#: ../src/firewall-config.in:6556 ../src/firewall-config.in:6585
 #: ../src/firewall-config.glade.h:36
 msgid "All"
 msgstr "ყველა"
 
-#: ../src/firewall-config.in:6549 ../src/firewall-config.in:6578
+#: ../src/firewall-config.in:6556 ../src/firewall-config.in:6585
 #: ../src/firewall-config.glade.h:37
 msgid "IPv4"
 msgstr "IPv4"
 
-#: ../src/firewall-config.in:6549 ../src/firewall-config.in:6578
+#: ../src/firewall-config.in:6556 ../src/firewall-config.in:6585
 #: ../src/firewall-config.glade.h:38
 msgid "IPv6"
 msgstr "IPv6"
 
-#: ../src/firewall-config.in:6555
+#: ../src/firewall-config.in:6562
 msgid "Built-in helper, rename not supported."
 msgstr "ჩადგმულ დამხმარეს სახელს ვერ გადაარქმევთ."
 
-#: ../src/firewall-config.in:7040
+#: ../src/firewall-config.in:7047
 msgid "Built-in icmp, rename not supported."
 msgstr "ჩადგმული icmp, სახელის შეცვლა შეუძლებელია."
 
-#: ../src/firewall-config.in:7650
+#: ../src/firewall-config.in:7657
 #, c-format
 msgid "Failed to read file '%s': %s"
 msgstr "ფაილის (%s) წაკითხვის შეცდომა: %s"
 
-#: ../src/firewall-config.in:7787
+#: ../src/firewall-config.in:7794
 #, c-format
 msgid "Select zone for source %s"
 msgstr "აირჩიეთ ზონა წყაროსთვის (%s)"
@@ -1752,8 +1757,8 @@ msgstr "ინვერსია"
 
 #: ../src/firewall-config.glade.h:237
 msgid ""
-"To enable this Action has to be 'reject' and Family either 'ipv4' or "
-"'ipv6' (not both)."
+"To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
+"(not both)."
 msgstr ""
 
 #: ../src/firewall-config.glade.h:238

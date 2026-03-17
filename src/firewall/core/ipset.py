@@ -77,27 +77,6 @@ class ipset:
                 errors.INVALID_NAME, "ipset name '%s' is not valid" % name
             )
 
-    def set_supported_types(self):
-        """Return types that are supported by the ipset command and kernel"""
-        ret = []
-        output = ""
-        try:
-            output = self.__run(["--help"])
-        except ValueError as ex:
-            log.debug1("ipset error: %s" % ex)
-        lines = output.splitlines()
-
-        in_types = False
-        for line in lines:
-            # print(line)
-            if in_types:
-                splits = line.strip().split(None, 2)
-                if splits[0] not in ret and splits[0] in IPSET_TYPES:
-                    ret.append(splits[0])
-            if line.startswith("Supported set types:"):
-                in_types = True
-        return ret
-
     def check_type(self, type_name):
         """Check ipset type"""
         if len(type_name) > IPSET_MAXNAMELEN or type_name not in IPSET_TYPES:

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<policy target="CONTINUE" priority="1000">
+  <short>Set Gateway - LAN to HOST</short>
+  <description>
+    Part of the policy set "gateway". A policy for traffic destined to the node
+    running firewalld and originating from: internal, home, trusted. It
+    enables basic services provided by a gateway, e.g. dns, dhcp.
+  </description>
+  <disable />
+
+  <ingress-zone name="internal" />
+  <ingress-zone name="home" />
+  <ingress-zone name="trusted" />
+  <egress-zone name="HOST" />
+
+  <service name="dns" />
+  <service name="dhcp" />
+  <service name="ssh" />
+</policy>

@@ -104,6 +104,15 @@ m4_define([FWD_START_TEST], [
     AT_KEYWORDS([m4_bregexp(__file__, [^.*/\([^/]*\)\.at$], [\1])])
     AT_KEYWORDS([m4_bregexp(__file__, [^\(.*\)/[^/]*$], [\1])])
 
+    dnl empty config directories so we don't have a bunch of mkdir's in test
+    dnl cases
+    AT_CHECK([mkdir -p ./helpers])
+    AT_CHECK([mkdir -p ./icmptypes])
+    AT_CHECK([mkdir -p ./ipsets])
+    AT_CHECK([mkdir -p ./policies])
+    AT_CHECK([mkdir -p ./services])
+    AT_CHECK([mkdir -p ./zones])
+
     dnl Default values for things that should be defined in atlocal. If atlocal
     dnl can't be found it's likely because the testsuite is run "standalone" and
     dnl atconfig/atlocal aren't available. There should be one here for every value
@@ -283,7 +292,8 @@ m4_define([FWD_END_TEST], [
             AT_FAIL_IF([cat ./firewalld.log | dnl
                        sed "/WARNING: ip6tables not usable, disabling IPv6 firewall/d" | dnl
                        m4_ifnblank([$1], [sed $1 |]) dnl
-                       [grep '^[0-9-]*[ ]\+[0-9:]*[ ]\+\(ERROR\|WARNING\)']])
+                       grep -e ['^[0-9-]*[ ]\+[0-9:]*[ ]\+\(ERROR\|WARNING\)'] dnl
+                            -e ['Detected permanent.* configuration change']])
         fi
         m4_ifdef([CURRENT_DBUS_ADDRESS], [m4_undefine([CURRENT_DBUS_ADDRESS])])
         m4_ifdef([CURRENT_TEST_NS], [m4_undefine([CURRENT_TEST_NS])])
@@ -478,6 +488,9 @@ m4_define([NFT_LIST_RULES_NORMALIZE], [dnl
         dnl newer nft replace ICMP reject aliases with code values
         dnl nftables commit 5fecd2a6ef61 ("src: disentangle ICMP code types")
         -e ['s/\(icmp\|icmpv6\|icmpx\) code no-route/\1 code 0/g'] dnl
+        dnl nftables commit f4b646032acf ("fib: allow to check if route exists in maps")
+        dnl changed the fib output. Now uses "check" keyword.
+        -e ['s/oif missing/check missing/g'] dnl
 ])
 
 m4_define([NFT_LIST_RULES_ALWAYS], [
@@ -646,7 +659,7 @@ m4_define([CHECK_LOG_AUDIT], [
 m4_define([CHECK_NFT_CT_HELPER], [
     m4_if(nftables, FIREWALL_BACKEND, [
         NS_CHECK([nft add table inet firewalld_check_ct_helper])
-        AT_SKIP_IF([! NS_CMD([nft add ct helper inet firewalld helper-ftp-tcp { type \"ftp\" protocol tcp \; } >/dev/null 2>&1])])
+        AT_SKIP_IF([! NS_CMD([nft add ct helper inet firewalld_check_ct_helper helper-ftp-tcp { type \"ftp\" protocol tcp \; } >/dev/null 2>&1])])
         NS_CHECK([nft delete table inet firewalld_check_ct_helper])
     ])
 ])
@@ -803,4 +816,59 @@ m4_define([CHECK_NFTABLES_FIB_IN_FORWARD], [
         AT_SKIP_IF([! NS_CMD([nft add rule inet firewalld_check foobar meta nfproto ipv6 fib saddr . mark . iif oif missing drop >/dev/null 2>&1])])
         NS_CHECK([nft delete table inet firewalld_check])
     ])
+])
+
+dnl This builds a test topology using network namespaces. There is a namespace
+dnl for each zone. Firewalld runs in the usual CURRENT_TEST_NS like other
+dnl tests. This allows doing functional testing of firewalld configuration.
+m4_define([START_TEST_TOPOLOGY], [
+    NS_CHECK([sysctl -w net.ipv4.conf.all.forwarding=1], 0, [ignore])
+
+    ZONES="block dmz drop external home internal public trusted work"
+    count=0
+    for ZONE in ${ZONES}; do
+        AT_CHECK([ip netns add CURRENT_TEST_NS-${ZONE}], 0, [ignore])
+        echo "ip netns delete CURRENT_TEST_NS-${ZONE}" >> ./cleanup
+
+        NS_CHECK([ip link add ${ZONE}-ns type veth peer name ${ZONE}-fwd], 0, [ignore])
+        NS_CHECK([ip link set ${ZONE}-ns netns CURRENT_TEST_NS-${ZONE}], 0, [ignore])
+
+        NS_CHECK([ip address add 10.${count}.0.1/24 dev ${ZONE}-fwd], 0, [ignore])
+        NS_CHECK([ip link set ${ZONE}-fwd up], 0, [ignore])
+        AT_CHECK([ip netns exec CURRENT_TEST_NS-${ZONE} ip address add 10.${count}.0.2/24 dev ${ZONE}-ns], 0, [ignore])
+        AT_CHECK([ip netns exec CURRENT_TEST_NS-${ZONE} ip link set ${ZONE}-ns up], 0, [ignore])
+        AT_CHECK([ip netns exec CURRENT_TEST_NS-${ZONE} ip route add default nexthop via 10.${count}.0.1], 0, [ignore])
+
+        FWD_CHECK([--zone ${ZONE} --add-interface ${ZONE}-fwd], 0, [ignore])
+
+        count=$(expr ${count} + 1)
+    done
+])
+
+dnl $1 = zone name (namespace)
+dnl $2 = command
+m4_define([TEST_TOPOLOGY_CMD], [
+    ip netns exec CURRENT_TEST_NS-$1 $2
+])
+
+dnl $1 = zone name (namespace)
+dnl $2 = command
+dnl $3..7 as per AT_CHECK()
+m4_define([TEST_TOPOLOGY_CHECK], [
+    AT_CHECK([TEST_TOPOLOGY_CMD([$1], [$2])], [$3], [$4], [$5], [$6], [$7])
+])
+
+dnl $1 = command to run until zero exit code
+m4_define([WAIT_UNTIL], [
+    _fail=1
+    _timeout=120
+    for I in $(seq ${_timeout}); do
+        { $1 ; } && { _fail=0; break; }
+        sleep 1
+    done
+    if test ${_fail} -gt 0; then
+        printf "FAIL: Command failed succeed in ${_timeout} seconds:\n"
+        printf "  $1\n"
+        AT_FAIL_IF([:])
+    fi
 ])

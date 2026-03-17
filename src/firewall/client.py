@@ -982,6 +982,7 @@ class FirewallClientPolicySettings:
     def __init__(self, settings=None):
         self.settings = {
             "description": "",
+            "disable": False,
             "egress_zones": [],
             "forward_ports": [],
             "icmp_blocks": [],
@@ -999,6 +1000,7 @@ class FirewallClientPolicySettings:
         }
         self.settings_dbus_type = [
             "s",
+            "b",
             "s",
             "(ssss)",
             "s",
@@ -1236,6 +1238,32 @@ class FirewallClientPolicySettings:
     @handle_exceptions
     def queryMasquerade(self):
         return self.settings["masquerade"]
+
+    @handle_exceptions
+    def getDisable(self):
+        return self.settings["disable"]
+
+    @handle_exceptions
+    def setDisable(self, disable):
+        self.settings["disable"] = disable
+
+    @handle_exceptions
+    def addDisable(self):
+        if not self.settings["disable"]:
+            self.settings["disable"] = True
+        else:
+            raise FirewallError(errors.ALREADY_ENABLED, "disable")
+
+    @handle_exceptions
+    def removeDisable(self):
+        if self.settings["disable"]:
+            self.settings["disable"] = False
+        else:
+            raise FirewallError(errors.NOT_ENABLED, "disable")
+
+    @handle_exceptions
+    def queryDisable(self):
+        return self.settings["disable"]
 
     @handle_exceptions
     def getForwardPorts(self):
@@ -3459,8 +3487,10 @@ class FirewallClient:
         )
 
     @handle_exceptions
-    def setPolicySettings(self, policy, settings):
-        self.fw_policy.setPolicySettings(policy, settings.getRuntimeSettingsDbusDict())
+    def setPolicySettings(self, policy, settings, timeout=0):
+        settings = settings.getRuntimeSettingsDbusDict()
+        settings["timeout"] = timeout
+        self.fw_policy.setPolicySettings(policy, settings)
 
     @handle_exceptions
     def getPolicies(self):
@@ -3597,8 +3627,8 @@ class FirewallClient:
     # forward
 
     @handle_exceptions
-    def addForward(self, zone):
-        self.fw_zone.setZoneSettings2(zone, {"forward": True})
+    def addForward(self, zone, timeout=0):
+        self.fw_zone.setZoneSettings2(zone, {"forward": True, "timeout": timeout})
 
     @handle_exceptions
     def queryForward(self, zone):
