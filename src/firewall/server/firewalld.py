@@ -925,7 +925,7 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("getZoneSettings2(%s)", zone)
         return self.fw.zone.get_config_with_settings_dict(zone)
 
-    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG_INFO)
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
     @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='sa{sv}')
     @dbus_handle_exceptions
     def setZoneSettings2(self, zone, settings, sender=None):
@@ -949,7 +949,7 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("policy.getPolicySettings(%s)", policy)
         return self.fw.policy.get_config_with_settings_dict(policy)
 
-    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG_INFO)
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
     @dbus_service_method(config.dbus.DBUS_INTERFACE_POLICY, in_signature='sa{sv}')
     @dbus_handle_exceptions
     def setPolicySettings(self, policy, settings, sender=None):
