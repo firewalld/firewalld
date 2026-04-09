@@ -35,14 +35,14 @@
 # Enrico Bella <enric@e.email>, 2020, 2025.
 # Salvatore Cocuzza <info@salvatorecocuzza.it>, 2025.
 # Weblate Translation Memory <noreply-mt-weblate-translation-memory@weblate.org>, 2025.
+# Ali Ciloqlu <ali.ciloqlu@murena.io>, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-06 14:46-0500\n"
-"PO-Revision-Date: 2025-11-19 22:58+0000\n"
-"Last-Translator: Weblate Translation Memory <noreply-mt-weblate-translation-"
-"memory@weblate.org>\n"
+"PO-Revision-Date: 2026-04-09 19:58+0000\n"
+"Last-Translator: Ali Ciloqlu <ali.ciloqlu@murena.io>\n"
 "Language-Team: Italian <https://translate.fedoraproject.org/projects/"
 "firewalld/master/it/>\n"
 "Language: it\n"
@@ -50,7 +50,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.14.3\n"
+"X-Generator: Weblate 5.16.2\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:450
 msgid "Firewall Applet"
@@ -176,7 +176,7 @@ msgstr "Licenza"
 
 #: ../src/firewall-applet.in:515
 msgid "Shields Up"
-msgstr "Shields Up"
+msgstr "Attiva blocchi"
 
 #: ../src/firewall-applet.in:520
 msgid "Enable Notifications"
@@ -374,7 +374,7 @@ msgstr "Modifiche applicate."
 #: ../src/firewall-config.in:92
 #, c-format
 msgid "Used by network connection '%s'"
-msgstr "Usato dalla connessione di rete  '%s'"
+msgstr "Usato dalla connessione di rete '%s'"
 
 #: ../src/firewall-config.in:94
 #, c-format
@@ -469,7 +469,7 @@ msgstr "Elemento"
 
 #: ../src/firewall-config.in:793
 msgid "Src"
-msgstr "Src"
+msgstr "Sorg"
 
 #: ../src/firewall-config.in:796
 msgid "Dest"
@@ -839,7 +839,7 @@ msgstr "nat"
 
 #: ../src/firewall-config.glade.h:12
 msgid "raw"
-msgstr "raw"
+msgstr "greggio"
 
 #: ../src/firewall-config.glade.h:13
 msgid "security"
@@ -942,7 +942,7 @@ msgstr "Modulo:"
 
 #: ../src/firewall-config.glade.h:40
 msgid "Helper"
-msgstr "Helper"
+msgstr "Aiutante"
 
 #: ../src/firewall-config.glade.h:41
 msgid "Please select a helper:"
@@ -1013,7 +1013,7 @@ msgstr "Cambia l'appartenenza ad una zona di una rete."
 
 #: ../src/firewall-config.glade.h:58
 msgid "Change Default Zone"
-msgstr "Cambia Zona Predefinita "
+msgstr "Cambia Zona Predefinita"
 
 #: ../src/firewall-config.glade.h:59
 msgid "Change default zone for connections or interfaces."
@@ -1033,7 +1033,7 @@ msgstr "Configurare Assegnazione Assistenti Automatici"
 
 #: ../src/firewall-config.glade.h:63
 msgid "Configure Automatic Helper Assignment setting."
-msgstr "Configurare l'impostazione Assegnazione Assistenti Automatici"
+msgstr "Configurare l'impostazione Assegnazione Assistenti Automatici."
 
 #: ../src/firewall-config.glade.h:64
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
@@ -1467,7 +1467,7 @@ msgid ""
 "example IP addresses, port numbers or MAC addresses. "
 msgstr ""
 "Un IPSet può essere usato per creare liste bianche o nere ed è in grado di "
-"memorizzare per esempio gli indirizzi IP, numeri di porta o indirizzi MAC."
+"memorizzare per esempio gli indirizzi IP, numeri di porta o indirizzi MAC. "
 
 #: ../src/firewall-config.glade.h:148
 msgid "IPSet"
@@ -1765,7 +1765,7 @@ msgstr "Per favore selezionare un ipset:"
 
 #: ../src/firewall-config.glade.h:205
 msgid "Please enter an ipset entry:"
-msgstr "Immettere una voce IPSet:"
+msgstr "Immettere una voce ipset:"
 
 #: ../src/firewall-config.glade.h:206
 msgid "Log Denied"
@@ -1833,7 +1833,7 @@ msgstr "Priorità:"
 
 #: ../src/firewall-config.glade.h:222
 msgid "Please enter a protocol."
-msgstr "Per cortesia scegli un protocollo"
+msgstr "Per favore scegli un protocollo."
 
 #: ../src/firewall-config.glade.h:223
 msgid "Other Protocol:"
@@ -1901,7 +1901,7 @@ msgstr "Prefisso:"
 
 #: ../src/firewall-config.glade.h:246
 msgid "Level:"
-msgstr "Livello"
+msgstr "Livello:"
 
 #: ../src/firewall-config.glade.h:263
 msgid "Element:"
