@@ -1,11 +1,12 @@
 # Ferdi Saptanera <ferdisn@fedoraproject.org>, 2018. #zanata
+# Arif Budiman <arifpedia@gmail.com>, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-06 14:46-0500\n"
-"PO-Revision-Date: 2025-11-13 20:48+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2026-02-01 04:58+0000\n"
+"Last-Translator: Arif Budiman <arifpedia@gmail.com>\n"
 "Language-Team: Indonesian <https://translate.fedoraproject.org/projects/"
 "firewalld/master/id/>\n"
 "Language: id\n"
@@ -13,45 +14,44 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.14.3\n"
+"X-Generator: Weblate 5.15.2\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:450
 msgid "Firewall Applet"
-msgstr "Aplikasi Firewall"
+msgstr "Aplet Firewall"
 
 #: ../config/firewall-config.appdata.xml.in.h:1
 msgid ""
 "Firewall Configuration provides a graphical tool for administering firewall."
-msgstr ""
+msgstr "Konfigurasi Firewall menyediakan alat grafis untuk mengelola firewall."
 
 #: ../config/firewall-config.appdata.xml.in.h:2
 msgid "Allows to inspect and set:"
-msgstr ""
+msgstr "Memungkinkan untuk memeriksa dan mengatur:"
 
 #: ../config/firewall-config.appdata.xml.in.h:3
-#, fuzzy
 msgid "Runtime and permanent firewall configuration"
-msgstr "Pengaturan Firewall"
+msgstr "Konfigurasi firewall runtime dan permanen"
 
 #: ../config/firewall-config.appdata.xml.in.h:4
 msgid "Predefined zones (levels of trust for network connections)"
-msgstr ""
+msgstr "Zona yang telah ditentukan (tingkat kepercayaan untuk koneksi jaringan)"
 
 #: ../config/firewall-config.appdata.xml.in.h:5
 msgid "Predefined services (port/protocol, netfilter helper module)"
-msgstr ""
+msgstr "Layanan yang telah ditentukan (port/protokol, modul pembantu netfilter)"
 
 #: ../config/firewall-config.appdata.xml.in.h:6
 msgid "Port forwarding, masquerading, ICMP blocking"
-msgstr ""
+msgstr "Penerusan port, masquerading, pemblokiran ICMP"
 
 #: ../config/firewall-config.appdata.xml.in.h:7
 msgid "Complex firewall rules a.k.a. Rich Language"
-msgstr ""
+msgstr "Aturan firewall kompleks alias Rich Language"
 
 #: ../config/firewall-config.appdata.xml.in.h:8
 msgid "Iptables rules a.k.a. Direct Interface"
-msgstr ""
+msgstr "Aturan iptables alias Antarmuka Langsung"
 
 #: ../config/firewall-config.desktop.in.h:1
 msgid "Firewall"
@@ -59,12 +59,12 @@ msgstr "Firewall"
 
 #: ../config/firewall-config.desktop.in.h:2 ../src/firewall-config.glade.h:51
 msgid "Firewall Configuration"
-msgstr "Pengaturan Firewall"
+msgstr "Konfigurasi Firewall"
 
 #. Translators: These are searchable keywords for the firewall configuration tool
 #: ../config/firewall-config.desktop.in.h:4
 msgid "firewall;network;security;iptables;netfilter;"
-msgstr "firewall;network;security;iptables;netfilter;"
+msgstr "firewall;jaringan;keamanan;iptables;netfilter;"
 
 #: ../src/firewall-applet.in:91 ../src/firewall-config.in:7690
 #, c-format
@@ -76,16 +76,16 @@ msgstr "Pilih zona untuk antarmuka '%s'"
 #: ../src/firewall-config.in:7736 ../src/firewall-config.in:7744
 #: ../src/firewall-config.in:7778 ../src/firewall-config.glade.h:4
 msgid "Default Zone"
-msgstr "Zona Standar"
+msgstr "Zona Default"
 
 #: ../src/firewall-applet.in:168 ../src/firewall-config.in:7771
 #, c-format
 msgid "Select zone for connection '%s'"
-msgstr "Pilih zona untuk sambungan '%s'"
+msgstr "Pilih zona untuk koneksi '%s'"
 
 #: ../src/firewall-applet.in:178 ../src/firewall-config.in:4037
 msgid "Failed to set zone {zone} for connection {connection_name}"
-msgstr ""
+msgstr "Gagal menyetel zona {zone} untuk koneksi {connection_name}"
 
 #: ../src/firewall-applet.in:199
 #, c-format
@@ -94,34 +94,34 @@ msgstr "Pilih zona untuk sumber '%s'"
 
 #: ../src/firewall-applet.in:218
 msgid "Configure Shields Up/Down Zones"
-msgstr "Mengatur Zona Perisai Menyala/Mati"
+msgstr "Konfigurasikan Zona Perisai Aktif/Nonaktif"
 
 #: ../src/firewall-applet.in:233
 msgid "Here you can select the zones used for Shields Up and Shields Down."
 msgstr ""
-"Di sini, Anda bisa memilih zona yang digunakan di Perisai Menyala dan "
-"Perisai Mati."
+"Di sini Anda dapat memilih zona yang digunakan untuk Perisai Aktif dan "
+"Perisai Nonaktif."
 
 #: ../src/firewall-applet.in:244
 msgid ""
 "This feature is useful for people using the default zones mostly. For users, "
 "that are changing zones of connections, it might be of limited use."
 msgstr ""
-"Fitur ini berguna untuk mereka yang sebagian besar memakai zona standar. "
-"Bagi pengguna yang mengubah-ubah zona sambungan, mungkin fitur ini tidak "
-"berguna."
+"Fitur ini berguna bagi orang yang sebagian besar menggunakan zona default. "
+"Bagi pengguna yang mengubah zona koneksi, fitur ini mungkin kurang "
+"bermanfaat."
 
 #: ../src/firewall-applet.in:256
 msgid "Shields Up Zone:"
-msgstr "Zona Perisai Menyala:"
+msgstr "Zona Perisai Aktif:"
 
 #: ../src/firewall-applet.in:265 ../src/firewall-applet.in:278
 msgid "Reset To Default"
-msgstr "Ubah Ke Pengaturan Awal"
+msgstr "Setel Ulang ke Default"
 
 #: ../src/firewall-applet.in:269
 msgid "Shields Down Zone:"
-msgstr "Zona Perisai Mati:"
+msgstr "Zona Perisai Nonaktif:"
 
 #: ../src/firewall-applet.in:368
 #, c-format
@@ -138,23 +138,23 @@ msgstr "Lisensi"
 
 #: ../src/firewall-applet.in:515
 msgid "Shields Up"
-msgstr "Perisai Menyala"
+msgstr "Perisai Aktif"
 
 #: ../src/firewall-applet.in:520
 msgid "Enable Notifications"
-msgstr "Nyalakan Pemberitahuan"
+msgstr "Aktifkan Notifikasi"
 
 #: ../src/firewall-applet.in:525
 msgid "Edit Firewall Settings..."
-msgstr "Sunting Pengaturan Firewall..."
+msgstr "Edit Pengaturan Firewall..."
 
 #: ../src/firewall-applet.in:529 ../src/firewall-config.glade.h:57
 msgid "Change Zones of Connections..."
-msgstr "Ubah Zona Sambungan"
+msgstr "Ubah Zona Koneksi..."
 
 #: ../src/firewall-applet.in:534
 msgid "Configure Shields UP/Down Zones..."
-msgstr "Susun Zona Perisai Nyala/Mati"
+msgstr "Konfigurasikan Zona Perisai Aktif/Nonaktif..."
 
 #: ../src/firewall-applet.in:538
 msgid "Block all network traffic"
@@ -168,7 +168,7 @@ msgstr "Tentang"
 #: ../src/firewall-config.in:2372 ../src/firewall-config.in:2712
 #: ../src/firewall-config.in:2738
 msgid "Connections"
-msgstr "Sambungan"
+msgstr "Koneksi"
 
 #: ../src/firewall-applet.in:556 ../src/firewall-config.in:565
 #: ../src/firewall-config.in:2495 ../src/firewall-config.in:2715
@@ -200,11 +200,11 @@ msgstr "{entry} (Zona: {zone})"
 
 #: ../src/firewall-applet.in:733
 msgid "{entry} (Default Zone: {default_zone})"
-msgstr "{entry} (Zona Standar: {default_zone})"
+msgstr "{entry} (Zona Default: {default_zone})"
 
 #: ../src/firewall-applet.in:819 ../src/firewall-config.in:1536
 msgid "Failed to get connections from NetworkManager"
-msgstr "Gagal mendapatkan sambungan dari NetworkManager"
+msgstr "Gagal mendapatkan koneksi dari NetworkManager"
 
 #: ../src/firewall-applet.in:831 ../src/firewall-config.in:1368
 msgid "No NetworkManager imports available"
@@ -212,7 +212,7 @@ msgstr "Tidak ada impor NetworkManager yang tersedia"
 
 #: ../src/firewall-applet.in:907
 msgid "No connection to firewall daemon"
-msgstr "Tidak ada sambungan ke daemon firewall"
+msgstr "Tidak ada koneksi ke daemon firewall"
 
 #: ../src/firewall-applet.in:913 ../src/firewall-applet.in:1070
 msgid "All network traffic is blocked."
@@ -221,163 +221,172 @@ msgstr "Semua lalu lintas jaringan diblokir."
 #: ../src/firewall-applet.in:916
 #, c-format
 msgid "Default Zone: '%s'"
-msgstr ""
+msgstr "Zona Default: '%s'"
 
 #: ../src/firewall-applet.in:923
 msgid ""
 "Default Zone '{default_zone}' active for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
+"Zona default '{default_zone}' aktif untuk koneksi '{connection}' pada "
+"antarmuka '{interface}'"
 
 #: ../src/firewall-applet.in:928
 msgid ""
 "Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
 msgstr ""
+"Zona '{zone}' aktif untuk koneksi '{connection}' pada antarmuka '{interface}'"
 
 #: ../src/firewall-applet.in:946
 msgid "Zone '{zone}' active for interface '{interface}'"
-msgstr ""
+msgstr "Zona '{zone}' aktif untuk antarmuka '{interface}'"
 
 #: ../src/firewall-applet.in:958
 msgid "Zone '{zone}' active for source {source}"
-msgstr ""
+msgstr "Zona '{zone}' aktif untuk sumber {source}"
 
 #: ../src/firewall-applet.in:962
 msgid "No Active Zones."
-msgstr ""
+msgstr "Tidak ada Zona Aktif."
 
 #: ../src/firewall-applet.in:1028
 msgid "Connection to FirewallD established."
-msgstr ""
+msgstr "Koneksi ke FirewallD terjalin."
 
 #: ../src/firewall-applet.in:1040
 msgid "Connection to FirewallD lost."
-msgstr ""
+msgstr "Koneksi ke FirewallD terputus."
 
 #: ../src/firewall-applet.in:1045
 msgid "FirewallD has been reloaded."
-msgstr ""
+msgstr "FirewallD telah dimuat ulang."
 
 #: ../src/firewall-applet.in:1052
 #, c-format
 msgid "Default zone changed to '%s'."
-msgstr ""
+msgstr "Zona default diubah menjadi '%s'."
 
 #: ../src/firewall-applet.in:1071
 msgid "Network traffic is not blocked anymore."
-msgstr ""
+msgstr "Lalu lintas jaringan tidak diblokir lagi."
 
 #: ../src/firewall-applet.in:1098 ../src/firewall-applet.in:1164
 msgid "activated"
-msgstr ""
+msgstr "diaktifkan"
 
 #: ../src/firewall-applet.in:1098 ../src/firewall-applet.in:1164
 msgid "deactivated"
-msgstr ""
+msgstr "dinonaktifkan"
 
 #: ../src/firewall-applet.in:1104
 msgid ""
 "Default zone '{default_zone}' {activated_deactivated} for connection "
 "'{connection}' on interface '{interface}'"
 msgstr ""
+"Zona default '{default_zone}' {activated_deactivated} untuk koneksi '"
+"{connection}' pada antarmuka '{interface}'"
 
 #: ../src/firewall-applet.in:1111
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
+"Zona '{zone}' {activated_deactivated} untuk koneksi '{connection}' pada "
+"antarmuka '{interface}'"
 
 #: ../src/firewall-applet.in:1118
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
-msgstr ""
+msgstr "Zona '{zone}' {activated_deactivated} untuk antarmuka '{interface}'"
 
 #: ../src/firewall-applet.in:1149
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
-msgstr ""
+msgstr "Zona '%s' diaktifkan untuk antarmuka '%s'"
 
 #: ../src/firewall-applet.in:1165
 msgid "Zone '{zone}' {activated_deactivated} for source '{source}'"
-msgstr ""
+msgstr "Zona '{zone}' {activated_deactivated} untuk sumber '{source}'"
 
 #: ../src/firewall-applet.in:1194
 #, c-format
 msgid "Zone '%s' activated for source '%s'"
-msgstr ""
+msgstr "Zona '%s' diaktifkan untuk sumber '%s'"
 
 #: ../src/firewall-config.in:85
 msgid "Connection to firewalld established."
-msgstr ""
+msgstr "Koneksi ke firewalld terjalin."
 
 #: ../src/firewall-config.in:86
 msgid "Trying to connect to firewalld, waiting..."
-msgstr ""
+msgstr "Mencoba terhubung ke firewalld, menunggu..."
 
 #: ../src/firewall-config.in:88
 msgid ""
 "Failed to connect to firewalld. Please make sure that the service has been "
 "started correctly and try again."
 msgstr ""
+"Gagal terhubung ke firewalld. Pastikan layanan telah dimulai dengan benar "
+"dan coba lagi."
 
 #: ../src/firewall-config.in:91
 msgid "Changes applied."
-msgstr ""
+msgstr "Perubahan diterapkan."
 
 #: ../src/firewall-config.in:92
 #, c-format
 msgid "Used by network connection '%s'"
-msgstr ""
+msgstr "Digunakan oleh koneksi jaringan '%s'"
 
 #: ../src/firewall-config.in:94
 #, c-format
 msgid "Default zone used by network connection '%s'"
-msgstr ""
+msgstr "Zona default digunakan oleh koneksi jaringan '%s'"
 
 #: ../src/firewall-config.in:96
 msgid "enabled"
-msgstr ""
+msgstr "diaktifkan"
 
 #: ../src/firewall-config.in:97
 msgid "disabled"
-msgstr ""
+msgstr "dinonaktifkan"
 
 #: ../src/firewall-config.in:122
 msgid "Failed to load icons."
-msgstr ""
+msgstr "Gagal memuat ikon."
 
 #: ../src/firewall-config.in:198 ../src/firewall-config.in:239
 msgid "Table"
-msgstr ""
+msgstr "Tabel"
 
 #: ../src/firewall-config.in:201 ../src/firewall-config.in:242
 msgid "Chain"
-msgstr ""
+msgstr "Rantai"
 
 #: ../src/firewall-config.in:245 ../src/firewall-config.in:784
 msgid "Priority"
-msgstr ""
+msgstr "Prioritas"
 
 #: ../src/firewall-config.in:248 ../src/firewall-config.in:289
 msgid "Args"
-msgstr ""
+msgstr "Argumen"
 
 #: ../src/firewall-config.in:336 ../src/firewall-config.in:2322
 msgid "Runtime"
-msgstr ""
+msgstr "Runtime"
 
 #: ../src/firewall-config.in:337
 msgid "Permanent"
-msgstr ""
+msgstr "Permanen"
 
 #: ../src/firewall-config.in:420 ../src/firewall-config.glade.h:131
 msgid "Service"
-msgstr ""
+msgstr "Layanan"
 
 #: ../src/firewall-config.in:428 ../src/firewall-config.in:475
 #: ../src/firewall-config.in:501 ../src/firewall-config.in:756
 #: ../src/firewall-config.in:996 ../src/firewall-config.in:1035
 msgid "Port"
-msgstr ""
+msgstr "Port"
 
 #: ../src/firewall-config.in:431 ../src/firewall-config.in:449
 #: ../src/firewall-config.in:478 ../src/firewall-config.in:504
@@ -385,275 +394,274 @@ msgstr ""
 #: ../src/firewall-config.in:1015 ../src/firewall-config.in:1038
 #: ../src/firewall-config.glade.h:221
 msgid "Protocol"
-msgstr ""
+msgstr "Protokol"
 
 #: ../src/firewall-config.in:507
 msgid "To Port"
-msgstr ""
+msgstr "Ke Port"
 
 #: ../src/firewall-config.in:510
 msgid "To Address"
-msgstr ""
+msgstr "Ke Alamat"
 
 #: ../src/firewall-config.in:559
 msgid "Bindings"
-msgstr ""
+msgstr "Pengikatan"
 
 #: ../src/firewall-config.in:596 ../src/firewall-config.glade.h:204
 msgid "Entry"
-msgstr ""
+msgstr "Entri"
 
 #: ../src/firewall-config.in:727
 msgid "Icmp Type"
-msgstr ""
+msgstr "Tipe ICMP"
 
 #: ../src/firewall-config.in:781
 msgid "Family"
-msgstr ""
+msgstr "Keluarga"
 
 #: ../src/firewall-config.in:787
 msgid "Action"
-msgstr ""
+msgstr "Tindakan"
 
 #: ../src/firewall-config.in:790
 msgid "Element"
-msgstr ""
+msgstr "Elemen"
 
 #: ../src/firewall-config.in:793
 msgid "Src"
-msgstr ""
+msgstr "Sumber"
 
 #: ../src/firewall-config.in:796
 msgid "Dest"
-msgstr ""
+msgstr "Tujuan"
 
 #: ../src/firewall-config.in:799
 msgid "log"
-msgstr ""
+msgstr "log"
 
 #: ../src/firewall-config.in:802
 msgid "Audit"
-msgstr ""
+msgstr "Audit"
 
 #: ../src/firewall-config.in:930 ../src/firewall-config.glade.h:192
 msgid "Interface"
-msgstr ""
+msgstr "Antarmuka"
 
 #: ../src/firewall-config.in:933
 msgid "Comment"
-msgstr ""
+msgstr "Komentar"
 
 #: ../src/firewall-config.in:955 ../src/firewall-config.glade.h:23
 msgid "Source"
-msgstr ""
+msgstr "Sumber"
 
 #: ../src/firewall-config.in:1581 ../src/firewall-config.in:2859
 #: ../src/firewall-config.in:2912
 msgid "Warning"
-msgstr ""
+msgstr "Peringatan"
 
 #: ../src/firewall-config.in:1592 ../src/firewall-config.in:1604
 msgid "Error"
-msgstr ""
+msgstr "Kesalahan"
 
 #: ../src/firewall-config.in:2028 ../src/firewall-config.in:3271
 #: ../src/firewall-config.in:3778 ../src/firewall-config.glade.h:233
 msgid "accept"
-msgstr ""
+msgstr "terima"
 
 #: ../src/firewall-config.in:2030 ../src/firewall-config.in:3273
 #: ../src/firewall-config.in:3780 ../src/firewall-config.in:3953
 #: ../src/firewall-config.glade.h:234
 msgid "reject"
-msgstr ""
+msgstr "tolak"
 
 #: ../src/firewall-config.in:2034 ../src/firewall-config.in:3290
 #: ../src/firewall-config.in:3787 ../src/firewall-config.glade.h:235
 msgid "drop"
-msgstr ""
+msgstr "jatuhkan"
 
 #: ../src/firewall-config.in:2036 ../src/firewall-config.in:3292
 #: ../src/firewall-config.in:3789 ../src/firewall-config.in:3956
 #: ../src/firewall-config.glade.h:236
 msgid "mark"
-msgstr ""
+msgstr "tandai"
 
 #: ../src/firewall-config.in:2039 ../src/firewall-config.in:2087
 #: ../src/firewall-config.in:2092
 msgid "limit"
-msgstr ""
+msgstr "batasi"
 
 #: ../src/firewall-config.in:2055 ../src/firewall-config.in:3226
 #: ../src/firewall-config.in:3412 ../src/firewall-config.in:3717
 #: ../src/firewall-config.glade.h:255
 msgid "service"
-msgstr ""
+msgstr "layanan"
 
 #: ../src/firewall-config.in:2057 ../src/firewall-config.in:3230
 #: ../src/firewall-config.in:3414 ../src/firewall-config.in:3721
 #: ../src/firewall-config.glade.h:256
 msgid "port"
-msgstr ""
+msgstr "port"
 
 #: ../src/firewall-config.in:2059 ../src/firewall-config.in:3235
 #: ../src/firewall-config.in:3423 ../src/firewall-config.in:3730
 #: ../src/firewall-config.glade.h:257
 msgid "protocol"
-msgstr ""
+msgstr "protokol"
 
 #: ../src/firewall-config.in:2061 ../src/firewall-config.in:3239
 #: ../src/firewall-config.in:3751 ../src/firewall-config.in:3973
 #: ../src/firewall-config.glade.h:262
 msgid "masquerade"
-msgstr ""
+msgstr "masquerade"
 
 #: ../src/firewall-config.in:2063 ../src/firewall-config.in:3243
 #: ../src/firewall-config.in:3425 ../src/firewall-config.in:3734
 #: ../src/firewall-config.in:3986 ../src/firewall-config.glade.h:258
 msgid "icmp-block"
-msgstr ""
+msgstr "blokir-icmp"
 
 #: ../src/firewall-config.in:2065 ../src/firewall-config.in:3247
 #: ../src/firewall-config.in:3427 ../src/firewall-config.in:3738
 #: ../src/firewall-config.glade.h:259
 msgid "icmp-type"
-msgstr ""
+msgstr "tipe-icmp"
 
 #: ../src/firewall-config.in:2067 ../src/firewall-config.in:3251
 #: ../src/firewall-config.in:3429 ../src/firewall-config.in:3742
 #: ../src/firewall-config.in:3981 ../src/firewall-config.glade.h:260
 msgid "forward-port"
-msgstr ""
+msgstr "teruskan-port"
 
 #: ../src/firewall-config.in:2074 ../src/firewall-config.in:3261
 #: ../src/firewall-config.in:3431 ../src/firewall-config.in:3753
 #: ../src/firewall-config.glade.h:261
 msgid "source-port"
-msgstr ""
+msgstr "port-sumber"
 
 #: ../src/firewall-config.in:2085
 msgid "level"
-msgstr ""
+msgstr "tingkat"
 
 #: ../src/firewall-config.in:2089 ../src/firewall-config.in:2094
 msgid "yes"
-msgstr ""
+msgstr "ya"
 
 #: ../src/firewall-config.in:2447 ../src/firewall-config.in:2511
 #: ../src/firewall-config.in:2550 ../src/firewall-config.glade.h:82
 msgid "Zone"
-msgstr ""
+msgstr "Zona"
 
 #: ../src/firewall-config.in:2472
 #, c-format
 msgid "Default Zone: %s"
-msgstr ""
+msgstr "Zona Default: %s"
 
 #: ../src/firewall-config.in:2486 ../src/firewall-config.in:2527
 #: ../src/firewall-config.in:2564
 #, c-format
 msgid "Zone: %s"
-msgstr ""
+msgstr "Zona: %s"
 
 #: ../src/firewall-config.in:2852
 #, c-format
 msgid "Zone '%s': Service '%s' is not available."
-msgstr ""
+msgstr "Zona '%s': Layanan '%s' tidak tersedia."
 
 #: ../src/firewall-config.in:2860 ../src/firewall-config.in:2913
 #: ../src/firewall-config.glade.h:156
 msgid "Remove"
-msgstr ""
+msgstr "Hapus"
 
 #: ../src/firewall-config.in:2860 ../src/firewall-config.in:2913
 msgid "Ignore"
-msgstr ""
+msgstr "Abaikan"
 
 #: ../src/firewall-config.in:2905
 #, c-format
 msgid "Zone '%s': ICMP type '%s' is not available."
-msgstr ""
+msgstr "Zona '%s': Tipe ICMP '%s' tidak tersedia."
 
 #: ../src/firewall-config.in:3065
 msgid "Built-in zone, rename not supported."
-msgstr ""
+msgstr "Zona bawaan, penggantian nama tidak didukung."
 
 #: ../src/firewall-config.in:3188 ../src/firewall-config.in:3691
 #: ../src/firewall-config.glade.h:241
 msgid "second"
-msgstr ""
+msgstr "detik"
 
 #: ../src/firewall-config.in:3188 ../src/firewall-config.in:3691
 #: ../src/firewall-config.glade.h:242
 msgid "minute"
-msgstr ""
+msgstr "menit"
 
 #: ../src/firewall-config.in:3188 ../src/firewall-config.in:3691
 #: ../src/firewall-config.glade.h:243
 msgid "hour"
-msgstr ""
+msgstr "jam"
 
 #: ../src/firewall-config.in:3188 ../src/firewall-config.in:3691
 #: ../src/firewall-config.glade.h:244
 msgid "day"
-msgstr ""
+msgstr "hari"
 
 #: ../src/firewall-config.in:3190 ../src/firewall-config.in:3693
 #: ../src/firewall-config.glade.h:247
 msgid "emergency"
-msgstr ""
+msgstr "darurat"
 
 #: ../src/firewall-config.in:3191 ../src/firewall-config.in:3694
 #: ../src/firewall-config.glade.h:248
 msgid "alert"
-msgstr ""
+msgstr "siaga"
 
 #: ../src/firewall-config.in:3192 ../src/firewall-config.in:3695
 #: ../src/firewall-config.glade.h:249
 msgid "critical"
-msgstr ""
+msgstr "kritis"
 
 #: ../src/firewall-config.in:3193 ../src/firewall-config.in:3696
 #: ../src/firewall-config.glade.h:250
 msgid "error"
-msgstr ""
+msgstr "kesalahan"
 
 #: ../src/firewall-config.in:3194 ../src/firewall-config.in:3697
 #: ../src/firewall-config.glade.h:251
 msgid "warning"
-msgstr ""
+msgstr "peringatan"
 
 #: ../src/firewall-config.in:3195 ../src/firewall-config.in:3698
 #: ../src/firewall-config.glade.h:252
 msgid "notice"
-msgstr ""
+msgstr "pemberitahuan"
 
 #: ../src/firewall-config.in:3196 ../src/firewall-config.in:3699
 #: ../src/firewall-config.glade.h:253
 msgid "info"
-msgstr ""
+msgstr "info"
 
 #: ../src/firewall-config.in:3197 ../src/firewall-config.in:3700
 #: ../src/firewall-config.glade.h:254
 msgid "debug"
-msgstr ""
+msgstr "debug"
 
 #: ../src/firewall-config.in:3404 ../src/firewall-config.in:3627
 #: ../src/firewall-config.in:3651 ../src/firewall-config.in:3707
 #: ../src/firewall-config.in:3859 ../src/firewall-config.in:3912
 msgid "ipv4"
-msgstr ""
+msgstr "ipv4"
 
 #: ../src/firewall-config.in:3406 ../src/firewall-config.in:3629
 #: ../src/firewall-config.in:3653 ../src/firewall-config.in:3707
 #: ../src/firewall-config.in:3861 ../src/firewall-config.in:3914
 msgid "ipv6"
-msgstr ""
+msgstr "ipv6"
 
 #: ../src/firewall-config.in:3995
-#, fuzzy
 msgid "invalid element"
-msgstr "Nama tidak valid"
+msgstr "elemen tidak valid"
 
 #: ../src/firewall-config.in:5161
 msgid ""
@@ -661,281 +669,287 @@ msgid ""
 "masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
+"Penerusan ke sistem lain hanya berguna jika antarmuka dimasquerade.\n"
+"Apakah Anda ingin melakukan masquerade pada zona ini ?"
 
 #: ../src/firewall-config.in:5519
 msgid "Built-in service, rename not supported."
-msgstr ""
+msgstr "Layanan bawaan, penggantian nama tidak didukung."
 
 #: ../src/firewall-config.in:5730
 msgid "Please enter an ipv4 address with the form address[/mask]."
-msgstr ""
+msgstr "Silakan masukkan alamat ipv4 dengan format alamat[/mask]."
 
 #: ../src/firewall-config.in:5731
 msgid "The mask can be a network mask or a number."
-msgstr ""
+msgstr "Mask dapat berupa mask jaringan atau sebuah angka."
 
 #: ../src/firewall-config.in:5733
 msgid "Please enter an ipv6 address with the form address[/mask]."
-msgstr ""
+msgstr "Silakan masukkan alamat ipv6 dengan format alamat[/mask]."
 
 #: ../src/firewall-config.in:5734
 msgid "The mask is a number."
-msgstr ""
+msgstr "Mask berupa sebuah angka."
 
 #: ../src/firewall-config.in:5737
 msgid "Please enter an ipv4 or ipv6 address with the form address[/mask]."
-msgstr ""
+msgstr "Silakan masukkan alamat ipv4 atau ipv6 dengan format alamat[/mask]."
 
 #: ../src/firewall-config.in:5740
 msgid ""
 "The mask can be a network mask or a number for ipv4.\n"
 "The mask is a number for ipv6."
 msgstr ""
+"Mask dapat berupa mask jaringan atau sebuah angka untuk ipv4.\n"
+"Mask berupa sebuah angka untuk ipv6."
 
 #: ../src/firewall-config.in:5922
 msgid "Built-in ipset, rename not supported."
-msgstr ""
+msgstr "ipset bawaan, penggantian nama tidak didukung."
 
 #: ../src/firewall-config.in:6022 ../src/firewall-config.in:6111
 msgid "Please select a file"
-msgstr ""
+msgstr "Silakan pilih sebuah file"
 
 #: ../src/firewall-config.in:6036 ../src/firewall-config.in:6125
 msgid "Text Files"
-msgstr ""
+msgstr "File Teks"
 
 #: ../src/firewall-config.in:6041 ../src/firewall-config.in:6130
 msgid "All Files"
-msgstr ""
+msgstr "Semua File"
 
 #: ../src/firewall-config.in:6556 ../src/firewall-config.in:6585
 #: ../src/firewall-config.glade.h:36
 msgid "All"
-msgstr ""
+msgstr "Semua"
 
 #: ../src/firewall-config.in:6556 ../src/firewall-config.in:6585
 #: ../src/firewall-config.glade.h:37
 msgid "IPv4"
-msgstr ""
+msgstr "IPv4"
 
 #: ../src/firewall-config.in:6556 ../src/firewall-config.in:6585
 #: ../src/firewall-config.glade.h:38
 msgid "IPv6"
-msgstr ""
+msgstr "IPv6"
 
 #: ../src/firewall-config.in:6562
 msgid "Built-in helper, rename not supported."
-msgstr ""
+msgstr "Helper bawaan, penggantian nama tidak didukung."
 
 #: ../src/firewall-config.in:7047
 msgid "Built-in icmp, rename not supported."
-msgstr ""
+msgstr "ICMP bawaan, penggantian nama tidak didukung."
 
 #: ../src/firewall-config.in:7657
 #, c-format
 msgid "Failed to read file '%s': %s"
-msgstr ""
+msgstr "Gagal membaca file '%s': %s"
 
 #: ../src/firewall-config.in:7794
 #, c-format
 msgid "Select zone for source %s"
-msgstr ""
+msgstr "Pilih zona untuk sumber %s"
 
 #. implies all other actions
 #: ../src/firewall-config.glade.h:1
 msgid "Address"
-msgstr ""
+msgstr "Alamat"
 
 #: ../src/firewall-config.glade.h:2
 msgid "Automatic Helpers"
-msgstr ""
+msgstr "Helper Otomatis"
 
 #: ../src/firewall-config.glade.h:3
 msgid "Please select the automatic helpers value:"
-msgstr ""
+msgstr "Silakan pilih nilai helper otomatis:"
 
 #: ../src/firewall-config.glade.h:5
 msgid "Please select default zone from the list below."
-msgstr ""
+msgstr "Silakan pilih zona default dari daftar di bawah ini."
 
 #: ../src/firewall-config.glade.h:6
 msgid "Direct Chain"
-msgstr ""
+msgstr "Rantai Langsung"
 
 #: ../src/firewall-config.glade.h:7
 msgid "Please select ipv and table and enter the chain name."
-msgstr ""
+msgstr "Silakan pilih ipv dan tabel lalu masukkan nama rantai."
 
 #: ../src/firewall-config.glade.h:8
 msgid "ipv:"
-msgstr ""
+msgstr "ipv:"
 
 #: ../src/firewall-config.glade.h:9
 msgid "eb"
-msgstr ""
+msgstr "eb"
 
 #: ../src/firewall-config.glade.h:10
 msgid "Chain:"
-msgstr ""
+msgstr "Rantai:"
 
 #: ../src/firewall-config.glade.h:11
 msgid "nat"
-msgstr ""
+msgstr "nat"
 
 #: ../src/firewall-config.glade.h:12
 msgid "raw"
-msgstr ""
+msgstr "raw"
 
 #: ../src/firewall-config.glade.h:13
 msgid "security"
-msgstr ""
+msgstr "security"
 
 #: ../src/firewall-config.glade.h:14
 msgid "Table:"
-msgstr ""
+msgstr "Tabel:"
 
 #: ../src/firewall-config.glade.h:15
 msgid "Direct Passthrough Rule"
-msgstr ""
+msgstr "Aturan Passthrough Langsung"
 
 #: ../src/firewall-config.glade.h:16
 msgid "Please select ipv and enter the args."
-msgstr ""
+msgstr "Silakan pilih ipv dan masukkan argumen."
 
 #: ../src/firewall-config.glade.h:17
 msgid "Args:"
-msgstr ""
+msgstr "Argumen:"
 
 #: ../src/firewall-config.glade.h:18
 msgid "Port Forwarding"
-msgstr ""
+msgstr "Penerusan Port"
 
 #: ../src/firewall-config.glade.h:19
 msgid ""
 "Please select the source and destination options according to your needs."
-msgstr ""
+msgstr "Silakan pilih opsi sumber dan tujuan sesuai kebutuhan Anda."
 
 #: ../src/firewall-config.glade.h:20
 msgid "Port / Port Range:"
-msgstr ""
+msgstr "Port / Rentang Port:"
 
 #: ../src/firewall-config.glade.h:21
 msgid "IP address:"
-msgstr ""
+msgstr "Alamat IP:"
 
 #: ../src/firewall-config.glade.h:22
 msgid "Protocol:"
-msgstr ""
+msgstr "Protokol:"
 
 #: ../src/firewall-config.glade.h:24
 msgid "Destination"
-msgstr ""
+msgstr "Tujuan"
 
 #: ../src/firewall-config.glade.h:25
 msgid ""
 "If you enable local forwarding, you have to specify a port. This port has to "
 "be different to the source port."
 msgstr ""
+"Jika Anda mengaktifkan penerusan lokal, Anda harus menentukan sebuah port. "
+"Port ini harus berbeda dari port sumber."
 
 #: ../src/firewall-config.glade.h:26
 msgid "Local forwarding"
-msgstr ""
+msgstr "Penerusan lokal"
 
 #: ../src/firewall-config.glade.h:27
 msgid "Forward to another port"
-msgstr ""
+msgstr "Teruskan ke port lain"
 
 #: ../src/firewall-config.glade.h:28
 msgid "Base Helper Settings"
-msgstr ""
+msgstr "Pengaturan Helper Dasar"
 
 #: ../src/firewall-config.glade.h:29
 msgid "Please configure base helper settings:"
-msgstr ""
+msgstr "Silakan konfigurasikan pengaturan helper dasar:"
 
 #: ../src/firewall-config.glade.h:30
 msgid "Bold entries are mandatory, all others are optional."
-msgstr ""
+msgstr "Entri yang dicetak tebal bersifat wajib, yang lainnya opsional."
 
 #: ../src/firewall-config.glade.h:31
 msgid "Name:"
-msgstr ""
+msgstr "Nama:"
 
 #: ../src/firewall-config.glade.h:32
 msgid "Version:"
-msgstr ""
+msgstr "Versi:"
 
 #: ../src/firewall-config.glade.h:33
 msgid "Short:"
-msgstr ""
+msgstr "Singkat:"
 
 #: ../src/firewall-config.glade.h:34
 msgid "Description:"
-msgstr ""
+msgstr "Deskripsi:"
 
 #: ../src/firewall-config.glade.h:35
 msgid "Family:"
-msgstr ""
+msgstr "Keluarga:"
 
 #: ../src/firewall-config.glade.h:39
 msgid "Module:"
-msgstr ""
+msgstr "Modul:"
 
 #: ../src/firewall-config.glade.h:40
 msgid "Helper"
-msgstr ""
+msgstr "Helper"
 
 #: ../src/firewall-config.glade.h:41
 msgid "Please select a helper:"
-msgstr ""
+msgstr "Silakan pilih sebuah helper:"
 
 #: ../src/firewall-config.glade.h:42
 msgid "Base ICMP Type Settings"
-msgstr ""
+msgstr "Pengaturan Tipe ICMP Dasar"
 
 #: ../src/firewall-config.glade.h:43
 msgid "Please configure base ICMP type settings:"
-msgstr ""
+msgstr "Silakan konfigurasikan pengaturan tipe ICMP dasar:"
 
 #: ../src/firewall-config.glade.h:44
 msgid "ICMP Type"
-msgstr ""
+msgstr "Tipe ICMP"
 
 #: ../src/firewall-config.glade.h:45
 msgid "Please select an ICMP type"
-msgstr ""
+msgstr "Silakan pilih sebuah tipe ICMP"
 
 #: ../src/firewall-config.glade.h:46
 msgid "Add Entry"
-msgstr ""
+msgstr "Tambah Entri"
 
 #: ../src/firewall-config.glade.h:47
 msgid "Add Entries From File"
-msgstr ""
+msgstr "Tambah Entri dari File"
 
 #: ../src/firewall-config.glade.h:48
 msgid "Remove Selected Entry"
-msgstr ""
+msgstr "Hapus Entri yang Dipilih"
 
 #: ../src/firewall-config.glade.h:49
 msgid "Remove All Entries"
-msgstr ""
+msgstr "Hapus Semua Entri"
 
 #: ../src/firewall-config.glade.h:50
 msgid "Remove Entries From File"
-msgstr ""
+msgstr "Hapus Entri dari File"
 
 #: ../src/firewall-config.glade.h:52
 msgid "_File"
-msgstr ""
+msgstr "_File"
 
 #: ../src/firewall-config.glade.h:53
 msgid "_Options"
-msgstr ""
+msgstr "_Opsi"
 
 #: ../src/firewall-config.glade.h:54
 msgid "Reload Firewalld"
-msgstr ""
+msgstr "Muat Ulang Firewalld"
 
 #: ../src/firewall-config.glade.h:55
 msgid ""
@@ -943,100 +957,108 @@ msgid ""
 "runtime configuration. i.e. all runtime only changes done until reload are "
 "lost with reload if they have not been also in permanent configuration."
 msgstr ""
+"Memuat ulang aturan firewall. Konfigurasi permanen saat ini akan menjadi "
+"konfigurasi runtime yang baru. Artinya, semua perubahan yang hanya berlaku "
+"di runtime yang dilakukan hingga pemuatan ulang akan hilang saat pemuatan "
+"ulang jika perubahan tersebut juga belum ada di konfigurasi permanen."
 
 #: ../src/firewall-config.glade.h:56
 msgid "Change which zone a network connection belongs to."
-msgstr ""
+msgstr "Ubah zona tempat koneksi jaringan berada."
 
 #: ../src/firewall-config.glade.h:58
 msgid "Change Default Zone"
-msgstr ""
+msgstr "Ubah Zona Default"
 
 #: ../src/firewall-config.glade.h:59
 msgid "Change default zone for connections or interfaces."
-msgstr ""
+msgstr "Ubah zona default untuk koneksi atau antarmuka."
 
 #: ../src/firewall-config.glade.h:60
 msgid "Change Log Denied"
-msgstr ""
+msgstr "Ubah Log Denied"
 
 #: ../src/firewall-config.glade.h:61
 msgid "Change LogDenied value."
-msgstr ""
+msgstr "Ubah nilai LogDenied."
 
 #: ../src/firewall-config.glade.h:62
 msgid "Configure Automatic Helper Assigment"
-msgstr ""
+msgstr "Konfigurasikan Penetapan Helper Otomatis"
 
 #: ../src/firewall-config.glade.h:63
 msgid "Configure Automatic Helper Assignment setting."
-msgstr ""
+msgstr "Konfigurasikan pengaturan Penetapan Helper Otomatis."
 
 #: ../src/firewall-config.glade.h:64
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
-msgstr ""
+msgstr "Mode panik berarti semua paket masuk dan keluar akan dijatuhkan."
 
 #: ../src/firewall-config.glade.h:65
 msgid "Panic Mode"
-msgstr ""
+msgstr "Mode Panik"
 
 #: ../src/firewall-config.glade.h:66
 msgid "Make runtime configuration permanent"
-msgstr ""
+msgstr "Jadikan konfigurasi runtime permanen"
 
 #: ../src/firewall-config.glade.h:67
 msgid "Runtime To Permanent"
-msgstr ""
+msgstr "Runtime ke Permanen"
 
 #: ../src/firewall-config.glade.h:68
 msgid "_View"
-msgstr ""
+msgstr "_Tampilan"
 
 #: ../src/firewall-config.glade.h:69
 msgid "IPSets"
-msgstr ""
+msgstr "IPSet"
 
 #: ../src/firewall-config.glade.h:70
 msgid "ICMP Types"
-msgstr ""
+msgstr "Tipe ICMP"
 
 #: ../src/firewall-config.glade.h:71
 msgid "Helpers"
-msgstr ""
+msgstr "Helper"
 
 #: ../src/firewall-config.glade.h:72
 msgid "Direct Configuration"
-msgstr ""
+msgstr "Konfigurasi Langsung"
 
 #: ../src/firewall-config.glade.h:73
 msgid "Active Bindings"
-msgstr ""
+msgstr "Pengikatan Aktif"
 
 #: ../src/firewall-config.glade.h:74
 msgid "_Help"
-msgstr ""
+msgstr "_Bantuan"
 
 #: ../src/firewall-config.glade.h:75
 msgid "Change Zone"
-msgstr ""
+msgstr "Ubah Zona"
 
 #: ../src/firewall-config.glade.h:76
 msgid "Change zone of binding"
-msgstr ""
+msgstr "Ubah zona pengikatan"
 
 #: ../src/firewall-config.glade.h:77
 msgid ""
 "Hide active runtime bindings of connections, interfaces and sources to zones"
 msgstr ""
+"Sembunyikan pengikatan runtime aktif dari koneksi, antarmuka, dan sumber ke "
+"zona"
 
 #: ../src/firewall-config.glade.h:78
 msgid ""
 "Show active runtime bindings of connections, interfaces and sources to zones"
 msgstr ""
+"Tampilkan pengikatan runtime aktif dari koneksi, antarmuka, dan sumber ke "
+"zona"
 
 #: ../src/firewall-config.glade.h:79
 msgid "Configuration:"
-msgstr ""
+msgstr "Konfigurasi:"
 
 #: ../src/firewall-config.glade.h:80
 msgid ""
@@ -1044,6 +1066,9 @@ msgid ""
 "configuration. Permanent configuration will be active after service or "
 "system reload or restart."
 msgstr ""
+"Konfigurasi yang saat ini terlihat. Konfigurasi runtime adalah konfigurasi "
+"aktual yang aktif. Konfigurasi permanen akan aktif setelah pemuatan ulang "
+"atau mulai ulang layanan atau sistem."
 
 #: ../src/firewall-config.glade.h:81
 msgid ""
@@ -1053,22 +1078,27 @@ msgid ""
 "filters and rich rules. The zone can be bound to interfaces and source "
 "addresses."
 msgstr ""
+"Zona firewalld mendefinisikan tingkat kepercayaan untuk koneksi jaringan, "
+"antarmuka, dan alamat sumber yang diikat ke zona tersebut. Zona "
+"menggabungkan layanan, port, protokol, masquerading, penerusan port/paket, "
+"filter ICMP, dan rich rules. Zona dapat diikat ke antarmuka dan alamat "
+"sumber."
 
 #: ../src/firewall-config.glade.h:83
 msgid "Add Zone"
-msgstr ""
+msgstr "Tambah Zona"
 
 #: ../src/firewall-config.glade.h:84
 msgid "Edit Zone"
-msgstr ""
+msgstr "Edit Zona"
 
 #: ../src/firewall-config.glade.h:85
 msgid "Remove Zone"
-msgstr ""
+msgstr "Hapus Zona"
 
 #: ../src/firewall-config.glade.h:86
 msgid "Load Zone Defaults"
-msgstr ""
+msgstr "Muat Default Zona"
 
 #: ../src/firewall-config.glade.h:87
 msgid ""
@@ -1076,62 +1106,70 @@ msgid ""
 "are accessible from all hosts and networks that can reach the machine from "
 "connections, interfaces and sources bound to this zone."
 msgstr ""
+"Di sini Anda dapat menentukan layanan mana yang tepercaya di zona. Layanan "
+"tepercaya dapat diakses dari semua host dan jaringan yang dapat menjangkau "
+"mesin dari koneksi, antarmuka, dan sumber yang diikat ke zona ini."
 
 #: ../src/firewall-config.glade.h:88
 msgid "Services"
-msgstr ""
+msgstr "Layanan"
 
 #: ../src/firewall-config.glade.h:89
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks that can connect to the machine."
 msgstr ""
+"Tambahkan port atau rentang port tambahan, yang perlu dapat diakses untuk "
+"semua host atau jaringan yang dapat terhubung ke mesin."
 
 #: ../src/firewall-config.glade.h:90
 msgid "Add Port"
-msgstr ""
+msgstr "Tambah Port"
 
 #: ../src/firewall-config.glade.h:91
 msgid "Edit Port"
-msgstr ""
+msgstr "Edit Port"
 
 #: ../src/firewall-config.glade.h:92
 msgid "Remove Port"
-msgstr ""
+msgstr "Hapus Port"
 
 #: ../src/firewall-config.glade.h:93
 msgid "Ports"
-msgstr ""
+msgstr "Port"
 
 #: ../src/firewall-config.glade.h:94
 msgid "Add protocols, which need to be accessible for all hosts or networks."
 msgstr ""
+"Tambahkan protokol, yang perlu dapat diakses untuk semua host atau jaringan."
 
 #: ../src/firewall-config.glade.h:95
 msgid "Add Protocol"
-msgstr ""
+msgstr "Tambah Protokol"
 
 #: ../src/firewall-config.glade.h:96
 msgid "Edit Protocol"
-msgstr ""
+msgstr "Edit Protokol"
 
 #: ../src/firewall-config.glade.h:97
 msgid "Remove Protocol"
-msgstr ""
+msgstr "Hapus Protokol"
 
 #: ../src/firewall-config.glade.h:98
 msgid "Protocols"
-msgstr ""
+msgstr "Protokol"
 
 #: ../src/firewall-config.glade.h:99
 msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks that can connect to the machine."
 msgstr ""
+"Tambahkan port sumber atau rentang port sumber tambahan, yang perlu dapat "
+"diakses untuk semua host atau jaringan yang dapat terhubung ke mesin."
 
 #: ../src/firewall-config.glade.h:100
 msgid "Source Ports"
-msgstr ""
+msgstr "Port Sumber"
 
 #: ../src/firewall-config.glade.h:101
 msgid ""
@@ -1139,20 +1177,26 @@ msgid ""
 "network to the internet. Your local network will not be visible and the "
 "hosts appear as a single address on the internet. Masquerading is IPv4 only."
 msgstr ""
+"Masquerading memungkinkan Anda menyiapkan host atau router yang "
+"menghubungkan jaringan lokal Anda ke internet. Jaringan lokal Anda tidak "
+"akan terlihat dan host akan tampak sebagai satu alamat di internet. "
+"Masquerading hanya untuk IPv4."
 
 #: ../src/firewall-config.glade.h:102
 msgid "Masquerade zone"
-msgstr ""
+msgstr "Lakukan masquerade pada zona"
 
 #: ../src/firewall-config.glade.h:103
 msgid ""
 "If you enable masquerading, IP forwarding will be enabled for your IPv4 "
 "networks."
 msgstr ""
+"Jika Anda mengaktifkan masquerading, penerusan IP akan diaktifkan untuk "
+"jaringan IPv4 Anda."
 
 #: ../src/firewall-config.glade.h:104
 msgid "Masquerading"
-msgstr ""
+msgstr "Masquerading"
 
 #: ../src/firewall-config.glade.h:105
 msgid ""
@@ -1161,18 +1205,21 @@ msgid ""
 "system is only useful if the interface is masqueraded. Port forwarding is "
 "IPv4 only."
 msgstr ""
+"Tambahkan entri untuk meneruskan port baik dari satu port ke port lain pada "
+"sistem lokal atau dari sistem lokal ke sistem lain. Penerusan ke sistem lain "
+"hanya berguna jika antarmuka dimasquerade. Penerusan port hanya untuk IPv4."
 
 #: ../src/firewall-config.glade.h:106
 msgid "Add Forward Port"
-msgstr ""
+msgstr "Tambah Port Terusan"
 
 #: ../src/firewall-config.glade.h:107
 msgid "Edit Forward Port"
-msgstr ""
+msgstr "Edit Port Terusan"
 
 #: ../src/firewall-config.glade.h:108
 msgid "Remove Forward Port"
-msgstr ""
+msgstr "Hapus Port Terusan"
 
 #: ../src/firewall-config.glade.h:109
 msgid ""
@@ -1180,64 +1227,75 @@ msgid ""
 "messages between networked computers, but additionally for informational "
 "messages like ping requests and replies."
 msgstr ""
+"Internet Control Message Protocol (ICMP) terutama digunakan untuk mengirim "
+"pesan kesalahan antar komputer yang terhubung jaringan, tetapi juga untuk "
+"pesan informasional seperti permintaan dan balasan ping."
 
 #: ../src/firewall-config.glade.h:110
 msgid ""
 "Mark the ICMP types in the list, which should be rejected. All other ICMP "
 "types are allowed to pass the firewall. The default is no limitation."
 msgstr ""
+"Tandai tipe ICMP dalam daftar yang harus ditolak. Semua tipe ICMP lainnya "
+"diizinkan melewati firewall. Default-nya tidak ada pembatasan."
 
 #: ../src/firewall-config.glade.h:111
 msgid ""
 "If Invert Filter is enabled, marked ICMP entries are accepted and the others "
 "are rejected. In a zone with the target DROP, they are dropped."
 msgstr ""
+"Jika Balikkan Filter diaktifkan, entri ICMP yang ditandai akan diterima dan "
+"yang lainnya ditolak. Dalam zona dengan target DROP, entri tersebut akan "
+"dijatuhkan."
 
 #: ../src/firewall-config.glade.h:112
 msgid "Invert Filter"
-msgstr ""
+msgstr "Balikkan Filter"
 
 #: ../src/firewall-config.glade.h:113
 msgid "ICMP Filter"
-msgstr ""
+msgstr "Filter ICMP"
 
 #: ../src/firewall-config.glade.h:114
 msgid "Here you can set rich language rules for the zone."
-msgstr ""
+msgstr "Di sini Anda dapat menyetel aturan rich language untuk zona."
 
 #: ../src/firewall-config.glade.h:115
 msgid "Add Rich Rule"
-msgstr ""
+msgstr "Tambah Rich Rule"
 
 #: ../src/firewall-config.glade.h:116
 msgid "Edit Rich Rule"
-msgstr ""
+msgstr "Edit Rich Rule"
 
 #: ../src/firewall-config.glade.h:117
 msgid "Remove Rich Rule"
-msgstr ""
+msgstr "Hapus Rich Rule"
 
 #: ../src/firewall-config.glade.h:118
 msgid "Rich Rules"
-msgstr ""
+msgstr "Rich Rules"
 
 #: ../src/firewall-config.glade.h:119
 msgid ""
 "Add entries to bind interfaces to the zone. If the interface will be used by "
 "a connection, the zone will be set to the zone specified in the connection."
 msgstr ""
+"Tambahkan entri untuk mengikat antarmuka ke zona. Jika antarmuka akan "
+"digunakan oleh sebuah koneksi, zona akan disetel ke zona yang ditentukan "
+"dalam koneksi tersebut."
 
 #: ../src/firewall-config.glade.h:120
 msgid "Add Interface"
-msgstr ""
+msgstr "Tambah Antarmuka"
 
 #: ../src/firewall-config.glade.h:121
 msgid "Edit Interface"
-msgstr ""
+msgstr "Edit Antarmuka"
 
 #: ../src/firewall-config.glade.h:122
 msgid "Remove Interface"
-msgstr ""
+msgstr "Hapus Antarmuka"
 
 #: ../src/firewall-config.glade.h:124
 msgid ""
@@ -1245,76 +1303,84 @@ msgid ""
 "to a MAC source address, but with limitations. Port forwarding and "
 "masquerading will not work for MAC source bindings."
 msgstr ""
+"Tambahkan entri untuk mengikat alamat sumber atau area ke zona. Anda juga "
+"dapat mengikat ke alamat sumber MAC, tetapi dengan keterbatasan. Penerusan "
+"port dan masquerading tidak akan berfungsi untuk pengikatan sumber MAC."
 
 #: ../src/firewall-config.glade.h:125
 msgid "Add Source"
-msgstr ""
+msgstr "Tambah Sumber"
 
 #: ../src/firewall-config.glade.h:126
 msgid "Edit Source"
-msgstr ""
+msgstr "Edit Sumber"
 
 #: ../src/firewall-config.glade.h:127
 msgid "Remove Source"
-msgstr ""
+msgstr "Hapus Sumber"
 
 #: ../src/firewall-config.glade.h:129
 msgid "Zones"
-msgstr ""
+msgstr "Zona"
 
 #: ../src/firewall-config.glade.h:130
 msgid ""
 "A firewalld service is a combination of ports, protocols, modules and "
 "destination addresses."
 msgstr ""
+"Layanan firewalld adalah kombinasi port, protokol, modul, dan alamat tujuan."
 
 #: ../src/firewall-config.glade.h:132
 msgid "Add Service"
-msgstr ""
+msgstr "Tambah Layanan"
 
 #: ../src/firewall-config.glade.h:133
 msgid "Edit Service"
-msgstr ""
+msgstr "Edit Layanan"
 
 #: ../src/firewall-config.glade.h:134
 msgid "Remove Service"
-msgstr ""
+msgstr "Hapus Layanan"
 
 #: ../src/firewall-config.glade.h:135
 msgid "Load Service Defaults"
-msgstr ""
+msgstr "Muat Default Layanan"
 
 #: ../src/firewall-config.glade.h:136
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks."
 msgstr ""
+"Tambahkan port atau rentang port tambahan, yang perlu dapat diakses untuk "
+"semua host atau jaringan."
 
 #: ../src/firewall-config.glade.h:137
 msgid "Edit Entry"
-msgstr ""
+msgstr "Edit Entri"
 
 #: ../src/firewall-config.glade.h:138
 msgid "Remove Entry"
-msgstr ""
+msgstr "Hapus Entri"
 
 #: ../src/firewall-config.glade.h:139
 msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks."
 msgstr ""
+"Tambahkan port sumber atau rentang port sumber tambahan, yang perlu dapat "
+"diakses untuk semua host atau jaringan."
 
 #: ../src/firewall-config.glade.h:140
 msgid "Source Port"
-msgstr ""
+msgstr "Port Sumber"
 
 #: ../src/firewall-config.glade.h:141
 msgid "Netfilter helper modules are needed for some services."
-msgstr ""
+msgstr "Modul helper netfilter diperlukan untuk beberapa layanan."
 
 #: ../src/firewall-config.glade.h:142
 msgid "Modules"
-msgstr ""
+msgstr "Modul"
 
 #: ../src/firewall-config.glade.h:143
 msgid ""
@@ -1322,46 +1388,52 @@ msgid ""
 "the destination address and type. If both entries are empty, there is no "
 "limitation."
 msgstr ""
+"Jika Anda menentukan alamat tujuan, entri layanan akan dibatasi ke alamat "
+"dan tipe tujuan. Jika kedua entri kosong, tidak ada pembatasan."
 
 #: ../src/firewall-config.glade.h:144
 msgid "IPv4:"
-msgstr ""
+msgstr "IPv4:"
 
 #: ../src/firewall-config.glade.h:145
 msgid "IPv6:"
-msgstr ""
+msgstr "IPv6:"
 
 #: ../src/firewall-config.glade.h:146
 msgid ""
 "Services can only be changed in the permanent configuration view. The "
 "runtime configuration of services is fixed."
 msgstr ""
+"Layanan hanya dapat diubah dalam tampilan konfigurasi permanen. Konfigurasi "
+"runtime layanan bersifat tetap."
 
 #: ../src/firewall-config.glade.h:147
 msgid ""
 "An IPSet can be used to create white or black lists and is able to store for "
 "example IP addresses, port numbers or MAC addresses. "
 msgstr ""
+"IPSet dapat digunakan untuk membuat daftar putih atau hitam dan dapat "
+"menyimpan misalnya alamat IP, nomor port, atau alamat MAC. "
 
 #: ../src/firewall-config.glade.h:148
 msgid "IPSet"
-msgstr ""
+msgstr "IPSet"
 
 #: ../src/firewall-config.glade.h:149
 msgid "Add IPSet"
-msgstr ""
+msgstr "Tambah IPSet"
 
 #: ../src/firewall-config.glade.h:150
 msgid "Edit IPSet"
-msgstr ""
+msgstr "Edit IPSet"
 
 #: ../src/firewall-config.glade.h:151
 msgid "Remove IPSet"
-msgstr ""
+msgstr "Hapus IPSet"
 
 #: ../src/firewall-config.glade.h:152
 msgid "Load IPSet Defaults"
-msgstr ""
+msgstr "Muat Default IPSet"
 
 #: ../src/firewall-config.glade.h:153
 msgid ""
@@ -1370,57 +1442,68 @@ msgid ""
 "added by firewalld. Entries, that have been directly added with the ipset "
 "command wil not be listed here."
 msgstr ""
+"Entri IPSet. Anda hanya akan dapat melihat entri ipset yang tidak "
+"menggunakan opsi timeout, dan juga hanya entri yang telah ditambahkan oleh "
+"firewalld. Entri yang ditambahkan langsung dengan perintah ipset tidak akan "
+"ditampilkan di sini."
 
 #: ../src/firewall-config.glade.h:154
 msgid ""
 "This IPSet uses the timeout option, therefore no entries are visible here. "
 "The entries should be taken care directly with the ipset command."
 msgstr ""
+"IPSet ini menggunakan opsi timeout, oleh karena itu tidak ada entri yang "
+"terlihat di sini. Entri harus dikelola langsung dengan perintah ipset."
 
 #: ../src/firewall-config.glade.h:155
 msgid "Add"
-msgstr ""
+msgstr "Tambah"
 
 #: ../src/firewall-config.glade.h:157
 msgid "Entries"
-msgstr ""
+msgstr "Entri"
 
 #: ../src/firewall-config.glade.h:158
 msgid ""
 "IPSets can only be created or deleted in the permanent configuration view."
 msgstr ""
+"IPSet hanya dapat dibuat atau dihapus dalam tampilan konfigurasi permanen."
 
 #: ../src/firewall-config.glade.h:159
 msgid ""
 "A firewalld icmptype provides the information for an Internet Control "
 "Message Protocol (ICMP) type for firewalld."
 msgstr ""
+"icmptype firewalld menyediakan informasi untuk sebuah tipe Internet Control "
+"Message Protocol (ICMP) untuk firewalld."
 
 #: ../src/firewall-config.glade.h:160
 msgid "Add ICMP Type"
-msgstr ""
+msgstr "Tambah Tipe ICMP"
 
 #: ../src/firewall-config.glade.h:161
 msgid "Edit ICMP Type"
-msgstr ""
+msgstr "Edit Tipe ICMP"
 
 #: ../src/firewall-config.glade.h:162
 msgid "Remove ICMP Type"
-msgstr ""
+msgstr "Hapus Tipe ICMP"
 
 #: ../src/firewall-config.glade.h:163
 msgid "Load ICMP Type Defaults"
-msgstr ""
+msgstr "Muat Default Tipe ICMP"
 
 #: ../src/firewall-config.glade.h:164
 msgid "Specify whether this ICMP Type is available for IPv4 and/or IPv6."
-msgstr ""
+msgstr "Tentukan apakah Tipe ICMP ini tersedia untuk IPv4 dan/atau IPv6."
 
 #: ../src/firewall-config.glade.h:165
 msgid ""
 "ICMP Types can only be changed in the permanent configuration view. The "
 "runtime configuration of ICMP Types is fixed."
 msgstr ""
+"Tipe ICMP hanya dapat diubah dalam tampilan konfigurasi permanen. "
+"Konfigurasi runtime Tipe ICMP bersifat tetap."
 
 #: ../src/firewall-config.glade.h:166
 msgid ""
@@ -1429,10 +1512,14 @@ msgid ""
 "are using ports that are unrelated to the signaling connection and are "
 "therefore blocked by the firewall without the helper."
 msgstr ""
+"Helper pelacakan koneksi membantu agar protokol yang menggunakan aliran "
+"berbeda untuk pensinyalan dan transfer data dapat berfungsi. Transfer data "
+"menggunakan port yang tidak terkait dengan koneksi pensinyalan dan karena "
+"itu diblokir oleh firewall tanpa helper."
 
 #: ../src/firewall-config.glade.h:167
 msgid "Define ports or port ranges, which are monitored by the helper."
-msgstr ""
+msgstr "Tentukan port atau rentang port, yang dipantau oleh helper."
 
 #: ../src/firewall-config.glade.h:168
 msgid ""
@@ -1441,6 +1528,11 @@ msgid ""
 "commands, parameters and targets. Direct configuration should be used only "
 "as a last resort when it is not possible to use other firewalld features."
 msgstr ""
+"Konfigurasi langsung memberikan akses yang lebih langsung ke firewall. Opsi "
+"ini mengharuskan pengguna mengetahui konsep dasar iptables, yaitu tabel, "
+"rantai, perintah, parameter, dan target. Konfigurasi langsung sebaiknya "
+"hanya digunakan sebagai upaya terakhir ketika tidak memungkinkan menggunakan "
+"fitur firewalld lainnya."
 
 #: ../src/firewall-config.glade.h:169
 msgid ""
@@ -1448,43 +1540,48 @@ msgid ""
 "will be for iptables, with ipv6 for ip6tables and with eb for ethernet "
 "bridges (ebtables)."
 msgstr ""
+"Argumen ipv dari setiap opsi harus berupa ipv4 atau ipv6 atau eb. Dengan "
+"ipv4 akan untuk iptables, dengan ipv6 untuk ip6tables, dan dengan eb untuk "
+"bridge ethernet (ebtables)."
 
 #: ../src/firewall-config.glade.h:170
 msgid "Additional chains for use with rules."
-msgstr ""
+msgstr "Rantai tambahan untuk digunakan dengan aturan."
 
 #: ../src/firewall-config.glade.h:171
 msgid "Add Chain"
-msgstr ""
+msgstr "Tambah Rantai"
 
 #: ../src/firewall-config.glade.h:172
 msgid "Edit Chain"
-msgstr ""
+msgstr "Edit Rantai"
 
 #: ../src/firewall-config.glade.h:173
 msgid "Remove Chain"
-msgstr ""
+msgstr "Hapus Rantai"
 
 #: ../src/firewall-config.glade.h:174
 msgid "Chains"
-msgstr ""
+msgstr "Rantai"
 
 #: ../src/firewall-config.glade.h:175
 msgid ""
 "Add a rule with the arguments args to a chain in a table with a priority."
 msgstr ""
+"Tambahkan aturan dengan argumen args ke sebuah rantai dalam sebuah tabel "
+"dengan sebuah prioritas."
 
 #: ../src/firewall-config.glade.h:176
 msgid "Add Rule"
-msgstr ""
+msgstr "Tambah Aturan"
 
 #: ../src/firewall-config.glade.h:177
 msgid "Edit Rule"
-msgstr ""
+msgstr "Edit Aturan"
 
 #: ../src/firewall-config.glade.h:178
 msgid "Remove Rule"
-msgstr ""
+msgstr "Hapus Aturan"
 
 #: ../src/firewall-config.glade.h:179
 msgid ""
@@ -1495,10 +1592,17 @@ msgid ""
 "after another one, use a low priority for the first and a higher for the "
 "following."
 msgstr ""
+"Prioritas digunakan untuk mengurutkan aturan. Prioritas 0 berarti "
+"menambahkan aturan di bagian paling atas rantai, dengan prioritas yang lebih "
+"tinggi aturan akan ditambahkan lebih ke bawah. Aturan dengan prioritas yang "
+"sama berada pada tingkat yang sama dan urutan aturan ini tidak tetap dan "
+"dapat berubah. Jika Anda ingin memastikan sebuah aturan akan ditambahkan "
+"setelah yang lain, gunakan prioritas rendah untuk yang pertama dan lebih "
+"tinggi untuk yang berikutnya."
 
 #: ../src/firewall-config.glade.h:180
 msgid "Rules"
-msgstr ""
+msgstr "Aturan"
 
 #: ../src/firewall-config.glade.h:181
 msgid ""
@@ -1506,271 +1610,278 @@ msgid ""
 "not placed in special chains. All iptables, ip6tables and ebtables options "
 "can be used."
 msgstr ""
+"Aturan passthrough diteruskan langsung ke firewall dan tidak ditempatkan "
+"dalam rantai khusus. Semua opsi iptables, ip6tables, dan ebtables dapat "
+"digunakan."
 
 #: ../src/firewall-config.glade.h:182
 msgid "Add Passthrough"
-msgstr ""
+msgstr "Tambah Passthrough"
 
 #: ../src/firewall-config.glade.h:183
 msgid "Edit Passthrough"
-msgstr ""
+msgstr "Edit Passthrough"
 
 #: ../src/firewall-config.glade.h:184
 msgid "Remove Passthrough"
-msgstr ""
+msgstr "Hapus Passthrough"
 
 #: ../src/firewall-config.glade.h:185
 msgid "Please be careful with passthrough rules to not damage the firewall."
 msgstr ""
+"Harap berhati-hati dengan aturan passthrough agar tidak merusak firewall."
 
 #: ../src/firewall-config.glade.h:186
 msgid "Passthrough"
-msgstr ""
+msgstr "Passthrough"
 
 #: ../src/firewall-config.glade.h:187
 msgid "Current default zone of the system."
-msgstr ""
+msgstr "Zona default sistem saat ini."
 
 #: ../src/firewall-config.glade.h:188
 msgctxt ""
 "Meaning: Log of denied packets. But this is too long. LogDenied is also the "
 "parameter used in firewalld.conf."
 msgid "Log Denied:"
-msgstr ""
+msgstr "Log Denied:"
 
 #: ../src/firewall-config.glade.h:189
 msgid "Panic Mode:"
-msgstr ""
+msgstr "Mode Panik:"
 
 #: ../src/firewall-config.glade.h:190
 msgctxt ""
 "Meaning: Log of denied packets. But this is too long. LogDenied is also the "
 "parameter used in firewalld.conf."
 msgid "Automatic Helpers:"
-msgstr ""
+msgstr "Helper Otomatis:"
 
 #: ../src/firewall-config.glade.h:191
 msgid "Default Zone:"
-msgstr ""
+msgstr "Zona Default:"
 
 #: ../src/firewall-config.glade.h:193
 msgid "Please enter an interface name:"
-msgstr ""
+msgstr "Silakan masukkan nama antarmuka:"
 
 #: ../src/firewall-config.glade.h:194
 msgid "Base IPSet Settings"
-msgstr ""
+msgstr "Pengaturan IPSet Dasar"
 
 #: ../src/firewall-config.glade.h:195
 msgid "Please configure base ipset settings:"
-msgstr ""
+msgstr "Silakan konfigurasikan pengaturan ipset dasar:"
 
 #: ../src/firewall-config.glade.h:196
 msgid "Type:"
-msgstr ""
+msgstr "Tipe:"
 
 #: ../src/firewall-config.glade.h:197
 msgid "Timeout:"
-msgstr ""
+msgstr "Timeout:"
 
 #: ../src/firewall-config.glade.h:198
 msgid "Hashsize:"
-msgstr ""
+msgstr "Hashsize:"
 
 #: ../src/firewall-config.glade.h:199
 msgid "Maxelem:"
-msgstr ""
+msgstr "Maxelem:"
 
 #: ../src/firewall-config.glade.h:200
 msgid "Timeout value in seconds"
-msgstr ""
+msgstr "Nilai timeout dalam detik"
 
 #: ../src/firewall-config.glade.h:201
 msgid "Initial hash size, default 1024"
-msgstr ""
+msgstr "Ukuran hash awal, default 1024"
 
 #: ../src/firewall-config.glade.h:202
 msgid "Max number of elements, default 65536"
-msgstr ""
+msgstr "Jumlah maksimum elemen, default 65536"
 
 #: ../src/firewall-config.glade.h:203
 msgid "Please select an ipset:"
-msgstr ""
+msgstr "Silakan pilih sebuah ipset:"
 
 #: ../src/firewall-config.glade.h:205
 msgid "Please enter an ipset entry:"
-msgstr ""
+msgstr "Silakan masukkan sebuah entri ipset:"
 
 #: ../src/firewall-config.glade.h:206
 msgid "Log Denied"
-msgstr ""
+msgstr "Log Denied"
 
 #: ../src/firewall-config.glade.h:207
 msgid "Please select the log denied value:"
-msgstr ""
+msgstr "Silakan pilih nilai log denied:"
 
 #: ../src/firewall-config.glade.h:208
 msgid "Mark"
-msgstr ""
+msgstr "Tanda"
 
 #: ../src/firewall-config.glade.h:209
 msgid "Please enter a mark with an optional mask."
-msgstr ""
+msgstr "Silakan masukkan sebuah tanda dengan mask opsional."
 
 #: ../src/firewall-config.glade.h:210
 msgid "The mark and the mask fields are both 32 bits wide unsigned numbers."
-msgstr ""
+msgstr "Kolom tanda dan mask keduanya adalah angka tak bertanda selebar 32-bit."
 
 #: ../src/firewall-config.glade.h:211
 msgid "Mark:"
-msgstr ""
+msgstr "Tanda:"
 
 #: ../src/firewall-config.glade.h:212
 msgid "Mask:"
-msgstr ""
+msgstr "Mask:"
 
 #: ../src/firewall-config.glade.h:213
 msgid "Please select a netfilter conntrack helper:"
-msgstr ""
+msgstr "Silakan pilih sebuah helper conntrack netfilter:"
 
 #: ../src/firewall-config.glade.h:214
 msgid "- Select -"
-msgstr ""
+msgstr "- Pilih -"
 
 #: ../src/firewall-config.glade.h:215
 msgid "Other Module:"
-msgstr ""
+msgstr "Modul Lainnya:"
 
 #: ../src/firewall-config.glade.h:216
 msgid "Port and Protocol"
-msgstr ""
+msgstr "Port dan Protokol"
 
 #: ../src/firewall-config.glade.h:217
 msgid "Please enter a port and protocol."
-msgstr ""
+msgstr "Silakan masukkan sebuah port dan protokol."
 
 #: ../src/firewall-config.glade.h:218
 msgid "Direct Rule"
-msgstr ""
+msgstr "Aturan Langsung"
 
 #: ../src/firewall-config.glade.h:219
 msgid "Please select ipv and table, chain priority and enter the args."
-msgstr ""
+msgstr "Silakan pilih ipv dan tabel, prioritas rantai, lalu masukkan argumen."
 
 #: ../src/firewall-config.glade.h:220
 msgid "Priority:"
-msgstr ""
+msgstr "Prioritas:"
 
 #: ../src/firewall-config.glade.h:222
 msgid "Please enter a protocol."
-msgstr ""
+msgstr "Silakan masukkan sebuah protokol."
 
 #: ../src/firewall-config.glade.h:223
 msgid "Other Protocol:"
-msgstr ""
+msgstr "Protokol Lainnya:"
 
 #: ../src/firewall-config.glade.h:224
 msgid "Rich Rule"
-msgstr ""
+msgstr "Rich Rule"
 
 #: ../src/firewall-config.glade.h:225
 msgid "Please enter a rich rule."
-msgstr ""
+msgstr "Silakan masukkan sebuah rich rule."
 
 #: ../src/firewall-config.glade.h:226
 msgid "For host or network allow or denylisting deactivate the element."
 msgstr ""
+"Untuk allowlisting atau denylisting host atau jaringan, nonaktifkan elemen."
 
 #: ../src/firewall-config.glade.h:227
 msgid "Source:"
-msgstr ""
+msgstr "Sumber:"
 
 #: ../src/firewall-config.glade.h:228
 msgid "Destination:"
-msgstr ""
+msgstr "Tujuan:"
 
 #: ../src/firewall-config.glade.h:229
 msgid "Log:"
-msgstr ""
+msgstr "Log:"
 
 #: ../src/firewall-config.glade.h:230
 msgid "Audit:"
-msgstr ""
+msgstr "Audit:"
 
 #: ../src/firewall-config.glade.h:231
 msgid "ipv4 and ipv6"
-msgstr ""
+msgstr "ipv4 dan ipv6"
 
 #: ../src/firewall-config.glade.h:232
 msgid "inverted"
-msgstr ""
+msgstr "dibalik"
 
 #: ../src/firewall-config.glade.h:237
 msgid ""
 "To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
 "(not both)."
 msgstr ""
+"Untuk mengaktifkan ini, Tindakan harus 'tolak' dan Keluarga harus 'ipv4' "
+"atau 'ipv6' (bukan keduanya)."
 
 #: ../src/firewall-config.glade.h:238
 msgid "with Type:"
-msgstr ""
+msgstr "dengan Tipe:"
 
 #: ../src/firewall-config.glade.h:239
 msgid "With limit:"
-msgstr ""
+msgstr "Dengan batas:"
 
 #: ../src/firewall-config.glade.h:240
 msgid "/"
-msgstr ""
+msgstr "/"
 
 #: ../src/firewall-config.glade.h:245
 msgid "Prefix:"
-msgstr ""
+msgstr "Prefiks:"
 
 #: ../src/firewall-config.glade.h:246
 msgid "Level:"
-msgstr ""
+msgstr "Tingkat:"
 
 #: ../src/firewall-config.glade.h:263
 msgid "Element:"
-msgstr ""
+msgstr "Elemen:"
 
 #: ../src/firewall-config.glade.h:264
 msgid "Action:"
-msgstr ""
+msgstr "Tindakan:"
 
 #: ../src/firewall-config.glade.h:265
 msgid "Base Service Settings"
-msgstr ""
+msgstr "Pengaturan Layanan Dasar"
 
 #: ../src/firewall-config.glade.h:266
 msgid "Please configure base service settings:"
-msgstr ""
+msgstr "Silakan konfigurasikan pengaturan layanan dasar:"
 
 #: ../src/firewall-config.glade.h:267
 msgid "Please select a service."
-msgstr ""
+msgstr "Silakan pilih sebuah layanan."
 
 #: ../src/firewall-config.glade.h:268
 msgid "Please enter a source."
-msgstr ""
+msgstr "Silakan masukkan sebuah sumber."
 
 #: ../src/firewall-config.glade.h:269
 msgid "label"
-msgstr ""
+msgstr "label"
 
 #: ../src/firewall-config.glade.h:270
 msgid "Base Zone Settings"
-msgstr ""
+msgstr "Pengaturan Zona Dasar"
 
 #: ../src/firewall-config.glade.h:271
 msgid "Please configure base zone settings:"
-msgstr ""
+msgstr "Silakan konfigurasikan pengaturan zona dasar:"
 
 #: ../src/firewall-config.glade.h:272
 msgid "Default Target"
-msgstr ""
+msgstr "Target Default"
 
 #: ../src/firewall-config.glade.h:273
 msgid "Target:"
-msgstr ""
+msgstr "Target:"
