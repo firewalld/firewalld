@@ -1,13 +1,13 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# Remus-Gabriel Chelu <remusgabriel.chelu@disroot.org>, 2023, 2025.
+# Remus-Gabriel Chelu <remusgabriel.chelu@disroot.org>, 2023, 2025, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-06 14:46-0500\n"
-"PO-Revision-Date: 2025-11-14 10:32+0000\n"
+"PO-Revision-Date: 2026-02-21 08:58+0000\n"
 "Last-Translator: Remus-Gabriel Chelu <remusgabriel.chelu@disroot.org>\n"
 "Language-Team: Romanian <https://translate.fedoraproject.org/projects/"
 "firewalld/master/ro/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
 "20)) ? 1 : 2;\n"
-"X-Generator: Weblate 5.14.3\n"
+"X-Generator: Weblate 5.16\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:450
 msgid "Firewall Applet"
@@ -715,7 +715,7 @@ msgstr ""
 
 #: ../src/firewall-config.in:5922
 msgid "Built-in ipset, rename not supported."
-msgstr "Set-IP încorporat, redenumirea nu este acceptată."
+msgstr "«ipset» integrat, redenumirea nu este acceptată."
 
 #: ../src/firewall-config.in:6022 ../src/firewall-config.in:6111
 msgid "Please select a file"
@@ -750,7 +750,7 @@ msgstr "Asistent încorporat, redenumirea nu este acceptată."
 
 #: ../src/firewall-config.in:7047
 msgid "Built-in icmp, rename not supported."
-msgstr "ICMP încorporat, redenumirea nu este acceptată."
+msgstr "ICMP integrat, redenumirea nu este acceptată."
 
 #: ../src/firewall-config.in:7657
 #, c-format
@@ -1702,7 +1702,7 @@ msgstr "Parametrii de bază ai Setului-IP"
 
 #: ../src/firewall-config.glade.h:195
 msgid "Please configure base ipset settings:"
-msgstr "Configurați parametrii de bază ai Setului-IP:"
+msgstr "Configurați parametrii de bază ai «ipset»:"
 
 #: ../src/firewall-config.glade.h:196
 msgid "Type:"
@@ -1734,11 +1734,11 @@ msgstr "Numărul maxim de elemente, implicit 65536"
 
 #: ../src/firewall-config.glade.h:203
 msgid "Please select an ipset:"
-msgstr "Selectați un Set-IP:"
+msgstr "Selectați un ipset:"
 
 #: ../src/firewall-config.glade.h:205
 msgid "Please enter an ipset entry:"
-msgstr "Introduceți o intrare de Set-IP:"
+msgstr "Introduceți o intrare de ipset:"
 
 #: ../src/firewall-config.glade.h:206
 msgid "Log Denied"
