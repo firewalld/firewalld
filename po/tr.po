@@ -8,14 +8,15 @@
 # Onuralp SEZER <thunderbirdtr@gmail.com>, 2012
 # Serdar Sağlam <teknomobil@msn.com>, 2019. #zanata
 # Oğuz Ersen <oguzersen@protonmail.com>, 2020.
-# Burak Yavuz <hitowerdigit@hotmail.com>, 2020, 2022.
-# Oğuz Ersen <oguz@ersen.moe>, 2022.
+# Burak Yavuz <hitowerdigit@hotmail.com>, 2020, 2022, 2025, 2026.
+# Oğuz Ersen <oguz@ersen.moe>, 2022, 2025.
+# Weblate Translation Memory <noreply-mt-weblate-translation-memory@weblate.org>, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-06 14:46-0500\n"
-"PO-Revision-Date: 2022-07-07 20:19+0000\n"
+"PO-Revision-Date: 2026-02-18 19:58+0000\n"
 "Last-Translator: Burak Yavuz <hitowerdigit@hotmail.com>\n"
 "Language-Team: Turkish <https://translate.fedoraproject.org/projects/"
 "firewalld/master/tr/>\n"
@@ -24,7 +25,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n>1);\n"
-"X-Generator: Weblate 4.13\n"
+"X-Generator: Weblate 5.16\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:450
 msgid "Firewall Applet"
@@ -34,37 +35,37 @@ msgstr "Güvenlik Duvarı Uygulaması"
 msgid ""
 "Firewall Configuration provides a graphical tool for administering firewall."
 msgstr ""
+"Güvenlik Duvarı Yapılandırması, güvenlik duvarını yönetmek için grafiksel "
+"bir araç sağlar."
 
 #: ../config/firewall-config.appdata.xml.in.h:2
-#, fuzzy
 msgid "Allows to inspect and set:"
-msgstr "Lütfen bir ipset seçin:"
+msgstr "İncelemeye ve ayarlamaya izin verir:"
 
 #: ../config/firewall-config.appdata.xml.in.h:3
-#, fuzzy
 msgid "Runtime and permanent firewall configuration"
-msgstr "Güvenlik Duvarı Yapılandırması"
+msgstr "Çalışma zamanı ve kalıcı güvenlik duvarı yapılandırması"
 
 #: ../config/firewall-config.appdata.xml.in.h:4
-#, fuzzy
 msgid "Predefined zones (levels of trust for network connections)"
-msgstr "'%s' ağ bağlantısı tarafından kullanılan öntanımlı bölge"
+msgstr "Öntanımlı bölgeler (ağ bağlantıları için güven düzeyleri)"
 
 #: ../config/firewall-config.appdata.xml.in.h:5
 msgid "Predefined services (port/protocol, netfilter helper module)"
 msgstr ""
+"Öntanımlı hizmetler (bağlantı noktası/protokol, netfilter yardımcı modülü)"
 
 #: ../config/firewall-config.appdata.xml.in.h:6
 msgid "Port forwarding, masquerading, ICMP blocking"
-msgstr ""
+msgstr "Bağlantı noktası yönlendirme, maskeleme, ICMP engelleme"
 
 #: ../config/firewall-config.appdata.xml.in.h:7
 msgid "Complex firewall rules a.k.a. Rich Language"
-msgstr ""
+msgstr "Zengin Dil olarak ta bilinen karmaşık güvenlik duvarı kuralları"
 
 #: ../config/firewall-config.appdata.xml.in.h:8
 msgid "Iptables rules a.k.a. Direct Interface"
-msgstr ""
+msgstr "Doğrudan Arayüz olarak ta bilinen Ip tabloları kuralları"
 
 #: ../config/firewall-config.desktop.in.h:1
 msgid "Firewall"
@@ -90,7 +91,7 @@ msgstr "'%s' arayüzü için bölge seç"
 #: ../src/firewall-config.in:7736 ../src/firewall-config.in:7744
 #: ../src/firewall-config.in:7778 ../src/firewall-config.glade.h:4
 msgid "Default Zone"
-msgstr "Öntanımlı Bölge"
+msgstr "Varsayılan Bölge"
 
 #: ../src/firewall-applet.in:168 ../src/firewall-config.in:7771
 #, c-format
@@ -188,7 +189,7 @@ msgstr "Bağlantılar"
 #: ../src/firewall-config.in:2495 ../src/firewall-config.in:2715
 #: ../src/firewall-config.in:2742 ../src/firewall-config.glade.h:123
 msgid "Interfaces"
-msgstr ""
+msgstr "Arayüzler"
 
 #: ../src/firewall-applet.in:561 ../src/firewall-config.in:568
 #: ../src/firewall-config.in:2535 ../src/firewall-config.in:2718
@@ -441,7 +442,7 @@ msgstr "Eylem"
 
 #: ../src/firewall-config.in:790
 msgid "Element"
-msgstr "Eleman"
+msgstr "Öğe"
 
 #: ../src/firewall-config.in:793
 msgid "Src"
@@ -675,9 +676,8 @@ msgid "ipv6"
 msgstr "ipv6"
 
 #: ../src/firewall-config.in:3995
-#, fuzzy
 msgid "invalid element"
-msgstr "Geçersiz ad"
+msgstr "geçersiz öğe"
 
 #: ../src/firewall-config.in:5161
 msgid ""
@@ -784,7 +784,7 @@ msgstr "Lütfen otomatik yardımcıların değerini seçin:"
 
 #: ../src/firewall-config.glade.h:5
 msgid "Please select default zone from the list below."
-msgstr "Lütfen aşağıdaki listeden öntanımlı bölgeyi seçin."
+msgstr "Lütfen aşağıdaki listeden varsayılan bölgeyi seçin."
 
 #: ../src/firewall-config.glade.h:6
 msgid "Direct Chain"
@@ -1085,8 +1085,9 @@ msgid ""
 "configuration. Permanent configuration will be active after service or "
 "system reload or restart."
 msgstr ""
-"Eğer belirli bir adres belirlediyseniz, ICMP tipi girişi bu hedefle sınırlı "
-"olacaktır."
+"Şu anda görünen yapılandırma. Çalışma zamanı yapılandırması asıl etkin "
+"yapılandırmadır. Kalıcı yapılandırma, hizmet veya sistem yeniden "
+"yüklendikten veya yeniden başlatıldıktan sonra etkin olacaktır."
 
 #: ../src/firewall-config.glade.h:81
 msgid ""
@@ -1414,7 +1415,7 @@ msgid ""
 "limitation."
 msgstr ""
 "Eğer belirli bir hedef adres belirlediyseniz, hizmet girişi hedef adres ve "
-"türü ile sınırlı olacaktır. Eğer ikisi de boş ise , herhangi bir sınırlama "
+"türü ile sınırlı olacaktır. Eğer ikisi de boş ise, herhangi bir sınırlama "
 "yoktur."
 
 #: ../src/firewall-config.glade.h:144
@@ -1730,7 +1731,7 @@ msgstr "Başlangıç hash boyutu, öntanımlı olarak 1024"
 
 #: ../src/firewall-config.glade.h:202
 msgid "Max number of elements, default 65536"
-msgstr "Azami eleman sayısı, öntanımlı olarak 65536"
+msgstr "En fazla öğe sayısı, varsayılan 65536"
 
 #: ../src/firewall-config.glade.h:203
 msgid "Please select an ipset:"
@@ -1821,8 +1822,8 @@ msgstr "Lütfen bir zengin kural girin."
 #: ../src/firewall-config.glade.h:226
 msgid "For host or network allow or denylisting deactivate the element."
 msgstr ""
-"Ana makine veya ağ için, izin veya ret listesine almak elemanı devreden "
-"çıkarır."
+"Anamakine veya ağ için izin verme veya reddetme listesine almak öğeyi devre "
+"dışı bırakır."
 
 #: ../src/firewall-config.glade.h:227
 msgid "Source:"
@@ -1858,11 +1859,11 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:238
 msgid "with Type:"
-msgstr "Tür:"
+msgstr "Şu türle:"
 
 #: ../src/firewall-config.glade.h:239
 msgid "With limit:"
-msgstr "Limit:"
+msgstr "Şu sınırla:"
 
 #: ../src/firewall-config.glade.h:240
 msgid "/"
@@ -1878,7 +1879,7 @@ msgstr "Seviye:"
 
 #: ../src/firewall-config.glade.h:263
 msgid "Element:"
-msgstr "Eleman:"
+msgstr "Öğe:"
 
 #: ../src/firewall-config.glade.h:264
 msgid "Action:"
@@ -1914,7 +1915,7 @@ msgstr "Lütfen temel bölge ayarlarını yapılandırın:"
 
 #: ../src/firewall-config.glade.h:272
 msgid "Default Target"
-msgstr "Öntanımlı Hedef"
+msgstr "Varsayılan Hedef"
 
 #: ../src/firewall-config.glade.h:273
 msgid "Target:"

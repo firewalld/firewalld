@@ -21,16 +21,18 @@
 # Zdenek <chmelarz@gmail.com>, 2017. #zanata
 # Eric Garver <e@erig.me>, 2018. #zanata
 # Robert Chudý <robertch@virtus.cz>, 2018. #zanata
-# Pavel Borecki <pavel.borecki@gmail.com>, 2019. #zanata, 2020, 2021.
-# Eric Garver <egarver@redhat.com>, 2020.
-# Tomáš Doležal <todoleza@redhat.com>, 2020.
+# Pavel Borecki <pavel.borecki@gmail.com>, 2019. #zanata, 2020, 2021, 2025.
+# Eric Garver <egarver@redhat.com>, 2020, 2025.
+# Tomáš Doležal <todoleza@redhat.com>, 2020, 2025.
+# Weblate Translation Memory <noreply-mt-weblate-translation-memory@weblate.org>, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-06 14:46-0500\n"
-"PO-Revision-Date: 2021-12-03 22:16+0000\n"
-"Last-Translator: Pavel Borecki <pavel.borecki@gmail.com>\n"
+"PO-Revision-Date: 2025-12-05 20:04+0000\n"
+"Last-Translator: Weblate Translation Memory <noreply-mt-weblate-translation-"
+"memory@weblate.org>\n"
 "Language-Team: Czech <https://translate.fedoraproject.org/projects/firewalld/"
 "master/cs/>\n"
 "Language: cs\n"
@@ -38,7 +40,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Weblate 4.9.1\n"
+"X-Generator: Weblate 5.14.3\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:450
 msgid "Firewall Applet"
@@ -48,37 +50,35 @@ msgstr "Aplet brány firewall"
 msgid ""
 "Firewall Configuration provides a graphical tool for administering firewall."
 msgstr ""
+"Nastavování brány firewall poskytuje grafický nástroj pro správu brány."
 
 #: ../config/firewall-config.appdata.xml.in.h:2
-#, fuzzy
 msgid "Allows to inspect and set:"
-msgstr "Vyberte IPSet:"
+msgstr "Umožnit provést inspekci a nastavit:"
 
 #: ../config/firewall-config.appdata.xml.in.h:3
-#, fuzzy
 msgid "Runtime and permanent firewall configuration"
-msgstr "Nastavení brány firewall"
+msgstr "Běhové a trvalé nastavení brány firewall"
 
 #: ../config/firewall-config.appdata.xml.in.h:4
-#, fuzzy
 msgid "Predefined zones (levels of trust for network connections)"
-msgstr "Výchozí zóna je využívána síťovým připojením „%s“"
+msgstr "Předpřipravené zóny (stupně důvěryhodnosti připojení k síti)"
 
 #: ../config/firewall-config.appdata.xml.in.h:5
 msgid "Predefined services (port/protocol, netfilter helper module)"
-msgstr ""
+msgstr "Předpřipravené služby (port/protokol, pomocný modul netfilter)"
 
 #: ../config/firewall-config.appdata.xml.in.h:6
 msgid "Port forwarding, masquerading, ICMP blocking"
-msgstr ""
+msgstr "Přesměrování portu, maškaráda, blokování ICMP"
 
 #: ../config/firewall-config.appdata.xml.in.h:7
 msgid "Complex firewall rules a.k.a. Rich Language"
-msgstr ""
+msgstr "Komplexní pravidla brány firewall, neboli tzv. Rich Language"
 
 #: ../config/firewall-config.appdata.xml.in.h:8
 msgid "Iptables rules a.k.a. Direct Interface"
-msgstr ""
+msgstr "Pravidla iptables neboli tzv. Direct Interface"
 
 #: ../config/firewall-config.desktop.in.h:1
 msgid "Firewall"
@@ -684,9 +684,8 @@ msgid "ipv6"
 msgstr "ipv6"
 
 #: ../src/firewall-config.in:3995
-#, fuzzy
 msgid "invalid element"
-msgstr "Neplatný název"
+msgstr "Neplatný prvek"
 
 #: ../src/firewall-config.in:5161
 msgid ""
