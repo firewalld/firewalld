@@ -1143,7 +1143,7 @@ class Firewall:
 
     def check_policy(self, policy):
         _policy = policy
-        if _policy not in self.policy.get_policies():
+        if _policy not in self.policy._policies:
             raise FirewallError(errors.INVALID_POLICY, _policy)
         return _policy
 
