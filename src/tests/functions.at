@@ -155,9 +155,6 @@ m4_define([FWD_START_TEST], [
         dnl set the appropriate backend
         AT_CHECK([sed -i 's/^FirewallBackend.*/FirewallBackend=FIREWALL_BACKEND/' ./firewalld.conf])
 
-        dnl DEBUG ONLY
-        AT_CHECK([sed -i 's/^IndividualCalls.*/IndividualCalls=yes/' ./firewalld.conf])
-
         dnl fib matching is pretty new in nftables. Don't use rpfilter on older
         dnl kernels.
         m4_if(nftables, FIREWALL_BACKEND, [
