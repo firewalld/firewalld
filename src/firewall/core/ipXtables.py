@@ -982,6 +982,7 @@ class ip4tables:
         else:
             return ["%%POLICY_SORT_KEY%%", ingress + egress + suffix + (policy,)]
 
+    # FIXME: update for new dispatch method.
     def build_policy_ingress_egress_pair_rules(
         self,
         enable,

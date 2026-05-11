@@ -116,250 +116,56 @@ FWD_CHECK([--permanent --zone zone-0andlast --add-interface dummy-9], 0, [ignore
 FWD_RELOAD()
 
 dnl verify rule generation is sorted
-NFT_LIST_RULES([inet], [filter_INPUT_POLICIES], 0, [dnl
+NFT_LIST_RULES([inet], [filter_INPUT_dispatch], 0, [dnl
   table inet firewalld {
-    chain filter_INPUT_POLICIES {
-      iifname "dummy-1" jump filter_IN_policy_allow-host-ipv6
-      iifname "dummy-1" jump filter_IN_zone-1
-      iifname "dummy-1" reject with icmpx admin-prohibited
-      iifname "dummy-2" jump filter_IN_policy_allow-host-ipv6
-      iifname "dummy-2" jump filter_IN_zone-2
-      iifname "dummy-2" reject with icmpx admin-prohibited
-      iifname "dummy-3" jump filter_IN_policy_allow-host-ipv6
-      iifname "dummy-3" jump filter_IN_zone-3
-      iifname "dummy-3" reject with icmpx admin-prohibited
-      iifname "dummy-4" jump filter_IN_policy_allow-host-ipv6
-      iifname "dummy-4" jump filter_IN_zone-4
-      iifname "dummy-4" reject with icmpx admin-prohibited
-      iifname "dummy-5" jump filter_IN_policy_allow-host-ipv6
-      iifname "dummy-5" jump filter_IN_zone-5
-      iifname "dummy-5" reject with icmpx admin-prohibited
-      iifname "dummy-9" jump filter_IN_policy_allow-host-ipv6
-      iifname "dummy-9" jump filter_IN_zone-0andlast
-      iifname "dummy-9" reject with icmpx admin-prohibited
-      ip saddr 10.10.10.0/24 jump filter_IN_policy_allow-host-ipv6
-      ip saddr 10.10.10.0/24 jump filter_IN_zone-6
-      ip saddr 10.10.10.0/24 reject with icmpx admin-prohibited
-      iifname "dummy-7" jump filter_IN_policy_allow-host-ipv6
-      iifname "dummy-7" jump filter_IN_zone-7
-      iifname "dummy-7" reject with icmpx admin-prohibited
-      ip saddr 10.0.0.0/8 jump filter_IN_policy_allow-host-ipv6
-      ip saddr 10.0.0.0/8 jump filter_IN_zone-8
-      ip saddr 10.0.0.0/8 reject with icmpx admin-prohibited
-      jump filter_IN_policy_allow-host-ipv6
-      jump filter_IN_public
-      reject with icmpx admin-prohibited
+    chain filter_INPUT_dispatch {
+      iifname "dummy-1" jump filter_IN_zone-1_to_HOST
+      iifname "dummy-2" jump filter_IN_zone-2_to_HOST
+      iifname "dummy-3" jump filter_IN_zone-3_to_HOST
+      iifname "dummy-4" jump filter_IN_zone-4_to_HOST
+      iifname "dummy-5" jump filter_IN_zone-5_to_HOST
+      iifname "dummy-9" jump filter_IN_zone-0andlast_to_HOST
+      ip saddr 10.10.10.0/24 jump filter_IN_zone-6_to_HOST
+      iifname "dummy-7" jump filter_IN_zone-7_to_HOST
+      ip saddr 10.0.0.0/8 jump filter_IN_zone-8_to_HOST
+      jump filter_IN_public_to_HOST
     }
   }
 ])
-NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES], 0, [dnl
+NFT_LIST_RULES([inet], [filter_FORWARD_dispatch], 0, [dnl
   table inet firewalld {
-    chain filter_FORWARD_POLICIES {
-      iifname "dummy-1" oifname "dummy-1" jump filter_FWD_zone-1
-      iifname "dummy-1" oifname "dummy-1" reject with icmpx admin-prohibited
-      iifname "dummy-1" oifname "dummy-2" jump filter_FWD_zone-1
-      iifname "dummy-1" oifname "dummy-2" reject with icmpx admin-prohibited
-      iifname "dummy-1" oifname "dummy-3" jump filter_FWD_zone-1
-      iifname "dummy-1" oifname "dummy-3" reject with icmpx admin-prohibited
-      iifname "dummy-1" oifname "dummy-4" jump filter_FWD_zone-1
-      iifname "dummy-1" oifname "dummy-4" reject with icmpx admin-prohibited
-      iifname "dummy-1" oifname "dummy-5" jump filter_FWD_zone-1
-      iifname "dummy-1" oifname "dummy-5" reject with icmpx admin-prohibited
-      iifname "dummy-1" ip daddr 10.10.10.0/24 jump filter_FWD_zone-1
-      iifname "dummy-1" ip daddr 10.10.10.0/24 reject with icmpx admin-prohibited
-      iifname "dummy-1" oifname "dummy-7" jump filter_FWD_zone-1
-      iifname "dummy-1" oifname "dummy-7" reject with icmpx admin-prohibited
-      iifname "dummy-1" ip daddr 10.0.0.0/8 jump filter_FWD_zone-1
-      iifname "dummy-1" ip daddr 10.0.0.0/8 reject with icmpx admin-prohibited
-      iifname "dummy-1" oifname "dummy-9" jump filter_FWD_zone-1
-      iifname "dummy-1" oifname "dummy-9" reject with icmpx admin-prohibited
-      iifname "dummy-1" jump filter_FWD_zone-1
-      iifname "dummy-1" reject with icmpx admin-prohibited
-      iifname "dummy-2" oifname "dummy-1" jump filter_FWD_zone-2
-      iifname "dummy-2" oifname "dummy-1" reject with icmpx admin-prohibited
-      iifname "dummy-2" oifname "dummy-2" jump filter_FWD_zone-2
-      iifname "dummy-2" oifname "dummy-2" reject with icmpx admin-prohibited
-      iifname "dummy-2" oifname "dummy-3" jump filter_FWD_zone-2
-      iifname "dummy-2" oifname "dummy-3" reject with icmpx admin-prohibited
-      iifname "dummy-2" oifname "dummy-4" jump filter_FWD_zone-2
-      iifname "dummy-2" oifname "dummy-4" reject with icmpx admin-prohibited
-      iifname "dummy-2" oifname "dummy-5" jump filter_FWD_zone-2
-      iifname "dummy-2" oifname "dummy-5" reject with icmpx admin-prohibited
-      iifname "dummy-2" ip daddr 10.10.10.0/24 jump filter_FWD_zone-2
-      iifname "dummy-2" ip daddr 10.10.10.0/24 reject with icmpx admin-prohibited
-      iifname "dummy-2" oifname "dummy-7" jump filter_FWD_zone-2
-      iifname "dummy-2" oifname "dummy-7" reject with icmpx admin-prohibited
-      iifname "dummy-2" ip daddr 10.0.0.0/8 jump filter_FWD_zone-2
-      iifname "dummy-2" ip daddr 10.0.0.0/8 reject with icmpx admin-prohibited
-      iifname "dummy-2" oifname "dummy-9" jump filter_FWD_zone-2
-      iifname "dummy-2" oifname "dummy-9" reject with icmpx admin-prohibited
-      iifname "dummy-2" jump filter_FWD_zone-2
-      iifname "dummy-2" reject with icmpx admin-prohibited
-      iifname "dummy-3" oifname "dummy-1" jump filter_FWD_zone-3
-      iifname "dummy-3" oifname "dummy-1" reject with icmpx admin-prohibited
-      iifname "dummy-3" oifname "dummy-2" jump filter_FWD_zone-3
-      iifname "dummy-3" oifname "dummy-2" reject with icmpx admin-prohibited
-      iifname "dummy-3" oifname "dummy-3" jump filter_FWD_zone-3
-      iifname "dummy-3" oifname "dummy-3" reject with icmpx admin-prohibited
-      iifname "dummy-3" oifname "dummy-4" jump filter_FWD_zone-3
-      iifname "dummy-3" oifname "dummy-4" reject with icmpx admin-prohibited
-      iifname "dummy-3" oifname "dummy-5" jump filter_FWD_zone-3
-      iifname "dummy-3" oifname "dummy-5" reject with icmpx admin-prohibited
-      iifname "dummy-3" ip daddr 10.10.10.0/24 jump filter_FWD_zone-3
-      iifname "dummy-3" ip daddr 10.10.10.0/24 reject with icmpx admin-prohibited
-      iifname "dummy-3" oifname "dummy-7" jump filter_FWD_zone-3
-      iifname "dummy-3" oifname "dummy-7" reject with icmpx admin-prohibited
-      iifname "dummy-3" ip daddr 10.0.0.0/8 jump filter_FWD_zone-3
-      iifname "dummy-3" ip daddr 10.0.0.0/8 reject with icmpx admin-prohibited
-      iifname "dummy-3" oifname "dummy-9" jump filter_FWD_zone-3
-      iifname "dummy-3" oifname "dummy-9" reject with icmpx admin-prohibited
-      iifname "dummy-3" jump filter_FWD_zone-3
-      iifname "dummy-3" reject with icmpx admin-prohibited
-      iifname "dummy-4" oifname "dummy-1" jump filter_FWD_zone-4
-      iifname "dummy-4" oifname "dummy-1" reject with icmpx admin-prohibited
-      iifname "dummy-4" oifname "dummy-2" jump filter_FWD_zone-4
-      iifname "dummy-4" oifname "dummy-2" reject with icmpx admin-prohibited
-      iifname "dummy-4" oifname "dummy-3" jump filter_FWD_zone-4
-      iifname "dummy-4" oifname "dummy-3" reject with icmpx admin-prohibited
-      iifname "dummy-4" oifname "dummy-4" jump filter_FWD_zone-4
-      iifname "dummy-4" oifname "dummy-4" reject with icmpx admin-prohibited
-      iifname "dummy-4" oifname "dummy-5" jump filter_FWD_zone-4
-      iifname "dummy-4" oifname "dummy-5" reject with icmpx admin-prohibited
-      iifname "dummy-4" ip daddr 10.10.10.0/24 jump filter_FWD_zone-4
-      iifname "dummy-4" ip daddr 10.10.10.0/24 reject with icmpx admin-prohibited
-      iifname "dummy-4" oifname "dummy-7" jump filter_FWD_zone-4
-      iifname "dummy-4" oifname "dummy-7" reject with icmpx admin-prohibited
-      iifname "dummy-4" ip daddr 10.0.0.0/8 jump filter_FWD_zone-4
-      iifname "dummy-4" ip daddr 10.0.0.0/8 reject with icmpx admin-prohibited
-      iifname "dummy-4" oifname "dummy-9" jump filter_FWD_zone-4
-      iifname "dummy-4" oifname "dummy-9" reject with icmpx admin-prohibited
-      iifname "dummy-4" jump filter_FWD_zone-4
-      iifname "dummy-4" reject with icmpx admin-prohibited
-      iifname "dummy-5" oifname "dummy-1" jump filter_FWD_zone-5
-      iifname "dummy-5" oifname "dummy-1" reject with icmpx admin-prohibited
-      iifname "dummy-5" oifname "dummy-2" jump filter_FWD_zone-5
-      iifname "dummy-5" oifname "dummy-2" reject with icmpx admin-prohibited
-      iifname "dummy-5" oifname "dummy-3" jump filter_FWD_zone-5
-      iifname "dummy-5" oifname "dummy-3" reject with icmpx admin-prohibited
-      iifname "dummy-5" oifname "dummy-4" jump filter_FWD_zone-5
-      iifname "dummy-5" oifname "dummy-4" reject with icmpx admin-prohibited
-      iifname "dummy-5" oifname "dummy-5" jump filter_FWD_zone-5
-      iifname "dummy-5" oifname "dummy-5" reject with icmpx admin-prohibited
-      iifname "dummy-5" ip daddr 10.10.10.0/24 jump filter_FWD_zone-5
-      iifname "dummy-5" ip daddr 10.10.10.0/24 reject with icmpx admin-prohibited
-      iifname "dummy-5" oifname "dummy-7" jump filter_FWD_zone-5
-      iifname "dummy-5" oifname "dummy-7" reject with icmpx admin-prohibited
-      iifname "dummy-5" ip daddr 10.0.0.0/8 jump filter_FWD_zone-5
-      iifname "dummy-5" ip daddr 10.0.0.0/8 reject with icmpx admin-prohibited
-      iifname "dummy-5" oifname "dummy-9" jump filter_FWD_zone-5
-      iifname "dummy-5" oifname "dummy-9" reject with icmpx admin-prohibited
-      iifname "dummy-5" jump filter_FWD_zone-5
-      iifname "dummy-5" reject with icmpx admin-prohibited
-      iifname "dummy-9" oifname "dummy-1" jump filter_FWD_zone-0andlast
-      iifname "dummy-9" oifname "dummy-1" reject with icmpx admin-prohibited
-      iifname "dummy-9" oifname "dummy-2" jump filter_FWD_zone-0andlast
-      iifname "dummy-9" oifname "dummy-2" reject with icmpx admin-prohibited
-      iifname "dummy-9" oifname "dummy-3" jump filter_FWD_zone-0andlast
-      iifname "dummy-9" oifname "dummy-3" reject with icmpx admin-prohibited
-      iifname "dummy-9" oifname "dummy-4" jump filter_FWD_zone-0andlast
-      iifname "dummy-9" oifname "dummy-4" reject with icmpx admin-prohibited
-      iifname "dummy-9" oifname "dummy-5" jump filter_FWD_zone-0andlast
-      iifname "dummy-9" oifname "dummy-5" reject with icmpx admin-prohibited
-      iifname "dummy-9" ip daddr 10.10.10.0/24 jump filter_FWD_zone-0andlast
-      iifname "dummy-9" ip daddr 10.10.10.0/24 reject with icmpx admin-prohibited
-      iifname "dummy-9" oifname "dummy-7" jump filter_FWD_zone-0andlast
-      iifname "dummy-9" oifname "dummy-7" reject with icmpx admin-prohibited
-      iifname "dummy-9" ip daddr 10.0.0.0/8 jump filter_FWD_zone-0andlast
-      iifname "dummy-9" ip daddr 10.0.0.0/8 reject with icmpx admin-prohibited
-      iifname "dummy-9" oifname "dummy-9" jump filter_FWD_zone-0andlast
-      iifname "dummy-9" oifname "dummy-9" reject with icmpx admin-prohibited
-      iifname "dummy-9" jump filter_FWD_zone-0andlast
-      iifname "dummy-9" reject with icmpx admin-prohibited
-      oifname "dummy-1" ip saddr 10.10.10.0/24 jump filter_FWD_zone-6
-      oifname "dummy-1" ip saddr 10.10.10.0/24 reject with icmpx admin-prohibited
-      oifname "dummy-2" ip saddr 10.10.10.0/24 jump filter_FWD_zone-6
-      oifname "dummy-2" ip saddr 10.10.10.0/24 reject with icmpx admin-prohibited
-      oifname "dummy-3" ip saddr 10.10.10.0/24 jump filter_FWD_zone-6
-      oifname "dummy-3" ip saddr 10.10.10.0/24 reject with icmpx admin-prohibited
-      oifname "dummy-4" ip saddr 10.10.10.0/24 jump filter_FWD_zone-6
-      oifname "dummy-4" ip saddr 10.10.10.0/24 reject with icmpx admin-prohibited
-      oifname "dummy-5" ip saddr 10.10.10.0/24 jump filter_FWD_zone-6
-      oifname "dummy-5" ip saddr 10.10.10.0/24 reject with icmpx admin-prohibited
-      ip saddr 10.10.10.0/24 ip daddr 10.10.10.0/24 jump filter_FWD_zone-6
-      ip saddr 10.10.10.0/24 ip daddr 10.10.10.0/24 reject with icmpx admin-prohibited
-      oifname "dummy-7" ip saddr 10.10.10.0/24 jump filter_FWD_zone-6
-      oifname "dummy-7" ip saddr 10.10.10.0/24 reject with icmpx admin-prohibited
-      ip saddr 10.10.10.0/24 ip daddr 10.0.0.0/8 jump filter_FWD_zone-6
-      ip saddr 10.10.10.0/24 ip daddr 10.0.0.0/8 reject with icmpx admin-prohibited
-      oifname "dummy-9" ip saddr 10.10.10.0/24 jump filter_FWD_zone-6
-      oifname "dummy-9" ip saddr 10.10.10.0/24 reject with icmpx admin-prohibited
-      ip saddr 10.10.10.0/24 jump filter_FWD_zone-6
-      ip saddr 10.10.10.0/24 reject with icmpx admin-prohibited
-      iifname "dummy-7" oifname "dummy-1" jump filter_FWD_zone-7
-      iifname "dummy-7" oifname "dummy-1" reject with icmpx admin-prohibited
-      iifname "dummy-7" oifname "dummy-2" jump filter_FWD_zone-7
-      iifname "dummy-7" oifname "dummy-2" reject with icmpx admin-prohibited
-      iifname "dummy-7" oifname "dummy-3" jump filter_FWD_zone-7
-      iifname "dummy-7" oifname "dummy-3" reject with icmpx admin-prohibited
-      iifname "dummy-7" oifname "dummy-4" jump filter_FWD_zone-7
-      iifname "dummy-7" oifname "dummy-4" reject with icmpx admin-prohibited
-      iifname "dummy-7" oifname "dummy-5" jump filter_FWD_zone-7
-      iifname "dummy-7" oifname "dummy-5" reject with icmpx admin-prohibited
-      iifname "dummy-7" ip daddr 10.10.10.0/24 jump filter_FWD_zone-7
-      iifname "dummy-7" ip daddr 10.10.10.0/24 reject with icmpx admin-prohibited
-      iifname "dummy-7" oifname "dummy-7" jump filter_FWD_zone-7
-      iifname "dummy-7" oifname "dummy-7" reject with icmpx admin-prohibited
-      iifname "dummy-7" ip daddr 10.0.0.0/8 jump filter_FWD_zone-7
-      iifname "dummy-7" ip daddr 10.0.0.0/8 reject with icmpx admin-prohibited
-      iifname "dummy-7" oifname "dummy-9" jump filter_FWD_zone-7
-      iifname "dummy-7" oifname "dummy-9" reject with icmpx admin-prohibited
-      iifname "dummy-7" jump filter_FWD_zone-7
-      iifname "dummy-7" reject with icmpx admin-prohibited
-      oifname "dummy-1" ip saddr 10.0.0.0/8 jump filter_FWD_zone-8
-      oifname "dummy-1" ip saddr 10.0.0.0/8 reject with icmpx admin-prohibited
-      oifname "dummy-2" ip saddr 10.0.0.0/8 jump filter_FWD_zone-8
-      oifname "dummy-2" ip saddr 10.0.0.0/8 reject with icmpx admin-prohibited
-      oifname "dummy-3" ip saddr 10.0.0.0/8 jump filter_FWD_zone-8
-      oifname "dummy-3" ip saddr 10.0.0.0/8 reject with icmpx admin-prohibited
-      oifname "dummy-4" ip saddr 10.0.0.0/8 jump filter_FWD_zone-8
-      oifname "dummy-4" ip saddr 10.0.0.0/8 reject with icmpx admin-prohibited
-      oifname "dummy-5" ip saddr 10.0.0.0/8 jump filter_FWD_zone-8
-      oifname "dummy-5" ip saddr 10.0.0.0/8 reject with icmpx admin-prohibited
-      ip saddr 10.0.0.0/8 ip daddr 10.10.10.0/24 jump filter_FWD_zone-8
-      ip saddr 10.0.0.0/8 ip daddr 10.10.10.0/24 reject with icmpx admin-prohibited
-      oifname "dummy-7" ip saddr 10.0.0.0/8 jump filter_FWD_zone-8
-      oifname "dummy-7" ip saddr 10.0.0.0/8 reject with icmpx admin-prohibited
-      ip saddr 10.0.0.0/8 ip daddr 10.0.0.0/8 jump filter_FWD_zone-8
-      ip saddr 10.0.0.0/8 ip daddr 10.0.0.0/8 reject with icmpx admin-prohibited
-      oifname "dummy-9" ip saddr 10.0.0.0/8 jump filter_FWD_zone-8
-      oifname "dummy-9" ip saddr 10.0.0.0/8 reject with icmpx admin-prohibited
-      ip saddr 10.0.0.0/8 jump filter_FWD_zone-8
-      ip saddr 10.0.0.0/8 reject with icmpx admin-prohibited
-      oifname "dummy-1" jump filter_FWD_public
-      oifname "dummy-1" reject with icmpx admin-prohibited
-      oifname "dummy-2" jump filter_FWD_public
-      oifname "dummy-2" reject with icmpx admin-prohibited
-      oifname "dummy-3" jump filter_FWD_public
-      oifname "dummy-3" reject with icmpx admin-prohibited
-      oifname "dummy-4" jump filter_FWD_public
-      oifname "dummy-4" reject with icmpx admin-prohibited
-      oifname "dummy-5" jump filter_FWD_public
-      oifname "dummy-5" reject with icmpx admin-prohibited
-      ip daddr 10.10.10.0/24 jump filter_FWD_public
-      ip daddr 10.10.10.0/24 reject with icmpx admin-prohibited
-      oifname "dummy-7" jump filter_FWD_public
-      oifname "dummy-7" reject with icmpx admin-prohibited
-      ip daddr 10.0.0.0/8 jump filter_FWD_public
-      ip daddr 10.0.0.0/8 reject with icmpx admin-prohibited
-      oifname "dummy-9" jump filter_FWD_public
-      oifname "dummy-9" reject with icmpx admin-prohibited
-      jump filter_FWD_public
-      reject with icmpx admin-prohibited
+    chain filter_FORWARD_dispatch {
+      iifname "dummy-1" jump filter_FWD_zone-1_dispatch_stage2
+      iifname "dummy-2" jump filter_FWD_zone-2_dispatch_stage2
+      iifname "dummy-3" jump filter_FWD_zone-3_dispatch_stage2
+      iifname "dummy-4" jump filter_FWD_zone-4_dispatch_stage2
+      iifname "dummy-5" jump filter_FWD_zone-5_dispatch_stage2
+      iifname "dummy-9" jump filter_FWD_zone-0andlast_dispatch_stage2
+      ip saddr 10.10.10.0/24 jump filter_FWD_zone-6_dispatch_stage2
+      iifname "dummy-7" jump filter_FWD_zone-7_dispatch_stage2
+      ip saddr 10.0.0.0/8 jump filter_FWD_zone-8_dispatch_stage2
+      jump filter_FWD_public_dispatch_stage2
+    }
+  }
+])
+NFT_LIST_RULES([inet], [filter_FWD_zone-0andlast_dispatch_stage2], 0, [dnl
+  table inet firewalld {
+    chain filter_FWD_zone-0andlast_dispatch_stage2 {
+      oifname "dummy-1" jump filter_FWD_zone-0andlast_to_zone-1
+      oifname "dummy-2" jump filter_FWD_zone-0andlast_to_zone-2
+      oifname "dummy-3" jump filter_FWD_zone-0andlast_to_zone-3
+      oifname "dummy-4" jump filter_FWD_zone-0andlast_to_zone-4
+      oifname "dummy-5" jump filter_FWD_zone-0andlast_to_zone-5
+      ip daddr 10.10.10.0/24 jump filter_FWD_zone-0andlast_to_zone-6
+      oifname "dummy-7" jump filter_FWD_zone-0andlast_to_zone-7
+      ip daddr 10.0.0.0/8 jump filter_FWD_zone-0andlast_to_zone-8
+      oifname "dummy-9" jump filter_FWD_zone-0andlast_to_zone-0andlast
+      jump filter_FWD_zone-0andlast_to_public
     }
   }
 ])
 
-IPTABLES_LIST_RULES([filter], [INPUT_POLICIES], 0, [dnl
+IPTABLES_LIST_RULES([filter], [INPUT_dispatch], 0, [dnl
   IN_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
   IN_zone-1 0 -- 0.0.0.0/0 0.0.0.0/0
   REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
@@ -391,7 +197,7 @@ IPTABLES_LIST_RULES([filter], [INPUT_POLICIES], 0, [dnl
   IN_public 0 -- 0.0.0.0/0 0.0.0.0/0
   REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
 ])
-IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES], 0, [dnl
+IPTABLES_LIST_RULES([filter], [FORWARD_dispatch], 0, [dnl
   FWD_zone-1 0 -- 0.0.0.0/0 0.0.0.0/0
   REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
   FWD_zone-1 0 -- 0.0.0.0/0 0.0.0.0/0
@@ -594,7 +400,7 @@ IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES], 0, [dnl
   REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
 ])
 
-IP6TABLES_LIST_RULES([filter], [INPUT_POLICIES], 0, [dnl
+IP6TABLES_LIST_RULES([filter], [INPUT_dispatch], 0, [dnl
   IN_allow-host-ipv6 0 -- ::/0 ::/0
   IN_zone-1 0 -- ::/0 ::/0
   REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
@@ -620,7 +426,7 @@ IP6TABLES_LIST_RULES([filter], [INPUT_POLICIES], 0, [dnl
   IN_public 0 -- ::/0 ::/0
   REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
 ])
-IP6TABLES_LIST_RULES([filter], [FORWARD_POLICIES], 0, [dnl
+IP6TABLES_LIST_RULES([filter], [FORWARD_dispatch], 0, [dnl
   FWD_zone-1 0 -- ::/0 ::/0
   REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
   FWD_zone-1 0 -- ::/0 ::/0

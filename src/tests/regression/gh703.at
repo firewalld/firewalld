@@ -3,17 +3,19 @@ AT_KEYWORDS(gh703)
 
 FWD_CHECK([--zone=home --add-source=34:7e:5c:3a:4c:32], 0, [ignore])
 
-NFT_LIST_RULES([inet], [nat_POSTROUTING_POLICIES], 0, [dnl
+NFT_LIST_RULES([inet], [nat_POSTROUTING_dispatch], 0, [dnl
     table inet firewalld {
-        chain nat_POSTROUTING_POLICIES {
-            ether daddr 34:7e:5c:3a:4c:32 ether saddr 34:7e:5c:3a:4c:32 jump nat_POST_home
-            ether daddr 34:7e:5c:3a:4c:32 ether saddr 34:7e:5c:3a:4c:32 return
-            ether daddr 34:7e:5c:3a:4c:32 jump nat_POST_home
-            ether daddr 34:7e:5c:3a:4c:32 return
-            ether saddr 34:7e:5c:3a:4c:32 jump nat_POST_public
-            ether saddr 34:7e:5c:3a:4c:32 return
-            jump nat_POST_public
-            return
+        chain nat_POSTROUTING_dispatch {
+            ether saddr 34:7e:5c:3a:4c:32 jump nat_POST_home_dispatch_stage2
+            jump nat_POST_public_dispatch_stage2
+        }
+    }
+])
+NFT_LIST_RULES([inet], [nat_POST_home_dispatch_stage2], 0, [dnl
+    table inet firewalld {
+        chain nat_POST_home_dispatch_stage2 {
+            ether daddr 34:7e:5c:3a:4c:32 jump nat_POST_home_to_home
+            jump nat_POST_home_to_public
         }
     }
 ])
