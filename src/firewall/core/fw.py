@@ -1143,7 +1143,7 @@ class Firewall:
 
     def check_policy(self, policy):
         _policy = policy
-        if _policy not in self.policy.get_policies():
+        if _policy not in self.policy._policies:
             raise FirewallError(errors.INVALID_POLICY, _policy)
         return _policy
 
@@ -1151,7 +1151,7 @@ class Firewall:
         _zone = zone
         if not _zone or _zone == "":
             _zone = self.get_default_zone()
-        if _zone not in self.zone.get_zones():
+        if _zone not in self.zone._zones:
             raise FirewallError(errors.INVALID_ZONE, _zone)
         return _zone
 

@@ -39,8 +39,9 @@ from firewall.core.rich import (
     Rich_Tcp_Mss_Clamp,
     Rich_NFLog,
 )
-from firewall.core.base import DEFAULT_ZONE_TARGET
+from firewall.core.base import DEFAULT_ZONE_TARGET, SHORTCUTS
 from firewall.core.icmp import ICMP_TYPES, ICMPV6_TYPES
+from firewall.core.io.policy import Policy
 from nftables.nftables import Nftables
 
 TABLE_NAME = "firewalld"
@@ -102,8 +103,8 @@ class nftables:
         self.available_tables = []
         self.rule_to_handle = {}
         self.rule_ref_count = {}
-        self.rich_rule_priority_counts = {}
-        self.policy_dispatch_index_cache = {}
+        self.rule_priority_counts = {}
+        self.dispatch_index_cache = {}
 
         self.nftables = Nftables()
         self.nftables.set_echo_output(True)
@@ -163,13 +164,13 @@ class nftables:
     def probe_support(self):
         self._probe_support_table_owner()
 
-    def _set_rule_sort_policy_dispatch(self, rule, policy_dispatch_index_cache):
+    def _set_rule_sort_dispatch(self, rule, dispatch_index_cache):
         for verb in ["add", "insert", "delete"]:
             if verb in rule:
                 break
 
         try:
-            sort_tuple = rule[verb]["rule"].pop("%%POLICY_SORT_KEY%%")
+            sort_tuple = rule[verb]["rule"].pop("%%DISPATCH_SORT_KEY%%")
         except KeyError:
             return
 
@@ -177,24 +178,24 @@ class nftables:
 
         if verb == "delete":
             if (
-                chain in policy_dispatch_index_cache
-                and sort_tuple in policy_dispatch_index_cache[chain]
+                chain in dispatch_index_cache
+                and sort_tuple in dispatch_index_cache[chain]
             ):
-                policy_dispatch_index_cache[chain].remove(sort_tuple)
+                dispatch_index_cache[chain].remove(sort_tuple)
         else:
-            if chain not in policy_dispatch_index_cache:
-                policy_dispatch_index_cache[chain] = []
+            if chain not in dispatch_index_cache:
+                dispatch_index_cache[chain] = []
 
             # We only have to track the sort key as it's unique. The actual
             # rule/json is not necessary.
             #
             # We only insert the tuple if it's not present. This is because we
             # do rule de-duplication in set_rules().
-            if sort_tuple not in policy_dispatch_index_cache[chain]:
-                policy_dispatch_index_cache[chain].append(sort_tuple)
-                policy_dispatch_index_cache[chain].sort()
+            if sort_tuple not in dispatch_index_cache[chain]:
+                dispatch_index_cache[chain].append(sort_tuple)
+                dispatch_index_cache[chain].sort()
 
-            index = policy_dispatch_index_cache[chain].index(sort_tuple)
+            index = dispatch_index_cache[chain].index(sort_tuple)
 
             _verb_snippet = rule[verb]
             del rule[verb]
@@ -276,8 +277,8 @@ class nftables:
         _deduplicated_rules = []
         _deduplicated_rules_keys = []
         _executed_rules = []
-        rich_rule_priority_counts = copy.deepcopy(self.rich_rule_priority_counts)
-        policy_dispatch_index_cache = copy.deepcopy(self.policy_dispatch_index_cache)
+        rule_priority_counts = copy.deepcopy(self.rule_priority_counts)
+        dispatch_index_cache = copy.deepcopy(self.dispatch_index_cache)
         rule_ref_count = self.rule_ref_count.copy()
         for rule in rules:
             if not isinstance(rule, dict):
@@ -349,9 +350,12 @@ class nftables:
                     rule[verb]["rule"]["expr"].insert(-1, {"counter": None})
 
                 self._set_rule_replace_priority(
-                    rule, rich_rule_priority_counts, "%%RICH_RULE_PRIORITY%%"
+                    rule, rule_priority_counts, "%%POLICY_PRIORITY%%"
                 )
-                self._set_rule_sort_policy_dispatch(rule, policy_dispatch_index_cache)
+                self._set_rule_replace_priority(
+                    rule, rule_priority_counts, "%%RICH_RULE_PRIORITY%%"
+                )
+                self._set_rule_sort_dispatch(rule, dispatch_index_cache)
 
                 # delete using rule handle
                 if verb == "delete":
@@ -385,8 +389,8 @@ class nftables:
                 % ("python-nftables", error, json.dumps(json_blob))
             )
 
-        self.rich_rule_priority_counts = rich_rule_priority_counts
-        self.policy_dispatch_index_cache = policy_dispatch_index_cache
+        self.rule_priority_counts = rule_priority_counts
+        self.dispatch_index_cache = dispatch_index_cache
         self.rule_ref_count = rule_ref_count
 
         index = 0
@@ -450,8 +454,8 @@ class nftables:
     def build_flush_rules(self):
         self.rule_to_handle = {}
         self.rule_ref_count = {}
-        self.rich_rule_priority_counts = {}
-        self.policy_dispatch_index_cache = {}
+        self.rule_priority_counts = {}
+        self.dispatch_index_cache = {}
 
         return self._build_delete_table_rules(TABLE_NAME)
 
@@ -680,7 +684,7 @@ class nftables:
                         "chain": {
                             "family": "inet",
                             "table": TABLE_NAME,
-                            "name": "mangle_%s_POLICIES" % (chain),
+                            "name": "mangle_%s_dispatch" % (chain),
                         }
                     }
                 }
@@ -693,7 +697,7 @@ class nftables:
                             "table": TABLE_NAME,
                             "chain": "mangle_%s" % chain,
                             "expr": [
-                                {"jump": {"target": "mangle_%s_POLICIES" % (chain)}}
+                                {"jump": {"target": "mangle_%s_dispatch" % (chain)}}
                             ],
                         }
                     }
@@ -722,7 +726,7 @@ class nftables:
                         "chain": {
                             "family": "inet",
                             "table": TABLE_NAME,
-                            "name": "nat_%s_POLICIES" % (chain),
+                            "name": "nat_%s_dispatch" % (chain),
                         }
                     }
                 }
@@ -734,7 +738,7 @@ class nftables:
                             "family": "inet",
                             "table": TABLE_NAME,
                             "chain": "nat_%s" % chain,
-                            "expr": [{"jump": {"target": "nat_%s_POLICIES" % (chain)}}],
+                            "expr": [{"jump": {"target": "nat_%s_dispatch" % (chain)}}],
                         }
                     }
                 }
@@ -852,7 +856,7 @@ class nftables:
                     "chain": {
                         "family": "inet",
                         "table": TABLE_NAME,
-                        "name": "filter_INPUT_POLICIES",
+                        "name": "filter_INPUT_dispatch",
                     }
                 }
             }
@@ -864,7 +868,7 @@ class nftables:
                         "family": "inet",
                         "table": TABLE_NAME,
                         "chain": "filter_%s" % "INPUT",
-                        "expr": [{"jump": {"target": "filter_INPUT_POLICIES"}}],
+                        "expr": [{"jump": {"target": "filter_INPUT_dispatch"}}],
                     }
                 }
             }
@@ -1039,7 +1043,7 @@ class nftables:
                     "chain": {
                         "family": "inet",
                         "table": TABLE_NAME,
-                        "name": "filter_FORWARD_POLICIES",
+                        "name": "filter_FORWARD_dispatch",
                     }
                 }
             }
@@ -1051,7 +1055,7 @@ class nftables:
                         "family": "inet",
                         "table": TABLE_NAME,
                         "chain": "filter_FORWARD",
-                        "expr": [{"jump": {"target": "filter_FORWARD_POLICIES"}}],
+                        "expr": [{"jump": {"target": "filter_FORWARD_dispatch"}}],
                     }
                 }
             }
@@ -1139,7 +1143,7 @@ class nftables:
                     "chain": {
                         "family": "inet",
                         "table": TABLE_NAME,
-                        "name": "filter_OUTPUT_POLICIES",
+                        "name": "filter_OUTPUT_dispatch",
                     }
                 }
             }
@@ -1151,7 +1155,7 @@ class nftables:
                         "family": "inet",
                         "table": TABLE_NAME,
                         "chain": "filter_OUTPUT",
-                        "expr": [{"jump": {"target": "filter_OUTPUT_POLICIES"}}],
+                        "expr": [{"jump": {"target": "filter_OUTPUT_dispatch"}}],
                     }
                 }
             }
@@ -1169,217 +1173,257 @@ class nftables:
 
         return []
 
-    def _policy_dispatch_sort_key(
-        self,
-        policy,
-        ingress_zone,
-        egress_zone,
-        ingress_interface,
-        ingress_source,
-        egress_interface,
-        egress_source,
-        priority,
-        last=False,
-        prerouting=False,
-        postrouting=False,
-        log_denied=False,
-    ):
-        p_obj = self._fw.policy.get_policy(policy)
-        ingress_priority = (
-            0
-            if ingress_zone == "HOST"
-            else self._fw.zone.get_zone(ingress_zone).ingress_priority
-        )
-        egress_priority = (
-            0
-            if egress_zone == "HOST"
-            else self._fw.zone.get_zone(egress_zone).egress_priority
-        )
+    def _zone_dispatch_chain_name(self, ingress_zone, egress_zone, table, chain):
+        return f"{table}_{SHORTCUTS[chain]}_{ingress_zone}_to_{egress_zone}"
 
-        ingress_sort_order = 0  # 0 means output chain
-        if ingress_source:
-            ingress_sort_order = 1
-        elif ingress_interface:
-            ingress_sort_order = 2
-
-        egress_sort_order = 0  # 0 means input chain
-        if egress_source:
-            egress_sort_order = 1
-        elif egress_interface or (p_obj.derived_from_zone and prerouting):
-            egress_sort_order = 2
-            if prerouting:
-                egress_zone = ""
-                egress_interface = ""
-
-        # default zone is always sorted to last as it's a "catch-all"
-        if ingress_interface == "*":
-            ingress_priority = self._fw.zone.get_zone(ingress_zone).priority_max + 1
-        if egress_interface == "*":
-            egress_priority = self._fw.zone.get_zone(egress_zone).priority_max + 1
-
-        last_sort_order = 0
-        if last:
-            if log_denied:
-                last_sort_order = 1
-            else:
-                last_sort_order = 2
-
-        ingress = (
-            ingress_priority,
-            ingress_sort_order,
-            ingress_zone,
-            ingress_source,
-            ingress_interface,
-        )
-        egress = (
-            egress_priority,
-            egress_sort_order,
-            egress_zone,
-            egress_source,
-            egress_interface,
-        )
-        suffix = (last_sort_order, priority)
-
-        if postrouting:
-            return {"%%POLICY_SORT_KEY%%": egress + ingress + suffix}
-        else:
-            return {"%%POLICY_SORT_KEY%%": ingress + egress + suffix}
-
-    def build_policy_ingress_egress_pair_rules(
-        self,
-        enable,
-        policy,
-        table,
-        chain,
-        ingress_zone,
-        egress_zone,
-        ingress_interface,
-        ingress_source,
-        egress_interface,
-        egress_source,
-        last=False,
-    ):
+    def build_zone_target_rules(self, enable, ingress_zone, egress_zone, table, chain):
         add_del = {True: "add", False: "delete"}[enable]
-        p_obj = self._fw.policy.get_policy(policy)
-        isSNAT = True if (table == "nat" and chain == "POSTROUTING") else False
-        _policy = self._fw.policy.policy_base_chain_name(
-            policy, table, POLICY_CHAIN_PREFIX, isSNAT
-        )
-        prerouting = True if chain == "PREROUTING" else False
-        postrouting = True if chain == "POSTROUTING" else False
-
-        if ingress_interface and ingress_interface[len(ingress_interface) - 1] == "+":
-            ingress_interface = ingress_interface[: len(ingress_interface) - 1] + "*"
-        if egress_interface and egress_interface[len(egress_interface) - 1] == "+":
-            egress_interface = egress_interface[: len(egress_interface) - 1] + "*"
+        if "HOST" == ingress_zone:
+            z_obj = self._fw.zone.get_zone(egress_zone)
+        else:
+            z_obj = self._fw.zone.get_zone(ingress_zone)
+        chain_name = self._zone_dispatch_chain_name(ingress_zone, egress_zone, table, chain)
 
         rules = []
         expr_fragments = []
-        if ingress_interface and ingress_interface != "*":
-            expr_fragments.append(
-                {
-                    "match": {
-                        "left": {"meta": {"key": "iifname"}},
-                        "op": "==",
-                        "right": ingress_interface,
-                    }
-                }
-            )
-        if egress_interface and egress_interface != "*" and not prerouting:
-            expr_fragments.append(
-                {
-                    "match": {
-                        "left": {"meta": {"key": "oifname"}},
-                        "op": "==",
-                        "right": egress_interface,
-                    }
-                }
-            )
-        if ingress_source:
-            expr_fragments.append(self._rule_addr_fragment("saddr", ingress_source))
-        if egress_source:
-            expr_fragments.append(self._rule_addr_fragment("daddr", egress_source))
-
-        if not last:
-            expr_fragments.append({"jump": {"target": "%s_%s" % (table, _policy)}})
-        elif table != "filter" or chain in ["PREROUTING", "OUTPUT"]:
+        if table != "filter" or chain in ["PREROUTING", "OUTPUT"]:
             expr_fragments.append({"return": None})
-        elif p_obj.target in [
+        elif z_obj.target in [
             DEFAULT_ZONE_TARGET,
             "ACCEPT",
             "REJECT",
             "%%REJECT%%",
             "DROP",
         ]:
-            # The "last" rule for filter tables implements the zone's
-            # --set-target instead of simply returning.
-            #
-            if self._fw.get_log_denied() != "off" and p_obj.target in [
+            if self._fw.get_log_denied() != "off" and z_obj.target in [
                 DEFAULT_ZONE_TARGET,
                 "%%REJECT%%",
                 "REJECT",
                 "DROP",
             ]:
-                _log_suffix = "DROP" if p_obj.target == "DROP" else "REJECT"
+                _log_suffix = "DROP" if z_obj.target == "DROP" else "REJECT"
 
                 rule = {
                     "family": "inet",
                     "table": TABLE_NAME,
-                    "chain": "%s_%s_POLICIES" % (table, chain),
+                    "chain": chain_name,
                     "expr": expr_fragments
                     + [
                         self._pkttype_match_fragment(self._fw.get_log_denied()),
-                        {"log": {"prefix": "filter_%s_%s: " % (_policy, _log_suffix)}},
+                        {"log": {"prefix": f"filter_{SHORTCUTS[chain]}_{ingress_zone}_{_log_suffix}: "}},
                     ],
+                    "%%POLICY_PRIORITY%%": Policy.priority_max + 1,
                 }
-                rule.update(
-                    self._policy_dispatch_sort_key(
-                        policy,
-                        ingress_zone,
-                        egress_zone,
-                        ingress_interface,
-                        ingress_source,
-                        egress_interface,
-                        egress_source,
-                        p_obj.priority,
-                        last=True,
-                        log_denied=True,
-                        postrouting=postrouting,
-                        prerouting=prerouting,
-                    )
-                )
                 rules.append({add_del: {"rule": rule}})
 
-            if p_obj.target in [DEFAULT_ZONE_TARGET, "%%REJECT%%", "REJECT"]:
+            if z_obj.target in [DEFAULT_ZONE_TARGET, "%%REJECT%%", "REJECT"]:
                 expr_fragments.append(self._reject_fragment())
             else:
-                expr_fragments.append({p_obj.target.lower(): None})
+                expr_fragments.append({z_obj.target.lower(): None})
+
+        rules.append(
+            {
+                add_del: {
+                    "rule": {
+                        "family": "inet",
+                        "table": TABLE_NAME,
+                        "chain": chain_name,
+                        "expr": expr_fragments,
+                        "%%POLICY_PRIORITY%%": Policy.priority_max + 2,
+                    }
+                }
+            }
+        )
+
+        return rules
+
+    def build_dispatch_stage2_chains(self, enable, ingress_zone, egress_zone, table, chain):
+        """ Chains for stage 2. (identify egress zone)
+        """
+        add_del = {True: "add", False: "delete"}[enable]
+
+        return [{
+                add_del: {
+                    "chain": {
+                        "family": "inet",
+                        "table": TABLE_NAME,
+                        "name": f"{table}_{SHORTCUTS[chain]}_{ingress_zone}_dispatch_stage2",
+                    }
+                }
+            }]
+
+    def build_dispatch_stage3_chains(self, enable, ingress_zone, egress_zone, table, chain):
+        """ Chains for stage 3. (dispatch to policies)
+        """
+        add_del = {True: "add", False: "delete"}[enable]
+
+        # chain for stage 3 (jump to policies)
+        return [{
+                add_del: {
+                    "chain": {
+                        "family": "inet",
+                        "table": TABLE_NAME,
+                        "name": self._zone_dispatch_chain_name(ingress_zone, egress_zone, table, chain),
+                    }
+                }
+            }]
+
+    def build_dispatch_stage1_rules(self, enable, ingress_zone, egress_zone, table, chain, interface, source):
+        add_del = {True: "add", False: "delete"}[enable]
+
+        if interface and interface[len(interface) - 1] == "+":
+            interface = interface[: len(interface) - 1] + "*"
+
+        expr_fragments = []
+        if interface and interface != "*":
+            expr_fragments.append(
+                {
+                    "match": {
+                        "left": {"meta": {"key": "iifname"}},
+                        "op": "==",
+                        "right": interface,
+                    }
+                }
+            )
+        elif source:
+            expr_fragments.append(self._rule_addr_fragment("saddr", source))
+
+        if "HOST" == egress_zone:
+            expr_fragments.append({"jump": {"target": self._zone_dispatch_chain_name(ingress_zone, "HOST", table, chain)}})
+        else:
+            expr_fragments.append({"jump": {"target": f"{table}_{SHORTCUTS[chain]}_{ingress_zone}_dispatch_stage2"}})
 
         rule = {
             "family": "inet",
             "table": TABLE_NAME,
-            "chain": "%s_%s_POLICIES" % (table, chain),
+            "chain": "%s_%s_dispatch" % (table, chain),
             "expr": expr_fragments,
         }
         rule.update(
-            self._policy_dispatch_sort_key(
-                policy,
+            self._zone_ingress_dispatch_sort_key(
                 ingress_zone,
                 egress_zone,
-                ingress_interface,
-                ingress_source,
-                egress_interface,
-                egress_source,
-                p_obj.priority,
-                last=last,
-                postrouting=postrouting,
-                prerouting=prerouting,
+                interface,
+                source,
             )
         )
 
-        rules.append({add_del: {"rule": rule}})
+        return [{add_del: {"rule": rule}}]
 
-        return rules
+    def build_dispatch_stage2_rules(self, enable, ingress_zone, egress_zone, table, chain, interface, source):
+        add_del = {True: "add", False: "delete"}[enable]
+
+        if interface and interface[len(interface) - 1] == "+":
+            interface = interface[: len(interface) - 1] + "*"
+
+        expr_fragments = []
+        if interface and interface != "*":
+            expr_fragments.append(
+                {
+                    "match": {
+                        "left": {"meta": {"key": "oifname"}},
+                        "op": "==",
+                        "right": interface,
+                    }
+                }
+            )
+        elif source:
+            expr_fragments.append(self._rule_addr_fragment("daddr", source))
+
+        expr_fragments.append({"jump": {"target": self._zone_dispatch_chain_name(ingress_zone, egress_zone, table, chain)}})
+
+        if "HOST" == ingress_zone:
+            chain_name = f"{table}_{chain}_dispatch"
+        else:
+            chain_name = f"{table}_{SHORTCUTS[chain]}_{ingress_zone}_dispatch_stage2"
+
+        rule = {
+            "family": "inet",
+            "table": TABLE_NAME,
+            "chain": chain_name,
+            "expr": expr_fragments,
+        }
+        rule.update(
+            self._zone_egress_dispatch_sort_key(
+                ingress_zone,
+                egress_zone,
+                interface,
+                source,
+            )
+        )
+
+        return [{add_del: {"rule": rule}}]
+
+    def _zone_ingress_dispatch_sort_key(
+        self,
+        ingress_zone,
+        egress_zone,
+        interface,
+        source,
+    ):
+        priority = self._fw.zone.get_zone(ingress_zone).ingress_priority
+
+        # Default zone is always dispatched last.
+        if interface == "*":
+            priority = self._fw.zone.get_zone(ingress_zone).priority_max + 1
+
+        # Old behavior dictates that source based must dispatch before
+        # interface based.
+        if source:
+            sort_order = 1
+        else:
+            sort_order = 2
+
+        return {"%%DISPATCH_SORT_KEY%%": (priority, sort_order, ingress_zone, interface, source, egress_zone)}
+
+    def _zone_egress_dispatch_sort_key(
+        self,
+        ingress_zone,
+        egress_zone,
+        interface,
+        source,
+    ):
+        priority = self._fw.zone.get_zone(egress_zone).egress_priority
+
+        # default zone is always dispatched last
+        if interface == "*":
+            priority = self._fw.zone.get_zone(egress_zone).priority_max + 1
+
+        if source:
+            sort_order = 1
+        elif interface:
+            sort_order = 2
+
+        return {"%%DISPATCH_SORT_KEY%%": (priority, sort_order, egress_zone, interface, source, ingress_zone)}
+
+    def _policy_dispatch_sort_key(self, policy):
+        p_obj = self._fw.policy.get_policy(policy)
+        return {"%%POLICY_PRIORITY%%": p_obj.priority}
+
+    def build_policy_dispatch_rules(
+        self,
+        enable,
+        ingress_zone,
+        egress_zone,
+        target_policy,
+        table,
+        chain,
+    ):
+        add_del = {True: "add", False: "delete"}[enable]
+        isSNAT = True if (table == "nat" and chain == "POSTROUTING") else False
+        _policy = self._fw.policy.policy_base_chain_name(
+            target_policy, table, POLICY_CHAIN_PREFIX, isSNAT
+        )
+
+        rule = {
+            "family": "inet",
+            "table": TABLE_NAME,
+            "chain": f"{table}_{SHORTCUTS[chain]}_{ingress_zone}_to_{egress_zone}",
+            "expr": [{"jump": {"target": "%s_%s" % (table, _policy)}}],
+        }
+        rule.update(self._policy_dispatch_sort_key(target_policy))
+
+        return [{add_del: {"rule": rule}}]
 
     def build_policy_chain_rules(self, enable, policy, table, chain):
         add_del = {True: "add", False: "delete"}[enable]

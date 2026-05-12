@@ -1,0 +1,18 @@
+FWD_START_TEST([zone - dispatch scale], [0])
+AT_KEYWORDS(zone interface source gh1399 RHEL-131070)
+
+C=0
+for ZONE in block dmz drop external home internal public trusted work; do
+for I in $(seq 20); do
+FWD_CHECK([--permanent --zone ${ZONE} --add-interface ${ZONE}-${I}], 0, [ignore])
+FWD_CHECK([--permanent --zone ${ZONE} --add-source 10.0.${C}.${I}], 0, [ignore])
+FWD_CHECK([--permanent --zone ${ZONE} --add-source 1234::${C}:${I}], 0, [ignore])
+done
+C=$(expr ${C} + 1)
+done
+
+dnl The only thing we need to verify is that a reload succeeded before dbus
+dnl times out during --reload.
+FWD_RELOAD()
+
+FWD_END_TEST()

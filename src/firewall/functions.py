@@ -581,7 +581,7 @@ def max_policy_name_len():
 
 
 def max_zone_name_len():
-    return 128
+    return 96
 
 
 def checkUser(user):
