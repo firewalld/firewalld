@@ -1,0 +1,72 @@
+FWD_START_TEST([zone - disallow dot in names])
+AT_KEYWORDS([zone check_config gh1486])
+
+dnl NOT allowed: regular zone with extra dot
+AT_DATA([./zones/foobar.67.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+<service name="ssh" />
+</zone>
+])
+FWD_CHECK([--check-config], 116, [ignore], [ignore])
+FWD_OFFLINE_CHECK([--check-config], 116, [ignore], [ignore])
+FWD_RELOAD(116, [ignore], [ignore])
+FWD_CHECK([--get-zones], 0, [dnl
+block dmz drop external home internal public trusted work
+])
+FWD_CHECK([--permanent --get-zones], 0, [dnl
+block dmz drop external home internal public trusted work
+])
+AT_CHECK([rm ./zones/foobar.67.xml])
+
+dnl NOT allowed: combined zone with extra dot
+AT_CHECK([mkdir -p ./zones/combined])
+AT_DATA([./zones/combined/zone.1.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+<service name="ssh" />
+</zone>
+])
+AT_DATA([./zones/combined/zone2.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+<service name="https" />
+</zone>
+])
+FWD_CHECK([--check-config], 116, [ignore], [ignore])
+FWD_OFFLINE_CHECK([--check-config], 116, [ignore], [ignore])
+FWD_RELOAD(116, [ignore], [ignore])
+FWD_CHECK([--get-zones], 0, [dnl
+block dmz drop external home internal public trusted work
+])
+FWD_CHECK([--permanent --get-zones], 0, [dnl
+block dmz drop external home internal public trusted work
+])
+AT_CHECK([rm -rf ./combined])
+
+dnl NOT allowed: combined zone with dot in directory
+AT_CHECK([mkdir -p ./zones/combined.42])
+AT_DATA([./zones/combined.42/zone.1.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+<service name="ssh" />
+</zone>
+])
+AT_DATA([./zones/combined.42/justazone.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+<service name="https" />
+</zone>
+])
+FWD_CHECK([--check-config], 116, [ignore], [ignore])
+FWD_OFFLINE_CHECK([--check-config], 116, [ignore], [ignore])
+FWD_RELOAD(116, [ignore], [ignore])
+FWD_CHECK([--get-zones], 0, [dnl
+block dmz drop external home internal public trusted work
+])
+FWD_CHECK([--permanent --get-zones], 0, [dnl
+block dmz drop external home internal public trusted work
+])
+AT_CHECK([rm -rf ./combined.42])
+
+FWD_END_TEST([-e '/ERROR: INVALID_NAME:/d'])
