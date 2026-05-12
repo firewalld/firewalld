@@ -9,6 +9,7 @@
 import sys
 import string
 import gi
+import re
 
 try:
     gi.require_version("Gtk", "3.0")
@@ -1718,16 +1719,13 @@ class FirewallConfig:
         else:
             weight = Pango.Weight.NORMAL
 
-        desc = None
-        zone_obj = self.fw.config().getZoneByName(zone)
-        if zone_obj:
-            settings = zone_obj.getSettings()
-            if settings:
-                desc = settings.getDescription()
-                if desc:
-                    import re
+        if self.runtime_view:
+            settings = self.fw.getZoneSettings(zone)
+        else:
+            settings = self.fw.config().getZoneByName(zone).getSettings()
 
-                    desc = re.sub(r"\s+", " ", desc)
+        desc = settings.getDescription()
+        desc = re.sub(r"\s+", " ", desc)
 
         self.zoneStore.append([zone, weight, desc])
 
