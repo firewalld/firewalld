@@ -21,6 +21,26 @@ from firewall.core.io.direct import Direct
 from firewall.core.io.firewalld_conf import firewalld_conf
 
 
+def get_config_files_in_dir(directory, conf_type):
+    """
+    Returns: list of tuples (directory, file)
+    """
+    if not os.path.isdir(directory):
+        return []
+    dir_file_list = []
+    for file in sorted(os.listdir(directory)):
+        if file.endswith(".xml"):
+            dir_file_list.append((directory, file))
+        # combined zones: <zone name>/foo.xml
+        #                 ...
+        #                 <zone name>/bar.xml
+        elif conf_type == "zone" and os.path.isdir(os.path.join(directory, file)):
+            dir_file_list.extend(
+                get_config_files_in_dir(os.path.join(directory, file), conf_type)
+            )
+    return dir_file_list
+
+
 def check_on_disk_config(fw):
     fw_config = FirewallConfig(fw)
 
@@ -70,12 +90,10 @@ def check_on_disk_config(fw):
     }
     for reader in readers.keys():
         for _dir in readers[reader]["dirs"]:
-            if not os.path.isdir(_dir):
-                continue
-            for file in sorted(os.listdir(_dir)):
-                if file.endswith(".xml"):
-                    obj = readers[reader]["reader"](file, _dir)
-                    readers[reader]["add"](obj)
+            for directory, file in get_config_files_in_dir(_dir, reader):
+                obj = readers[reader]["reader"](file, directory)
+                readers[reader]["add"](obj)
+
     fw_config.full_check_config()
 
     if os.path.isfile(config.FIREWALLD_DIRECT):
