@@ -92,6 +92,10 @@ class FirewallPolicy:
 
         return active_policies
 
+    def get_applied_policies(self):
+        policies = set(self.get_active_policies_not_derived_from_zone())
+        return list(filter(lambda x: self.get_policy(x).applied, policies))
+
     def get_policy(self, policy):
         p = self._fw.check_policy(policy)
         return self._policies[p]
@@ -129,9 +133,7 @@ class FirewallPolicy:
 
         if enable:
             # build the base chain layout of the policy
-            for table, chain in (
-                self._get_table_chains_for_policy_dispatch(policy)
-            ):
+            for table, chain in self._get_table_chains_for_policy_dispatch(policy):
                 self.gen_chain_rules(policy, True, table, chain, transaction)
 
         for key in [
@@ -187,9 +189,7 @@ class FirewallPolicy:
                     )
 
         if not enable:
-            for table, chain in (
-                self._get_table_chains_for_policy_dispatch(policy)
-            ):
+            for table, chain in self._get_table_chains_for_policy_dispatch(policy):
                 self.gen_chain_rules(policy, False, table, chain, transaction)
             obj.applied = False
 
@@ -1840,8 +1840,20 @@ class FirewallPolicy:
                     if not backend.policies_supported:
                         continue
 
-                    for table, chain in (
-                        self._get_table_chains_for_policy_dispatch(policy)
+                    # For zone derived policies, we'll have two: (zone, "ANY")
+                    # and ("ANY", zone). This results in rule duplication as
+                    # ingress-zone == egress-zone is covered by both of these.
+                    #
+                    # Skip one of them.
+                    if (
+                        p_obj.derived_from_zone
+                        and _ingress_zone == _egress_zone
+                        and ingress_zone == "ANY"
+                    ):
+                        continue
+
+                    for table, chain in self._get_table_chains_for_policy_dispatch(
+                        policy
                     ):
                         # The backend wants the _target_ policy to jump to.
                         #
@@ -1860,9 +1872,13 @@ class FirewallPolicy:
                         target_policy = policy
                         if p_obj.derived_from_zone:
                             if chain in ["FORWARD", "PREROUTING"]:
-                                target_policy = self._fw.zone.policy_name_from_zones(_ingress_zone, "ANY")
+                                target_policy = self._fw.zone.policy_name_from_zones(
+                                    _ingress_zone, "ANY"
+                                )
                             elif chain == "POSTROUTING":
-                                target_policy = self._fw.zone.policy_name_from_zones("ANY", _egress_zone)
+                                target_policy = self._fw.zone.policy_name_from_zones(
+                                    "ANY", _egress_zone
+                                )
 
                         rules = backend.build_policy_dispatch_rules(
                             enable,
@@ -1944,7 +1960,7 @@ class FirewallPolicy:
             if not self._fw.nftables_enabled:
                 tc.append(("raw", "PREROUTING"))
             return tc
-        else: # zone to zone, "ANY" to zone, zone to "ANY", "ANY" to "ANY"
+        else:  # zone to zone, "ANY" to zone, zone to "ANY", "ANY" to "ANY"
             tc = [
                 ("filter", "FORWARD"),
                 ("nat", "PREROUTING"),

@@ -41,8 +41,9 @@ from firewall.core.rich import (
     Rich_IcmpBlock,
     Rich_Tcp_Mss_Clamp,
 )
-from firewall.core.base import DEFAULT_ZONE_TARGET
+from firewall.core.base import DEFAULT_ZONE_TARGET, SHORTCUTS
 from firewall.core.icmp import ICMP_TYPES, ICMPV6_TYPES
+from firewall.core.io.policy import Policy
 import string
 
 POLICY_CHAIN_PREFIX = ""
@@ -165,9 +166,9 @@ class ip4tables:
         self.restore_wait_option = self._detect_restore_wait_option()
         self.fill_exists()
         self.available_tables = []
-        self.rich_rule_priority_counts = {}
-        self.policy_dispatch_index_cache = {}
-        self.policy_dispatch_index_cache_ref_count = {}
+        self.rule_priority_counts = {}
+        self.dispatch_index_cache = {}
+        self.dispatch_index_cache_ref_count = {}
         self.our_chains = {}  # chains created by firewalld
         self.unique_chain_name_map = (
             {}
@@ -335,11 +336,11 @@ class ip4tables:
                 rule[insert_add_index] = "-I"
                 rule.insert(insert_add_index + 2, "%d" % index)
 
-    def _set_rule_sort_policy_dispatch(
-        self, rule, policy_dispatch_index_cache, policy_dispatch_index_cache_ref_count
+    def _set_rule_sort_dispatch(
+        self, rule, dispatch_index_cache, dispatch_index_cache_ref_count
     ):
         try:
-            i = rule.index("%%POLICY_SORT_KEY%%")
+            i = rule.index("%%DISPATCH_SORT_KEY%%")
         except ValueError:
             return False
 
@@ -374,45 +375,45 @@ class ip4tables:
 
         if delete:
             if (
-                chain in policy_dispatch_index_cache
-                and sort_tuple in policy_dispatch_index_cache[chain]
+                chain in dispatch_index_cache
+                and sort_tuple in dispatch_index_cache[chain]
             ):
                 if (
-                    chain in policy_dispatch_index_cache_ref_count
-                    and sort_tuple in policy_dispatch_index_cache_ref_count[chain]
+                    chain in dispatch_index_cache_ref_count
+                    and sort_tuple in dispatch_index_cache_ref_count[chain]
                 ):
-                    if policy_dispatch_index_cache_ref_count[chain][sort_tuple] == 1:
-                        del policy_dispatch_index_cache_ref_count[chain][sort_tuple]
-                        policy_dispatch_index_cache[chain].remove(sort_tuple)
+                    if dispatch_index_cache_ref_count[chain][sort_tuple] == 1:
+                        del dispatch_index_cache_ref_count[chain][sort_tuple]
+                        dispatch_index_cache[chain].remove(sort_tuple)
                         return False
                     else:
-                        policy_dispatch_index_cache_ref_count[chain][sort_tuple] -= 1
+                        dispatch_index_cache_ref_count[chain][sort_tuple] -= 1
                         return True
                 else:  # only ever one, so no ref count created
-                    policy_dispatch_index_cache[chain].remove(sort_tuple)
+                    dispatch_index_cache[chain].remove(sort_tuple)
                     return False
             return True
         else:
-            if chain not in policy_dispatch_index_cache:
-                policy_dispatch_index_cache[chain] = []
+            if chain not in dispatch_index_cache:
+                dispatch_index_cache[chain] = []
 
             # rule de-duplication
-            if sort_tuple in policy_dispatch_index_cache[chain]:
-                if chain not in policy_dispatch_index_cache_ref_count:
-                    policy_dispatch_index_cache_ref_count[chain] = {}
-                if sort_tuple not in policy_dispatch_index_cache_ref_count[chain]:
-                    policy_dispatch_index_cache_ref_count[chain][sort_tuple] = 1
+            if sort_tuple in dispatch_index_cache[chain]:
+                if chain not in dispatch_index_cache_ref_count:
+                    dispatch_index_cache_ref_count[chain] = {}
+                if sort_tuple not in dispatch_index_cache_ref_count[chain]:
+                    dispatch_index_cache_ref_count[chain][sort_tuple] = 1
 
-                if sort_tuple in policy_dispatch_index_cache_ref_count[chain]:
-                    policy_dispatch_index_cache_ref_count[chain][sort_tuple] += 1
+                if sort_tuple in dispatch_index_cache_ref_count[chain]:
+                    dispatch_index_cache_ref_count[chain][sort_tuple] += 1
 
                 # Tell caller to skip this rule as we already have one
                 return True
 
-            policy_dispatch_index_cache[chain].append(sort_tuple)
-            policy_dispatch_index_cache[chain].sort()
+            dispatch_index_cache[chain].append(sort_tuple)
+            dispatch_index_cache[chain].sort()
 
-            index = policy_dispatch_index_cache[chain].index(sort_tuple)
+            index = dispatch_index_cache[chain].index(sort_tuple)
 
             rule[verb_index] = "-I"
             rule.insert(verb_index + 2, f"{index + 1}")
@@ -423,10 +424,10 @@ class ip4tables:
         temp_file = tempFile()
 
         table_rules = {}
-        rich_rule_priority_counts = copy.deepcopy(self.rich_rule_priority_counts)
-        policy_dispatch_index_cache = copy.deepcopy(self.policy_dispatch_index_cache)
-        policy_dispatch_index_cache_ref_count = copy.deepcopy(
-            self.policy_dispatch_index_cache_ref_count
+        rule_priority_counts = copy.deepcopy(self.rule_priority_counts)
+        dispatch_index_cache = copy.deepcopy(self.dispatch_index_cache)
+        dispatch_index_cache_ref_count = copy.deepcopy(
+            self.dispatch_index_cache_ref_count
         )
         for _rule in rules:
             rule = _rule[:]
@@ -455,10 +456,13 @@ class ip4tables:
                     rule.pop(i)
 
             self._set_rule_replace_priority(
-                rule, rich_rule_priority_counts, "%%RICH_RULE_PRIORITY%%"
+                rule, rule_priority_counts, "%%POLICY_PRIORITY%%"
             )
-            skip = self._set_rule_sort_policy_dispatch(
-                rule, policy_dispatch_index_cache, policy_dispatch_index_cache_ref_count
+            self._set_rule_replace_priority(
+                rule, rule_priority_counts, "%%RICH_RULE_PRIORITY%%"
+            )
+            skip = self._set_rule_sort_dispatch(
+                rule, dispatch_index_cache, dispatch_index_cache_ref_count
             )
 
             if skip:
@@ -528,11 +532,9 @@ class ip4tables:
             raise ValueError(
                 "'%s %s' failed: %s" % (self._restore_command, " ".join(args), ret)
             )
-        self.rich_rule_priority_counts = rich_rule_priority_counts
-        self.policy_dispatch_index_cache = policy_dispatch_index_cache
-        self.policy_dispatch_index_cache_ref_count = (
-            policy_dispatch_index_cache_ref_count
-        )
+        self.rule_priority_counts = rule_priority_counts
+        self.dispatch_index_cache = dispatch_index_cache
+        self.dispatch_index_cache_ref_count = dispatch_index_cache_ref_count
 
     def set_rule(self, rule, log_denied):
         # replace %%REJECT%%
@@ -558,27 +560,28 @@ class ip4tables:
             else:
                 rule.pop(i)
 
-        rich_rule_priority_counts = copy.deepcopy(self.rich_rule_priority_counts)
-        policy_dispatch_index_cache = copy.deepcopy(self.policy_dispatch_index_cache)
-        policy_dispatch_index_cache_ref_count = copy.deepcopy(
-            self.policy_dispatch_index_cache_ref_count
+        rule_priority_counts = copy.deepcopy(self.rule_priority_counts)
+        dispatch_index_cache = copy.deepcopy(self.dispatch_index_cache)
+        dispatch_index_cache_ref_count = copy.deepcopy(
+            self.dispatch_index_cache_ref_count
         )
         self._set_rule_replace_priority(
-            rule, rich_rule_priority_counts, "%%RICH_RULE_PRIORITY%%"
+            rule, rule_priority_counts, "%%POLICY_PRIORITY%%"
         )
-        skip = self._set_rule_sort_policy_dispatch(
-            rule, policy_dispatch_index_cache, policy_dispatch_index_cache_ref_count
+        self._set_rule_replace_priority(
+            rule, rule_priority_counts, "%%RICH_RULE_PRIORITY%%"
+        )
+        skip = self._set_rule_sort_dispatch(
+            rule, dispatch_index_cache, dispatch_index_cache_ref_count
         )
 
         output = ""
         if not skip:
             output = self.__run(rule)
 
-        self.rich_rule_priority_counts = rich_rule_priority_counts
-        self.policy_dispatch_index_cache = policy_dispatch_index_cache
-        self.policy_dispatch_index_cache_ref_count = (
-            policy_dispatch_index_cache_ref_count
-        )
+        self.rule_priority_counts = rule_priority_counts
+        self.dispatch_index_cache = dispatch_index_cache
+        self.dispatch_index_cache_ref_count = dispatch_index_cache_ref_count
         return output
 
     def get_available_tables(self, table=None):
@@ -694,9 +697,9 @@ class ip4tables:
                 return rand_chain
 
     def build_flush_rules(self):
-        self.rich_rule_priority_counts = {}
-        self.policy_dispatch_index_cache = {}
-        self.policy_dispatch_index_cache_ref_count = {}
+        self.rule_priority_counts = {}
+        self.dispatch_index_cache = {}
+        self.dispatch_index_cache_ref_count = {}
         self.our_chains = {}
         self.unique_chain_name_map = {}
         rules = []
@@ -773,9 +776,9 @@ class ip4tables:
                 self.our_chains["raw"].add("%s_direct" % chain)
 
                 if chain == "PREROUTING":
-                    default_rules["raw"].append("-N %s_POLICIES" % (chain))
-                    self.our_chains["raw"].update(set(["%s_POLICIES" % (chain)]))
-                    default_rules["raw"].append("-A %s -j %s_POLICIES" % (chain, chain))
+                    default_rules["raw"].append("-N %s_dispatch" % (chain))
+                    self.our_chains["raw"].update(set(["%s_dispatch" % (chain)]))
+                    default_rules["raw"].append("-A %s -j %s_dispatch" % (chain, chain))
 
         if self.get_available_tables("mangle"):
             default_rules["mangle"] = []
@@ -786,10 +789,10 @@ class ip4tables:
                 self.our_chains["mangle"].add("%s_direct" % chain)
 
                 if chain == "PREROUTING":
-                    default_rules["mangle"].append("-N %s_POLICIES" % (chain))
-                    self.our_chains["mangle"].update(set(["%s_POLICIES" % (chain)]))
+                    default_rules["mangle"].append("-N %s_dispatch" % (chain))
+                    self.our_chains["mangle"].update(set(["%s_dispatch" % (chain)]))
                     default_rules["mangle"].append(
-                        "-A %s -j %s_POLICIES" % (chain, chain)
+                        "-A %s -j %s_dispatch" % (chain, chain)
                     )
 
         if self.get_available_tables("nat"):
@@ -800,9 +803,9 @@ class ip4tables:
                 default_rules["nat"].append("-A %s -j %s_direct" % (chain, chain))
                 self.our_chains["nat"].add("%s_direct" % chain)
 
-                default_rules["nat"].append("-N %s_POLICIES" % (chain))
-                self.our_chains["nat"].update(set(["%s_POLICIES" % (chain)]))
-                default_rules["nat"].append("-A %s -j %s_POLICIES" % (chain, chain))
+                default_rules["nat"].append("-N %s_dispatch" % (chain))
+                self.our_chains["nat"].update(set(["%s_dispatch" % (chain)]))
+                default_rules["nat"].append("-A %s -j %s_dispatch" % (chain, chain))
 
         default_rules["filter"] = []
         self.our_chains["filter"] = set()
@@ -825,9 +828,9 @@ class ip4tables:
         default_rules["filter"].append("-N INPUT_direct")
         default_rules["filter"].append("-A INPUT -j INPUT_direct")
         self.our_chains["filter"].update(set("INPUT_direct"))
-        default_rules["filter"].append("-N INPUT_POLICIES")
-        self.our_chains["filter"].update(set("INPUT_POLICIES"))
-        default_rules["filter"].append("-A INPUT -j INPUT_POLICIES")
+        default_rules["filter"].append("-N INPUT_dispatch")
+        self.our_chains["filter"].update(set("INPUT_dispatch"))
+        default_rules["filter"].append("-A INPUT -j INPUT_dispatch")
         if log_denied != "off":
             default_rules["filter"].append(
                 "-A INPUT %%LOGTYPE%% -j LOG --log-prefix 'FINAL_REJECT: '"
@@ -852,9 +855,9 @@ class ip4tables:
         default_rules["filter"].append("-N FORWARD_direct")
         default_rules["filter"].append("-A FORWARD -j FORWARD_direct")
         self.our_chains["filter"].update(set("FORWARD_direct"))
-        default_rules["filter"].append("-N FORWARD_POLICIES")
-        self.our_chains["filter"].update(set("FORWARD_POLICIES"))
-        default_rules["filter"].append("-A FORWARD -j FORWARD_POLICIES")
+        default_rules["filter"].append("-N FORWARD_dispatch")
+        self.our_chains["filter"].update(set("FORWARD_dispatch"))
+        default_rules["filter"].append("-A FORWARD -j FORWARD_dispatch")
         if log_denied != "off":
             default_rules["filter"].append(
                 "-A FORWARD %%LOGTYPE%% -j LOG --log-prefix 'FINAL_REJECT: '"
@@ -875,9 +878,9 @@ class ip4tables:
             "-A OUTPUT -j OUTPUT_direct",
         ]
         self.our_chains["filter"].update(set("OUTPUT_direct"))
-        default_rules["filter"].append("-N OUTPUT_POLICIES")
-        default_rules["filter"].append("-A OUTPUT -j OUTPUT_POLICIES")
-        self.our_chains["filter"].update(set("OUTPUT_POLICIES"))
+        default_rules["filter"].append("-N OUTPUT_dispatch")
+        default_rules["filter"].append("-A OUTPUT -j OUTPUT_dispatch")
+        self.our_chains["filter"].update(set("OUTPUT_dispatch"))
 
         final_default_rules = []
         for table in default_rules:
@@ -903,211 +906,238 @@ class ip4tables:
 
         return {}
 
-    def _policy_dispatch_sort_key(
-        self,
-        policy,
-        ingress_zone,
-        egress_zone,
-        ingress_interface,
-        ingress_source,
-        egress_interface,
-        egress_source,
-        priority,
-        last=False,
-        prerouting=False,
-        postrouting=False,
-        log_denied=False,
-    ):
-        p_obj = self._fw.policy.get_policy(policy)
-        ingress_priority = (
-            0
-            if ingress_zone == "HOST"
-            else self._fw.zone.get_zone(ingress_zone).ingress_priority
-        )
-        egress_priority = (
-            0
-            if egress_zone == "HOST"
-            else self._fw.zone.get_zone(egress_zone).egress_priority
-        )
+    def _zone_dispatch_chain_name(self, ingress_zone, egress_zone, table, chain):
+        return f"{SHORTCUTS[chain]}_{ingress_zone}_to_{egress_zone}"
 
-        ingress_sort_order = 0  # 0 means output chain
-        if ingress_source:
-            ingress_sort_order = 1
-        elif ingress_interface:
-            ingress_sort_order = 2
-            if postrouting:
-                ingress_zone = ""
-                ingress_interface = ""
-
-        egress_sort_order = 0  # 0 means input chain
-        if egress_source:
-            egress_sort_order = 1
-        elif egress_interface or (p_obj.derived_from_zone and prerouting):
-            egress_sort_order = 2
-            if prerouting:
-                egress_zone = ""
-                egress_interface = ""
-
-        # default zone is always sorted to last as it's a "catch-all"
-        if ingress_interface == "+":
-            ingress_priority = self._fw.zone.get_zone(ingress_zone).priority_max + 1
-        if egress_interface == "+":
-            egress_priority = self._fw.zone.get_zone(egress_zone).priority_max + 1
-
-        last_sort_order = 0
-        if last:
-            if log_denied:
-                last_sort_order = 1
-            else:
-                last_sort_order = 2
-
-        ingress = (
-            ingress_priority,
-            ingress_sort_order,
-            ingress_zone,
-            ingress_source,
-            ingress_interface,
-        )
-        egress = (
-            egress_priority,
-            egress_sort_order,
-            egress_zone,
-            egress_source,
-            egress_interface,
-        )
-        suffix = (last_sort_order, priority)
-
-        if postrouting:
-            return ["%%POLICY_SORT_KEY%%", egress + ingress + suffix + (policy,)]
+    def build_zone_target_rules(self, enable, ingress_zone, egress_zone, table, chain):
+        add_del = {True: "-A", False: "-D"}[enable]
+        if chain in ["OUTPUT", "POSTROUTING"]:
+            z_obj = self._fw.zone.get_zone(egress_zone)
         else:
-            return ["%%POLICY_SORT_KEY%%", ingress + egress + suffix + (policy,)]
-
-    # FIXME: update for new dispatch method.
-    def build_policy_ingress_egress_pair_rules(
-        self,
-        enable,
-        policy,
-        table,
-        chain,
-        ingress_zone,
-        egress_zone,
-        ingress_interface,
-        ingress_source,
-        egress_interface,
-        egress_source,
-        last=False,
-    ):
-        add_del = {True: "-I", False: "-D"}[enable]
-        p_obj = self._fw.policy.get_policy(policy)
-        isSNAT = True if (table == "nat" and chain == "POSTROUTING") else False
-        _policy = self._fw.policy.policy_base_chain_name(
-            policy, table, POLICY_CHAIN_PREFIX, isSNAT
+            z_obj = self._fw.zone.get_zone(ingress_zone)
+        chain_name = self._zone_dispatch_chain_name(
+            ingress_zone, egress_zone, table, chain
         )
-        _policy_unique = self.get_unique_chain_name(_policy, prefix=POLICY_CHAIN_PREFIX)
-        prerouting = True if chain == "PREROUTING" else False
-        postrouting = True if chain == "POSTROUTING" else False
-
-        # iptables can not match a destination MAC
-        if check_mac(egress_source) or (postrouting and check_mac(ingress_source)):
-            return []
+        chain_name_unique = self.get_unique_chain_name(chain_name)
 
         rules = []
 
-        rule = ["-t", table, add_del, f"{chain}_POLICIES"]
-
-        # iptables-legacy cannot match -i in postrouting
-        if ingress_interface and ingress_interface != "+" and not postrouting:
-            rule.extend(["-i", ingress_interface])
-        if egress_interface and egress_interface != "+" and not prerouting:
-            rule.extend(["-o", egress_interface])
-        if ingress_source:
-            rule.extend(self._rule_addr_fragment("-s", ingress_source))
-        if egress_source:
-            rule.extend(self._rule_addr_fragment("-d", egress_source))
-
-        if not last:
-            if _policy == _policy_unique:
-                rule.extend(["-j", _policy_unique])
-            else:
-                rule.extend(
-                    [
-                        "-j",
-                        _policy_unique,
-                        "-m",
-                        "comment",
-                        "--comment",
-                        f"human readable jump target: {_policy}",
-                    ]
-                )
-        elif table != "filter" or chain in ["PREROUTING", "OUTPUT"]:
-            rule.extend(["-j", "RETURN"])
-        elif p_obj.target in [
+        target_rule = ["-t", table, add_del, chain_name_unique]
+        if table != "filter" or chain in ["PREROUTING", "OUTPUT"]:
+            target_rule.extend(["-j", "RETURN"])
+        elif z_obj.target in [
             DEFAULT_ZONE_TARGET,
             "ACCEPT",
             "REJECT",
             "%%REJECT%%",
             "DROP",
         ]:
-            if self._fw.get_log_denied() != "off" and p_obj.target in [
+            if self._fw.get_log_denied() != "off" and z_obj.target in [
                 DEFAULT_ZONE_TARGET,
                 "%%REJECT%%",
                 "REJECT",
                 "DROP",
             ]:
-                _rule = rule[:]
-                _log_suffix = "DROP" if p_obj.target == "DROP" else "REJECT"
+                log_rule = ["-t", table, add_del, f"{chain}_dispatch"]
+                _log_suffix = "DROP" if z_obj.target == "DROP" else "REJECT"
 
-                _rule.extend(
+                log_rule.extend(
                     [
                         "%%LOGTYPE%%",
                         "-j",
                         "LOG",
                         "--log-prefix",
-                        f"{_policy}_{_log_suffix}: ",
+                        f"filter_{SHORTCUTS[chain]}_{ingress_zone}_{_log_suffix}: ",
+                        "%%POLICY_PRIORITY%%",
+                        Policy.priority_max + 1,
                     ]
                 )
-                _rule.extend(
-                    self._policy_dispatch_sort_key(
-                        policy,
-                        ingress_zone,
-                        egress_zone,
-                        ingress_interface,
-                        ingress_source,
-                        egress_interface,
-                        egress_source,
-                        p_obj.priority,
-                        last=True,
-                        log_denied=True,
-                        postrouting=postrouting,
-                        prerouting=prerouting,
-                    )
-                )
-                rules.append(_rule)
 
-            if p_obj.target == DEFAULT_ZONE_TARGET:
-                rule.extend(["-j", "REJECT"])
+                rules.append(log_rule)
+
+            if z_obj.target in [DEFAULT_ZONE_TARGET, "%%REJECT%%", "REJECT"]:
+                target_rule.extend(["-j", "REJECT"])
             else:
-                rule.extend(["-j", p_obj.target])
+                target_rule.extend(["-j", z_obj.target])
+
+        target_rule.extend(["%%POLICY_PRIORITY%%", Policy.priority_max + 2])
+
+        rules.append(target_rule)
+
+        return rules
+
+    def build_dispatch_stage2_chains(self, enable, ingress_zone, table, chain):
+        """Chains for stage 2. (identify egress zone)"""
+        add_del = {True: "-N", False: "-X"}[enable]
+        chain_name = f"{SHORTCUTS[chain]}_{ingress_zone}_dispatch_stage2"
+        chain_name_unique = self.get_unique_chain_name(chain_name)
+
+        return [["-t", table, add_del, chain_name_unique]]
+
+    def build_dispatch_stage3_chains(
+        self, enable, ingress_zone, egress_zone, table, chain
+    ):
+        """Chains for stage 3. (dispatch to policies)"""
+        add_del = {True: "-N", False: "-X"}[enable]
+        chain_name = self._zone_dispatch_chain_name(
+            ingress_zone, egress_zone, table, chain
+        )
+        chain_name_unique = self.get_unique_chain_name(chain_name)
+
+        return [["-t", table, add_del, chain_name_unique]]
+
+    def build_dispatch_stage1_rules(
+        self, enable, ingress_zone, egress_zone, table, chain, interface, source
+    ):
+        add_del = {True: "-A", False: "-D"}[enable]
+
+        # iptables can not match a source MAC in postrouting
+        if source and chain == "POSTROUTING" and check_mac(source):
+            return []
+
+        if "HOST" == egress_zone:
+            chain_name = self._zone_dispatch_chain_name(
+                ingress_zone, egress_zone, table, chain
+            )
+        else:
+            chain_name = f"{SHORTCUTS[chain]}_{ingress_zone}_dispatch_stage2"
+        chain_name_unique = self.get_unique_chain_name(chain_name)
+
+        rule = ["-t", table, add_del, f"{chain}_dispatch"]
+
+        if interface and interface != "+":
+            rule.extend(["-i", interface])
+        elif source:
+            rule.extend(self._rule_addr_fragment("-s", source))
+
+        rule.extend(["-j", chain_name_unique])
 
         rule.extend(
-            self._policy_dispatch_sort_key(
-                policy,
+            self._zone_ingress_dispatch_sort_key(
                 ingress_zone,
                 egress_zone,
-                ingress_interface,
-                ingress_source,
-                egress_interface,
-                egress_source,
-                p_obj.priority,
-                last=last,
-                postrouting=postrouting,
-                prerouting=prerouting,
+                interface,
+                source,
             )
         )
 
-        rules.append(rule)
+        return [rule]
 
-        return rules
+    def build_dispatch_stage2_rules(
+        self, enable, ingress_zone, egress_zone, table, chain, interface, source
+    ):
+        add_del = {True: "-A", False: "-D"}[enable]
+
+        # iptables can not match a destination MAC
+        if source and check_mac(source):
+            return []
+
+        if "HOST" == ingress_zone:
+            chain_name = f"{chain}_dispatch"
+        else:
+            chain_name = f"{SHORTCUTS[chain]}_{ingress_zone}_dispatch_stage2"
+        chain_name_unique = self.get_unique_chain_name(chain_name)
+
+        rule = ["-t", table, add_del, chain_name_unique]
+
+        if interface and interface != "+":
+            rule.extend(["-o", interface])
+        elif source:
+            rule.extend(self._rule_addr_fragment("-d", source))
+
+        target_chain = self._zone_dispatch_chain_name(
+            ingress_zone, egress_zone, table, chain
+        )
+        target_chain_name_unique = self.get_unique_chain_name(target_chain)
+        rule.extend(["-j", target_chain_name_unique])
+
+        rule.extend(
+            self._zone_egress_dispatch_sort_key(
+                ingress_zone,
+                egress_zone,
+                interface,
+                source,
+            )
+        )
+
+        return [rule]
+
+    def _zone_ingress_dispatch_sort_key(
+        self,
+        ingress_zone,
+        egress_zone,
+        interface,
+        source,
+    ):
+        priority = self._fw.zone.get_zone(ingress_zone).ingress_priority
+
+        # Default zone is always dispatched last.
+        if interface == "+":
+            priority = self._fw.zone.get_zone(ingress_zone).priority_max + 1
+
+        # Old behavior dictates that source based must dispatch before
+        # interface based.
+        if source:
+            sort_order = 1
+        else:
+            sort_order = 2
+
+        return [
+            "%%DISPATCH_SORT_KEY%%",
+            (priority, sort_order, ingress_zone, interface, source, egress_zone),
+        ]
+
+    def _zone_egress_dispatch_sort_key(
+        self,
+        ingress_zone,
+        egress_zone,
+        interface,
+        source,
+    ):
+        priority = self._fw.zone.get_zone(egress_zone).egress_priority
+
+        # default zone is always dispatched last
+        if interface == "+":
+            priority = self._fw.zone.get_zone(egress_zone).priority_max + 1
+
+        if source:
+            sort_order = 1
+        elif interface:
+            sort_order = 2
+
+        return [
+            "%%DISPATCH_SORT_KEY%%",
+            (priority, sort_order, egress_zone, interface, source, ingress_zone),
+        ]
+
+    def _policy_dispatch_sort_key(self, policy):
+        p_obj = self._fw.policy.get_policy(policy)
+        return ["%%POLICY_PRIORITY%%", p_obj.priority]
+
+    def build_policy_dispatch_rules(
+        self,
+        enable,
+        ingress_zone,
+        egress_zone,
+        target_policy,
+        table,
+        chain,
+    ):
+        add_del = {True: "-A", False: "-D"}[enable]
+        isSNAT = True if (table == "nat" and chain == "POSTROUTING") else False
+        chain_name = self._zone_dispatch_chain_name(
+            ingress_zone, egress_zone, table, chain
+        )
+        chain_name_unique = self.get_unique_chain_name(chain_name)
+        _policy = self._fw.policy.policy_base_chain_name(
+            target_policy, table, POLICY_CHAIN_PREFIX, isSNAT
+        )
+        _policy_unique = self.get_unique_chain_name(_policy, prefix=POLICY_CHAIN_PREFIX)
+
+        rule = ["-t", table, add_del, chain_name_unique, "-j", _policy_unique]
+        rule.extend(self._policy_dispatch_sort_key(target_policy))
+
+        return [rule]
 
     def _rule_addr_fragment(self, opt, address, invert=False):
         if address.startswith("ipset:"):

@@ -15,7 +15,7 @@ NS_CHECK([nft list table inet firewalld | wc -l], 0, [dnl
 ])
 ], [ dnl iptables
 NS_CHECK([iptables-save | wc -l], 0, [dnl
-249
+292
 ])
 ])])
 

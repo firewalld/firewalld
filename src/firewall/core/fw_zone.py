@@ -257,49 +257,67 @@ class FirewallZone:
                 )
 
     def _gen_zone_to_zone_chains_stage2(self, enable, zone, transaction):
-        """ Generates chains for jump to stage 3.
-        """
+        """Generates chains for jump to stage 3."""
         for backend in self._fw.enabled_backends():
             if not backend.policies_supported:
                 continue
 
             # where ingress-zone == newly activated zone
             #
-            for egress_zone in self.get_applied_zones():
-                for (table, chain) in self._fw.policy._get_table_chains_for_zone_dispatch(zone, "ANY"):
-                    rules = backend.build_dispatch_stage2_chains(enable, zone, egress_zone, table, chain)
-                    transaction.add_rules(backend, rules)
+            for (table, chain) in self._fw.policy._get_table_chains_for_zone_dispatch(
+                zone, "ANY"
+            ):
+                rules = backend.build_dispatch_stage2_chains(enable, zone, table, chain)
+                transaction.add_rules(backend, rules)
 
     def _gen_zone_to_zone_chains_stage3(self, enable, zone, transaction):
-        """ Generate chains for stage 3, and --set-target
-        """
+        """Generate chains for stage 3, and --set-target"""
         for backend in self._fw.enabled_backends():
             if not backend.policies_supported:
                 continue
 
             # zone to "HOST"
-            for (table, chain) in self._fw.policy._get_table_chains_for_zone_dispatch(zone, "HOST"):
-                rules = backend.build_dispatch_stage3_chains(enable, zone, "HOST", table, chain)
+            for (table, chain) in self._fw.policy._get_table_chains_for_zone_dispatch(
+                zone, "HOST"
+            ):
+                rules = backend.build_dispatch_stage3_chains(
+                    enable, zone, "HOST", table, chain
+                )
                 transaction.add_rules(backend, rules)
 
-                rules = backend.build_zone_target_rules(enable, zone, "HOST", table, chain)
+                rules = backend.build_zone_target_rules(
+                    enable, zone, "HOST", table, chain
+                )
                 transaction.add_rules(backend, rules)
 
             # "HOST" to zone
-            for (table, chain) in self._fw.policy._get_table_chains_for_zone_dispatch("HOST", zone):
-                rules = backend.build_dispatch_stage3_chains(enable, "HOST", zone, table, chain)
+            for (table, chain) in self._fw.policy._get_table_chains_for_zone_dispatch(
+                "HOST", zone
+            ):
+                rules = backend.build_dispatch_stage3_chains(
+                    enable, "HOST", zone, table, chain
+                )
                 transaction.add_rules(backend, rules)
 
-                rules = backend.build_zone_target_rules(enable, "HOST", zone, table, chain)
+                rules = backend.build_zone_target_rules(
+                    enable, "HOST", zone, table, chain
+                )
                 transaction.add_rules(backend, rules)
 
             # zone to "ANY"
             for egress_zone in self.get_applied_zones():
-                for (table, chain) in self._fw.policy._get_table_chains_for_zone_dispatch(zone, "ANY"):
-                    rules = backend.build_dispatch_stage3_chains(enable, zone, egress_zone, table, chain)
+                for (
+                    table,
+                    chain,
+                ) in self._fw.policy._get_table_chains_for_zone_dispatch(zone, "ANY"):
+                    rules = backend.build_dispatch_stage3_chains(
+                        enable, zone, egress_zone, table, chain
+                    )
                     transaction.add_rules(backend, rules)
 
-                    rules = backend.build_zone_target_rules(enable, zone, egress_zone, table, chain)
+                    rules = backend.build_zone_target_rules(
+                        enable, zone, egress_zone, table, chain
+                    )
                     transaction.add_rules(backend, rules)
 
             # "ANY" to zone
@@ -309,16 +327,22 @@ class FirewallZone:
                 if ingress_zone == zone:
                     continue
 
-                for (table, chain) in self._fw.policy._get_table_chains_for_zone_dispatch("ANY", zone):
-                    rules = backend.build_dispatch_stage3_chains(enable, ingress_zone, zone, table, chain)
+                for (
+                    table,
+                    chain,
+                ) in self._fw.policy._get_table_chains_for_zone_dispatch("ANY", zone):
+                    rules = backend.build_dispatch_stage3_chains(
+                        enable, ingress_zone, zone, table, chain
+                    )
                     transaction.add_rules(backend, rules)
 
-                    rules = backend.build_zone_target_rules(enable, ingress_zone, zone, table, chain)
+                    rules = backend.build_zone_target_rules(
+                        enable, ingress_zone, zone, table, chain
+                    )
                     transaction.add_rules(backend, rules)
 
     def _gen_zone_to_zone_rules(self, enable, zone, transaction):
-        """ Generates rules for jump to stage 3.
-        """
+        """Generates rules for jump to stage 3."""
         for backend in self._fw.enabled_backends():
             if not backend.policies_supported:
                 continue
@@ -326,23 +350,73 @@ class FirewallZone:
             for egress_zone in self.get_applied_zones():
                 if egress_zone == zone:
                     continue
-                for (table, chain) in self._fw.policy._get_table_chains_for_zone_dispatch(zone, "ANY"):
+                for (
+                    table,
+                    chain,
+                ) in self._fw.policy._get_table_chains_for_zone_dispatch(zone, "ANY"):
                     for egress_interface in self.list_interfaces(egress_zone):
-                        rules = backend.build_dispatch_stage2_rules(enable, zone, egress_zone, table, chain, egress_interface, None)
+                        rules = backend.build_dispatch_stage2_rules(
+                            enable,
+                            zone,
+                            egress_zone,
+                            table,
+                            chain,
+                            egress_interface,
+                            None,
+                        )
                         transaction.add_rules(backend, rules)
                     for egress_source in self.list_sources(egress_zone):
-                        rules = backend.build_dispatch_stage2_rules(enable, zone, egress_zone, table, chain, None, egress_source)
+                        # Some backends only support one ipv
+                        if not backend.is_ipv_supported(
+                            self.check_source(egress_source)
+                        ):
+                            continue
+
+                        rules = backend.build_dispatch_stage2_rules(
+                            enable, zone, egress_zone, table, chain, None, egress_source
+                        )
                         transaction.add_rules(backend, rules)
             # egress dispatch for default zone
             if zone != self._fw.get_default_zone():
-                for (table, chain) in self._fw.policy._get_table_chains_for_zone_dispatch(zone, "ANY"):
-                    rules = backend.build_dispatch_stage2_rules(enable, zone, self._fw.get_default_zone(), table, chain, "+", None)
+                for (
+                    table,
+                    chain,
+                ) in self._fw.policy._get_table_chains_for_zone_dispatch(zone, "ANY"):
+                    rules = backend.build_dispatch_stage2_rules(
+                        enable,
+                        zone,
+                        self._fw.get_default_zone(),
+                        table,
+                        chain,
+                        "+",
+                        None,
+                    )
                     transaction.add_rules(backend, rules)
 
+    def _gen_policy_dispatch_rules(self, enable, zone, transaction):
+        """Update policy dispatch for regular policies that use this zone."""
+        for policy in self._fw.policy.get_applied_policies():
+            p_ingress_zones = self._fw.policy.list_ingress_zones(policy)
+            p_egress_zones = self._fw.policy.list_egress_zones(policy)
+
+            if zone in p_ingress_zones or "ANY" in p_ingress_zones:
+                self._fw.policy._ingress_zone(enable, policy, zone, transaction)
+            if zone in p_egress_zones or "ANY" in p_egress_zones:
+                self._fw.policy._egress_zone(enable, policy, zone, transaction)
+
     def gen_zone_to_zone_rules(self, enable, zone, transaction):
-        self._gen_zone_to_zone_chains_stage2(enable, zone, transaction)
-        self._gen_zone_to_zone_chains_stage3(enable, zone, transaction)
-        self._gen_zone_to_zone_rules(enable, zone, transaction)
+        fns = [
+            lambda: self._gen_zone_to_zone_chains_stage2(enable, zone, transaction),
+            lambda: self._gen_zone_to_zone_chains_stage3(enable, zone, transaction),
+            lambda: self._gen_zone_to_zone_rules(enable, zone, transaction),
+            lambda: self._gen_policy_dispatch_rules(enable, zone, transaction),
+        ]
+
+        if not enable:
+            fns.reverse()
+
+        for fn in fns:
+            fn()
 
     def _zone_settings(self, enable, zone, transaction):
         for key in ["interfaces", "sources", "forward", "icmp_block_inversion"]:
@@ -736,28 +810,56 @@ class FirewallZone:
 
     def _update_zone_dispatch(self, enable, zone, interface, source, transaction):
         if interface and source:
-            raise BugError("_update_zone_dispatch(): can't have both interface and source")
+            raise BugError(
+                "_update_zone_dispatch(): can't have both interface and source"
+            )
 
-        for backend in self._fw.enabled_backends():
+        # Some backends only support one ipv
+        ipv = None
+        if source:
+            ipv = self.check_source(source)
+
+        for backend in (
+            [self._fw.get_backend_by_ipv(ipv)] if ipv else self._fw.enabled_backends()
+        ):
+            if not backend.policies_supported:
+                continue
             # zone to "HOST"
-            for (table, chain) in self._fw.policy._get_table_chains_for_zone_dispatch(zone, "HOST"):
-                rules = backend.build_dispatch_stage1_rules(enable, zone, "HOST", table, chain, interface, source)
+            for (table, chain) in self._fw.policy._get_table_chains_for_zone_dispatch(
+                zone, "HOST"
+            ):
+                rules = backend.build_dispatch_stage1_rules(
+                    enable, zone, "HOST", table, chain, interface, source
+                )
                 transaction.add_rules(backend, rules)
 
             # "HOST" to zone
-            for (table, chain) in self._fw.policy._get_table_chains_for_zone_dispatch("HOST", zone):
-                rules = backend.build_dispatch_stage2_rules(enable, "HOST", zone, table, chain, interface, source)
+            for (table, chain) in self._fw.policy._get_table_chains_for_zone_dispatch(
+                "HOST", zone
+            ):
+                rules = backend.build_dispatch_stage2_rules(
+                    enable, "HOST", zone, table, chain, interface, source
+                )
                 transaction.add_rules(backend, rules)
 
             # zone to "ANY"
-            for (table, chain) in self._fw.policy._get_table_chains_for_zone_dispatch(zone, "ANY"):
-                rules = backend.build_dispatch_stage1_rules(enable, zone, "ANY", table, chain, interface, source)
+            for (table, chain) in self._fw.policy._get_table_chains_for_zone_dispatch(
+                zone, "ANY"
+            ):
+                rules = backend.build_dispatch_stage1_rules(
+                    enable, zone, "ANY", table, chain, interface, source
+                )
                 transaction.add_rules(backend, rules)
 
             # "ANY" to zone
             for ingress_zone in self.get_applied_zones():
-                for (table, chain) in self._fw.policy._get_table_chains_for_zone_dispatch("ANY", zone):
-                    rules = backend.build_dispatch_stage2_rules(enable, ingress_zone, zone, table, chain, interface, source)
+                for (
+                    table,
+                    chain,
+                ) in self._fw.policy._get_table_chains_for_zone_dispatch("ANY", zone):
+                    rules = backend.build_dispatch_stage2_rules(
+                        enable, ingress_zone, zone, table, chain, interface, source
+                    )
                     transaction.add_rules(backend, rules)
 
     def _interface(self, enable, zone, interface, transaction):

@@ -1178,11 +1178,13 @@ class nftables:
 
     def build_zone_target_rules(self, enable, ingress_zone, egress_zone, table, chain):
         add_del = {True: "add", False: "delete"}[enable]
-        if "HOST" == ingress_zone:
+        if chain in ["OUTPUT", "POSTROUTING"]:
             z_obj = self._fw.zone.get_zone(egress_zone)
         else:
             z_obj = self._fw.zone.get_zone(ingress_zone)
-        chain_name = self._zone_dispatch_chain_name(ingress_zone, egress_zone, table, chain)
+        chain_name = self._zone_dispatch_chain_name(
+            ingress_zone, egress_zone, table, chain
+        )
 
         rules = []
         expr_fragments = []
@@ -1210,7 +1212,11 @@ class nftables:
                     "expr": expr_fragments
                     + [
                         self._pkttype_match_fragment(self._fw.get_log_denied()),
-                        {"log": {"prefix": f"filter_{SHORTCUTS[chain]}_{ingress_zone}_{_log_suffix}: "}},
+                        {
+                            "log": {
+                                "prefix": f"filter_{SHORTCUTS[chain]}_{ingress_zone}_{_log_suffix}: "
+                            }
+                        },
                     ],
                     "%%POLICY_PRIORITY%%": Policy.priority_max + 1,
                 }
@@ -1237,12 +1243,12 @@ class nftables:
 
         return rules
 
-    def build_dispatch_stage2_chains(self, enable, ingress_zone, egress_zone, table, chain):
-        """ Chains for stage 2. (identify egress zone)
-        """
+    def build_dispatch_stage2_chains(self, enable, ingress_zone, table, chain):
+        """Chains for stage 2. (identify egress zone)"""
         add_del = {True: "add", False: "delete"}[enable]
 
-        return [{
+        return [
+            {
                 add_del: {
                     "chain": {
                         "family": "inet",
@@ -1250,25 +1256,33 @@ class nftables:
                         "name": f"{table}_{SHORTCUTS[chain]}_{ingress_zone}_dispatch_stage2",
                     }
                 }
-            }]
+            }
+        ]
 
-    def build_dispatch_stage3_chains(self, enable, ingress_zone, egress_zone, table, chain):
-        """ Chains for stage 3. (dispatch to policies)
-        """
+    def build_dispatch_stage3_chains(
+        self, enable, ingress_zone, egress_zone, table, chain
+    ):
+        """Chains for stage 3. (dispatch to policies)"""
         add_del = {True: "add", False: "delete"}[enable]
 
         # chain for stage 3 (jump to policies)
-        return [{
+        return [
+            {
                 add_del: {
                     "chain": {
                         "family": "inet",
                         "table": TABLE_NAME,
-                        "name": self._zone_dispatch_chain_name(ingress_zone, egress_zone, table, chain),
+                        "name": self._zone_dispatch_chain_name(
+                            ingress_zone, egress_zone, table, chain
+                        ),
                     }
                 }
-            }]
+            }
+        ]
 
-    def build_dispatch_stage1_rules(self, enable, ingress_zone, egress_zone, table, chain, interface, source):
+    def build_dispatch_stage1_rules(
+        self, enable, ingress_zone, egress_zone, table, chain, interface, source
+    ):
         add_del = {True: "add", False: "delete"}[enable]
 
         if interface and interface[len(interface) - 1] == "+":
@@ -1289,9 +1303,23 @@ class nftables:
             expr_fragments.append(self._rule_addr_fragment("saddr", source))
 
         if "HOST" == egress_zone:
-            expr_fragments.append({"jump": {"target": self._zone_dispatch_chain_name(ingress_zone, "HOST", table, chain)}})
+            expr_fragments.append(
+                {
+                    "jump": {
+                        "target": self._zone_dispatch_chain_name(
+                            ingress_zone, "HOST", table, chain
+                        )
+                    }
+                }
+            )
         else:
-            expr_fragments.append({"jump": {"target": f"{table}_{SHORTCUTS[chain]}_{ingress_zone}_dispatch_stage2"}})
+            expr_fragments.append(
+                {
+                    "jump": {
+                        "target": f"{table}_{SHORTCUTS[chain]}_{ingress_zone}_dispatch_stage2"
+                    }
+                }
+            )
 
         rule = {
             "family": "inet",
@@ -1310,7 +1338,9 @@ class nftables:
 
         return [{add_del: {"rule": rule}}]
 
-    def build_dispatch_stage2_rules(self, enable, ingress_zone, egress_zone, table, chain, interface, source):
+    def build_dispatch_stage2_rules(
+        self, enable, ingress_zone, egress_zone, table, chain, interface, source
+    ):
         add_del = {True: "add", False: "delete"}[enable]
 
         if interface and interface[len(interface) - 1] == "+":
@@ -1330,7 +1360,15 @@ class nftables:
         elif source:
             expr_fragments.append(self._rule_addr_fragment("daddr", source))
 
-        expr_fragments.append({"jump": {"target": self._zone_dispatch_chain_name(ingress_zone, egress_zone, table, chain)}})
+        expr_fragments.append(
+            {
+                "jump": {
+                    "target": self._zone_dispatch_chain_name(
+                        ingress_zone, egress_zone, table, chain
+                    )
+                }
+            }
+        )
 
         if "HOST" == ingress_zone:
             chain_name = f"{table}_{chain}_dispatch"
@@ -1374,7 +1412,16 @@ class nftables:
         else:
             sort_order = 2
 
-        return {"%%DISPATCH_SORT_KEY%%": (priority, sort_order, ingress_zone, interface, source, egress_zone)}
+        return {
+            "%%DISPATCH_SORT_KEY%%": (
+                priority,
+                sort_order,
+                ingress_zone,
+                interface,
+                source,
+                egress_zone,
+            )
+        }
 
     def _zone_egress_dispatch_sort_key(
         self,
@@ -1394,7 +1441,16 @@ class nftables:
         elif interface:
             sort_order = 2
 
-        return {"%%DISPATCH_SORT_KEY%%": (priority, sort_order, egress_zone, interface, source, ingress_zone)}
+        return {
+            "%%DISPATCH_SORT_KEY%%": (
+                priority,
+                sort_order,
+                egress_zone,
+                interface,
+                source,
+                ingress_zone,
+            )
+        }
 
     def _policy_dispatch_sort_key(self, policy):
         p_obj = self._fw.policy.get_policy(policy)
@@ -1418,7 +1474,9 @@ class nftables:
         rule = {
             "family": "inet",
             "table": TABLE_NAME,
-            "chain": f"{table}_{SHORTCUTS[chain]}_{ingress_zone}_to_{egress_zone}",
+            "chain": self._zone_dispatch_chain_name(
+                ingress_zone, egress_zone, table, chain
+            ),
             "expr": [{"jump": {"target": "%s_%s" % (table, _policy)}}],
         }
         rule.update(self._policy_dispatch_sort_key(target_policy))
