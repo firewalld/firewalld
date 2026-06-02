@@ -102,6 +102,7 @@ Policy Options
   --get-active-policies
                        Print currently active policies
   --list-all-policies  List everything added for or enabled in all policies
+  --list-all-rules     List all active firewall rules (zones, policies, direct)
   --new-policy=<policy>
                        Add a new empty policy
   --new-policy-from-file=<filename> [--name=<policy>]
@@ -583,6 +584,7 @@ parser_group_standalone.add_argument(
 )
 parser_group_standalone.add_argument("--list-all-zones", action="store_true")
 parser_group_standalone.add_argument("--list-all-policies", action="store_true")
+parser_group_standalone.add_argument("--list-all-rules", action="store_true")
 
 parser_group_standalone.add_argument("--info-zone", metavar="<zone>")
 parser_group_standalone.add_argument("--info-policy", metavar="<policy>")
@@ -1067,6 +1069,7 @@ options_config = (
     or a.get_helpers
     or a.get_policies
     or a.list_all_policies
+    or a.list_all_rules
 )
 
 options_zone_and_policy_adapt_query = (
@@ -1332,6 +1335,7 @@ options_list_get = (
     or a.get_destinations
     or a.get_description
     or a.list_all_policies
+    or a.list_all_rules
     or a.info_policy
     or a.get_policies
     or a.get_active_policies
@@ -4038,6 +4042,59 @@ elif a.list_all_policies:
             policy, fw.getPolicySettings(policy), active_policies=active_policies
         )
         cmd.print_msg("")
+    sys.exit(0)
+
+elif a.list_all_rules:
+    cmd.print_msg("ACTIVE ZONES:")
+    default_zone = fw.getDefaultZone()
+    active_zones = fw.getActiveZones()
+
+    # Only show active zones (zones with interfaces or sources)
+    zones_to_show = set()
+    for zone_name in active_zones:
+        zones_to_show.add(zone_name)
+    # Also show default zone even if not active
+    zones_to_show.add(default_zone)
+
+    for zone in sorted(zones_to_show):
+        cmd.print_zone_info(
+            zone,
+            fw.getZoneSettings(zone),
+            default_zone=default_zone,
+            active_zones=active_zones,
+        )
+        cmd.print_msg("")
+
+    cmd.print_msg("ACTIVE POLICIES:")
+    active_policies = fw.getActivePolicies()
+    # Only show active policies (not disabled ones)
+    for policy in active_policies:
+        cmd.print_policy_info(
+            policy, fw.getPolicySettings(policy), active_policies=active_policies
+        )
+        cmd.print_msg("")
+
+    if not active_policies:
+        cmd.print_msg("  (none)")
+        cmd.print_msg("")
+
+    cmd.print_msg("DIRECT RULES:")
+    rules = fw.getAllRules()
+    for ipv, table, chain, priority, rule in rules:
+        cmd.print_msg(
+            "%s %s %s %d %s" % (ipv, table, chain, priority, joinArgs(rule))
+        )
+    if not rules:
+        cmd.print_msg("  (none)")
+    cmd.print_msg("")
+
+    cmd.print_msg("DIRECT PASSTHROUGHS:")
+    passthroughs = fw.getAllPassthroughs()
+    for ipv, rule in passthroughs:
+        cmd.print_msg("%s %s" % (ipv, joinArgs(rule)))
+    if not passthroughs:
+        cmd.print_msg("  (none)")
+
     sys.exit(0)
 
 elif a.info_zone:
