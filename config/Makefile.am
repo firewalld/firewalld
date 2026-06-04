@@ -34,7 +34,8 @@ dist_xmlschema_DATA = \
 	xmlschema/icmptype.xsd \
 	xmlschema/ipset.xsd \
 	xmlschema/service.xsd \
-	xmlschema/zone.xsd
+	xmlschema/zone.xsd \
+	xmlschema/policy.xsd
 dist_xmlschema_SCRIPTS = xmlschema/check.sh
 
 BUILT_SOURCES = \
