@@ -2,16 +2,15 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # Matjaž Jeran <matjaz.jeran@amis.net>, 2023, 2025.
-# Martin Srebotnjak <miles@filmsi.net>, 2025.
+# Martin Srebotnjak <miles@filmsi.net>, 2025, 2026.
 # Weblate Translation Memory <noreply-mt-weblate-translation-memory@weblate.org>, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-07-08 15:43-0400\n"
-"PO-Revision-Date: 2025-12-08 23:09+0000\n"
-"Last-Translator: Weblate Translation Memory <noreply-mt-weblate-translation-"
-"memory@weblate.org>\n"
+"PO-Revision-Date: 2026-06-05 08:02+0000\n"
+"Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian <https://translate.fedoraproject.org/projects/"
 "firewalld/master/sl/>\n"
 "Language: sl\n"
@@ -20,7 +19,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || "
 "n%100==4 ? 2 : 3;\n"
-"X-Generator: Weblate 5.14.3\n"
+"X-Generator: Weblate 2026.6.1\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:450
 msgid "Firewall Applet"
@@ -260,15 +259,15 @@ msgstr "Ni aktivnih območij."
 
 #: ../src/firewall-applet.in:1028
 msgid "Connection to FirewallD established."
-msgstr "Vzpostavljena je povezava z ID vdorobrana."
+msgstr "Vzpostavljena je povezava s požarnim zidom (FirewallD)."
 
 #: ../src/firewall-applet.in:1040
 msgid "Connection to FirewallD lost."
-msgstr "Povezava z ID vdorobrana je prekinjena."
+msgstr "Povezava s požarnim zidom (FirewallD) je prekinjena."
 
 #: ../src/firewall-applet.in:1045
 msgid "FirewallD has been reloaded."
-msgstr "ID vdorobrana je bil ponovno naložen."
+msgstr "Požarni zid (FirewallD) je bil ponovno naložen."
 
 #: ../src/firewall-applet.in:1052
 #, c-format
@@ -327,19 +326,19 @@ msgstr "Vzpostavljena je povezava s požarnim zidom."
 
 #: ../src/firewall-config.in:95
 msgid "Trying to connect to firewalld, waiting..."
-msgstr "Poskušam vzpostaviti povezavo s firewalld, čakam ..."
+msgstr "Poteka poskus vzpostavitve povezave s firewalld ..."
 
 #: ../src/firewall-config.in:97
 msgid ""
 "Failed to connect to firewalld. Please make sure that the service has been "
 "started correctly and try again."
 msgstr ""
-"Povezava s firewalld ni uspela. Preverite, da je bila storitev korektno "
-"zagnana in poskusite ponovno."
+"Povezava s firewalld ni uspela. Preverite, da je bila storitev pravilno "
+"zagnana in poskusite znova."
 
 #: ../src/firewall-config.in:100
 msgid "Changes applied."
-msgstr "Uveljavljene spremembe."
+msgstr "Spremembe so uveljavljene."
 
 #: ../src/firewall-config.in:101
 #, c-format
