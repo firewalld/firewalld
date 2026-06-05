@@ -15,13 +15,14 @@
 # Eric Garver <e@erig.me>, 2017. #zanata
 # Robert Antoni Buj Gelonch <rbuj@fedoraproject.org>, 2017. #zanata
 # Robert Antoni Buj Gelonch <rbuj@fedoraproject.org>, 2018. #zanata
+# David Medina <dmedinacpnl@gmail.com>, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-07-08 15:43-0400\n"
-"PO-Revision-Date: 2025-11-13 20:42+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2026-05-09 10:59+0000\n"
+"Last-Translator: David Medina <dmedinacpnl@gmail.com>\n"
 "Language-Team: Catalan <https://translate.fedoraproject.org/projects/"
 "firewalld/master/ca/>\n"
 "Language: ca\n"
@@ -29,7 +30,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.14.3\n"
+"X-Generator: Weblate 5.17.1\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:450
 msgid "Firewall Applet"
@@ -684,9 +685,8 @@ msgid "ipv6"
 msgstr "ipv6"
 
 #: ../src/firewall-config.in:4008
-#, fuzzy
 msgid "invalid element"
-msgstr "El nom no és vàlid"
+msgstr "element no vàlid"
 
 #: ../src/firewall-config.in:5174
 msgid ""
@@ -1455,7 +1455,7 @@ msgid ""
 "example IP addresses, port numbers or MAC addresses. "
 msgstr ""
 "Un IPSet pot utilitzar-se per crear llistes blanques o negres, és capaç "
-"d'emmagatzemar per exemple les adreces IP, els números dels ports o les MAC."
+"d'emmagatzemar per exemple les adreces IP, els números dels ports o les MAC. "
 
 #: ../src/firewall-config.glade.h:148
 msgid "IPSet"
@@ -1834,11 +1834,10 @@ msgid "Please enter a rich rule."
 msgstr "Introduïu una regla d'enriquiment."
 
 #: ../src/firewall-config.glade.h:226
-#, fuzzy
 msgid "For host or network allow or denylisting deactivate the element."
 msgstr ""
-"Per a l'amfitrió o la xarxa en la llista blanca o en la llista negra "
-"desactiva l'element."
+"Per a l'amfitrió o la xarxa, desactiveu l'element a la llista de permissions "
+"o denegacions."
 
 #: ../src/firewall-config.glade.h:227
 msgid "Source:"
