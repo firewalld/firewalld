@@ -1,6 +1,7 @@
 FWD_START_TEST([service include])
 AT_KEYWORDS(service xml gh273 rhbz1720300 gh707 gh1075)
 
+FWD_STOP_FIREWALLD()
 AT_CHECK([cat <<HERE > ./services/my-service-with-include.xml
 <?xml version="1.0" encoding="utf-8"?>
 <service>
@@ -22,7 +23,7 @@ AT_CHECK([cat <<HERE > ./services/recursive-service.xml
 </service>
 HERE
 ])
-FWD_RELOAD
+FWD_START_FIREWALLD()
 
 FWD_CHECK([-q --zone=drop --add-interface=foobar0])
 FWD_CHECK([-q --zone=drop --add-service=my-service-with-include])
@@ -114,6 +115,7 @@ my-service-with-include
 ])])
 
 dnl firewall-offline-cmd
+FWD_STOP_FIREWALLD()
 FWD_OFFLINE_CHECK([--service=my-service-with-include --query-include=recursive-service], 0, [ignore], [ignore])
 FWD_OFFLINE_CHECK([-q --service=my-service-with-include --add-include=ssh])
 FWD_OFFLINE_CHECK([--service=my-service-with-include --query-include=ssh], 0, [ignore], [ignore])
@@ -134,6 +136,7 @@ my-service-with-include
   includes: mdns recursive-service ssdp
   helpers:
 ])])
+FWD_START_FIREWALLD()
 
 dnl negative test for including service that doesn't exist
 FWD_CHECK([--permanent --service=my-service-with-include --add-include=does-not-exist], 101, [ignore], [ignore])
