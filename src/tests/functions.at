@@ -291,6 +291,10 @@ m4_define([FWD_START_TEST], [
 ])
 
 m4_define([FWD_END_TEST], [
+    dnl Give watcher time to detect out-of-band config changes.
+    dnl See commit 133d38fff480 ("test(functions): fail test if out-of-band configuration changes detected")
+    ${at_debug_p} && sleep 10
+
     m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
         if test x"$1" != x"ignore"; then
             AT_FAIL_IF([cat ./firewalld.log | dnl
