@@ -1,4 +1,5 @@
 m4_define([FWD_STOP_FIREWALLD], [
+    m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
     pid=$(cat firewalld.pid)
     kill $pid
     for I in 1 2 3 4 5 6 7 8 9 0; do
@@ -6,9 +7,11 @@ m4_define([FWD_STOP_FIREWALLD], [
         sleep 1
     done
     test $pid -eq 0 || { kill -9 $pid; sleep 3; }
+    ])
 ])
 
 m4_define([FWD_START_FIREWALLD], [
+    m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
     FIREWALLD_ARGS="--nofork --nopid --log-file ./firewalld.log --log-target file --system-config ./"
     dnl if testsuite ran with debug flag, add debug output
     ${at_debug_p} && FIREWALLD_ARGS="--debug=9 ${FIREWALLD_ARGS}"
@@ -36,6 +39,7 @@ m4_define([FWD_START_FIREWALLD], [
         sleep 1
     done
     AT_FAIL_IF([test $up -ne 1])
+    ])
 ])
 
 m4_define([START_NETWORKMANAGER], [
