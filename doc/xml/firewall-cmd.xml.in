@@ -441,6 +441,35 @@
         </listitem>
       </varlistentry>
 
+      <varlistentry id="list-all-rules">
+        <term><option>--list-all-rules</option></term>
+        <listitem>
+          <para>
+            List all active firewall rules in a unified view. This command provides a comprehensive overview of the entire firewall configuration by displaying active zones, active policies, direct rules, and direct passthroughs in a single output.
+          </para>
+          <para>
+            Unlike <option>--list-all-zones</option> which shows all predefined zones, this option only displays zones that are currently active (have interfaces or sources assigned) or are the default zone. Similarly, only active policies are shown, excluding disabled policies.
+          </para>
+          <para>
+            The output is organized into four sections:
+          </para>
+          <itemizedlist>
+            <listitem>
+              <para>ACTIVE ZONES: Currently active zones with their complete configuration including services, ports, masquerading, port forwarding, and rich rules.</para>
+            </listitem>
+            <listitem>
+              <para>ACTIVE POLICIES: Active firewalld policies with ingress/egress zones and rules.</para>
+            </listitem>
+            <listitem>
+              <para>DIRECT RULES: Direct iptables/nftables rules added via the direct interface.</para>
+            </listitem>
+            <listitem>
+              <para>DIRECT PASSTHROUGHS: Direct passthrough rules.</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </varlistentry>
+
       <varlistentry>
         <term><option>--permanent</option> <option>--new-policy</option>=<replaceable>policy</replaceable></term>
         <listitem>

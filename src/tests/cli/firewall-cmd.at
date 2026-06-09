@@ -2235,3 +2235,38 @@ AT_DATA([./ipsets/foobar.xml], [dnl
     AT_CHECK([rm ./zones/foobar.xml])
 
 FWD_END_TEST([ignore])
+
+FWD_START_TEST([list-all-rules])
+    AT_KEYWORDS(zone policy direct list)
+
+    dnl Basic test - command should run without error
+    FWD_CHECK([--list-all-rules], 0, [ignore])
+    
+    dnl Verify output contains expected sections
+    FWD_CHECK([--list-all-rules | grep 'ACTIVE ZONES:'], 0, [ignore])
+    FWD_CHECK([--list-all-rules | grep 'ACTIVE POLICIES:'], 0, [ignore])
+    FWD_CHECK([--list-all-rules | grep 'DIRECT RULES:'], 0, [ignore])
+    FWD_CHECK([--list-all-rules | grep 'DIRECT PASSTHROUGHS:'], 0, [ignore])
+    
+    dnl Verify it shows active zone
+    FWD_CHECK([--get-default-zone], 0, [stdout])
+    default_zone=$(cat stdout | tr -d '\n')
+    FWD_CHECK([--list-all-rules | grep "$default_zone"], 0, [ignore])
+    
+    dnl Add a service to default zone and verify it appears
+    FWD_CHECK([--add-service=ssh], 0, [ignore])
+    FWD_CHECK([--list-all-rules | grep 'services:.*ssh'], 0, [ignore])
+    
+    dnl Add a direct rule and verify it appears
+    FWD_CHECK([--direct --add-rule ipv4 filter INPUT 0 -p tcp --dport 12345 -j ACCEPT], 0, [ignore])
+    FWD_CHECK([--list-all-rules | grep '12345'], 0, [ignore])
+    
+    dnl Add a passthrough and verify it appears
+    FWD_CHECK([--direct --add-passthrough ipv4 -t filter -A INPUT -p tcp --dport 54321 -j DROP], 0, [ignore])
+    FWD_CHECK([--list-all-rules | grep '54321'], 0, [ignore])
+    
+    
+    dnl Verify the command cannot be combined with other options (mutual exclusivity)
+    FWD_CHECK([--list-all-rules --zone=public], 1, ignore, ignore)
+    FWD_CHECK([--list-all-rules --list-all-zones], 1, ignore, ignore)
+FWD_END_TEST
