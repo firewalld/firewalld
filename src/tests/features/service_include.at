@@ -2,7 +2,7 @@ FWD_START_TEST([service include])
 AT_KEYWORDS(service xml gh273 rhbz1720300 gh707 gh1075)
 
 FWD_STOP_FIREWALLD()
-AT_CHECK([cat <<HERE > ./services/my-service-with-include.xml
+AT_DATA([./services/my-service-with-include.xml], [dnl
 <?xml version="1.0" encoding="utf-8"?>
 <service>
   <short>my-service-with-include</short>
@@ -12,16 +12,14 @@ AT_CHECK([cat <<HERE > ./services/my-service-with-include.xml
   <include service="mdns"/>
   <include service="recursive-service"/>
 </service>
-HERE
 ])
-AT_CHECK([cat <<HERE > ./services/recursive-service.xml
+AT_DATA([./services/recursive-service.xml], [dnl
 <?xml version="1.0" encoding="utf-8"?>
 <service>
   <short>recursive-service</short>
   <description>Include a service that included us</description>
   <include service="my-service-with-include"/>
 </service>
-HERE
 ])
 FWD_START_FIREWALLD()
 
