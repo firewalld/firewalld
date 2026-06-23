@@ -13,6 +13,7 @@ import sys
 sys.modules["gobject"] = GObject
 
 import argparse
+import time
 import os
 
 from firewall.client import (
@@ -1522,7 +1523,18 @@ if not (
         state = "State: not running\n\n"
     cmd.fail(state + "No options specified\n" + parser.format_usage()[:-1])
 
+# The firewalld service may start before claiming dbus.
+# Do some retries before giving up.
 if not fw.connected:
+    cmd.print_error_msg("Waiting on dbus connection...")
+for retries in range(10):
+    # CLI doesn't use the glib mainloop, as such we must manually retry the
+    # connection.
+    fw._connection_established()
+    if fw.connected:
+        break
+    time.sleep(1)
+else:
     if a.state:
         cmd.print_and_exit("not running", errors.NOT_RUNNING)
     else:
