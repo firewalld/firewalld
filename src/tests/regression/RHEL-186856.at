@@ -1,0 +1,39 @@
+FWD_START_TEST([dbus - CLI retry connection])
+AT_KEYWORDS([dbus cli RHEL-186856 RHEL-186365])
+
+FWD_STOP_FIREWALLD()
+
+dnl Verify CLI commands wait on the dbus connection.
+m4_define([timeout_check], [dnl
+TIME_BEFORE=$(date +%s)
+FWD_CHECK([$1], [252], [ignore], [dnl
+Waiting on dbus connection...
+$2
+])
+TIME_AFTER=$(date +%s)
+AT_CHECK([expr $(expr ${TIME_BEFORE} + 5) '<' ${TIME_AFTER}], [0], [ignore])
+])
+
+timeout_check([--state], [not running])
+timeout_check([--add-service https], [FirewallD is not running])
+timeout_check([--zone trusted --add-masquerade], [FirewallD is not running])
+timeout_check([--zone trusted --add-port 1234/udp], [FirewallD is not running])
+
+FWD_START_FIREWALLD()
+
+dnl Verify CLI commands return immediately if firewalld is running
+m4_define([no_timeout_check], [dnl
+TIME_BEFORE=$(date +%s)
+FWD_CHECK([$1], [0], [ignore])
+TIME_AFTER=$(date +%s)
+AT_CHECK([expr $(expr ${TIME_BEFORE} + 5) '>' ${TIME_AFTER}], [0], [ignore])
+])
+
+no_timeout_check([--state])
+no_timeout_check([--add-service https])
+no_timeout_check([--zone trusted --add-masquerade])
+no_timeout_check([--zone trusted --add-port 1234/udp])
+
+m4_undefine([timeout_check])
+m4_undefine([no_timeout_check])
+FWD_END_TEST()
