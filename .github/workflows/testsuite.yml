@@ -115,7 +115,12 @@ jobs:
           ./configure --disable-docs
           make -j $(nproc)
 
-      - name: run testsuite
+      - name: run testsuite (no scale tests)
         run: |
-          sudo make -C src/tests check-local TESTSUITEFLAGS="-k ${{ matrix.keyword }} -j$(nproc)" \
+          sudo make -C src/tests check-local TESTSUITEFLAGS="-k ${{ matrix.keyword }},!scale -j$(nproc)" \
+          || sudo make -C src/tests check-local TESTSUITEFLAGS="--recheck --errexit --verbose"
+
+      - name: run testsuite (only scale tests)
+        run: |
+          sudo make -C src/tests check-local TESTSUITEFLAGS="-k ${{ matrix.keyword }},scale" \
           || sudo make -C src/tests check-local TESTSUITEFLAGS="--recheck --errexit --verbose"
