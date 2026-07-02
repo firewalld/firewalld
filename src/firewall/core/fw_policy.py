@@ -133,11 +133,7 @@ class FirewallPolicy:
 
         if enable:
             # build the base chain layout of the policy
-            for table, chain in (
-                self._get_table_chains_for_policy_dispatch(policy)
-                if not obj.derived_from_zone
-                else self._get_table_chains_for_zone_dispatch(policy)
-            ):
+            for table, chain in self._get_table_chains_for_policy_dispatch(policy):
                 self.gen_chain_rules(policy, True, table, chain, transaction)
 
         for key in [
@@ -180,8 +176,7 @@ class FirewallPolicy:
                 elif key == "rules":
                     self.__rule(enable, _policy, args, transaction)
                 elif key == "ingress_zones":
-                    if not obj.derived_from_zone:
-                        self._ingress_zone(enable, _policy, args, transaction)
+                    self._ingress_zone(enable, _policy, args, transaction)
                 elif key == "egress_zones":
                     # key off ingress zones, which also considers egress zones
                     continue
@@ -194,11 +189,7 @@ class FirewallPolicy:
                     )
 
         if not enable:
-            for table, chain in (
-                self._get_table_chains_for_policy_dispatch(policy)
-                if not obj.derived_from_zone
-                else self._get_table_chains_for_zone_dispatch(policy)
-            ):
+            for table, chain in self._get_table_chains_for_policy_dispatch(policy):
                 self.gen_chain_rules(policy, False, table, chain, transaction)
             obj.applied = False
 
@@ -1815,52 +1806,6 @@ class FirewallPolicy:
             rules = backend.build_policy_icmp_block_inversion_rules(enable, policy)
             transaction.add_rules(backend, rules)
 
-    def _ingress_egress_pair(
-        self,
-        enable,
-        policy,
-        ingress_zone,
-        egress_zone,
-        ingress_interface,
-        ingress_source,
-        egress_interface,
-        egress_source,
-        transaction,
-        last=False,
-    ):
-        p_obj = self.get_policy(policy)
-        ipv = None
-        if ingress_source:
-            ipv = self._fw.zone.check_source(ingress_source)
-        elif egress_source:
-            ipv = self._fw.zone.check_source(egress_source)
-
-        for backend in (
-            [self._fw.get_backend_by_ipv(ipv)] if ipv else self._fw.enabled_backends()
-        ):
-            if not backend.policies_supported:
-                continue
-
-            for table, chain in (
-                self._get_table_chains_for_policy_dispatch(policy)
-                if not p_obj.derived_from_zone
-                else self._get_table_chains_for_zone_dispatch(policy)
-            ):
-                rules = backend.build_policy_ingress_egress_pair_rules(
-                    enable,
-                    policy,
-                    table,
-                    chain,
-                    ingress_zone,
-                    egress_zone,
-                    ingress_interface,
-                    ingress_source,
-                    egress_interface,
-                    egress_source,
-                    last=last,
-                )
-                transaction.add_rules(backend, rules)
-
     def _ingress_egress_zone(
         self,
         enable,
@@ -1868,158 +1813,82 @@ class FirewallPolicy:
         ingress_zone,
         egress_zone,
         transaction,
-        ingressInterface=None,
-        ingressSource=None,
-        egressInterface=None,
-        egressSource=None,
     ):
+        p_obj = self.get_policy(policy)
+
         if ingress_zone == "ANY":
-            _ingress_zones = self._fw.zone.get_active_zones()
-
-            # include the zone currently being activated
-            if egress_zone not in ["HOST", "ANY"] and egress_zone not in _ingress_zones:
-                _ingress_zones.append(egress_zone)
-        else:
+            _ingress_zones = self._fw.zone.get_applied_zones()
+        elif ingress_zone == "HOST":
             _ingress_zones = [ingress_zone]
-        if egress_zone == "ANY":
-            _egress_zones = self._fw.zone.get_active_zones()
-
-            # include the zone currently being activated
-            if (
-                ingress_zone not in ["HOST", "ANY"]
-                and ingress_zone not in _egress_zones
-            ):
-                _egress_zones.append(ingress_zone)
+        elif self._fw.zone.get_zone(ingress_zone).applied:
+            _ingress_zones = [ingress_zone]
         else:
+            _ingress_zones = []
+
+        if egress_zone == "ANY":
+            _egress_zones = self._fw.zone.get_applied_zones()
+        elif egress_zone == "HOST":
             _egress_zones = [egress_zone]
+        elif self._fw.zone.get_zone(egress_zone).applied:
+            _egress_zones = [egress_zone]
+        else:
+            _egress_zones = []
 
         for _ingress_zone in _ingress_zones:
-            if _ingress_zone == "HOST":
-                _ingress_interfaces = [""]
-                _ingress_sources = []
-            else:
-                if ingressInterface:
-                    _ingress_interfaces = [ingressInterface]
-                    _ingress_sources = []
-                elif ingressSource:
-                    _ingress_interfaces = []
-                    _ingress_sources = [ingressSource]
-                else:
-                    _ingress_interfaces = list(
-                        self._fw.zone.list_interfaces(_ingress_zone)
-                    )
-                    if (
-                        _ingress_zone == self._fw._default_zone
-                        and "+" not in _ingress_interfaces
-                    ):
-                        _ingress_interfaces.append("+")
-                    _ingress_sources = list(self._fw.zone.list_sources(_ingress_zone))
-                    try:
-                        # In some cases, e.g. (ANY --> zone) the ingress
-                        # interfaces and egress interface may the same, because
-                        # the zone appears in both ingress and egress. So avoid
-                        # adding it twice by skipping it when updating the
-                        # egress side.
-                        _ingress_interfaces.remove(egressInterface)
-                    except:
-                        pass
-                    try:
-                        _ingress_sources.remove(egressSource)
-                    except:
-                        pass
-
             for _egress_zone in _egress_zones:
-                if _egress_zone == "HOST":
-                    _egress_interfaces = [""]
-                    _egress_sources = []
-                else:
-                    if egressInterface:
-                        _egress_interfaces = [egressInterface]
-                        _egress_sources = []
-                    elif egressSource:
-                        _egress_interfaces = []
-                        _egress_sources = [egressSource]
-                    else:
-                        _egress_interfaces = list(
-                            self._fw.zone.list_interfaces(_egress_zone)
-                        )
-                        if (
-                            _egress_zone == self._fw._default_zone
-                            and "+" not in _egress_interfaces
-                        ):
-                            _egress_interfaces.append("+")
-                        _egress_sources = list(self._fw.zone.list_sources(_egress_zone))
+                for backend in self._fw.enabled_backends():
+                    if not backend.policies_supported:
+                        continue
 
-                        # If the currently activating zone is in both ingress
-                        # and egress, then we must include the activating
-                        # interface now as it will not be present in
-                        # zone.list_interfaces().
-                        if _ingress_zone == _egress_zone:
-                            if (
-                                ingressInterface
-                                and ingressInterface not in _egress_interfaces
-                            ):
-                                _egress_interfaces.append(ingressInterface)
-                            if ingressSource and ingressSource not in _egress_sources:
-                                _egress_sources.append(ingressSource)
+                    # For zone derived policies, we'll have two: (zone, "ANY")
+                    # and ("ANY", zone). This results in rule duplication as
+                    # ingress-zone == egress-zone is covered by both of these.
+                    #
+                    # Skip one of them.
+                    if (
+                        p_obj.derived_from_zone
+                        and _ingress_zone == _egress_zone
+                        and ingress_zone == "ANY"
+                    ):
+                        continue
 
-                for _ingress_interface in _ingress_interfaces:
-                    for _egress_interface in _egress_interfaces:
-                        if _ingress_interface == "+" and _egress_interface == "+":
-                            continue
-                        self._ingress_egress_pair(
+                    for table, chain in self._get_table_chains_for_policy_dispatch(
+                        policy
+                    ):
+                        # The backend wants the _target_ policy to jump to.
+                        #
+                        # Zone derived policies have unique conventions due to
+                        # $HISTORY. As such, the policy passed to the backends
+                        # sometimes needs to represent the ingress zone (PREROUTING,
+                        # FORWARD) and sometimes the egress zone (POSTROUTING).
+                        # For example, the policy passed to this function may
+                        # be derived from "internal" zone where
+                        # ingress-zones=ANY and egress-zones=internal. However,
+                        # the backends need to know the _target_ policy.
+                        #
+                        # Regular policies don't have this issue.
+                        #
+                        # See add_zone()
+                        target_policy = policy
+                        if p_obj.derived_from_zone:
+                            if chain in ["FORWARD", "PREROUTING"]:
+                                target_policy = self._fw.zone.policy_name_from_zones(
+                                    _ingress_zone, "ANY"
+                                )
+                            elif chain == "POSTROUTING":
+                                target_policy = self._fw.zone.policy_name_from_zones(
+                                    "ANY", _egress_zone
+                                )
+
+                        rules = backend.build_policy_dispatch_rules(
                             enable,
-                            policy,
                             _ingress_zone,
                             _egress_zone,
-                            _ingress_interface,
-                            "",
-                            _egress_interface,
-                            "",
-                            transaction,
+                            target_policy,
+                            table,
+                            chain,
                         )
-                    for _egress_source in _egress_sources:
-                        self._ingress_egress_pair(
-                            enable,
-                            policy,
-                            _ingress_zone,
-                            _egress_zone,
-                            _ingress_interface,
-                            "",
-                            "",
-                            _egress_source,
-                            transaction,
-                        )
-                for _ingress_source in _ingress_sources:
-                    for _egress_interface in _egress_interfaces:
-                        self._ingress_egress_pair(
-                            enable,
-                            policy,
-                            _ingress_zone,
-                            _egress_zone,
-                            "",
-                            _ingress_source,
-                            _egress_interface,
-                            "",
-                            transaction,
-                        )
-                    for _egress_source in _egress_sources:
-                        # must be same IPv4/IPv6 family!
-                        if self._fw.zone.check_source(
-                            _ingress_source
-                        ) != self._fw.zone.check_source(_egress_source):
-                            continue
-                        self._ingress_egress_pair(
-                            enable,
-                            policy,
-                            _ingress_zone,
-                            _egress_zone,
-                            "",
-                            _ingress_source,
-                            "",
-                            _egress_source,
-                            transaction,
-                        )
+                        transaction.add_rules(backend, rules)
 
     def _ingress_zone(
         self,
@@ -2027,23 +1896,14 @@ class FirewallPolicy:
         policy,
         ingress_zone,
         transaction,
-        ingressInterface=None,
-        ingressSource=None,
     ):
         for egress_zone in self.list_egress_zones(policy):
-            if (
-                egress_zone not in ["HOST", "ANY"]
-                and not self._fw.zone.get_zone(egress_zone).applied
-            ):
-                continue
             self._ingress_egress_zone(
                 enable,
                 policy,
                 ingress_zone,
                 egress_zone,
                 transaction,
-                ingressInterface=ingressInterface,
-                ingressSource=ingressSource,
             )
 
     def _egress_zone(
@@ -2052,37 +1912,20 @@ class FirewallPolicy:
         policy,
         egress_zone,
         transaction,
-        egressInterface=None,
-        egressSource=None,
     ):
         for ingress_zone in self.list_ingress_zones(policy):
-            if (
-                ingress_zone not in ["HOST", "ANY"]
-                and not self._fw.zone.get_zone(ingress_zone).applied
-            ):
-                continue
             self._ingress_egress_zone(
                 enable,
                 policy,
                 ingress_zone,
                 egress_zone,
                 transaction,
-                egressInterface=egressInterface,
-                egressSource=egressSource,
             )
 
     def _get_table_chains_for_policy_dispatch(self, policy):
         """Create a list of (table, chain) needed for policy dispatch"""
         obj = self._policies[policy]
-        if "ANY" in obj.ingress_zones and "HOST" in obj.egress_zones:
-            # any --> HOST
-            tc = [("filter", "INPUT"), ("nat", "PREROUTING"), ("mangle", "PREROUTING")]
-            # iptables backend needs to put conntrack helper rules in raw
-            # prerouting.
-            if not self._fw.nftables_enabled:
-                tc.append(("raw", "PREROUTING"))
-            return tc
-        elif "HOST" in obj.egress_zones:
+        if "HOST" in obj.egress_zones:
             # zone --> HOST
             tc = [("filter", "INPUT"), ("nat", "PREROUTING"), ("mangle", "PREROUTING")]
             # iptables backend needs to put conntrack helper rules in raw
@@ -2093,8 +1936,8 @@ class FirewallPolicy:
         elif "HOST" in obj.ingress_zones:
             # HOST --> zone/any
             return [("filter", "OUTPUT"), ("nat", "OUTPUT")]
-        elif "ANY" in obj.ingress_zones and "ANY" in obj.egress_zones:
-            # any --> any
+        else:
+            # ANY/zone -> ANY/zone
             tc = [
                 ("filter", "FORWARD"),
                 ("nat", "PREROUTING"),
@@ -2106,89 +1949,30 @@ class FirewallPolicy:
             if not self._fw.nftables_enabled:
                 tc.append(("raw", "PREROUTING"))
             return tc
-        elif "ANY" in obj.egress_zones:
-            # zone --> any
+
+    def _get_table_chains_for_zone_dispatch(self, ingress_zone, egress_zone):
+        if "HOST" == ingress_zone:
+            return [("filter", "OUTPUT"), ("nat", "OUTPUT")]
+        elif "HOST" == egress_zone:
+            tc = [("filter", "INPUT"), ("nat", "PREROUTING"), ("mangle", "PREROUTING")]
+            # iptables backend needs to put conntrack helper rules in raw
+            # prerouting.
+            if not self._fw.nftables_enabled:
+                tc.append(("raw", "PREROUTING"))
+            return tc
+        else:  # ANY/zone -> ANY/zone
             tc = [
                 ("filter", "FORWARD"),
                 ("nat", "PREROUTING"),
+                ("nat", "POSTROUTING"),
                 ("mangle", "PREROUTING"),
             ]
             # iptables backend needs to put conntrack helper rules in raw
             # prerouting.
             if not self._fw.nftables_enabled:
                 tc.append(("raw", "PREROUTING"))
-            if self._fw._firewall_backend == "nftables":
-                tc.append(("nat", "POSTROUTING"))
-            else:
-                for zone in obj.ingress_zones:
-                    if self._fw.zone.get_zone(zone).interfaces:
-                        break
-                else:
-                    tc.append(("nat", "POSTROUTING"))
-            return tc
-        elif "ANY" in obj.ingress_zones:
-            # any --> zone
-            tc = [("filter", "FORWARD"), ("nat", "POSTROUTING")]
-            # iptables backend needs to put conntrack helper rules in raw
-            # prerouting.
-            if not self._fw.nftables_enabled:
-                tc.append(("raw", "PREROUTING"))
-            for zone in obj.egress_zones:
-                if self._fw.zone.get_zone(zone).interfaces:
-                    break
-            else:
-                tc.append(("nat", "PREROUTING"))
-                tc.append(("mangle", "PREROUTING"))
-            return tc
-        else:
-            # zone -> zone
-            tc = [("filter", "FORWARD")]
-            # iptables backend needs to put conntrack helper rules in raw
-            # prerouting.
-            if not self._fw.nftables_enabled:
-                tc.append(("raw", "PREROUTING"))
-            if self._fw._firewall_backend == "nftables":
-                tc.append(("nat", "POSTROUTING"))
-            else:
-                for zone in obj.ingress_zones:
-                    if self._fw.zone.get_zone(zone).interfaces:
-                        break
-                else:
-                    tc.append(("nat", "POSTROUTING"))
-            for zone in obj.egress_zones:
-                if self._fw.zone.get_zone(zone).interfaces:
-                    break
-            else:
-                tc.append(("nat", "PREROUTING"))
-                tc.append(("mangle", "PREROUTING"))
-            return tc
 
-    def _get_table_chains_for_zone_dispatch(self, policy):
-        """Create a list of (table, chain) needed for zone dispatch"""
-        obj = self._policies[policy]
-        if "HOST" in obj.egress_zones:
-            # zone --> Host
-            tc = [("filter", "INPUT")]
-            # iptables backend needs to put conntrack helper rules in raw
-            # prerouting.
-            if not self._fw.nftables_enabled:
-                tc.append(("raw", "PREROUTING"))
             return tc
-        elif "HOST" in obj.ingress_zones:
-            # zone derived policies of this type are for tracking only, no zone
-            # features use it
-            return [("filter", "OUTPUT"), ("nat", "OUTPUT")]
-        elif "ANY" in obj.egress_zones:
-            # zone --> any
-            return [
-                ("filter", "FORWARD"),
-                ("nat", "PREROUTING"),
-                ("mangle", "PREROUTING"),
-            ]
-        elif "ANY" in obj.ingress_zones:
-            # any --> zone
-            return [("nat", "POSTROUTING")]
-        raise FirewallError(errors.INVALID_POLICY, "Invalid policy: %s" % (policy))
 
     def policy_base_chain_name(self, policy, table, policy_prefix, isSNAT=False):
         obj = self._fw.policy.get_policy(policy)
