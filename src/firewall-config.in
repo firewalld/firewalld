@@ -83,6 +83,14 @@ class FirewallConfig:
         builder.add_from_file("%s/%s" % (datadir, config.CONFIG_GLADE_NAME))
         builder.connect_signals(self)
 
+        self.settings_theme = Gio.Settings.new("org.gnome.desktop.interface")
+        gtk_settings = Gtk.Settings.get_default()
+        self.settings_theme.connect(
+            "changed::color-scheme", self.on_color_scheme_changed, gtk_settings
+        )
+
+        self.on_color_scheme_changed(self.settings_theme, "color-scheme", gtk_settings)
+
         self.connected_label = _("Connection to firewalld established.")
         self.trying_to_connect_label = _("Trying to connect to firewalld, waiting...")
         self.failed_to_connect_label = _(
@@ -1382,6 +1390,13 @@ class FirewallConfig:
             self.mainloop.run()
         except KeyboardInterrupt:
             self.onQuit()
+
+    def on_color_scheme_changed(self, settings, key, gtk_settings):
+        value = settings.get_string(key)
+        if value == "prefer-dark":
+            gtk_settings.set_property("gtk-application-prefer-dark-theme", True)
+        else:
+            gtk_settings.set_property("gtk-application-prefer-dark-theme", False)
 
     def add_visible_dialog(self, dialog):
         self.visible_dialogs.append(dialog)
