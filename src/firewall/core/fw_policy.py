@@ -92,6 +92,10 @@ class FirewallPolicy:
 
         return active_policies
 
+    def get_applied_policies(self):
+        policies = set(self.get_active_policies_not_derived_from_zone())
+        return list(filter(lambda x: self.get_policy(x).applied, policies))
+
     def get_policy(self, policy):
         p = self._fw.check_policy(policy)
         return self._policies[p]
