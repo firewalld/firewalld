@@ -71,6 +71,10 @@ class FirewallZone:
             active_zones.append(self._fw._default_zone)
         return active_zones
 
+    def get_applied_zones(self):
+        applied_zones = set(self.get_zones() + [self._fw._default_zone])
+        return list(filter(lambda x: self.get_zone(x).applied, applied_zones))
+
     def get_zone_of_interface(self, interface):
         interface_id = self.__interface_id(interface)
         for zone in self._zones:
