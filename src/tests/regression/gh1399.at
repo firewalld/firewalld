@@ -1,0 +1,91 @@
+FWD_START_TEST([zone - dispatch scale (even distribution)], [393216])
+AT_KEYWORDS(scale zone interface source gh1399 RHEL-131070)
+
+dnl Disable for this test because CI do not support table owner. It's very new
+dnl in nftables.
+AT_CHECK([sed -i 's/^NftablesTableOwner=.*/NftablesTableOwner=no/' ./firewalld.conf])
+FWD_RELOAD()
+
+C=0
+for ZONE in block dmz drop external home internal public trusted work; do
+for I in $(seq 20); do
+FWD_CHECK([--permanent --zone ${ZONE} --add-interface ${ZONE}-${I}], 0, [ignore])
+FWD_CHECK([--permanent --zone ${ZONE} --add-source 10.0.${C}.${I}], 0, [ignore])
+IF_HOST_SUPPORTS_IPV6_RULES([
+FWD_CHECK([--permanent --zone ${ZONE} --add-source 1234::${C}:${I}], 0, [ignore])
+])
+done
+C=$(expr ${C} + 1)
+done
+
+dnl Just need to verify that a reload works. Meaning dbus doesn't timeout and
+dnl we don't blow the memory limits set by FWD_START_TEST().
+FWD_RELOAD()
+
+dnl check rule counts to catch any drastic increases
+m4_if(nftables, FIREWALL_BACKEND, [
+NS_CHECK([nft list table inet firewalld | wc -l], 0, [dnl
+28501
+])
+], [ dnl iptables
+NS_CHECK([iptables-save | wc -l], 0, [dnl
+22986
+])
+])
+
+FWD_END_TEST()
+
+FWD_START_TEST([zone - dispatch scale (uneven distribution)], [393216])
+AT_KEYWORDS(scale zone interface source gh1399 RHEL-131070)
+
+dnl Disable for this test because CI do not support table owner. It's very new
+dnl in nftables.
+AT_CHECK([sed -i 's/^NftablesTableOwner=.*/NftablesTableOwner=no/' ./firewalld.conf])
+FWD_RELOAD()
+
+dnl Create roughly the same amount of rules as above.
+dnl Math for num iterations here:
+dnl   (num iterations above) - (3 interfaces/sources below) * (num zones below)
+dnl   20*20*20*9 - 3 * 8
+dnl   180 - 3 * 8
+dnl   = 156
+C=0
+for ZONE in block; do
+for I in $(seq 156); do
+FWD_CHECK([--permanent --zone ${ZONE} --add-interface ${ZONE}-${I}], 0, [ignore])
+FWD_CHECK([--permanent --zone ${ZONE} --add-source 10.0.${C}.${I}], 0, [ignore])
+IF_HOST_SUPPORTS_IPV6_RULES([
+FWD_CHECK([--permanent --zone ${ZONE} --add-source 1234::${C}:${I}], 0, [ignore])
+])
+done
+C=$(expr ${C} + 1)
+done
+
+C=1
+for ZONE in dmz drop external home internal public trusted work; do
+for I in $(seq 1); do
+FWD_CHECK([--permanent --zone ${ZONE} --add-interface ${ZONE}-${I}], 0, [ignore])
+FWD_CHECK([--permanent --zone ${ZONE} --add-source 10.0.${C}.${I}], 0, [ignore])
+IF_HOST_SUPPORTS_IPV6_RULES([
+FWD_CHECK([--permanent --zone ${ZONE} --add-source 1234::${C}:${I}], 0, [ignore])
+])
+done
+C=$(expr ${C} + 1)
+done
+
+dnl Just need to verify that a reload works. Meaning dbus doesn't timeout and
+dnl we don't blow the memory limits set by FWD_START_TEST().
+FWD_RELOAD()
+
+dnl check rule counts to catch any drastic increases
+m4_if(nftables, FIREWALL_BACKEND, [
+NS_CHECK([nft list table inet firewalld | wc -l], 0, [dnl
+26293
+])
+], [ dnl iptables
+NS_CHECK([iptables-save | wc -l], 0, [dnl
+21162
+])
+])
+
+FWD_END_TEST()
