@@ -176,122 +176,222 @@ do_timeout([--add-masquerade],
 dnl for disable we have to check the dispatch
 FWD_CHECK([--policy foobar --timeout 2 --add-disable], 0, [ignore])
 
-NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES], 0, [dnl
+NFT_LIST_RULES([inet], [filter_FWD_public_to_public], 0, [dnl
     table inet firewalld {
-        chain filter_FORWARD_POLICIES {
-            iifname "foobar0" oifname "foobar0" jump filter_FWD_trusted
-            iifname "foobar0" oifname "foobar0" accept
-            iifname "foobar0" jump filter_FWD_trusted
-            iifname "foobar0" accept
-            oifname "foobar0" jump filter_FWD_public
-            oifname "foobar0" reject with icmpx admin-prohibited
+        chain filter_FWD_public_to_public {
             jump filter_FWD_public
             reject with icmpx admin-prohibited
         }
     }
 ])
-IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES], 0, [dnl
-    FWD_trusted 0 -- 0.0.0.0/0 0.0.0.0/0
-    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
-    FWD_trusted 0 -- 0.0.0.0/0 0.0.0.0/0
-    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
+NFT_LIST_RULES([inet], [filter_FWD_public_to_trusted], 0, [dnl
+    table inet firewalld {
+        chain filter_FWD_public_to_trusted {
+            jump filter_FWD_public
+            reject with icmpx admin-prohibited
+        }
+    }
+])
+NFT_LIST_RULES([inet], [filter_FWD_trusted_to_public], 0, [dnl
+    table inet firewalld {
+        chain filter_FWD_trusted_to_public {
+            jump filter_FWD_trusted
+            accept
+        }
+    }
+])
+NFT_LIST_RULES([inet], [filter_FWD_trusted_to_trusted], 0, [dnl
+    table inet firewalld {
+        chain filter_FWD_trusted_to_trusted {
+            jump filter_FWD_trusted
+            accept
+        }
+    }
+])
+IPTABLES_LIST_RULES([filter], [FWD_public_to_public], 0, [dnl
     FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
     REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+])
+IPTABLES_LIST_RULES([filter], [FWD_public_to_trusted], 0, [dnl
     FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
     REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+])
+IPTABLES_LIST_RULES([filter], [FWD_trusted_to_public], 0, [dnl
+    FWD_trusted 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
+])
+IPTABLES_LIST_RULES([filter], [FWD_trusted_to_trusted], 0, [dnl
+    FWD_trusted 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 
 sleep 5
-NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES], 0, [dnl
+NFT_LIST_RULES([inet], [filter_FWD_public_to_public], 0, [dnl
     table inet firewalld {
-        chain filter_FORWARD_POLICIES {
-            iifname "foobar0" oifname "foobar0" jump filter_FWD_policy_foobar
-            iifname "foobar0" oifname "foobar0" jump filter_FWD_trusted
-            iifname "foobar0" oifname "foobar0" accept
-            iifname "foobar0" jump filter_FWD_policy_foobar
-            iifname "foobar0" jump filter_FWD_trusted
-            iifname "foobar0" accept
-            oifname "foobar0" jump filter_FWD_policy_foobar
-            oifname "foobar0" jump filter_FWD_public
-            oifname "foobar0" reject with icmpx admin-prohibited
+        chain filter_FWD_public_to_public {
+            jump filter_FWD_policy_foobar
             jump filter_FWD_public
             reject with icmpx admin-prohibited
         }
     }
 ])
-IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES], 0, [dnl
-    FWD_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
-    FWD_trusted 0 -- 0.0.0.0/0 0.0.0.0/0
-    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
-    FWD_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
-    FWD_trusted 0 -- 0.0.0.0/0 0.0.0.0/0
-    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
+NFT_LIST_RULES([inet], [filter_FWD_public_to_trusted], 0, [dnl
+    table inet firewalld {
+        chain filter_FWD_public_to_trusted {
+            jump filter_FWD_policy_foobar
+            jump filter_FWD_public
+            reject with icmpx admin-prohibited
+        }
+    }
+])
+NFT_LIST_RULES([inet], [filter_FWD_trusted_to_public], 0, [dnl
+    table inet firewalld {
+        chain filter_FWD_trusted_to_public {
+            jump filter_FWD_policy_foobar
+            jump filter_FWD_trusted
+            accept
+        }
+    }
+])
+NFT_LIST_RULES([inet], [filter_FWD_trusted_to_trusted], 0, [dnl
+    table inet firewalld {
+        chain filter_FWD_trusted_to_trusted {
+            jump filter_FWD_policy_foobar
+            jump filter_FWD_trusted
+            accept
+        }
+    }
+])
+IPTABLES_LIST_RULES([filter], [FWD_public_to_public], 0, [dnl
     FWD_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
     FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
     REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+])
+IPTABLES_LIST_RULES([filter], [FWD_public_to_trusted], 0, [dnl
+    FWD_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
     FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
     REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+])
+IPTABLES_LIST_RULES([filter], [FWD_trusted_to_public], 0, [dnl
+    FWD_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_trusted 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
+])
+IPTABLES_LIST_RULES([filter], [FWD_trusted_to_trusted], 0, [dnl
+    FWD_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_trusted 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 
 dnl for ingress-zone and egress-zone we have to check the dispatch
 FWD_CHECK([--policy foobar --remove-ingress-zone ANY], 0, [ignore])
 FWD_CHECK([--policy foobar --timeout 2 --add-ingress-zone ANY], 0, [ignore])
 
-NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES], 0, [dnl
+NFT_LIST_RULES([inet], [filter_FWD_public_to_public], 0, [dnl
     table inet firewalld {
-        chain filter_FORWARD_POLICIES {
-            iifname "foobar0" oifname "foobar0" jump filter_FWD_policy_foobar
-            iifname "foobar0" oifname "foobar0" jump filter_FWD_trusted
-            iifname "foobar0" oifname "foobar0" accept
-            iifname "foobar0" jump filter_FWD_policy_foobar
-            iifname "foobar0" jump filter_FWD_trusted
-            iifname "foobar0" accept
-            oifname "foobar0" jump filter_FWD_policy_foobar
-            oifname "foobar0" jump filter_FWD_public
-            oifname "foobar0" reject with icmpx admin-prohibited
+        chain filter_FWD_public_to_public {
+            jump filter_FWD_policy_foobar
             jump filter_FWD_public
             reject with icmpx admin-prohibited
         }
     }
 ])
-IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES], 0, [dnl
-    FWD_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
-    FWD_trusted 0 -- 0.0.0.0/0 0.0.0.0/0
-    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
-    FWD_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
-    FWD_trusted 0 -- 0.0.0.0/0 0.0.0.0/0
-    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
+NFT_LIST_RULES([inet], [filter_FWD_public_to_trusted], 0, [dnl
+    table inet firewalld {
+        chain filter_FWD_public_to_trusted {
+            jump filter_FWD_policy_foobar
+            jump filter_FWD_public
+            reject with icmpx admin-prohibited
+        }
+    }
+])
+NFT_LIST_RULES([inet], [filter_FWD_trusted_to_public], 0, [dnl
+    table inet firewalld {
+        chain filter_FWD_trusted_to_public {
+            jump filter_FWD_policy_foobar
+            jump filter_FWD_trusted
+            accept
+        }
+    }
+])
+NFT_LIST_RULES([inet], [filter_FWD_trusted_to_trusted], 0, [dnl
+    table inet firewalld {
+        chain filter_FWD_trusted_to_trusted {
+            jump filter_FWD_policy_foobar
+            jump filter_FWD_trusted
+            accept
+        }
+    }
+])
+IPTABLES_LIST_RULES([filter], [FWD_public_to_public], 0, [dnl
     FWD_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
     FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
     REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+])
+IPTABLES_LIST_RULES([filter], [FWD_public_to_trusted], 0, [dnl
+    FWD_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
     FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
     REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+])
+IPTABLES_LIST_RULES([filter], [FWD_trusted_to_public], 0, [dnl
+    FWD_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_trusted 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
+])
+IPTABLES_LIST_RULES([filter], [FWD_trusted_to_trusted], 0, [dnl
+    FWD_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_trusted 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 
 sleep 5
-NFT_LIST_RULES([inet], [filter_FORWARD_POLICIES], 0, [dnl
+NFT_LIST_RULES([inet], [filter_FWD_public_to_public], 0, [dnl
     table inet firewalld {
-        chain filter_FORWARD_POLICIES {
-            iifname "foobar0" oifname "foobar0" jump filter_FWD_trusted
-            iifname "foobar0" oifname "foobar0" accept
-            iifname "foobar0" jump filter_FWD_trusted
-            iifname "foobar0" accept
-            oifname "foobar0" jump filter_FWD_public
-            oifname "foobar0" reject with icmpx admin-prohibited
+        chain filter_FWD_public_to_public {
             jump filter_FWD_public
             reject with icmpx admin-prohibited
         }
     }
 ])
-IPTABLES_LIST_RULES([filter], [FORWARD_POLICIES], 0, [dnl
-    FWD_trusted 0 -- 0.0.0.0/0 0.0.0.0/0
-    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
-    FWD_trusted 0 -- 0.0.0.0/0 0.0.0.0/0
-    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
+NFT_LIST_RULES([inet], [filter_FWD_public_to_trusted], 0, [dnl
+    table inet firewalld {
+        chain filter_FWD_public_to_trusted {
+            jump filter_FWD_public
+            reject with icmpx admin-prohibited
+        }
+    }
+])
+NFT_LIST_RULES([inet], [filter_FWD_trusted_to_public], 0, [dnl
+    table inet firewalld {
+        chain filter_FWD_trusted_to_public {
+            jump filter_FWD_trusted
+            accept
+        }
+    }
+])
+NFT_LIST_RULES([inet], [filter_FWD_trusted_to_trusted], 0, [dnl
+    table inet firewalld {
+        chain filter_FWD_trusted_to_trusted {
+            jump filter_FWD_trusted
+            accept
+        }
+    }
+])
+IPTABLES_LIST_RULES([filter], [FWD_public_to_public], 0, [dnl
     FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
     REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+])
+IPTABLES_LIST_RULES([filter], [FWD_public_to_trusted], 0, [dnl
     FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
     REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+])
+IPTABLES_LIST_RULES([filter], [FWD_trusted_to_public], 0, [dnl
+    FWD_trusted 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
+])
+IPTABLES_LIST_RULES([filter], [FWD_trusted_to_trusted], 0, [dnl
+    FWD_trusted 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 
 m4_undefine([do_timeout])

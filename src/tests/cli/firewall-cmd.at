@@ -141,18 +141,12 @@ FWD_START_TEST([zone interfaces])
     dnl risk.
     FWD_CHECK([--add-interface=foobar+++], 0, ignore)
     FWD_CHECK([--add-interface=foobar+], 0, ignore)
-    NFT_LIST_RULES([inet], [filter_INPUT_POLICIES], 0, [dnl
+    NFT_LIST_RULES([inet], [filter_INPUT_dispatch], 0, [dnl
         table inet firewalld {
-            chain filter_INPUT_POLICIES {
-                iifname "foobar*" jump filter_IN_policy_allow-host-ipv6
-                iifname "foobar*" jump filter_IN_public
-                iifname "foobar*" reject with icmpx admin-prohibited
-                iifname "foobar++*" jump filter_IN_policy_allow-host-ipv6
-                iifname "foobar++*" jump filter_IN_public
-                iifname "foobar++*" reject with icmpx admin-prohibited
-                jump filter_IN_policy_allow-host-ipv6
-                jump filter_IN_public
-                reject with icmpx admin-prohibited
+            chain filter_INPUT_dispatch {
+                iifname "foobar*" jump filter_IN_public_to_HOST
+                iifname "foobar++*" jump filter_IN_public_to_HOST
+                jump filter_IN_public_to_HOST
             }
         }
     ])
@@ -723,15 +717,19 @@ FWD_START_TEST([ipset])
             }
         }
     ])
-    NFT_LIST_RULES([inet], [filter_INPUT_POLICIES], 0, [dnl
+    NFT_LIST_RULES([inet], [filter_INPUT_dispatch], 0, [dnl
         table inet firewalld {
-            chain filter_INPUT_POLICIES {
-                ip saddr . meta l4proto . th sport @foobar jump filter_IN_policy_allow-host-ipv6
-                ip saddr . meta l4proto . th sport @foobar jump filter_IN_internal
-                ip saddr . meta l4proto . th sport @foobar reject with icmpx admin-prohibited
-                jump filter_IN_policy_allow-host-ipv6
-                jump filter_IN_public
-                reject with icmpx admin-prohibited
+            chain filter_INPUT_dispatch {
+                ip saddr . meta l4proto . th sport @foobar jump filter_IN_internal_to_HOST
+                jump filter_IN_public_to_HOST
+            }
+        }
+    ])
+    NFT_LIST_RULES([inet], [filter_OUTPUT_dispatch], 0, [dnl
+        table inet firewalld {
+            chain filter_OUTPUT_dispatch {
+                ip daddr . meta l4proto . th dport @foobar jump filter_OUT_HOST_to_internal
+                jump filter_OUT_HOST_to_public
             }
         }
     ])
@@ -765,15 +763,19 @@ FWD_START_TEST([ipset])
             }
         }
     ])
-    NFT_LIST_RULES([inet], [filter_INPUT_POLICIES], 0, [dnl
+    NFT_LIST_RULES([inet], [filter_INPUT_dispatch], 0, [dnl
         table inet firewalld {
-            chain filter_INPUT_POLICIES {
-                ip saddr . mark @foobar jump filter_IN_policy_allow-host-ipv6
-                ip saddr . mark @foobar jump filter_IN_internal
-                ip saddr . mark @foobar reject with icmpx admin-prohibited
-                jump filter_IN_policy_allow-host-ipv6
-                jump filter_IN_public
-                reject with icmpx admin-prohibited
+            chain filter_INPUT_dispatch {
+                ip saddr . mark @foobar jump filter_IN_internal_to_HOST
+                jump filter_IN_public_to_HOST
+            }
+        }
+    ])
+    NFT_LIST_RULES([inet], [filter_OUTPUT_dispatch], 0, [dnl
+        table inet firewalld {
+            chain filter_OUTPUT_dispatch {
+                ip daddr . mark @foobar jump filter_OUT_HOST_to_internal
+                jump filter_OUT_HOST_to_public
             }
         }
     ])
@@ -836,15 +838,19 @@ FWD_START_TEST([ipset])
             }
         }
     ])
-    NFT_LIST_RULES([inet], [filter_INPUT_POLICIES], 0, [dnl
+    NFT_LIST_RULES([inet], [filter_INPUT_dispatch], 0, [dnl
         table inet firewalld {
-            chain filter_INPUT_POLICIES {
-                ip saddr . iifname @foobar jump filter_IN_policy_allow-host-ipv6
-                ip saddr . iifname @foobar jump filter_IN_internal
-                ip saddr . iifname @foobar reject with icmpx admin-prohibited
-                jump filter_IN_policy_allow-host-ipv6
-                jump filter_IN_public
-                reject with icmpx admin-prohibited
+            chain filter_INPUT_dispatch {
+                ip saddr . iifname @foobar jump filter_IN_internal_to_HOST
+                jump filter_IN_public_to_HOST
+            }
+        }
+    ])
+    NFT_LIST_RULES([inet], [filter_OUTPUT_dispatch], 0, [dnl
+        table inet firewalld {
+            chain filter_OUTPUT_dispatch {
+                ip daddr . oifname @foobar jump filter_OUT_HOST_to_internal
+                jump filter_OUT_HOST_to_public
             }
         }
     ])
@@ -1399,7 +1405,7 @@ FWD_START_TEST([rich rules priority])
         ct status dnat accept
         iifname "lo" accept
         ct state invalid drop
-        jump filter_INPUT_POLICIES
+        jump filter_INPUT_dispatch
         reject with icmpx admin-prohibited
         }
         }

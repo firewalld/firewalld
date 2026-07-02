@@ -3,9 +3,16 @@ FWD_START_TEST([nftables counters])
 AT_KEYWORDS(counters)
 
 dnl check no counters
-NFT_LIST_RULES([inet], [filter_INPUT_POLICIES], 0, [dnl
+NFT_LIST_RULES([inet], [filter_INPUT_dispatch], 0, [dnl
     table inet firewalld {
-        chain filter_INPUT_POLICIES {
+        chain filter_INPUT_dispatch {
+            jump filter_IN_public_to_HOST
+        }
+    }
+])
+NFT_LIST_RULES([inet], [filter_IN_public_to_HOST], 0, [dnl
+    table inet firewalld {
+        chain filter_IN_public_to_HOST {
             jump filter_IN_policy_allow-host-ipv6
             jump filter_IN_public
             reject with icmpx admin-prohibited
@@ -25,9 +32,16 @@ AT_CHECK([sed -i 's/^NftablesCounters=.*/NftablesCounters=yes/' ./firewalld.conf
 FWD_RELOAD()
 
 dnl check counters exist
-NFT_LIST_RULES([inet], [filter_INPUT_POLICIES], 0, [dnl
+NFT_LIST_RULES([inet], [filter_INPUT_dispatch], 0, [dnl
     table inet firewalld {
-        chain filter_INPUT_POLICIES {
+        chain filter_INPUT_dispatch {
+            counter packets 0 bytes 0 jump filter_IN_public_to_HOST
+        }
+    }
+])
+NFT_LIST_RULES([inet], [filter_IN_public_to_HOST], 0, [dnl
+    table inet firewalld {
+        chain filter_IN_public_to_HOST {
             counter packets 0 bytes 0 jump filter_IN_policy_allow-host-ipv6
             counter packets 0 bytes 0 jump filter_IN_public
             counter packets 0 bytes 0 reject with icmpx admin-prohibited

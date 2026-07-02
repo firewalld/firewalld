@@ -38,14 +38,9 @@ NFT_LIST_RULES([inet], [filter_IN_policy_log-denied], 0, [dnl
         }
     }
 ])
-NFT_LIST_RULES([inet], [filter_INPUT_POLICIES], 0, [dnl
+NFT_LIST_RULES([inet], [filter_IN_public_to_HOST], 0, [dnl
     table inet firewalld {
-        chain filter_INPUT_POLICIES {
-            iifname "foobar0" jump filter_IN_policy_allow-host-ipv6
-            iifname "foobar0" jump filter_IN_public
-            iifname "foobar0" jump filter_IN_policy_log-denied
-            iifname "foobar0" log prefix "filter_IN_public_REJECT: "
-            iifname "foobar0" reject with icmpx admin-prohibited
+        chain filter_IN_public_to_HOST {
             jump filter_IN_policy_allow-host-ipv6
             jump filter_IN_public
             jump filter_IN_policy_log-denied
