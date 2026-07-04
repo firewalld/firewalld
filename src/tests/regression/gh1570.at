@@ -1,0 +1,20 @@
+FWD_START_TEST([cli - no arguments])
+AT_KEYWORDS([cli gh1570 RHEL-60902])
+
+FWD_STOP_FIREWALLD()
+
+dnl Verify CLI with no options does not crash if firewalld is not running.
+FWD_CHECK([], [2], [ignore], [dnl
+State: not running
+
+No options specified
+usage: 'firewall-cmd --help' for usage information or see firewall-cmd(1) man page
+])
+
+dnl Verify offline CLI with no options
+FWD_OFFLINE_CHECK([], [2], [ignore], [dnl
+usage: see firewall-offline-cmd man page
+No option specified.
+])
+
+FWD_END_TEST()
