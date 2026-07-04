@@ -1540,7 +1540,7 @@ if not (
     or options_direct
     or options_permanent_only
 ):
-    state = fw.get_property("state")
+    state = fw.get_property("state") if fw.connected else None
     if state == "RUNNING":
         state = "State: running\n\n"
     elif state == "FAILED":
