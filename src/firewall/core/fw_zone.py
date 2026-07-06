@@ -632,6 +632,12 @@ class FirewallZone:
             self.__register_interface(_obj, interface_id, zone, sender)
             transaction.add_fail(self.__unregister_interface, _obj, interface_id)
 
+            # This may have activated some policies, so try to apply them.
+            for policy in self._fw.policy.get_unapplied_policies():
+                self._fw.policy.try_apply_policy_settings(
+                    policy, use_transaction=transaction
+                )
+
         return _zone
 
     def __register_interface(self, _obj, interface_id, zone, sender):
@@ -674,8 +680,16 @@ class FirewallZone:
 
             _obj = self._zones[_zone]
             interface_id = self.__interface_id(interface)
+            applied_policies = self._fw.policy.get_applied_policies()
             transaction.add_post(self.__unregister_interface, _obj, interface_id)
             self._interface(False, _zone, interface, transaction)
+
+            # This may have deactivated some policies, so try to unapply them.
+            def _unapply_policies(policies):
+                for policy in policies:
+                    self._fw.policy.try_unapply_policy_settings(policy)
+
+            transaction.add_post(_unapply_policies, applied_policies)
 
         return _zone
 
@@ -745,6 +759,12 @@ class FirewallZone:
             self.__register_source(_obj, source_id, zone, sender)
             transaction.add_fail(self.__unregister_source, _obj, source_id)
 
+            # This may have activated some policies, so try to apply them.
+            for policy in self._fw.policy.get_unapplied_policies():
+                self._fw.policy.try_apply_policy_settings(
+                    policy, use_transaction=transaction
+                )
+
         return _zone
 
     def __register_source(self, _obj, source_id, zone, sender):
@@ -789,8 +809,16 @@ class FirewallZone:
             _obj = self._zones[_zone]
             ipv = self.check_source(source)
             source_id = self.__source_id(source)
+            applied_policies = self._fw.policy.get_applied_policies()
             transaction.add_post(self.__unregister_source, _obj, source_id)
             self._source(False, _zone, ipv, source_id, transaction)
+
+            # This may have deactivated some policies, so try to unapply them.
+            def _unapply_policies(policies):
+                for policy in policies:
+                    self._fw.policy.try_unapply_policy_settings(policy)
+
+            transaction.add_post(_unapply_policies, applied_policies)
 
         return _zone
 
