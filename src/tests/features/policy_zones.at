@@ -518,3 +518,131 @@ IP6TABLES_LIST_RULES([filter], [FWD_public_to_public], 0, [dnl
 
 FWD_END_TEST([-e '/ERROR: INVALID_ZONE:/d'])
 
+FWD_START_TEST([policy - interface activation])
+AT_KEYWORDS(policy)
+
+FWD_CHECK([--permanent --new-policy=foobar], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-ingress-zone="internal"], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-egress-zone="HOST"], 0, [ignore])
+FWD_RELOAD()
+FWD_CHECK([--zone=internal --add-interface=foobar1], 0, [ignore])
+FWD_CHECK([--get-active-policies], 0, [dnl
+allow-host-ipv6
+  ingress-zones: ANY
+  egress-zones: HOST
+foobar
+  ingress-zones: internal
+  egress-zones: HOST
+])
+NFT_LIST_RULES([inet], [filter_IN_internal_to_HOST], 0, [dnl
+  table inet firewalld {
+    chain filter_IN_internal_to_HOST {
+      jump filter_IN_policy_allow-host-ipv6
+      jump filter_IN_policy_foobar
+      jump filter_IN_internal
+      reject with icmpx admin-prohibited
+    }
+  }
+])
+IPTABLES_LIST_RULES([filter], [IN_internal_to_HOST], 0, [dnl
+    IN_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+    IN_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
+    IN_internal 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+])
+IP6TABLES_LIST_RULES([filter], [IN_internal_to_HOST], 0, [dnl
+    IN_allow-host-ipv6 0 -- ::/0 ::/0
+    IN_foobar 0 -- ::/0 ::/0
+    IN_internal 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+])
+dnl deactive
+FWD_CHECK([--zone=internal --remove-interface=foobar1], 0, [ignore])
+FWD_CHECK([--get-active-policies], 0, [dnl
+allow-host-ipv6
+  ingress-zones: ANY
+  egress-zones: HOST
+])
+NFT_LIST_RULES([inet], [filter_IN_internal_to_HOST], 0, [dnl
+  table inet firewalld {
+    chain filter_IN_internal_to_HOST {
+      jump filter_IN_policy_allow-host-ipv6
+      jump filter_IN_internal
+      reject with icmpx admin-prohibited
+    }
+  }
+])
+IPTABLES_LIST_RULES([filter], [IN_internal_to_HOST], 0, [dnl
+    IN_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
+    IN_internal 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+])
+IP6TABLES_LIST_RULES([filter], [IN_internal_to_HOST], 0, [dnl
+    IN_allow-host-ipv6 0 -- ::/0 ::/0
+    IN_internal 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+])
+
+FWD_END_TEST()
+
+FWD_START_TEST([policy - source activation])
+AT_KEYWORDS(policy)
+
+dnl ingress-zone == ANY
+FWD_CHECK([--permanent --new-policy=foobar], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-ingress-zone="ANY"], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-egress-zone="internal"], 0, [ignore])
+FWD_RELOAD()
+FWD_CHECK([--zone=internal --add-source=10.10.10.0/24], 0, [ignore])
+FWD_CHECK([--get-active-policies], 0, [dnl
+allow-host-ipv6
+  ingress-zones: ANY
+  egress-zones: HOST
+foobar
+  ingress-zones: ANY
+  egress-zones: internal
+])
+NFT_LIST_RULES([inet], [filter_FWD_public_to_internal], 0, [dnl
+    table inet firewalld {
+        chain filter_FWD_public_to_internal {
+            jump filter_FWD_policy_foobar
+            jump filter_FWD_public
+            reject with icmpx admin-prohibited
+        }
+    }
+])
+IPTABLES_LIST_RULES([filter], [FWD_public_to_internal], 0, [dnl
+    FWD_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+])
+IP6TABLES_LIST_RULES([filter], [FWD_public_to_internal], 0, [dnl
+    FWD_foobar 0 -- ::/0 ::/0
+    FWD_public 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+])
+dnl deactivate
+FWD_CHECK([--zone=internal --remove-source=10.10.10.0/24], 0, [ignore])
+FWD_CHECK([--get-active-policies], 0, [dnl
+allow-host-ipv6
+  ingress-zones: ANY
+  egress-zones: HOST
+])
+NFT_LIST_RULES([inet], [filter_FWD_public_to_internal], 0, [dnl
+    table inet firewalld {
+        chain filter_FWD_public_to_internal {
+            jump filter_FWD_public
+            reject with icmpx admin-prohibited
+        }
+    }
+])
+IPTABLES_LIST_RULES([filter], [FWD_public_to_internal], 0, [dnl
+    FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+])
+IP6TABLES_LIST_RULES([filter], [FWD_public_to_internal], 0, [dnl
+    FWD_public 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+])
+
+FWD_END_TEST()
