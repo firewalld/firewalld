@@ -1,0 +1,520 @@
+FWD_START_TEST([policy - zones])
+AT_KEYWORDS(policy)
+
+FWD_CHECK([--permanent --zone=public --add-interface=foobar0], 0, [ignore])
+FWD_CHECK([--permanent --zone=internal --add-interface=foobar1], 0, [ignore])
+
+FWD_CHECK([--permanent --new-policy=foobar], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --set-priority -1], 0, [ignore])
+FWD_RELOAD
+
+dnl only one of HOST/ANY/zones allowed in ingress
+FWD_CHECK([--permanent --policy=foobar --add-ingress-zone="HOST"], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --query-ingress-zone="HOST"], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-ingress-zone="ANY"], 112, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-ingress-zone="public"], 112, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --remove-ingress-zone="HOST"], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-ingress-zone="ANY"], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --query-ingress-zone="ANY"], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-ingress-zone="HOST"], 112, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-ingress-zone="public"], 112, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --remove-ingress-zone="ANY"], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-ingress-zone="public"], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --query-ingress-zone="public"], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-ingress-zone="internal"], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --query-ingress-zone="internal"], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-ingress-zone="ANY"], 112, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-ingress-zone="HOST"], 112, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --query-ingress-zone="ANY"], 1, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --query-ingress-zone="HOST"], 1, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --remove-ingress-zone="public"], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --remove-ingress-zone="internal"], 0, [ignore])
+FWD_CHECK([            --policy=foobar --add-ingress-zone="HOST"], 0, [ignore])
+FWD_CHECK([            --policy=foobar --query-ingress-zone="HOST"], 0, [ignore])
+FWD_CHECK([            --policy=foobar --add-ingress-zone="ANY"], 112, [ignore], [ignore])
+FWD_CHECK([            --policy=foobar --add-ingress-zone="public"], 112, [ignore], [ignore])
+FWD_CHECK([            --policy=foobar --remove-ingress-zone="HOST"], 0, [ignore])
+FWD_CHECK([            --policy=foobar --add-ingress-zone="ANY"], 0, [ignore])
+FWD_CHECK([            --policy=foobar --query-ingress-zone="ANY"], 0, [ignore])
+FWD_CHECK([            --policy=foobar --add-ingress-zone="HOST"], 112, [ignore], [ignore])
+FWD_CHECK([            --policy=foobar --add-ingress-zone="public"], 112, [ignore], [ignore])
+FWD_CHECK([            --policy=foobar --remove-ingress-zone="ANY"], 0, [ignore])
+FWD_CHECK([            --policy=foobar --add-ingress-zone="public"], 0, [ignore])
+FWD_CHECK([            --policy=foobar --query-ingress-zone="public"], 0, [ignore])
+FWD_CHECK([            --policy=foobar --add-ingress-zone="internal"], 0, [ignore])
+FWD_CHECK([            --policy=foobar --query-ingress-zone="internal"], 0, [ignore])
+FWD_CHECK([            --policy=foobar --add-ingress-zone="ANY"], 112, [ignore], [ignore])
+FWD_CHECK([            --policy=foobar --add-ingress-zone="HOST"], 112, [ignore], [ignore])
+FWD_CHECK([            --policy=foobar --query-ingress-zone="ANY"], 1, [ignore], [ignore])
+FWD_CHECK([            --policy=foobar --query-ingress-zone="HOST"], 1, [ignore], [ignore])
+FWD_CHECK([            --policy=foobar --remove-ingress-zone="public"], 0, [ignore])
+FWD_CHECK([            --policy=foobar --remove-ingress-zone="internal"], 0, [ignore])
+
+dnl only one of HOST/ANY/zones allowed in egress
+FWD_CHECK([--permanent --policy=foobar --add-egress-zone="HOST"], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-egress-zone="ANY"], 112, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-egress-zone="public"], 112, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --remove-egress-zone="HOST"], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-egress-zone="ANY"], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-egress-zone="HOST"], 112, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-egress-zone="public"], 112, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --remove-egress-zone="ANY"], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-egress-zone="public"], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-egress-zone="internal"], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-egress-zone="ANY"], 112, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-egress-zone="HOST"], 112, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --remove-egress-zone="public"], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --remove-egress-zone="internal"], 0, [ignore])
+FWD_CHECK([            --policy=foobar --add-egress-zone="HOST"], 0, [ignore])
+FWD_CHECK([            --policy=foobar --add-egress-zone="ANY"], 112, [ignore], [ignore])
+FWD_CHECK([            --policy=foobar --add-egress-zone="public"], 112, [ignore], [ignore])
+FWD_CHECK([            --policy=foobar --remove-egress-zone="HOST"], 0, [ignore])
+FWD_CHECK([            --policy=foobar --add-egress-zone="ANY"], 0, [ignore])
+FWD_CHECK([            --policy=foobar --add-egress-zone="HOST"], 112, [ignore], [ignore])
+FWD_CHECK([            --policy=foobar --add-egress-zone="public"], 112, [ignore], [ignore])
+FWD_CHECK([            --policy=foobar --remove-egress-zone="ANY"], 0, [ignore])
+FWD_CHECK([            --policy=foobar --add-egress-zone="public"], 0, [ignore])
+FWD_CHECK([            --policy=foobar --add-egress-zone="internal"], 0, [ignore])
+FWD_CHECK([            --policy=foobar --add-egress-zone="ANY"], 112, [ignore], [ignore])
+FWD_CHECK([            --policy=foobar --add-egress-zone="HOST"], 112, [ignore], [ignore])
+FWD_CHECK([            --policy=foobar --remove-egress-zone="public"], 0, [ignore])
+FWD_CHECK([            --policy=foobar --remove-egress-zone="internal"], 0, [ignore])
+
+dnl verify ANY to ANY is possible
+FWD_CHECK([--permanent --policy=foobar --add-ingress-zone="ANY"], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-egress-zone="ANY"], 0, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --query-egress-zone="ANY"], 0, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --query-egress-zone="ANY"], 0, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --remove-ingress-zone="ANY"], 0, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --remove-egress-zone="ANY"], 0, [ignore], [ignore])
+FWD_CHECK([            --policy=foobar --add-ingress-zone="ANY"], 0, [ignore])
+FWD_CHECK([            --policy=foobar --add-egress-zone="ANY"], 0, [ignore], [ignore])
+FWD_CHECK([            --policy=foobar --query-egress-zone="ANY"], 0, [ignore], [ignore])
+FWD_CHECK([            --policy=foobar --query-egress-zone="ANY"], 0, [ignore], [ignore])
+FWD_CHECK([            --policy=foobar --remove-ingress-zone="ANY"], 0, [ignore], [ignore])
+FWD_CHECK([            --policy=foobar --remove-egress-zone="ANY"], 0, [ignore], [ignore])
+
+dnl zone's are allowed in both ingress and egress
+FWD_CHECK([--permanent --policy=foobar --add-ingress-zone="public"], 0, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-egress-zone="public"], 0, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --query-egress-zone="public"], 0, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --query-egress-zone="public"], 0, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --remove-ingress-zone="public"], 0, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --remove-egress-zone="public"], 0, [ignore], [ignore])
+FWD_CHECK([            --policy=foobar --add-ingress-zone="public"], 0, [ignore], [ignore])
+FWD_CHECK([            --policy=foobar --add-egress-zone="public"], 0, [ignore], [ignore])
+FWD_CHECK([            --policy=foobar --query-egress-zone="public"], 0, [ignore], [ignore])
+FWD_CHECK([            --policy=foobar --query-egress-zone="public"], 0, [ignore], [ignore])
+FWD_CHECK([            --policy=foobar --remove-ingress-zone="public"], 0, [ignore], [ignore])
+FWD_CHECK([            --policy=foobar --remove-egress-zone="public"], 0, [ignore], [ignore])
+
+dnl negative test HOST to HOST not possible
+FWD_CHECK([--permanent --policy=foobar --add-ingress-zone="HOST"], 0, [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-egress-zone="HOST"], 112, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --remove-ingress-zone="HOST"], 0, [ignore])
+FWD_CHECK([            --policy=foobar --add-ingress-zone="HOST"], 0, [ignore])
+FWD_CHECK([            --policy=foobar --add-egress-zone="HOST"], 112, [ignore], [ignore])
+FWD_CHECK([            --policy=foobar --remove-ingress-zone="HOST"], 0, [ignore])
+
+dnl negative test non existent zones
+FWD_CHECK([--permanent --policy=foobar --add-ingress-zone="does_not_exist"], 112, [ignore], [ignore])
+FWD_CHECK([--permanent --policy=foobar --add-egress-zone="does_not_exist"], 112, [ignore], [ignore])
+FWD_CHECK([            --policy=foobar --add-ingress-zone="does_not_exist"], 112, [ignore], [ignore])
+FWD_CHECK([            --policy=foobar --add-egress-zone="does_not_exist"], 112, [ignore], [ignore])
+
+dnl verify we allow policies with missing ingress and/or egress zones.  This
+dnl allows them to exist, but be un-applied. Useful for shipping "stock"
+dnl policies.
+FWD_CHECK([--permanent --policy=foobar --add-ingress-zone="public"], 0, [ignore])
+FWD_RELOAD
+FWD_CHECK([--get-active-policies], 0, [dnl
+allow-host-ipv6
+  ingress-zones: ANY
+  egress-zones: HOST
+])
+NFT_LIST_RULES([inet], [filter_FORWARD_dispatch], 0, [dnl
+    table inet firewalld {
+        chain filter_FORWARD_dispatch {
+            iifname "foobar1" jump filter_FWD_internal_dispatch_stage2
+            iifname "foobar0" jump filter_FWD_public_dispatch_stage2
+            jump filter_FWD_public_dispatch_stage2
+        }
+    }
+])
+NFT_LIST_RULES([inet], [filter_FWD_internal_dispatch_stage2], 0, [dnl
+    table inet firewalld {
+        chain filter_FWD_internal_dispatch_stage2 {
+            oifname "foobar1" jump filter_FWD_internal_to_internal
+            oifname "foobar0" jump filter_FWD_internal_to_public
+            jump filter_FWD_internal_to_public
+        }
+    }
+])
+NFT_LIST_RULES([inet], [filter_FWD_internal_to_internal], 0, [dnl
+    table inet firewalld {
+        chain filter_FWD_internal_to_internal {
+            jump filter_FWD_internal
+            reject with icmpx admin-prohibited
+        }
+    }
+])
+NFT_LIST_RULES([inet], [filter_FWD_internal_to_public], 0, [dnl
+    table inet firewalld {
+        chain filter_FWD_internal_to_public {
+            jump filter_FWD_internal
+            reject with icmpx admin-prohibited
+        }
+    }
+])
+NFT_LIST_RULES([inet], [filter_FWD_public_dispatch_stage2], 0, [dnl
+    table inet firewalld {
+        chain filter_FWD_public_dispatch_stage2 {
+            oifname "foobar1" jump filter_FWD_public_to_internal
+            oifname "foobar0" jump filter_FWD_public_to_public
+            jump filter_FWD_public_to_public
+        }
+    }
+])
+NFT_LIST_RULES([inet], [filter_FWD_public_to_internal], 0, [dnl
+    table inet firewalld {
+        chain filter_FWD_public_to_internal {
+            jump filter_FWD_public
+            reject with icmpx admin-prohibited
+        }
+    }
+])
+NFT_LIST_RULES([inet], [filter_FWD_public_to_public], 0, [dnl
+    table inet firewalld {
+        chain filter_FWD_public_to_public {
+            jump filter_FWD_public
+            reject with icmpx admin-prohibited
+        }
+    }
+])
+IPTABLES_LIST_RULES([filter], [FORWARD_dispatch], 0, [dnl
+    FWD_internal_dispatch_stage2 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_public_dispatch_stage2 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_public_dispatch_stage2 0 -- 0.0.0.0/0 0.0.0.0/0
+])
+IPTABLES_LIST_RULES([filter], [FWD_internal_dispatch_stage2], 0, [dnl
+    FWD_internal_to_internal 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_internal_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_internal_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
+])
+IPTABLES_LIST_RULES([filter], [FWD_internal_to_internal], 0, [dnl
+    FWD_internal 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+])
+IPTABLES_LIST_RULES([filter], [FWD_internal_to_public], 0, [dnl
+    FWD_internal 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+])
+IPTABLES_LIST_RULES([filter], [FWD_public_dispatch_stage2], 0, [dnl
+    FWD_public_to_internal 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_public_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_public_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
+])
+IPTABLES_LIST_RULES([filter], [FWD_public_to_internal], 0, [dnl
+    FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+])
+IPTABLES_LIST_RULES([filter], [FWD_public_to_public], 0, [dnl
+    FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+])
+IP6TABLES_LIST_RULES([filter], [FORWARD_dispatch], 0, [dnl
+    FWD_internal_dispatch_stage2 0 -- ::/0 ::/0
+    FWD_public_dispatch_stage2 0 -- ::/0 ::/0
+    FWD_public_dispatch_stage2 0 -- ::/0 ::/0
+])
+IP6TABLES_LIST_RULES([filter], [FWD_internal_dispatch_stage2], 0, [dnl
+    FWD_internal_to_internal 0 -- ::/0 ::/0
+    FWD_internal_to_public 0 -- ::/0 ::/0
+    FWD_internal_to_public 0 -- ::/0 ::/0
+])
+IP6TABLES_LIST_RULES([filter], [FWD_internal_to_internal], 0, [dnl
+    FWD_internal 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+])
+IP6TABLES_LIST_RULES([filter], [FWD_internal_to_public], 0, [dnl
+    FWD_internal 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+])
+IP6TABLES_LIST_RULES([filter], [FWD_public_dispatch_stage2], 0, [dnl
+    FWD_public_to_internal 0 -- ::/0 ::/0
+    FWD_public_to_public 0 -- ::/0 ::/0
+    FWD_public_to_public 0 -- ::/0 ::/0
+])
+IP6TABLES_LIST_RULES([filter], [FWD_public_to_internal], 0, [dnl
+    FWD_public 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+])
+IP6TABLES_LIST_RULES([filter], [FWD_public_to_public], 0, [dnl
+    FWD_public 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+])
+FWD_CHECK([--permanent --policy=foobar --add-egress-zone="internal"], 0, [ignore])
+FWD_RELOAD
+FWD_CHECK([--get-active-policies], 0, [dnl
+allow-host-ipv6
+  ingress-zones: ANY
+  egress-zones: HOST
+foobar
+  ingress-zones: public
+  egress-zones: internal
+])
+NFT_LIST_RULES([inet], [filter_FORWARD_dispatch], 0, [dnl
+    table inet firewalld {
+        chain filter_FORWARD_dispatch {
+            iifname "foobar1" jump filter_FWD_internal_dispatch_stage2
+            iifname "foobar0" jump filter_FWD_public_dispatch_stage2
+            jump filter_FWD_public_dispatch_stage2
+        }
+    }
+])
+NFT_LIST_RULES([inet], [filter_FWD_internal_dispatch_stage2], 0, [dnl
+    table inet firewalld {
+        chain filter_FWD_internal_dispatch_stage2 {
+            oifname "foobar1" jump filter_FWD_internal_to_internal
+            oifname "foobar0" jump filter_FWD_internal_to_public
+            jump filter_FWD_internal_to_public
+        }
+    }
+])
+NFT_LIST_RULES([inet], [filter_FWD_internal_to_internal], 0, [dnl
+    table inet firewalld {
+        chain filter_FWD_internal_to_internal {
+            jump filter_FWD_internal
+            reject with icmpx admin-prohibited
+        }
+    }
+])
+NFT_LIST_RULES([inet], [filter_FWD_internal_to_public], 0, [dnl
+    table inet firewalld {
+        chain filter_FWD_internal_to_public {
+            jump filter_FWD_internal
+            reject with icmpx admin-prohibited
+        }
+    }
+])
+NFT_LIST_RULES([inet], [filter_FWD_public_dispatch_stage2], 0, [dnl
+    table inet firewalld {
+        chain filter_FWD_public_dispatch_stage2 {
+            oifname "foobar1" jump filter_FWD_public_to_internal
+            oifname "foobar0" jump filter_FWD_public_to_public
+            jump filter_FWD_public_to_public
+        }
+    }
+])
+NFT_LIST_RULES([inet], [filter_FWD_public_to_internal], 0, [dnl
+    table inet firewalld {
+        chain filter_FWD_public_to_internal {
+            jump filter_FWD_policy_foobar
+            jump filter_FWD_public
+            reject with icmpx admin-prohibited
+        }
+    }
+])
+NFT_LIST_RULES([inet], [filter_FWD_public_to_public], 0, [dnl
+    table inet firewalld {
+        chain filter_FWD_public_to_public {
+            jump filter_FWD_public
+            reject with icmpx admin-prohibited
+        }
+    }
+])
+IPTABLES_LIST_RULES([filter], [FORWARD_dispatch], 0, [dnl
+    FWD_internal_dispatch_stage2 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_public_dispatch_stage2 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_public_dispatch_stage2 0 -- 0.0.0.0/0 0.0.0.0/0
+])
+IPTABLES_LIST_RULES([filter], [FWD_internal_dispatch_stage2], 0, [dnl
+    FWD_internal_to_internal 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_internal_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_internal_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
+])
+IPTABLES_LIST_RULES([filter], [FWD_internal_to_internal], 0, [dnl
+    FWD_internal 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+])
+IPTABLES_LIST_RULES([filter], [FWD_internal_to_public], 0, [dnl
+    FWD_internal 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+])
+IPTABLES_LIST_RULES([filter], [FWD_public_dispatch_stage2], 0, [dnl
+    FWD_public_to_internal 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_public_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_public_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
+])
+IPTABLES_LIST_RULES([filter], [FWD_public_to_internal], 0, [dnl
+    FWD_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+])
+IPTABLES_LIST_RULES([filter], [FWD_public_to_public], 0, [dnl
+    FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+])
+IP6TABLES_LIST_RULES([filter], [FORWARD_dispatch], 0, [dnl
+    FWD_internal_dispatch_stage2 0 -- ::/0 ::/0
+    FWD_public_dispatch_stage2 0 -- ::/0 ::/0
+    FWD_public_dispatch_stage2 0 -- ::/0 ::/0
+])
+IP6TABLES_LIST_RULES([filter], [FWD_internal_dispatch_stage2], 0, [dnl
+    FWD_internal_to_internal 0 -- ::/0 ::/0
+    FWD_internal_to_public 0 -- ::/0 ::/0
+    FWD_internal_to_public 0 -- ::/0 ::/0
+])
+IP6TABLES_LIST_RULES([filter], [FWD_internal_to_internal], 0, [dnl
+    FWD_internal 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+])
+IP6TABLES_LIST_RULES([filter], [FWD_internal_to_public], 0, [dnl
+    FWD_internal 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+])
+IP6TABLES_LIST_RULES([filter], [FWD_public_dispatch_stage2], 0, [dnl
+    FWD_public_to_internal 0 -- ::/0 ::/0
+    FWD_public_to_public 0 -- ::/0 ::/0
+    FWD_public_to_public 0 -- ::/0 ::/0
+])
+IP6TABLES_LIST_RULES([filter], [FWD_public_to_internal], 0, [dnl
+    FWD_foobar 0 -- ::/0 ::/0
+    FWD_public 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+])
+IP6TABLES_LIST_RULES([filter], [FWD_public_to_public], 0, [dnl
+    FWD_public 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+])
+FWD_CHECK([--permanent --policy=foobar --remove-ingress-zone="public"], 0, [ignore])
+FWD_RELOAD
+FWD_CHECK([--get-active-policies], 0, [dnl
+allow-host-ipv6
+  ingress-zones: ANY
+  egress-zones: HOST
+])
+NFT_LIST_RULES([inet], [filter_FORWARD_dispatch], 0, [dnl
+    table inet firewalld {
+        chain filter_FORWARD_dispatch {
+            iifname "foobar1" jump filter_FWD_internal_dispatch_stage2
+            iifname "foobar0" jump filter_FWD_public_dispatch_stage2
+            jump filter_FWD_public_dispatch_stage2
+        }
+    }
+])
+NFT_LIST_RULES([inet], [filter_FWD_internal_dispatch_stage2], 0, [dnl
+    table inet firewalld {
+        chain filter_FWD_internal_dispatch_stage2 {
+            oifname "foobar1" jump filter_FWD_internal_to_internal
+            oifname "foobar0" jump filter_FWD_internal_to_public
+            jump filter_FWD_internal_to_public
+        }
+    }
+])
+NFT_LIST_RULES([inet], [filter_FWD_internal_to_internal], 0, [dnl
+    table inet firewalld {
+        chain filter_FWD_internal_to_internal {
+            jump filter_FWD_internal
+            reject with icmpx admin-prohibited
+        }
+    }
+])
+NFT_LIST_RULES([inet], [filter_FWD_internal_to_public], 0, [dnl
+    table inet firewalld {
+        chain filter_FWD_internal_to_public {
+            jump filter_FWD_internal
+            reject with icmpx admin-prohibited
+        }
+    }
+])
+NFT_LIST_RULES([inet], [filter_FWD_public_dispatch_stage2], 0, [dnl
+    table inet firewalld {
+        chain filter_FWD_public_dispatch_stage2 {
+            oifname "foobar1" jump filter_FWD_public_to_internal
+            oifname "foobar0" jump filter_FWD_public_to_public
+            jump filter_FWD_public_to_public
+        }
+    }
+])
+NFT_LIST_RULES([inet], [filter_FWD_public_to_internal], 0, [dnl
+    table inet firewalld {
+        chain filter_FWD_public_to_internal {
+            jump filter_FWD_public
+            reject with icmpx admin-prohibited
+        }
+    }
+])
+NFT_LIST_RULES([inet], [filter_FWD_public_to_public], 0, [dnl
+    table inet firewalld {
+        chain filter_FWD_public_to_public {
+            jump filter_FWD_public
+            reject with icmpx admin-prohibited
+        }
+    }
+])
+IPTABLES_LIST_RULES([filter], [FORWARD_dispatch], 0, [dnl
+    FWD_internal_dispatch_stage2 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_public_dispatch_stage2 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_public_dispatch_stage2 0 -- 0.0.0.0/0 0.0.0.0/0
+])
+IPTABLES_LIST_RULES([filter], [FWD_internal_dispatch_stage2], 0, [dnl
+    FWD_internal_to_internal 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_internal_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_internal_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
+])
+IPTABLES_LIST_RULES([filter], [FWD_internal_to_internal], 0, [dnl
+    FWD_internal 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+])
+IPTABLES_LIST_RULES([filter], [FWD_internal_to_public], 0, [dnl
+    FWD_internal 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+])
+IPTABLES_LIST_RULES([filter], [FWD_public_dispatch_stage2], 0, [dnl
+    FWD_public_to_internal 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_public_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    FWD_public_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
+])
+IPTABLES_LIST_RULES([filter], [FWD_public_to_internal], 0, [dnl
+    FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+])
+IPTABLES_LIST_RULES([filter], [FWD_public_to_public], 0, [dnl
+    FWD_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    REJECT 0 -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-port-unreachable
+])
+IP6TABLES_LIST_RULES([filter], [FORWARD_dispatch], 0, [dnl
+    FWD_internal_dispatch_stage2 0 -- ::/0 ::/0
+    FWD_public_dispatch_stage2 0 -- ::/0 ::/0
+    FWD_public_dispatch_stage2 0 -- ::/0 ::/0
+])
+IP6TABLES_LIST_RULES([filter], [FWD_internal_dispatch_stage2], 0, [dnl
+    FWD_internal_to_internal 0 -- ::/0 ::/0
+    FWD_internal_to_public 0 -- ::/0 ::/0
+    FWD_internal_to_public 0 -- ::/0 ::/0
+])
+IP6TABLES_LIST_RULES([filter], [FWD_internal_to_internal], 0, [dnl
+    FWD_internal 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+])
+IP6TABLES_LIST_RULES([filter], [FWD_internal_to_public], 0, [dnl
+    FWD_internal 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+])
+IP6TABLES_LIST_RULES([filter], [FWD_public_dispatch_stage2], 0, [dnl
+    FWD_public_to_internal 0 -- ::/0 ::/0
+    FWD_public_to_public 0 -- ::/0 ::/0
+    FWD_public_to_public 0 -- ::/0 ::/0
+])
+IP6TABLES_LIST_RULES([filter], [FWD_public_to_internal], 0, [dnl
+    FWD_public 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+])
+IP6TABLES_LIST_RULES([filter], [FWD_public_to_public], 0, [dnl
+    FWD_public 0 -- ::/0 ::/0
+    REJECT 0 -- ::/0 ::/0 reject-with icmp6-port-unreachable
+])
+
+FWD_END_TEST([-e '/ERROR: INVALID_ZONE:/d'])
+
