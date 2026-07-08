@@ -57,6 +57,8 @@ jobs:
             echo "This is a feature release. It also includes all bug fixes since v${1}.$(expr ${2} - 1).0."
             echo
             git shortlog --format="%s (%h)" --no-merges --grep "^feat" v${1}.$(expr ${2} - 1).0..HEAD
+            echo
+            git shortlog --format="%s (%h)" --no-merges --grep "^\(fix\|doc\)" v${1}.$(expr ${2} - 1).0..HEAD
           else
             echo "This is a bug fix only release."
             echo
