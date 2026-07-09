@@ -852,7 +852,7 @@ class Firewall:
             name = "%s/%s" % (path, filename)
             log.debug1("Loading zone file '%s'", name)
 
-            obj = zone_reader(filename, path, no_check_name=combine)
+            obj = zone_reader(filename, path, check_name_len=not combine)
             if combine:
                 # Change name for permanent configuration
                 obj.name = "%s/%s" % (
