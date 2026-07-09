@@ -249,7 +249,7 @@ class Zone(IO_Object):
                     f"Must be in range [{self.priority_min}, {self.priority_max}].",
                 )
 
-    def check_name(self, name):
+    def check_name(self, name, check_name_len=True):
         super(Zone, self).check_name(name)
         if name.startswith("/"):
             raise FirewallError(
@@ -264,7 +264,7 @@ class Zone(IO_Object):
                 errors.INVALID_NAME,
                 "Zone '{}': name has more than one '/'".format(name),
             )
-        else:
+        elif check_name_len:
             if "/" in name:
                 checked_name = name[: name.find("/")]
             else:
@@ -433,15 +433,14 @@ class zone_ContentHandler(IO_Object_ContentHandler):
         common_endElement(self, name)
 
 
-def zone_reader(filename, path, no_check_name=False):
+def zone_reader(filename, path, check_name_len=True):
     zone = Zone()
     if not filename.endswith(".xml"):
         raise FirewallError(
             errors.INVALID_NAME, "'%s' is missing .xml suffix" % filename
         )
     zone.name = filename[:-4]
-    if not no_check_name:
-        zone.check_name(zone.name)
+    zone.check_name(zone.name, check_name_len=check_name_len)
     zone.filename = filename
     zone.path = path
     zone.builtin = False if path.startswith(config.ETC_FIREWALLD) else True
