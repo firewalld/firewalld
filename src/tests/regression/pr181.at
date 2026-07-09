@@ -12,7 +12,7 @@ AT_DATA([./zones/foobar/a_really_long_name_that_trigger_the_bug.xml], [dnl
 </zone>
 ])
 
-AT_DATA([./zones/foobar/another_really_long_name_that_trigger_the_bug.xml], [dnl
+AT_DATA([./zones/foobar/another_really_long_name_that_trigger_the_bug_it_is_so_long_that_it_should_trigger_with_our_new_extendend_zone_and_policy_limits_blah_blah_blah_blah_blah_blah_blah_blah_blah_blah_blah_blah_blah.xml], [dnl
 <?xml version="1.0" encoding="utf-8"?>
 <zone>
 <short>foobar</short>
