@@ -1210,15 +1210,14 @@ class policy_ContentHandler(IO_Object_ContentHandler):
         common_endElement(self, name)
 
 
-def policy_reader(filename, path, no_check_name=False):
+def policy_reader(filename, path):
     policy = Policy()
     if not filename.endswith(".xml"):
         raise FirewallError(
             errors.INVALID_NAME, "'%s' is missing .xml suffix" % filename
         )
     policy.name = filename[:-4]
-    if not no_check_name:
-        policy.check_name(policy.name)
+    policy.check_name(policy.name)
     policy.filename = filename
     policy.path = path
     policy.builtin = False if path.startswith(config.ETC_FIREWALLD) else True
