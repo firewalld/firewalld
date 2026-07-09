@@ -3,19 +3,23 @@ AT_KEYWORDS(zone gh181)
 
 AT_CHECK([mkdir -p ./zones/foobar])
 
-AT_CHECK([echo '<?xml version="1.0" encoding="utf-8"?>' > ./zones/foobar/a_really_long_name_that_trigger_the_bug.xml])
-AT_CHECK([echo '<zone>' >> ./zones/foobar/a_really_long_name_that_trigger_the_bug.xml])
-AT_CHECK([echo '<short>foobar</short>' >> ./zones/foobar/a_really_long_name_that_trigger_the_bug.xml])
-AT_CHECK([echo '<description>foobar desc</description>' >> ./zones/foobar/a_really_long_name_that_trigger_the_bug.xml])
-AT_CHECK([echo '<service name="ssh"/>' >> ./zones/foobar/a_really_long_name_that_trigger_the_bug.xml])
-AT_CHECK([echo '</zone>' >> ./zones/foobar/a_really_long_name_that_trigger_the_bug.xml])
+AT_DATA([./zones/foobar/a_really_long_name_that_trigger_the_bug.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+<short>foobar</short>
+<description>foobar desc</description>
+<service name="ssh"/>
+</zone>
+])
 
-AT_CHECK([echo '<?xml version="1.0" encoding="utf-8"?>' > ./zones/foobar/another_really_long_name_that_trigger_the_bug.xml])
-AT_CHECK([echo '<zone>' >> ./zones/foobar/another_really_long_name_that_trigger_the_bug.xml])
-AT_CHECK([echo '<short>foobar</short>' >> ./zones/foobar/another_really_long_name_that_trigger_the_bug.xml])
-AT_CHECK([echo '<description>foobar desc</description>' >> ./zones/foobar/another_really_long_name_that_trigger_the_bug.xml])
-AT_CHECK([echo '<service name="http"/>' >> ./zones/foobar/another_really_long_name_that_trigger_the_bug.xml])
-AT_CHECK([echo '</zone>' >> ./zones/foobar/another_really_long_name_that_trigger_the_bug.xml])
+AT_DATA([./zones/foobar/another_really_long_name_that_trigger_the_bug.xml], [dnl
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+<short>foobar</short>
+<description>foobar desc</description>
+<service name="http"/>
+</zone>
+])
 
 FWD_RELOAD
 FWD_CHECK([--zone=foobar --list-all | TRIM | grep ^services], 0, [dnl
