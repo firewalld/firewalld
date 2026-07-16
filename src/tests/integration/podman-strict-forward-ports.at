@@ -70,6 +70,10 @@ common_init()
 AT_CHECK([sed -i 's/^StrictForwardPorts.*/StrictForwardPorts=yes/' ./firewalld.conf])
 FWD_RELOAD()
 
+dnl If podman is using the netavark backend, then it will refuse to start
+dnl with --publish and firewalld StrictForwardPorts=yes.
+AT_SKIP_IF([test $(basename ${PODMAN}) = "podman" && ! ${PODMAN} run --rm --publish 10.10.10.1:55080:80 quay.io/centos/centos:stream9 ls])
+
 dnl start a container with --publish
 AT_CHECK([$PODMAN run --rm --detach --publish 10.10.10.1:55080:80 quay.io/centos/centos:stream9 sh -c "dnl
 echo hello world > index.html && dnl
