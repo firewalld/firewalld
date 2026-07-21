@@ -581,7 +581,7 @@
 	<!-- list/add/remove/query service -->
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--permanent</option></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--list-services</option></term>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--list-services</option></term>
 	  <listitem>
 	    <para>
 	      List services added as a space separated list.
@@ -590,7 +590,7 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--permanent</option></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--add-service</option>=<replaceable>service</replaceable> <optional><option>--timeout</option>=<replaceable>timeval</replaceable></optional></term>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--add-service</option>=<replaceable>service</replaceable> <optional><option>--timeout</option>=<replaceable>timeval</replaceable></optional></term>
 	  <listitem>
 	    <para>
 	      Add a service. This option can be specified multiple times. If a timeout is supplied, the rule will be active for the specified amount of time and will be removed automatically afterwards.
@@ -623,7 +623,7 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--permanent</option></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--remove-service</option>=<replaceable>service</replaceable></term>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--remove-service</option>=<replaceable>service</replaceable></term>
 	  <listitem>
 	    <para>
 	      Remove a service. This option can be specified multiple times.
@@ -632,7 +632,7 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--permanent</option></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--query-service</option>=<replaceable>service</replaceable></term>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--query-service</option>=<replaceable>service</replaceable></term>
 	  <listitem>
 	    <para>
 	      Return whether <replaceable>service</replaceable> has been added. Returns 0 if true, 1 otherwise.
@@ -643,7 +643,7 @@
 	<!-- list/add/remove/query port -->
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--permanent</option></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--list-ports</option></term>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--list-ports</option></term>
 	  <listitem>
 	    <para>
 	      List ports added as a space separated list. A port is of the form <replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable>, it can be either a port and protocol pair or a port range with a protocol.
@@ -652,7 +652,7 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--permanent</option></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--add-port</option>=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable> <optional><option>--timeout</option>=<replaceable>timeval</replaceable></optional></term>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--add-port</option>=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable> <optional><option>--timeout</option>=<replaceable>timeval</replaceable></optional></term>
 	  <listitem>
 	    <para>
 	      Add the port. This option can be specified multiple times. If a timeout is supplied, the rule will be active for the specified amount of time and will be removed automatically afterwards.
@@ -668,7 +668,7 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--permanent</option></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--remove-port</option>=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable></term>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--remove-port</option>=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable></term>
 	  <listitem>
 	    <para>
 	      Remove the port. This option can be specified multiple times.
@@ -677,7 +677,7 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--permanent</option></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--query-port</option>=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable></term>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--query-port</option>=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable></term>
 	  <listitem>
 	    <para>
 	      Return whether the port has been added. Returns 0 if true, 1 otherwise.
@@ -688,7 +688,7 @@
 	<!-- list/add/remove/query protocol -->
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--permanent</option></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--list-protocols</option></term>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--list-protocols</option></term>
 	  <listitem>
 	    <para>
 	      List protocols added as a space separated list.
@@ -697,7 +697,7 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--permanent</option></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--add-protocol</option>=<replaceable>protocol</replaceable> <optional><option>--timeout</option>=<replaceable>timeval</replaceable></optional></term>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--add-protocol</option>=<replaceable>protocol</replaceable> <optional><option>--timeout</option>=<replaceable>timeval</replaceable></optional></term>
 	  <listitem>
 	    <para>
 	      Add the protocol. This option can be specified multiple times. If a timeout is supplied, the rule will be active for the specified amount of time and will be removed automatically afterwards.
@@ -713,7 +713,7 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--permanent</option></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--remove-protocol</option>=<replaceable>protocol</replaceable></term>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--remove-protocol</option>=<replaceable>protocol</replaceable></term>
 	  <listitem>
 	    <para>
 	      Remove the protocol. This option can be specified multiple times.
@@ -722,7 +722,7 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--permanent</option></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--query-protocol</option>=<replaceable>protocol</replaceable></term>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--query-protocol</option>=<replaceable>protocol</replaceable></term>
 	  <listitem>
 	    <para>
 	      Return whether the protocol has been added. Returns 0 if true, 1 otherwise.
@@ -733,7 +733,7 @@
 	<!-- list/add/remove/query source port -->
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--permanent</option></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--list-source-ports</option></term>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--list-source-ports</option></term>
 	  <listitem>
 	    <para>
 	      List source ports added as a space separated list. A port is of the form <replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable>.
@@ -742,7 +742,7 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--permanent</option></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--add-source-port</option>=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable> <optional><option>--timeout</option>=<replaceable>timeval</replaceable></optional></term>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--add-source-port</option>=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable> <optional><option>--timeout</option>=<replaceable>timeval</replaceable></optional></term>
 	  <listitem>
 	    <para>
 	      Add the source port. This option can be specified multiple times. If a timeout is supplied, the rule will be active for the specified amount of time and will be removed automatically afterwards.
@@ -758,7 +758,7 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--permanent</option></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--remove-source-port</option>=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable></term>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--remove-source-port</option>=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable></term>
 	  <listitem>
 	    <para>
 	      Remove the source port. This option can be specified multiple times.
@@ -767,7 +767,7 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--permanent</option></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--query-source-port</option>=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable></term>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--query-source-port</option>=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable></term>
 	  <listitem>
 	    <para>
 	      Return whether the source port has been added. Returns 0 if true, 1 otherwise.
@@ -778,7 +778,7 @@
 	<!-- list/add/remove/query icmp-block -->
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--permanent</option></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--list-icmp-blocks</option></term>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--list-icmp-blocks</option></term>
 	  <listitem>
 	    <para>
 	      List Internet Control Message Protocol (ICMP) type blocks added as a space separated list.
@@ -787,7 +787,7 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--permanent</option></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--add-icmp-block</option>=<replaceable>icmptype</replaceable> <optional><option>--timeout</option>=<replaceable>timeval</replaceable></optional></term>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--add-icmp-block</option>=<replaceable>icmptype</replaceable> <optional><option>--timeout</option>=<replaceable>timeval</replaceable></optional></term>
 	  <listitem>
 	    <para>
 	      Add an ICMP block for <replaceable>icmptype</replaceable>. This option can be specified multiple times. If a timeout is supplied, the rule will be active for the specified amount of time and will be removed automatically afterwards.
@@ -803,7 +803,7 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--permanent</option></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--remove-icmp-block</option>=<replaceable>icmptype</replaceable></term>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--remove-icmp-block</option>=<replaceable>icmptype</replaceable></term>
 	  <listitem>
 	    <para>
 	      Remove the ICMP block for <replaceable>icmptype</replaceable>. This option can be specified multiple times.
@@ -812,7 +812,7 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--permanent</option></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--query-icmp-block</option>=<replaceable>icmptype</replaceable></term>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--query-icmp-block</option>=<replaceable>icmptype</replaceable></term>
 	  <listitem>
 	    <para>
 	      Return whether an ICMP block for <replaceable>icmptype</replaceable> has been added. Returns 0 if true, 1 otherwise.
@@ -823,7 +823,7 @@
 	<!-- list/add/remove/query forward-port -->
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--permanent</option></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--list-forward-ports</option></term>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--list-forward-ports</option></term>
 	  <listitem>
 	    <para>
 	      List <emphasis>IPv4</emphasis> forward ports added as a space separated list.
@@ -835,7 +835,7 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--permanent</option></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--add-forward-port</option>=port=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>:proto=<replaceable>protocol</replaceable><optional>:toport=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional></optional><optional>:toaddr=<replaceable>address</replaceable><optional>/<replaceable>mask</replaceable></optional></optional> <optional><option>--timeout</option>=<replaceable>timeval</replaceable></optional></term>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--add-forward-port</option>=port=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>:proto=<replaceable>protocol</replaceable><optional>:toport=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional></optional><optional>:toaddr=<replaceable>address</replaceable><optional>/<replaceable>mask</replaceable></optional></optional> <optional><option>--timeout</option>=<replaceable>timeval</replaceable></optional></term>
 	  <listitem>
 	    <para>
 	      Add the <emphasis>IPv4</emphasis> forward port. This option can be specified multiple times. If a timeout is supplied, the rule will be active for the specified amount of time and will be removed automatically afterwards.
@@ -857,7 +857,7 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--permanent</option></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--remove-forward-port</option>=port=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>:proto=<replaceable>protocol</replaceable><optional>:toport=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional></optional><optional>:toaddr=<replaceable>address</replaceable><optional>/<replaceable>mask</replaceable></optional></optional></term>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--remove-forward-port</option>=port=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>:proto=<replaceable>protocol</replaceable><optional>:toport=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional></optional><optional>:toaddr=<replaceable>address</replaceable><optional>/<replaceable>mask</replaceable></optional></optional></term>
 	  <listitem>
 	    <para>
 	      Remove the <emphasis>IPv4</emphasis> forward port. This option can be specified multiple times.
@@ -869,7 +869,7 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--permanent</option></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--query-forward-port</option>=port=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>:proto=<replaceable>protocol</replaceable><optional>:toport=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional></optional><optional>:toaddr=<replaceable>address</replaceable><optional>/<replaceable>mask</replaceable></optional></optional></term>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--query-forward-port</option>=port=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>:proto=<replaceable>protocol</replaceable><optional>:toport=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional></optional><optional>:toaddr=<replaceable>address</replaceable><optional>/<replaceable>mask</replaceable></optional></optional></term>
 	  <listitem>
 	    <para>
 	      Return whether the <emphasis>IPv4</emphasis> forward port has been added. Returns 0 if true, 1 otherwise.
@@ -883,7 +883,7 @@
 	<!-- add/remove/query masquerade -->
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--permanent</option></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--add-masquerade</option> <optional><option>--timeout</option>=<replaceable>timeval</replaceable></optional></term>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--add-masquerade</option> <optional><option>--timeout</option>=<replaceable>timeval</replaceable></optional></term>
 	  <listitem>
 	    <para>
 	      Enable <emphasis>IPv4</emphasis> masquerade. If a timeout is supplied, masquerading will be active for the specified amount of time.
@@ -910,7 +910,7 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--permanent</option></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--remove-masquerade</option></term>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--remove-masquerade</option></term>
 	  <listitem>
 	    <para>
 	      Disable <emphasis>IPv4</emphasis> masquerade. If the masquerading was enabled with a timeout, it will be disabled also.
@@ -922,7 +922,7 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--permanent</option></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--query-masquerade</option></term>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--query-masquerade</option></term>
 	  <listitem>
 	    <para>
 	      Return whether <emphasis>IPv4</emphasis> masquerading has been enabled. Returns 0 if true, 1 otherwise.
@@ -936,7 +936,7 @@
 	<!-- list/add/remove/query rich rule -->
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--permanent</option></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--list-rich-rules</option></term>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--list-rich-rules</option></term>
 	  <listitem>
 	    <para>
 	      List rich language rules added as a newline separated list.
@@ -945,7 +945,7 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--permanent</option></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--add-rich-rule</option>='<replaceable>rule</replaceable>' <optional><option>--timeout</option>=<replaceable>timeval</replaceable></optional></term>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--add-rich-rule</option>='<replaceable>rule</replaceable>' <optional><option>--timeout</option>=<replaceable>timeval</replaceable></optional></term>
 	  <listitem>
 	    <para>
 	      Add rich language rule '<replaceable>rule</replaceable>'. This option can be specified multiple times. If a timeout is supplied, the <replaceable>rule</replaceable> will be active for the specified amount of time and will be removed automatically afterwards.
@@ -961,7 +961,7 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--permanent</option></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--remove-rich-rule</option>='<replaceable>rule</replaceable>'</term>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--remove-rich-rule</option>='<replaceable>rule</replaceable>'</term>
 	  <listitem>
 	    <para>
 	      Remove rich language rule '<replaceable>rule</replaceable>'. This option can be specified multiple times.
@@ -973,7 +973,7 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--permanent</option></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--query-rich-rule</option>='<replaceable>rule</replaceable>'</term>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--query-rich-rule</option>='<replaceable>rule</replaceable>'</term>
 	  <listitem>
 	    <para>
 	      Return whether a rich language rule '<replaceable>rule</replaceable>' has been added. Returns 0 if true, 1 otherwise.
