@@ -1,9 +1,6 @@
 AC_PREREQ([2.68])
 
-m4_define([PKG_NAME], firewalld)
-m4_define([PKG_VERSION], m4_bpatsubst(m4_esyscmd([grep "Version:" firewalld.spec]), [Version:\W\([0-9.]*\)\W], [\1]))
-
-AC_INIT([PKG_NAME],[PKG_VERSION])
+AC_INIT([firewalld], m4_bpatsubst(m4_esyscmd([grep "Version:" firewalld.spec]), [Version:\W\([0-9.]*\)\W], [\1]))
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_SRCDIR([src/firewalld.in])
 AC_PREFIX_DEFAULT([/usr])
@@ -140,7 +137,7 @@ AC_ARG_VAR([DEFAULT_LOG_TARGET], m4_flatten([
 
 #############################################################
 
-AC_SUBST([GETTEXT_PACKAGE], '[PKG_NAME]')
+AC_SUBST([GETTEXT_PACKAGE], [PACKAGE_NAME])
 AC_DEFINE_UNQUOTED([GETTEXT_PACKAGE], ["$GETTEXT_PACKAGE"],)
 
 IT_PROG_INTLTOOL([0.35.0], [no-xml])
