@@ -1,0 +1,23 @@
+FWD_START_TEST([empty ipset --get-entries no extra line])
+AT_KEYWORDS([ipset gh1585])
+
+FWD_CHECK([--permanent --new-ipset foobar --type hash:net], 0, [ignore])
+FWD_RELOAD()
+
+dnl empty
+FWD_CHECK([--ipset foobar --get-entries], 0, [dnl
+])
+FWD_CHECK([--ipset foobar --get-entries], 0, [stdout])
+FWD_CHECK([--ipset foobar --remove-entries-from-file stdout], 0, [ignore])
+
+dnl not empty
+FWD_CHECK([--ipset foobar --add-entry 10.10.10.0/24], 0, [ignore])
+FWD_CHECK([--ipset foobar --get-entries], 0, [dnl
+10.10.10.0/24
+])
+FWD_CHECK([--ipset foobar --get-entries], 0, [stdout])
+FWD_CHECK([--ipset foobar --remove-entries-from-file stdout], 0, [ignore])
+FWD_CHECK([--ipset foobar --get-entries], 0, [dnl
+])
+
+FWD_END_TEST()
