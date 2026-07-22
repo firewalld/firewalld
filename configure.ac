@@ -1,5 +1,3 @@
-# Process this file with autoconf to produce a configure script.
-
 AC_PREREQ([2.68])
 
 m4_define([PKG_NAME], firewalld)
