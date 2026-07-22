@@ -661,13 +661,13 @@ FWD_START_TEST([ipset])
 
     FWD_CHECK([--permanent --new-ipset=foobar --type=hash:ip], 0, ignore)
     FWD_CHECK([--reload], 0, ignore)
-    FWD_CHECK([--ipset=foobar --get-entries], 0, [
+    FWD_CHECK([--ipset=foobar --get-entries], 0, [dnl
 ])
     FWD_CHECK([--ipset=foobar --add-entry=1.2.3.4], 0, ignore)
     FWD_CHECK([--ipset=foobar --get-entries | grep "1.2.3.4"], 0, ignore)
     FWD_CHECK([--ipset=foobar --add-entry=1.2.3.400], 136, ignore, ignore)
     FWD_CHECK([--ipset=foobar --remove-entry=1.2.3.4], 0, ignore)
-    FWD_CHECK([--ipset=foobar --get-entries], 0, [
+    FWD_CHECK([--ipset=foobar --get-entries], 0, [dnl
 ])
 
     FWD_CHECK([--zone=public --add-source=ipset:foobar], 0, ignore)
@@ -886,9 +886,9 @@ FWD_START_TEST([user helpers])
     FWD_CHECK([--permanent --helper=foobar --get-family | grep ipv4], 0, ignore)
     FWD_CHECK([--permanent --helper=foobar --set-family=], 0, ignore)
 
-    FWD_CHECK([--permanent --helper=foobar --get-family], 0, [
+    FWD_CHECK([--permanent --helper=foobar --get-family], 0, [dnl
 ])
-    FWD_CHECK([--permanent --helper=foobar --get-ports], 0, [
+    FWD_CHECK([--permanent --helper=foobar --get-ports], 0, [dnl
 ])
 
     FWD_CHECK([--permanent --helper=foobar --add-port=44/tcp], 0, ignore)
@@ -896,7 +896,7 @@ FWD_START_TEST([user helpers])
     FWD_CHECK([--permanent --helper=foobar --query-port=44/tcp], 0, ignore)
     FWD_CHECK([--permanent --helper=foobar --remove-port=44/tcp], 0, ignore)
     FWD_CHECK([--permanent --helper=foobar --query-port=44/tcp], 1, ignore)
-    FWD_CHECK([--permanent --helper=foobar --get-ports], 0, [
+    FWD_CHECK([--permanent --helper=foobar --get-ports], 0, [dnl
 ])
     FWD_CHECK([--permanent --delete-helper=foobar], 0, ignore)
     FWD_CHECK([--permanent --get-helpers | grep foobar], 1, ignore)
