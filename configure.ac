@@ -4,8 +4,6 @@ AC_PREREQ([2.68])
 
 m4_define([PKG_NAME], firewalld)
 m4_define([PKG_VERSION], m4_bpatsubst(m4_esyscmd([grep "Version:" firewalld.spec]), [Version:\W\([0-9.]*\)\W], [\1]))
-m4_define([PKG_RELEASE], m4_bpatsubst(m4_esyscmd([grep "Release:" firewalld.spec]), [Release:\W\([0-9.]*\).*\W], [\1]))
-m4_define([PKG_TAG], m4_format(v%s, PKG_VERSION))
 
 AC_INIT([PKG_NAME],[PKG_VERSION])
 AC_CONFIG_MACRO_DIR([m4])
@@ -13,11 +11,6 @@ AC_CONFIG_SRCDIR([src/firewalld.in])
 AC_PREFIX_DEFAULT([/usr])
 
 AM_INIT_AUTOMAKE([1.11 tar-ustar no-define foreign dist-bzip2 no-dist-gzip])
-
-AC_SUBST([PACKAGE_RELEASE], '[PKG_RELEASE]')
-AC_DEFINE_UNQUOTED([PACKAGE_RELEASE], ["$PACKAGE_RELEASE"])
-AC_SUBST([PACKAGE_TAG], '[PKG_TAG]')
-AC_DEFINE_UNQUOTED([PACKAGE_TAG], ["$PACKAGE_TAG"])
 
 AC_PROG_INSTALL
 AC_PROG_LN_S
