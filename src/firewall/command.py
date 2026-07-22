@@ -44,7 +44,7 @@ class FirewallCommand:
         return self.verbose
 
     def print_msg(self, msg=None, *, force=False, file=None, exit_code=None):
-        if msg is not None and (not self.quiet or force):
+        if msg and (not self.quiet or force):
             if file is None:
                 file = sys.stdout
             file.write(msg + "\n")

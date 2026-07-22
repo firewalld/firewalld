@@ -36,7 +36,7 @@ FWD_CHECK([--reset-to-defaults], 0, ignore, ignore)
 
 FWD_CHECK([--permanent --query-service zzzzzzzzzzzz], 1, ignore, ignore)
 FWD_CHECK([--permanent --zone internal --query-service ftp], 1, ignore, ignore)
-FWD_CHECK([--permanent --helper ftp --get-short], 0, [
+FWD_CHECK([--permanent --helper ftp --get-short], 0, [dnl
 ], ignore)
 FWD_CHECK([--permanent --policy allow-host-ipv6 --get-short], 0, [Allow host IPv6
 ], ignore)

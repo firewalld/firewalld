@@ -61,7 +61,7 @@ FWD_CHECK([--permanent --ipset=foobar --get-entries], 0, [dnl
 10.1.0.0/22
 ])
 FWD_CHECK([-q --permanent --ipset=foobar --remove-entry=10.1.1.0/22])
-FWD_CHECK([--permanent --ipset=foobar --get-entries], 0, [
+FWD_CHECK([--permanent --ipset=foobar --get-entries], 0, [dnl
 ])
 
 dnl rhbz 1644834
