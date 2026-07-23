@@ -2493,6 +2493,46 @@ if a.permanent:
             cmd.print_msg("")
         sys.exit(0)
 
+    elif a.list_all and not zone and not a.policy:
+        # Comprehensive --list-all for permanent config
+        cmd.print_msg("ALL ZONES:")
+        default_zone = fw.getDefaultZone()
+        for zone_name in sorted(fw.config().getZoneNames()):
+            settings = fw.config().getZoneByName(zone_name).getSettings()
+            interfaces = try_nm_get_interfaces_in_zone(zone_name)
+            cmd.print_zone_info(
+                zone_name,
+                settings,
+                default_zone=default_zone,
+                extra_interfaces=interfaces,
+            )
+            cmd.print_msg("")
+
+        cmd.print_msg("ALL POLICIES:")
+        for policy in sorted(fw.config().getPolicyNames()):
+            settings = fw.config().getPolicyByName(policy).getSettings()
+            cmd.print_policy_info(policy, settings)
+            cmd.print_msg("")
+
+        cmd.print_msg("DIRECT RULES:")
+        direct = fw.config().direct()
+        rules = direct.getAllRules()
+        for ipv, table, chain, priority, rule in rules:
+            cmd.print_msg(
+                "%s %s %s %d %s" % (ipv, table, chain, priority, joinArgs(rule))
+            )
+        if not rules:
+            cmd.print_msg("  (none)")
+        cmd.print_msg("")
+
+        cmd.print_msg("DIRECT PASSTHROUGHS:")
+        passthroughs = direct.getAllPassthroughs()
+        for ipv, rule in passthroughs:
+            cmd.print_msg("%s %s" % (ipv, joinArgs(rule)))
+        if not passthroughs:
+            cmd.print_msg("  (none)")
+        sys.exit(0)
+
     elif a.policy_set:
         for _policy in filter(
             lambda x: x[: len(a.policy_set)] == a.policy_set,
@@ -4019,14 +4059,55 @@ elif a.query_icmp_block_inversion:
     cmd.print_query_result(fw.queryIcmpBlockInversion(zone))
 
 # list all
-elif a.list_all:
-    z = zone if zone else fw.getDefaultZone()
+elif a.list_all and zone:
+    # Show specific zone
     cmd.print_zone_info(
-        z,
-        fw.getZoneSettings(z),
+        zone,
+        fw.getZoneSettings(zone),
         default_zone=fw.getDefaultZone(),
         active_zones=fw.getActiveZones(),
     )
+    sys.exit(0)
+
+elif a.list_all:
+    # Comprehensive --list-all when no zone specified
+    cmd.print_msg("ALL ZONES:")
+    default_zone = fw.getDefaultZone()
+    active_zones = fw.getActiveZones()
+
+    for zone_name in sorted(fw.getZones()):
+        cmd.print_zone_info(
+            zone_name,
+            fw.getZoneSettings(zone_name),
+            default_zone=default_zone,
+            active_zones=active_zones,
+        )
+        cmd.print_msg("")
+
+    cmd.print_msg("ALL POLICIES:")
+    active_policies = fw.getActivePolicies()
+    for policy in sorted(fw.getPolicies()):
+        cmd.print_policy_info(
+            policy, fw.getPolicySettings(policy), active_policies=active_policies
+        )
+        cmd.print_msg("")
+
+    cmd.print_msg("DIRECT RULES:")
+    rules = fw.getAllRules()
+    for ipv, table, chain, priority, rule in rules:
+        cmd.print_msg(
+            "%s %s %s %d %s" % (ipv, table, chain, priority, joinArgs(rule))
+        )
+    if not rules:
+        cmd.print_msg("  (none)")
+    cmd.print_msg("")
+
+    cmd.print_msg("DIRECT PASSTHROUGHS:")
+    passthroughs = fw.getAllPassthroughs()
+    for ipv, rule in passthroughs:
+        cmd.print_msg("%s %s" % (ipv, joinArgs(rule)))
+    if not passthroughs:
+        cmd.print_msg("  (none)")
     sys.exit(0)
 
 # list everything
