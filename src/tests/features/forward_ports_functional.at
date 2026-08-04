@@ -1,0 +1,84 @@
+m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
+FWD_START_TEST([forward ports (functional)])
+AT_KEYWORDS(policy forward_port)
+dnl Forward ports are difficult to get the backend ruleset/dispatch correct
+dnl because they occur during PREROUTING. As such, a functional test to
+dnl verify behavior is necessary.
+
+FWD_CHECK([--permanent --new-policy dnatZoneToExternal], 0, [ignore])
+FWD_CHECK([--permanent --policy dnatZoneToExternal --set-priority -100], 0, [ignore])
+FWD_CHECK([--permanent --policy dnatZoneToExternal --add-ingress-zone internal], 0, [ignore])
+FWD_CHECK([--permanent --policy dnatZoneToExternal --add-egress-zone public], 0, [ignore])
+
+FWD_CHECK([--permanent --new-policy dnatZoneToWork], 0, [ignore])
+FWD_CHECK([--permanent --policy dnatZoneToExternal --set-priority -1], 0, [ignore])
+FWD_CHECK([--permanent --policy dnatZoneToWork --add-ingress-zone internal], 0, [ignore])
+FWD_CHECK([--permanent --policy dnatZoneToWork --add-egress-zone work], 0, [ignore])
+
+FWD_CHECK([--permanent --new-policy dnatHostToDmz], 0, [ignore])
+FWD_CHECK([--permanent --policy dnatHostToDmz --add-ingress-zone trusted], 0, [ignore])
+FWD_CHECK([--permanent --policy dnatHostToDmz --add-egress-zone HOST], 0, [ignore])
+
+FWD_CHECK([--permanent --new-policy redirectHost], 0, [ignore])
+FWD_CHECK([--permanent --policy redirectHost --add-ingress-zone home], 0, [ignore])
+FWD_CHECK([--permanent --policy redirectHost --add-egress-zone HOST], 0, [ignore])
+
+FWD_RELOAD()
+START_TEST_TOPOLOGY()
+
+FWD_CHECK([--zone public --remove-interface public-fwd], 0, [ignore])
+FWD_CHECK([--zone public --add-source 10.6.0.0/24], 0, [ignore])
+FWD_CHECK([--zone work --remove-interface work-fwd], 0, [ignore])
+FWD_CHECK([--zone work --add-source 10.8.0.0/24], 0, [ignore])
+FWD_CHECK([--policy dnatZoneToExternal --add-forward-port port=80:proto=tcp:toport=8080:toaddr=10.3.0.2], 0, [ignore])
+dnl This forward port of port 80 --> 8080 in dnatZoneToWork should _never_ be
+dnl hit because the dnatZoneToExternal has a higher priority.
+FWD_CHECK([--policy dnatZoneToWork --add-forward-port port=80:proto=tcp:toport=8080:toaddr=10.8.0.2], 0, [ignore])
+FWD_CHECK([--policy dnatZoneToWork --add-forward-port port=8080:proto=tcp:toport=8080:toaddr=10.8.0.2], 0, [ignore])
+FWD_CHECK([--policy dnatHostToDmz --add-forward-port port=80:proto=tcp:toport=8080:toaddr=10.1.0.2], 0, [ignore])
+FWD_CHECK([--policy redirectHost --add-forward-port port=80:proto=tcp:toport=8080], 0, [ignore])
+
+dnl start webserver in external
+echo "Hello from external!" > external.html
+TEST_TOPOLOGY_CMD([external], [python3 -m http.server 8080 &])
+echo "kill $!" >> ./cleanup
+WAIT_UNTIL([NS_CMD([curl --max-time 1 http://10.3.0.2:8080/external.html])])
+dnl verify internal --> public (dnat to external)
+TEST_TOPOLOGY_CHECK([internal], [curl http://10.6.0.123/external.html], 0, [dnl
+Hello from external!
+], [ignore])
+
+dnl start webserver in work
+echo "Hello from work!" > work.html
+TEST_TOPOLOGY_CMD([work], [python3 -m http.server 8080 &])
+echo "kill $!" >> ./cleanup
+WAIT_UNTIL([NS_CMD([curl --max-time 1 http://10.8.0.2:8080/work.html])])
+dnl verify internal --> external (dnat to work)
+TEST_TOPOLOGY_CHECK([internal], [curl http://10.3.0.2:8080/work.html], 0, [dnl
+Hello from work!
+], [ignore])
+
+dnl start webserver in dmz
+echo "Hello from dmz!" > dmz.html
+TEST_TOPOLOGY_CMD([dmz], [python3 -m http.server 8080 &])
+echo "kill $!" >> ./cleanup
+WAIT_UNTIL([NS_CMD([curl --max-time 1 http://10.1.0.2:8080/dmz.html])])
+dnl verify trusted --> HOST (dnat to dmz)
+dnl curl destination only needs to be something on the "HOST"
+TEST_TOPOLOGY_CHECK([trusted], [curl http://10.2.0.1/dmz.html], 0, [dnl
+Hello from dmz!
+], [ignore])
+
+dnl start webserver in firewalld test namespace
+echo "Hello from firewalld!" > firewalld.html
+NS_CMD([python3 -m http.server 8080 &])
+echo "kill $!" >> ./cleanup
+WAIT_UNTIL([NS_CMD([curl --max-time 1 http://10.1.0.1:8080/firewalld.html])])
+dnl verify home --> HOST (redirect)
+dnl curl destination only needs to be something on the "HOST"
+TEST_TOPOLOGY_CHECK([home], [curl http://10.0.0.1/firewalld.html], 0, [dnl
+Hello from firewalld!
+], [ignore])
+
+FWD_END_TEST()
+])
