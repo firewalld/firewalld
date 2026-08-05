@@ -189,6 +189,7 @@ m4_define([FWD_START_TEST], [
             m4_define([CURRENT_TEST_NS], [fwd-test-${at_group_normalized}])
             echo "ip netns delete CURRENT_TEST_NS" >> ./cleanup_late
             AT_CHECK([ip netns add CURRENT_TEST_NS])
+            AT_CHECK([ip netns exec CURRENT_TEST_NS ip link set lo up], 0, [ignore])
         ])
         m4_if(iptables, FIREWALL_BACKEND, [
             CHECK_IPTABLES
