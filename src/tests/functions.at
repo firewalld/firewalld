@@ -836,8 +836,8 @@ m4_define([START_TEST_TOPOLOGY], [
     ZONES="block dmz drop external home internal public trusted work"
     count=0
     for ZONE in ${ZONES}; do
-        AT_CHECK([ip netns add CURRENT_TEST_NS-${ZONE}], 0, [ignore])
         echo "ip netns delete CURRENT_TEST_NS-${ZONE}" >> ./cleanup
+        AT_CHECK([ip netns add CURRENT_TEST_NS-${ZONE}], 0, [ignore])
 
         NS_CHECK([ip link add ${ZONE}-ns type veth peer name ${ZONE}-fwd], 0, [ignore])
         NS_CHECK([ip link set ${ZONE}-ns netns CURRENT_TEST_NS-${ZONE}], 0, [ignore])
