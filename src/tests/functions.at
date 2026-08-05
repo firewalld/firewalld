@@ -839,6 +839,8 @@ m4_define([START_TEST_TOPOLOGY], [
         echo "ip netns delete CURRENT_TEST_NS-${ZONE}" >> ./cleanup
         AT_CHECK([ip netns add CURRENT_TEST_NS-${ZONE}], 0, [ignore])
 
+        AT_CHECK([ip netns exec CURRENT_TEST_NS-${ZONE} ip link set lo up], 0, [ignore])
+
         NS_CHECK([ip link add ${ZONE}-ns type veth peer name ${ZONE}-fwd], 0, [ignore])
         NS_CHECK([ip link set ${ZONE}-ns netns CURRENT_TEST_NS-${ZONE}], 0, [ignore])
 
