@@ -1188,8 +1188,13 @@ class nftables:
 
         rules = []
         expr_fragments = []
-        if table != "filter" or chain in ["PREROUTING", "OUTPUT"]:
+        if chain == "PREROUTING":
+            # During prerouting we can't reliably determine if the packet is
+            # destined for the host (local) or a remote (non-local). As such,
+            # we have to let fall through.
             expr_fragments.append({"return": None})
+        elif chain in ["OUTPUT", "POSTROUTING"]:
+            expr_fragments.append({"accept": None})
         elif z_obj.target in [
             DEFAULT_ZONE_TARGET,
             "ACCEPT",

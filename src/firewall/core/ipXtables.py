@@ -923,8 +923,10 @@ class ip4tables:
         rules = []
 
         target_rule = ["-t", table, add_del, chain_name_unique]
-        if table != "filter" or chain in ["PREROUTING", "OUTPUT"]:
+        if chain == "PREROUTING":
             target_rule.extend(["-j", "RETURN"])
+        elif chain in ["OUTPUT", "POSTROUTING"]:
+            target_rule.extend(["-j", "ACCEPT"])
         elif z_obj.target in [
             DEFAULT_ZONE_TARGET,
             "ACCEPT",

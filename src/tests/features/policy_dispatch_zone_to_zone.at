@@ -84,7 +84,7 @@ NFT_LIST_RULES([inet], [filter_OUT_HOST_to_public], 0, [dnl
     table inet firewalld {
         chain filter_OUT_HOST_to_public {
             jump filter_OUT_public
-            return
+            accept
         }
     }
 ])
@@ -92,7 +92,7 @@ NFT_LIST_RULES([inet], [filter_OUT_HOST_to_internal], 0, [dnl
     table inet firewalld {
         chain filter_OUT_HOST_to_internal {
             jump filter_OUT_internal
-            return
+            accept
         }
     }
 ])
@@ -103,11 +103,11 @@ IPTABLES_LIST_RULES([filter], [OUTPUT_dispatch], 0, [dnl
 ])
 IPTABLES_LIST_RULES([filter], [OUT_HOST_to_internal], 0, [dnl
     OUT_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IPTABLES_LIST_RULES([filter], [OUT_HOST_to_public], 0, [dnl
     OUT_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [OUTPUT_dispatch], 0, [dnl
     OUT_HOST_to_internal 0 -- ::/0 ::/0
@@ -116,11 +116,11 @@ IP6TABLES_LIST_RULES([filter], [OUTPUT_dispatch], 0, [dnl
 ])
 IP6TABLES_LIST_RULES([filter], [OUT_HOST_to_internal], 0, [dnl
     OUT_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 IP6TABLES_LIST_RULES([filter], [OUT_HOST_to_public], 0, [dnl
     OUT_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 dnl (filter, forward)
 NFT_LIST_RULES([inet], [filter_FORWARD_dispatch], 0, [dnl
@@ -706,7 +706,7 @@ NFT_LIST_RULES([inet], [nat_POST_internal_to_public], 0, [dnl
         chain nat_POST_internal_to_public {
             jump nat_POST_policy_foobar
             jump nat_POST_public
-            return
+            accept
         }
     }
 ])
@@ -714,7 +714,7 @@ NFT_LIST_RULES([inet], [nat_POST_internal_to_internal], 0, [dnl
     table inet firewalld {
         chain nat_POST_internal_to_internal {
             jump nat_POST_internal
-            return
+            accept
         }
     }
 ])
@@ -731,7 +731,7 @@ NFT_LIST_RULES([inet], [nat_POST_public_to_internal], 0, [dnl
     table inet firewalld {
         chain nat_POST_public_to_internal {
             jump nat_POST_internal
-            return
+            accept
         }
     }
 ])
@@ -739,7 +739,7 @@ NFT_LIST_RULES([inet], [nat_POST_public_to_public], 0, [dnl
     table inet firewalld {
         chain nat_POST_public_to_public {
             jump nat_POST_public
-            return
+            accept
         }
     }
 ])
@@ -756,11 +756,11 @@ IPTABLES_LIST_RULES([nat], [RknF1k8zHSgJpQwmM2mrluWtcGtl], 0, [dnl
 IPTABLES_LIST_RULES([nat], [POST_internal_to_public], 0, [dnl
     POST_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
     POST_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IPTABLES_LIST_RULES([nat], [POST_internal_to_internal], 0, [dnl
     POST_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IPTABLES_LIST_RULES([nat], [POST_public_dispatch_stage2], 0, [dnl
     POST_public_to_internal 0 -- 0.0.0.0/0 0.0.0.0/0
@@ -769,11 +769,11 @@ IPTABLES_LIST_RULES([nat], [POST_public_dispatch_stage2], 0, [dnl
 ])
 IPTABLES_LIST_RULES([nat], [POST_public_to_public], 0, [dnl
     POST_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IPTABLES_LIST_RULES([nat], [POST_public_to_internal], 0, [dnl
     POST_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [POSTROUTING_dispatch], 0, [dnl
     RknF1k8zHSgJpQwmM2mrluWtcGtl 0 -- ::/0 ::/0
@@ -788,11 +788,11 @@ IP6TABLES_LIST_RULES([nat], [RknF1k8zHSgJpQwmM2mrluWtcGtl], 0, [dnl
 IP6TABLES_LIST_RULES([nat], [POST_internal_to_public], 0, [dnl
     POST_foobar 0 -- ::/0 ::/0
     POST_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 IP6TABLES_LIST_RULES([nat], [POST_internal_to_internal], 0, [dnl
     POST_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 IP6TABLES_LIST_RULES([nat], [POST_public_dispatch_stage2], 0, [dnl
     POST_public_to_internal 0 -- ::/0 ::/0
@@ -801,11 +801,11 @@ IP6TABLES_LIST_RULES([nat], [POST_public_dispatch_stage2], 0, [dnl
 ])
 IP6TABLES_LIST_RULES([nat], [POST_public_to_public], 0, [dnl
     POST_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 IP6TABLES_LIST_RULES([nat], [POST_public_to_internal], 0, [dnl
     POST_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 dnl (nat, output)
 NFT_LIST_RULES([inet], [nat_OUTPUT_dispatch], 0, [dnl
@@ -821,7 +821,7 @@ NFT_LIST_RULES([inet], [nat_OUT_HOST_to_internal], 0, [dnl
     table inet firewalld {
         chain nat_OUT_HOST_to_internal {
             jump nat_OUT_internal
-            return
+            accept
         }
     }
 ])
@@ -829,7 +829,7 @@ NFT_LIST_RULES([inet], [nat_OUT_HOST_to_public], 0, [dnl
     table inet firewalld {
         chain nat_OUT_HOST_to_public {
             jump nat_OUT_public
-            return
+            accept
         }
     }
 ])
@@ -840,11 +840,11 @@ IPTABLES_LIST_RULES([nat], [OUTPUT_dispatch], 0, [dnl
 ])
 IPTABLES_LIST_RULES([nat], [OUT_HOST_to_internal], 0, [dnl
     OUT_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IPTABLES_LIST_RULES([nat], [OUT_HOST_to_public], 0, [dnl
     OUT_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [OUTPUT_dispatch], 0, [dnl
     OUT_HOST_to_internal 0 -- ::/0 ::/0
@@ -853,11 +853,11 @@ IP6TABLES_LIST_RULES([nat], [OUTPUT_dispatch], 0, [dnl
 ])
 IP6TABLES_LIST_RULES([nat], [OUT_HOST_to_internal], 0, [dnl
     OUT_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 IP6TABLES_LIST_RULES([nat], [OUT_HOST_to_public], 0, [dnl
     OUT_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 FWD_CHECK([--policy=foobar --remove-ingress-zone="internal"], 0, [ignore])
 FWD_CHECK([--policy=foobar --remove-egress-zone="public"], 0, [ignore])
@@ -942,7 +942,7 @@ NFT_LIST_RULES([inet], [filter_OUT_HOST_to_public], 0, [dnl
     table inet firewalld {
         chain filter_OUT_HOST_to_public {
             jump filter_OUT_public
-            return
+            accept
         }
     }
 ])
@@ -950,7 +950,7 @@ NFT_LIST_RULES([inet], [filter_OUT_HOST_to_internal], 0, [dnl
     table inet firewalld {
         chain filter_OUT_HOST_to_internal {
             jump filter_OUT_internal
-            return
+            accept
         }
     }
 ])
@@ -961,11 +961,11 @@ IPTABLES_LIST_RULES([filter], [OUTPUT_dispatch], 0, [dnl
 ])
 IPTABLES_LIST_RULES([filter], [OUT_HOST_to_internal], 0, [dnl
     OUT_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IPTABLES_LIST_RULES([filter], [OUT_HOST_to_public], 0, [dnl
     OUT_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [OUTPUT_dispatch], 0, [dnl
     OUT_HOST_to_internal 0 -- ::/0 ::/0
@@ -973,11 +973,11 @@ IP6TABLES_LIST_RULES([filter], [OUTPUT_dispatch], 0, [dnl
 ])
 IP6TABLES_LIST_RULES([filter], [OUT_HOST_to_internal], 0, [dnl
     OUT_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 IP6TABLES_LIST_RULES([filter], [OUT_HOST_to_public], 0, [dnl
     OUT_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 dnl (filter, forward)
 NFT_LIST_RULES([inet], [filter_FORWARD_dispatch], 0, [dnl
@@ -1548,7 +1548,7 @@ NFT_LIST_RULES([inet], [nat_POST_internal_to_public], 0, [dnl
         chain nat_POST_internal_to_public {
             jump nat_POST_policy_foobar
             jump nat_POST_public
-            return
+            accept
         }
     }
 ])
@@ -1556,7 +1556,7 @@ NFT_LIST_RULES([inet], [nat_POST_internal_to_internal], 0, [dnl
     table inet firewalld {
         chain nat_POST_internal_to_internal {
             jump nat_POST_internal
-            return
+            accept
         }
     }
 ])
@@ -1573,7 +1573,7 @@ NFT_LIST_RULES([inet], [nat_POST_public_to_internal], 0, [dnl
     table inet firewalld {
         chain nat_POST_public_to_internal {
             jump nat_POST_internal
-            return
+            accept
         }
     }
 ])
@@ -1581,7 +1581,7 @@ NFT_LIST_RULES([inet], [nat_POST_public_to_public], 0, [dnl
     table inet firewalld {
         chain nat_POST_public_to_public {
             jump nat_POST_public
-            return
+            accept
         }
     }
 ])
@@ -1598,11 +1598,11 @@ IPTABLES_LIST_RULES([nat], [RknF1k8zHSgJpQwmM2mrluWtcGtl], 0, [dnl
 IPTABLES_LIST_RULES([nat], [POST_internal_to_public], 0, [dnl
     POST_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
     POST_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IPTABLES_LIST_RULES([nat], [POST_internal_to_internal], 0, [dnl
     POST_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IPTABLES_LIST_RULES([nat], [POST_public_dispatch_stage2], 0, [dnl
     POST_public_to_public 0 -- 0.0.0.0/0 10.10.10.0/24
@@ -1611,11 +1611,11 @@ IPTABLES_LIST_RULES([nat], [POST_public_dispatch_stage2], 0, [dnl
 ])
 IPTABLES_LIST_RULES([nat], [POST_public_to_public], 0, [dnl
     POST_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IPTABLES_LIST_RULES([nat], [POST_public_to_internal], 0, [dnl
     POST_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [POSTROUTING_dispatch], 0, [dnl
     RknF1k8zHSgJpQwmM2mrluWtcGtl 0 -- ::/0 ::/0
@@ -1628,11 +1628,11 @@ IP6TABLES_LIST_RULES([nat], [RknF1k8zHSgJpQwmM2mrluWtcGtl], 0, [dnl
 IP6TABLES_LIST_RULES([nat], [POST_internal_to_public], 0, [dnl
     POST_foobar 0 -- ::/0 ::/0
     POST_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 IP6TABLES_LIST_RULES([nat], [POST_internal_to_internal], 0, [dnl
     POST_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 IP6TABLES_LIST_RULES([nat], [POST_public_dispatch_stage2], 0, [dnl
     POST_public_to_internal 0 -- ::/0 ::/0
@@ -1640,11 +1640,11 @@ IP6TABLES_LIST_RULES([nat], [POST_public_dispatch_stage2], 0, [dnl
 ])
 IP6TABLES_LIST_RULES([nat], [POST_public_to_public], 0, [dnl
     POST_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 IP6TABLES_LIST_RULES([nat], [POST_public_to_internal], 0, [dnl
     POST_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 dnl (nat, output)
 NFT_LIST_RULES([inet], [nat_OUTPUT_dispatch], 0, [dnl
@@ -1660,7 +1660,7 @@ NFT_LIST_RULES([inet], [nat_OUT_HOST_to_internal], 0, [dnl
     table inet firewalld {
         chain nat_OUT_HOST_to_internal {
             jump nat_OUT_internal
-            return
+            accept
         }
     }
 ])
@@ -1668,7 +1668,7 @@ NFT_LIST_RULES([inet], [nat_OUT_HOST_to_public], 0, [dnl
     table inet firewalld {
         chain nat_OUT_HOST_to_public {
             jump nat_OUT_public
-            return
+            accept
         }
     }
 ])
@@ -1679,11 +1679,11 @@ IPTABLES_LIST_RULES([nat], [OUTPUT_dispatch], 0, [dnl
 ])
 IPTABLES_LIST_RULES([nat], [OUT_HOST_to_internal], 0, [dnl
     OUT_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IPTABLES_LIST_RULES([nat], [OUT_HOST_to_public], 0, [dnl
     OUT_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [OUTPUT_dispatch], 0, [dnl
     OUT_HOST_to_internal 0 -- ::/0 ::/0
@@ -1691,11 +1691,11 @@ IP6TABLES_LIST_RULES([nat], [OUTPUT_dispatch], 0, [dnl
 ])
 IP6TABLES_LIST_RULES([nat], [OUT_HOST_to_internal], 0, [dnl
     OUT_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 IP6TABLES_LIST_RULES([nat], [OUT_HOST_to_public], 0, [dnl
     OUT_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 FWD_CHECK([--policy=foobar --remove-ingress-zone="internal"], 0, [ignore])
 FWD_CHECK([--policy=foobar --remove-egress-zone="public"], 0, [ignore])
@@ -1780,7 +1780,7 @@ NFT_LIST_RULES([inet], [filter_OUT_HOST_to_public], 0, [dnl
     table inet firewalld {
         chain filter_OUT_HOST_to_public {
             jump filter_OUT_public
-            return
+            accept
         }
     }
 ])
@@ -1788,7 +1788,7 @@ NFT_LIST_RULES([inet], [filter_OUT_HOST_to_internal], 0, [dnl
     table inet firewalld {
         chain filter_OUT_HOST_to_internal {
             jump filter_OUT_internal
-            return
+            accept
         }
     }
 ])
@@ -1799,11 +1799,11 @@ IPTABLES_LIST_RULES([filter], [OUTPUT_dispatch], 0, [dnl
 ])
 IPTABLES_LIST_RULES([filter], [OUT_HOST_to_internal], 0, [dnl
     OUT_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IPTABLES_LIST_RULES([filter], [OUT_HOST_to_public], 0, [dnl
     OUT_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [OUTPUT_dispatch], 0, [dnl
     OUT_HOST_to_public 0 -- ::/0 ::/0
@@ -1811,11 +1811,11 @@ IP6TABLES_LIST_RULES([filter], [OUTPUT_dispatch], 0, [dnl
 ])
 IP6TABLES_LIST_RULES([filter], [OUT_HOST_to_internal], 0, [dnl
     OUT_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 IP6TABLES_LIST_RULES([filter], [OUT_HOST_to_public], 0, [dnl
     OUT_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 dnl (filter, forward)
 NFT_LIST_RULES([inet], [filter_FORWARD_dispatch], 0, [dnl
@@ -2386,7 +2386,7 @@ NFT_LIST_RULES([inet], [nat_POST_internal_to_public], 0, [dnl
         chain nat_POST_internal_to_public {
             jump nat_POST_policy_foobar
             jump nat_POST_public
-            return
+            accept
         }
     }
 ])
@@ -2394,7 +2394,7 @@ NFT_LIST_RULES([inet], [nat_POST_internal_to_internal], 0, [dnl
     table inet firewalld {
         chain nat_POST_internal_to_internal {
             jump nat_POST_internal
-            return
+            accept
         }
     }
 ])
@@ -2411,7 +2411,7 @@ NFT_LIST_RULES([inet], [nat_POST_public_to_internal], 0, [dnl
     table inet firewalld {
         chain nat_POST_public_to_internal {
             jump nat_POST_internal
-            return
+            accept
         }
     }
 ])
@@ -2419,7 +2419,7 @@ NFT_LIST_RULES([inet], [nat_POST_public_to_public], 0, [dnl
     table inet firewalld {
         chain nat_POST_public_to_public {
             jump nat_POST_public
-            return
+            accept
         }
     }
 ])
@@ -2436,11 +2436,11 @@ IPTABLES_LIST_RULES([nat], [RknF1k8zHSgJpQwmM2mrluWtcGtl], 0, [dnl
 IPTABLES_LIST_RULES([nat], [POST_internal_to_public], 0, [dnl
     POST_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
     POST_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IPTABLES_LIST_RULES([nat], [POST_internal_to_internal], 0, [dnl
     POST_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IPTABLES_LIST_RULES([nat], [POST_public_dispatch_stage2], 0, [dnl
     POST_public_to_internal 0 -- 0.0.0.0/0 10.10.10.0/24
@@ -2449,11 +2449,11 @@ IPTABLES_LIST_RULES([nat], [POST_public_dispatch_stage2], 0, [dnl
 ])
 IPTABLES_LIST_RULES([nat], [POST_public_to_public], 0, [dnl
     POST_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IPTABLES_LIST_RULES([nat], [POST_public_to_internal], 0, [dnl
     POST_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [POSTROUTING_dispatch], 0, [dnl
     POST_public_dispatch_stage2 0 -- ::/0 ::/0
@@ -2466,11 +2466,11 @@ IP6TABLES_LIST_RULES([nat], [RknF1k8zHSgJpQwmM2mrluWtcGtl], 0, [dnl
 IP6TABLES_LIST_RULES([nat], [POST_internal_to_public], 0, [dnl
     POST_foobar 0 -- ::/0 ::/0
     POST_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 IP6TABLES_LIST_RULES([nat], [POST_internal_to_internal], 0, [dnl
     POST_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 IP6TABLES_LIST_RULES([nat], [POST_public_dispatch_stage2], 0, [dnl
     POST_public_to_public 0 -- ::/0 ::/0
@@ -2478,11 +2478,11 @@ IP6TABLES_LIST_RULES([nat], [POST_public_dispatch_stage2], 0, [dnl
 ])
 IP6TABLES_LIST_RULES([nat], [POST_public_to_public], 0, [dnl
     POST_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 IP6TABLES_LIST_RULES([nat], [POST_public_to_internal], 0, [dnl
     POST_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 dnl (nat, output)
 NFT_LIST_RULES([inet], [nat_OUTPUT_dispatch], 0, [dnl
@@ -2498,7 +2498,7 @@ NFT_LIST_RULES([inet], [nat_OUT_HOST_to_internal], 0, [dnl
     table inet firewalld {
         chain nat_OUT_HOST_to_internal {
             jump nat_OUT_internal
-            return
+            accept
         }
     }
 ])
@@ -2506,7 +2506,7 @@ NFT_LIST_RULES([inet], [nat_OUT_HOST_to_public], 0, [dnl
     table inet firewalld {
         chain nat_OUT_HOST_to_public {
             jump nat_OUT_public
-            return
+            accept
         }
     }
 ])
@@ -2517,11 +2517,11 @@ IPTABLES_LIST_RULES([nat], [OUTPUT_dispatch], 0, [dnl
 ])
 IPTABLES_LIST_RULES([nat], [OUT_HOST_to_internal], 0, [dnl
     OUT_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IPTABLES_LIST_RULES([nat], [OUT_HOST_to_public], 0, [dnl
     OUT_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [OUTPUT_dispatch], 0, [dnl
     OUT_HOST_to_public 0 -- ::/0 ::/0
@@ -2529,11 +2529,11 @@ IP6TABLES_LIST_RULES([nat], [OUTPUT_dispatch], 0, [dnl
 ])
 IP6TABLES_LIST_RULES([nat], [OUT_HOST_to_internal], 0, [dnl
     OUT_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 IP6TABLES_LIST_RULES([nat], [OUT_HOST_to_public], 0, [dnl
     OUT_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 FWD_CHECK([--policy=foobar --remove-ingress-zone="internal"], 0, [ignore])
 FWD_CHECK([--policy=foobar --remove-egress-zone="public"], 0, [ignore])
@@ -2617,7 +2617,7 @@ NFT_LIST_RULES([inet], [filter_OUT_HOST_to_public], 0, [dnl
     table inet firewalld {
         chain filter_OUT_HOST_to_public {
             jump filter_OUT_public
-            return
+            accept
         }
     }
 ])
@@ -2625,7 +2625,7 @@ NFT_LIST_RULES([inet], [filter_OUT_HOST_to_internal], 0, [dnl
     table inet firewalld {
         chain filter_OUT_HOST_to_internal {
             jump filter_OUT_internal
-            return
+            accept
         }
     }
 ])
@@ -2636,22 +2636,22 @@ IPTABLES_LIST_RULES([filter], [OUTPUT_dispatch], 0, [dnl
 ])
 IPTABLES_LIST_RULES([filter], [OUT_HOST_to_internal], 0, [dnl
     OUT_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IPTABLES_LIST_RULES([filter], [OUT_HOST_to_public], 0, [dnl
     OUT_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([filter], [OUTPUT_dispatch], 0, [dnl
     OUT_HOST_to_public 0 -- ::/0 ::/0
 ])
 IP6TABLES_LIST_RULES([filter], [OUT_HOST_to_internal], 0, [dnl
     OUT_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 IP6TABLES_LIST_RULES([filter], [OUT_HOST_to_public], 0, [dnl
     OUT_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 dnl (filter, forward)
 NFT_LIST_RULES([inet], [filter_FORWARD_dispatch], 0, [dnl
@@ -3207,7 +3207,7 @@ NFT_LIST_RULES([inet], [nat_POST_internal_to_public], 0, [dnl
         chain nat_POST_internal_to_public {
             jump nat_POST_policy_foobar
             jump nat_POST_public
-            return
+            accept
         }
     }
 ])
@@ -3215,7 +3215,7 @@ NFT_LIST_RULES([inet], [nat_POST_internal_to_internal], 0, [dnl
     table inet firewalld {
         chain nat_POST_internal_to_internal {
             jump nat_POST_internal
-            return
+            accept
         }
     }
 ])
@@ -3232,7 +3232,7 @@ NFT_LIST_RULES([inet], [nat_POST_public_to_internal], 0, [dnl
     table inet firewalld {
         chain nat_POST_public_to_internal {
             jump nat_POST_internal
-            return
+            accept
         }
     }
 ])
@@ -3240,7 +3240,7 @@ NFT_LIST_RULES([inet], [nat_POST_public_to_public], 0, [dnl
     table inet firewalld {
         chain nat_POST_public_to_public {
             jump nat_POST_public
-            return
+            accept
         }
     }
 ])
@@ -3257,11 +3257,11 @@ IPTABLES_LIST_RULES([nat], [RknF1k8zHSgJpQwmM2mrluWtcGtl], 0, [dnl
 IPTABLES_LIST_RULES([nat], [POST_internal_to_public], 0, [dnl
     POST_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
     POST_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IPTABLES_LIST_RULES([nat], [POST_internal_to_internal], 0, [dnl
     POST_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IPTABLES_LIST_RULES([nat], [POST_public_dispatch_stage2], 0, [dnl
     POST_public_to_internal 0 -- 0.0.0.0/0 10.10.10.0/24
@@ -3270,11 +3270,11 @@ IPTABLES_LIST_RULES([nat], [POST_public_dispatch_stage2], 0, [dnl
 ])
 IPTABLES_LIST_RULES([nat], [POST_public_to_public], 0, [dnl
     POST_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IPTABLES_LIST_RULES([nat], [POST_public_to_internal], 0, [dnl
     POST_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [POSTROUTING_dispatch], 0, [dnl
     POST_public_dispatch_stage2 0 -- ::/0 ::/0
@@ -3285,22 +3285,22 @@ IP6TABLES_LIST_RULES([nat], [RknF1k8zHSgJpQwmM2mrluWtcGtl], 0, [dnl
 IP6TABLES_LIST_RULES([nat], [POST_internal_to_public], 0, [dnl
     POST_foobar 0 -- ::/0 ::/0
     POST_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 IP6TABLES_LIST_RULES([nat], [POST_internal_to_internal], 0, [dnl
     POST_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 IP6TABLES_LIST_RULES([nat], [POST_public_dispatch_stage2], 0, [dnl
     POST_public_to_public 0 -- ::/0 ::/0
 ])
 IP6TABLES_LIST_RULES([nat], [POST_public_to_public], 0, [dnl
     POST_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 IP6TABLES_LIST_RULES([nat], [POST_public_to_internal], 0, [dnl
     POST_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 dnl (nat, output)
 NFT_LIST_RULES([inet], [nat_OUTPUT_dispatch], 0, [dnl
@@ -3316,7 +3316,7 @@ NFT_LIST_RULES([inet], [nat_OUT_HOST_to_internal], 0, [dnl
     table inet firewalld {
         chain nat_OUT_HOST_to_internal {
             jump nat_OUT_internal
-            return
+            accept
         }
     }
 ])
@@ -3324,7 +3324,7 @@ NFT_LIST_RULES([inet], [nat_OUT_HOST_to_public], 0, [dnl
     table inet firewalld {
         chain nat_OUT_HOST_to_public {
             jump nat_OUT_public
-            return
+            accept
         }
     }
 ])
@@ -3335,22 +3335,22 @@ IPTABLES_LIST_RULES([nat], [OUTPUT_dispatch], 0, [dnl
 ])
 IPTABLES_LIST_RULES([nat], [OUT_HOST_to_internal], 0, [dnl
     OUT_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IPTABLES_LIST_RULES([nat], [OUT_HOST_to_public], 0, [dnl
     OUT_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [OUTPUT_dispatch], 0, [dnl
     OUT_HOST_to_public 0 -- ::/0 ::/0
 ])
 IP6TABLES_LIST_RULES([nat], [OUT_HOST_to_internal], 0, [dnl
     OUT_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 IP6TABLES_LIST_RULES([nat], [OUT_HOST_to_public], 0, [dnl
     OUT_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 FWD_CHECK([--policy=foobar --remove-ingress-zone="internal"], 0, [ignore])
 FWD_CHECK([--policy=foobar --remove-egress-zone="public"], 0, [ignore])
