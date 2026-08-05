@@ -1,0 +1,26 @@
+FWD_START_TEST([no disptach drifting in OUTPUT])
+AT_KEYWORDS([gh1591])
+
+dnl Using the default zone (public) in the egress means it will be considered
+dnl last as all unassigned traffic goes to the default zone. So if drifting occurs
+dnl this will catch all traffic. This is basically making sure that the OUTPUT
+dnl dispatch is terminal after it selects a zone.
+FWD_CHECK([--permanent --new-policy block-outgoing], 0, [ignore])
+FWD_CHECK([--permanent --policy block-outgoing --set-priority -32768], 0, [ignore])
+FWD_CHECK([--permanent --policy block-outgoing --set-target REJECT], 0, [ignore])
+FWD_CHECK([--permanent --policy block-outgoing --add-ingress-zone HOST], 0, [ignore])
+FWD_CHECK([--permanent --policy block-outgoing --add-egress-zone public], 0, [ignore])
+
+FWD_RELOAD()
+START_TEST_TOPOLOGY()
+
+dnl start webserver in home
+echo "Hello from home!" > home.html
+TEST_TOPOLOGY_CMD([home], [python3 -m http.server 8080 &])
+echo "kill $!" >> ./cleanup
+WAIT_UNTIL([TEST_TOPOLOGY_CMD([home], [curl --max-time 1 http://10.4.0.2:8080/home.html])])
+NS_CHECK([curl http://10.4.0.2:8080/home.html], 0, [dnl
+Hello from home!
+], [ignore])
+
+FWD_END_TEST()
