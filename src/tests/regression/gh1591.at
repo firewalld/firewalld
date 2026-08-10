@@ -1,6 +1,9 @@
 FWD_START_TEST([no disptach drifting in OUTPUT])
 AT_KEYWORDS([gh1591])
 
+AT_SKIP_IF([! NS_CMD([which python3])])
+AT_SKIP_IF([! NS_CMD([which curl])])
+
 dnl Using the default zone (public) in the egress means it will be considered
 dnl last as all unassigned traffic goes to the default zone. So if drifting occurs
 dnl this will catch all traffic. This is basically making sure that the OUTPUT
