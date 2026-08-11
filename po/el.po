@@ -19,7 +19,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-07-08 15:43-0400\n"
-"PO-Revision-Date: 2026-02-01 04:58+0000\n"
+"PO-Revision-Date: 2026-07-28 20:18+0000\n"
 "Last-Translator: Jim Spentzos <jimspentzos2000@gmail.com>\n"
 "Language-Team: Greek <https://translate.fedoraproject.org/projects/firewalld/"
 "master/el/>\n"
@@ -28,7 +28,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.15.2\n"
+"X-Generator: Weblate 2026.7.1\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet.in:450
 msgid "Firewall Applet"
@@ -48,117 +48,118 @@ msgstr "Ρύθμιση τείχους προστασίας"
 #. Translators: These are searchable keywords for the firewall configuration tool
 #: ../config/firewall-config.desktop.in.h:4
 msgid "firewall;network;security;iptables;netfilter;"
-msgstr ""
-"firewall;network;security;iptables;netfilter;τείχος;προστασία;ασφάλεια;"
-"δίκτυο;φίλτρα;"
+msgstr "firewall;network;security;iptables;netfilter;τείχος;προστασία;ασφάλεια;δίκτυο;φίλτρα;"
 
 #: ../config/org.firewalld.firewall-config.metainfo.xml.in.h:3
 msgid ""
 "Firewall Configuration provides a graphical tool for administering firewall."
 msgstr ""
+"Η Διαμόρφωση τείχους προστασίας παρέχει ένα εργαλείο με γραφικό περιβάλλον "
+"για τη διαχείριση του τείχους προστασίας."
 
 #: ../config/org.firewalld.firewall-config.metainfo.xml.in.h:4
 msgid "Allows to inspect and set:"
-msgstr ""
+msgstr "Επιτρέπει τη επιθεώρηση και τον ορισμό των εξής:"
 
 #: ../config/org.firewalld.firewall-config.metainfo.xml.in.h:5
-#, fuzzy
 msgid "Runtime and permanent firewall configuration"
-msgstr "Ρύθμιση τείχους προστασίας"
+msgstr ""
+"Διαμόρφωση τείχους προστασίας για την κατάσταση χρόνου λειτουργίας και τη "
+"μόνιμη κατάσταση"
 
 #: ../config/org.firewalld.firewall-config.metainfo.xml.in.h:6
 msgid "Predefined zones (levels of trust for network connections)"
-msgstr ""
+msgstr "Προκαθορισμένες ζώνες (επίπεδα εμπιστοσύνης για συνδέσεις δικτύου)"
 
 #: ../config/org.firewalld.firewall-config.metainfo.xml.in.h:7
 msgid "Predefined services (port/protocol, netfilter helper module)"
-msgstr ""
+msgstr "Προκαθορισμένες υπηρεσίες (θύρα/πρωτόκολλο, βοηθητική μονάδα netfilter)"
 
 #: ../config/org.firewalld.firewall-config.metainfo.xml.in.h:8
 msgid "Port forwarding, masquerading, ICMP blocking"
-msgstr ""
+msgstr "Προώθηση θύρας, μασκάρεμα, φραγή ICMP"
 
 #: ../config/org.firewalld.firewall-config.metainfo.xml.in.h:9
 msgid "Complex firewall rules a.k.a. Rich Language"
-msgstr ""
+msgstr "Σύνθετοι κανόνες τείχους προστασίας (εμπλουτισμένη γλώσσα)"
 
 #: ../config/org.firewalld.firewall-config.metainfo.xml.in.h:10
 msgid "Iptables rules a.k.a. Direct Interface"
-msgstr ""
+msgstr "Κανόνες iptables (άμεση διεπαφή)"
 
 #: ../src/firewall-applet.in:91 ../src/firewall-config.in:7703
 #, c-format
 msgid "Select zone for interface '%s'"
-msgstr "Ζώνη '%s' ενεργοποιήθηκε για την διεπαφή '%s'"
+msgstr "Επιλέξτε ζώνη για τη διεπαφή «%s»"
 
 #: ../src/firewall-applet.in:132 ../src/firewall-applet.in:139
 #: ../src/firewall-applet.in:145 ../src/firewall-config.in:2453
 #: ../src/firewall-config.in:7749 ../src/firewall-config.in:7757
 #: ../src/firewall-config.in:7791 ../src/firewall-config.glade.h:4
 msgid "Default Zone"
-msgstr ""
+msgstr "Προεπιλεγμένη ζώνη"
 
 #: ../src/firewall-applet.in:168 ../src/firewall-config.in:7784
 #, c-format
 msgid "Select zone for connection '%s'"
-msgstr ""
+msgstr "Επιλέξτε ζώνη για τη σύνδεση «%s»"
 
 #: ../src/firewall-applet.in:178 ../src/firewall-config.in:4050
 msgid "Failed to set zone {zone} for connection {connection_name}"
-msgstr ""
+msgstr "Ο ορισμός της ζώνης «{zone}» για τη σύνδεση «{connection_name}» απέτυχε"
 
 #: ../src/firewall-applet.in:199
 #, c-format
 msgid "Select zone for source '%s'"
-msgstr ""
+msgstr "Επιλέξτε ζώνη για την προέλευση «%s»"
 
 #: ../src/firewall-applet.in:218
 msgid "Configure Shields Up/Down Zones"
-msgstr "Επεξεργασία ζωνών ασπίδων πάνω/κάτω"
+msgstr "Ρύθμιση ζωνών ενεργής/ανενεργής προστασίας"
 
 #: ../src/firewall-applet.in:233
 msgid "Here you can select the zones used for Shields Up and Shields Down."
 msgstr ""
-"Εδώ μπορείτε να επιλέξετε τις ζώνες που χρησιμοποιούνται για τις ασπίδες "
-"πάνω και ασπίδες κάτω."
+"Εδώ μπορείτε να επιλέξετε τις ζώνες που χρησιμοποιούνται για τις καταστάσεις "
+"ενεργής/ανενεργής προστασίας."
 
 #: ../src/firewall-applet.in:244
 msgid ""
 "This feature is useful for people using the default zones mostly. For users, "
 "that are changing zones of connections, it might be of limited use."
 msgstr ""
-"Αυτό το χαρακτηριστικό είναι χρήσιμο για τους ανθρώπους που χρησιμοποιούν "
-"τις προεπιλεγμένες ζώνες περισσότερο. Για χρήστες, που αλλάζουν ζώνες από "
-"συνδέσεις, μπορεί να είναι περιορισμένης χρήσης."
+"Αυτή η δυνατότητα είναι χρήσιμη για τα άτομα που χρησιμοποιούν κυρίως τις "
+"προεπιλεγμένες ζώνες. Για τους χρήστες που αλλάζουν τις ζώνες των συνδέσεων, "
+"ενδέχεται να είναι περιορισμένης χρησιμότητας."
 
 #: ../src/firewall-applet.in:256
 msgid "Shields Up Zone:"
-msgstr "Ζώνη ασπίδων πάνω:"
+msgstr "Ζώνη ενεργής προστασίας:"
 
 #: ../src/firewall-applet.in:265 ../src/firewall-applet.in:278
 msgid "Reset To Default"
-msgstr ""
+msgstr "Επαναφορά στην προεπιλογή"
 
 #: ../src/firewall-applet.in:269
 msgid "Shields Down Zone:"
-msgstr "Ζώνη ασπίδων κάτω:"
+msgstr "Ζώνη ανενεργής προστασίας:"
 
 #: ../src/firewall-applet.in:368
 #, c-format
 msgid "About %s"
-msgstr ""
+msgstr "Σχετικά με το %s"
 
 #: ../src/firewall-applet.in:421
 msgid "Authors"
-msgstr ""
+msgstr "Δημιουργοί"
 
 #: ../src/firewall-applet.in:431
 msgid "License"
-msgstr ""
+msgstr "Άδεια χρήσης"
 
 #: ../src/firewall-applet.in:515
 msgid "Shields Up"
-msgstr "Ασπίδες πάνω"
+msgstr "Ενεργή προστασία"
 
 #: ../src/firewall-applet.in:520
 msgid "Enable Notifications"
@@ -170,11 +171,11 @@ msgstr "Επεξεργασία ρυθμίσεων τείχους προστασ�
 
 #: ../src/firewall-applet.in:529 ../src/firewall-config.glade.h:57
 msgid "Change Zones of Connections..."
-msgstr "Αλλάξτε τις Ζώνες Σύνδεσης "
+msgstr "Αλλαγή ζωνών συνδέσεων…"
 
 #: ../src/firewall-applet.in:534
 msgid "Configure Shields UP/Down Zones..."
-msgstr "Επεξεργασία ζωνών ασπίδων πάνω/κάτω..."
+msgstr "Ρύθμιση ζωνών ενεργής/ανενεργής προστασίας..."
 
 #: ../src/firewall-applet.in:538
 msgid "Block all network traffic"
@@ -208,31 +209,31 @@ msgstr "Η εξουσιοδότηση απέτυχε."
 
 #: ../src/firewall-applet.in:634 ../src/firewall-config.in:2290
 msgid "Invalid name"
-msgstr "Το όρισμα %s είναι λάθος."
+msgstr "Μη έγκυρο όνομα"
 
 #: ../src/firewall-applet.in:637 ../src/firewall-config.in:2293
 msgid "Name already exists"
-msgstr "Το όνομα ήδη υπάρχει "
+msgstr "Το όνομα υπάρχει ήδη"
 
 #: ../src/firewall-applet.in:726
 msgid "{entry} (Zone: {zone})"
-msgstr ""
+msgstr "{entry} (Ζώνη: {zone})"
 
 #: ../src/firewall-applet.in:733
 msgid "{entry} (Default Zone: {default_zone})"
-msgstr ""
+msgstr "{entry} (Προεπιλεγμένη ζώνη: {default_zone})"
 
 #: ../src/firewall-applet.in:819 ../src/firewall-config.in:1552
 msgid "Failed to get connections from NetworkManager"
-msgstr ""
+msgstr "Αποτυχία λήψης συνδέσεων από το NetworkManager"
 
 #: ../src/firewall-applet.in:831 ../src/firewall-config.in:1377
 msgid "No NetworkManager imports available"
-msgstr ""
+msgstr "Δεν διατίθενται εισαγωγές από το NetworkManager"
 
 #: ../src/firewall-applet.in:907
 msgid "No connection to firewall daemon"
-msgstr "Δεν υπάρχει σύνδεση στον δαίμονα του Firewall"
+msgstr "Δεν υπάρχει σύνδεση στην υπηρεσία παρασκηνίου του τείχους προστασίας"
 
 #: ../src/firewall-applet.in:913 ../src/firewall-applet.in:1070
 msgid "All network traffic is blocked."
@@ -241,52 +242,55 @@ msgstr "Όλη η κίνηση δικτύου είναι φραγμένη."
 #: ../src/firewall-applet.in:916
 #, c-format
 msgid "Default Zone: '%s'"
-msgstr ""
+msgstr "Προεπιλεγμένη ζώνη: «%s»"
 
 #: ../src/firewall-applet.in:923
 msgid ""
 "Default Zone '{default_zone}' active for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
+"Η προεπιλεγμένη ζώνη «{default_zone}» είναι ενεργή για τη σύνδεση «"
+"{connection}» στη διεπαφή «{interface}»"
 
 #: ../src/firewall-applet.in:928
 msgid ""
 "Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
 msgstr ""
-"Ζώνη '{zone}' ενεργή για σύνδεση '{connection}' στην διεπαφή '{interface}'"
+"Η ζώνη «{zone}» είναι ενεργή για τη σύνδεση «{connection}» στη διεπαφή «"
+"{interface}»"
 
 #: ../src/firewall-applet.in:946
 msgid "Zone '{zone}' active for interface '{interface}'"
-msgstr "Ζώνη '{zone}' ενεργή για την διεπαφή '{interface}'"
+msgstr "Η ζώνη «{zone}» είναι ενεργή για τη διεπαφή «{interface}»"
 
 #: ../src/firewall-applet.in:958
 msgid "Zone '{zone}' active for source {source}"
-msgstr ""
+msgstr "Η ζώνη «{zone}» είναι ενεργή για την προέλευση «{source}»"
 
 #: ../src/firewall-applet.in:962
 msgid "No Active Zones."
-msgstr "Δεν υπάρχουν ενεργές ζώνες"
+msgstr "Δεν υπάρχουν ενεργές ζώνες."
 
 #: ../src/firewall-applet.in:1028
 msgid "Connection to FirewallD established."
-msgstr "Η σύνδεση στο FirewallD επιτεύχθηκε."
+msgstr "Επιτεύχθηκε σύνδεση με το FirewallD."
 
 #: ../src/firewall-applet.in:1040
 msgid "Connection to FirewallD lost."
-msgstr "Η σύνδεση στο FirewallD χάθηκε."
+msgstr "Χάθηκε η σύνδεση με το FirewallD."
 
 #: ../src/firewall-applet.in:1045
 msgid "FirewallD has been reloaded."
-msgstr "Έγινε επανεκκίνηση του FirewallD"
+msgstr "Έγινε επαναφόρτωση του FirewallD."
 
 #: ../src/firewall-applet.in:1052
 #, c-format
 msgid "Default zone changed to '%s'."
-msgstr "Η προεπιλεγμένη ζώνη άλλαξε σε '%s'."
+msgstr "Η προεπιλεγμένη ζώνη άλλαξε σε «%s»."
 
 #: ../src/firewall-applet.in:1071
 msgid "Network traffic is not blocked anymore."
-msgstr "Η κίνηση δικτύου δεν είναι άλλο φραγμένη."
+msgstr "Η κίνηση δικτύου δεν είναι πλέον αποκλεισμένη."
 
 #: ../src/firewall-applet.in:1098 ../src/firewall-applet.in:1164
 msgid "activated"
@@ -301,80 +305,84 @@ msgid ""
 "Default zone '{default_zone}' {activated_deactivated} for connection "
 "'{connection}' on interface '{interface}'"
 msgstr ""
+"Η προεπιλεγμένη ζώνη «{default_zone}» {activated_deactivated} για τη σύνδεση "
+"«{connection}» στη διεπαφή «{interface}»"
 
 #: ../src/firewall-applet.in:1111
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
-"Ζώνη '{zone}' {activated_deactivated} για σύνδεση '{connection}' στην "
-"διεπαφή '{interface}'"
+"Η ζώνη «{zone}» {activated_deactivated} για τη σύνδεση «{connection}» στη "
+"διεπαφή «{interface}»"
 
 #: ../src/firewall-applet.in:1118
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
-msgstr "Ζώνη '{zone}' {activated_deactivated} για την διεπαφή '{interface}'"
+msgstr "Η ζώνη «{zone}» {activated_deactivated} για τη διεπαφή «{interface}»"
 
 #: ../src/firewall-applet.in:1149
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
-msgstr "Ζώνη '%s' ενεργοποιήθηκε για την διεπαφή '%s'"
+msgstr "Η ζώνη «%s» ενεργοποιήθηκε για τη διεπαφή «%s»"
 
 #: ../src/firewall-applet.in:1165
 msgid "Zone '{zone}' {activated_deactivated} for source '{source}'"
-msgstr ""
+msgstr "Η ζώνη «{zone}» {activated_deactivated} για την προέλευση «{source}»"
 
 #: ../src/firewall-applet.in:1194
 #, c-format
 msgid "Zone '%s' activated for source '%s'"
-msgstr ""
+msgstr "Η ζώνη «%s» ενεργοποιήθηκε για την προέλευση «%s»"
 
 #: ../src/firewall-config.in:94
 msgid "Connection to firewalld established."
-msgstr ""
+msgstr "Η σύνδεση στο firewalld επιτεύχθηκε."
 
 #: ../src/firewall-config.in:95
 msgid "Trying to connect to firewalld, waiting..."
-msgstr ""
+msgstr "Προσπάθεια σύνδεσης με το firewalld, σε αναμονή..."
 
 #: ../src/firewall-config.in:97
 msgid ""
 "Failed to connect to firewalld. Please make sure that the service has been "
 "started correctly and try again."
 msgstr ""
+"Η σύνδεση με το firewalld απέτυχε. Βεβαιωθείτε ότι η υπηρεσία έχει εκκινηθεί "
+"σωστά και δοκιμάστε ξανά."
 
 #: ../src/firewall-config.in:100
 msgid "Changes applied."
-msgstr ""
+msgstr "Οι αλλαγές εφαρμόστηκαν."
 
 #: ../src/firewall-config.in:101
 #, c-format
 msgid "Used by network connection '%s'"
-msgstr ""
+msgstr "Χρησιμοποιείται από τη σύνδεση δικτύου «%s»"
 
 #: ../src/firewall-config.in:103
 #, c-format
 msgid "Default zone used by network connection '%s'"
-msgstr ""
+msgstr "Η προεπιλεγμένη ζώνη που χρησιμοποιείται από τη σύνδεση δικτύου «%s»"
 
 #: ../src/firewall-config.in:105
 msgid "enabled"
-msgstr ""
+msgstr "ενεργό"
 
 #: ../src/firewall-config.in:106
 msgid "disabled"
-msgstr ""
+msgstr "ανενεργό"
 
 #: ../src/firewall-config.in:131
 msgid "Failed to load icons."
-msgstr "Απέτυχε η φόρτωση εικονιδίων."
+msgstr "Η φόρτωση των εικονιδίων απέτυχε."
 
 #: ../src/firewall-config.in:207 ../src/firewall-config.in:248
 msgid "Table"
-msgstr ""
+msgstr "Πίνακας"
 
 #: ../src/firewall-config.in:210 ../src/firewall-config.in:251
 msgid "Chain"
-msgstr ""
+msgstr "Αλυσίδα"
 
 #: ../src/firewall-config.in:254 ../src/firewall-config.in:793
 msgid "Priority"
@@ -382,15 +390,15 @@ msgstr "Προτεραιότητα"
 
 #: ../src/firewall-config.in:257 ../src/firewall-config.in:298
 msgid "Args"
-msgstr ""
+msgstr "Ορίσματα"
 
 #: ../src/firewall-config.in:345 ../src/firewall-config.in:2335
 msgid "Runtime"
-msgstr ""
+msgstr "Χρόνος λειτουργίας"
 
 #: ../src/firewall-config.in:346
 msgid "Permanent"
-msgstr ""
+msgstr "Μόνιμη"
 
 #: ../src/firewall-config.in:429 ../src/firewall-config.glade.h:131
 msgid "Service"
@@ -412,19 +420,19 @@ msgstr "Πρωτόκολλο"
 
 #: ../src/firewall-config.in:516
 msgid "To Port"
-msgstr "Στην πόρτα"
+msgstr "Προς τη θύρα"
 
 #: ../src/firewall-config.in:519
 msgid "To Address"
-msgstr "Στην διεύθυνση"
+msgstr "Προς τη διεύθυνση"
 
 #: ../src/firewall-config.in:568
 msgid "Bindings"
-msgstr ""
+msgstr "Συσχετίσεις"
 
 #: ../src/firewall-config.in:605 ../src/firewall-config.glade.h:204
 msgid "Entry"
-msgstr ""
+msgstr "Καταχώριση"
 
 #: ../src/firewall-config.in:736
 msgid "Icmp Type"
@@ -444,23 +452,23 @@ msgstr "Στοιχείο"
 
 #: ../src/firewall-config.in:802
 msgid "Src"
-msgstr ""
+msgstr "Προέλευση"
 
 #: ../src/firewall-config.in:805
 msgid "Dest"
-msgstr ""
+msgstr "Προορισμός"
 
 #: ../src/firewall-config.in:808
 msgid "log"
-msgstr ""
+msgstr "αρχείο καταγραφής"
 
 #: ../src/firewall-config.in:811
 msgid "Audit"
-msgstr ""
+msgstr "Έλεγχος"
 
 #: ../src/firewall-config.in:939 ../src/firewall-config.glade.h:192
 msgid "Interface"
-msgstr ""
+msgstr "Διεπαφή"
 
 #: ../src/firewall-config.in:942
 msgid "Comment"
@@ -468,7 +476,7 @@ msgstr "Σχόλιο"
 
 #: ../src/firewall-config.in:964 ../src/firewall-config.glade.h:23
 msgid "Source"
-msgstr "Πηγή"
+msgstr "Προέλευση"
 
 #: ../src/firewall-config.in:1597 ../src/firewall-config.in:2872
 #: ../src/firewall-config.in:2925
@@ -482,77 +490,77 @@ msgstr "Σφάλμα"
 #: ../src/firewall-config.in:2041 ../src/firewall-config.in:3284
 #: ../src/firewall-config.in:3791 ../src/firewall-config.glade.h:233
 msgid "accept"
-msgstr ""
+msgstr "αποδοχή"
 
 #: ../src/firewall-config.in:2043 ../src/firewall-config.in:3286
 #: ../src/firewall-config.in:3793 ../src/firewall-config.in:3966
 #: ../src/firewall-config.glade.h:234
 msgid "reject"
-msgstr ""
+msgstr "άρνηση"
 
 #: ../src/firewall-config.in:2047 ../src/firewall-config.in:3303
 #: ../src/firewall-config.in:3800 ../src/firewall-config.glade.h:235
 msgid "drop"
-msgstr ""
+msgstr "απόρριψη"
 
 #: ../src/firewall-config.in:2049 ../src/firewall-config.in:3305
 #: ../src/firewall-config.in:3802 ../src/firewall-config.in:3969
 #: ../src/firewall-config.glade.h:236
 msgid "mark"
-msgstr ""
+msgstr "σήμανση"
 
 #: ../src/firewall-config.in:2052 ../src/firewall-config.in:2100
 #: ../src/firewall-config.in:2105
 msgid "limit"
-msgstr ""
+msgstr "όριο"
 
 #: ../src/firewall-config.in:2068 ../src/firewall-config.in:3239
 #: ../src/firewall-config.in:3425 ../src/firewall-config.in:3730
 #: ../src/firewall-config.glade.h:255
 msgid "service"
-msgstr ""
+msgstr "υπηρεσία"
 
 #: ../src/firewall-config.in:2070 ../src/firewall-config.in:3243
 #: ../src/firewall-config.in:3427 ../src/firewall-config.in:3734
 #: ../src/firewall-config.glade.h:256
 msgid "port"
-msgstr ""
+msgstr "θύρα"
 
 #: ../src/firewall-config.in:2072 ../src/firewall-config.in:3248
 #: ../src/firewall-config.in:3436 ../src/firewall-config.in:3743
 #: ../src/firewall-config.glade.h:257
 msgid "protocol"
-msgstr ""
+msgstr "πρωτόκολλο"
 
 #: ../src/firewall-config.in:2074 ../src/firewall-config.in:3252
 #: ../src/firewall-config.in:3764 ../src/firewall-config.in:3986
 #: ../src/firewall-config.glade.h:262
 msgid "masquerade"
-msgstr ""
+msgstr "μασκάρεμα"
 
 #: ../src/firewall-config.in:2076 ../src/firewall-config.in:3256
 #: ../src/firewall-config.in:3438 ../src/firewall-config.in:3747
 #: ../src/firewall-config.in:3999 ../src/firewall-config.glade.h:258
 msgid "icmp-block"
-msgstr ""
+msgstr "φραγή-icmp"
 
 #: ../src/firewall-config.in:2078 ../src/firewall-config.in:3260
 #: ../src/firewall-config.in:3440 ../src/firewall-config.in:3751
 #: ../src/firewall-config.glade.h:259
 msgid "icmp-type"
-msgstr ""
+msgstr "τύπος-icmp"
 
 #: ../src/firewall-config.in:2080 ../src/firewall-config.in:3264
 #: ../src/firewall-config.in:3442 ../src/firewall-config.in:3755
 #: ../src/firewall-config.in:3994 ../src/firewall-config.glade.h:260
 msgid "forward-port"
-msgstr ""
+msgstr "θύρα-προώθησης"
 
 #: ../src/firewall-config.in:2087 ../src/firewall-config.in:3274
 #: ../src/firewall-config.in:3444 ../src/firewall-config.in:3766
 #: ../src/firewall-config.glade.h:261
 msgid "source-port"
-msgstr ""
+msgstr "θύρα-προέλευσης"
 
 #: ../src/firewall-config.in:2098
 msgid "level"
@@ -570,18 +578,18 @@ msgstr "Ζώνη"
 #: ../src/firewall-config.in:2485
 #, c-format
 msgid "Default Zone: %s"
-msgstr ""
+msgstr "Προεπιλεγμένη ζώνη: %s"
 
 #: ../src/firewall-config.in:2499 ../src/firewall-config.in:2540
 #: ../src/firewall-config.in:2577
 #, c-format
 msgid "Zone: %s"
-msgstr ""
+msgstr "Ζώνη: %s"
 
 #: ../src/firewall-config.in:2865
 #, c-format
 msgid "Zone '%s': Service '%s' is not available."
-msgstr "Ζώνη '%s'. Η υπηρεσία '%s' δεν είναι διαθέσιμη "
+msgstr "Ζώνη «%s»: η υπηρεσία «%s» δεν είναι διαθέσιμη."
 
 #: ../src/firewall-config.in:2873 ../src/firewall-config.in:2926
 #: ../src/firewall-config.glade.h:156
@@ -599,7 +607,7 @@ msgstr "Ζώνη '%s'. Ο τύπος ICMP '%s' δεν είναι διαθέσι�
 
 #: ../src/firewall-config.in:3078
 msgid "Built-in zone, rename not supported."
-msgstr "Ενσωματωμένη ζώνη, η μετονομασία δεν υποστηρίζεται."
+msgstr "Ενσωματωμένη ζώνη, δεν υποστηρίζεται μετονομασία."
 
 #: ../src/firewall-config.in:3201 ../src/firewall-config.in:3704
 #: ../src/firewall-config.glade.h:241
@@ -624,59 +632,58 @@ msgstr "ημέρα"
 #: ../src/firewall-config.in:3203 ../src/firewall-config.in:3706
 #: ../src/firewall-config.glade.h:247
 msgid "emergency"
-msgstr ""
+msgstr "έκτακτη ανάγκη"
 
 #: ../src/firewall-config.in:3204 ../src/firewall-config.in:3707
 #: ../src/firewall-config.glade.h:248
 msgid "alert"
-msgstr ""
+msgstr "ειδοποίηση"
 
 #: ../src/firewall-config.in:3205 ../src/firewall-config.in:3708
 #: ../src/firewall-config.glade.h:249
 msgid "critical"
-msgstr ""
+msgstr "κρίσιμο"
 
 #: ../src/firewall-config.in:3206 ../src/firewall-config.in:3709
 #: ../src/firewall-config.glade.h:250
 msgid "error"
-msgstr ""
+msgstr "σφάλμα"
 
 #: ../src/firewall-config.in:3207 ../src/firewall-config.in:3710
 #: ../src/firewall-config.glade.h:251
 msgid "warning"
-msgstr ""
+msgstr "προειδοποίηση"
 
 #: ../src/firewall-config.in:3208 ../src/firewall-config.in:3711
 #: ../src/firewall-config.glade.h:252
 msgid "notice"
-msgstr ""
+msgstr "σημείωση"
 
 #: ../src/firewall-config.in:3209 ../src/firewall-config.in:3712
 #: ../src/firewall-config.glade.h:253
 msgid "info"
-msgstr ""
+msgstr "πληροφορίες"
 
 #: ../src/firewall-config.in:3210 ../src/firewall-config.in:3713
 #: ../src/firewall-config.glade.h:254
 msgid "debug"
-msgstr ""
+msgstr "αποσφαλμάτωση"
 
 #: ../src/firewall-config.in:3417 ../src/firewall-config.in:3640
 #: ../src/firewall-config.in:3664 ../src/firewall-config.in:3720
 #: ../src/firewall-config.in:3872 ../src/firewall-config.in:3925
 msgid "ipv4"
-msgstr ""
+msgstr "ipv4"
 
 #: ../src/firewall-config.in:3419 ../src/firewall-config.in:3642
 #: ../src/firewall-config.in:3666 ../src/firewall-config.in:3720
 #: ../src/firewall-config.in:3874 ../src/firewall-config.in:3927
 msgid "ipv6"
-msgstr ""
+msgstr "ipv6"
 
 #: ../src/firewall-config.in:4008
-#, fuzzy
 msgid "invalid element"
-msgstr "Το όρισμα %s είναι λάθος."
+msgstr "μη έγκυρο στοιχείο"
 
 #: ../src/firewall-config.in:5174
 msgid ""
@@ -684,30 +691,33 @@ msgid ""
 "masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
+"Η προώθηση σε κάποιο άλλο σύστημα είναι χρήσιμη μόνο αν η διεπαφή είναι "
+"μασκαρισμένη.\n"
+"Θέλετε να μασκάρετε αυτήν τη ζώνη;"
 
 #: ../src/firewall-config.in:5532
 msgid "Built-in service, rename not supported."
-msgstr "Ενσωματωμένη υπηρεσία, η μετονομασία δεν υποστηρίζεται."
+msgstr "Ενσωματωμένη υπηρεσία, δεν υποστηρίζεται μετονομασία."
 
 #: ../src/firewall-config.in:5743
 msgid "Please enter an ipv4 address with the form address[/mask]."
-msgstr ""
+msgstr "Εισαγάγετε μια διεύθυνση ipv4 με τη μορφή «διεύθυνση[/μάσκα]»."
 
 #: ../src/firewall-config.in:5744
 msgid "The mask can be a network mask or a number."
-msgstr ""
+msgstr "Η μάσκα μπορεί να είναι μάσκα δικτύου ή αριθμός."
 
 #: ../src/firewall-config.in:5746
 msgid "Please enter an ipv6 address with the form address[/mask]."
-msgstr ""
+msgstr "Εισαγάγετε μια διεύθυνση ipv6 με τη μορφή «διεύθυνση[/μάσκα]»."
 
 #: ../src/firewall-config.in:5747
 msgid "The mask is a number."
-msgstr ""
+msgstr "Η μάσκα είναι ένας αριθμός."
 
 #: ../src/firewall-config.in:5750
 msgid "Please enter an ipv4 or ipv6 address with the form address[/mask]."
-msgstr ""
+msgstr "Εισαγάγετε μια διεύθυνση ipv4 ή ipv6 με τη μορφή «διεύθυνση[/μάσκα]»."
 
 #: ../src/firewall-config.in:5753
 msgid ""
@@ -717,24 +727,24 @@ msgstr ""
 
 #: ../src/firewall-config.in:5935
 msgid "Built-in ipset, rename not supported."
-msgstr ""
+msgstr "Ενσωματωμένο ipset, η μετονομασία δεν υποστηρίζεται."
 
 #: ../src/firewall-config.in:6035 ../src/firewall-config.in:6124
 msgid "Please select a file"
-msgstr ""
+msgstr "Επιλέξτε ένα αρχείο"
 
 #: ../src/firewall-config.in:6049 ../src/firewall-config.in:6138
 msgid "Text Files"
-msgstr ""
+msgstr "Αρχεία κειμένου"
 
 #: ../src/firewall-config.in:6054 ../src/firewall-config.in:6143
 msgid "All Files"
-msgstr ""
+msgstr "Όλα τα αρχεία"
 
 #: ../src/firewall-config.in:6569 ../src/firewall-config.in:6598
 #: ../src/firewall-config.glade.h:36
 msgid "All"
-msgstr ""
+msgstr "Όλα"
 
 #: ../src/firewall-config.in:6569 ../src/firewall-config.in:6598
 #: ../src/firewall-config.glade.h:37
@@ -748,21 +758,21 @@ msgstr "IPv6"
 
 #: ../src/firewall-config.in:6575
 msgid "Built-in helper, rename not supported."
-msgstr ""
+msgstr "Ενσωματωμένος βοηθός, η μετονομασία δεν υποστηρίζεται."
 
 #: ../src/firewall-config.in:7060
 msgid "Built-in icmp, rename not supported."
-msgstr "Ενσωματωμένος icmp, η μετονομασία δεν υποστηρίζεται."
+msgstr "Ενσωματωμένο icmp, δεν υποστηρίζεται μετονομασία."
 
 #: ../src/firewall-config.in:7670
 #, c-format
 msgid "Failed to read file '%s': %s"
-msgstr ""
+msgstr "Αποτυχία ανάγνωσης του αρχείου «%s»: %s"
 
 #: ../src/firewall-config.in:7807
 #, c-format
 msgid "Select zone for source %s"
-msgstr ""
+msgstr "Επιλέξτε ζώνη για την προέλευση «%s»"
 
 #. implies all other actions
 #: ../src/firewall-config.glade.h:1
@@ -771,51 +781,51 @@ msgstr "Διεύθυνση"
 
 #: ../src/firewall-config.glade.h:2
 msgid "Automatic Helpers"
-msgstr ""
+msgstr "Αυτόματοι βοηθοί"
 
 #: ../src/firewall-config.glade.h:3
 msgid "Please select the automatic helpers value:"
-msgstr ""
+msgstr "Επιλέξτε την τιμή αυτόματων βοηθών:"
 
 #: ../src/firewall-config.glade.h:5
 msgid "Please select default zone from the list below."
-msgstr ""
+msgstr "Επιλέξτε την προεπιλεγμένη ζώνη από την παρακάτω λίστα."
 
 #: ../src/firewall-config.glade.h:6
 msgid "Direct Chain"
-msgstr ""
+msgstr "Άμεση αλυσίδα"
 
 #: ../src/firewall-config.glade.h:7
 msgid "Please select ipv and table and enter the chain name."
-msgstr ""
+msgstr "Επιλέξτε ipv και πίνακα και εισαγάγετε το όνομα αλυσίδας."
 
 #: ../src/firewall-config.glade.h:8
 msgid "ipv:"
-msgstr ""
+msgstr "ipv:"
 
 #: ../src/firewall-config.glade.h:9
 msgid "eb"
-msgstr ""
+msgstr "eb"
 
 #: ../src/firewall-config.glade.h:10
 msgid "Chain:"
-msgstr ""
+msgstr "Αλυσίδα:"
 
 #: ../src/firewall-config.glade.h:11
 msgid "nat"
-msgstr ""
+msgstr "nat"
 
 #: ../src/firewall-config.glade.h:12
 msgid "raw"
-msgstr ""
+msgstr "raw"
 
 #: ../src/firewall-config.glade.h:13
 msgid "security"
-msgstr ""
+msgstr "ασφάλεια"
 
 #: ../src/firewall-config.glade.h:14
 msgid "Table:"
-msgstr ""
+msgstr "Πίνακας:"
 
 #: ../src/firewall-config.glade.h:15
 msgid "Direct Passthrough Rule"
@@ -823,25 +833,25 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:16
 msgid "Please select ipv and enter the args."
-msgstr ""
+msgstr "Επιλέξτε ipv και εισαγάγετε τα ορίσματα."
 
 #: ../src/firewall-config.glade.h:17
 msgid "Args:"
-msgstr ""
+msgstr "Ορίσματα:"
 
 #: ../src/firewall-config.glade.h:18
 msgid "Port Forwarding"
-msgstr "Προώθηση πόρτας"
+msgstr "Προώθηση θύρας"
 
 #: ../src/firewall-config.glade.h:19
 msgid ""
 "Please select the source and destination options according to your needs."
 msgstr ""
-"Παρακαλώ επιλέξτε τις επιλογές πηγής και προορισμού βάση των αναγκών σας."
+"Προσαρμόστε τις επιλογές προέλευσης και προορισμού βάσει των αναγκών σας."
 
 #: ../src/firewall-config.glade.h:20
 msgid "Port / Port Range:"
-msgstr "Πόρτα / Εμβέλεια πόρτων:"
+msgstr "Θύρα/Εύρος θυρών:"
 
 #: ../src/firewall-config.glade.h:21
 msgid "IP address:"
@@ -849,7 +859,7 @@ msgstr "Διεύθυνση IP:"
 
 #: ../src/firewall-config.glade.h:22
 msgid "Protocol:"
-msgstr "Πρωτόκολλο"
+msgstr "Πρωτόκολλο:"
 
 #: ../src/firewall-config.glade.h:24
 msgid "Destination"
@@ -869,15 +879,15 @@ msgstr "Τοπική προώθηση"
 
 #: ../src/firewall-config.glade.h:27
 msgid "Forward to another port"
-msgstr "Προώθηση σε άλλη πόρτα"
+msgstr "Προώθηση σε άλλη θύρα"
 
 #: ../src/firewall-config.glade.h:28
 msgid "Base Helper Settings"
-msgstr ""
+msgstr "Ρυθμίσεις βοηθού βάσης"
 
 #: ../src/firewall-config.glade.h:29
 msgid "Please configure base helper settings:"
-msgstr ""
+msgstr "Διαμορφώστε τις ρυθμίσεις βοηθού βάσης:"
 
 #: ../src/firewall-config.glade.h:30
 msgid "Bold entries are mandatory, all others are optional."
@@ -886,7 +896,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:31
 msgid "Name:"
-msgstr "Ονομασία:"
+msgstr "Όνομα:"
 
 #: ../src/firewall-config.glade.h:32
 msgid "Version:"
@@ -894,7 +904,7 @@ msgstr "Έκδοση:"
 
 #: ../src/firewall-config.glade.h:33
 msgid "Short:"
-msgstr "Ταξηνόμηση:"
+msgstr "Περίληψη:"
 
 #: ../src/firewall-config.glade.h:34
 msgid "Description:"
@@ -902,19 +912,19 @@ msgstr "Περιγραφή:"
 
 #: ../src/firewall-config.glade.h:35
 msgid "Family:"
-msgstr ""
+msgstr "Οικογένεια:"
 
 #: ../src/firewall-config.glade.h:39
 msgid "Module:"
-msgstr ""
+msgstr "Μονάδα:"
 
 #: ../src/firewall-config.glade.h:40
 msgid "Helper"
-msgstr ""
+msgstr "Βοηθός"
 
 #: ../src/firewall-config.glade.h:41
 msgid "Please select a helper:"
-msgstr ""
+msgstr "Επιλέξτε έναν βοηθό:"
 
 #: ../src/firewall-config.glade.h:42
 msgid "Base ICMP Type Settings"
@@ -922,7 +932,7 @@ msgstr "Ρυθμίσεις βάσης τύπου ICMP"
 
 #: ../src/firewall-config.glade.h:43
 msgid "Please configure base ICMP type settings:"
-msgstr "Παρακαλώ διαμορφώστε τις ρυθμίσεις βάσης τύπου ICMP:"
+msgstr "Διαμορφώστε τις ρυθμίσεις βάσης τύπου ICMP:"
 
 #: ../src/firewall-config.glade.h:44
 msgid "ICMP Type"
@@ -930,27 +940,27 @@ msgstr "Τύπος ICMP"
 
 #: ../src/firewall-config.glade.h:45
 msgid "Please select an ICMP type"
-msgstr ""
+msgstr "Επιλέξτε έναν τύπο ICMP"
 
 #: ../src/firewall-config.glade.h:46
 msgid "Add Entry"
-msgstr "Προσθήκη καταχώρησης"
+msgstr "Προσθήκη καταχώρισης"
 
 #: ../src/firewall-config.glade.h:47
 msgid "Add Entries From File"
-msgstr ""
+msgstr "Προσθήκη καταχωρίσεων από αρχείο"
 
 #: ../src/firewall-config.glade.h:48
 msgid "Remove Selected Entry"
-msgstr ""
+msgstr "Αφαίρεση επιλεγμένης καταχώρισης"
 
 #: ../src/firewall-config.glade.h:49
 msgid "Remove All Entries"
-msgstr ""
+msgstr "Αφαίρεση όλων των καταχωρίσεων"
 
 #: ../src/firewall-config.glade.h:50
 msgid "Remove Entries From File"
-msgstr ""
+msgstr "Αφαίρεση καταχωρίσεων από αρχείο"
 
 #: ../src/firewall-config.glade.h:52
 msgid "_File"
@@ -962,7 +972,7 @@ msgstr "_Επιλογές"
 
 #: ../src/firewall-config.glade.h:54
 msgid "Reload Firewalld"
-msgstr "Επανεκκίνηση Firewalld"
+msgstr "Επαναφόρτωση του Firewalld"
 
 #: ../src/firewall-config.glade.h:55
 msgid ""
@@ -973,7 +983,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:56
 msgid "Change which zone a network connection belongs to."
-msgstr ""
+msgstr "Αλλάξτε τη ζώνη στην οποία ανήκει μια σύνδεση δικτύου."
 
 #: ../src/firewall-config.glade.h:58
 msgid "Change Default Zone"
@@ -981,7 +991,7 @@ msgstr "Αλλαγή προεπιλεγμένης ζώνης"
 
 #: ../src/firewall-config.glade.h:59
 msgid "Change default zone for connections or interfaces."
-msgstr ""
+msgstr "Αλλάξτε την προεπιλεγμένη ζώνη για συνδέσεις ή διεπαφές."
 
 #: ../src/firewall-config.glade.h:60
 msgid "Change Log Denied"
@@ -989,11 +999,11 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:61
 msgid "Change LogDenied value."
-msgstr ""
+msgstr "Αλλαγή της τιμής LogDenied."
 
 #: ../src/firewall-config.glade.h:62
 msgid "Configure Automatic Helper Assigment"
-msgstr ""
+msgstr "Ρύθμιση αυτόματης ανάθεσης βοηθών"
 
 #: ../src/firewall-config.glade.h:63
 msgid "Configure Automatic Helper Assignment setting."
@@ -1005,7 +1015,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:65
 msgid "Panic Mode"
-msgstr ""
+msgstr "Λειτουργία πανικού"
 
 #: ../src/firewall-config.glade.h:66
 msgid "Make runtime configuration permanent"
@@ -1017,27 +1027,27 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:68
 msgid "_View"
-msgstr ""
+msgstr "_Προβολή"
 
 #: ../src/firewall-config.glade.h:69
 msgid "IPSets"
-msgstr ""
+msgstr "IPSet"
 
 #: ../src/firewall-config.glade.h:70
 msgid "ICMP Types"
-msgstr ""
+msgstr "Τύποι ICMP"
 
 #: ../src/firewall-config.glade.h:71
 msgid "Helpers"
-msgstr ""
+msgstr "Βοηθοί"
 
 #: ../src/firewall-config.glade.h:72
 msgid "Direct Configuration"
-msgstr ""
+msgstr "Άμεση διαμόρφωση"
 
 #: ../src/firewall-config.glade.h:73
 msgid "Active Bindings"
-msgstr ""
+msgstr "Ενεργές συσχετίσεις"
 
 #: ../src/firewall-config.glade.h:74
 msgid "_Help"
@@ -1045,11 +1055,11 @@ msgstr "_Βοήθεια"
 
 #: ../src/firewall-config.glade.h:75
 msgid "Change Zone"
-msgstr ""
+msgstr "Αλλαγή ζώνης"
 
 #: ../src/firewall-config.glade.h:76
 msgid "Change zone of binding"
-msgstr ""
+msgstr "Αλλαγή ζώνης συσχέτισης"
 
 #: ../src/firewall-config.glade.h:77
 msgid ""
@@ -1063,7 +1073,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:79
 msgid "Configuration:"
-msgstr ""
+msgstr "Διαμόρφωση:"
 
 #: ../src/firewall-config.glade.h:80
 msgid ""
@@ -1071,8 +1081,8 @@ msgid ""
 "configuration. Permanent configuration will be active after service or "
 "system reload or restart."
 msgstr ""
-"Τρέχουσες ορατές ρυθμίσεις. Οι διαμόρφωση κατά την εκκίνηση είναι η "
-"πραγματικά ενεργή διαμόρφωση. Η επίμονη διαμόρφωση θα είναι ενεργή μετά από "
+"Τρέχουσες ορατές ρυθμίσεις. Η διαμόρφωση χρόνου λειτουργίας είναι η "
+"πραγματική ενεργή διαμόρφωση. Η μόνιμη διαμόρφωση θα είναι ενεργή μετά την "
 "επανεκκίνηση της υπηρεσίας ή του συστήματος."
 
 #: ../src/firewall-config.glade.h:81
@@ -1139,19 +1149,19 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:95
 msgid "Add Protocol"
-msgstr ""
+msgstr "Προσθήκη πρωτοκόλλου"
 
 #: ../src/firewall-config.glade.h:96
 msgid "Edit Protocol"
-msgstr ""
+msgstr "Επεξεργασία πρωτοκόλλου"
 
 #: ../src/firewall-config.glade.h:97
 msgid "Remove Protocol"
-msgstr ""
+msgstr "Αφαίρεση πρωτοκόλλου"
 
 #: ../src/firewall-config.glade.h:98
 msgid "Protocols"
-msgstr ""
+msgstr "Πρωτόκολλα"
 
 #: ../src/firewall-config.glade.h:99
 msgid ""
@@ -1161,7 +1171,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:100
 msgid "Source Ports"
-msgstr ""
+msgstr "Θύρες προέλευσης"
 
 #: ../src/firewall-config.glade.h:101
 msgid ""
@@ -1169,10 +1179,10 @@ msgid ""
 "network to the internet. Your local network will not be visible and the "
 "hosts appear as a single address on the internet. Masquerading is IPv4 only."
 msgstr ""
-"Το μασκάρισμα σας επιτρέπει να στίσετε έναν υπολογιστή ή ρούτερ που συνδέει "
-"το τοπικό σας δίκτυο στο ίντερνετ. Το τοπικό σας δίκτυο δεν θα είναι ορατό "
-"και οι υπολογιστές θα εμφανίζονται ως μια μοναδική διεύθυνση στο ίντερνετ. "
-"Το μασκάρισμα είναι IPv4 μόνο."
+"Το μασκάρεμα σάς επιτρέπει να ρυθμίσετε έναν υπολογιστή ή δρομολογητή που "
+"συνδέει το τοπικό σας δίκτυο με το διαδίκτυο. Το τοπικό σας δίκτυο δεν θα "
+"είναι ορατό και οι υπολογιστές θα εμφανίζονται ως μία μοναδική διεύθυνση στο "
+"διαδίκτυο. Το μασκάρεμα εφαρμόζεται μόνο στο πρωτόκολλο IPv4."
 
 #: ../src/firewall-config.glade.h:102
 msgid "Masquerade zone"
@@ -1183,12 +1193,12 @@ msgid ""
 "If you enable masquerading, IP forwarding will be enabled for your IPv4 "
 "networks."
 msgstr ""
-"Αν ενεργοποιήσετε το μασκάρισμα, Η προώθηση IP θα ενεργοποιηθεί για τα IPv4 "
-"δίκτυα σας."
+"Εάν ενεργοποιήσετε το μασκάρεμα, θα ενεργοποιηθεί η προώθηση IP για τα "
+"δίκτυα IPv4 σας."
 
 #: ../src/firewall-config.glade.h:104
 msgid "Masquerading"
-msgstr "Μασκάρισμα"
+msgstr "Μασκάρεμα"
 
 #: ../src/firewall-config.glade.h:105
 msgid ""
@@ -1197,22 +1207,22 @@ msgid ""
 "system is only useful if the interface is masqueraded. Port forwarding is "
 "IPv4 only."
 msgstr ""
-"Προσθήκη καταχωρίσεων για την προώθηση πορτών είτε από μια πόρτα σε άλλη στο "
-"τοπικό σύστημα ή από το τοπικό σύστημα σε άλλο σύστημα. Η προώθηση σε άλλο "
-"σύστημα είναι χρήσιμη μόνο αν η διεπαφή είναι μασκαρισμένη. Η προώθηση "
-"πορτών είναι IPv4 μόνο."
+"Προσθέστε καταχωρίσεις για την προώθηση θυρών από μια θύρα σε κάποια άλλη "
+"στο τοπικό σύστημα ή από το τοπικό σύστημα σε κάποιο άλλο. Η προώθηση σε "
+"άλλο σύστημα είναι χρήσιμη μόνο αν η διεπαφή είναι μασκαρισμένη. Η προώθηση "
+"θυρών ισχύει μόνο για το πρωτόκολλο IPv4."
 
 #: ../src/firewall-config.glade.h:106
 msgid "Add Forward Port"
-msgstr "Πρόσθεση της Πύλης Προώθησης "
+msgstr "Προσθήκη θύρας προώθησης"
 
 #: ../src/firewall-config.glade.h:107
 msgid "Edit Forward Port"
-msgstr "Εκδοση της Πύλης Προώθησης "
+msgstr "Επεξεργασία θύρας προώθησης"
 
 #: ../src/firewall-config.glade.h:108
 msgid "Remove Forward Port"
-msgstr "Αφαιρέστε την Πύλη Εισόδου Προώθησης "
+msgstr "Αφαίρεση θύρας προώθησης"
 
 #: ../src/firewall-config.glade.h:109
 msgid ""
@@ -1220,18 +1230,19 @@ msgid ""
 "messages between networked computers, but additionally for informational "
 "messages like ping requests and replies."
 msgstr ""
-"Το Internet Control Message Protocol (ICMP) χρησιμοποιείται κυρίως για την "
-"αποστολή μηνυμάτων σφαλμάτων μεταξύ υπολογιστές του δικτύου, αλλά επιπλέον "
-"για ενημερωτικά μηνύματα όπως αιτήματα ping και απαντήσεις."
+"Το πρωτόκολλο ICMP (Internet Control Message Protocol) χρησιμοποιείται "
+"κυρίως για την αποστολή μηνυμάτων σφαλμάτων ανάμεσα σε δικτυωμένους "
+"υπολογιστές, αλλά επιπλέον για ενημερωτικά μηνύματα, όπως αιτήματα ping και "
+"απαντήσεις."
 
 #: ../src/firewall-config.glade.h:110
 msgid ""
 "Mark the ICMP types in the list, which should be rejected. All other ICMP "
 "types are allowed to pass the firewall. The default is no limitation."
 msgstr ""
-"Σημειώστε όλους τους τύπους ICMP στη λίστα, η οποία θα πρέπει να απορριφθεί. "
-"Όλοι οι άλλοι τύποι ICMP επιτρέπονται να περάσουν το τείχος προστασίας. Η "
-"προεπιλογή είναι να μην υπάρχει κανένας περιορισμός."
+"Επισημάνετε όλους τους τύπους ICMP που θα πρέπει να απορρίπτονται, στη "
+"λίστα. Σε όλους τους άλλους τύπους ICMP θα επιτρέπεται η διαπέραση του "
+"τείχους προστασίας. Από προεπιλογή, δεν υπάρχει κανένας περιορισμός."
 
 #: ../src/firewall-config.glade.h:111
 msgid ""
@@ -1241,7 +1252,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:112
 msgid "Invert Filter"
-msgstr ""
+msgstr "Αντιστροφή φίλτρου"
 
 #: ../src/firewall-config.glade.h:113
 msgid "ICMP Filter"
@@ -1253,19 +1264,19 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:115
 msgid "Add Rich Rule"
-msgstr ""
+msgstr "Προσθήκη εμπλουτισμένου κανόνα"
 
 #: ../src/firewall-config.glade.h:116
 msgid "Edit Rich Rule"
-msgstr ""
+msgstr "Επεξεργασία εμπλουτισμένου κανόνα"
 
 #: ../src/firewall-config.glade.h:117
 msgid "Remove Rich Rule"
-msgstr ""
+msgstr "Αφαίρεση εμπλουτισμένου κανόνα"
 
 #: ../src/firewall-config.glade.h:118
 msgid "Rich Rules"
-msgstr ""
+msgstr "Εμπλουτισμένοι κανόνες"
 
 #: ../src/firewall-config.glade.h:119
 msgid ""
@@ -1275,15 +1286,15 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:120
 msgid "Add Interface"
-msgstr ""
+msgstr "Προσθήκη διεπαφής"
 
 #: ../src/firewall-config.glade.h:121
 msgid "Edit Interface"
-msgstr ""
+msgstr "Επεξεργασία διεπαφής"
 
 #: ../src/firewall-config.glade.h:122
 msgid "Remove Interface"
-msgstr ""
+msgstr "Αφαίρεση διεπαφής"
 
 #: ../src/firewall-config.glade.h:124
 msgid ""
@@ -1294,19 +1305,19 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:125
 msgid "Add Source"
-msgstr ""
+msgstr "Προσθήκη προέλευσης"
 
 #: ../src/firewall-config.glade.h:126
 msgid "Edit Source"
-msgstr ""
+msgstr "Επεξεργασία προέλευσης"
 
 #: ../src/firewall-config.glade.h:127
 msgid "Remove Source"
-msgstr ""
+msgstr "Αφαίρεση προέλευσης"
 
 #: ../src/firewall-config.glade.h:129
 msgid "Zones"
-msgstr ""
+msgstr "Ζώνες"
 
 #: ../src/firewall-config.glade.h:130
 msgid ""
@@ -1338,11 +1349,11 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:137
 msgid "Edit Entry"
-msgstr "Επεξεργασία καταχώρησης"
+msgstr "Επεξεργασία καταχώρισης"
 
 #: ../src/firewall-config.glade.h:138
 msgid "Remove Entry"
-msgstr "Αφαίρεση καταχώρησης"
+msgstr "Αφαίρεση καταχώρισης"
 
 #: ../src/firewall-config.glade.h:139
 msgid ""
@@ -1352,7 +1363,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:140
 msgid "Source Port"
-msgstr ""
+msgstr "Θύρα προέλευσης"
 
 #: ../src/firewall-config.glade.h:141
 msgid "Netfilter helper modules are needed for some services."
@@ -1368,9 +1379,9 @@ msgid ""
 "the destination address and type. If both entries are empty, there is no "
 "limitation."
 msgstr ""
-"Εάν καθορίσετε τις διευθύνσεις προορισμού, η έναρξη παροχής υπηρεσιών θα "
-"πρέπει να περιορίζεται στη διεύθυνση προορισμού και το είδος. Αν και οι δύο "
-"καταχωρίσεις είναι κενές, δεν υπάρχει περιορισμός."
+"Εάν καθορίσετε διευθύνσεις προορισμού, η καταχώριση της υπηρεσίας θα "
+"περιορίζεται στη διεύθυνση προορισμού και τον τύπο. Εάν είναι κενές και οι "
+"δύο καταχωρίσεις, δεν εφαρμόζεται κανένας περιορισμός."
 
 #: ../src/firewall-config.glade.h:144
 msgid "IPv4:"
@@ -1394,23 +1405,23 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:148
 msgid "IPSet"
-msgstr ""
+msgstr "IPSet"
 
 #: ../src/firewall-config.glade.h:149
 msgid "Add IPSet"
-msgstr ""
+msgstr "Προσθήκη IPSet"
 
 #: ../src/firewall-config.glade.h:150
 msgid "Edit IPSet"
-msgstr ""
+msgstr "Επεξεργασία IPSet"
 
 #: ../src/firewall-config.glade.h:151
 msgid "Remove IPSet"
-msgstr ""
+msgstr "Αφαίρεση IPSet"
 
 #: ../src/firewall-config.glade.h:152
 msgid "Load IPSet Defaults"
-msgstr ""
+msgstr "Φόρτωση προεπιλογών IPSet"
 
 #: ../src/firewall-config.glade.h:153
 msgid ""
@@ -1428,16 +1439,18 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:155
 msgid "Add"
-msgstr ""
+msgstr "Προσθήκη"
 
 #: ../src/firewall-config.glade.h:157
 msgid "Entries"
-msgstr ""
+msgstr "Καταχωρίσεις"
 
 #: ../src/firewall-config.glade.h:158
 msgid ""
 "IPSets can only be created or deleted in the permanent configuration view."
 msgstr ""
+"Μπορείτε να δημιουργήσετε ή να διαγράψετε τα IPSet μόνο από την προβολή "
+"μόνιμης διαμόρφωσης."
 
 #: ../src/firewall-config.glade.h:159
 msgid ""
@@ -1500,23 +1513,23 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:170
 msgid "Additional chains for use with rules."
-msgstr ""
+msgstr "Πρόσθετες αλυσίδες για χρήση με κανόνες."
 
 #: ../src/firewall-config.glade.h:171
 msgid "Add Chain"
-msgstr ""
+msgstr "Προσθήκη αλυσίδας"
 
 #: ../src/firewall-config.glade.h:172
 msgid "Edit Chain"
-msgstr ""
+msgstr "Επεξεργασία αλυσίδας"
 
 #: ../src/firewall-config.glade.h:173
 msgid "Remove Chain"
-msgstr ""
+msgstr "Αφαίρεση αλυσίδας"
 
 #: ../src/firewall-config.glade.h:174
 msgid "Chains"
-msgstr ""
+msgstr "Αλυσίδες"
 
 #: ../src/firewall-config.glade.h:175
 msgid ""
@@ -1525,15 +1538,15 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:176
 msgid "Add Rule"
-msgstr ""
+msgstr "Προσθήκη κανόνα"
 
 #: ../src/firewall-config.glade.h:177
 msgid "Edit Rule"
-msgstr ""
+msgstr "Επεξεργασία κανόνα"
 
 #: ../src/firewall-config.glade.h:178
 msgid "Remove Rule"
-msgstr ""
+msgstr "Αφαίρεση κανόνα"
 
 #: ../src/firewall-config.glade.h:179
 msgid ""
@@ -1547,7 +1560,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:180
 msgid "Rules"
-msgstr ""
+msgstr "Κανόνες"
 
 #: ../src/firewall-config.glade.h:181
 msgid ""
@@ -1558,23 +1571,25 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:182
 msgid "Add Passthrough"
-msgstr ""
+msgstr "Προσθήκη διαπέρασης"
 
 #: ../src/firewall-config.glade.h:183
 msgid "Edit Passthrough"
-msgstr ""
+msgstr "Επεξεργασία διαπέρασης"
 
 #: ../src/firewall-config.glade.h:184
 msgid "Remove Passthrough"
-msgstr ""
+msgstr "Αφαίρεση διαπέρασης"
 
 #: ../src/firewall-config.glade.h:185
 msgid "Please be careful with passthrough rules to not damage the firewall."
 msgstr ""
+"Θα πρέπει να δείξετε ιδιαίτερη προσοχή στους κανόνες διαπέρασης, ώστε να "
+"αποφύγετε προβλήματα με το τείχος προστασίας."
 
 #: ../src/firewall-config.glade.h:186
 msgid "Passthrough"
-msgstr ""
+msgstr "Διαπέραση"
 
 #: ../src/firewall-config.glade.h:187
 msgid "Current default zone of the system."
@@ -1585,18 +1600,18 @@ msgctxt ""
 "Meaning: Log of denied packets. But this is too long. LogDenied is also the "
 "parameter used in firewalld.conf."
 msgid "Log Denied:"
-msgstr ""
+msgstr "Αρχείο αρνήσεων:"
 
 #: ../src/firewall-config.glade.h:189
 msgid "Panic Mode:"
-msgstr ""
+msgstr "Λειτουργία πανικού:"
 
 #: ../src/firewall-config.glade.h:190
 msgctxt ""
 "Meaning: Log of denied packets. But this is too long. LogDenied is also the "
 "parameter used in firewalld.conf."
 msgid "Automatic Helpers:"
-msgstr ""
+msgstr "Αυτόματοι βοηθοί:"
 
 #: ../src/firewall-config.glade.h:191
 msgid "Default Zone:"
@@ -1604,39 +1619,39 @@ msgstr "Προεπιλεγμένη ζώνη:"
 
 #: ../src/firewall-config.glade.h:193
 msgid "Please enter an interface name:"
-msgstr ""
+msgstr "Εισαγάγετε ένα όνομα διεπαφής:"
 
 #: ../src/firewall-config.glade.h:194
 msgid "Base IPSet Settings"
-msgstr ""
+msgstr "Ρυθμίσεις IPSet βάσης"
 
 #: ../src/firewall-config.glade.h:195
 msgid "Please configure base ipset settings:"
-msgstr ""
+msgstr "Διαμορφώστε τις ρυθμίσεις ipset βάσης:"
 
 #: ../src/firewall-config.glade.h:196
 msgid "Type:"
-msgstr ""
+msgstr "Τύπος:"
 
 #: ../src/firewall-config.glade.h:197
 msgid "Timeout:"
-msgstr ""
+msgstr "Χρονικό όριο:"
 
 #: ../src/firewall-config.glade.h:198
 msgid "Hashsize:"
-msgstr ""
+msgstr "Μέγεθος hash:"
 
 #: ../src/firewall-config.glade.h:199
 msgid "Maxelem:"
-msgstr ""
+msgstr "Μεγ. στοιχείο:"
 
 #: ../src/firewall-config.glade.h:200
 msgid "Timeout value in seconds"
-msgstr ""
+msgstr "Τιμή χρονικού ορίου σε δευτερόλεπτα"
 
 #: ../src/firewall-config.glade.h:201
 msgid "Initial hash size, default 1024"
-msgstr ""
+msgstr "Αρχικό μέγεθος hash, προεπιλογή: 1024"
 
 #: ../src/firewall-config.glade.h:202
 msgid "Max number of elements, default 65536"
@@ -1644,15 +1659,15 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:203
 msgid "Please select an ipset:"
-msgstr ""
+msgstr "Επιλέξτε ένα ipset:"
 
 #: ../src/firewall-config.glade.h:205
 msgid "Please enter an ipset entry:"
-msgstr ""
+msgstr "Εισαγάγετε μια καταχώριση ipset:"
 
 #: ../src/firewall-config.glade.h:206
 msgid "Log Denied"
-msgstr ""
+msgstr "Αρχείο αρνήσεων"
 
 #: ../src/firewall-config.glade.h:207
 msgid "Please select the log denied value:"
@@ -1660,7 +1675,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:208
 msgid "Mark"
-msgstr ""
+msgstr "Σήμανση"
 
 #: ../src/firewall-config.glade.h:209
 msgid "Please enter a mark with an optional mask."
@@ -1672,11 +1687,11 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:211
 msgid "Mark:"
-msgstr ""
+msgstr "Σήμανση:"
 
 #: ../src/firewall-config.glade.h:212
 msgid "Mask:"
-msgstr ""
+msgstr "Μάσκα:"
 
 #: ../src/firewall-config.glade.h:213
 msgid "Please select a netfilter conntrack helper:"
@@ -1684,11 +1699,11 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:214
 msgid "- Select -"
-msgstr ""
+msgstr "- Επιλογή -"
 
 #: ../src/firewall-config.glade.h:215
 msgid "Other Module:"
-msgstr ""
+msgstr "Άλλη μονάδα:"
 
 #: ../src/firewall-config.glade.h:216
 msgid "Port and Protocol"
@@ -1696,35 +1711,36 @@ msgstr "Πόρτα και πρωτόκολλο"
 
 #: ../src/firewall-config.glade.h:217
 msgid "Please enter a port and protocol."
-msgstr "Παρακαλώ εισάγετε μια πόρτα και πρωτόκολλο"
+msgstr "Εισαγάγετε μια θύρα και ένα πρωτόκολλο."
 
 #: ../src/firewall-config.glade.h:218
 msgid "Direct Rule"
-msgstr ""
+msgstr "Άμεσος κανόνας"
 
 #: ../src/firewall-config.glade.h:219
 msgid "Please select ipv and table, chain priority and enter the args."
 msgstr ""
+"Επιλέξτε ipv και πίνακα, προτεραιότητα αλυσίδας και εισαγάγετε τα ορίσματα."
 
 #: ../src/firewall-config.glade.h:220
 msgid "Priority:"
-msgstr ""
+msgstr "Προτεραιότητα:"
 
 #: ../src/firewall-config.glade.h:222
 msgid "Please enter a protocol."
-msgstr ""
+msgstr "Εισαγάγετε ένα πρωτόκολλο."
 
 #: ../src/firewall-config.glade.h:223
 msgid "Other Protocol:"
-msgstr "Άλλο πρωτόκολλο"
+msgstr "Άλλο πρωτόκολλο:"
 
 #: ../src/firewall-config.glade.h:224
 msgid "Rich Rule"
-msgstr ""
+msgstr "Εμπλουτισμένος κανόνας"
 
 #: ../src/firewall-config.glade.h:225
 msgid "Please enter a rich rule."
-msgstr ""
+msgstr "Εισαγάγετε έναν εμπλουτισμένο κανόνα."
 
 #: ../src/firewall-config.glade.h:226
 msgid "For host or network allow or denylisting deactivate the element."
@@ -1732,23 +1748,23 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:227
 msgid "Source:"
-msgstr ""
+msgstr "Προέλευση:"
 
 #: ../src/firewall-config.glade.h:228
 msgid "Destination:"
-msgstr ""
+msgstr "Προορισμός:"
 
 #: ../src/firewall-config.glade.h:229
 msgid "Log:"
-msgstr ""
+msgstr "Αρχείο καταγραφής:"
 
 #: ../src/firewall-config.glade.h:230
 msgid "Audit:"
-msgstr ""
+msgstr "Έλεγχος:"
 
 #: ../src/firewall-config.glade.h:231
 msgid "ipv4 and ipv6"
-msgstr ""
+msgstr "ipv4 και ipv6"
 
 #: ../src/firewall-config.glade.h:232
 msgid "inverted"
@@ -1762,31 +1778,31 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:238
 msgid "with Type:"
-msgstr ""
+msgstr "με τύπο:"
 
 #: ../src/firewall-config.glade.h:239
 msgid "With limit:"
-msgstr ""
+msgstr "Με όριο:"
 
 #: ../src/firewall-config.glade.h:240
 msgid "/"
-msgstr ""
+msgstr "/"
 
 #: ../src/firewall-config.glade.h:245
 msgid "Prefix:"
-msgstr ""
+msgstr "Πρόθεμα:"
 
 #: ../src/firewall-config.glade.h:246
 msgid "Level:"
-msgstr ""
+msgstr "Επίπεδο:"
 
 #: ../src/firewall-config.glade.h:263
 msgid "Element:"
-msgstr ""
+msgstr "Στοιχείο:"
 
 #: ../src/firewall-config.glade.h:264
 msgid "Action:"
-msgstr ""
+msgstr "Ενέργεια:"
 
 #: ../src/firewall-config.glade.h:265
 msgid "Base Service Settings"
@@ -1794,19 +1810,19 @@ msgstr "Ρυθμίσεις υπηρεσίας βάσης"
 
 #: ../src/firewall-config.glade.h:266
 msgid "Please configure base service settings:"
-msgstr "Παρακαλώ διαμορφώστε τις ρυθμίσεις υπηρεσίας βάσης"
+msgstr "Διαμορφώστε τις ρυθμίσεις υπηρεσίας βάσης:"
 
 #: ../src/firewall-config.glade.h:267
 msgid "Please select a service."
-msgstr ""
+msgstr "Επιλέξτε μια υπηρεσία."
 
 #: ../src/firewall-config.glade.h:268
 msgid "Please enter a source."
-msgstr ""
+msgstr "Εισαγάγετε μια πηγή."
 
 #: ../src/firewall-config.glade.h:269
 msgid "label"
-msgstr ""
+msgstr "ετικέτα"
 
 #: ../src/firewall-config.glade.h:270
 msgid "Base Zone Settings"
@@ -1814,7 +1830,7 @@ msgstr "Ρυθμίσεις βάσης ζώνης"
 
 #: ../src/firewall-config.glade.h:271
 msgid "Please configure base zone settings:"
-msgstr "Παρακαλώ διαμορφώστε τις ρυθμίσεις υπηρεσίας ζώνης"
+msgstr "Διαμορφώστε τις ρυθμίσεις ζώνης βάσης:"
 
 #: ../src/firewall-config.glade.h:272
 msgid "Default Target"
