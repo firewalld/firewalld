@@ -166,3 +166,52 @@ m4_foreach([VALUE], [[strict-forward], [loose-forward]], [
 ])
 
 FWD_END_TEST([-e "/^ERROR: INVALID_VALUE:.*is incompatible with FirewallBackend=iptables."])
+
+FWD_START_TEST([rpfilter - log denied])
+AT_KEYWORDS(rpfilter logging)
+CHECK_NFTABLES_FIB()
+
+AT_CHECK([sed -i 's/^LogDenied.*/LogDenied=all/' ./firewalld.conf])
+AT_CHECK([sed -i 's/^IPv6_rpfilter.*/IPv6_rpfilter=strict/' ./firewalld.conf])
+FWD_RELOAD()
+
+NFT_LIST_RULES([inet], [filter_PREROUTING], 0, [dnl
+    table inet firewalld {
+        chain filter_PREROUTING {
+            icmpv6 type { nd-router-advert, nd-neighbor-solicit } accept
+            meta nfproto ipv6 fib saddr . mark . iif oif missing log prefix "rpfilter_DROP: " drop
+        }
+    }
+])
+
+IP6TABLES_LIST_RULES([mangle], [PREROUTING], 0, [dnl
+    ACCEPT 58 -- ::/0 ::/0 ipv6-icmptype 134
+    ACCEPT 58 -- ::/0 ::/0 ipv6-icmptype 135
+    LOG 0 -- ::/0 ::/0 rpfilter validmark invert LOG flags 0 level 4 prefix "rpfilter_DROP: "
+    DROP 0 -- ::/0 ::/0 rpfilter validmark invert
+    PREROUTING_direct 0 -- ::/0 ::/0
+    PREROUTING_POLICIES 0 -- ::/0 ::/0
+])
+
+FWD_CHECK([-q --set-log-denied=multicast])
+
+NFT_LIST_RULES([inet], [filter_PREROUTING], 0, [dnl
+    table inet firewalld {
+        chain filter_PREROUTING {
+            icmpv6 type { nd-router-advert, nd-neighbor-solicit } accept
+            meta nfproto ipv6 fib saddr . mark . iif oif missing meta pkttype multicast log prefix "rpfilter_DROP: "
+            meta nfproto ipv6 fib saddr . mark . iif oif missing drop
+        }
+    }
+])
+
+IP6TABLES_LIST_RULES([mangle], [PREROUTING], 0, [dnl
+    ACCEPT 58 -- ::/0 ::/0 ipv6-icmptype 134
+    ACCEPT 58 -- ::/0 ::/0 ipv6-icmptype 135
+    LOG 0 -- ::/0 ::/0 rpfilter validmark invert PKTTYPE = multicast LOG flags 0 level 4 prefix "rpfilter_DROP: "
+    DROP 0 -- ::/0 ::/0 rpfilter validmark invert
+    PREROUTING_direct 0 -- ::/0 ::/0
+    PREROUTING_POLICIES 0 -- ::/0 ::/0
+])
+
+FWD_END_TEST()
