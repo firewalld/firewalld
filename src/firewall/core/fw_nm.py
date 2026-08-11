@@ -172,6 +172,9 @@ def nm_get_interfaces():
 
         try:
             con = active_con.get_connection()
+            if con is None:
+                continue
+
             if con.get_flags() & (
                 NM.SettingsConnectionFlags.NM_GENERATED
                 | NM.SettingsConnectionFlags.NM_VOLATILE
