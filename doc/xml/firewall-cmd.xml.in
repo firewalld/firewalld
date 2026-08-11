@@ -505,7 +505,13 @@
         <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <optional><option>--policy</option>=<replaceable>policy</replaceable></optional> <option>--list-all</option></term>
         <listitem>
           <para>
-            List everything added or enabled.
+            List everything. The behavior depends on whether --zone or --policy is specified:
+          </para>
+          <para>
+            With --zone or --policy: Lists all settings for the specified zone or policy.
+          </para>
+          <para>
+            Without --zone or --policy: Lists ALL zones, ALL policies, direct rules, and passthroughs.
           </para>
         </listitem>
       </varlistentry>
