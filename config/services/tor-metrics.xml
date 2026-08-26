@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>Tor - Metrics</short>
+  <description>Tor enables online anonymity and censorship resistance by directing Internet traffic through a network of relays. It conceals user's location from anyone conducting network surveillance and traffic analysis. To understand the well-being of Tor relays and the Tor network it is vital to provide and have access to relay metrics. It's important to understand that exposing the tor MetricsPort publicly is dangerous for the Tor network users, which is why that port is not enabled by default and its access has to be governed by an access policy. Please take extra precaution and care when opening this port, and close it when you are done debugging.</description>
+  <port protocol="tcp" port="9035"/>
+</service>
