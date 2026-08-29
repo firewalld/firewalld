@@ -651,7 +651,7 @@ class Logger:
                 return None
 
         # class in module
-        for dummy, obj in module.__dict__.items():
+        for obj in module.__dict__.values():
             if isinstance(obj, types.ClassType):
                 if hasattr(obj, code.co_name):
                     value = getattr(obj, code.co_name)
