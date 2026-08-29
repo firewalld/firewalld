@@ -2452,7 +2452,7 @@ class FirewallClientIcmpTypeSettings:
             self.settings[3].remove(destination)
         # empty means all
         elif not self.settings[3]:
-            self.setDestinations(list(set(["ipv4", "ipv6"]) - set([destination])))
+            self.setDestinations(list({"ipv4", "ipv6"} - {destination}))
         else:
             raise FirewallError(errors.NOT_ENABLED, destination)
 

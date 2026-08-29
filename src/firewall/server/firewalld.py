@@ -2467,9 +2467,9 @@ class FirewallD(DbusServiceObject):
             return self.fw.direct.passthrough(ipv, args)
         except FirewallError as error:
             if ipv in ["ipv4", "ipv6"]:
-                query_args = set(["-C", "--check", "-L", "--list"])
+                query_args = {"-C", "--check", "-L", "--list"}
             else:
-                query_args = set(["-L", "--list"])
+                query_args = {"-L", "--list"}
             msg = str(error)
             if error.code == errors.COMMAND_FAILED:
                 if len(set(args) & query_args) <= 0:

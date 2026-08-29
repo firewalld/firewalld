@@ -114,30 +114,28 @@ def common_check_passthrough(args):
     rules are allowed)"""
 
     args = set(args)
-    not_allowed = set(
-        [
-            "-C",
-            "--check",  # check rule
-            "-D",
-            "--delete",  # delete rule
-            "-R",
-            "--replace",  # replace rule
-            "-L",
-            "--list",  # list rule
-            "-S",
-            "--list-rules",  # print rules
-            "-F",
-            "--flush",  # flush rules
-            "-Z",
-            "--zero",  # zero rules
-            "-X",
-            "--delete-chain",  # delete chain
-            "-P",
-            "--policy",  # policy
-            "-E",
-            "--rename-chain",
-        ]
-    )  # rename chain)
+    not_allowed = {
+        "-C",
+        "--check",  # check rule
+        "-D",
+        "--delete",  # delete rule
+        "-R",
+        "--replace",  # replace rule
+        "-L",
+        "--list",  # list rule
+        "-S",
+        "--list-rules",  # print rules
+        "-F",
+        "--flush",  # flush rules
+        "-Z",
+        "--zero",  # zero rules
+        "-X",
+        "--delete-chain",  # delete chain
+        "-P",
+        "--policy",  # policy
+        "-E",
+        "--rename-chain",
+    }  # rename chain)
     # intersection of args and not_allowed is not empty, i.e.
     # something from args is not allowed
     if len(args & not_allowed) > 0:
@@ -146,7 +144,7 @@ def common_check_passthrough(args):
         )
 
     # args need to contain one of -A, -I, -N
-    needed = set(["-A", "--append", "-I", "--insert", "-N", "--new-chain"])
+    needed = {"-A", "--append", "-I", "--insert", "-N", "--new-chain"}
     # empty intersection of args and needed, i.e.
     # none from args contains any needed command
     if len(args & needed) == 0:
@@ -777,7 +775,7 @@ class ip4tables:
 
                 if chain == "PREROUTING":
                     default_rules["raw"].append("-N %s_dispatch" % (chain))
-                    self.our_chains["raw"].update(set(["%s_dispatch" % (chain)]))
+                    self.our_chains["raw"].update({"%s_dispatch" % (chain)})
                     default_rules["raw"].append("-A %s -j %s_dispatch" % (chain, chain))
 
         if self.get_available_tables("mangle"):
@@ -790,7 +788,7 @@ class ip4tables:
 
                 if chain == "PREROUTING":
                     default_rules["mangle"].append("-N %s_dispatch" % (chain))
-                    self.our_chains["mangle"].update(set(["%s_dispatch" % (chain)]))
+                    self.our_chains["mangle"].update({"%s_dispatch" % (chain)})
                     default_rules["mangle"].append(
                         "-A %s -j %s_dispatch" % (chain, chain)
                     )
@@ -804,7 +802,7 @@ class ip4tables:
                 self.our_chains["nat"].add("%s_direct" % chain)
 
                 default_rules["nat"].append("-N %s_dispatch" % (chain))
-                self.our_chains["nat"].update(set(["%s_dispatch" % (chain)]))
+                self.our_chains["nat"].update({"%s_dispatch" % (chain)})
                 default_rules["nat"].append("-A %s -j %s_dispatch" % (chain, chain))
 
         default_rules["filter"] = []
