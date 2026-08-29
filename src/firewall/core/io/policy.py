@@ -924,8 +924,8 @@ class Policy(IO_Object):
                         ),
                     )
                 if (
-                    zone not in ["ANY", "HOST"] and (set(["ANY", "HOST"]) & set(config))
-                ) or (zone in ["ANY", "HOST"] and (set(config) - set([zone]))):
+                    zone not in ["ANY", "HOST"] and ({"ANY", "HOST"} & set(config))
+                ) or (zone in ["ANY", "HOST"] and (set(config) - {zone})):
                     raise FirewallError(
                         errors.INVALID_ZONE,
                         "Policy '{}': '{}' may only contain one of: many regular zones, ANY, or HOST".format(
