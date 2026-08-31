@@ -907,7 +907,10 @@ class ip4tables:
         return {}
 
     def _zone_dispatch_chain_name(self, ingress_zone, egress_zone, table, chain):
-        return f"{SHORTCUTS[chain]}_{ingress_zone}_to_{egress_zone}"
+        if chain == "PREROUTING":
+            return f"{SHORTCUTS[chain]}_{ingress_zone}_dispatch"
+        else:
+            return f"{SHORTCUTS[chain]}_{ingress_zone}_to_{egress_zone}"
 
     def build_zone_target_rules(self, enable, ingress_zone, egress_zone, table, chain):
         add_del = {True: "-A", False: "-D"}[enable]
@@ -918,14 +921,17 @@ class ip4tables:
         chain_name = self._zone_dispatch_chain_name(
             ingress_zone, egress_zone, table, chain
         )
+
+        # prerouting cannot determine the egress. Only create it once.
+        if chain == "PREROUTING" and egress_zone != "HOST":
+            return []
+
         chain_name_unique = self.get_unique_chain_name(chain_name)
 
         rules = []
 
         target_rule = ["-t", table, add_del, chain_name_unique]
-        if chain == "PREROUTING":
-            target_rule.extend(["-j", "RETURN"])
-        elif chain in ["OUTPUT", "POSTROUTING"]:
+        if chain in ["PREROUTING", "OUTPUT", "POSTROUTING"]:
             target_rule.extend(["-j", "ACCEPT"])
         elif z_obj.target in [
             DEFAULT_ZONE_TARGET,
@@ -971,6 +977,12 @@ class ip4tables:
     def build_dispatch_stage2_chains(self, enable, ingress_zone, table, chain):
         """Chains for stage 2. (identify egress zone)"""
         add_del = {True: "-N", False: "-X"}[enable]
+
+        # prerouting doesn't have a stage2 because it can't determine the
+        # egress
+        if chain == "PREROUTING":
+            return []
+
         chain_name = f"{SHORTCUTS[chain]}_{ingress_zone}_dispatch_stage2"
         chain_name_unique = self.get_unique_chain_name(chain_name)
 
@@ -981,6 +993,11 @@ class ip4tables:
     ):
         """Chains for stage 3. (dispatch to policies)"""
         add_del = {True: "-N", False: "-X"}[enable]
+
+        # prerouting cannot determine the egress. Only create it once.
+        if chain == "PREROUTING" and egress_zone != "HOST":
+            return []
+
         chain_name = self._zone_dispatch_chain_name(
             ingress_zone, egress_zone, table, chain
         )
@@ -993,11 +1010,15 @@ class ip4tables:
     ):
         add_del = {True: "-A", False: "-D"}[enable]
 
+        # prerouting cannot determine the egress. Only create it once.
+        if chain == "PREROUTING" and egress_zone != "HOST":
+            return []
+
         # iptables can not match a source MAC in postrouting
         if source and chain == "POSTROUTING" and check_mac(source):
             return []
 
-        if "HOST" == egress_zone:
+        if "HOST" == egress_zone or chain == "PREROUTING":
             chain_name = self._zone_dispatch_chain_name(
                 ingress_zone, egress_zone, table, chain
             )
@@ -1029,6 +1050,11 @@ class ip4tables:
         self, enable, ingress_zone, egress_zone, table, chain, interface, source
     ):
         add_del = {True: "-A", False: "-D"}[enable]
+
+        # prerouting doesn't have a stage2 because it can't determine the
+        # egress
+        if chain == "PREROUTING":
+            return []
 
         # iptables can not match a destination MAC
         if source and check_mac(source):

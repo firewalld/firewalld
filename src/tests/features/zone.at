@@ -212,14 +212,16 @@ dnl iptables backend has to do some magic with chain names because it only
 dnl support 28 chars. Verify it works as expected.
 dnl NOTE: This depends on the random seed being initialized in Python.
 FWD_CHECK([--zone=$(head -c 96 /dev/zero |tr '\0' 'F') --add-service http], 0, [ignore])
-IPTABLES_LIST_RULES([filter], [ix2bAJwsQ6abxmYtcL7mc74LObLh], 0, [dnl
+dnl chain IN_AAA..._allow
+IPTABLES_LIST_RULES([filter], [2guXhiGh5km5EKouFBYori1dMSy4], 0, [dnl
 ])
-IP6TABLES_LIST_RULES([filter], [ix2bAJwsQ6abxmYtcL7mc74LObLh], 0, [dnl
+IP6TABLES_LIST_RULES([filter], [2guXhiGh5km5EKouFBYori1dMSy4], 0, [dnl
 ])
-IPTABLES_LIST_RULES([filter], [RNKz7wbhRDrQFydPsCGPPfQm21eS], 0, [dnl
+dnl chain IN_FFF..._allow
+IPTABLES_LIST_RULES([filter], [Qoi3rGO5rjeCCfX1ei4WI7yAYO2k], 0, [dnl
     ACCEPT 6 -- 0.0.0.0/0 0.0.0.0/0 tcp dpt:80
 ])
-IP6TABLES_LIST_RULES([filter], [RNKz7wbhRDrQFydPsCGPPfQm21eS], 0, [dnl
+IP6TABLES_LIST_RULES([filter], [Qoi3rGO5rjeCCfX1ei4WI7yAYO2k], 0, [dnl
     ACCEPT 6 -- ::/0 ::/0 tcp dpt:80
 ])
 
