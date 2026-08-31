@@ -853,6 +853,13 @@
 	    <para>
 	      <emphasis>Note:</emphasis> IP forwarding will be implicitly enabled if <option>toaddr</option> is specified.
 	    </para>
+            <para>
+              <emphasis>Note:</emphasis>
+                When this option is used with <option>--policy</option>,
+                it's impossible for the firewall backend to determine the egress
+                zone. See section <emphasis>UNKNOWN DESTINATIONS</emphasis>
+                for more information.
+            </para>
 	  </listitem>
 	</varlistentry>
 
@@ -2496,6 +2503,36 @@ firewall-cmd --permanent --add-port=443/tcp
 	</programlisting>
       </para>
     </refsect2>
+  </refsect1>
+
+  <refsect1 id="unknown_destinations">
+    <title>UNKNOWN DESTINATIONS</title>
+    <para>
+      Some features occur at a point in the packet processing pipeline
+      when it's impossible to determine the destination of the packet, e.g.
+      prerouting. As a consequence, firewalld can only use the ingress
+      interface/source to dispatch zones and policies. Packets are dispatched
+      without considering the
+      egress.
+    </para>
+    <para>
+      Since egress cannot be determined the order of precedence is determined
+      the policy's priority.
+    </para>
+    <para>
+      The following features are subject to this behavior:
+      <variablelist>
+	<varlistentry>
+	  <term><option>--add-forward-port</option></term>
+	</varlistentry>
+	<varlistentry>
+	  <term><option>--add-rich-rule  rule ... forward-port ...</option></term>
+	</varlistentry>
+	<varlistentry>
+	  <term><option>--add-rich-rule  rule ... mark ...</option></term>
+	</varlistentry>
+      </variablelist>
+    </para>
   </refsect1>
 
   <refsect1 id="exit_codes">

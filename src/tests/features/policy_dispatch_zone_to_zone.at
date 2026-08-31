@@ -249,438 +249,182 @@ IP6TABLES_LIST_RULES([filter], [FWD_public_to_internal], 0, [dnl
 ])
 dnl (raw, prerouting) (helpers, iptables only)
 IPTABLES_LIST_RULES([raw], [PREROUTING_dispatch], 0, [dnl
-    PRE_internal_dispatch_stage2 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_internal_to_HOST 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_public_dispatch_stage2 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_public_to_HOST 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_public_dispatch_stage2 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_public_to_HOST 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_internal_dispatch 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_public_dispatch 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_public_dispatch 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
-IPTABLES_LIST_RULES([raw], [PRE_internal_dispatch_stage2], 0, [dnl
-    PRE_internal_to_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_internal_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_internal_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([raw], [PRE_internal_to_internal], 0, [dnl
-    PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([raw], [PRE_internal_to_public], 0, [dnl
+IPTABLES_LIST_RULES([raw], [PRE_internal_dispatch], 0, [dnl
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([raw], [PRE_internal_to_HOST], 0, [dnl
-    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
-IPTABLES_LIST_RULES([raw], [PRE_public_dispatch_stage2], 0, [dnl
-    PRE_public_to_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_public_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_public_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([raw], [PRE_public_to_internal], 0, [dnl
-    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([raw], [PRE_public_to_public], 0, [dnl
-    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([raw], [PRE_public_to_HOST], 0, [dnl
+IPTABLES_LIST_RULES([raw], [PRE_public_dispatch], 0, [dnl
     PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([raw], [PREROUTING_dispatch], 0, [dnl
-    PRE_internal_dispatch_stage2 0 -- ::/0 ::/0
-    PRE_internal_to_HOST 0 -- ::/0 ::/0
-    PRE_public_dispatch_stage2 0 -- ::/0 ::/0
-    PRE_public_to_HOST 0 -- ::/0 ::/0
-    PRE_public_dispatch_stage2 0 -- ::/0 ::/0
-    PRE_public_to_HOST 0 -- ::/0 ::/0
+    PRE_internal_dispatch 0 -- ::/0 ::/0
+    PRE_public_dispatch 0 -- ::/0 ::/0
+    PRE_public_dispatch 0 -- ::/0 ::/0
 ])
-IP6TABLES_LIST_RULES([raw], [PRE_internal_dispatch_stage2], 0, [dnl
-    PRE_internal_to_internal 0 -- ::/0 ::/0
-    PRE_internal_to_public 0 -- ::/0 ::/0
-    PRE_internal_to_public 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([raw], [PRE_internal_to_internal], 0, [dnl
-    PRE_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([raw], [PRE_internal_to_public], 0, [dnl
+IP6TABLES_LIST_RULES([raw], [PRE_internal_dispatch], 0, [dnl
+    PRE_allow-host-ipv6 0 -- ::/0 ::/0
     PRE_foobar 0 -- ::/0 ::/0
     PRE_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([raw], [PRE_internal_to_HOST], 0, [dnl
-    PRE_allow-host-ipv6 0 -- ::/0 ::/0
     PRE_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    PRE_internal 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
-IP6TABLES_LIST_RULES([raw], [PRE_public_dispatch_stage2], 0, [dnl
-    PRE_public_to_internal 0 -- ::/0 ::/0
-    PRE_public_to_public 0 -- ::/0 ::/0
-    PRE_public_to_public 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([raw], [PRE_public_to_internal], 0, [dnl
-    PRE_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([raw], [PRE_public_to_public], 0, [dnl
-    PRE_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([raw], [PRE_public_to_HOST], 0, [dnl
+IP6TABLES_LIST_RULES([raw], [PRE_public_dispatch], 0, [dnl
     PRE_allow-host-ipv6 0 -- ::/0 ::/0
     PRE_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    PRE_public 0 -- ::/0 ::/0
+    PRE_public 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 dnl (mangle, prerouting)
 NFT_LIST_RULES([inet], [mangle_PREROUTING_dispatch], 0, [dnl
     table inet firewalld {
         chain mangle_PREROUTING_dispatch {
-            iifname "foobar1" jump mangle_PRE_internal_dispatch_stage2
-            iifname "foobar1" jump mangle_PRE_internal_to_HOST
-            iifname "foobar0" jump mangle_PRE_public_dispatch_stage2
-            iifname "foobar0" jump mangle_PRE_public_to_HOST
-            jump mangle_PRE_public_dispatch_stage2
-            jump mangle_PRE_public_to_HOST
+            iifname "foobar1" jump mangle_PRE_internal_dispatch
+            iifname "foobar0" jump mangle_PRE_public_dispatch
+            jump mangle_PRE_public_dispatch
         }
     }
 ])
-NFT_LIST_RULES([inet], [mangle_PRE_internal_dispatch_stage2], 0, [dnl
+NFT_LIST_RULES([inet], [mangle_PRE_internal_dispatch], 0, [dnl
     table inet firewalld {
-        chain mangle_PRE_internal_dispatch_stage2 {
-            oifname "foobar1" jump mangle_PRE_internal_to_internal
-            oifname "foobar0" jump mangle_PRE_internal_to_public
-            jump mangle_PRE_internal_to_public
-        }
-    }
-])
-NFT_LIST_RULES([inet], [mangle_PRE_internal_to_public], 0, [dnl
-    table inet firewalld {
-        chain mangle_PRE_internal_to_public {
+        chain mangle_PRE_internal_dispatch {
+            jump mangle_PRE_policy_allow-host-ipv6
             jump mangle_PRE_policy_foobar
             jump mangle_PRE_internal
-            return
+            accept
         }
     }
 ])
-NFT_LIST_RULES([inet], [mangle_PRE_internal_to_internal], 0, [dnl
+NFT_LIST_RULES([inet], [mangle_PRE_public_dispatch], 0, [dnl
     table inet firewalld {
-        chain mangle_PRE_internal_to_internal {
-            jump mangle_PRE_internal
-            return
-        }
-    }
-])
-NFT_LIST_RULES([inet], [mangle_PRE_internal_to_HOST], 0, [dnl
-    table inet firewalld {
-        chain mangle_PRE_internal_to_HOST {
-            jump mangle_PRE_policy_allow-host-ipv6
-            jump mangle_PRE_internal
-            return
-        }
-    }
-])
-NFT_LIST_RULES([inet], [mangle_PRE_public_dispatch_stage2], 0, [dnl
-    table inet firewalld {
-        chain mangle_PRE_public_dispatch_stage2 {
-            oifname "foobar1" jump mangle_PRE_public_to_internal
-            oifname "foobar0" jump mangle_PRE_public_to_public
-            jump mangle_PRE_public_to_public
-        }
-    }
-])
-NFT_LIST_RULES([inet], [mangle_PRE_public_to_internal], 0, [dnl
-    table inet firewalld {
-        chain mangle_PRE_public_to_internal {
-            jump mangle_PRE_public
-            return
-        }
-    }
-])
-NFT_LIST_RULES([inet], [mangle_PRE_public_to_public], 0, [dnl
-    table inet firewalld {
-        chain mangle_PRE_public_to_public {
-            jump mangle_PRE_public
-            return
-        }
-    }
-])
-NFT_LIST_RULES([inet], [mangle_PRE_public_to_HOST], 0, [dnl
-    table inet firewalld {
-        chain mangle_PRE_public_to_HOST {
+        chain mangle_PRE_public_dispatch {
             jump mangle_PRE_policy_allow-host-ipv6
             jump mangle_PRE_public
-            return
+            accept
         }
     }
 ])
 IPTABLES_LIST_RULES([mangle], [PREROUTING_dispatch], 0, [dnl
-    PRE_internal_dispatch_stage2 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_internal_to_HOST 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_public_dispatch_stage2 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_public_to_HOST 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_public_dispatch_stage2 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_public_to_HOST 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_internal_dispatch 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_public_dispatch 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_public_dispatch 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
-IPTABLES_LIST_RULES([mangle], [PRE_internal_dispatch_stage2], 0, [dnl
-    PRE_internal_to_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_internal_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_internal_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([mangle], [PRE_internal_to_internal], 0, [dnl
-    PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([mangle], [PRE_internal_to_public], 0, [dnl
+IPTABLES_LIST_RULES([mangle], [PRE_internal_dispatch], 0, [dnl
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([mangle], [PRE_internal_to_HOST], 0, [dnl
-    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
-IPTABLES_LIST_RULES([mangle], [PRE_public_dispatch_stage2], 0, [dnl
-    PRE_public_to_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_public_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_public_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([mangle], [PRE_public_to_internal], 0, [dnl
-    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([mangle], [PRE_public_to_public], 0, [dnl
-    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([mangle], [PRE_public_to_HOST], 0, [dnl
+IPTABLES_LIST_RULES([mangle], [PRE_public_dispatch], 0, [dnl
     PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([mangle], [PREROUTING_dispatch], 0, [dnl
-    PRE_internal_dispatch_stage2 0 -- ::/0 ::/0
-    PRE_internal_to_HOST 0 -- ::/0 ::/0
-    PRE_public_dispatch_stage2 0 -- ::/0 ::/0
-    PRE_public_to_HOST 0 -- ::/0 ::/0
-    PRE_public_dispatch_stage2 0 -- ::/0 ::/0
-    PRE_public_to_HOST 0 -- ::/0 ::/0
+    PRE_internal_dispatch 0 -- ::/0 ::/0
+    PRE_public_dispatch 0 -- ::/0 ::/0
+    PRE_public_dispatch 0 -- ::/0 ::/0
 ])
-IP6TABLES_LIST_RULES([mangle], [PRE_internal_dispatch_stage2], 0, [dnl
-    PRE_internal_to_internal 0 -- ::/0 ::/0
-    PRE_internal_to_public 0 -- ::/0 ::/0
-    PRE_internal_to_public 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([mangle], [PRE_internal_to_internal], 0, [dnl
-    PRE_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([mangle], [PRE_internal_to_public], 0, [dnl
+IP6TABLES_LIST_RULES([mangle], [PRE_internal_dispatch], 0, [dnl
+    PRE_allow-host-ipv6 0 -- ::/0 ::/0
     PRE_foobar 0 -- ::/0 ::/0
     PRE_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([mangle], [PRE_internal_to_HOST], 0, [dnl
-    PRE_allow-host-ipv6 0 -- ::/0 ::/0
     PRE_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    PRE_internal 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
-IP6TABLES_LIST_RULES([mangle], [PRE_public_dispatch_stage2], 0, [dnl
-    PRE_public_to_internal 0 -- ::/0 ::/0
-    PRE_public_to_public 0 -- ::/0 ::/0
-    PRE_public_to_public 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([mangle], [PRE_public_to_internal], 0, [dnl
-    PRE_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([mangle], [PRE_public_to_public], 0, [dnl
-    PRE_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([mangle], [PRE_public_to_HOST], 0, [dnl
+IP6TABLES_LIST_RULES([mangle], [PRE_public_dispatch], 0, [dnl
     PRE_allow-host-ipv6 0 -- ::/0 ::/0
     PRE_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    PRE_public 0 -- ::/0 ::/0
+    PRE_public 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 dnl (nat, prerouting)
 NFT_LIST_RULES([inet], [nat_PREROUTING_dispatch], 0, [dnl
     table inet firewalld {
         chain nat_PREROUTING_dispatch {
-            iifname "foobar1" jump nat_PRE_internal_dispatch_stage2
-            iifname "foobar1" jump nat_PRE_internal_to_HOST
-            iifname "foobar0" jump nat_PRE_public_dispatch_stage2
-            iifname "foobar0" jump nat_PRE_public_to_HOST
-            jump nat_PRE_public_dispatch_stage2
-            jump nat_PRE_public_to_HOST
+            iifname "foobar1" jump nat_PRE_internal_dispatch
+            iifname "foobar0" jump nat_PRE_public_dispatch
+            jump nat_PRE_public_dispatch
         }
     }
 ])
-NFT_LIST_RULES([inet], [nat_PRE_internal_dispatch_stage2], 0, [dnl
+NFT_LIST_RULES([inet], [nat_PRE_internal_dispatch], 0, [dnl
     table inet firewalld {
-        chain nat_PRE_internal_dispatch_stage2 {
-            oifname "foobar1" jump nat_PRE_internal_to_internal
-            oifname "foobar0" jump nat_PRE_internal_to_public
-            jump nat_PRE_internal_to_public
-        }
-    }
-])
-NFT_LIST_RULES([inet], [nat_PRE_internal_to_public], 0, [dnl
-    table inet firewalld {
-        chain nat_PRE_internal_to_public {
+        chain nat_PRE_internal_dispatch {
+            jump nat_PRE_policy_allow-host-ipv6
             jump nat_PRE_policy_foobar
             jump nat_PRE_internal
-            return
+            accept
         }
     }
 ])
-NFT_LIST_RULES([inet], [nat_PRE_internal_to_internal], 0, [dnl
+NFT_LIST_RULES([inet], [nat_PRE_public_dispatch], 0, [dnl
     table inet firewalld {
-        chain nat_PRE_internal_to_internal {
-            jump nat_PRE_internal
-            return
-        }
-    }
-])
-NFT_LIST_RULES([inet], [nat_PRE_internal_to_HOST], 0, [dnl
-    table inet firewalld {
-        chain nat_PRE_internal_to_HOST {
-            jump nat_PRE_policy_allow-host-ipv6
-            jump nat_PRE_internal
-            return
-        }
-    }
-])
-NFT_LIST_RULES([inet], [nat_PRE_public_dispatch_stage2], 0, [dnl
-    table inet firewalld {
-        chain nat_PRE_public_dispatch_stage2 {
-            oifname "foobar1" jump nat_PRE_public_to_internal
-            oifname "foobar0" jump nat_PRE_public_to_public
-            jump nat_PRE_public_to_public
-        }
-    }
-])
-NFT_LIST_RULES([inet], [nat_PRE_public_to_internal], 0, [dnl
-    table inet firewalld {
-        chain nat_PRE_public_to_internal {
-            jump nat_PRE_public
-            return
-        }
-    }
-])
-NFT_LIST_RULES([inet], [nat_PRE_public_to_public], 0, [dnl
-    table inet firewalld {
-        chain nat_PRE_public_to_public {
-            jump nat_PRE_public
-            return
-        }
-    }
-])
-NFT_LIST_RULES([inet], [nat_PRE_public_to_HOST], 0, [dnl
-    table inet firewalld {
-        chain nat_PRE_public_to_HOST {
+        chain nat_PRE_public_dispatch {
             jump nat_PRE_policy_allow-host-ipv6
             jump nat_PRE_public
-            return
+            accept
         }
     }
 ])
 IPTABLES_LIST_RULES([nat], [PREROUTING_dispatch], 0, [dnl
-    PRE_internal_dispatch_stage2 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_internal_to_HOST 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_public_dispatch_stage2 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_public_to_HOST 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_public_dispatch_stage2 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_public_to_HOST 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_internal_dispatch 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_public_dispatch 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_public_dispatch 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
-IPTABLES_LIST_RULES([nat], [PRE_internal_dispatch_stage2], 0, [dnl
-    PRE_internal_to_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_internal_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_internal_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([nat], [PRE_internal_to_internal], 0, [dnl
-    PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([nat], [PRE_internal_to_public], 0, [dnl
+IPTABLES_LIST_RULES([nat], [PRE_internal_dispatch], 0, [dnl
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([nat], [PRE_internal_to_HOST], 0, [dnl
-    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
-IPTABLES_LIST_RULES([nat], [PRE_public_dispatch_stage2], 0, [dnl
-    PRE_public_to_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_public_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_public_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([nat], [PRE_public_to_internal], 0, [dnl
-    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([nat], [PRE_public_to_public], 0, [dnl
-    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([nat], [PRE_public_to_HOST], 0, [dnl
+IPTABLES_LIST_RULES([nat], [PRE_public_dispatch], 0, [dnl
     PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [PREROUTING_dispatch], 0, [dnl
-    PRE_internal_dispatch_stage2 0 -- ::/0 ::/0
-    PRE_internal_to_HOST 0 -- ::/0 ::/0
-    PRE_public_dispatch_stage2 0 -- ::/0 ::/0
-    PRE_public_to_HOST 0 -- ::/0 ::/0
-    PRE_public_dispatch_stage2 0 -- ::/0 ::/0
-    PRE_public_to_HOST 0 -- ::/0 ::/0
+    PRE_internal_dispatch 0 -- ::/0 ::/0
+    PRE_public_dispatch 0 -- ::/0 ::/0
+    PRE_public_dispatch 0 -- ::/0 ::/0
 ])
-IP6TABLES_LIST_RULES([nat], [PRE_internal_dispatch_stage2], 0, [dnl
-    PRE_internal_to_internal 0 -- ::/0 ::/0
-    PRE_internal_to_public 0 -- ::/0 ::/0
-    PRE_internal_to_public 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([nat], [PRE_internal_to_internal], 0, [dnl
-    PRE_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([nat], [PRE_internal_to_public], 0, [dnl
+IP6TABLES_LIST_RULES([nat], [PRE_internal_dispatch], 0, [dnl
+    PRE_allow-host-ipv6 0 -- ::/0 ::/0
     PRE_foobar 0 -- ::/0 ::/0
     PRE_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([nat], [PRE_internal_to_HOST], 0, [dnl
-    PRE_allow-host-ipv6 0 -- ::/0 ::/0
     PRE_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    PRE_internal 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
-IP6TABLES_LIST_RULES([nat], [PRE_public_dispatch_stage2], 0, [dnl
-    PRE_public_to_internal 0 -- ::/0 ::/0
-    PRE_public_to_public 0 -- ::/0 ::/0
-    PRE_public_to_public 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([nat], [PRE_public_to_internal], 0, [dnl
-    PRE_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([nat], [PRE_public_to_public], 0, [dnl
-    PRE_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([nat], [PRE_public_to_HOST], 0, [dnl
+IP6TABLES_LIST_RULES([nat], [PRE_public_dispatch], 0, [dnl
     PRE_allow-host-ipv6 0 -- ::/0 ::/0
     PRE_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    PRE_public 0 -- ::/0 ::/0
+    PRE_public 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 dnl (nat, postrouting)
 NFT_LIST_RULES([inet], [nat_POSTROUTING_dispatch], 0, [dnl
@@ -1103,426 +847,179 @@ IP6TABLES_LIST_RULES([filter], [FWD_public_to_internal], 0, [dnl
 ])
 dnl (raw, prerouting) (helpers, iptables only)
 IPTABLES_LIST_RULES([raw], [PREROUTING_dispatch], 0, [dnl
-    PRE_public_dispatch_stage2 0 -- 10.10.10.0/24 0.0.0.0/0
-    PRE_public_to_HOST 0 -- 10.10.10.0/24 0.0.0.0/0
-    PRE_internal_dispatch_stage2 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_internal_to_HOST 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_public_dispatch_stage2 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_public_to_HOST 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_public_dispatch 0 -- 10.10.10.0/24 0.0.0.0/0
+    PRE_internal_dispatch 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_public_dispatch 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
-IPTABLES_LIST_RULES([raw], [PRE_internal_dispatch_stage2], 0, [dnl
-    PRE_internal_to_public 0 -- 0.0.0.0/0 10.10.10.0/24
-    PRE_internal_to_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_internal_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([raw], [PRE_internal_to_internal], 0, [dnl
-    PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([raw], [PRE_internal_to_public], 0, [dnl
+IPTABLES_LIST_RULES([raw], [PRE_internal_dispatch], 0, [dnl
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([raw], [PRE_internal_to_HOST], 0, [dnl
-    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
-IPTABLES_LIST_RULES([raw], [PRE_public_dispatch_stage2], 0, [dnl
-    PRE_public_to_public 0 -- 0.0.0.0/0 10.10.10.0/24
-    PRE_public_to_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_public_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([raw], [PRE_public_to_internal], 0, [dnl
-    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([raw], [PRE_public_to_public], 0, [dnl
-    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([raw], [PRE_public_to_HOST], 0, [dnl
+IPTABLES_LIST_RULES([raw], [PRE_public_dispatch], 0, [dnl
     PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([raw], [PREROUTING_dispatch], 0, [dnl
-    PRE_internal_dispatch_stage2 0 -- ::/0 ::/0
-    PRE_internal_to_HOST 0 -- ::/0 ::/0
-    PRE_public_dispatch_stage2 0 -- ::/0 ::/0
-    PRE_public_to_HOST 0 -- ::/0 ::/0
+    PRE_internal_dispatch 0 -- ::/0 ::/0
+    PRE_public_dispatch 0 -- ::/0 ::/0
 ])
-IP6TABLES_LIST_RULES([raw], [PRE_internal_dispatch_stage2], 0, [dnl
-    PRE_internal_to_internal 0 -- ::/0 ::/0
-    PRE_internal_to_public 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([raw], [PRE_internal_to_internal], 0, [dnl
-    PRE_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([raw], [PRE_internal_to_public], 0, [dnl
+IP6TABLES_LIST_RULES([raw], [PRE_internal_dispatch], 0, [dnl
+    PRE_allow-host-ipv6 0 -- ::/0 ::/0
     PRE_foobar 0 -- ::/0 ::/0
     PRE_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([raw], [PRE_internal_to_HOST], 0, [dnl
-    PRE_allow-host-ipv6 0 -- ::/0 ::/0
     PRE_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    PRE_internal 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
-IP6TABLES_LIST_RULES([raw], [PRE_public_dispatch_stage2], 0, [dnl
-    PRE_public_to_internal 0 -- ::/0 ::/0
-    PRE_public_to_public 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([raw], [PRE_public_to_internal], 0, [dnl
-    PRE_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([raw], [PRE_public_to_public], 0, [dnl
-    PRE_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([raw], [PRE_public_to_HOST], 0, [dnl
+IP6TABLES_LIST_RULES([raw], [PRE_public_dispatch], 0, [dnl
     PRE_allow-host-ipv6 0 -- ::/0 ::/0
     PRE_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    PRE_public 0 -- ::/0 ::/0
+    PRE_public 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 dnl (mangle, prerouting)
 NFT_LIST_RULES([inet], [mangle_PREROUTING_dispatch], 0, [dnl
     table inet firewalld {
         chain mangle_PREROUTING_dispatch {
-            ip saddr 10.10.10.0/24 jump mangle_PRE_public_dispatch_stage2
-            ip saddr 10.10.10.0/24 jump mangle_PRE_public_to_HOST
-            iifname "foobar1" jump mangle_PRE_internal_dispatch_stage2
-            iifname "foobar1" jump mangle_PRE_internal_to_HOST
-            jump mangle_PRE_public_dispatch_stage2
-            jump mangle_PRE_public_to_HOST
+            ip saddr 10.10.10.0/24 jump mangle_PRE_public_dispatch
+            iifname "foobar1" jump mangle_PRE_internal_dispatch
+            jump mangle_PRE_public_dispatch
         }
     }
 ])
-NFT_LIST_RULES([inet], [mangle_PRE_internal_dispatch_stage2], 0, [dnl
+NFT_LIST_RULES([inet], [mangle_PRE_internal_dispatch], 0, [dnl
     table inet firewalld {
-        chain mangle_PRE_internal_dispatch_stage2 {
-            ip daddr 10.10.10.0/24 jump mangle_PRE_internal_to_public
-            oifname "foobar1" jump mangle_PRE_internal_to_internal
-            jump mangle_PRE_internal_to_public
-        }
-    }
-])
-NFT_LIST_RULES([inet], [mangle_PRE_internal_to_public], 0, [dnl
-    table inet firewalld {
-        chain mangle_PRE_internal_to_public {
+        chain mangle_PRE_internal_dispatch {
+            jump mangle_PRE_policy_allow-host-ipv6
             jump mangle_PRE_policy_foobar
             jump mangle_PRE_internal
-            return
+            accept
         }
     }
 ])
-NFT_LIST_RULES([inet], [mangle_PRE_internal_to_internal], 0, [dnl
+NFT_LIST_RULES([inet], [mangle_PRE_public_dispatch], 0, [dnl
     table inet firewalld {
-        chain mangle_PRE_internal_to_internal {
-            jump mangle_PRE_internal
-            return
-        }
-    }
-])
-NFT_LIST_RULES([inet], [mangle_PRE_internal_to_HOST], 0, [dnl
-    table inet firewalld {
-        chain mangle_PRE_internal_to_HOST {
-            jump mangle_PRE_policy_allow-host-ipv6
-            jump mangle_PRE_internal
-            return
-        }
-    }
-])
-NFT_LIST_RULES([inet], [mangle_PRE_public_dispatch_stage2], 0, [dnl
-    table inet firewalld {
-        chain mangle_PRE_public_dispatch_stage2 {
-            ip daddr 10.10.10.0/24 jump mangle_PRE_public_to_public
-            oifname "foobar1" jump mangle_PRE_public_to_internal
-            jump mangle_PRE_public_to_public
-        }
-    }
-])
-NFT_LIST_RULES([inet], [mangle_PRE_public_to_internal], 0, [dnl
-    table inet firewalld {
-        chain mangle_PRE_public_to_internal {
-            jump mangle_PRE_public
-            return
-        }
-    }
-])
-NFT_LIST_RULES([inet], [mangle_PRE_public_to_public], 0, [dnl
-    table inet firewalld {
-        chain mangle_PRE_public_to_public {
-            jump mangle_PRE_public
-            return
-        }
-    }
-])
-NFT_LIST_RULES([inet], [mangle_PRE_public_to_HOST], 0, [dnl
-    table inet firewalld {
-        chain mangle_PRE_public_to_HOST {
+        chain mangle_PRE_public_dispatch {
             jump mangle_PRE_policy_allow-host-ipv6
             jump mangle_PRE_public
-            return
+            accept
         }
     }
 ])
 IPTABLES_LIST_RULES([mangle], [PREROUTING_dispatch], 0, [dnl
-    PRE_public_dispatch_stage2 0 -- 10.10.10.0/24 0.0.0.0/0
-    PRE_public_to_HOST 0 -- 10.10.10.0/24 0.0.0.0/0
-    PRE_internal_dispatch_stage2 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_internal_to_HOST 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_public_dispatch_stage2 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_public_to_HOST 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_public_dispatch 0 -- 10.10.10.0/24 0.0.0.0/0
+    PRE_internal_dispatch 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_public_dispatch 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
-IPTABLES_LIST_RULES([mangle], [PRE_internal_dispatch_stage2], 0, [dnl
-    PRE_internal_to_public 0 -- 0.0.0.0/0 10.10.10.0/24
-    PRE_internal_to_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_internal_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([mangle], [PRE_internal_to_internal], 0, [dnl
-    PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([mangle], [PRE_internal_to_public], 0, [dnl
+IPTABLES_LIST_RULES([mangle], [PRE_internal_dispatch], 0, [dnl
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([mangle], [PRE_internal_to_HOST], 0, [dnl
-    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
-IPTABLES_LIST_RULES([mangle], [PRE_public_dispatch_stage2], 0, [dnl
-    PRE_public_to_public 0 -- 0.0.0.0/0 10.10.10.0/24
-    PRE_public_to_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_public_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([mangle], [PRE_public_to_internal], 0, [dnl
-    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([mangle], [PRE_public_to_public], 0, [dnl
-    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([mangle], [PRE_public_to_HOST], 0, [dnl
+IPTABLES_LIST_RULES([mangle], [PRE_public_dispatch], 0, [dnl
     PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([mangle], [PREROUTING_dispatch], 0, [dnl
-    PRE_internal_dispatch_stage2 0 -- ::/0 ::/0
-    PRE_internal_to_HOST 0 -- ::/0 ::/0
-    PRE_public_dispatch_stage2 0 -- ::/0 ::/0
-    PRE_public_to_HOST 0 -- ::/0 ::/0
+    PRE_internal_dispatch 0 -- ::/0 ::/0
+    PRE_public_dispatch 0 -- ::/0 ::/0
 ])
-IP6TABLES_LIST_RULES([mangle], [PRE_internal_dispatch_stage2], 0, [dnl
-    PRE_internal_to_internal 0 -- ::/0 ::/0
-    PRE_internal_to_public 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([mangle], [PRE_internal_to_internal], 0, [dnl
-    PRE_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([mangle], [PRE_internal_to_public], 0, [dnl
+IP6TABLES_LIST_RULES([mangle], [PRE_internal_dispatch], 0, [dnl
+    PRE_allow-host-ipv6 0 -- ::/0 ::/0
     PRE_foobar 0 -- ::/0 ::/0
     PRE_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([mangle], [PRE_internal_to_HOST], 0, [dnl
-    PRE_allow-host-ipv6 0 -- ::/0 ::/0
     PRE_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    PRE_internal 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
-IP6TABLES_LIST_RULES([mangle], [PRE_public_dispatch_stage2], 0, [dnl
-    PRE_public_to_internal 0 -- ::/0 ::/0
-    PRE_public_to_public 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([mangle], [PRE_public_to_internal], 0, [dnl
-    PRE_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([mangle], [PRE_public_to_public], 0, [dnl
-    PRE_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([mangle], [PRE_public_to_HOST], 0, [dnl
+IP6TABLES_LIST_RULES([mangle], [PRE_public_dispatch], 0, [dnl
     PRE_allow-host-ipv6 0 -- ::/0 ::/0
     PRE_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    PRE_public 0 -- ::/0 ::/0
+    PRE_public 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 dnl (nat, prerouting)
 NFT_LIST_RULES([inet], [nat_PREROUTING_dispatch], 0, [dnl
     table inet firewalld {
         chain nat_PREROUTING_dispatch {
-            ip saddr 10.10.10.0/24 jump nat_PRE_public_dispatch_stage2
-            ip saddr 10.10.10.0/24 jump nat_PRE_public_to_HOST
-            iifname "foobar1" jump nat_PRE_internal_dispatch_stage2
-            iifname "foobar1" jump nat_PRE_internal_to_HOST
-            jump nat_PRE_public_dispatch_stage2
-            jump nat_PRE_public_to_HOST
+            ip saddr 10.10.10.0/24 jump nat_PRE_public_dispatch
+            iifname "foobar1" jump nat_PRE_internal_dispatch
+            jump nat_PRE_public_dispatch
         }
     }
 ])
-NFT_LIST_RULES([inet], [nat_PRE_internal_dispatch_stage2], 0, [dnl
+NFT_LIST_RULES([inet], [nat_PRE_internal_dispatch], 0, [dnl
     table inet firewalld {
-        chain nat_PRE_internal_dispatch_stage2 {
-            ip daddr 10.10.10.0/24 jump nat_PRE_internal_to_public
-            oifname "foobar1" jump nat_PRE_internal_to_internal
-            jump nat_PRE_internal_to_public
-        }
-    }
-])
-NFT_LIST_RULES([inet], [nat_PRE_internal_to_public], 0, [dnl
-    table inet firewalld {
-        chain nat_PRE_internal_to_public {
+        chain nat_PRE_internal_dispatch {
+            jump nat_PRE_policy_allow-host-ipv6
             jump nat_PRE_policy_foobar
             jump nat_PRE_internal
-            return
+            accept
         }
     }
 ])
-NFT_LIST_RULES([inet], [nat_PRE_internal_to_internal], 0, [dnl
+NFT_LIST_RULES([inet], [nat_PRE_public_dispatch], 0, [dnl
     table inet firewalld {
-        chain nat_PRE_internal_to_internal {
-            jump nat_PRE_internal
-            return
-        }
-    }
-])
-NFT_LIST_RULES([inet], [nat_PRE_internal_to_HOST], 0, [dnl
-    table inet firewalld {
-        chain nat_PRE_internal_to_HOST {
-            jump nat_PRE_policy_allow-host-ipv6
-            jump nat_PRE_internal
-            return
-        }
-    }
-])
-NFT_LIST_RULES([inet], [nat_PRE_public_dispatch_stage2], 0, [dnl
-    table inet firewalld {
-        chain nat_PRE_public_dispatch_stage2 {
-            ip daddr 10.10.10.0/24 jump nat_PRE_public_to_public
-            oifname "foobar1" jump nat_PRE_public_to_internal
-            jump nat_PRE_public_to_public
-        }
-    }
-])
-NFT_LIST_RULES([inet], [nat_PRE_public_to_internal], 0, [dnl
-    table inet firewalld {
-        chain nat_PRE_public_to_internal {
-            jump nat_PRE_public
-            return
-        }
-    }
-])
-NFT_LIST_RULES([inet], [nat_PRE_public_to_public], 0, [dnl
-    table inet firewalld {
-        chain nat_PRE_public_to_public {
-            jump nat_PRE_public
-            return
-        }
-    }
-])
-NFT_LIST_RULES([inet], [nat_PRE_public_to_HOST], 0, [dnl
-    table inet firewalld {
-        chain nat_PRE_public_to_HOST {
+        chain nat_PRE_public_dispatch {
             jump nat_PRE_policy_allow-host-ipv6
             jump nat_PRE_public
-            return
+            accept
         }
     }
 ])
 IPTABLES_LIST_RULES([nat], [PREROUTING_dispatch], 0, [dnl
-    PRE_public_dispatch_stage2 0 -- 10.10.10.0/24 0.0.0.0/0
-    PRE_public_to_HOST 0 -- 10.10.10.0/24 0.0.0.0/0
-    PRE_internal_dispatch_stage2 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_internal_to_HOST 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_public_dispatch_stage2 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_public_to_HOST 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_public_dispatch 0 -- 10.10.10.0/24 0.0.0.0/0
+    PRE_internal_dispatch 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_public_dispatch 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
-IPTABLES_LIST_RULES([nat], [PRE_internal_dispatch_stage2], 0, [dnl
-    PRE_internal_to_public 0 -- 0.0.0.0/0 10.10.10.0/24
-    PRE_internal_to_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_internal_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([nat], [PRE_internal_to_internal], 0, [dnl
-    PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([nat], [PRE_internal_to_public], 0, [dnl
+IPTABLES_LIST_RULES([nat], [PRE_internal_dispatch], 0, [dnl
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([nat], [PRE_internal_to_HOST], 0, [dnl
-    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
-IPTABLES_LIST_RULES([nat], [PRE_public_dispatch_stage2], 0, [dnl
-    PRE_public_to_public 0 -- 0.0.0.0/0 10.10.10.0/24
-    PRE_public_to_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_public_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([nat], [PRE_public_to_internal], 0, [dnl
-    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([nat], [PRE_public_to_public], 0, [dnl
-    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([nat], [PRE_public_to_HOST], 0, [dnl
+IPTABLES_LIST_RULES([nat], [PRE_public_dispatch], 0, [dnl
     PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [PREROUTING_dispatch], 0, [dnl
-    PRE_internal_dispatch_stage2 0 -- ::/0 ::/0
-    PRE_internal_to_HOST 0 -- ::/0 ::/0
-    PRE_public_dispatch_stage2 0 -- ::/0 ::/0
-    PRE_public_to_HOST 0 -- ::/0 ::/0
+    PRE_internal_dispatch 0 -- ::/0 ::/0
+    PRE_public_dispatch 0 -- ::/0 ::/0
 ])
-IP6TABLES_LIST_RULES([nat], [PRE_internal_dispatch_stage2], 0, [dnl
-    PRE_internal_to_internal 0 -- ::/0 ::/0
-    PRE_internal_to_public 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([nat], [PRE_internal_to_internal], 0, [dnl
-    PRE_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([nat], [PRE_internal_to_public], 0, [dnl
+IP6TABLES_LIST_RULES([nat], [PRE_internal_dispatch], 0, [dnl
+    PRE_allow-host-ipv6 0 -- ::/0 ::/0
     PRE_foobar 0 -- ::/0 ::/0
     PRE_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([nat], [PRE_internal_to_HOST], 0, [dnl
-    PRE_allow-host-ipv6 0 -- ::/0 ::/0
     PRE_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    PRE_internal 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
-IP6TABLES_LIST_RULES([nat], [PRE_public_dispatch_stage2], 0, [dnl
-    PRE_public_to_internal 0 -- ::/0 ::/0
-    PRE_public_to_public 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([nat], [PRE_public_to_internal], 0, [dnl
-    PRE_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([nat], [PRE_public_to_public], 0, [dnl
-    PRE_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([nat], [PRE_public_to_HOST], 0, [dnl
+IP6TABLES_LIST_RULES([nat], [PRE_public_dispatch], 0, [dnl
     PRE_allow-host-ipv6 0 -- ::/0 ::/0
     PRE_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    PRE_public 0 -- ::/0 ::/0
+    PRE_public 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 dnl (nat, postrouting)
 NFT_LIST_RULES([inet], [nat_POSTROUTING_dispatch], 0, [dnl
@@ -1941,426 +1438,179 @@ IP6TABLES_LIST_RULES([filter], [FWD_public_to_internal], 0, [dnl
 ])
 dnl (raw, prerouting) (helpers, iptables only)
 IPTABLES_LIST_RULES([raw], [PREROUTING_dispatch], 0, [dnl
-    PRE_internal_dispatch_stage2 0 -- 10.10.10.0/24 0.0.0.0/0
-    PRE_internal_to_HOST 0 -- 10.10.10.0/24 0.0.0.0/0
-    PRE_public_dispatch_stage2 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_public_to_HOST 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_public_dispatch_stage2 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_public_to_HOST 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_internal_dispatch 0 -- 10.10.10.0/24 0.0.0.0/0
+    PRE_public_dispatch 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_public_dispatch 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
-IPTABLES_LIST_RULES([raw], [PRE_internal_dispatch_stage2], 0, [dnl
-    PRE_internal_to_internal 0 -- 0.0.0.0/0 10.10.10.0/24
-    PRE_internal_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_internal_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([raw], [PRE_internal_to_internal], 0, [dnl
-    PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([raw], [PRE_internal_to_public], 0, [dnl
+IPTABLES_LIST_RULES([raw], [PRE_internal_dispatch], 0, [dnl
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([raw], [PRE_internal_to_HOST], 0, [dnl
-    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
-IPTABLES_LIST_RULES([raw], [PRE_public_dispatch_stage2], 0, [dnl
-    PRE_public_to_internal 0 -- 0.0.0.0/0 10.10.10.0/24
-    PRE_public_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_public_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([raw], [PRE_public_to_internal], 0, [dnl
-    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([raw], [PRE_public_to_public], 0, [dnl
-    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([raw], [PRE_public_to_HOST], 0, [dnl
+IPTABLES_LIST_RULES([raw], [PRE_public_dispatch], 0, [dnl
     PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([raw], [PREROUTING_dispatch], 0, [dnl
-    PRE_public_dispatch_stage2 0 -- ::/0 ::/0
-    PRE_public_to_HOST 0 -- ::/0 ::/0
-    PRE_public_dispatch_stage2 0 -- ::/0 ::/0
-    PRE_public_to_HOST 0 -- ::/0 ::/0
+    PRE_public_dispatch 0 -- ::/0 ::/0
+    PRE_public_dispatch 0 -- ::/0 ::/0
 ])
-IP6TABLES_LIST_RULES([raw], [PRE_internal_dispatch_stage2], 0, [dnl
-    PRE_internal_to_public 0 -- ::/0 ::/0
-    PRE_internal_to_public 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([raw], [PRE_internal_to_internal], 0, [dnl
-    PRE_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([raw], [PRE_internal_to_public], 0, [dnl
+IP6TABLES_LIST_RULES([raw], [PRE_internal_dispatch], 0, [dnl
+    PRE_allow-host-ipv6 0 -- ::/0 ::/0
     PRE_foobar 0 -- ::/0 ::/0
     PRE_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([raw], [PRE_internal_to_HOST], 0, [dnl
-    PRE_allow-host-ipv6 0 -- ::/0 ::/0
     PRE_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    PRE_internal 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
-IP6TABLES_LIST_RULES([raw], [PRE_public_dispatch_stage2], 0, [dnl
-    PRE_public_to_public 0 -- ::/0 ::/0
-    PRE_public_to_public 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([raw], [PRE_public_to_internal], 0, [dnl
-    PRE_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([raw], [PRE_public_to_public], 0, [dnl
-    PRE_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([raw], [PRE_public_to_HOST], 0, [dnl
+IP6TABLES_LIST_RULES([raw], [PRE_public_dispatch], 0, [dnl
     PRE_allow-host-ipv6 0 -- ::/0 ::/0
     PRE_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    PRE_public 0 -- ::/0 ::/0
+    PRE_public 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 dnl (mangle, prerouting)
 NFT_LIST_RULES([inet], [mangle_PREROUTING_dispatch], 0, [dnl
     table inet firewalld {
         chain mangle_PREROUTING_dispatch {
-            ip saddr 10.10.10.0/24 jump mangle_PRE_internal_dispatch_stage2
-            ip saddr 10.10.10.0/24 jump mangle_PRE_internal_to_HOST
-            iifname "foobar0" jump mangle_PRE_public_dispatch_stage2
-            iifname "foobar0" jump mangle_PRE_public_to_HOST
-            jump mangle_PRE_public_dispatch_stage2
-            jump mangle_PRE_public_to_HOST
+            ip saddr 10.10.10.0/24 jump mangle_PRE_internal_dispatch
+            iifname "foobar0" jump mangle_PRE_public_dispatch
+            jump mangle_PRE_public_dispatch
         }
     }
 ])
-NFT_LIST_RULES([inet], [mangle_PRE_internal_dispatch_stage2], 0, [dnl
+NFT_LIST_RULES([inet], [mangle_PRE_internal_dispatch], 0, [dnl
     table inet firewalld {
-        chain mangle_PRE_internal_dispatch_stage2 {
-            ip daddr 10.10.10.0/24 jump mangle_PRE_internal_to_internal
-            oifname "foobar0" jump mangle_PRE_internal_to_public
-            jump mangle_PRE_internal_to_public
-        }
-    }
-])
-NFT_LIST_RULES([inet], [mangle_PRE_internal_to_public], 0, [dnl
-    table inet firewalld {
-        chain mangle_PRE_internal_to_public {
+        chain mangle_PRE_internal_dispatch {
+            jump mangle_PRE_policy_allow-host-ipv6
             jump mangle_PRE_policy_foobar
             jump mangle_PRE_internal
-            return
+            accept
         }
     }
 ])
-NFT_LIST_RULES([inet], [mangle_PRE_internal_to_internal], 0, [dnl
+NFT_LIST_RULES([inet], [mangle_PRE_public_dispatch], 0, [dnl
     table inet firewalld {
-        chain mangle_PRE_internal_to_internal {
-            jump mangle_PRE_internal
-            return
-        }
-    }
-])
-NFT_LIST_RULES([inet], [mangle_PRE_internal_to_HOST], 0, [dnl
-    table inet firewalld {
-        chain mangle_PRE_internal_to_HOST {
-            jump mangle_PRE_policy_allow-host-ipv6
-            jump mangle_PRE_internal
-            return
-        }
-    }
-])
-NFT_LIST_RULES([inet], [mangle_PRE_public_dispatch_stage2], 0, [dnl
-    table inet firewalld {
-        chain mangle_PRE_public_dispatch_stage2 {
-            ip daddr 10.10.10.0/24 jump mangle_PRE_public_to_internal
-            oifname "foobar0" jump mangle_PRE_public_to_public
-            jump mangle_PRE_public_to_public
-        }
-    }
-])
-NFT_LIST_RULES([inet], [mangle_PRE_public_to_internal], 0, [dnl
-    table inet firewalld {
-        chain mangle_PRE_public_to_internal {
-            jump mangle_PRE_public
-            return
-        }
-    }
-])
-NFT_LIST_RULES([inet], [mangle_PRE_public_to_public], 0, [dnl
-    table inet firewalld {
-        chain mangle_PRE_public_to_public {
-            jump mangle_PRE_public
-            return
-        }
-    }
-])
-NFT_LIST_RULES([inet], [mangle_PRE_public_to_HOST], 0, [dnl
-    table inet firewalld {
-        chain mangle_PRE_public_to_HOST {
+        chain mangle_PRE_public_dispatch {
             jump mangle_PRE_policy_allow-host-ipv6
             jump mangle_PRE_public
-            return
+            accept
         }
     }
 ])
 IPTABLES_LIST_RULES([mangle], [PREROUTING_dispatch], 0, [dnl
-    PRE_internal_dispatch_stage2 0 -- 10.10.10.0/24 0.0.0.0/0
-    PRE_internal_to_HOST 0 -- 10.10.10.0/24 0.0.0.0/0
-    PRE_public_dispatch_stage2 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_public_to_HOST 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_public_dispatch_stage2 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_public_to_HOST 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_internal_dispatch 0 -- 10.10.10.0/24 0.0.0.0/0
+    PRE_public_dispatch 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_public_dispatch 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
-IPTABLES_LIST_RULES([mangle], [PRE_internal_dispatch_stage2], 0, [dnl
-    PRE_internal_to_internal 0 -- 0.0.0.0/0 10.10.10.0/24
-    PRE_internal_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_internal_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([mangle], [PRE_internal_to_internal], 0, [dnl
-    PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([mangle], [PRE_internal_to_public], 0, [dnl
+IPTABLES_LIST_RULES([mangle], [PRE_internal_dispatch], 0, [dnl
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([mangle], [PRE_internal_to_HOST], 0, [dnl
-    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
-IPTABLES_LIST_RULES([mangle], [PRE_public_dispatch_stage2], 0, [dnl
-    PRE_public_to_internal 0 -- 0.0.0.0/0 10.10.10.0/24
-    PRE_public_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_public_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([mangle], [PRE_public_to_internal], 0, [dnl
-    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([mangle], [PRE_public_to_public], 0, [dnl
-    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([mangle], [PRE_public_to_HOST], 0, [dnl
+IPTABLES_LIST_RULES([mangle], [PRE_public_dispatch], 0, [dnl
     PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([mangle], [PREROUTING_dispatch], 0, [dnl
-    PRE_public_dispatch_stage2 0 -- ::/0 ::/0
-    PRE_public_to_HOST 0 -- ::/0 ::/0
-    PRE_public_dispatch_stage2 0 -- ::/0 ::/0
-    PRE_public_to_HOST 0 -- ::/0 ::/0
+    PRE_public_dispatch 0 -- ::/0 ::/0
+    PRE_public_dispatch 0 -- ::/0 ::/0
 ])
-IP6TABLES_LIST_RULES([mangle], [PRE_internal_dispatch_stage2], 0, [dnl
-    PRE_internal_to_public 0 -- ::/0 ::/0
-    PRE_internal_to_public 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([mangle], [PRE_internal_to_internal], 0, [dnl
-    PRE_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([mangle], [PRE_internal_to_public], 0, [dnl
+IP6TABLES_LIST_RULES([mangle], [PRE_internal_dispatch], 0, [dnl
+    PRE_allow-host-ipv6 0 -- ::/0 ::/0
     PRE_foobar 0 -- ::/0 ::/0
     PRE_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([mangle], [PRE_internal_to_HOST], 0, [dnl
-    PRE_allow-host-ipv6 0 -- ::/0 ::/0
     PRE_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    PRE_internal 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
-IP6TABLES_LIST_RULES([mangle], [PRE_public_dispatch_stage2], 0, [dnl
-    PRE_public_to_public 0 -- ::/0 ::/0
-    PRE_public_to_public 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([mangle], [PRE_public_to_internal], 0, [dnl
-    PRE_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([mangle], [PRE_public_to_public], 0, [dnl
-    PRE_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([mangle], [PRE_public_to_HOST], 0, [dnl
+IP6TABLES_LIST_RULES([mangle], [PRE_public_dispatch], 0, [dnl
     PRE_allow-host-ipv6 0 -- ::/0 ::/0
     PRE_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    PRE_public 0 -- ::/0 ::/0
+    PRE_public 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 dnl (nat, prerouting)
 NFT_LIST_RULES([inet], [nat_PREROUTING_dispatch], 0, [dnl
     table inet firewalld {
         chain nat_PREROUTING_dispatch {
-            ip saddr 10.10.10.0/24 jump nat_PRE_internal_dispatch_stage2
-            ip saddr 10.10.10.0/24 jump nat_PRE_internal_to_HOST
-            iifname "foobar0" jump nat_PRE_public_dispatch_stage2
-            iifname "foobar0" jump nat_PRE_public_to_HOST
-            jump nat_PRE_public_dispatch_stage2
-            jump nat_PRE_public_to_HOST
+            ip saddr 10.10.10.0/24 jump nat_PRE_internal_dispatch
+            iifname "foobar0" jump nat_PRE_public_dispatch
+            jump nat_PRE_public_dispatch
         }
     }
 ])
-NFT_LIST_RULES([inet], [nat_PRE_internal_dispatch_stage2], 0, [dnl
+NFT_LIST_RULES([inet], [nat_PRE_internal_dispatch], 0, [dnl
     table inet firewalld {
-        chain nat_PRE_internal_dispatch_stage2 {
-            ip daddr 10.10.10.0/24 jump nat_PRE_internal_to_internal
-            oifname "foobar0" jump nat_PRE_internal_to_public
-            jump nat_PRE_internal_to_public
-        }
-    }
-])
-NFT_LIST_RULES([inet], [nat_PRE_internal_to_public], 0, [dnl
-    table inet firewalld {
-        chain nat_PRE_internal_to_public {
+        chain nat_PRE_internal_dispatch {
+            jump nat_PRE_policy_allow-host-ipv6
             jump nat_PRE_policy_foobar
             jump nat_PRE_internal
-            return
+            accept
         }
     }
 ])
-NFT_LIST_RULES([inet], [nat_PRE_internal_to_internal], 0, [dnl
+NFT_LIST_RULES([inet], [nat_PRE_public_dispatch], 0, [dnl
     table inet firewalld {
-        chain nat_PRE_internal_to_internal {
-            jump nat_PRE_internal
-            return
-        }
-    }
-])
-NFT_LIST_RULES([inet], [nat_PRE_internal_to_HOST], 0, [dnl
-    table inet firewalld {
-        chain nat_PRE_internal_to_HOST {
-            jump nat_PRE_policy_allow-host-ipv6
-            jump nat_PRE_internal
-            return
-        }
-    }
-])
-NFT_LIST_RULES([inet], [nat_PRE_public_dispatch_stage2], 0, [dnl
-    table inet firewalld {
-        chain nat_PRE_public_dispatch_stage2 {
-            ip daddr 10.10.10.0/24 jump nat_PRE_public_to_internal
-            oifname "foobar0" jump nat_PRE_public_to_public
-            jump nat_PRE_public_to_public
-        }
-    }
-])
-NFT_LIST_RULES([inet], [nat_PRE_public_to_internal], 0, [dnl
-    table inet firewalld {
-        chain nat_PRE_public_to_internal {
-            jump nat_PRE_public
-            return
-        }
-    }
-])
-NFT_LIST_RULES([inet], [nat_PRE_public_to_public], 0, [dnl
-    table inet firewalld {
-        chain nat_PRE_public_to_public {
-            jump nat_PRE_public
-            return
-        }
-    }
-])
-NFT_LIST_RULES([inet], [nat_PRE_public_to_HOST], 0, [dnl
-    table inet firewalld {
-        chain nat_PRE_public_to_HOST {
+        chain nat_PRE_public_dispatch {
             jump nat_PRE_policy_allow-host-ipv6
             jump nat_PRE_public
-            return
+            accept
         }
     }
 ])
 IPTABLES_LIST_RULES([nat], [PREROUTING_dispatch], 0, [dnl
-    PRE_internal_dispatch_stage2 0 -- 10.10.10.0/24 0.0.0.0/0
-    PRE_internal_to_HOST 0 -- 10.10.10.0/24 0.0.0.0/0
-    PRE_public_dispatch_stage2 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_public_to_HOST 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_public_dispatch_stage2 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_public_to_HOST 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_internal_dispatch 0 -- 10.10.10.0/24 0.0.0.0/0
+    PRE_public_dispatch 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_public_dispatch 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
-IPTABLES_LIST_RULES([nat], [PRE_internal_dispatch_stage2], 0, [dnl
-    PRE_internal_to_internal 0 -- 0.0.0.0/0 10.10.10.0/24
-    PRE_internal_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_internal_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([nat], [PRE_internal_to_internal], 0, [dnl
-    PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([nat], [PRE_internal_to_public], 0, [dnl
+IPTABLES_LIST_RULES([nat], [PRE_internal_dispatch], 0, [dnl
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([nat], [PRE_internal_to_HOST], 0, [dnl
-    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
-IPTABLES_LIST_RULES([nat], [PRE_public_dispatch_stage2], 0, [dnl
-    PRE_public_to_internal 0 -- 0.0.0.0/0 10.10.10.0/24
-    PRE_public_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_public_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([nat], [PRE_public_to_internal], 0, [dnl
-    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([nat], [PRE_public_to_public], 0, [dnl
-    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([nat], [PRE_public_to_HOST], 0, [dnl
+IPTABLES_LIST_RULES([nat], [PRE_public_dispatch], 0, [dnl
     PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [PREROUTING_dispatch], 0, [dnl
-    PRE_public_dispatch_stage2 0 -- ::/0 ::/0
-    PRE_public_to_HOST 0 -- ::/0 ::/0
-    PRE_public_dispatch_stage2 0 -- ::/0 ::/0
-    PRE_public_to_HOST 0 -- ::/0 ::/0
+    PRE_public_dispatch 0 -- ::/0 ::/0
+    PRE_public_dispatch 0 -- ::/0 ::/0
 ])
-IP6TABLES_LIST_RULES([nat], [PRE_internal_dispatch_stage2], 0, [dnl
-    PRE_internal_to_public 0 -- ::/0 ::/0
-    PRE_internal_to_public 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([nat], [PRE_internal_to_internal], 0, [dnl
-    PRE_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([nat], [PRE_internal_to_public], 0, [dnl
+IP6TABLES_LIST_RULES([nat], [PRE_internal_dispatch], 0, [dnl
+    PRE_allow-host-ipv6 0 -- ::/0 ::/0
     PRE_foobar 0 -- ::/0 ::/0
     PRE_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([nat], [PRE_internal_to_HOST], 0, [dnl
-    PRE_allow-host-ipv6 0 -- ::/0 ::/0
     PRE_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    PRE_internal 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
-IP6TABLES_LIST_RULES([nat], [PRE_public_dispatch_stage2], 0, [dnl
-    PRE_public_to_public 0 -- ::/0 ::/0
-    PRE_public_to_public 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([nat], [PRE_public_to_internal], 0, [dnl
-    PRE_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([nat], [PRE_public_to_public], 0, [dnl
-    PRE_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([nat], [PRE_public_to_HOST], 0, [dnl
+IP6TABLES_LIST_RULES([nat], [PRE_public_dispatch], 0, [dnl
     PRE_allow-host-ipv6 0 -- ::/0 ::/0
     PRE_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    PRE_public 0 -- ::/0 ::/0
+    PRE_public 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 dnl (nat, postrouting)
 NFT_LIST_RULES([inet], [nat_POSTROUTING_dispatch], 0, [dnl
@@ -2774,414 +2024,176 @@ IP6TABLES_LIST_RULES([filter], [FWD_public_to_internal], 0, [dnl
 ])
 dnl (raw, prerouting) (helpers, iptables only)
 IPTABLES_LIST_RULES([raw], [PREROUTING_dispatch], 0, [dnl
-    PRE_internal_dispatch_stage2 0 -- 10.10.10.0/24 0.0.0.0/0
-    PRE_internal_to_HOST 0 -- 10.10.10.0/24 0.0.0.0/0
-    PRE_public_dispatch_stage2 0 -- 10.20.20.0/24 0.0.0.0/0
-    PRE_public_to_HOST 0 -- 10.20.20.0/24 0.0.0.0/0
-    PRE_public_dispatch_stage2 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_public_to_HOST 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_internal_dispatch 0 -- 10.10.10.0/24 0.0.0.0/0
+    PRE_public_dispatch 0 -- 10.20.20.0/24 0.0.0.0/0
+    PRE_public_dispatch 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
-IPTABLES_LIST_RULES([raw], [PRE_internal_dispatch_stage2], 0, [dnl
-    PRE_internal_to_internal 0 -- 0.0.0.0/0 10.10.10.0/24
-    PRE_internal_to_public 0 -- 0.0.0.0/0 10.20.20.0/24
-    PRE_internal_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([raw], [PRE_internal_to_internal], 0, [dnl
-    PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([raw], [PRE_internal_to_public], 0, [dnl
+IPTABLES_LIST_RULES([raw], [PRE_internal_dispatch], 0, [dnl
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([raw], [PRE_internal_to_HOST], 0, [dnl
-    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
-IPTABLES_LIST_RULES([raw], [PRE_public_dispatch_stage2], 0, [dnl
-    PRE_public_to_internal 0 -- 0.0.0.0/0 10.10.10.0/24
-    PRE_public_to_public 0 -- 0.0.0.0/0 10.20.20.0/24
-    PRE_public_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([raw], [PRE_public_to_internal], 0, [dnl
-    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([raw], [PRE_public_to_public], 0, [dnl
-    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([raw], [PRE_public_to_HOST], 0, [dnl
+IPTABLES_LIST_RULES([raw], [PRE_public_dispatch], 0, [dnl
     PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([raw], [PREROUTING_dispatch], 0, [dnl
-    PRE_public_dispatch_stage2 0 -- ::/0 ::/0
-    PRE_public_to_HOST 0 -- ::/0 ::/0
+    PRE_public_dispatch 0 -- ::/0 ::/0
 ])
-IP6TABLES_LIST_RULES([raw], [PRE_internal_dispatch_stage2], 0, [dnl
-    PRE_internal_to_public 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([raw], [PRE_internal_to_internal], 0, [dnl
-    PRE_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([raw], [PRE_internal_to_public], 0, [dnl
+IP6TABLES_LIST_RULES([raw], [PRE_internal_dispatch], 0, [dnl
+    PRE_allow-host-ipv6 0 -- ::/0 ::/0
     PRE_foobar 0 -- ::/0 ::/0
     PRE_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([raw], [PRE_internal_to_HOST], 0, [dnl
-    PRE_allow-host-ipv6 0 -- ::/0 ::/0
     PRE_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    PRE_internal 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
-IP6TABLES_LIST_RULES([raw], [PRE_public_dispatch_stage2], 0, [dnl
-    PRE_public_to_public 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([raw], [PRE_public_to_internal], 0, [dnl
-    PRE_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([raw], [PRE_public_to_public], 0, [dnl
-    PRE_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([raw], [PRE_public_to_HOST], 0, [dnl
+IP6TABLES_LIST_RULES([raw], [PRE_public_dispatch], 0, [dnl
     PRE_allow-host-ipv6 0 -- ::/0 ::/0
     PRE_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    PRE_public 0 -- ::/0 ::/0
+    PRE_public 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 dnl (mangle, prerouting)
 NFT_LIST_RULES([inet], [mangle_PREROUTING_dispatch], 0, [dnl
     table inet firewalld {
         chain mangle_PREROUTING_dispatch {
-            ip saddr 10.10.10.0/24 jump mangle_PRE_internal_dispatch_stage2
-            ip saddr 10.10.10.0/24 jump mangle_PRE_internal_to_HOST
-            ip saddr 10.20.20.0/24 jump mangle_PRE_public_dispatch_stage2
-            ip saddr 10.20.20.0/24 jump mangle_PRE_public_to_HOST
-            jump mangle_PRE_public_dispatch_stage2
-            jump mangle_PRE_public_to_HOST
+            ip saddr 10.10.10.0/24 jump mangle_PRE_internal_dispatch
+            ip saddr 10.20.20.0/24 jump mangle_PRE_public_dispatch
+            jump mangle_PRE_public_dispatch
         }
     }
 ])
-NFT_LIST_RULES([inet], [mangle_PRE_internal_dispatch_stage2], 0, [dnl
+NFT_LIST_RULES([inet], [mangle_PRE_internal_dispatch], 0, [dnl
     table inet firewalld {
-        chain mangle_PRE_internal_dispatch_stage2 {
-            ip daddr 10.10.10.0/24 jump mangle_PRE_internal_to_internal
-            ip daddr 10.20.20.0/24 jump mangle_PRE_internal_to_public
-            jump mangle_PRE_internal_to_public
-        }
-    }
-])
-NFT_LIST_RULES([inet], [mangle_PRE_internal_to_public], 0, [dnl
-    table inet firewalld {
-        chain mangle_PRE_internal_to_public {
+        chain mangle_PRE_internal_dispatch {
+            jump mangle_PRE_policy_allow-host-ipv6
             jump mangle_PRE_policy_foobar
             jump mangle_PRE_internal
-            return
+            accept
         }
     }
 ])
-NFT_LIST_RULES([inet], [mangle_PRE_internal_to_internal], 0, [dnl
+NFT_LIST_RULES([inet], [mangle_PRE_public_dispatch], 0, [dnl
     table inet firewalld {
-        chain mangle_PRE_internal_to_internal {
-            jump mangle_PRE_internal
-            return
-        }
-    }
-])
-NFT_LIST_RULES([inet], [mangle_PRE_internal_to_HOST], 0, [dnl
-    table inet firewalld {
-        chain mangle_PRE_internal_to_HOST {
-            jump mangle_PRE_policy_allow-host-ipv6
-            jump mangle_PRE_internal
-            return
-        }
-    }
-])
-NFT_LIST_RULES([inet], [mangle_PRE_public_dispatch_stage2], 0, [dnl
-    table inet firewalld {
-        chain mangle_PRE_public_dispatch_stage2 {
-            ip daddr 10.10.10.0/24 jump mangle_PRE_public_to_internal
-            ip daddr 10.20.20.0/24 jump mangle_PRE_public_to_public
-            jump mangle_PRE_public_to_public
-        }
-    }
-])
-NFT_LIST_RULES([inet], [mangle_PRE_public_to_internal], 0, [dnl
-    table inet firewalld {
-        chain mangle_PRE_public_to_internal {
-            jump mangle_PRE_public
-            return
-        }
-    }
-])
-NFT_LIST_RULES([inet], [mangle_PRE_public_to_public], 0, [dnl
-    table inet firewalld {
-        chain mangle_PRE_public_to_public {
-            jump mangle_PRE_public
-            return
-        }
-    }
-])
-NFT_LIST_RULES([inet], [mangle_PRE_public_to_HOST], 0, [dnl
-    table inet firewalld {
-        chain mangle_PRE_public_to_HOST {
+        chain mangle_PRE_public_dispatch {
             jump mangle_PRE_policy_allow-host-ipv6
             jump mangle_PRE_public
-            return
+            accept
         }
     }
 ])
 IPTABLES_LIST_RULES([mangle], [PREROUTING_dispatch], 0, [dnl
-    PRE_internal_dispatch_stage2 0 -- 10.10.10.0/24 0.0.0.0/0
-    PRE_internal_to_HOST 0 -- 10.10.10.0/24 0.0.0.0/0
-    PRE_public_dispatch_stage2 0 -- 10.20.20.0/24 0.0.0.0/0
-    PRE_public_to_HOST 0 -- 10.20.20.0/24 0.0.0.0/0
-    PRE_public_dispatch_stage2 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_public_to_HOST 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_internal_dispatch 0 -- 10.10.10.0/24 0.0.0.0/0
+    PRE_public_dispatch 0 -- 10.20.20.0/24 0.0.0.0/0
+    PRE_public_dispatch 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
-IPTABLES_LIST_RULES([mangle], [PRE_internal_dispatch_stage2], 0, [dnl
-    PRE_internal_to_internal 0 -- 0.0.0.0/0 10.10.10.0/24
-    PRE_internal_to_public 0 -- 0.0.0.0/0 10.20.20.0/24
-    PRE_internal_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([mangle], [PRE_internal_to_internal], 0, [dnl
-    PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([mangle], [PRE_internal_to_public], 0, [dnl
+IPTABLES_LIST_RULES([mangle], [PRE_internal_dispatch], 0, [dnl
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([mangle], [PRE_internal_to_HOST], 0, [dnl
-    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
-IPTABLES_LIST_RULES([mangle], [PRE_public_dispatch_stage2], 0, [dnl
-    PRE_public_to_internal 0 -- 0.0.0.0/0 10.10.10.0/24
-    PRE_public_to_public 0 -- 0.0.0.0/0 10.20.20.0/24
-    PRE_public_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([mangle], [PRE_public_to_internal], 0, [dnl
-    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([mangle], [PRE_public_to_public], 0, [dnl
-    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([mangle], [PRE_public_to_HOST], 0, [dnl
+IPTABLES_LIST_RULES([mangle], [PRE_public_dispatch], 0, [dnl
     PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([mangle], [PREROUTING_dispatch], 0, [dnl
-    PRE_public_dispatch_stage2 0 -- ::/0 ::/0
-    PRE_public_to_HOST 0 -- ::/0 ::/0
+    PRE_public_dispatch 0 -- ::/0 ::/0
 ])
-IP6TABLES_LIST_RULES([mangle], [PRE_internal_dispatch_stage2], 0, [dnl
-    PRE_internal_to_public 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([mangle], [PRE_internal_to_internal], 0, [dnl
-    PRE_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([mangle], [PRE_internal_to_public], 0, [dnl
+IP6TABLES_LIST_RULES([mangle], [PRE_internal_dispatch], 0, [dnl
+    PRE_allow-host-ipv6 0 -- ::/0 ::/0
     PRE_foobar 0 -- ::/0 ::/0
     PRE_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([mangle], [PRE_internal_to_HOST], 0, [dnl
-    PRE_allow-host-ipv6 0 -- ::/0 ::/0
     PRE_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    PRE_internal 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
-IP6TABLES_LIST_RULES([mangle], [PRE_public_dispatch_stage2], 0, [dnl
-    PRE_public_to_public 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([mangle], [PRE_public_to_internal], 0, [dnl
-    PRE_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([mangle], [PRE_public_to_public], 0, [dnl
-    PRE_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([mangle], [PRE_public_to_HOST], 0, [dnl
+IP6TABLES_LIST_RULES([mangle], [PRE_public_dispatch], 0, [dnl
     PRE_allow-host-ipv6 0 -- ::/0 ::/0
     PRE_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    PRE_public 0 -- ::/0 ::/0
+    PRE_public 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 dnl (nat, prerouting)
 NFT_LIST_RULES([inet], [nat_PREROUTING_dispatch], 0, [dnl
     table inet firewalld {
         chain nat_PREROUTING_dispatch {
-            ip saddr 10.10.10.0/24 jump nat_PRE_internal_dispatch_stage2
-            ip saddr 10.10.10.0/24 jump nat_PRE_internal_to_HOST
-            ip saddr 10.20.20.0/24 jump nat_PRE_public_dispatch_stage2
-            ip saddr 10.20.20.0/24 jump nat_PRE_public_to_HOST
-            jump nat_PRE_public_dispatch_stage2
-            jump nat_PRE_public_to_HOST
+            ip saddr 10.10.10.0/24 jump nat_PRE_internal_dispatch
+            ip saddr 10.20.20.0/24 jump nat_PRE_public_dispatch
+            jump nat_PRE_public_dispatch
         }
     }
 ])
-NFT_LIST_RULES([inet], [nat_PRE_internal_dispatch_stage2], 0, [dnl
+NFT_LIST_RULES([inet], [nat_PRE_internal_dispatch], 0, [dnl
     table inet firewalld {
-        chain nat_PRE_internal_dispatch_stage2 {
-            ip daddr 10.10.10.0/24 jump nat_PRE_internal_to_internal
-            ip daddr 10.20.20.0/24 jump nat_PRE_internal_to_public
-            jump nat_PRE_internal_to_public
-        }
-    }
-])
-NFT_LIST_RULES([inet], [nat_PRE_internal_to_public], 0, [dnl
-    table inet firewalld {
-        chain nat_PRE_internal_to_public {
+        chain nat_PRE_internal_dispatch {
+            jump nat_PRE_policy_allow-host-ipv6
             jump nat_PRE_policy_foobar
             jump nat_PRE_internal
-            return
+            accept
         }
     }
 ])
-NFT_LIST_RULES([inet], [nat_PRE_internal_to_internal], 0, [dnl
+NFT_LIST_RULES([inet], [nat_PRE_public_dispatch], 0, [dnl
     table inet firewalld {
-        chain nat_PRE_internal_to_internal {
-            jump nat_PRE_internal
-            return
-        }
-    }
-])
-NFT_LIST_RULES([inet], [nat_PRE_internal_to_HOST], 0, [dnl
-    table inet firewalld {
-        chain nat_PRE_internal_to_HOST {
-            jump nat_PRE_policy_allow-host-ipv6
-            jump nat_PRE_internal
-            return
-        }
-    }
-])
-NFT_LIST_RULES([inet], [nat_PRE_public_dispatch_stage2], 0, [dnl
-    table inet firewalld {
-        chain nat_PRE_public_dispatch_stage2 {
-            ip daddr 10.10.10.0/24 jump nat_PRE_public_to_internal
-            ip daddr 10.20.20.0/24 jump nat_PRE_public_to_public
-            jump nat_PRE_public_to_public
-        }
-    }
-])
-NFT_LIST_RULES([inet], [nat_PRE_public_to_internal], 0, [dnl
-    table inet firewalld {
-        chain nat_PRE_public_to_internal {
-            jump nat_PRE_public
-            return
-        }
-    }
-])
-NFT_LIST_RULES([inet], [nat_PRE_public_to_public], 0, [dnl
-    table inet firewalld {
-        chain nat_PRE_public_to_public {
-            jump nat_PRE_public
-            return
-        }
-    }
-])
-NFT_LIST_RULES([inet], [nat_PRE_public_to_HOST], 0, [dnl
-    table inet firewalld {
-        chain nat_PRE_public_to_HOST {
+        chain nat_PRE_public_dispatch {
             jump nat_PRE_policy_allow-host-ipv6
             jump nat_PRE_public
-            return
+            accept
         }
     }
 ])
 IPTABLES_LIST_RULES([nat], [PREROUTING_dispatch], 0, [dnl
-    PRE_internal_dispatch_stage2 0 -- 10.10.10.0/24 0.0.0.0/0
-    PRE_internal_to_HOST 0 -- 10.10.10.0/24 0.0.0.0/0
-    PRE_public_dispatch_stage2 0 -- 10.20.20.0/24 0.0.0.0/0
-    PRE_public_to_HOST 0 -- 10.20.20.0/24 0.0.0.0/0
-    PRE_public_dispatch_stage2 0 -- 0.0.0.0/0 0.0.0.0/0
-    PRE_public_to_HOST 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_internal_dispatch 0 -- 10.10.10.0/24 0.0.0.0/0
+    PRE_public_dispatch 0 -- 10.20.20.0/24 0.0.0.0/0
+    PRE_public_dispatch 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
-IPTABLES_LIST_RULES([nat], [PRE_internal_dispatch_stage2], 0, [dnl
-    PRE_internal_to_internal 0 -- 0.0.0.0/0 10.10.10.0/24
-    PRE_internal_to_public 0 -- 0.0.0.0/0 10.20.20.0/24
-    PRE_internal_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([nat], [PRE_internal_to_internal], 0, [dnl
-    PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([nat], [PRE_internal_to_public], 0, [dnl
+IPTABLES_LIST_RULES([nat], [PRE_internal_dispatch], 0, [dnl
+    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_foobar 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([nat], [PRE_internal_to_HOST], 0, [dnl
-    PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_internal 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
-IPTABLES_LIST_RULES([nat], [PRE_public_dispatch_stage2], 0, [dnl
-    PRE_public_to_internal 0 -- 0.0.0.0/0 10.10.10.0/24
-    PRE_public_to_public 0 -- 0.0.0.0/0 10.20.20.0/24
-    PRE_public_to_public 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([nat], [PRE_public_to_internal], 0, [dnl
-    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([nat], [PRE_public_to_public], 0, [dnl
-    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
-])
-IPTABLES_LIST_RULES([nat], [PRE_public_to_HOST], 0, [dnl
+IPTABLES_LIST_RULES([nat], [PRE_public_dispatch], 0, [dnl
     PRE_allow-host-ipv6 0 -- 0.0.0.0/0 0.0.0.0/0
     PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
-    RETURN 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    PRE_public 0 -- 0.0.0.0/0 0.0.0.0/0
+    ACCEPT 0 -- 0.0.0.0/0 0.0.0.0/0
 ])
 IP6TABLES_LIST_RULES([nat], [PREROUTING_dispatch], 0, [dnl
-    PRE_public_dispatch_stage2 0 -- ::/0 ::/0
-    PRE_public_to_HOST 0 -- ::/0 ::/0
+    PRE_public_dispatch 0 -- ::/0 ::/0
 ])
-IP6TABLES_LIST_RULES([nat], [PRE_internal_dispatch_stage2], 0, [dnl
-    PRE_internal_to_public 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([nat], [PRE_internal_to_internal], 0, [dnl
-    PRE_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([nat], [PRE_internal_to_public], 0, [dnl
+IP6TABLES_LIST_RULES([nat], [PRE_internal_dispatch], 0, [dnl
+    PRE_allow-host-ipv6 0 -- ::/0 ::/0
     PRE_foobar 0 -- ::/0 ::/0
     PRE_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([nat], [PRE_internal_to_HOST], 0, [dnl
-    PRE_allow-host-ipv6 0 -- ::/0 ::/0
     PRE_internal 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    PRE_internal 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
-IP6TABLES_LIST_RULES([nat], [PRE_public_dispatch_stage2], 0, [dnl
-    PRE_public_to_public 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([nat], [PRE_public_to_internal], 0, [dnl
-    PRE_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([nat], [PRE_public_to_public], 0, [dnl
-    PRE_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
-])
-IP6TABLES_LIST_RULES([nat], [PRE_public_to_HOST], 0, [dnl
+IP6TABLES_LIST_RULES([nat], [PRE_public_dispatch], 0, [dnl
     PRE_allow-host-ipv6 0 -- ::/0 ::/0
     PRE_public 0 -- ::/0 ::/0
-    RETURN 0 -- ::/0 ::/0
+    PRE_public 0 -- ::/0 ::/0
+    PRE_public 0 -- ::/0 ::/0
+    ACCEPT 0 -- ::/0 ::/0
 ])
 dnl (nat, postrouting)
 NFT_LIST_RULES([inet], [nat_POSTROUTING_dispatch], 0, [dnl

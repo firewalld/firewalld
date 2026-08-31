@@ -1174,7 +1174,10 @@ class nftables:
         return []
 
     def _zone_dispatch_chain_name(self, ingress_zone, egress_zone, table, chain):
-        return f"{table}_{SHORTCUTS[chain]}_{ingress_zone}_to_{egress_zone}"
+        if chain == "PREROUTING":
+            return f"{table}_{SHORTCUTS[chain]}_{ingress_zone}_dispatch"
+        else:
+            return f"{table}_{SHORTCUTS[chain]}_{ingress_zone}_to_{egress_zone}"
 
     def build_zone_target_rules(self, enable, ingress_zone, egress_zone, table, chain):
         add_del = {True: "add", False: "delete"}[enable]
@@ -1186,14 +1189,13 @@ class nftables:
             ingress_zone, egress_zone, table, chain
         )
 
+        # prerouting cannot determine the egress. Only create it once.
+        if chain == "PREROUTING" and egress_zone != "HOST":
+            return []
+
         rules = []
         expr_fragments = []
-        if chain == "PREROUTING":
-            # During prerouting we can't reliably determine if the packet is
-            # destined for the host (local) or a remote (non-local). As such,
-            # we have to let fall through.
-            expr_fragments.append({"return": None})
-        elif chain in ["OUTPUT", "POSTROUTING"]:
+        if chain in ["PREROUTING", "OUTPUT", "POSTROUTING"]:
             expr_fragments.append({"accept": None})
         elif z_obj.target in [
             DEFAULT_ZONE_TARGET,
@@ -1252,6 +1254,11 @@ class nftables:
         """Chains for stage 2. (identify egress zone)"""
         add_del = {True: "add", False: "delete"}[enable]
 
+        # prerouting doesn't have a stage2 because it can't determine the
+        # egress
+        if chain == "PREROUTING":
+            return []
+
         return [
             {
                 add_del: {
@@ -1269,6 +1276,10 @@ class nftables:
     ):
         """Chains for stage 3. (dispatch to policies)"""
         add_del = {True: "add", False: "delete"}[enable]
+
+        # prerouting cannot determine the egress. Only create it once.
+        if chain == "PREROUTING" and egress_zone != "HOST":
+            return []
 
         # chain for stage 3 (jump to policies)
         return [
@@ -1290,6 +1301,10 @@ class nftables:
     ):
         add_del = {True: "add", False: "delete"}[enable]
 
+        # prerouting cannot determine the egress. Only create it once.
+        if chain == "PREROUTING" and egress_zone != "HOST":
+            return []
+
         if interface and interface[len(interface) - 1] == "+":
             interface = interface[: len(interface) - 1] + "*"
 
@@ -1307,12 +1322,12 @@ class nftables:
         elif source:
             expr_fragments.append(self._rule_addr_fragment("saddr", source))
 
-        if "HOST" == egress_zone:
+        if "HOST" == egress_zone or chain == "PREROUTING":
             expr_fragments.append(
                 {
                     "jump": {
                         "target": self._zone_dispatch_chain_name(
-                            ingress_zone, "HOST", table, chain
+                            ingress_zone, egress_zone, table, chain
                         )
                     }
                 }
@@ -1347,6 +1362,11 @@ class nftables:
         self, enable, ingress_zone, egress_zone, table, chain, interface, source
     ):
         add_del = {True: "add", False: "delete"}[enable]
+
+        # prerouting doesn't have a stage2 because it can't determine the
+        # egress
+        if chain == "PREROUTING":
+            return []
 
         if interface and interface[len(interface) - 1] == "+":
             interface = interface[: len(interface) - 1] + "*"
