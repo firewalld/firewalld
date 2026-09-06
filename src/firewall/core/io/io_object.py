@@ -211,6 +211,41 @@ class IO_Object:
             )
 
 
+class IO_Object_CommentsDict(dict):
+    def __comment_key(self, el_name, el_id=""):
+        return "%s%s%s" % (el_name, "/" if el_id != "" else "", el_id)
+
+    def set_comments(self, el_name, el_id, preceding_comments, closing_comments):
+        key = self.__comment_key(el_name, el_id)
+        if not key in self:
+            self[key] = (preceding_comments, closing_comments)
+        else:
+            if not self[key][0]:
+                self[key][0] = preceding_comments
+            if not self[key][1]:
+                self[key][1] = closing_comments
+
+    def set_preceding_comments(self, el_name, el_id, preceding_comments):
+        key = self.__comment_key(el_name, el_id)
+        if not key in self:
+            self[key] = (preceding_comments, [])
+        elif not self[key][0]:
+            self[key][0] = preceding_comments
+
+    def set_closing_comments(self, el_name, el_id, closing_comments):
+        key = self.__comment_key(el_name, el_id)
+        if not key in self:
+            self[key] = ([], closing_comments)
+        elif not self[key][1]:
+            self[key][1] = closing_comments
+
+    def get_comments(self, pos, el_name, el_id=""):
+        key = self.__comment_key(el_name, el_id)
+        if key in self and self[key][pos]:
+            return self[key][pos]
+        return []
+
+
 # PARSER
 
 
@@ -247,21 +282,47 @@ class IO_Object_ContentHandler(sax.handler.ContentHandler):
     def __init__(self, item):
         self.item = item
         self._element = ""
+        self._comments = []
 
     def startDocument(self):
         self._element = ""
+        self._comments = []
 
     def startElement(self, name, attrs):
         self._element = ""
+        self._precedingComments = self._comments
+        self._comments = []
 
     def endElement(self, name):
         if name == "short":
             self.item.short = self._element
         elif name == "description":
             self.item.description = self._element
+        self._closingComments = self._comments
+        self._comments = []
 
     def characters(self, content):
         self._element += content.replace("\n", " ")
+
+    def comment(self, data):
+        if data != "":
+            if data[0].isspace():
+                data = data[1:]
+            if data[-1].isspace():
+                data = data[:-1]
+            self._comments.append(data)
+
+    def startDTD(self, name, public_id, system_id):
+        pass
+
+    def endDTD(self):
+        pass
+
+    def startCDATA(self):
+        pass
+
+    def endCDATA(self):
+        pass
 
 
 class IO_Object_XMLGenerator(saxutils.XMLGenerator):
@@ -288,6 +349,15 @@ class IO_Object_XMLGenerator(saxutils.XMLGenerator):
         for name, value in attrs.items():
             self._write(" %s=%s" % (name, saxutils.quoteattr(value)))
         self._write("/>")
+
+    def comment(self, comment):
+        self._write("<!-- " + comment + " -->")
+
+    def writeComments(self, indent, newline, comments_dict, cmt_pos, el_name, el_inst=""):
+        for comment in comments_dict.get_comments(cmt_pos, el_name, el_inst):
+            self.ignorableWhitespace(indent)
+            self.comment(comment)
+            self.ignorableWhitespace(newline)
 
 
 def check_port(port):
