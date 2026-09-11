@@ -26,7 +26,7 @@ from firewall.client import (
     FirewallClientPolicySettings,
 )
 from firewall.errors import FirewallError
-from firewall import config
+from firewall.config import VERSION
 from firewall import errors
 from firewall.functions import joinArgs, splitArgs, getPortRange
 from firewall.core.fw_nm import (
@@ -3188,7 +3188,7 @@ if a.permanent:
             fw_zone.update(settings)
 
 elif a.version:
-    cmd.print_and_exit(config.VERSION)
+    cmd.print_and_exit(VERSION)
 elif a.state:
     state = fw.get_property("state")
     if state == "RUNNING":
