@@ -17,7 +17,7 @@ from firewall import config
 from firewall.core.fw import Firewall
 from firewall.core.rich import Rich_Rule
 from firewall.core.logger import log
-from firewall.client import FirewallClientZoneSettings
+from firewall.client import FirewallClientZoneSettings, FirewallClientPolicySettings
 from firewall.server.dbus import FirewallDBusException, DbusServiceObject
 from firewall.server.decorators import (
     dbus_handle_exceptions,
@@ -412,11 +412,11 @@ class FirewallD(DbusServiceObject):
 
         config_names = self.config.getServiceNames()
         for name in self.fw.service.get_services():
-            conf = self.getServiceSettings(name)
+            conf = self.getServiceSettings2(name)
             try:
                 if name in config_names:
                     conf_obj = self.config.getServiceByName(name)
-                    if conf_obj.getSettings() != conf:
+                    if conf_obj.getSettings2() != conf:
                         log.debug1("Copying service '%s' settings" % name)
                         conf_obj.update(conf)
                     else:
@@ -478,7 +478,6 @@ class FirewallD(DbusServiceObject):
         for name in self.fw.zone.get_zones():
             conf = self.getZoneSettings2(name)
             settings = FirewallClientZoneSettings(copy.deepcopy(conf))
-            changed = False
             for interface in settings.getInterfaces():
                 if interface in self.fw._nm_assigned_interfaces:
                     log.debug1(
@@ -486,19 +485,16 @@ class FirewallD(DbusServiceObject):
                         % (name, interface)
                     )
                     settings.removeInterface(interface)
-                    changed = True
             # For the remaining interfaces, attempt to let NM manage them
             for interface in settings.getInterfaces():
                 try:
                     connection = nm_get_connection_of_interface(interface)
                     if connection and nm_set_zone_of_connection(name, connection):
                         settings.removeInterface(interface)
-                        changed = True
                 except Exception:
                     pass
 
-            if changed:
-                conf = settings.getSettingsDict()
+            conf = settings.getSettingsDict()
             # For the remaining try to update the ifcfg files
             for interface in settings.getInterfaces():
                 ifcfg_set_zone_of_interface(name, interface)
@@ -518,7 +514,13 @@ class FirewallD(DbusServiceObject):
 
         config_names = self.config.getPolicyNames()
         for name in self.fw.policy.get_policies_not_derived_from_zone():
-            conf = self.getPolicySettings(name)
+            # The dbus API only returns keys that have non-empty config. The
+            # FirewallClientPolicySettings().getSettingsDict() always returns
+            # all keys even if they have "empty" values. Without this, config
+            # that was emptied at runtime won't be emptied in permanent config.
+            conf = FirewallClientPolicySettings(
+                self.getPolicySettings(name)
+            ).getSettingsDict()
             try:
                 if name in config_names:
                     conf_obj = self.config.getPolicyByName(name)
