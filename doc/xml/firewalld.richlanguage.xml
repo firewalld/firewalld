@@ -276,7 +276,7 @@ source-port port="port value" protocol="tcp|udp|sctp|dccp"
       <title>Log</title>
       <para>
 	<programlisting>
-log [prefix="prefix text"] [level="log level"] [limit value="rate/duration"]
+log [prefix="prefix text"] [level="log level"] [limit value="rate/duration" [burst="value"]]
 	</programlisting>
       </para>
       <para>
@@ -294,7 +294,7 @@ log [prefix="prefix text"] [level="log level"] [limit value="rate/duration"]
       <title>NFLog</title>
       <para>
 	<programlisting>
-nflog [group="group id"] [prefix="prefix text"] [queue-size="threshold"] [limit value="rate/duration"]
+nflog [group="group id"] [prefix="prefix text"] [queue-size="threshold"] [limit value="rate/duration" [burst="value"]]
 	</programlisting>
       </para>
       <para>
@@ -320,7 +320,7 @@ nflog [group="group id"] [prefix="prefix text"] [queue-size="threshold"] [limit 
       <title>Audit</title>
       <para>
 	<programlisting>
-audit [limit value="rate/duration"]
+audit [limit value="rate/duration" [burst="value"]]
 	</programlisting>
       </para>
       <para>
@@ -340,22 +340,22 @@ audit [limit value="rate/duration"]
       </para>
       <para>
 	<programlisting>
-accept [limit value="rate/duration"]
+accept [limit value="rate/duration" [burst="value"]]
 	</programlisting>
       </para>
       <para>
 	<programlisting>
-reject [type="reject type"] [limit value="rate/duration"]
+reject [type="reject type"] [limit value="rate/duration" [burst="value"]]
 	</programlisting>
       </para>
       <para>
 	<programlisting>
-drop [limit value="rate/duration"]
+drop [limit value="rate/duration" [burst="value"]]
 	</programlisting>
       </para>
       <para>
 	<programlisting>
-mark set="mark[/mask]" [limit value="rate/duration"]
+mark set="mark[/mask]" [limit value="rate/duration" [burst="value"]]
 	</programlisting>
       </para>
       <para>
@@ -374,7 +374,7 @@ mark set="mark[/mask]" [limit value="rate/duration"]
        <title>Limit</title>
       <para>
 	<programlisting>
-limit value="rate/duration"
+limit value="rate/duration" [burst="value"]
 	</programlisting>
       </para>
        <para>
@@ -383,6 +383,8 @@ limit value="rate/duration"
 	 The rate is a natural positive number [1, ..]
 	 The duration is of "s", "m", "h", "d". "s" means seconds, "m" minutes, "h" hours and "d" days.
 	 Maximum limit value is "2/d", which means at maximum two matches per day.
+	 The optional burst is a non-negative integer in the range 0 to 10000000.
+	 It sets how many packets may match in excess of the given rate.
        </para>
     </refsect2>
 
@@ -456,7 +458,7 @@ rule service name="ftp" log limit value="1/m" audit accept
       </para>
       <para>
 	<programlisting>
-rule family="ipv4" source address="192.168.0.0/24" service name="tftp" log prefix="tftp" level="info" limit value="1/m" accept
+rule family="ipv4" source address="192.168.0.0/24" service name="tftp" log prefix="tftp" level="info" limit value="1/m" burst="5" accept
 	</programlisting>
       </para>
     </refsect2>
