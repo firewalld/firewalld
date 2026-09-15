@@ -356,7 +356,7 @@ class FirewallDirect:
                 except ValueError:
                     pass
                 else:
-                    if len(rule) > i and "," in rule[i + 1]:
+                    if len(rule) > i + 1 and "," in rule[i + 1]:
                         # For all items in the comma separated list in index
                         # i of the rule, a new rule is created with a single
                         # item from this list
