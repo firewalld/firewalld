@@ -403,7 +403,7 @@ class Logger:
         self._addLogging(domain, target, level, fmt, is_debug=0)
 
     def addDebugLogging(self, domain, target, level=ALL, fmt=None):
-        """Add debg log target for domain and level. Level can be a single
+        """Add debug log target for domain and level. Level can be a single
         level or an array of levels. Use level ALL to set for all levels.
         If no format is specified, the default format will be used."""
         self._addLogging(domain, target, level, fmt, is_debug=1)
