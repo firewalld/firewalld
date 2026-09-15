@@ -1187,7 +1187,7 @@ class Firewall:
             if not functions.checkIP6nMask(source):
                 raise FirewallError(errors.INVALID_ADDR, source)
         else:
-            raise FirewallError(errors.INVALID_IPV, "'%s' not in {'ipv4'|'ipv6'}")
+            raise FirewallError(errors.INVALID_IPV, "'%s' not in {'ipv4'|'ipv6'}" % ipv)
 
     def check_icmptype(self, icmp):
         self.icmptype.check_icmptype(icmp)
