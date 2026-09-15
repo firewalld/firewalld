@@ -436,7 +436,7 @@ class FirewallDirect:
         #   _rule_priority_positions[(ipv4,filter,INPUT)][3] = 1
         # The new rule
         #   ipv4, filter, INPUT, 2, -i, foo2_2, -j, ACCEPT
-        # has the same pritority as the second rule before and will be added
+        # has the same priority as the second rule before and will be added
         # right after it.
         # The initial index is 1 and the chain_id is already in
         # _rule_priority_positions. Therefore the index will increase for
