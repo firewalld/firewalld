@@ -572,7 +572,7 @@ class Firewall:
             #
             # Future optimization for the ipset case in reload: The transaction
             # only needs to be split here if there are conflicting ipset types in
-            # exsting ipsets and the configuration in firewalld.
+            # existing ipsets and the configuration in firewalld.
             if (reload and complete_reload) or (
                 self.ipset.backends() and self.ipset.has_ipsets()
             ):
