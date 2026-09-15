@@ -640,19 +640,21 @@ class Logger:
                     return obj
 
         module = inspect.getmodule(frame.f_code)
+        if module is None:
+            return None
         code = frame.f_code
 
         # function in module?
         if code.co_name in module.__dict__:
             if (
-                hasattr(module.__dict__[code.co_name], "func_code")
+                hasattr(module.__dict__[code.co_name], "__code__")
                 and module.__dict__[code.co_name].__code__ == code
             ):
                 return None
 
         # class in module
         for obj in module.__dict__.values():
-            if isinstance(obj, types.ClassType):
+            if isinstance(obj, type):
                 if hasattr(obj, code.co_name):
                     value = getattr(obj, code.co_name)
                     if isinstance(value, types.FunctionType):
