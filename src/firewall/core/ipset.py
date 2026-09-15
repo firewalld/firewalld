@@ -112,7 +112,7 @@ class ipset:
     def test(self, set_name, entry, options=None):
         args = ["test", set_name, entry]
         if options:
-            args.append("%s" % " ".join(options))
+            args.extend(options)
         return self.__run(args)
 
     def set_list(self, set_name=None, options=None):
