@@ -240,7 +240,7 @@ class Logger:
     ERROR = -1
     WARNING = 0
 
-    # Additional levels are generated in class initilization
+    # Additional levels are generated in class initialization
 
     stdout = _StdoutLog()
     stderr = _StderrLog()
