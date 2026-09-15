@@ -318,7 +318,7 @@ class Direct(IO_Object):
             self.passthroughs[ipv].append(args)
         else:
             log.warning(
-                "Passthrough '%s' for ipv '%s'" % ("',".join(args), ipv)
+                "Passthrough '%s' for ipv '%s' " % ("',".join(args), ipv)
                 + "already in list, ignoring"
             )
 
@@ -330,7 +330,7 @@ class Direct(IO_Object):
                 del self.passthroughs[ipv]
         else:
             raise ValueError(
-                "Passthrough '%s' for ipv '%s'" % ("',".join(args), ipv) + "not in list"
+                "Passthrough '%s' for ipv '%s' not in list" % ("',".join(args), ipv)
             )
 
     def query_passthrough(self, ipv, args):
