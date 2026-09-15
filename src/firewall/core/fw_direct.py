@@ -418,7 +418,7 @@ class FirewallDirect:
 
         # If a rule gets added, the initial rule index position within the
         # ipv, table and chain combination (chain_id) is 1.
-        # Tf the chain_id exists in _rule_priority_positions, there are already
+        # If the chain_id exists in _rule_priority_positions, there are already
         # other rules for this chain_id. The number of rules for a priority
         # less or equal to the priority of the new rule will increase the
         # index of the new rule. The index is the ip*tables -I insert rule
