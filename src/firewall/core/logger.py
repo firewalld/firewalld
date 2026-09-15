@@ -509,9 +509,9 @@ class Logger:
                     )
         else:
             if is_debug:
-                levels = [i for i in range(self.DEBUG1, self.DEBUG_MAX)]
+                levels = [i for i in range(self.DEBUG1, self.DEBUG_MAX + 1)]
             else:
-                levels = [i for i in range(self.FATAL, self.INFO_MAX)]
+                levels = [i for i in range(self.FATAL, self.INFO_MAX + 1)]
         return levels
 
     def _getTargets(self, target):
