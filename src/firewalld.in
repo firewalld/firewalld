@@ -97,7 +97,9 @@ def setup_logging(args):
         try:
             log_file.open()
         except IOError as e:
-            print("Failed to open log file '%s': %s", config.FIREWALLD_LOGFILE, str(e))
+            print(
+                "Failed to open log file '%s': %s" % (config.FIREWALLD_LOGFILE, str(e))
+            )
         else:
             log.setInfoLogging("*", log_file)
             if args.debug:
