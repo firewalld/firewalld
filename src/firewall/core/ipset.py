@@ -146,7 +146,7 @@ class ipset:
                 while i < len(splits):
                     opt = splits[i]
                     if opt in ["family", "hashsize", "maxelem", "timeout", "netmask"]:
-                        if len(splits) > i:
+                        if len(splits) > i + 1:
                             i += 1
                             _options[opt] = splits[i]
                         else:
