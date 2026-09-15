@@ -546,7 +546,7 @@ class Logger:
             if level not in _logging:
                 continue
             for domain, dummy, dummy in _logging[level]:
-                if domain not in _domains:
+                if domain not in _domains.get(level, []):
                     _domains.setdefault(level, []).append(domain)
 
     def _setLogging(self, domain, target, level=ALL, fmt=None, is_debug=0):
