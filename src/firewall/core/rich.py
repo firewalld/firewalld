@@ -532,6 +532,10 @@ class Rich_Reject:
     type: str = ""
     limit: Rich_Limit = None
 
+    def __post_init__(self):
+        if self.type is None:
+            object.__setattr__(self, "type", "")
+
     def __lt__(self, other):
         if self.type < other.type:
             return True
