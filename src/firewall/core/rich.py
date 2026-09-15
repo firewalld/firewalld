@@ -699,6 +699,18 @@ class Rich_Rule:
 
         return tokens
 
+    @staticmethod
+    def _parse_invert(value):
+        """Parse the value of the 'invert' attribute the same way as the XML
+        parser does. Any string used to be treated as True, even "false"."""
+        if value.lower() in ["yes", "true"]:
+            return True
+        if value.lower() in ["no", "false"]:
+            return False
+        raise FirewallError(
+            errors.INVALID_RULE, "invalid 'invert' attribute value '%s'." % value
+        )
+
     def _import_from_string(self, rule_str):
         if not rule_str:
             raise FirewallError(errors.INVALID_RULE, "empty rule")
@@ -877,8 +889,10 @@ class Rich_Rule:
                 else:
                     in_elements.append(current_element)  # push into stack
             elif in_element == "source":
-                if attr_name in ["address", "mac", "ipset", "invert"]:
+                if attr_name in ["address", "mac", "ipset"]:
                     attrs[attr_name] = attr_value
+                elif attr_name == "invert":
+                    attrs[attr_name] = self._parse_invert(attr_value)
                 elif current_element in ["not", "NOT"]:
                     attrs["invert"] = True
                 else:
@@ -896,8 +910,10 @@ class Rich_Rule:
                     attrs.clear()
                     index = index - 1  # return token to input
             elif in_element == "destination":
-                if attr_name in ["address", "ipset", "invert"]:
+                if attr_name in ["address", "ipset"]:
                     attrs[attr_name] = attr_value
+                elif attr_name == "invert":
+                    attrs[attr_name] = self._parse_invert(attr_value)
                 elif current_element in ["not", "NOT"]:
                     attrs["invert"] = True
                 else:
