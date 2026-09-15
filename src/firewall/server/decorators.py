@@ -28,7 +28,7 @@ from firewall.dbus_utils import uid_of_sender
 
 
 def handle_exceptions(func):
-    """Decorator to handle exceptions and log them. Used if not conneced
+    """Decorator to handle exceptions and log them. Used if not connected
     to D-Bus.
     """
 
