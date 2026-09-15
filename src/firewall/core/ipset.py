@@ -285,7 +285,12 @@ def check_entry_overlaps_existing(entry, entries):
         return
 
     for itr in entries:
-        if entry_network.overlaps(ipaddress.ip_network(itr, strict=False)):
+        try:
+            itr_network = ipaddress.ip_network(itr, strict=False)
+        except ValueError:
+            # existing entry can not be parsed, e.g. an IP range
+            continue
+        if entry_network.overlaps(itr_network):
             raise FirewallError(
                 errors.INVALID_ENTRY,
                 "Entry '{}' overlaps with existing entry '{}'".format(entry, itr),
