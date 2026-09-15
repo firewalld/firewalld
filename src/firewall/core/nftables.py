@@ -1625,7 +1625,7 @@ class nftables:
                 }
             }
 
-        raise FirewallError(INVALID_RULE, 'Invalid pkttype "%s"', pkttype)
+        raise FirewallError(INVALID_RULE, 'Invalid pkttype "%s"' % pkttype)
 
     def _reject_types_fragment(self, reject_type):
         frags = {
@@ -1936,7 +1936,7 @@ class nftables:
         if not rich_family:
             return {}
         if rich_family not in ["ipv4", "ipv6"]:
-            raise FirewallError(INVALID_RULE, "Invalid family" % rich_family)
+            raise FirewallError(INVALID_RULE, "Invalid family '%s'" % rich_family)
 
         return {
             "match": {
