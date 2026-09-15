@@ -1128,7 +1128,7 @@ class ip4tables:
 
         if source:
             sort_order = 1
-        elif interface:
+        else:
             sort_order = 2
 
         return [
