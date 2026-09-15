@@ -906,7 +906,7 @@ class Firewall:
                 (status, msg) = self.modules_backend.load_module(module)
             else:
                 if self._module_refcount.get(module, 0) > 1:
-                    status = 0  # module referenced more then one, do not unload
+                    status = 0  # module referenced more than once, do not unload
                 else:
                     (status, msg) = self.modules_backend.unload_module(module)
             if status != 0:
