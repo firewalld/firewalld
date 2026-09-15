@@ -382,7 +382,7 @@ class Direct(IO_Object):
         handler = IO_Object_XMLGenerator(f)
         handler.startDocument()
 
-        # start whitelist element
+        # start direct element
         handler.startElement("direct", {})
         handler.ignorableWhitespace("\n")
 
@@ -427,7 +427,7 @@ class Direct(IO_Object):
                 handler.endElement("passthrough")
                 handler.ignorableWhitespace("\n")
 
-        # end zone element
+        # end direct element
         handler.endElement("direct")
         handler.ignorableWhitespace("\n")
         handler.endDocument()
