@@ -267,7 +267,7 @@ class IPSet(IO_Object):
                     elif not check_port(splits[1]):
                         raise FirewallError(
                             errors.INVALID_ENTRY,
-                            "invalid port '%s'in '%s'" % (splits[1], entry),
+                            "invalid port '%s' in '%s'" % (splits[1], entry),
                         )
                 else:
                     if not check_port(item):

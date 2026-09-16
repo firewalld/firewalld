@@ -112,7 +112,7 @@ class ipset:
     def test(self, set_name, entry, options=None):
         args = ["test", set_name, entry]
         if options:
-            args.append("%s" % " ".join(options))
+            args.extend(options)
         return self.__run(args)
 
     def set_list(self, set_name=None, options=None):
@@ -146,7 +146,7 @@ class ipset:
                 while i < len(splits):
                     opt = splits[i]
                     if opt in ["family", "hashsize", "maxelem", "timeout", "netmask"]:
-                        if len(splits) > i:
+                        if len(splits) > i + 1:
                             i += 1
                             _options[opt] = splits[i]
                         else:
@@ -285,7 +285,12 @@ def check_entry_overlaps_existing(entry, entries):
         return
 
     for itr in entries:
-        if entry_network.overlaps(ipaddress.ip_network(itr, strict=False)):
+        try:
+            itr_network = ipaddress.ip_network(itr, strict=False)
+        except ValueError:
+            # existing entry can not be parsed, e.g. an IP range
+            continue
+        if entry_network.overlaps(itr_network):
             raise FirewallError(
                 errors.INVALID_ENTRY,
                 "Entry '{}' overlaps with existing entry '{}'".format(entry, itr),
