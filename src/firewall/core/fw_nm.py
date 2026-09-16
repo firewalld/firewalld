@@ -170,8 +170,11 @@ def nm_get_interfaces():
         if active_con.get_vpn():
             continue
 
+        con = active_con.get_connection()
+        if con is None:
+            continue
+
         try:
-            con = active_con.get_connection()
             if con.get_flags() & (
                 NM.SettingsConnectionFlags.NM_GENERATED
                 | NM.SettingsConnectionFlags.NM_VOLATILE
@@ -233,8 +236,11 @@ def nm_get_connection_of_interface(interface):
     if active_con is None:
         return None
 
+    con = active_con.get_connection()
+    if con is None:
+        return None
+
     try:
-        con = active_con.get_connection()
         if con.get_flags() & NM.SettingsConnectionFlags.NM_GENERATED:
             return None
     except AttributeError:
