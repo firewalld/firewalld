@@ -240,7 +240,7 @@ class Logger:
     ERROR = -1
     WARNING = 0
 
-    # Additional levels are generated in class initilization
+    # Additional levels are generated in class initialization
 
     stdout = _StdoutLog()
     stderr = _StderrLog()
@@ -403,7 +403,7 @@ class Logger:
         self._addLogging(domain, target, level, fmt, is_debug=0)
 
     def addDebugLogging(self, domain, target, level=ALL, fmt=None):
-        """Add debg log target for domain and level. Level can be a single
+        """Add debug log target for domain and level. Level can be a single
         level or an array of levels. Use level ALL to set for all levels.
         If no format is specified, the default format will be used."""
         self._addLogging(domain, target, level, fmt, is_debug=1)
@@ -509,9 +509,9 @@ class Logger:
                     )
         else:
             if is_debug:
-                levels = [i for i in range(self.DEBUG1, self.DEBUG_MAX)]
+                levels = [i for i in range(self.DEBUG1, self.DEBUG_MAX + 1)]
             else:
-                levels = [i for i in range(self.FATAL, self.INFO_MAX)]
+                levels = [i for i in range(self.FATAL, self.INFO_MAX + 1)]
         return levels
 
     def _getTargets(self, target):
@@ -546,7 +546,7 @@ class Logger:
             if level not in _logging:
                 continue
             for domain, dummy, dummy in _logging[level]:
-                if domain not in _domains:
+                if domain not in _domains.get(level, []):
                     _domains.setdefault(level, []).append(domain)
 
     def _setLogging(self, domain, target, level=ALL, fmt=None, is_debug=0):
@@ -640,19 +640,21 @@ class Logger:
                     return obj
 
         module = inspect.getmodule(frame.f_code)
+        if module is None:
+            return None
         code = frame.f_code
 
         # function in module?
         if code.co_name in module.__dict__:
             if (
-                hasattr(module.__dict__[code.co_name], "func_code")
+                hasattr(module.__dict__[code.co_name], "__code__")
                 and module.__dict__[code.co_name].__code__ == code
             ):
                 return None
 
         # class in module
         for obj in module.__dict__.values():
-            if isinstance(obj, types.ClassType):
+            if isinstance(obj, type):
                 if hasattr(obj, code.co_name):
                     value = getattr(obj, code.co_name)
                     if isinstance(value, types.FunctionType):
