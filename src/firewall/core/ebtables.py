@@ -136,7 +136,7 @@ class ebtables:
                 except ValueError:
                     pass
                 else:
-                    if len(rule) >= i + 1:
+                    if len(rule) > i + 1:
                         rule.pop(i)
                         table = rule.pop(i)
 
