@@ -572,7 +572,7 @@ class Firewall:
             #
             # Future optimization for the ipset case in reload: The transaction
             # only needs to be split here if there are conflicting ipset types in
-            # exsting ipsets and the configuration in firewalld.
+            # existing ipsets and the configuration in firewalld.
             if (reload and complete_reload) or (
                 self.ipset.backends() and self.ipset.has_ipsets()
             ):
@@ -905,8 +905,8 @@ class Firewall:
             if enable:
                 (status, msg) = self.modules_backend.load_module(module)
             else:
-                if self._module_refcount[module] > 1:
-                    status = 0  # module referenced more then one, do not unload
+                if self._module_refcount.get(module, 0) > 1:
+                    status = 0  # module referenced more than once, do not unload
                 else:
                     (status, msg) = self.modules_backend.unload_module(module)
             if status != 0:
@@ -1187,7 +1187,7 @@ class Firewall:
             if not functions.checkIP6nMask(source):
                 raise FirewallError(errors.INVALID_ADDR, source)
         else:
-            raise FirewallError(errors.INVALID_IPV, "'%s' not in {'ipv4'|'ipv6'}")
+            raise FirewallError(errors.INVALID_IPV, "'%s' not in {'ipv4'|'ipv6'}" % ipv)
 
     def check_icmptype(self, icmp):
         self.icmptype.check_icmptype(icmp)
