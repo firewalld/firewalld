@@ -149,7 +149,7 @@ def common_startElement(obj, name, attrs):
             )
             return True
         else:
-            raise FirewallError(errors.INVALID_RULE, "icmp-block outside of rule.")
+            raise FirewallError(errors.INVALID_RULE, "icmp-type outside of rule.")
 
     elif name == "masquerade":
         if obj._rule:
@@ -745,7 +745,7 @@ def common_writer(obj, handler):
                 attrs["set"] = rule.action.set
             else:
                 raise FirewallError(
-                    errors.INVALID_RULE, f"Unknown action in rule '{str(obj._rule)}'."
+                    errors.INVALID_RULE, f"Unknown action in rule '{str(rule)}'."
                 )
             handler.ignorableWhitespace("    ")
             if rule.action.limit:
