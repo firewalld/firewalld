@@ -159,6 +159,9 @@ def nm_get_connections(connections, connections_name):
         if active_con.get_vpn():
             continue
 
+        if _nm_connection_is_generated_or_volatile(active_con.get_connection()):
+            continue
+
         name = active_con.get_id()
         uuid = active_con.get_uuid()
         devices = active_con.get_devices()
