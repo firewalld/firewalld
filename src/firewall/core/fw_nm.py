@@ -72,6 +72,29 @@ def nm_get_client():
     return _nm_client
 
 
+def _nm_connection_is_generated_or_volatile(con):
+    """Check whether a NM connection has no persistent configuration of its
+    own, i.e. it is generated or volatile.
+    @param con NM.RemoteConnection instance, may be None
+    @return True if generated/volatile, False otherwise
+    """
+    if con is None:
+        return False
+
+    try:
+        return bool(
+            con.get_flags()
+            & (
+                NM.SettingsConnectionFlags.NM_GENERATED
+                | NM.SettingsConnectionFlags.VOLATILE
+            )
+        )
+    except AttributeError:
+        # Prior to NetworkManager 1.12, we can only guess
+        # that a connection was generated/volatile.
+        return con.get_unsaved()
+
+
 def nm_get_zone_of_connection(connection):
     """Get zone of connection from NM
     @param connection name
@@ -87,17 +110,8 @@ def nm_get_zone_of_connection(connection):
     if setting_con is None:
         return None
 
-    try:
-        if con.get_flags() & (
-            NM.SettingsConnectionFlags.NM_GENERATED
-            | NM.SettingsConnectionFlags.NM_VOLATILE
-        ):
-            return ""
-    except AttributeError:
-        # Prior to NetworkManager 1.12, we can only guess
-        # that a connection was generated/volatile.
-        if con.get_unsaved():
-            return ""
+    if _nm_connection_is_generated_or_volatile(con):
+        return ""
 
     zone = setting_con.get_zone()
     if zone is None:
@@ -145,6 +159,9 @@ def nm_get_connections(connections, connections_name):
         if active_con.get_vpn():
             continue
 
+        if _nm_connection_is_generated_or_volatile(active_con.get_connection()):
+            continue
+
         name = active_con.get_id()
         uuid = active_con.get_uuid()
         devices = active_con.get_devices()
@@ -170,18 +187,8 @@ def nm_get_interfaces():
         if active_con.get_vpn():
             continue
 
-        try:
-            con = active_con.get_connection()
-            if con.get_flags() & (
-                NM.SettingsConnectionFlags.NM_GENERATED
-                | NM.SettingsConnectionFlags.NM_VOLATILE
-            ):
-                continue
-        except AttributeError:
-            # Prior to NetworkManager 1.12, we can only guess
-            # that a connection was generated/volatile.
-            if con.get_unsaved():
-                continue
+        if _nm_connection_is_generated_or_volatile(active_con.get_connection()):
+            continue
 
         for dev in active_con.get_devices():
             ip_iface = dev.get_ip_iface()
