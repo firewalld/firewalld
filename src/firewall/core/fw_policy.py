@@ -51,7 +51,7 @@ class FirewallPolicy:
     def cleanup(self):
         self._chains.clear()
         self._policies.clear()
-        for _id in self._timeouts:
+        for _id in list(self._timeouts):
             self.removeTimeout(_id)
 
     # transaction
