@@ -1,0 +1,19 @@
+FWD_START_TEST([reload with a timed runtime rule active])
+AT_KEYWORDS([gh1597])
+
+dnl cleanup() iterated _timeouts while removeTimeout() deleted from it, so a
+dnl reload with any timed runtime object active raised "dictionary changed size
+dnl during iteration" and left the daemon with no zones loaded.
+
+dnl A policy must exist before it can be used at runtime.
+FWD_CHECK([--permanent --new-policy foobar], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar --add-ingress-zone ANY], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar --add-egress-zone ANY], 0, [ignore])
+FWD_RELOAD()
+
+FWD_CHECK([--zone public --add-port 12345/tcp --timeout 300], 0, [ignore])
+FWD_CHECK([--policy foobar --add-port 42/tcp --timeout 300], 0, [ignore])
+
+FWD_RELOAD()
+
+FWD_END_TEST()
