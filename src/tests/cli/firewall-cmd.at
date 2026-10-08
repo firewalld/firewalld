@@ -2241,3 +2241,538 @@ AT_DATA([./ipsets/foobar.xml], [dnl
     AT_CHECK([rm ./zones/foobar.xml])
 
 FWD_END_TEST([ignore])
+
+FWD_START_TEST([option --list-all])
+    AT_KEYWORDS(zone policy direct)
+
+    dnl create some deviation in the permanent/runtime config
+    FWD_CHECK([--permanent --zone public --add-service https], 0, [ignore])
+
+    dnl Verify output contains expected sections
+    FWD_CHECK([--list-all | TRIM_WHITESPACE], 0, [m4_strip([dnl
+ALL ZONES:
+block
+  target: %%REJECT%%
+  ingress-priority: 0
+  egress-priority: 0
+  icmp-block-inversion: no
+  interfaces: 
+  sources: 
+  services: 
+  ports: 
+  protocols: 
+  forward: yes
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+dmz
+  target: default
+  ingress-priority: 0
+  egress-priority: 0
+  icmp-block-inversion: no
+  interfaces: 
+  sources: 
+  services: ssh
+  ports: 
+  protocols: 
+  forward: yes
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+drop
+  target: DROP
+  ingress-priority: 0
+  egress-priority: 0
+  icmp-block-inversion: no
+  interfaces: 
+  sources: 
+  services: 
+  ports: 
+  protocols: 
+  forward: yes
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+external
+  target: default
+  ingress-priority: 0
+  egress-priority: 0
+  icmp-block-inversion: no
+  interfaces: 
+  sources: 
+  services: ssh
+  ports: 
+  protocols: 
+  forward: yes
+  masquerade: yes
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+home
+  target: default
+  ingress-priority: 0
+  egress-priority: 0
+  icmp-block-inversion: no
+  interfaces: 
+  sources: 
+  services: dhcpv6-client mdns samba-client ssh
+  ports: 
+  protocols: 
+  forward: yes
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+internal
+  target: default
+  ingress-priority: 0
+  egress-priority: 0
+  icmp-block-inversion: no
+  interfaces: 
+  sources: 
+  services: dhcpv6-client mdns samba-client ssh
+  ports: 
+  protocols: 
+  forward: yes
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+public (default, active)
+  target: default
+  ingress-priority: 0
+  egress-priority: 0
+  icmp-block-inversion: no
+  interfaces: 
+  sources: 
+  services: dhcpv6-client ssh
+  ports: 
+  protocols: 
+  forward: yes
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+trusted
+  target: ACCEPT
+  ingress-priority: 0
+  egress-priority: 0
+  icmp-block-inversion: no
+  interfaces: 
+  sources: 
+  services: 
+  ports: 
+  protocols: 
+  forward: yes
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+work
+  target: default
+  ingress-priority: 0
+  egress-priority: 0
+  icmp-block-inversion: no
+  interfaces: 
+  sources: 
+  services: dhcpv6-client ssh
+  ports: 
+  protocols: 
+  forward: yes
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+ALL POLICIES:
+allow-host-ipv6 (active)
+  disable: no
+  priority: -15000
+  target: CONTINUE
+  ingress-zones: ANY
+  egress-zones: HOST
+  services: 
+  ports: 
+  protocols: 
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+       rule family="ipv6" icmp-type name="mld-listener-done" accept
+       rule family="ipv6" icmp-type name="mld-listener-query" accept
+       rule family="ipv6" icmp-type name="mld-listener-report" accept
+       rule family="ipv6" icmp-type name="mld2-listener-report" accept
+       rule family="ipv6" icmp-type name="neighbour-advertisement" accept
+       rule family="ipv6" icmp-type name="neighbour-solicitation" accept
+       rule family="ipv6" icmp-type name="redirect" accept
+       rule family="ipv6" icmp-type name="router-advertisement" accept
+gateway-dmz-to-HOST (disabled)
+  disable: yes
+  priority: 1000
+  target: CONTINUE
+  ingress-zones: dmz
+  egress-zones: HOST
+  services: dhcp dns
+  ports: 
+  protocols: 
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+gateway-lan-to-HOST (disabled)
+  disable: yes
+  priority: 1000
+  target: CONTINUE
+  ingress-zones: internal home trusted
+  egress-zones: HOST
+  services: dhcp dns ssh
+  ports: 
+  protocols: 
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+gateway-lan-to-work (disabled)
+  disable: yes
+  priority: 1000
+  target: ACCEPT
+  ingress-zones: internal home trusted
+  egress-zones: work
+  services: ftp tftp
+  ports: 
+  protocols: 
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+gateway-lan-to-world (disabled)
+  disable: yes
+  priority: 1000
+  target: ACCEPT
+  ingress-zones: internal home trusted
+  egress-zones: external public
+  services: ftp tftp
+  ports: 
+  protocols: 
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+gateway-world-to-HOST (disabled)
+  disable: yes
+  priority: 1000
+  target: CONTINUE
+  ingress-zones: external public
+  egress-zones: HOST
+  services: dhcpv6-client
+  ports: 
+  protocols: 
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+DIRECT RULES:
+  (none)
+DIRECT PASSTHROUGHS:
+  (none)
+])])
+    FWD_CHECK([--permanent --list-all | TRIM_WHITESPACE], 0, [m4_strip([dnl
+ALL ZONES:
+block
+  target: %%REJECT%%
+  ingress-priority: 0
+  egress-priority: 0
+  icmp-block-inversion: no
+  interfaces: 
+  sources: 
+  services: 
+  ports: 
+  protocols: 
+  forward: yes
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+dmz
+  target: default
+  ingress-priority: 0
+  egress-priority: 0
+  icmp-block-inversion: no
+  interfaces: 
+  sources: 
+  services: ssh
+  ports: 
+  protocols: 
+  forward: yes
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+drop
+  target: DROP
+  ingress-priority: 0
+  egress-priority: 0
+  icmp-block-inversion: no
+  interfaces: 
+  sources: 
+  services: 
+  ports: 
+  protocols: 
+  forward: yes
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+external
+  target: default
+  ingress-priority: 0
+  egress-priority: 0
+  icmp-block-inversion: no
+  interfaces: 
+  sources: 
+  services: ssh
+  ports: 
+  protocols: 
+  forward: yes
+  masquerade: yes
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+home
+  target: default
+  ingress-priority: 0
+  egress-priority: 0
+  icmp-block-inversion: no
+  interfaces: 
+  sources: 
+  services: dhcpv6-client mdns samba-client ssh
+  ports: 
+  protocols: 
+  forward: yes
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+internal
+  target: default
+  ingress-priority: 0
+  egress-priority: 0
+  icmp-block-inversion: no
+  interfaces: 
+  sources: 
+  services: dhcpv6-client mdns samba-client ssh
+  ports: 
+  protocols: 
+  forward: yes
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+public (default)
+  target: default
+  ingress-priority: 0
+  egress-priority: 0
+  icmp-block-inversion: no
+  interfaces: 
+  sources: 
+  services: dhcpv6-client https ssh
+  ports: 
+  protocols: 
+  forward: yes
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+trusted
+  target: ACCEPT
+  ingress-priority: 0
+  egress-priority: 0
+  icmp-block-inversion: no
+  interfaces: 
+  sources: 
+  services: 
+  ports: 
+  protocols: 
+  forward: yes
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+work
+  target: default
+  ingress-priority: 0
+  egress-priority: 0
+  icmp-block-inversion: no
+  interfaces: 
+  sources: 
+  services: dhcpv6-client ssh
+  ports: 
+  protocols: 
+  forward: yes
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+ALL POLICIES:
+allow-host-ipv6
+  disable: no
+  priority: -15000
+  target: CONTINUE
+  ingress-zones: ANY
+  egress-zones: HOST
+  services: 
+  ports: 
+  protocols: 
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+       rule family="ipv6" icmp-type name="mld-listener-done" accept
+       rule family="ipv6" icmp-type name="mld-listener-query" accept
+       rule family="ipv6" icmp-type name="mld-listener-report" accept
+       rule family="ipv6" icmp-type name="mld2-listener-report" accept
+       rule family="ipv6" icmp-type name="neighbour-advertisement" accept
+       rule family="ipv6" icmp-type name="neighbour-solicitation" accept
+       rule family="ipv6" icmp-type name="redirect" accept
+       rule family="ipv6" icmp-type name="router-advertisement" accept
+gateway-dmz-to-HOST
+  disable: yes
+  priority: 1000
+  target: CONTINUE
+  ingress-zones: dmz
+  egress-zones: HOST
+  services: dhcp dns
+  ports: 
+  protocols: 
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+gateway-lan-to-HOST
+  disable: yes
+  priority: 1000
+  target: CONTINUE
+  ingress-zones: internal home trusted
+  egress-zones: HOST
+  services: dhcp dns ssh
+  ports: 
+  protocols: 
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+gateway-lan-to-work
+  disable: yes
+  priority: 1000
+  target: ACCEPT
+  ingress-zones: internal home trusted
+  egress-zones: work
+  services: ftp tftp
+  ports: 
+  protocols: 
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+gateway-lan-to-world
+  disable: yes
+  priority: 1000
+  target: ACCEPT
+  ingress-zones: internal home trusted
+  egress-zones: external public
+  services: ftp tftp
+  ports: 
+  protocols: 
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+gateway-world-to-HOST
+  disable: yes
+  priority: 1000
+  target: CONTINUE
+  ingress-zones: external public
+  egress-zones: HOST
+  services: dhcpv6-client
+  ports: 
+  protocols: 
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+DIRECT RULES:
+  (none)
+DIRECT PASSTHROUGHS:
+  (none)
+])])
+
+    dnl Verify --list-all works with --zone (shows specific zone)
+    FWD_CHECK([--zone=public --list-all | TRIM_WHITESPACE], 0, [m4_strip([dnl
+public (default, active)
+  target: default
+  ingress-priority: 0
+  egress-priority: 0
+  icmp-block-inversion: no
+  interfaces: 
+  sources: 
+  services: dhcpv6-client ssh
+  ports: 
+  protocols: 
+  forward: yes
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+])])
+    FWD_CHECK([--permanent --zone=public --list-all | TRIM_WHITESPACE], 0, [m4_strip([dnl
+public (default)
+  target: default
+  ingress-priority: 0
+  egress-priority: 0
+  icmp-block-inversion: no
+  interfaces: 
+  sources: 
+  services: dhcpv6-client https ssh
+  ports: 
+  protocols: 
+  forward: yes
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+])])
+FWD_END_TEST()
