@@ -2285,6 +2285,7 @@ try:
 
             for filename in a.add_entries_from_file:
                 try:
+                    filename = os.path.expanduser(filename)
                     entries = cmd.get_ipset_entries_from_file(filename)
                 except IOError as msg:
                     message = "Failed to read file '%s': %s" % (filename, msg)
