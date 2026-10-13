@@ -32,6 +32,7 @@ from firewall.functions import joinArgs, splitArgs, getPortRange
 from firewall.core.fw_nm import (
     nm_is_imported,
     nm_get_connection_of_interface,
+    nm_get_device_by_ip_iface,
     nm_get_zone_of_connection,
     nm_set_zone_of_connection,
     nm_get_interfaces_in_zone,
@@ -489,9 +490,20 @@ def try_set_zone_of_interface(_zone, interface):
     if nm_is_imported():
         try:
             connection = nm_get_connection_of_interface(interface)
-        except Exception:
-            pass
+        except Exception as e:
+            cmd.print_warning(
+                "NetworkManager zone delegation for interface '%s' failed: %s"
+                % (interface, e)
+            )
         else:
+            if connection is None and nm_get_device_by_ip_iface(interface):
+                cmd.print_warning(
+                    "The interface is under control of NetworkManager, but its "
+                    "connection has no persistent configuration (generated or "
+                    "volatile). The zone binding will be lost on reload or "
+                    "reactivation. To make it permanent, set the connection.zone "
+                    "property of a persistent profile for this interface."
+                )
             if connection is not None:
                 if _zone == nm_get_zone_of_connection(connection):
                     if _zone == "":
