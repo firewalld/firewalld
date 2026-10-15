@@ -221,14 +221,11 @@ class IPSet(IO_Object):
                                 "invalid protocol for family '%s' in '%s'"
                                 % (family, entry),
                             )
-                        if not check_icmp_name(splits[1]) and "/" not in splits[1]:
-                            raise FirewallError(
-                                errors.INVALID_ENTRY,
-                                "invalid icmp type '%s' in '%s'" % (splits[1], entry),
-                            )
-                        else:
-                            (_type, _code) = splits[1].split("/")
-                            if not check_icmp_type_code(_type, _code):
+                        if not check_icmp_name(splits[1]):
+                            type_code = splits[1].split("/")
+                            if len(type_code) != 2 or not check_icmp_type_code(
+                                *type_code
+                            ):
                                 raise FirewallError(
                                     errors.INVALID_ENTRY,
                                     "invalid icmp type '%s' in '%s'"
@@ -241,14 +238,11 @@ class IPSet(IO_Object):
                                 "invalid protocol for family '%s' in '%s'"
                                 % (family, entry),
                             )
-                        if not check_icmpv6_name(splits[1]) and "/" not in splits[1]:
-                            raise FirewallError(
-                                errors.INVALID_ENTRY,
-                                "invalid icmpv6 type '%s' in '%s'" % (splits[1], entry),
-                            )
-                        else:
-                            (_type, _code) = splits[1].split("/")
-                            if not check_icmpv6_type_code(_type, _code):
+                        if not check_icmpv6_name(splits[1]):
+                            type_code = splits[1].split("/")
+                            if len(type_code) != 2 or not check_icmpv6_type_code(
+                                *type_code
+                            ):
                                 raise FirewallError(
                                     errors.INVALID_ENTRY,
                                     "invalid icmpv6 type '%s' in '%s'"
