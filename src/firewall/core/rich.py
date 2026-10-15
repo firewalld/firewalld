@@ -1071,7 +1071,7 @@ class Rich_Rule:
                         "action",
                         Rich_Reject(attrs.get("type"), attrs.get("limit")),
                     )
-                    in_elements.pop()  # accept
+                    in_elements.pop()  # reject
                     attrs.clear()
                     index = index - 1  # return token to input
             elif in_element == "mark":
@@ -1083,7 +1083,7 @@ class Rich_Rule:
                     object.__setattr__(
                         self, "action", Rich_Mark(attrs.get("set"), attrs.get("limit"))
                     )
-                    in_elements.pop()  # accept
+                    in_elements.pop()  # mark
                     attrs.clear()
                     index = index - 1  # return token to input
             elif in_element == "limit":
