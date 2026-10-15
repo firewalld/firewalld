@@ -389,14 +389,20 @@ def checkInterface(iface):
     """Check interface string
 
     @param interface string
-    @return True if interface is valid (maximum 16 chars and does not contain ' ', '/', '!', ':', '*'), else False
+    @return True if interface is valid (maximum 16 chars and does not contain whitespace, control characters, '/', '!', '*'), else False
     """
 
     if not iface or len(iface) > 16:
         return False
-    for ch in [" ", "/", "!", "*"]:
-        # !:* are limits for iptables <= 1.4.5
+    for ch in ["/", "!", "*"]:
+        # !* are limits for iptables <= 1.4.5
         if ch in iface:
+            return False
+    for ch in iface:
+        # The kernel does not allow whitespace in interface names. Control
+        # characters (e.g. newlines) would also break the line based input of
+        # iptables-restore and ipset restore.
+        if ch.isspace() or ord(ch) < 32 or ord(ch) == 127:
             return False
     # disabled old iptables check
     # if iface == "+":
