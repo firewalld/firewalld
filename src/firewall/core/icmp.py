@@ -97,10 +97,20 @@ def check_icmp_name(_name):
     return False
 
 
-def check_icmp_type_code(_type, _code):
-    if (_type, _code) in ICMP_TYPES.values():
-        return True
+def _check_type_code(types, _type, _code):
+    try:
+        _type = int(_type)
+        _code = int(_code)
+    except (TypeError, ValueError):
+        return False
+    for t, c, _ in types.values():
+        if (t, c) == (_type, _code):
+            return True
     return False
+
+
+def check_icmp_type_code(_type, _code):
+    return _check_type_code(ICMP_TYPES, _type, _code)
 
 
 def check_icmpv6_name(_name):
@@ -110,6 +120,4 @@ def check_icmpv6_name(_name):
 
 
 def check_icmpv6_type_code(_type, _code):
-    if (_type, _code) in ICMPV6_TYPES.values():
-        return True
-    return False
+    return _check_type_code(ICMPV6_TYPES, _type, _code)
