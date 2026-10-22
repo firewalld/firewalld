@@ -288,6 +288,7 @@ CONFIG_FILES = \
 	services/ovirt-imageio.xml \
 	services/ovirt-storageconsole.xml \
 	services/ovirt-vmconsole.xml \
+	services/pacredir.xml \
 	services/pmcd.xml \
 	services/pmproxy.xml \
 	services/pmwebapis.xml \
