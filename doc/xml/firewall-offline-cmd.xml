@@ -891,6 +891,14 @@
 	    <para>
 	      <emphasis>Note:</emphasis> IP forwarding will be implicitly enabled if <option>toaddr</option> is specified.
 	    </para>
+            <para>
+              <emphasis>Note:</emphasis>
+              When this option is used with <option>--policy</option>,
+              it's impossible for the firewall backend to determine the egress
+              zone. See section <emphasis>UNKNOWN DESTINATIONS</emphasis>
+              in <citerefentry><refentrytitle>firewall-cmd</refentrytitle><manvolnum>1</manvolnum></citerefentry>
+              for more information.
+            </para>
 	  </listitem>
 	</varlistentry>
 

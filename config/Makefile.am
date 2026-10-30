@@ -256,13 +256,15 @@ CONFIG_FILES = \
 	services/managesieve.xml \
 	services/matrix.xml \
 	services/mdns.xml \
-	services/minecraft.xml \
+	services/mednafen.xml \
 	services/memcache.xml \
+	services/minecraft.xml \
 	services/minidlna.xml \
 	services/mndp.xml \
 	services/mongodb.xml \
 	services/mosh.xml \
 	services/mountd.xml \
+	services/mpd-httpd.xml \
 	services/mpd.xml \
 	services/mqtt.xml \
 	services/mqtt-tls.xml \

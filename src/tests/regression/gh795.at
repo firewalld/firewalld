@@ -10,7 +10,6 @@ FWD_CHECK([--permanent --ipset foobar --get-entries], 0, [dnl
 ])
 FWD_CHECK([--permanent --ipset foobar --remove-entry 1.2.3.4], 0, [ignore])
 FWD_CHECK([--permanent --ipset foobar --get-entries], 0, [dnl
-
 ])
 FWD_RELOAD
 FWD_CHECK([--ipset foobar --add-entry 1.2.3.4], 0, [ignore])
@@ -42,7 +41,6 @@ IPSET_LIST_SET([foobar], 0, [dnl
 
 FWD_CHECK([--ipset foobar --remove-entry 1.2.3.4], 0, [ignore])
 FWD_CHECK([--ipset foobar --get-entries], 0, [dnl
-
 ])
 
 FWD_END_TEST([-e '/WARNING: ALREADY_ENABLED:/d'])

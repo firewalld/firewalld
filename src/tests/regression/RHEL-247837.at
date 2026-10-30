@@ -1,0 +1,51 @@
+FWD_START_TEST([runtime-to-permanent empty runtime features])
+AT_KEYWORDS(RHEL-247837 gh1239)
+
+dnl RHEL-247837
+FWD_CHECK([--zone work --list-services], 0, [dnl
+dhcpv6-client ssh
+])
+FWD_CHECK([--zone work --remove-service dhcpv6-client], 0, [ignore])
+FWD_CHECK([--zone work --remove-service ssh], 0, [ignore])
+FWD_CHECK([--runtime-to-permanent], 0, [ignore])
+FWD_RELOAD()
+FWD_CHECK([--zone work --list-services], 0, [dnl
+])
+
+dnl gh1239
+FWD_CHECK([--permanent --new-zone testzone], 0, [ignore])
+FWD_CHECK([--permanent --zone testzone --add-source 1.1.1.1], 0, [ignore])
+FWD_RELOAD()
+FWD_CHECK([--zone testzone --list-sources], 0, [dnl
+1.1.1.1
+])
+FWD_CHECK([--zone testzone --remove-source 1.1.1.1], 0, [ignore])
+FWD_CHECK([--runtime-to-permanent], 0, [ignore])
+FWD_RELOAD()
+FWD_CHECK([--zone testzone --list-sources], 0, [dnl
+])
+
+dnl similar to above, but with a policy
+FWD_CHECK([--permanent --new-policy foobar], 0, [ignore])
+FWD_CHECK([--permanent --policy foobar --add-service https], 0, [ignore])
+FWD_RELOAD()
+FWD_CHECK([--policy foobar --list-services], 0, [dnl
+https
+])
+FWD_CHECK([--policy foobar --remove-service https], 0, [ignore])
+FWD_CHECK([--runtime-to-permanent], 0, [ignore])
+FWD_RELOAD()
+FWD_CHECK([--policy foobar --list-services], 0, [dnl
+])
+
+dnl service definition
+FWD_CHECK([--permanent --new-service raboof], 0, [ignore])
+FWD_CHECK([--permanent --service raboof --add-port 1234/tcp], 0, [ignore])
+FWD_RELOAD()
+FWD_CHECK([--permanent --delete-service raboof], 0, [ignore])
+FWD_CHECK([--permanent --get-services | grep raboof], 1, [ignore])
+FWD_CHECK([--runtime-to-permanent], 0, [ignore])
+FWD_RELOAD()
+FWD_CHECK([--get-services | grep raboof], 0, [ignore])
+
+FWD_END_TEST()

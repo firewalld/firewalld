@@ -51,7 +51,7 @@ jobs:
       - name: install libnftnl ${{ matrix.libnftnl-version }}
         run: |
           cd /tmp
-          git clone --depth=1 --branch ${{ matrix.libnftnl-version }} git://git.netfilter.org/libnftnl
+          git clone --depth=1 --branch ${{ matrix.libnftnl-version }} https://git.netfilter.org/libnftnl
           cd libnftnl
           ./autogen.sh
           ./configure
@@ -62,7 +62,7 @@ jobs:
       - name: install nftables ${{ matrix.nftables-version }}
         run: |
           cd /tmp
-          git clone --depth=1 --branch ${{ matrix.nftables-version }} git://git.netfilter.org/nftables
+          git clone --depth=1 --branch ${{ matrix.nftables-version }} https://git.netfilter.org/nftables
           cd nftables
           ./autogen.sh
           ./configure --disable-man-doc --with-json --disable-python

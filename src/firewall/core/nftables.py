@@ -1174,7 +1174,10 @@ class nftables:
         return []
 
     def _zone_dispatch_chain_name(self, ingress_zone, egress_zone, table, chain):
-        return f"{table}_{SHORTCUTS[chain]}_{ingress_zone}_to_{egress_zone}"
+        if chain == "PREROUTING":
+            return f"{table}_{SHORTCUTS[chain]}_{ingress_zone}_dispatch"
+        else:
+            return f"{table}_{SHORTCUTS[chain]}_{ingress_zone}_to_{egress_zone}"
 
     def build_zone_target_rules(self, enable, ingress_zone, egress_zone, table, chain):
         add_del = {True: "add", False: "delete"}[enable]
@@ -1186,10 +1189,14 @@ class nftables:
             ingress_zone, egress_zone, table, chain
         )
 
+        # prerouting cannot determine the egress. Only create it once.
+        if chain == "PREROUTING" and egress_zone != "HOST":
+            return []
+
         rules = []
         expr_fragments = []
-        if table != "filter" or chain in ["PREROUTING", "OUTPUT"]:
-            expr_fragments.append({"return": None})
+        if chain in ["PREROUTING", "OUTPUT", "POSTROUTING"]:
+            expr_fragments.append({"accept": None})
         elif z_obj.target in [
             DEFAULT_ZONE_TARGET,
             "ACCEPT",
@@ -1247,6 +1254,11 @@ class nftables:
         """Chains for stage 2. (identify egress zone)"""
         add_del = {True: "add", False: "delete"}[enable]
 
+        # prerouting doesn't have a stage2 because it can't determine the
+        # egress
+        if chain == "PREROUTING":
+            return []
+
         return [
             {
                 add_del: {
@@ -1264,6 +1276,10 @@ class nftables:
     ):
         """Chains for stage 3. (dispatch to policies)"""
         add_del = {True: "add", False: "delete"}[enable]
+
+        # prerouting cannot determine the egress. Only create it once.
+        if chain == "PREROUTING" and egress_zone != "HOST":
+            return []
 
         # chain for stage 3 (jump to policies)
         return [
@@ -1285,6 +1301,10 @@ class nftables:
     ):
         add_del = {True: "add", False: "delete"}[enable]
 
+        # prerouting cannot determine the egress. Only create it once.
+        if chain == "PREROUTING" and egress_zone != "HOST":
+            return []
+
         if interface and interface[len(interface) - 1] == "+":
             interface = interface[: len(interface) - 1] + "*"
 
@@ -1302,12 +1322,12 @@ class nftables:
         elif source:
             expr_fragments.append(self._rule_addr_fragment("saddr", source))
 
-        if "HOST" == egress_zone:
+        if "HOST" == egress_zone or chain == "PREROUTING":
             expr_fragments.append(
                 {
                     "jump": {
                         "target": self._zone_dispatch_chain_name(
-                            ingress_zone, "HOST", table, chain
+                            ingress_zone, egress_zone, table, chain
                         )
                     }
                 }
@@ -1342,6 +1362,11 @@ class nftables:
         self, enable, ingress_zone, egress_zone, table, chain, interface, source
     ):
         add_del = {True: "add", False: "delete"}[enable]
+
+        # prerouting doesn't have a stage2 because it can't determine the
+        # egress
+        if chain == "PREROUTING":
+            return []
 
         if interface and interface[len(interface) - 1] == "+":
             interface = interface[: len(interface) - 1] + "*"
@@ -2647,11 +2672,36 @@ class nftables:
                 }
             },
         ]
+
         if log_denied != "off":
-            expr_fragments.append({"log": {"prefix": "rpfilter_DROP: "}})
+            if log_denied == "all":
+                expr_fragments.append({"log": {"prefix": "rpfilter_DROP: "}})
+            else:
+                rules.append(
+                    {
+                        "insert": {
+                            "rule": {
+                                "family": "inet",
+                                "table": TABLE_NAME,
+                                "chain": rpfilter_chain,
+                                "expr": (
+                                    expr_fragments
+                                    + [
+                                        self._pkttype_match_fragment(
+                                            self._fw.get_log_denied()
+                                        ),
+                                        {"log": {"prefix": "rpfilter_DROP: "}},
+                                    ]
+                                ),
+                            }
+                        }
+                    }
+                )
+
         expr_fragments.append({"drop": None})
 
-        rules.append(
+        rules.insert(
+            0,
             {
                 "insert": {
                     "rule": {
@@ -2661,8 +2711,9 @@ class nftables:
                         "expr": expr_fragments,
                     }
                 }
-            }
+            },
         )
+
         # RHBZ#1058505, RHBZ#1575431 (bug in kernel 4.16-4.17)
         if self._fw._ipv6_rpfilter not in ("loose-forward", "strict-forward"):
             # this rule doesn't make sense for forwarded packets

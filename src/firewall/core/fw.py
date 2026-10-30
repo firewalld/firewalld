@@ -237,7 +237,7 @@ class Firewall:
         order = ["ipsets", "helpers", "icmptypes", "services", "zones", "policies"]
         for io_obj_type in order:
             io_objs = all_io_objects[io_obj_type]
-            for name, io_obj in io_objs.items():
+            for io_obj in io_objs.values():
                 io_obj.check_config_dict(io_obj.export_config_dict(), all_io_objects)
 
     def _start_check_tables(self):
@@ -852,7 +852,7 @@ class Firewall:
             name = "%s/%s" % (path, filename)
             log.debug1("Loading zone file '%s'", name)
 
-            obj = zone_reader(filename, path, no_check_name=combine)
+            obj = zone_reader(filename, path, check_name_len=not combine)
             if combine:
                 # Change name for permanent configuration
                 obj.name = "%s/%s" % (

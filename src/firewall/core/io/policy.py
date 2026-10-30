@@ -924,8 +924,8 @@ class Policy(IO_Object):
                         ),
                     )
                 if (
-                    zone not in ["ANY", "HOST"] and (set(["ANY", "HOST"]) & set(config))
-                ) or (zone in ["ANY", "HOST"] and (set(config) - set([zone]))):
+                    zone not in ["ANY", "HOST"] and ({"ANY", "HOST"} & set(config))
+                ) or (zone in ["ANY", "HOST"] and (set(config) - {zone})):
                     raise FirewallError(
                         errors.INVALID_ZONE,
                         "Policy '{}': '{}' may only contain one of: many regular zones, ANY, or HOST".format(
@@ -1210,15 +1210,14 @@ class policy_ContentHandler(IO_Object_ContentHandler):
         common_endElement(self, name)
 
 
-def policy_reader(filename, path, no_check_name=False):
+def policy_reader(filename, path):
     policy = Policy()
     if not filename.endswith(".xml"):
         raise FirewallError(
             errors.INVALID_NAME, "'%s' is missing .xml suffix" % filename
         )
     policy.name = filename[:-4]
-    if not no_check_name:
-        policy.check_name(policy.name)
+    policy.check_name(policy.name)
     policy.filename = filename
     policy.path = path
     policy.builtin = False if path.startswith(config.ETC_FIREWALLD) else True

@@ -347,7 +347,7 @@ class FirewallDConfigIcmpType(DbusServiceObject):
             else:
                 settings[3].remove(destination)
         else:  # empty means all
-            settings[3] = list(set(["ipv4", "ipv6"]) - set([destination]))
+            settings[3] = list({"ipv4", "ipv6"} - {destination})
         self.update(settings)
 
     @dbus_service_method(

@@ -25,11 +25,11 @@ FWD_RELOAD()
 dnl check rule counts to catch any drastic increases
 m4_if(nftables, FIREWALL_BACKEND, [
 NS_CHECK([nft list table inet firewalld | wc -l], 0, [dnl
-28501
+16817
 ])
 ], [ dnl iptables
 NS_CHECK([iptables-save | wc -l], 0, [dnl
-22986
+11643
 ])
 ])
 
@@ -80,11 +80,11 @@ FWD_RELOAD()
 dnl check rule counts to catch any drastic increases
 m4_if(nftables, FIREWALL_BACKEND, [
 NS_CHECK([nft list table inet firewalld | wc -l], 0, [dnl
-26293
+15569
 ])
 ], [ dnl iptables
 NS_CHECK([iptables-save | wc -l], 0, [dnl
-21162
+10779
 ])
 ])
 

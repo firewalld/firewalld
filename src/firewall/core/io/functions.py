@@ -23,21 +23,22 @@ from firewall.core.io.firewalld_conf import firewalld_conf
 
 def get_config_files_in_dir(directory, conf_type):
     """
-    Returns: list of tuples (directory, file)
+    Returns: list of tuples (directory, file, check_name_len)
     """
     if not os.path.isdir(directory):
         return []
     dir_file_list = []
     for file in sorted(os.listdir(directory)):
         if file.endswith(".xml"):
-            dir_file_list.append((directory, file))
+            dir_file_list.append((directory, file, True))
         # combined zones: <zone name>/foo.xml
         #                 ...
         #                 <zone name>/bar.xml
         elif conf_type == "zone" and os.path.isdir(os.path.join(directory, file)):
-            dir_file_list.extend(
-                get_config_files_in_dir(os.path.join(directory, file), conf_type)
-            )
+            for _dir, _file, _ in get_config_files_in_dir(
+                os.path.join(directory, file), conf_type
+            ):
+                dir_file_list.append((_dir, _file, False))
     return dir_file_list
 
 
@@ -90,8 +91,15 @@ def check_on_disk_config(fw):
     }
     for reader in readers.keys():
         for _dir in readers[reader]["dirs"]:
-            for directory, file in get_config_files_in_dir(_dir, reader):
-                obj = readers[reader]["reader"](file, directory)
+            for directory, file, check_name_len in get_config_files_in_dir(
+                _dir, reader
+            ):
+                if check_name_len:
+                    obj = readers[reader]["reader"](file, directory)
+                else:
+                    obj = readers[reader]["reader"](
+                        file, directory, check_name_len=False
+                    )
                 readers[reader]["add"](obj)
 
     fw_config.full_check_config()

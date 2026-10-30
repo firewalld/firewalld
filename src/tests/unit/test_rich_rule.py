@@ -351,7 +351,7 @@ def test_rich_limit():
         l2 = firewall.core.rich.Rich_Limit(l.value, l.burst)
         assert l == l2
         assert hash(l) == hash(l2), "Rich_Limit must be hashable"
-        assert set([l, l2]) == set([l]), "Rich_Limit must be hashable"
+        assert {l, l2} == {l}, "Rich_Limit must be hashable"
         return l
 
     with pytest.raises(TypeError):

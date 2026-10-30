@@ -45,7 +45,7 @@ class FirewallZone:
     def cleanup(self):
         self._zones.clear()
         self._zone_policies.clear()
-        for _id in self._timeouts:
+        for _id in list(self._timeouts):
             self.removeTimeout(_id)
 
     def with_transaction(self, *args, **kwargs):
