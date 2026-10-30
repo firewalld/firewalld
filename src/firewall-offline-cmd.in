@@ -2676,6 +2676,47 @@ try:
             cmd.print_msg("")
         sys.exit(0)
 
+    elif a.list_all and not zone and not a.policy:
+        # Comprehensive --list-all for offline config
+        cmd.print_msg("ALL ZONES:")
+        zones = fw.config.get_zones()
+        default_zone = fw.get_default_zone()
+        for zone_name in sorted(zones):
+            fw_zone = fw.config.get_zone(zone_name)
+            fw_settings = FirewallClientZoneSettings(
+                fw.config.get_zone_config_dict(fw_zone)
+            )
+            cmd.print_zone_info(zone_name, fw_settings, default_zone=default_zone)
+            cmd.print_msg("")
+
+        cmd.print_msg("ALL POLICIES:")
+        policies = fw.config.get_policy_objects()
+        for policy in policies:
+            fw_policy = fw.config.get_policy_object(policy)
+            fw_settings = FirewallClientPolicySettings(
+                fw.config.get_policy_object_config_dict(fw_policy)
+            )
+            cmd.print_policy_info(policy, fw_settings)
+            cmd.print_msg("")
+
+        cmd.print_msg("DIRECT RULES:")
+        rules = fw.direct.get_all_rules()
+        for ipv, table, chain, priority, rule in rules:
+            cmd.print_msg(
+                "%s %s %s %d %s" % (ipv, table, chain, priority, joinArgs(rule))
+            )
+        if not rules:
+            cmd.print_msg("  (none)")
+        cmd.print_msg("")
+
+        cmd.print_msg("DIRECT PASSTHROUGHS:")
+        passthroughs = fw.direct.get_all_passthroughs()
+        for ipv, rule in passthroughs:
+            cmd.print_msg("%s %s" % (ipv, joinArgs(rule)))
+        if not passthroughs:
+            cmd.print_msg("  (none)")
+        sys.exit(0)
+
     elif a.policy_set:
         for _policy in filter(
             lambda x: x[: len(a.policy_set)] == a.policy_set,
