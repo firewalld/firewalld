@@ -237,7 +237,7 @@ class ip4tables:
         except ValueError:
             pass
         else:
-            if len(args) >= i + 1:
+            if len(args) > i + 1:
                 table = args[i + 1]
         chain = None
         for opt in ["-A", "--append", "-I", "--insert", "-N", "--new-chain"]:
@@ -246,7 +246,7 @@ class ip4tables:
             except ValueError:
                 pass
             else:
-                if len(args) >= i + 1:
+                if len(args) > i + 1:
                     chain = args[i + 1]
         return (table, chain)
 
@@ -283,7 +283,7 @@ class ip4tables:
                 except ValueError:
                     pass
                 else:
-                    if len(rule) >= j + 1:
+                    if len(rule) > j + 1:
                         table = rule[j + 1]
             for opt in ["-A", "--append", "-I", "--insert", "-D", "--delete"]:
                 try:
@@ -291,7 +291,7 @@ class ip4tables:
                 except ValueError:
                     pass
                 else:
-                    if len(rule) >= insert_add_index + 1:
+                    if len(rule) > insert_add_index + 1:
                         chain = rule[insert_add_index + 1]
 
                     if opt in ["-I", "--insert"]:
@@ -355,7 +355,7 @@ class ip4tables:
             except ValueError:
                 continue
 
-            if len(rule) >= j + 1:
+            if len(rule) > j + 1:
                 table = rule[j + 1]
         for opt in ["-A", "--append", "-I", "--insert", "-D", "--delete"]:
             try:
@@ -363,7 +363,7 @@ class ip4tables:
             except ValueError:
                 continue
 
-            if len(rule) >= verb_index + 1:
+            if len(rule) > verb_index + 1:
                 chain = rule[verb_index + 1]
 
             if opt in ["-D", "--delete"]:
@@ -474,7 +474,7 @@ class ip4tables:
                 except ValueError:
                     pass
                 else:
-                    if len(rule) >= i + 1:
+                    if len(rule) > i + 1:
                         rule.pop(i)
                         table = rule.pop(i)
 
