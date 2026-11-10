@@ -825,9 +825,9 @@ class ip4tables:
         )
         default_rules["filter"].append("-N INPUT_direct")
         default_rules["filter"].append("-A INPUT -j INPUT_direct")
-        self.our_chains["filter"].update(set("INPUT_direct"))
+        self.our_chains["filter"].add("INPUT_direct")
         default_rules["filter"].append("-N INPUT_dispatch")
-        self.our_chains["filter"].update(set("INPUT_dispatch"))
+        self.our_chains["filter"].add("INPUT_dispatch")
         default_rules["filter"].append("-A INPUT -j INPUT_dispatch")
         if log_denied != "off":
             default_rules["filter"].append(
@@ -852,9 +852,9 @@ class ip4tables:
         )
         default_rules["filter"].append("-N FORWARD_direct")
         default_rules["filter"].append("-A FORWARD -j FORWARD_direct")
-        self.our_chains["filter"].update(set("FORWARD_direct"))
+        self.our_chains["filter"].add("FORWARD_direct")
         default_rules["filter"].append("-N FORWARD_dispatch")
-        self.our_chains["filter"].update(set("FORWARD_dispatch"))
+        self.our_chains["filter"].add("FORWARD_dispatch")
         default_rules["filter"].append("-A FORWARD -j FORWARD_dispatch")
         if log_denied != "off":
             default_rules["filter"].append(
@@ -875,10 +875,10 @@ class ip4tables:
             "-A OUTPUT -o lo -j ACCEPT",
             "-A OUTPUT -j OUTPUT_direct",
         ]
-        self.our_chains["filter"].update(set("OUTPUT_direct"))
+        self.our_chains["filter"].add("OUTPUT_direct")
         default_rules["filter"].append("-N OUTPUT_dispatch")
         default_rules["filter"].append("-A OUTPUT -j OUTPUT_dispatch")
-        self.our_chains["filter"].update(set("OUTPUT_dispatch"))
+        self.our_chains["filter"].add("OUTPUT_dispatch")
 
         final_default_rules = []
         for table in default_rules:
