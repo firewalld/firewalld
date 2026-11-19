@@ -44,6 +44,7 @@ from firewall.dbus_utils import (
 )
 from firewall import errors
 from firewall.errors import FirewallError
+from firewall.functions import checkInterface
 
 ############################################################################
 #
@@ -711,6 +712,16 @@ class FirewallDConfig(DbusServiceObject):
                             "'%s' for %s" % (new_value, property_name),
                         )
                     config_name = "IPv6_rpfilter"
+                elif property_name == "NftablesFlowtable":
+                    ifaces = new_value.split()
+                    if new_value != "off" and (
+                        not ifaces or not all(checkInterface(i) for i in ifaces)
+                    ):
+                        raise FirewallError(
+                            errors.INVALID_VALUE,
+                            "'%s' for %s" % (new_value, property_name),
+                        )
+                    config_name = property_name
                 else:
                     raise errors.BugError(f'Unhandled property_name "{property_name}"')
 
