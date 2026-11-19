@@ -99,7 +99,7 @@ class FirewallClientZoneSettings:
             [],
             [],
             False,
-            False,
+            True,
             DEFAULT_ZONE_PRIORITY,
             DEFAULT_ZONE_PRIORITY,
         ]
