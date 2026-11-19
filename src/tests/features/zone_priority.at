@@ -73,7 +73,7 @@ foobar
   services:
   ports:
   protocols:
-  forward: no
+  forward: yes
   masquerade: no
   forward-ports:
   source-ports:
@@ -247,7 +247,7 @@ zone-2 (active)
   services:
   ports:
   protocols:
-  forward: no
+  forward: yes
   masquerade: no
   forward-ports:
   source-ports:
@@ -265,7 +265,7 @@ zone-4 (active)
   services:
   ports:
   protocols:
-  forward: no
+  forward: yes
   masquerade: no
   forward-ports:
   source-ports:
@@ -278,6 +278,7 @@ AT_CHECK([cat ./zones/zone-5.xml], 0, [dnl
 <?xml version="1.0" encoding="utf-8"?>
 <zone ingress-priority="-1" egress-priority="100">
   <interface name="dummy-5"/>
+  <forward/>
 </zone>
 ])
 
