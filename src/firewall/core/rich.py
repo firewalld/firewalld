@@ -415,14 +415,11 @@ class Rich_Log:
             raise FirewallError(errors.INVALID_LOG_LEVEL, self.level)
 
     def __lt__(self, other):
-        if self.prefix < other.prefix:
-            return True
-        elif self.level < other.level:
-            return True
-        elif lt_objects(self.limit, other.limit):
-            return True
-
-        return False
+        if self.prefix != other.prefix:
+            return self.prefix < other.prefix
+        if self.level != other.level:
+            return self.level < other.level
+        return lt_objects(self.limit, other.limit)
 
     def __str__(self):
         return "log%s%s%s" % (
@@ -470,16 +467,13 @@ class Rich_NFLog:
         object.__setattr__(self, "threshold", int(str(self.threshold), 0))
 
     def __lt__(self, other):
-        if self.group < other.group:
-            return True
-        elif self.prefix < other.prefix:
-            return True
-        elif self.threshold < other.threshold:
-            return True
-        elif lt_objects(self.limit, other.limit):
-            return True
-
-        return False
+        if self.group != other.group:
+            return self.group < other.group
+        if self.prefix != other.prefix:
+            return self.prefix < other.prefix
+        if self.threshold != other.threshold:
+            return self.threshold < other.threshold
+        return lt_objects(self.limit, other.limit)
 
     def __str__(self):
         return "nflog%s%s%s%s" % (
@@ -533,12 +527,9 @@ class Rich_Reject:
     limit: Rich_Limit = None
 
     def __lt__(self, other):
-        if self.type < other.type:
-            return True
-        elif lt_objects(self.limit, other.limit):
-            return True
-
-        return False
+        if self.type != other.type:
+            return self.type < other.type
+        return lt_objects(self.limit, other.limit)
 
     def __str__(self):
         return "reject%s%s" % (
@@ -593,12 +584,9 @@ class Rich_Mark:
                 raise FirewallError(errors.INVALID_MARK, x)
 
     def __lt__(self, other):
-        if self.set < other.set:
-            return True
-        elif lt_objects(self.limit, other.limit):
-            return True
-
-        return False
+        if self.set != other.set:
+            return self.set < other.set
+        return lt_objects(self.limit, other.limit)
 
     def __str__(self):
         return "mark set=%s%s" % (self.set, " %s" % self.limit if self.limit else "")
