@@ -356,7 +356,7 @@ class FirewallDirect:
                 except ValueError:
                     pass
                 else:
-                    if len(rule) > i and "," in rule[i + 1]:
+                    if len(rule) > i + 1 and "," in rule[i + 1]:
                         # For all items in the comma separated list in index
                         # i of the rule, a new rule is created with a single
                         # item from this list
@@ -418,7 +418,7 @@ class FirewallDirect:
 
         # If a rule gets added, the initial rule index position within the
         # ipv, table and chain combination (chain_id) is 1.
-        # Tf the chain_id exists in _rule_priority_positions, there are already
+        # If the chain_id exists in _rule_priority_positions, there are already
         # other rules for this chain_id. The number of rules for a priority
         # less or equal to the priority of the new rule will increase the
         # index of the new rule. The index is the ip*tables -I insert rule
@@ -436,7 +436,7 @@ class FirewallDirect:
         #   _rule_priority_positions[(ipv4,filter,INPUT)][3] = 1
         # The new rule
         #   ipv4, filter, INPUT, 2, -i, foo2_2, -j, ACCEPT
-        # has the same pritority as the second rule before and will be added
+        # has the same priority as the second rule before and will be added
         # right after it.
         # The initial index is 1 and the chain_id is already in
         # _rule_priority_positions. Therefore the index will increase for

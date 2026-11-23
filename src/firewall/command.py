@@ -317,6 +317,7 @@ class FirewallCommand:
                 code = FirewallError.get_code(str(msg))
                 if len(option) > 1:
                     self.print_warning("Warning: %s" % msg)
+                    continue
                 else:
                     self.print_and_exit("Error: %s" % msg, code)
             self.activate_exception_handler()

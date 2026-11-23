@@ -318,7 +318,7 @@ class Direct(IO_Object):
             self.passthroughs[ipv].append(args)
         else:
             log.warning(
-                "Passthrough '%s' for ipv '%s'" % ("',".join(args), ipv)
+                "Passthrough '%s' for ipv '%s' " % ("',".join(args), ipv)
                 + "already in list, ignoring"
             )
 
@@ -330,7 +330,7 @@ class Direct(IO_Object):
                 del self.passthroughs[ipv]
         else:
             raise ValueError(
-                "Passthrough '%s' for ipv '%s'" % ("',".join(args), ipv) + "not in list"
+                "Passthrough '%s' for ipv '%s' not in list" % ("',".join(args), ipv)
             )
 
     def query_passthrough(self, ipv, args):
@@ -382,7 +382,7 @@ class Direct(IO_Object):
         handler = IO_Object_XMLGenerator(f)
         handler.startDocument()
 
-        # start whitelist element
+        # start direct element
         handler.startElement("direct", {})
         handler.ignorableWhitespace("\n")
 
@@ -427,7 +427,7 @@ class Direct(IO_Object):
                 handler.endElement("passthrough")
                 handler.ignorableWhitespace("\n")
 
-        # end zone element
+        # end direct element
         handler.endElement("direct")
         handler.ignorableWhitespace("\n")
         handler.endDocument()

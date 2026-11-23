@@ -96,7 +96,7 @@ def common_reverse_passthrough(args):
             # position idx+2
             try:
                 int(ret_args[idx + 2])
-            except ValueError:
+            except (ValueError, IndexError):
                 pass
             else:
                 ret_args.pop(idx + 2)
@@ -1128,7 +1128,7 @@ class ip4tables:
 
         if source:
             sort_order = 1
-        elif interface:
+        else:
             sort_order = 2
 
         return [
