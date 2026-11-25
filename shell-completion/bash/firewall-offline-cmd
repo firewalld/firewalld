@@ -1,0 +1,259 @@
+# SPDX-License-Identifier: GPL-2.0-or-later
+#
+# Copyright (C) 2013 Red Hat, Inc.
+#
+# Authors:
+# Jiri Popelka <jpopelka@redhat.com>
+#
+# Adapted for firewall-offline-cmd (see also bash/firewall-cmd).
+
+# bash completion for firewall-offline-cmd
+
+OPTIONS_CONFIG="--get-zones --get-policies --get-services --get-icmptypes --get-helpers \
+                --list-all-zones --list-all-policies \
+                --info-zone= --info-policy= --info-service= --info-icmptype= \
+                --info-ipset= --info-helper="
+
+OPTIONS_ZONE_INTERFACES_SOURCES="\
+            --add-interface= --remove-interface= --query-interface= \
+            --list-interfaces --change-interface= \
+            --add-source= --remove-source= --query-source= \
+            --change-source= --list-sources"
+
+OPTIONS_ZONE_POLICY_ACTION="--list-all \
+                       --list-services \
+                       --add-service= --remove-service= --query-service= \
+                       --list-ports \
+                       --add-port= --remove-port= --query-port= \
+                       --list-protocols \
+                       --add-protocol= --remove-protocol= --query-protocol= \
+                       --list-source-ports \
+                       --add-source-port= --remove-source-port= --query-source-port= \
+                       --list-icmp-blocks \
+                       --add-icmp-block= --remove-icmp-block= --query-icmp-block= \
+                       --list-forward-ports \
+                       --add-forward-port= --remove-forward-port= --query-forward-port= \
+                       --add-masquerade --remove-masquerade --query-masquerade \
+                       --list-rich-rules \
+                       --add-rich-rule= --remove-rich-rule= --query-rich-rule="
+
+OPTIONS_ZONE_ADAPT_QUERY="--add-icmp-block-inversion --remove-icmp-block-inversion \
+                    --query-icmp-block-inversion \
+                    --add-forward --remove-forward --query-forward"
+
+OPTIONS_POLICY_ADAPT_QUERY="--list-ingress-zones \
+                            --add-ingress-zone= --remove-ingress-zone= --query-ingress-zone= \
+                            --list-egress-zones \
+                            --add-egress-zone= --remove-egress-zone= --query-egress-zone="
+
+OPTIONS_ZONE_POLICY_META="--get-description --set-description= \
+                                    --get-short --set-short= \
+                                    --get-target --set-target="
+
+OPTIONS_POLICY_META="--get-priority --set-priority="
+
+OPTIONS_IPSET_ACTION_ACTION="--add-entry= --remove-entry= --query-entry= --add-entries-from-file= --remove-entries-from-file"
+
+OPTIONS_IPSET_ADAPT_QUERY="--list-entries"
+
+OPTIONS_ZONE="${OPTIONS_ZONE_INTERFACES_SOURCES} \
+              ${OPTIONS_ZONE_POLICY_ACTION} \
+              ${OPTIONS_ZONE_ADAPT_QUERY} \
+              ${OPTIONS_ZONE_POLICY_META}"
+
+OPTIONS_POLICY="${OPTIONS_ZONE_POLICY_ACTION} \
+                ${OPTIONS_POLICY_ADAPT_QUERY} \
+                ${OPTIONS_POLICY_META} \
+                ${OPTIONS_ZONE_POLICY_META}"
+
+OPTIONS_IPSET="${OPTIONS_IPSET_ACTION_ACTION} ${OPTIONS_IPSET_ADAPT_QUERY}"
+
+OPTIONS_SERVICE="--set-description= --get-description --set-short= --get-short \
+                --add-port= --remove-port= --query-port= --get-ports \
+                --add-protocol= --remove-protocol= --query-protocol= --get-protocols --add-source-port= \
+                --remove-source-port= --query-source-port= --get-source-ports --add-helper= \
+                --remove-helper= --query-helper= --get-service-helpers --set-destination= \
+                --remove-destination= --query-destination= --get-destinations --add-include= \
+                --remove-include= --query-include= --get-includes"
+
+OPTIONS_CONFIG_OBJECTS="--new-icmptype= --new-icmptype-from-file= --delete-icmptype= \
+                        --load-icmptype-defaults= \
+                        --new-service= --new-service-from-file= --service= --delete-service= \
+                        --load-service-defaults= \
+                        --new-zone= --new-zone-from-file= --delete-zone= \
+                        --load-zone-defaults= \
+                        --new-policy= --new-policy-from-file= --delete-policy= \
+                        --load-policy-defaults= \
+                        --new-ipset= --new-ipset-from-file= --delete-ipset= \
+                        --load-ipset-defaults= \
+                        --new-helper= --new-helper-from-file= --delete-helper= \
+                        --load-helper-defaults= \
+                        --path-zone= --path-policy= --path-service= --path-icmptype= \
+                        --path-ipset= --path-helper="
+
+OPTIONS_NEW_IPSET="--type= --option="
+
+OPTIONS_NEW_HELPER="--module= --family="
+
+OPTIONS_HELPER=""
+
+OPTIONS_OFFLINE="--system-config= --default-config= --check-config --reset-to-defaults \
+                 --migrate-system-config-firewall= \
+                 --enabled --disabled \
+                 --policy-server --policy-desktop \
+                 --service= --remove-service= --port= --trust= --masq= \
+                 --forward-port= --block-icmp="
+
+OPTIONS_DIRECT="--passthrough \
+        --add-chain --remove-chain --query-chain --get-chains --get-all-chains \
+        --add-rule --remove-rule  --remove-rules --query-rule  --get-rules  --get-all-rules \
+        --add-passthrough --remove-passthrough \
+        --query-passthrough --get-passthroughs --get-all-passthroughs"
+
+OPTIONS_GENERAL="--help --version \
+                 --get-log-denied --set-log-denied= \
+                 --get-default-zone --set-default-zone= \
+                 --get-zone-of-interface= --get-zone-of-source= \
+                 ${OPTIONS_CONFIG} \
+                 ${OPTIONS_CONFIG_OBJECTS} \
+                 ${OPTIONS_OFFLINE} \
+                 --zone= ${OPTIONS_ZONE} \
+                 --policy= ${OPTIONS_POLICY} \
+                 --ipset= ${OPTIONS_IPSET} \
+                 --direct"
+
+_firewall_offline_cmd()
+{
+    local cur prev words cword split
+    _init_completion -s || return
+
+    case $prev in
+    --*-entries-from-file|--new-*-from-file|--migrate-system-config-firewall)
+        _filedir
+        return
+        ;;
+    --system-config|--default-config)
+        _filedir -d
+        return
+        ;;
+    --new-ipset*)
+        if [[ "$cur" == -* ]]; then
+            COMPREPLY=( $( compgen -W "${OPTIONS_NEW_IPSET}" -- "$cur") )
+        fi
+        ;;
+    --new-helper*)
+        if [[ "$cur" == -* ]]; then
+            COMPREPLY=( $( compgen -W "${OPTIONS_NEW_HELPER}" -- "$cur") )
+        fi
+        ;;
+    --new-*)
+        ;;
+    --zone|--set-default-zone|--info-zone|--path-zone|--load-zone-defaults|--delete-zone)
+        COMPREPLY=( $( compgen -W '`firewall-offline-cmd --get-zones`' -- "$cur" ) )
+        ;;
+    --add-ingress-zone|--remove-ingress-zone|--query-ingress-zone|\
+    --add-egress-zone|--remove-egress-zone|--query-egress-zone)
+        COMPREPLY=( $( compgen -W '`firewall-offline-cmd --get-zones` HOST ANY' -- "$cur" ) )
+        ;;
+    --policy|--info-policy|--path-policy|--load-policy-defaults|--delete-policy)
+        COMPREPLY=( $( compgen -W '`firewall-offline-cmd --get-policies`' -- "$cur" ) )
+        ;;
+    --zone=*)
+        COMPREPLY=( $( compgen -W "${OPTIONS_ZONE}" -- "$cur" ) )
+        ;;
+    --policy=*)
+        COMPREPLY=( $( compgen -W "${OPTIONS_POLICY}" -- "$cur" ) )
+        ;;
+    --ipset=*)
+        COMPREPLY=( $( compgen -W "${OPTIONS_IPSET}" -- "$cur" ) )
+        ;;
+    --*-ipset)
+        COMPREPLY=( $( compgen -W '`firewall-offline-cmd --get-ipsets`' -- "$cur" ) )
+        ;;
+    --*-service|--service|--remove-service)
+        COMPREPLY=( $( compgen -W '`firewall-offline-cmd --get-services`' -- "$cur" ) )
+        ;;
+    --service=*)
+        COMPREPLY=( $( compgen -W "${OPTIONS_SERVICE}" -- "$cur" ) )
+        ;;
+    --helper|--info-helper|--path-helper)
+        COMPREPLY=( $( compgen -W '`firewall-offline-cmd --get-helpers`' -- "$cur" ) )
+        ;;
+    --helper=*)
+        COMPREPLY=( $( compgen -W "${OPTIONS_HELPER}" -- "$cur" ) )
+        ;;
+    --*-icmp-block|--info-icmptype|--path-icmptype|--block-icmp)
+        COMPREPLY=( $( compgen -W '`firewall-offline-cmd --get-icmptypes`' -- "$cur" ) )
+        ;;
+    --list-services|--add-service=*|--remove-service=*|--query-service=*|\
+    --list-ports|--add-port=*|--remove-port=*|--query-port=*|\
+    --list-source-ports|--add-source-port=*|--remove-source-port=*|--query-source-port=*|\
+    --list-protocols|--add-protocol=*|--remove-protocol=*|--query-protocol=*|\
+    --list-icmp-blocks|--add-icmp-block=*|--remove-icmp-block=*|--query-icmp-block=*|\
+    --list-forward-ports|--add-forward-port=*|--remove-forward-port=*|--query-forward-port=*|\
+    --list-interfaces|--add-interface=*|--remove-interface=*|--query-interface=*|\
+    --list-sources|--add-source=*|--remove-source=*|--query-source=*|\
+    --add-ingress-zone=*|--remove-ingress-zone=*|\
+    --add-egress-zone=*|--remove-egress-zone=*|\
+    --add-forward|--remove-forward|--query-forward|\
+    --add-masquerade|--remove-masquerade|--query-masquerade|--list-all|\
+    --get-description|--get-short|--set-description=*|--set-short=*)
+        opts=""
+        if [[ ( ${prev} == --add-* ) || ( ${prev} == --remove-* ) ]]; then
+          [[ ${prev} == *=* ]] && opts="${prev%=*}=" || opts="${prev}"
+        fi
+        [[ ! ${words[@]} == *--zone=* ]] && opts="${opts} --zone="
+        if [ -n "${opts}" ]; then
+            COMPREPLY=( $( compgen -W "${opts}" -- "$cur" ) )
+        fi
+        ;;
+    --*-interface|--trust|--masq)
+        _available_interfaces
+        ;;
+    --direct)
+        COMPREPLY=( $( compgen -W "${OPTIONS_DIRECT}" -- "$cur" ) )
+        ;;
+    --*-rich-rule)
+        return 0
+        ;;
+    --passthrough|--*-chain|--get-chains|--*-rule|--get-rules|--remove-rules)
+        COMPREPLY=( $( compgen -W 'ipv4 ipv6 eb' -- "$cur" ) )
+        ;;
+    --add-protocol|--remove-protocol|--query-protocol)
+        COMPREPLY=( $( compgen -W '`getent protocols | cut -d " " -f 1`' -- "$cur" ) )
+        ;;
+    --set-target)
+        if [[ ${words[@]} == *--policy=* ]]; then
+            COMPREPLY=( $( compgen -W 'CONTINUE ACCEPT DROP REJECT' -- "$cur" ) )
+        else
+            COMPREPLY=( $( compgen -W 'default ACCEPT DROP REJECT' -- "$cur" ) )
+        fi
+        ;;
+    --set-log-denied)
+        COMPREPLY=( $( compgen -W 'all unicast broadcast multicast off' -- "$cur" ) )
+        ;;
+    ipv4|ipv6|eb)
+        if [[ ${words[@]} == *--passthrough* ]]; then
+            return 0
+        else
+            COMPREPLY=( $( compgen -W 'nat filter mangle' -- "$cur" ) )
+        fi
+        ;;
+    *)
+        if [[ "$cur" == -* ]]; then
+            if [[ ${words[@]} == *--new-ipset* ]]; then
+                COMPREPLY=( $( compgen -W "${OPTIONS_NEW_IPSET}" -- "$cur") )
+            elif [[ ${words[@]} == *--direct* ]]; then
+                COMPREPLY=( $( compgen -W "${OPTIONS_DIRECT}" -- "$cur") )
+            else
+                COMPREPLY=( $( compgen -W "${OPTIONS_GENERAL}" -- "$cur") )
+            fi
+        fi
+        ;;
+    esac
+
+    # do not append a space to words that end with =
+    [[ $COMPREPLY == *= ]] && compopt -o nospace
+
+} &&
+complete -F _firewall_offline_cmd firewall-offline-cmd

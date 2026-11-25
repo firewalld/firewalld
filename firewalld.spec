@@ -156,6 +156,7 @@ fi
 %{_bindir}/firewall-offline-cmd
 %dir %{_datadir}/bash-completion/completions
 %{_datadir}/bash-completion/completions/firewall-cmd
+%{_datadir}/bash-completion/completions/firewall-offline-cmd
 %dir %{_datadir}/zsh/site-functions
 %{_datadir}/zsh/site-functions/_firewalld
 %{_prefix}/lib/firewalld/icmptypes/*.xml
