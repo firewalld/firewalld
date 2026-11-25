@@ -253,7 +253,10 @@ class FirewallConfig:
 
     def load_ipset_defaults(self, obj):
         if obj.name not in self._ipsets:
-            raise FirewallError(errors.NO_DEFAULTS, obj.name)
+            raise FirewallError(
+                errors.NO_DEFAULTS,
+                "no customized ipset '%s' exists; already using defaults" % obj.name,
+            )
         elif self._ipsets[obj.name] != obj:
             raise FirewallError(
                 errors.NO_DEFAULTS, "self._ipsets[%s] != obj" % obj.name
@@ -433,7 +436,10 @@ class FirewallConfig:
 
     def load_icmptype_defaults(self, obj):
         if obj.name not in self._icmptypes:
-            raise FirewallError(errors.NO_DEFAULTS, obj.name)
+            raise FirewallError(
+                errors.NO_DEFAULTS,
+                "no customized icmptype '%s' exists; already using defaults" % obj.name,
+            )
         elif self._icmptypes[obj.name] != obj:
             raise FirewallError(
                 errors.NO_DEFAULTS, "self._icmptypes[%s] != obj" % obj.name
@@ -613,7 +619,10 @@ class FirewallConfig:
 
     def load_service_defaults(self, obj):
         if obj.name not in self._services:
-            raise FirewallError(errors.NO_DEFAULTS, obj.name)
+            raise FirewallError(
+                errors.NO_DEFAULTS,
+                "no customized service '%s' exists; already using defaults" % obj.name,
+            )
         elif self._services[obj.name] != obj:
             raise FirewallError(
                 errors.NO_DEFAULTS, "self._services[%s] != obj" % obj.name
@@ -815,7 +824,10 @@ class FirewallConfig:
 
     def load_zone_defaults(self, obj):
         if obj.name not in self._zones:
-            raise FirewallError(errors.NO_DEFAULTS, obj.name)
+            raise FirewallError(
+                errors.NO_DEFAULTS,
+                "no customized zone '%s' exists; already using defaults" % obj.name,
+            )
         elif self._zones[obj.name] != obj:
             raise FirewallError(errors.NO_DEFAULTS, "self._zones[%s] != obj" % obj.name)
         elif obj.name not in self._builtin_zones:
@@ -1019,7 +1031,10 @@ class FirewallConfig:
 
     def load_policy_object_defaults(self, obj):
         if obj.name not in self._policy_objects:
-            raise FirewallError(errors.NO_DEFAULTS, obj.name)
+            raise FirewallError(
+                errors.NO_DEFAULTS,
+                "no customized policy '%s' exists; already using defaults" % obj.name,
+            )
         elif self._policy_objects[obj.name] != obj:
             raise FirewallError(
                 errors.NO_DEFAULTS, "self._policy_objects[%s] != obj" % obj.name
@@ -1214,7 +1229,10 @@ class FirewallConfig:
 
     def load_helper_defaults(self, obj):
         if obj.name not in self._helpers:
-            raise FirewallError(errors.NO_DEFAULTS, obj.name)
+            raise FirewallError(
+                errors.NO_DEFAULTS,
+                "no customized helper '%s' exists; already using defaults" % obj.name,
+            )
         elif self._helpers[obj.name] != obj:
             raise FirewallError(
                 errors.NO_DEFAULTS, "self._helpers[%s] != obj" % obj.name
